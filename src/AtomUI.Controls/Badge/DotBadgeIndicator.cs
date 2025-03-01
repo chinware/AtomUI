@@ -1,12 +1,16 @@
-﻿using AtomUI.Theme.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class DotBadgeIndicator : Control
+internal class DotBadgeIndicator : Control,
+                                   ITokenResourceConsumer
 {
     internal static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
         AvaloniaProperty.Register<DotBadgeIndicator, IBrush?>(
@@ -38,7 +42,10 @@ internal class DotBadgeIndicator : Control
         set => SetValue(BadgeShadowSizeProperty, value);
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     private BoxShadows _boxShadows;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static DotBadgeIndicator()
     {
@@ -49,9 +56,22 @@ internal class DotBadgeIndicator : Control
     {
         base.ApplyTemplate();
         BuildBoxShadow();
-        
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty,
+            BadgeTokenKey.BadgeShadowColor));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

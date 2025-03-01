@@ -1,16 +1,20 @@
-﻿using AtomUI.Controls.Badge;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Badge;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class DotBadgeAdorner : TemplatedControl
+internal class DotBadgeAdorner : TemplatedControl,
+                                 ITokenResourceConsumer
 {
     public static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
         AvaloniaProperty.Register<DotBadgeAdorner, IBrush?>(
@@ -99,21 +103,38 @@ internal class DotBadgeAdorner : TemplatedControl
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
 
     private MotionActorControl? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static DotBadgeAdorner()
     {
         AffectsMeasure<DotBadge>(TextProperty, IsAdornerModeProperty);
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
+            SharedTokenKey.MotionDurationMid));
+        SetupBadgeColorBindings();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid);
-        SetupBadgeColor();
+
         _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(DotBadgeAdornerTheme.IndicatorMotionActorPart);
     }
 
@@ -149,39 +170,39 @@ internal class DotBadgeAdorner : TemplatedControl
         {
             if (change.Property == StatusProperty)
             {
-                SetupBadgeColor();
+                SetupBadgeColorBindings();
             }
         }
     }
 
-    private void SetupBadgeColor()
+    private void SetupBadgeColorBindings()
     {
         if (Status is not null)
         {
             if (Status == DotBadgeStatus.Error)
             {
-                TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorError);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
+                    SharedTokenKey.ColorError));
             }
             else if (Status == DotBadgeStatus.Success)
             {
-                TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorSuccess);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
+                    SharedTokenKey.ColorSuccess));
             }
             else if (Status == DotBadgeStatus.Warning)
             {
-                TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorWarning);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
+                    SharedTokenKey.ColorWarning));
             }
             else if (Status == DotBadgeStatus.Processing)
             {
-                TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorInfo);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
+                    SharedTokenKey.ColorInfo));
             }
             else if (Status == DotBadgeStatus.Default)
             {
-                TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorTextPlaceholder);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
+                    SharedTokenKey.ColorTextPlaceholder));
             }
         }
     }

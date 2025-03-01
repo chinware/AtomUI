@@ -1,5 +1,7 @@
-﻿using AtomUI.Controls.Badge;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Badge;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -10,7 +12,8 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class CountBadgeAdorner : TemplatedControl
+internal class CountBadgeAdorner : TemplatedControl,
+                                   ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -153,12 +156,15 @@ internal class CountBadgeAdorner : TemplatedControl
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
     
     private MotionActorControl? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
     private bool _needInitialHide;
-
+    private CompositeDisposable? _tokenBindingsDisposable;
+    
     static CountBadgeAdorner()
     {
         AffectsMeasure<CountBadgeAdorner>(OverflowCountProperty,
@@ -182,12 +188,19 @@ internal class CountBadgeAdorner : TemplatedControl
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid);
-        TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor));
         BuildBoxShadow();
         BuildCountText();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     private void BuildBoxShadow()
@@ -304,7 +317,6 @@ internal class CountBadgeAdorner : TemplatedControl
 
     internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
     {
-
         if (enableMotion)
         {
             ApplyHideMotion(() =>

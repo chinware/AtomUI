@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -8,6 +9,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -21,7 +23,8 @@ public enum CountBadgeSize
 
 public class CountBadge : Control,
                           IControlSharedTokenResourcesHost,
-                          IAnimationAwareControl
+                          IAnimationAwareControl,
+                          ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -51,13 +54,13 @@ public class CountBadge : Control,
 
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
         AvaloniaProperty.Register<CountBadge, bool>(nameof(BadgeIsVisible), true);
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AvaloniaProperty.Register<CountBadge, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
         = AvaloniaProperty.Register<CountBadge, bool>(nameof(IsWaveAnimationEnabled));
-    
+
     public string? BadgeColor
     {
         get => GetValue(BadgeColorProperty);
@@ -106,7 +109,7 @@ public class CountBadge : Control,
         get => GetValue(BadgeIsVisibleProperty);
         set => SetValue(BadgeIsVisibleProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -118,7 +121,7 @@ public class CountBadge : Control,
         get => GetValue(IsWaveAnimationEnabledProperty);
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -126,23 +129,25 @@ public class CountBadge : Control,
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         AvaloniaProperty.Register<CountBadge, TimeSpan>(
             nameof(MotionDuration));
-    
+
     public TimeSpan MotionDuration
     {
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => BadgeToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-    
+
     private CountBadgeAdorner? _badgeAdorner;
     private AdornerLayer? _adornerLayer;
     private bool _isInitialized;
-    
+    private CompositeDisposable? _tokenBindingsDisposable;
+
     static CountBadge()
     {
         AffectsMeasure<CountBadge>(DecoratedTargetProperty,
@@ -157,7 +162,7 @@ public class CountBadge : Control,
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
-    
+
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
@@ -169,9 +174,22 @@ public class CountBadge : Control,
             }
 
             SetupShowZero();
-            
             _isInitialized = true;
         }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
+            SharedTokenKey.MotionDurationSlow));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     private CountBadgeAdorner CreateBadgeAdorner()
@@ -201,6 +219,7 @@ public class CountBadge : Control,
             {
                 return;
             }
+
             badgeAdorner.ApplyToTarget(_adornerLayer, this);
         }
         else
@@ -217,6 +236,7 @@ public class CountBadge : Control,
         {
             return;
         }
+
         _badgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
         if (!enableMotion)
         {
@@ -250,10 +270,9 @@ public class CountBadge : Control,
             BindUtils.RelayBind(this, SizeProperty, _badgeAdorner, CountBadgeAdorner.SizeProperty);
             BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
             BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, _badgeAdorner, CountBadgeAdorner.IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _badgeAdorner,
+                CountBadgeAdorner.IsMotionEnabledProperty);
         }
-
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
     }
 
     private void HandleDecoratedTargetChanged()

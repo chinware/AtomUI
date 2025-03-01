@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -79,10 +81,11 @@ public enum ArrowPosition
     RightEdgeAlignedBottom
 }
 
-public class ArrowDecoratedBox : ContentControl, 
+public class ArrowDecoratedBox : ContentControl,
                                  IArrowAwareShadowMaskInfoProvider,
                                  IAnimationAwareControl,
-                                 IControlSharedTokenResourcesHost
+                                 IControlSharedTokenResourcesHost,
+                                 ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -92,13 +95,13 @@ public class ArrowDecoratedBox : ContentControl,
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
             nameof(ArrowPosition));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsMotionEnabled));
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsWaveAnimationEnabled));
-    
+
     /// <summary>
     /// 是否显示指示箭头
     /// </summary>
@@ -116,7 +119,7 @@ public class ArrowDecoratedBox : ContentControl,
         get => GetValue(ArrowPositionProperty);
         set => SetValue(ArrowPositionProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -135,10 +138,10 @@ public class ArrowDecoratedBox : ContentControl,
 
     internal static readonly StyledProperty<double> ArrowSizeProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
-    
+
     internal static readonly StyledProperty<Direction> ArrowDirectionProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, Direction>(nameof(ArrowDirection));
-    
+
     /// <summary>
     /// 箭头的大小
     /// </summary>
@@ -147,19 +150,20 @@ public class ArrowDecoratedBox : ContentControl,
         get => GetValue(ArrowSizeProperty);
         set => SetValue(ArrowSizeProperty, value);
     }
-    
+
     internal Direction ArrowDirection
     {
         get => GetValue(ArrowDirectionProperty);
         set => SetValue(ArrowDirectionProperty, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
-    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     public Rect ArrowIndicatorBounds { get; private set; }
-    
+
     #endregion
 
     // 指针最顶点位置
@@ -168,7 +172,8 @@ public class ArrowDecoratedBox : ContentControl,
     private Border? _contentDecorator;
     private Control? _arrowIndicatorLayout;
     private ArrowIndicator? _arrowIndicator;
-    private bool _arrowPlacementFlipped = false;
+    private bool _arrowPlacementFlipped;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static ArrowDecoratedBox()
     {
@@ -229,6 +234,18 @@ public class ArrowDecoratedBox : ContentControl,
         }
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
     public CornerRadius GetMaskCornerRadius()
     {
         return CornerRadius;
@@ -238,7 +255,7 @@ public class ArrowDecoratedBox : ContentControl,
     {
         Debug.Assert(_arrowIndicatorLayout != null && _contentDecorator != null);
         var targetRect = _contentDecorator.Bounds;
-        var arrowSize = _arrowIndicatorLayout.DesiredSize;
+        var arrowSize  = _arrowIndicatorLayout.DesiredSize;
         if (_arrowPlacementFlipped)
         {
             if (ArrowDirection == Direction.Top)
@@ -258,9 +275,10 @@ public class ArrowDecoratedBox : ContentControl,
                 targetRect = targetRect.WithX(targetRect.X - arrowSize.Width);
             }
         }
+
         return targetRect;
     }
-    
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -286,13 +304,14 @@ public class ArrowDecoratedBox : ContentControl,
         var targetRect  = _arrowIndicatorLayout.Bounds;
         var center      = targetRect.Center;
         var controlSize = Bounds.Size;
-        
+
         // 计算中点
         var direction = GetDirection(ArrowPosition);
         if (direction == Direction.Left || direction == Direction.Right)
         {
             return (center.Y, controlSize.Height - center.Y);
         }
+
         return (center.X, controlSize.Width - center.X);
     }
 
@@ -303,6 +322,7 @@ public class ArrowDecoratedBox : ContentControl,
         {
             ArrangeArrow(finalSize);
         }
+
         return size;
     }
 
@@ -312,11 +332,12 @@ public class ArrowDecoratedBox : ContentControl,
         {
             return;
         }
+
         var offsetX  = 0d;
         var offsetY  = 0d;
         var position = ArrowPosition;
         var size     = _arrowIndicatorLayout.DesiredSize;
-    
+
         var minValue = Math.Min(size.Width, size.Height);
         var maxValue = Math.Max(size.Width, size.Height);
         if (position == ArrowPosition.Left ||
@@ -417,6 +438,7 @@ public class ArrowDecoratedBox : ContentControl,
                 offsetX = finalSize.Width - maxValue * 2;
             }
         }
+
         _arrowIndicatorLayout.Arrange(new Rect(new Point(offsetX, offsetY), size));
         if (_arrowIndicator != null)
         {
