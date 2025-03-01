@@ -101,10 +101,12 @@ internal class ComboBoxTheme : BaseControlTheme
 
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
-            ButtonSpinnerTokenKey.HandleHoverColor);
-        TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorPrimaryActive);
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
+            Icon.ActiveFilledBrushProperty,
+            ButtonSpinnerTokenKey.HandleHoverColor));
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
+            Icon.SelectedFilledBrushProperty,
+            SharedTokenKey.ColorPrimaryActive));
 
         var openButton = new IconButton
         {
@@ -117,12 +119,14 @@ internal class ComboBoxTheme : BaseControlTheme
 
         openButton.RegisterInNameScope(scope);
 
-        TokenResourceBinder.CreateTokenBinding(openButton, Layoutable.WidthProperty,
-            ComboBoxTokenKey.OpenIndicatorWidth);
-        TokenResourceBinder.CreateTokenBinding(openButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(openButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton, Layoutable.WidthProperty,
+            ComboBoxTokenKey.OpenIndicatorWidth));
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton,
+            IconButton.IconWidthProperty,
+            SharedTokenKey.IconSizeSM));
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton,
+            IconButton.IconHeightProperty,
+            SharedTokenKey.IconSizeSM));
 
         spinnerHandleDecorator.Child   = openButton;
         spinnerInnerBox.SpinnerContent = spinnerHandleDecorator;
@@ -179,12 +183,12 @@ internal class ComboBoxTheme : BaseControlTheme
 
         var border = new Border();
 
-        TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            SharedTokenKey.ColorBgContainer);
-        TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            ComboBoxTokenKey.PopupBorderRadius);
-        TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            ComboBoxTokenKey.PopupContentPadding);
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
+            SharedTokenKey.ColorBgContainer));
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
+            ComboBoxTokenKey.PopupBorderRadius));
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
+            ComboBoxTokenKey.PopupContentPadding));
 
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
@@ -198,10 +202,10 @@ internal class ComboBoxTheme : BaseControlTheme
 
         popup.Child = border;
 
-        TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            ComboBoxTokenKey.PopupMarginToAnchor);
-        TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            ComboBoxTokenKey.PopupBoxShadows);
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
+            ComboBoxTokenKey.PopupMarginToAnchor));
+        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
+            ComboBoxTokenKey.PopupBoxShadows));
         CreateTemplateParentBinding(popup, Layoutable.MaxHeightProperty,
             ComboBox.MaxDropDownHeightProperty);
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,

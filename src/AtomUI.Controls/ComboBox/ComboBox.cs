@@ -1,10 +1,12 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -12,7 +14,8 @@ using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
 public class ComboBox : AvaloniaComboBox,
                         IAnimationAwareControl,
-                        IControlSharedTokenResourcesHost
+                        IControlSharedTokenResourcesHost,
+                        ITokenResourceConsumer
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
@@ -116,8 +119,11 @@ public class ComboBox : AvaloniaComboBox,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ComboBoxToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static ComboBox()
     {
@@ -186,5 +192,17 @@ public class ComboBox : AvaloniaComboBox,
     {
         PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
         PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }
