@@ -1,5 +1,7 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -13,7 +15,9 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
+internal class CheckBoxIndicator : Control, 
+                                   IWaveAdornerInfoProvider,
+                                   ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -136,10 +140,13 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
         get => _isWaveAnimationEnabled;
         set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static CheckBoxIndicator()
     {
@@ -162,9 +169,16 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     public override void ApplyTemplate()
