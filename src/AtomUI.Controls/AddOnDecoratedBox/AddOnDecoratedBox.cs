@@ -187,6 +187,22 @@ public class AddOnDecoratedBox : ContentControl,
             if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
             {
                 SetupInnerBoxCornerRadius();
+                if (change.NewValue is Icon icon)
+                {
+                    SetupIconTypeAddOnSize(icon);
+                }
+            }
+            else if (change.Property == SizeTypeProperty)
+            {
+                if (LeftAddOn is Icon leftIconAddOn)
+                {
+                    SetupIconTypeAddOnSize(leftIconAddOn);
+                }
+
+                if (RightAddOn is Icon rightIconAddOn)
+                {
+                    SetupIconTypeAddOnSize(rightIconAddOn);
+                }
             }
         }
 
@@ -198,34 +214,13 @@ public class AddOnDecoratedBox : ContentControl,
         if (change.Property == StatusProperty)
         {
             UpdatePseudoClasses();
-        }
-
-        if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
-        {
-            if (change.NewValue is Icon icon)
-            {
-                SetupIconTypeAddOnSize(icon);
-            }
-        }
+        } 
         else if (change.Property == ContentProperty)
         {
             if (Content is AddOnDecoratedInnerBox innerBox)
             {
                 BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty);
                 BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty);
-            }
-        }
-
-        if (change.Property == SizeTypeProperty)
-        {
-            if (LeftAddOn is Icon leftIconAddOn)
-            {
-                SetupIconTypeAddOnSize(leftIconAddOn);
-            }
-
-            if (RightAddOn is Icon rightIconAddOn)
-            {
-                SetupIconTypeAddOnSize(rightIconAddOn);
             }
         }
     }

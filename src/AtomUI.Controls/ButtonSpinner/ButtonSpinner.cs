@@ -1,8 +1,10 @@
-﻿using AtomUI.Theme;
+﻿using System.Reactive.Disposables;
+using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -10,7 +12,8 @@ using AvaloniaButtonSpinner = Avalonia.Controls.ButtonSpinner;
 
 public class ButtonSpinner : AvaloniaButtonSpinner,
                              IAnimationAwareControl,
-                             IControlSharedTokenResourcesHost
+                             IControlSharedTokenResourcesHost,
+                             ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -102,11 +105,13 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonSpinnerToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private Border? _spinnerHandleDecorator;
     private ButtonSpinnerDecoratedBox? _decoratedBox;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     public ButtonSpinner()
     {
@@ -160,5 +165,18 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
         _decoratedBox           = e.NameScope.Find<ButtonSpinnerDecoratedBox>(ButtonSpinnerTheme.DecoratedBoxPart);
         base.OnApplyTemplate(e);
         SetupSpinnerHandleCornerRadius();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

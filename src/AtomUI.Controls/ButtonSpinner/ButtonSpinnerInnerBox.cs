@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -6,13 +7,15 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
 [TemplatePart(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
-internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
+internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, 
+                                       ICustomHitTest
 {
     #region 公共属性定义
 
@@ -125,17 +128,22 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
         return true;
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderBrushProperty,
+            SharedTokenKey.ColorBorder));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
+            ButtonSpinnerTokenKey.HandleWidth));
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart);
-        TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderBrushProperty,
-            SharedTokenKey.ColorBorder);
-        TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
-            ButtonSpinnerTokenKey.HandleWidth);
         base.OnApplyTemplate(e);
+        _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart);
     }
 
     public override void Render(DrawingContext context)

@@ -105,15 +105,15 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         
         decoratorLayout.Children.Add(spinnerLayout);
 
-        TokenResourceBinder.CreateTokenBinding(spinnerLayout, Layoutable.WidthProperty,
-            ButtonSpinnerTokenKey.HandleWidth);
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(spinnerLayout, Layoutable.WidthProperty,
+            ButtonSpinnerTokenKey.HandleWidth));
         
         var increaseButtonIcon = AntDesignIconPackage.UpOutlined();
 
-        TokenResourceBinder.CreateTokenBinding(increaseButtonIcon, Icon.ActiveFilledBrushProperty,
-            ButtonSpinnerTokenKey.HandleHoverColor);
-        TokenResourceBinder.CreateTokenBinding(increaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorPrimaryActive);
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButtonIcon, Icon.ActiveFilledBrushProperty,
+            ButtonSpinnerTokenKey.HandleHoverColor));
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButtonIcon, Icon.SelectedFilledBrushProperty,
+            SharedTokenKey.ColorPrimaryActive));
 
         var increaseButton = new IconButton
         {
@@ -130,18 +130,18 @@ internal class ButtonSpinnerTheme : BaseControlTheme
             increaseButton.Styles.Add(handleButtonStyle);
         }
 
-        TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconWidthProperty,
-            ButtonSpinnerTokenKey.HandleIconSize);
-        TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconHeightProperty,
-            ButtonSpinnerTokenKey.HandleIconSize);
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconWidthProperty,
+            ButtonSpinnerTokenKey.HandleIconSize));
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconHeightProperty,
+            ButtonSpinnerTokenKey.HandleIconSize));
         increaseButton.RegisterInNameScope(scope);
 
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
-            ButtonSpinnerTokenKey.HandleHoverColor);
-        TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorPrimaryActive);
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
+            ButtonSpinnerTokenKey.HandleHoverColor));
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
+            SharedTokenKey.ColorPrimaryActive));
 
         var decreaseButton = new IconButton
         {
@@ -158,10 +158,10 @@ internal class ButtonSpinnerTheme : BaseControlTheme
             decreaseButton.Styles.Add(handleButtonStyle);
         }
         decreaseButton.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconWidthProperty,
-            ButtonSpinnerTokenKey.HandleIconSize);
-        TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconHeightProperty,
-            ButtonSpinnerTokenKey.HandleIconSize);
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconWidthProperty,
+            ButtonSpinnerTokenKey.HandleIconSize));
+        buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconHeightProperty,
+            ButtonSpinnerTokenKey.HandleIconSize));
 
         spinnerLayout.Children.Add(increaseButton);
         spinnerLayout.Children.Add(decreaseButton);
