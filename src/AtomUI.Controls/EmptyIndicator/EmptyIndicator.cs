@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using System.Reactive.Disposables;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -7,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -18,7 +20,8 @@ public enum PresetEmptyImage
 }
 
 public partial class EmptyIndicator : TemplatedControl,
-                                      IControlSharedTokenResourcesHost
+                                      IControlSharedTokenResourcesHost,
+                                      ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -148,9 +151,11 @@ public partial class EmptyIndicator : TemplatedControl,
 
     string IControlSharedTokenResourcesHost.TokenId => EmptyIndicatorToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
     
+    private CompositeDisposable? _tokenBindingsDisposable;
     private Avalonia.Svg.Svg? _svg;
 
     static EmptyIndicator()
@@ -198,13 +203,14 @@ public partial class EmptyIndicator : TemplatedControl,
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillProperty, SharedTokenKey.ColorFill);
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryProperty,
-            SharedTokenKey.ColorFillTertiary);
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillQuaternaryProperty,
-            SharedTokenKey.ColorFillQuaternary);
-        TokenResourceBinder.CreateTokenBinding(this, ColorBgContainerProperty,
-            SharedTokenKey.ColorBgContainer);
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, ColorFillProperty, SharedTokenKey.ColorFill));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryProperty,
+            SharedTokenKey.ColorFillTertiary));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ColorFillQuaternaryProperty,
+            SharedTokenKey.ColorFillQuaternary));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ColorBgContainerProperty,
+            SharedTokenKey.ColorBgContainer));
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -260,16 +266,23 @@ public partial class EmptyIndicator : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SetupTokenBindings();
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _svg                = scope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
+        _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment   = VerticalAlignment.Center;
         CheckImageSource();
         SetupImage();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        SetupTokenBindings();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

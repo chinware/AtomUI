@@ -46,8 +46,9 @@ internal class EmptyIndicatorTheme : BaseControlTheme
                 Text                = indicator.Description ?? "No data"
             };
 
-            TokenResourceBinder.CreateTokenBinding(description, TextBlock.ForegroundProperty,
-                SharedTokenKey.ColorTextDescription);
+            indicator.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(description,
+                TextBlock.ForegroundProperty,
+                SharedTokenKey.ColorTextDescription));
             BindUtils.RelayBind(indicator, EmptyIndicator.DescriptionMarginProperty, description,
                 Layoutable.MarginProperty,
                 d => new Thickness(0, d, 0, 0));
