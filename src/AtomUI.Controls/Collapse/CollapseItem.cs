@@ -1,7 +1,9 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -12,11 +14,14 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
-public class CollapseItem : HeaderedContentControl, ISelectable
+public class CollapseItem : HeaderedContentControl,
+                            ISelectable,
+                            ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -108,9 +113,9 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         AvaloniaProperty.RegisterDirect<CollapseItem, TimeSpan>(nameof(MotionDuration),
             o => o.MotionDuration,
             (o, v) => o.MotionDuration = v);
-    
+
     internal static readonly DirectProperty<CollapseItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsMotionEnabled), 
+        = AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
 
@@ -177,7 +182,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         get => _motionDuration;
         set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
-    
+
     private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
@@ -186,7 +191,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     #endregion
+
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static CollapseItem()
     {
@@ -242,7 +251,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
         SetupIconButton();
         _tempAnimationDisabled = true;
         HandleSelectedChanged();
@@ -320,16 +328,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             _motionActor.IsVisible = true;
             return;
         }
-        
+
         InAnimating = true;
         var motion = new SlideUpInMotion(MotionDuration, new CubicEaseOut());
-        MotionInvoker.Invoke(_motionActor, motion, () =>
-        {
-            _motionActor.SetCurrentValue(IsVisibleProperty, true);
-        }, () =>
-        {
-            InAnimating = false;
-        });
+        MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
+            () => { InAnimating = false; });
     }
 
     private void CollapseItemContent()
@@ -359,8 +362,9 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         if (ExpandIcon is null)
         {
             ExpandIcon = AntDesignIconPackage.RightOutlined();
-            TokenResourceBinder.CreateTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
-                SharedTokenKey.ColorTextDisabled);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(ExpandIcon,
+                Icon.DisabledFilledBrushProperty,
+                SharedTokenKey.ColorTextDisabled));
         }
 
         ExpandIcon.SetTemplatedParent(this);
@@ -374,5 +378,19 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         }
 
         return false;
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
+            SharedTokenKey.MotionDurationSlow));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }
