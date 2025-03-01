@@ -27,10 +27,10 @@ public abstract class NavMenuBase : SelectingItemsControl,
             o => o.IsOpen);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<NavMenuBase, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuBase>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<NavMenuBase, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<NavMenuBase>();
 
     private bool _isOpen;
 

@@ -73,10 +73,10 @@ public class Expander : AvaloniaExpander,
         AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Expander, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Expander, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Expander>();
     
     public SizeType SizeType
     {

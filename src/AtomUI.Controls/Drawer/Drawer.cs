@@ -72,10 +72,10 @@ public class Drawer : Control,
         AvaloniaProperty.Register<Drawer, double>(nameof(PushOffsetPercent));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Drawer, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Drawer>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Drawer, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Drawer>();
 
     [Content]
     [DependsOn(nameof(ContentTemplate))]

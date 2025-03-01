@@ -11,13 +11,17 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 internal class HeadTextButton : AvaloniaButton
 {
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<HeadTextButton, bool>(nameof(IsMotionEnabled), true);
-    
-    public bool IsMotionEnabled
+    internal static readonly DirectProperty<HeadTextButton, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<HeadTextButton, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+
+    private bool _isMotionEnabled;
+
+    internal bool IsMotionEnabled
     {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

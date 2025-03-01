@@ -56,10 +56,10 @@ public class CountBadge : Control,
         AvaloniaProperty.Register<CountBadge, bool>(nameof(BadgeIsVisible), true);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<CountBadge, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CountBadge>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<CountBadge, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<CountBadge>();
 
     public string? BadgeColor
     {

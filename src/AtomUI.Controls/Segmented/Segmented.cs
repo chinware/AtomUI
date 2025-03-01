@@ -29,10 +29,10 @@ public class Segmented : SelectingItemsControl,
         AvaloniaProperty.Register<Segmented, bool>(nameof(IsExpanding));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Segmented, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Segmented>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Segmented, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Segmented>();
 
     public SizeType SizeType
     {

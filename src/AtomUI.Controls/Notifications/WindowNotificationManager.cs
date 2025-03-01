@@ -38,10 +38,10 @@ public class WindowNotificationManager : TemplatedControl,
             nameof(Position), NotificationPosition.TopRight);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<WindowNotificationManager, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowNotificationManager>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<WindowNotificationManager, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<WindowNotificationManager>();
 
     public static readonly StyledProperty<int> MaxItemsProperty =
         AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);

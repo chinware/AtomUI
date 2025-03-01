@@ -28,7 +28,8 @@ public class FlyoutPresenterCreatedEventArgs : EventArgs
 /// <summary>
 /// 最基本得弹窗 Flyout，在这里不处理那种带箭头得
 /// </summary>
-public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
+public abstract class PopupFlyoutBase : FlyoutBase, 
+                                        IPopupHostProvider
 {
     #region 公共属性定义
 
@@ -77,9 +78,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     /// </summary>
     public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
-
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsMotionEnabled));
 
     public double MarginToAnchor
     {
@@ -147,24 +145,31 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         get => GetValue(PlacementConstraintAdjustmentProperty);
         set => SetValue(PlacementConstraintAdjustmentProperty, value);
     }
-
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-
+    
     #endregion
 
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
-        AvaloniaProperty.Register<Flyout, bool>(nameof(IsDetectMouseClickEnabled), true);
+        AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
 
+    internal static readonly DirectProperty<PopupFlyoutBase, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<PopupFlyoutBase, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+    
     internal bool IsDetectMouseClickEnabled
     {
         get => GetValue(IsDetectMouseClickEnabledProperty);
         set => SetValue(IsDetectMouseClickEnabledProperty, value);
+    }
+    
+    private bool _isMotionEnabled;
+
+    internal bool IsMotionEnabled
+    {
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
     #endregion
@@ -625,7 +630,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         base.OnPropertyChanged(change);
         if (change.Property == TargetProperty && Target != null)
         {
-            //BindUtils.RelayBind(Target, IsMotionEnabledProperty, this, IsMotionEnabledProperty);
+            BindUtils.RelayBind(Target, AnimationAwareControlProperty.IsMotionEnabledProperty, this, IsMotionEnabledProperty);
         }
     }
 }

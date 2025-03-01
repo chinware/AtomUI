@@ -36,12 +36,12 @@ public class IconButton : AvaloniaButton,
 
     public static readonly StyledProperty<bool> IsEnableHoverEffectProperty
         = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconButton>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<IconButton>();
 
     public Icon? Icon
     {

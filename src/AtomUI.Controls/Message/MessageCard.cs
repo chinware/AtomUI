@@ -60,10 +60,10 @@ public class MessageCard : TemplatedControl,
         AvaloniaProperty.Register<MessageCard, string>(nameof(Message));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<MessageCard, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageCard>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<MessageCard, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<MessageCard>();
 
     /// <summary>
     /// Determines if the notification is already closing.

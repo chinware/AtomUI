@@ -52,12 +52,12 @@ public class TreeView : AvaloniaTreeView,
 
     public static readonly StyledProperty<bool> IsShowLeafIconProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafIcon));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeView>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<TreeView>();
 
     public bool IsDraggable
     {

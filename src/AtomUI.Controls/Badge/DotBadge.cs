@@ -49,10 +49,10 @@ public class DotBadge : Control,
         AvaloniaProperty.Register<DotBadge, bool>(nameof(BadgeIsVisible));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<DotBadge, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadge>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<DotBadge, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<DotBadge>();
 
     public string? DotColor
     {

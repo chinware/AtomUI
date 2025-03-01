@@ -30,16 +30,20 @@ internal class BaseCalendarDayButton : AvaloniaButton,
     internal const string TodayPC = ":today";
     internal const string BlackoutPC = ":blackout";
     internal const string DayfocusedPC = ":dayfocused";
-    
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<BaseCalendarDayButton, bool>(nameof(IsMotionEnabled), true);
-    
-    public bool IsMotionEnabled
+
+    internal static readonly DirectProperty<BaseCalendarDayButton, bool> IsMotionEnabledProperty
+        = AvaloniaProperty.RegisterDirect<BaseCalendarDayButton, bool>(nameof(IsMotionEnabled),
+            o => o.IsMotionEnabled,
+            (o, v) => o.IsMotionEnabled = v);
+
+    private bool _isMotionEnabled;
+
+    internal bool IsMotionEnabled
     {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
+        get => _isMotionEnabled;
+        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
-    
+
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     private CompositeDisposable? _tokenBindingsDisposable;
 
@@ -189,7 +193,7 @@ internal class BaseCalendarDayButton : AvaloniaButton,
         SetPseudoClasses();
         SetupTransitions();
     }
-    
+
     private void SetupTransitions()
     {
         if (IsMotionEnabled)
@@ -289,7 +293,7 @@ internal class BaseCalendarDayButton : AvaloniaButton,
             CalendarDayButtonMouseUp?.Invoke(this, e);
         }
     }
-    
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
@@ -304,7 +308,7 @@ internal class BaseCalendarDayButton : AvaloniaButton,
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

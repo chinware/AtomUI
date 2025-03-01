@@ -73,10 +73,10 @@ public abstract class InfoPickerInput : TemplatedControl,
         AvaloniaProperty.Register<InfoPickerInput, IBrush?>(nameof(InputTextBrush));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<InfoPickerInput>();
 
     public object? LeftAddOn
     {

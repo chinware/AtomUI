@@ -81,10 +81,10 @@ public class ToolTip : ContentControl,
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomHide");
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ToolTip, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToolTip>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ToolTip, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ToolTip>();
 
     public bool IsMotionEnabled
     {

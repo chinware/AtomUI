@@ -47,10 +47,10 @@ public class ComboBox : AvaloniaComboBox,
         TextBox.IsEnableClearButtonProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ComboBox, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ComboBox, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ComboBox>();
 
     public object? LeftAddOn
     {

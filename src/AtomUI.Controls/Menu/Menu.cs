@@ -21,10 +21,10 @@ public class Menu : AvaloniaMenu,
         AvaloniaProperty.Register<Menu, SizeType>(nameof(SizeType), SizeType.Middle);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Menu, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Menu>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Menu, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Menu>();
 
     public SizeType SizeType
     {

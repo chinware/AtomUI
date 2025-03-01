@@ -17,10 +17,10 @@ public class ContextMenu : AvaloniaContextMenu,
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ContextMenu, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ContextMenu, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ContextMenu>();
 
     public bool IsMotionEnabled
     {

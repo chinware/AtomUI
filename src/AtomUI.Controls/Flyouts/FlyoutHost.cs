@@ -64,10 +64,10 @@ public class FlyoutHost : Control,
         Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<FlyoutHost>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
     /// 距离 anchor 的边距，根据垂直和水平进行设置

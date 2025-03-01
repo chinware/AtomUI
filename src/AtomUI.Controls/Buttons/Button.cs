@@ -79,10 +79,10 @@ public class Button : AvaloniaButton,
         = AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Button>();
 
     public ButtonType ButtonType
     {
@@ -354,7 +354,7 @@ public class Button : AvaloniaButton,
         }
 
         SetupControlThemeBindings();
-        
+
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
@@ -486,7 +486,8 @@ public class Button : AvaloniaButton,
     {
         if (Shape == ButtonShape.Circle)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenKey.CirclePadding));
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenKey.CirclePadding));
         }
     }
 
@@ -680,23 +681,29 @@ public class Button : AvaloniaButton,
         {
             this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
                 normalFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                Icon.SelectedFilledBrushProperty,
                 selectedFilledBrushKey));
             this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
                 activeFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                Icon.DisabledFilledBrushProperty,
                 disabledFilledBrushKey));
         }
 
         if (_loadingIcon is not null)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.NormalFilledBrushProperty,
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon,
+                Icon.NormalFilledBrushProperty,
                 normalFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.SelectedFilledBrushProperty,
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon,
+                Icon.SelectedFilledBrushProperty,
                 selectedFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.ActiveFilledBrushProperty,
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon,
+                Icon.ActiveFilledBrushProperty,
                 activeFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.DisabledFilledBrushProperty,
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon,
+                Icon.DisabledFilledBrushProperty,
                 disabledFilledBrushKey));
         }
 

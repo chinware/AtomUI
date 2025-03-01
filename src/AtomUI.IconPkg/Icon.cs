@@ -62,10 +62,10 @@ public class Icon : Control,
         AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Icon, bool>(nameof(IsMotionEnabled), true);
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Icon, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Icon>();
 
     public IconInfo? IconInfo
     {

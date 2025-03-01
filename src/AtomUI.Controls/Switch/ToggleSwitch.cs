@@ -49,19 +49,19 @@ public class ToggleSwitch : ToggleButton,
     /// 设置预置的大小类型
     /// </summary>
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
+        AvaloniaProperty.Register<ToggleSwitch, SizeType>(nameof(SizeType), SizeType.Middle);
 
     /// <summary>
     /// 是否处于加载状态
     /// </summary>
     public static readonly StyledProperty<bool> IsLoadingProperty =
-        AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
+        AvaloniaProperty.Register<ToggleSwitch, bool>(nameof(IsLoading));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleSwitch>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ToggleSwitch>();
 
     /// <summary>
     /// Gets or Sets the Content that is displayed when in the On State.

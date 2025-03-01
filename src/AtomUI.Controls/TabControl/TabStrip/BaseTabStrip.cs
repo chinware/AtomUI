@@ -41,10 +41,10 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(TabAlignmentCenter));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabStrip>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<BaseTabStrip>();
     
     public SizeType SizeType
     {

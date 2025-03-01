@@ -17,11 +17,11 @@ public class LineEdit : TextBox,
         AvaloniaProperty.Register<LineEdit, object?>(nameof(RightAddOn));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<LineEdit>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsWaveAnimationEnabled));
-    
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<LineEdit>();
+
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -45,7 +45,7 @@ public class LineEdit : TextBox,
         get => GetValue(IsWaveAnimationEnabledProperty);
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -58,7 +58,7 @@ public class LineEdit : TextBox,
     {
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

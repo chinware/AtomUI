@@ -131,7 +131,13 @@ public class Slider : RangeBase,
 
     public static readonly StyledProperty<bool> IncludedProperty =
         SliderTrack.IncludedProperty.AddOwner<Slider>();
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
 
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Slider>();
+    
     /// <summary>
     /// Gets or sets the orientation of a <see cref="Slider" />.
     /// </summary>
@@ -202,16 +208,7 @@ public class Slider : RangeBase,
         get => GetValue(IncludedProperty);
         set => SetValue(IncludedProperty, value);
     }
-
-    #endregion
-
-    #region 内部属性定义
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Slider, bool>(nameof(IsMotionEnabled));
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Slider, bool>(nameof(IsWaveAnimationEnabled));
-
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -223,6 +220,10 @@ public class Slider : RangeBase,
         get => GetValue(IsWaveAnimationEnabledProperty);
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
+
+    #endregion
+
+    #region 内部属性定义
     
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;

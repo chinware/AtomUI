@@ -36,10 +36,10 @@ public class BaseTabControl : AvaloniaTabControl,
         AvaloniaProperty.Register<BaseTabControl, bool>(nameof(TabAlignmentCenter));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<BaseTabControl, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabControl>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<BaseTabControl, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<BaseTabControl>();
 
     public SizeType SizeType
     {
