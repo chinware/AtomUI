@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -12,6 +14,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls.CalendarView;
@@ -23,7 +26,8 @@ namespace AtomUI.Controls.CalendarView;
 [TemplatePart(CalendarItemTheme.NextButtonPart, typeof(IconButton))]
 [TemplatePart(CalendarItemTheme.NextMonthButtonPart, typeof(IconButton))]
 [TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
-internal class CalendarItem : TemplatedControl
+internal class CalendarItem : TemplatedControl,
+                              ITokenResourceConsumer
 {
     internal const string CalendarDisabledPC = ":calendardisabled";
 
@@ -205,9 +209,12 @@ internal class CalendarItem : TemplatedControl
             }
         }
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     protected DateTime _currentMonth;
     protected UniformGrid? _headerLayout;
     protected bool _isMouseLeftButtonDownYearView;
@@ -1142,9 +1149,6 @@ internal class CalendarItem : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom)));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SetCalendarDayButtons();
@@ -1209,5 +1213,20 @@ internal class CalendarItem : TemplatedControl
         var monthViewPos = monthView.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(monthView)!) ?? default;
         return new Rect(firstDayPos,
             new Size(monthView.Bounds.Width, monthViewPos.Y + monthView.Bounds.Height - firstDayPos.Y));
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom))));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

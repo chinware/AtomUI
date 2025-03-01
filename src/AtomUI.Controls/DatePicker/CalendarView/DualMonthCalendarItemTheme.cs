@@ -1,4 +1,5 @@
 ﻿using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -19,25 +20,26 @@ internal class DualMonthCalendarItemTheme : CalendarItemTheme
     public const string SecondaryHeaderButtonPart = "PART_SecondaryHeaderButton";
     public const string SecondaryNextMonthButtonPart = "PART_SecondaryNextMonthButton";
     public const string SecondaryNextButtonPart = "PART_SecondaryNextButton";
-    
+
     public DualMonthCalendarItemTheme()
         : this(typeof(DualMonthCalendarItem))
     {
     }
-    
+
     public DualMonthCalendarItemTheme(Type targetType) : base(targetType)
     {
     }
-    
-    protected override void NotifyConfigureHeaderLayout(UniformGrid headerLayout)
+
+    protected override void NotifyConfigureHeaderLayout(CalendarItem calendarItem, UniformGrid headerLayout)
     {
         headerLayout.Columns = 2;
     }
 
-    protected override void NotifyBuildHeaderItems(UniformGrid headerLayout, INameScope scope)
+    protected override void NotifyBuildHeaderItems(CalendarItem calendarItem, UniformGrid headerLayout,
+                                                   INameScope scope)
     {
-        base.NotifyBuildHeaderItems(headerLayout, scope);
-        BuildHeaderItem(headerLayout, 
+        base.NotifyBuildHeaderItems(calendarItem, headerLayout, scope);
+        BuildHeaderItem(calendarItem, headerLayout,
             SecondaryPreviousButtonPart,
             SecondaryPreviousMonthButtonPart,
             SecondaryHeaderButtonPart,
@@ -46,18 +48,21 @@ internal class DualMonthCalendarItemTheme : CalendarItemTheme
             scope);
     }
 
-    protected override void NotifyConfigureMonthViewLayout(UniformGrid monthViewLayout, INameScope scope)
+    protected override void NotifyConfigureMonthViewLayout(CalendarItem calendarItem, UniformGrid monthViewLayout,
+                                                           INameScope scope)
     {
         monthViewLayout.Columns = 2;
     }
-    
-    protected override void NotifyBuildMonthViews(UniformGrid monthViewLayout, INameScope scope)
+
+    protected override void NotifyBuildMonthViews(CalendarItem calendarItem, UniformGrid monthViewLayout,
+                                                  INameScope scope)
     {
-        base.NotifyBuildMonthViews(monthViewLayout, scope);
+        base.NotifyBuildMonthViews(calendarItem, monthViewLayout, scope);
         var monthView = BuildMonthViewItem(SecondaryMonthViewPart);
         BindUtils.RelayBind(monthViewLayout, Visual.IsVisibleProperty, monthView, Visual.IsVisibleProperty);
-        
-        TokenResourceBinder.CreateTokenBinding(monthView, Layoutable.MarginProperty,
+
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(monthView,
+            Layoutable.MarginProperty,
             DatePickerTokenKey.RangeCalendarSpacing, BindingPriority.Template,
             v =>
             {
@@ -67,8 +72,8 @@ internal class DualMonthCalendarItemTheme : CalendarItemTheme
                 }
 
                 return new Thickness();
-            });
-        
+            }));
+
         monthView.RegisterInNameScope(scope);
         monthViewLayout.Children.Add(monthView);
     }

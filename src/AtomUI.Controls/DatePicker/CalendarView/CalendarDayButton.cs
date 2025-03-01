@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -22,7 +24,8 @@ namespace AtomUI.Controls.CalendarView;
     TodayPC,
     BlackoutPC,
     DayfocusedPC)]
-internal sealed class CalendarDayButton : AvaloniaButton
+internal sealed class CalendarDayButton : AvaloniaButton,
+                                          ITokenResourceConsumer
 {
     internal const string TodayPC = ":today";
     internal const string BlackoutPC = ":blackout";
@@ -40,7 +43,10 @@ internal sealed class CalendarDayButton : AvaloniaButton
         get => _isMotionEnabled;
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
-
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    private CompositeDisposable? _tokenBindingsDisposable;
+    
     /// <summary>
     /// Gets or sets the Calendar associated with this button.
     /// </summary>
@@ -293,21 +299,23 @@ internal sealed class CalendarDayButton : AvaloniaButton
             CalendarDayButtonMouseUp?.Invoke(this, e);
         }
     }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
     
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         SetupTransitions();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
     }
-    
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

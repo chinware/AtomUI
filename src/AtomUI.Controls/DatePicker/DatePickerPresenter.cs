@@ -1,14 +1,15 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.CalendarView;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
 
 namespace AtomUI.Controls;
@@ -16,55 +17,57 @@ namespace AtomUI.Controls;
 public class ChoosingStatusEventArgs : EventArgs
 {
     public bool IsChoosing { get; }
+
     public ChoosingStatusEventArgs(bool isChoosing)
     {
         IsChoosing = isChoosing;
     }
 }
 
-internal class DatePickerPresenter : PickerPresenterBase
+internal class DatePickerPresenter : PickerPresenterBase,
+                                     ITokenResourceConsumer
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsNeedConfirmProperty =
         DatePicker.IsNeedConfirmProperty.AddOwner<DatePickerPresenter>();
-    
+
     public static readonly StyledProperty<bool> IsShowNowProperty =
         DatePicker.IsShowNowProperty.AddOwner<DatePickerPresenter>();
-    
+
     public static readonly StyledProperty<bool> IsShowTimeProperty =
         DatePicker.IsShowTimeProperty.AddOwner<DatePickerPresenter>();
 
     public static readonly StyledProperty<DateTime?> SelectedDateTimeProperty =
         DatePicker.SelectedDateTimeProperty.AddOwner<DatePickerPresenter>();
-    
+
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<DatePickerPresenter>();
-    
+
     public bool IsNeedConfirm
     {
         get => GetValue(IsNeedConfirmProperty);
         set => SetValue(IsNeedConfirmProperty, value);
     }
-    
+
     public bool IsShowNow
     {
         get => GetValue(IsShowNowProperty);
         set => SetValue(IsShowNowProperty, value);
     }
-    
+
     public bool IsShowTime
     {
         get => GetValue(IsShowTimeProperty);
         set => SetValue(IsShowTimeProperty, value);
     }
-    
+
     public DateTime? SelectedDateTime
     {
         get => GetValue(SelectedDateTimeProperty);
         set => SetValue(SelectedDateTimeProperty, value);
     }
-    
+
     public ClockIdentifierType ClockIdentifier
     {
         get => GetValue(ClockIdentifierProperty);
@@ -79,15 +82,15 @@ internal class DatePickerPresenter : PickerPresenterBase
         AvaloniaProperty.RegisterDirect<DatePickerPresenter, bool>(nameof(ButtonsPanelVisible),
             o => o.ButtonsPanelVisible,
             (o, v) => o.ButtonsPanelVisible = v);
-    
+
     public static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
         AvaloniaProperty.Register<DatePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
-    
+
     internal static readonly DirectProperty<DatePickerPresenter, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DatePickerPresenter, bool>(nameof(IsMotionEnabled), 
+        = AvaloniaProperty.RegisterDirect<DatePickerPresenter, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
-    
+
     private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
@@ -97,27 +100,30 @@ internal class DatePickerPresenter : PickerPresenterBase
     }
 
     private bool _buttonsPanelVisible = true;
+
     internal bool ButtonsPanelVisible
     {
         get => _buttonsPanelVisible;
         set => SetAndRaise(ButtonsPanelVisibleProperty, ref _buttonsPanelVisible, value);
     }
-    
+
     public TimeSpan? TempSelectedTime
     {
         get => GetValue(TempSelectedTimeProperty);
         set => SetValue(TempSelectedTimeProperty, value);
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     #endregion
 
     #region 公共事件定义
-    
+
     /// <summary>
     /// 当前 Pointer 选中的日期和时间的变化事件
     /// </summary>
     public event EventHandler<DateSelectedEventArgs>? HoverDateTimeChanged;
-    
+
     /// <summary>
     /// 当前是否处于选择中状态
     /// </summary>
@@ -129,38 +135,36 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected Button? _todayButton;
     protected Button? _confirmButton;
     protected PickerCalendar? _calendarView;
-    protected CompositeDisposable? _compositeDisposable;
     protected TimeView? _timeView;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0)));
-        _compositeDisposable = new CompositeDisposable();
-        if (_calendarView is not null)
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
+        this.AddTokenBindingDisposable(PickerCalendar.IsPointerInMonthViewProperty.Changed.Subscribe(args =>
         {
-            _compositeDisposable.Add(PickerCalendar.IsPointerInMonthViewProperty.Changed.Subscribe(args =>
+            if (_calendarView is not null)
             {
                 EmitChoosingStatueChanged(args.GetNewValue<bool>());
-            }));
-        }
-
-        if (_timeView is not null)
+            }
+        }));
+        this.AddTokenBindingDisposable(TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
         {
-            _compositeDisposable.Add(TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
+            if (_timeView is not null)
             {
                 EmitChoosingStatueChanged(args.GetNewValue<bool>());
-            }));
-            SyncTimeViewTimeValue();
-        }
+            }
+        }));
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
-        _compositeDisposable?.Dispose();
-        _compositeDisposable = null;
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -198,7 +202,7 @@ internal class DatePickerPresenter : PickerPresenterBase
         if (_calendarView is not null)
         {
             _calendarView.HoverDateChanged += HandleCalendarViewDateHoverChanged;
-            _calendarView.DateSelected += HandleCalendarViewDateSelected;
+            _calendarView.DateSelected     += HandleCalendarViewDateSelected;
         }
 
         if (_timeView is not null)
@@ -207,7 +211,7 @@ internal class DatePickerPresenter : PickerPresenterBase
             {
                 SyncTimeViewTimeValue();
             }
-            
+
             _timeView.HoverTimeChanged += HandleTimeViewHoverChanged;
             _timeView.TimeSelected     += HandleTimeViewTimeSelected;
             _timeView.TempTimeSelected += HandleTimeViewTempTimeSelected;
@@ -225,16 +229,10 @@ internal class DatePickerPresenter : PickerPresenterBase
 
         if (_confirmButton is not null)
         {
-            _confirmButton.Click     += HandleConfirmButtonClicked;
-            _confirmButton.IsEnabled =  SelectedDateTime is not null;
-            _confirmButton.PointerEntered += (sender, args) =>
-            {
-                NotifyPointerEnterConfirmButton();
-            };
-            _confirmButton.PointerExited += (sender, args) =>
-            {
-                NotifyPointerExitConfirmButton();
-            };
+            _confirmButton.Click          += HandleConfirmButtonClicked;
+            _confirmButton.IsEnabled      =  SelectedDateTime is not null;
+            _confirmButton.PointerEntered += (sender, args) => { NotifyPointerEnterConfirmButton(); };
+            _confirmButton.PointerExited  += (sender, args) => { NotifyPointerExitConfirmButton(); };
         }
 
         SetupConfirmButtonEnableStatus();
@@ -244,11 +242,12 @@ internal class DatePickerPresenter : PickerPresenterBase
     {
         if (_calendarView?.SelectedDate is not null)
         {
-            var hoverDateTime = CollectDateTime(_calendarView?.SelectedDate, TempSelectedTime ?? _timeView?.SelectedTime);
+            var hoverDateTime =
+                CollectDateTime(_calendarView?.SelectedDate, TempSelectedTime ?? _timeView?.SelectedTime);
             EmitHoverDateTimeChanged(hoverDateTime);
         }
     }
-    
+
     protected virtual void NotifyPointerExitConfirmButton()
     {
         EmitChoosingStatueChanged(false);
@@ -261,12 +260,13 @@ internal class DatePickerPresenter : PickerPresenterBase
         {
             _calendarView.DisplayDate = DateTime.Today;
         }
+
         if (!IsNeedConfirm)
         {
             OnConfirmed();
         }
     }
-    
+
     private void HandleNowButtonClicked(object? sender, RoutedEventArgs args)
     {
         if (_calendarView is not null)
@@ -284,7 +284,7 @@ internal class DatePickerPresenter : PickerPresenterBase
             OnConfirmed();
         }
     }
-    
+
     private void HandleConfirmButtonClicked(object? sender, RoutedEventArgs args)
     {
         NotifyConfirmButtonClicked();
@@ -313,9 +313,9 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected void EmitHoverDateTimeChanged(DateTime? newDate)
     {
-        HoverDateTimeChanged?.Invoke(this, new DateSelectedEventArgs(newDate));   
+        HoverDateTimeChanged?.Invoke(this, new DateSelectedEventArgs(newDate));
     }
-    
+
     private void HandleCalendarViewDateSelected(object? sender, DateSelectedEventArgs args)
     {
         NotifyCalendarViewDateSelected();
@@ -336,12 +336,13 @@ internal class DatePickerPresenter : PickerPresenterBase
         {
             return null;
         }
-        date =   date.Value.Date;
+
+        date = date.Value.Date;
         if (IsShowTime && timeSpan is not null)
         {
             date = date.Value.Add(timeSpan.Value);
         }
-        
+
         return date;
     }
 
@@ -353,14 +354,14 @@ internal class DatePickerPresenter : PickerPresenterBase
         {
             return;
         }
-        
+
         _confirmButton.IsVisible = IsNeedConfirm;
-        
+
         _nowButton.IsVisible             = false;
         _todayButton.IsVisible           = false;
         _nowButton.HorizontalAlignment   = HorizontalAlignment.Left;
         _todayButton.HorizontalAlignment = HorizontalAlignment.Left;
-        
+
         if (IsShowNow)
         {
             _nowButton.IsVisible   = false;
@@ -418,7 +419,7 @@ internal class DatePickerPresenter : PickerPresenterBase
             _timeView.SelectedTime = SelectedDateTime?.TimeOfDay ?? TimeSpan.Zero;
         }
     }
-    
+
     private void HandleTimeViewHoverChanged(object? sender, TimeSelectedEventArgs args)
     {
         NotifyTimeViewHoverChanged(args.Time);
@@ -437,7 +438,7 @@ internal class DatePickerPresenter : PickerPresenterBase
             OnConfirmed();
         }
     }
-    
+
     private void HandleTimeViewTempTimeSelected(object? sender, TimeSelectedEventArgs args)
     {
         TimeViewTempTimeSelected(args.Time);
