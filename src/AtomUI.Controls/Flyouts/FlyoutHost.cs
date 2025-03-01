@@ -1,5 +1,7 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -20,7 +22,8 @@ public enum FlyoutTriggerType
 }
 
 public class FlyoutHost : Control,
-                          IAnimationAwareControl
+                          IAnimationAwareControl,
+                          ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -167,16 +170,18 @@ public class FlyoutHost : Control,
     #region 内部属性定义
 
     Control IAnimationAwareControl.PropertyBindTarget => this;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
+    private readonly FlyoutStateHelper _flyoutStateHelper;
+    
     static FlyoutHost()
     {
         PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
     }
-
-    private readonly FlyoutStateHelper _flyoutStateHelper;
-
+    
     public FlyoutHost()
     {
         _flyoutStateHelper = new FlyoutStateHelper();
@@ -186,7 +191,8 @@ public class FlyoutHost : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
         
         BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
         BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
@@ -200,6 +206,12 @@ public class FlyoutHost : Control,
             AnchorTarget.SetLogicalParent(this);
             VisualChildren.Add(AnchorTarget);
         }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

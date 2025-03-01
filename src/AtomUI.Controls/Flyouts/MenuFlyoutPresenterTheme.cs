@@ -36,18 +36,18 @@ internal class MenuFlyoutPresenterTheme : BaseControlTheme
             CreateTemplateParentBinding(arrowDecorator, ArrowDecoratedBox.ArrowPositionProperty,
                 MenuFlyoutPresenter.ArrowPositionProperty);
 
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.BackgroundProperty,
-                MenuTokenKey.MenuBgColor);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinWidthProperty,
-                MenuTokenKey.MenuPopupMinWidth);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxWidthProperty,
-                MenuTokenKey.MenuPopupMaxWidth);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinHeightProperty,
-                MenuTokenKey.MenuPopupMinHeight);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxHeightProperty,
-                MenuTokenKey.MenuPopupMaxHeight);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.PaddingProperty,
-                MenuTokenKey.MenuPopupContentPadding);
+            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.BackgroundProperty,
+                MenuTokenKey.MenuBgColor));
+            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinWidthProperty,
+                MenuTokenKey.MenuPopupMinWidth));
+            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxWidthProperty,
+                MenuTokenKey.MenuPopupMaxWidth));
+            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinHeightProperty,
+                MenuTokenKey.MenuPopupMinHeight));
+            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxHeightProperty,
+                MenuTokenKey.MenuPopupMaxHeight));
+            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.PaddingProperty,
+                MenuTokenKey.MenuPopupContentPadding));
 
             var scrollViewer = new MenuScrollViewer
             {

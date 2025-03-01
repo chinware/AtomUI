@@ -191,12 +191,10 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     private PixelRect? _enlargePopupRectScreenPixelRect;
     private IDisposable? _transientDisposable;
     private Action<IPopupHost?>? _popupHostChangedHandler;
-    // private static readonly EventInfo ClosingEventInfo;
 
     static PopupFlyoutBase()
     {
         Control.ContextFlyoutProperty.Changed.Subscribe(OnContextFlyoutPropertyChanged);
-        // ClosingEventInfo = typeof(Popup).GetEvent("Closing", BindingFlags.NonPublic | BindingFlags.Instance)!;
     }
 
     public PopupFlyoutBase()
@@ -627,7 +625,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         base.OnPropertyChanged(change);
         if (change.Property == TargetProperty && Target != null)
         {
-            TokenResourceBinder.CreateTokenBinding(this, IsMotionEnabledProperty, Target, SharedTokenKey.EnableMotion);
+            //BindUtils.RelayBind(Target, IsMotionEnabledProperty, this, IsMotionEnabledProperty);
         }
     }
 }
