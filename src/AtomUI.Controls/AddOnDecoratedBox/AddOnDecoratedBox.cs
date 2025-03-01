@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -10,6 +11,8 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -31,7 +34,8 @@ public enum AddOnDecoratedStatus
 [TemplatePart(AddOnDecoratedBoxTheme.RightAddOnPart, typeof(ContentPresenter))]
 [TemplatePart(AddOnDecoratedBoxTheme.InnerBoxContentPart, typeof(ContentPresenter), IsRequired = true)]
 public class AddOnDecoratedBox : ContentControl,
-                                 IControlSharedTokenResourcesHost
+                                 IControlSharedTokenResourcesHost,
+                                 ITokenResourceConsumer
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
@@ -83,7 +87,7 @@ public class AddOnDecoratedBox : ContentControl,
         get => GetValue(StatusProperty);
         set => SetValue(StatusProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -155,11 +159,14 @@ public class AddOnDecoratedBox : ContentControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AddOnDecoratedBoxToken.ID;
-    
+
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     #endregion
 
     protected Control? _leftAddOnPresenter;
     protected Control? _rightAddOnPresenter;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static AddOnDecoratedBox()
     {
@@ -228,18 +235,18 @@ public class AddOnDecoratedBox : ContentControl,
     {
         if (SizeType == SizeType.Large)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeLG);
-            TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeLG);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeLG));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeLG));
         }
         else if (SizeType == SizeType.Middle)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSize);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSize));
         }
         else
         {
-            TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeSM);
-            TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeSM);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeSM));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeSM));
         }
     }
 
@@ -279,14 +286,23 @@ public class AddOnDecoratedBox : ContentControl,
 
         NotifyAddOnBorderInfoCalculated();
     }
+    
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
+        
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected virtual void NotifyAddOnBorderInfoCalculated()

@@ -19,9 +19,9 @@ internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
     {
     }
 
-    protected override void BuildRightAddOnItems(StackPanel layout, INameScope scope)
+    protected override void BuildRightAddOnItems(AddOnDecoratedInnerBox addOnDecoratedInnerBox, StackPanel layout, INameScope scope)
     {
-        base.BuildRightAddOnItems(layout, scope);
+        base.BuildRightAddOnItems(addOnDecoratedInnerBox, layout, scope);
         BuildRevealButtonButton(layout, scope);
     }
     

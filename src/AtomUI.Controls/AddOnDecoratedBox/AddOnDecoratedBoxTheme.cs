@@ -60,12 +60,12 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
 
     protected virtual void BuildGridChildren(AddOnDecoratedBox decoratedBox, Grid mainLayout, INameScope scope)
     {
-        BuildLeftAddOn(mainLayout, scope);
+        BuildLeftAddOn(decoratedBox, mainLayout, scope);
         BuildInnerBox(decoratedBox, mainLayout, scope);
-        BuildRightAddOn(mainLayout, scope);
+        BuildRightAddOn(decoratedBox, mainLayout, scope);
     }
 
-    protected virtual void BuildLeftAddOn(Grid layout, INameScope scope)
+    protected virtual void BuildLeftAddOn(AddOnDecoratedBox decoratedBox, Grid layout, INameScope scope)
     {
         var leftAddOnContentPresenter = new ContentPresenter
         {
@@ -88,10 +88,10 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             ObjectConverters.IsNotNull);
         leftAddOnContentPresenter.RegisterInNameScope(scope);
 
-        TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-            AddOnDecoratedBoxTokenKey.AddonBg);
-        TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-            SharedTokenKey.ColorBorder);
+        decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BackgroundProperty,
+            AddOnDecoratedBoxTokenKey.AddonBg));
+        decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
+            SharedTokenKey.ColorBorder));
 
         Grid.SetColumn(leftAddOnContentPresenter, 0);
         layout.Children.Add(leftAddOnContentPresenter);
@@ -110,7 +110,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
         Grid.SetColumn(innerBox, 1);
     }
 
-    protected virtual void BuildRightAddOn(Grid layout, INameScope scope)
+    protected virtual void BuildRightAddOn(AddOnDecoratedBox decoratedBox, Grid layout, INameScope scope)
     {
         var rightAddOnContentPresenter = new ContentPresenter
         {
@@ -131,10 +131,10 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             BindingMode.Default, 
             ObjectConverters.IsNotNull);
 
-        TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-            AddOnDecoratedBoxTokenKey.AddonBg);
-        TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-            SharedTokenKey.ColorBorder);
+        decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BackgroundProperty,
+            AddOnDecoratedBoxTokenKey.AddonBg));
+        decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
+            SharedTokenKey.ColorBorder));
 
         rightAddOnContentPresenter.RegisterInNameScope(scope);
         layout.Children.Add(rightAddOnContentPresenter);

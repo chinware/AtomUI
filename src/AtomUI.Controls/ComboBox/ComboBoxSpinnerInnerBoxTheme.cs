@@ -21,7 +21,7 @@ internal class ComboBoxSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
     {
     }
 
-    protected override void NotifyBuildExtraChild(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
+    protected override void NotifyBuildExtraChild(AddOnDecoratedInnerBox decoratedBox, Panel layout, INameScope scope)
     {
         var contentPresenter = new ContentPresenter
         {

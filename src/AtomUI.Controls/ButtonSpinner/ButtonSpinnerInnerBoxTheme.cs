@@ -21,7 +21,7 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
     {
     }
 
-    protected override void NotifyBuildExtraChild(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
+    protected override void NotifyBuildExtraChild(AddOnDecoratedInnerBox addOnDecoratedInnerBox, Panel layout, INameScope scope)
     {
         var contentPresenter = new ContentPresenter
         {
