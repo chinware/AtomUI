@@ -1,6 +1,7 @@
 ﻿using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
@@ -159,17 +160,19 @@ public class DropdownButton : Button
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
+        
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         _openIndicatorIcon = AntDesignIconPackage.DownOutlined();
 
-        TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.WidthProperty, SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.HeightProperty, SharedTokenKey.IconSizeSM);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.WidthProperty, SharedTokenKey.IconSizeSM));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.HeightProperty, SharedTokenKey.IconSizeSM));
 
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
+ 
         SetupFlyoutProperties();
         if (IsShowIndicator)
         {
@@ -285,14 +288,18 @@ public class DropdownButton : Button
     {
         if (_openIndicatorIcon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.NormalFilledBrushProperty,
-                normalFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.SelectedFilledBrushProperty,
-                selectedFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.ActiveFilledBrushProperty,
-                activeFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.DisabledFilledBrushProperty,
-                disabledFilledBrushKey);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon,
+                Icon.NormalFilledBrushProperty,
+                normalFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon,
+                Icon.SelectedFilledBrushProperty,
+                selectedFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon,
+                Icon.ActiveFilledBrushProperty,
+                activeFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon,
+                Icon.DisabledFilledBrushProperty,
+                disabledFilledBrushKey));
         }
     }
 

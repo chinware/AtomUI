@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
@@ -39,11 +40,12 @@ public enum ButtonShape
 // TODO 目前不能动态切换 ButtonType
 
 [PseudoClasses(IconOnlyPC, LoadingPC)]
-public class Button : AvaloniaButton, 
-                      ISizeTypeAware, 
+public class Button : AvaloniaButton,
+                      ISizeTypeAware,
                       IWaveAdornerInfoProvider,
                       IAnimationAwareControl,
-                      IControlSharedTokenResourcesHost
+                      IControlSharedTokenResourcesHost,
+                      ITokenResourceConsumer
 {
     public const string IconOnlyPC = ":icononly";
     public const string LoadingPC = ":loading";
@@ -231,15 +233,17 @@ public class Button : AvaloniaButton,
         get => GetValue(EffectiveBorderThicknessProperty);
         set => SetValue(EffectiveBorderThicknessProperty, value);
     }
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private bool _initialized;
     private Icon? _loadingIcon;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static Button()
     {
@@ -291,16 +295,15 @@ public class Button : AvaloniaButton,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         if (!_initialized)
         {
-            SetupControlTheme();
             if (Text is null && Content is string content)
             {
                 Text    = content;
                 Content = null;
             }
 
-            UpdatePseudoClasses();
             if (ButtonType == ButtonType.Default)
             {
                 if (IsDanger)
@@ -350,6 +353,20 @@ public class Button : AvaloniaButton,
 
             _initialized = true;
         }
+
+        SetupControlThemeBindings();
+        
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+        UpdatePseudoClasses();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -403,7 +420,7 @@ public class Button : AvaloniaButton,
         {
             if (VisualRoot is not null)
             {
-                SetupControlTheme();
+                SetupControlThemeBindings();
             }
         }
         else if (e.Property == ContentProperty ||
@@ -442,23 +459,27 @@ public class Button : AvaloniaButton,
         }
     }
 
-    private void SetupControlTheme()
+    private void SetupControlThemeBindings()
     {
         if (ButtonType == ButtonType.Default)
         {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Primary)
         {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Text)
         {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Link)
         {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID));
         }
     }
 
@@ -466,7 +487,7 @@ public class Button : AvaloniaButton,
     {
         if (Shape == ButtonShape.Circle)
         {
-            TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenKey.CirclePadding);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenKey.CirclePadding));
         }
     }
 
@@ -482,7 +503,8 @@ public class Button : AvaloniaButton,
                     transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
                     if (IsGhost)
                     {
-                        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+                        transitions.Add(
+                            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
                         transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                     }
                 }
@@ -499,6 +521,7 @@ public class Button : AvaloniaButton,
                 {
                     transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                 }
+
                 Transitions = transitions;
             }
         }
@@ -513,17 +536,12 @@ public class Button : AvaloniaButton,
     {
         base.OnApplyTemplate(e);
         _loadingIcon = e.NameScope.Find<Icon>(BaseButtonTheme.LoadingIconPart);
-        HandleTemplateApplied(e.NameScope);
-        SetupTransitions();
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
         ApplyShapeStyleConfig();
         ApplyIconModeStyleConfig();
         UpdatePseudoClasses();
         SetupIcon();
         SetupIconBrush();
+        SetupTransitions();
     }
 
     protected virtual void ApplyIconModeStyleConfig()
@@ -557,10 +575,6 @@ public class Button : AvaloniaButton,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
     }
 
@@ -665,26 +679,26 @@ public class Button : AvaloniaButton,
 
         if (Icon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                normalFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
-                selectedFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
-                activeFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
-                disabledFilledBrushKey);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+                normalFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
+                selectedFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
+                activeFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
+                disabledFilledBrushKey));
         }
 
         if (_loadingIcon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.NormalFilledBrushProperty,
-                normalFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.SelectedFilledBrushProperty,
-                selectedFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.ActiveFilledBrushProperty,
-                activeFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.DisabledFilledBrushProperty,
-                disabledFilledBrushKey);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.NormalFilledBrushProperty,
+                normalFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.SelectedFilledBrushProperty,
+                selectedFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.ActiveFilledBrushProperty,
+                activeFilledBrushKey));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon, Icon.DisabledFilledBrushProperty,
+                disabledFilledBrushKey));
         }
 
         NotifyIconBrushCalculated(in normalFilledBrushKey, in selectedFilledBrushKey, in activeFilledBrushKey,

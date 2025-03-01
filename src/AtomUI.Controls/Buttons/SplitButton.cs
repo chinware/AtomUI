@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Reactive.Disposables;
+using System.Windows.Input;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -29,7 +30,8 @@ namespace AtomUI.Controls;
 public class SplitButton : ContentControl, 
                            ICommandSource, 
                            ISizeTypeAware,
-                           IControlSharedTokenResourcesHost
+                           IControlSharedTokenResourcesHost,
+                           ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -246,9 +248,11 @@ public class SplitButton : ContentControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private Button? _primaryButton;
     private Button? _secondaryButton;
     private KeyGesture? _hotkey;
@@ -404,14 +408,7 @@ public class SplitButton : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-
-        TokenResourceBinder.CreateTokenBinding(this, Border.BorderBrushProperty,
-            SharedTokenKey.ColorBorder);
-        TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-
+        
         UnregisterEvents();
         UnregisterFlyoutEvents(Flyout);
 
@@ -449,6 +446,14 @@ public class SplitButton : ContentControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderBrushProperty,
+            SharedTokenKey.ColorBorder));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
 
         // Control attached again, set Hotkey to create a hotkey manager for this control
         SetCurrentValue(HotKeyProperty, _hotkey);
@@ -482,7 +487,7 @@ public class SplitButton : ContentControl,
         {
             Command.CanExecuteChanged -= CanExecuteChanged;
         }
-
+        this.DisposeTokenBindings();
         _isAttachedToLogicalTree = false;
     }
 
