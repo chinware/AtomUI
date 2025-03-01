@@ -19,9 +19,9 @@ public enum PresetEmptyImage
     Default
 }
 
-public partial class EmptyIndicator : TemplatedControl,
-                                      IControlSharedTokenResourcesHost,
-                                      ITokenResourceConsumer
+public class EmptyIndicator : TemplatedControl,
+                              IControlSharedTokenResourcesHost,
+                              ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -80,31 +80,31 @@ public partial class EmptyIndicator : TemplatedControl,
     }
 
     #endregion
-    
+
     #region 内部属性定义
-    
+
     internal static readonly StyledProperty<double> DescriptionMarginProperty =
         AvaloniaProperty.Register<EmptyIndicator, double>(
             nameof(DescriptionMargin));
-    
+
     private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFill),
             o => o._colorFill,
             (o, v) => o._colorFill = v);
-    
+
     private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillTertiaryProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFillTertiary),
             o => o._colorFillTertiary,
             (o, v) => o._colorFillTertiary = v);
-    
+
     private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillQuaternaryProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFillQuaternary),
             o => o._colorFillQuaternary,
             (o, v) => o._colorFillQuaternary = v);
-    
+
     private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorBgContainerProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorBgContainer),
@@ -116,7 +116,7 @@ public partial class EmptyIndicator : TemplatedControl,
         get => GetValue(DescriptionMarginProperty);
         set => SetValue(DescriptionMarginProperty, value);
     }
-    
+
     private IBrush? _colorFill;
 
     internal IBrush? ColorFill
@@ -124,37 +124,38 @@ public partial class EmptyIndicator : TemplatedControl,
         get => _colorFill;
         set => SetAndRaise(ColorFillProperty, ref _colorFill, value);
     }
-    
+
     private IBrush? _colorFillTertiary;
-    
+
     internal IBrush? ColorFillTertiary
     {
         get => _colorFillTertiary;
         set => SetAndRaise(ColorFillTertiaryProperty, ref _colorFillTertiary, value);
     }
-    
+
     private IBrush? _colorFillQuaternary;
-    
+
     internal IBrush? ColorFillQuaternary
     {
         get => _colorFillQuaternary;
         set => SetAndRaise(ColorFillQuaternaryProperty, ref _colorFillQuaternary, value);
     }
-    
+
     private IBrush? _colorBgContainer;
+
     internal IBrush? ColorBgContainer
     {
         get => _colorBgContainer;
         set => SetAndRaise(ColorBgContainerProperty, ref _colorBgContainer, value);
     }
-    
+
 
     string IControlSharedTokenResourcesHost.TokenId => EmptyIndicatorToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-    
+
     #endregion
-    
+
     private CompositeDisposable? _tokenBindingsDisposable;
     private Avalonia.Svg.Svg? _svg;
 
