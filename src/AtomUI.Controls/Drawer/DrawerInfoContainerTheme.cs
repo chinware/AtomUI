@@ -57,7 +57,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
             };
             rootLayout.Children.Add(infoLayout);
 
-            BuildHeader(infoLayout, scope);
+            BuildHeader(drawerInfoContainer, infoLayout, scope);
             var separator = new Separator();
             Grid.SetRow(separator, 1);
             infoLayout.Children.Add(separator);
@@ -66,30 +66,36 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
             {
                 Name = InfoContainerPart,
             };
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, DrawerInfoContainer.ContentProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainer.ContentTemplateProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
+                DrawerInfoContainer.ContentProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
+                DrawerInfoContainer.ContentTemplateProperty);
             Grid.SetRow(contentPresenter, 2);
             infoLayout.Children.Add(contentPresenter);
-            
+
             var footerSeparator = new Separator();
             Grid.SetRow(footerSeparator, 3);
             infoLayout.Children.Add(footerSeparator);
-            CreateTemplateParentBinding(footerSeparator, Separator.IsVisibleProperty, DrawerInfoContainer.HasFooterProperty);
+            CreateTemplateParentBinding(footerSeparator, Separator.IsVisibleProperty,
+                DrawerInfoContainer.HasFooterProperty);
             var footerPresenter = new ContentPresenter
             {
                 Name = InfoFooterPart
             };
-            CreateTemplateParentBinding(footerPresenter, ContentPresenter.IsVisibleProperty, DrawerInfoContainer.HasFooterProperty);
-            CreateTemplateParentBinding(footerPresenter, ContentPresenter.ContentProperty, DrawerInfoContainer.FooterProperty);
-            CreateTemplateParentBinding(footerPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainer.FooterTemplateProperty);
+            CreateTemplateParentBinding(footerPresenter, ContentPresenter.IsVisibleProperty,
+                DrawerInfoContainer.HasFooterProperty);
+            CreateTemplateParentBinding(footerPresenter, ContentPresenter.ContentProperty,
+                DrawerInfoContainer.FooterProperty);
+            CreateTemplateParentBinding(footerPresenter, ContentPresenter.ContentTemplateProperty,
+                DrawerInfoContainer.FooterTemplateProperty);
             Grid.SetRow(footerPresenter, 4);
             infoLayout.Children.Add(footerPresenter);
-            
+
             return rootLayout;
         });
     }
 
-    private void BuildHeader(Grid rootLayout, INameScope scope)
+    private void BuildHeader(DrawerInfoContainer drawerInfoContainer, Grid rootLayout, INameScope scope)
     {
         var headerLayout = new Grid
         {
@@ -105,11 +111,14 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         rootLayout.Children.Add(headerLayout);
 
         var closeIcon = AntDesignIconPackage.CloseOutlined();
-        
-        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty, SharedTokenKey.ColorIcon);
-        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty, SharedTokenKey.ColorIconHover);
-        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty, SharedTokenKey.ColorIconHover);
-        
+
+        drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+            Icon.NormalFilledBrushProperty, SharedTokenKey.ColorIcon));
+        drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+            Icon.ActiveFilledBrushProperty, SharedTokenKey.ColorIconHover));
+        drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+            Icon.SelectedFilledBrushProperty, SharedTokenKey.ColorIconHover));
+
         var closeButton = new IconButton()
         {
             Name                = CloseButtonPart,
@@ -119,16 +128,18 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         };
         closeButton.RegisterInNameScope(scope);
         Grid.SetColumn(closeButton, 0);
-        CreateTemplateParentBinding(closeButton, IconButton.IsMotionEnabledProperty, DrawerInfoContainer.IsMotionEnabledProperty, 
+        CreateTemplateParentBinding(closeButton, IconButton.IsMotionEnabledProperty,
+            DrawerInfoContainer.IsMotionEnabledProperty,
             BindingPriority.LocalValue);
-        CreateTemplateParentBinding(closeButton, IconButton.IsVisibleProperty, DrawerInfoContainer.IsShowCloseButtonProperty);
+        CreateTemplateParentBinding(closeButton, IconButton.IsVisibleProperty,
+            DrawerInfoContainer.IsShowCloseButtonProperty);
         headerLayout.Children.Add(closeButton);
 
         var headerText = new TextBlock
         {
-            Name = HeaderTextPart,
+            Name                = HeaderTextPart,
             HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment = VerticalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center,
         };
         CreateTemplateParentBinding(headerText, TextBlock.TextProperty, DrawerInfoContainer.TitleProperty);
         Grid.SetColumn(headerText, 1);
@@ -136,13 +147,16 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
 
         var extraContentPresenter = new ContentPresenter
         {
-            Name = ExtraContentPresenterPart,
+            Name                       = ExtraContentPresenterPart,
             HorizontalContentAlignment = HorizontalAlignment.Left,
-            VerticalContentAlignment = VerticalAlignment.Top,
+            VerticalContentAlignment   = VerticalAlignment.Top,
         };
-        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.IsVisibleProperty, DrawerInfoContainer.HasExtraProperty);
-        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentProperty, DrawerInfoContainer.ExtraProperty);
-        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentTemplateProperty, DrawerInfoContainer.ExtraTemplateProperty);
+        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.IsVisibleProperty,
+            DrawerInfoContainer.HasExtraProperty);
+        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentProperty,
+            DrawerInfoContainer.ExtraProperty);
+        CreateTemplateParentBinding(extraContentPresenter, ContentPresenter.ContentTemplateProperty,
+            DrawerInfoContainer.ExtraTemplateProperty);
         Grid.SetColumn(extraContentPresenter, 2);
         headerLayout.Children.Add(extraContentPresenter);
     }
@@ -170,7 +184,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
             frameStyle.Add(Border.BoxShadowProperty, DrawerTokenKey.BoxShadowDrawerUp);
             topPlacementStyle.Add(frameStyle);
         }
-      
+
         Add(topPlacementStyle);
         var rightPlacementStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Right));
@@ -259,7 +273,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         headerTextStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeightLG);
         headerTextStyle.Add(TextBlock.FontWeightProperty, SharedTokenKey.FontWeightStrong);
         Add(headerTextStyle);
-        
+
         var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
         closeButtonStyle.Add(IconButton.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         closeButtonStyle.Add(IconButton.PaddingProperty, DrawerTokenKey.CloseIconPadding);

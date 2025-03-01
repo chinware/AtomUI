@@ -1,4 +1,6 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
+using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -11,7 +13,8 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class DrawerInfoContainer : HeaderedContentControl
+internal class DrawerInfoContainer : HeaderedContentControl,
+                                     ITokenResourceConsumer
 {
     #region 内部属性定义
     
@@ -158,15 +161,25 @@ internal class DrawerInfoContainer : HeaderedContentControl
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
     
+    private CompositeDisposable? _tokenBindingsDisposable;
     internal event EventHandler? CloseRequested;
     private IconButton? _closeButton;
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         SetupTransitions();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     private void SetupTransitions()

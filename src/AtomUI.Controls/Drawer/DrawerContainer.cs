@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -19,7 +21,8 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-internal class DrawerContainer : ContentControl
+internal class DrawerContainer : ContentControl,
+                                 ITokenResourceConsumer
 {
     #region 内部属性定义
 
@@ -87,6 +90,11 @@ internal class DrawerContainer : ContentControl
         AvaloniaProperty.RegisterDirect<DrawerContainer, double>(nameof(PushOffsetPercent),
             o => o.PushOffsetPercent,
             (o, v) => o.PushOffsetPercent = v);
+    
+    internal static readonly DirectProperty<DrawerContainer, IBrush?> MaskBgColorProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, IBrush?>(nameof(MaskBgColor),
+            o => o.MaskBgColor,
+            (o, v) => o.MaskBgColor = v);
 
     private DrawerPlacement _placement = DrawerPlacement.Right;
 
@@ -191,10 +199,21 @@ internal class DrawerContainer : ContentControl
         get => _pushOffsetPercent;
         set => SetAndRaise(PushOffsetPercentProperty, ref _pushOffsetPercent, value);
     }
+    
+    private IBrush? _maskBgColor;
+
+    internal IBrush? MaskBgColor
+    {
+        get => _maskBgColor;
+        set => SetAndRaise(MaskBgColorProperty, ref _maskBgColor, value);
+    }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     #endregion
 
     internal WeakReference<Drawer>? Drawer { get; set; }
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private MotionActorControl? _motionActor;
     private DrawerInfoContainer? _infoContainer;
     private ITransform? _originInfoContainerTransform;
@@ -204,19 +223,27 @@ internal class DrawerContainer : ContentControl
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MaskBgColorProperty, SharedTokenKey.ColorBgMask));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, SharedTokenKey.ColorBgMask);
+        Background = MaskBgColor;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, SharedTokenKey.ColorTransparent);
+        Background = Brushes.Transparent;
     }
 
     internal void Open(ScopeAwareAdornerLayer layer)
