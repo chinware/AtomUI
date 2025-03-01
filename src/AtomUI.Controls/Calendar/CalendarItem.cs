@@ -1,7 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -9,6 +13,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using AvaloniaButton = Avalonia.Controls.Button;
 
@@ -24,7 +29,8 @@ namespace AtomUI.Controls;
 [TemplatePart(CalendarItemTheme.PreviousMonthButtonPart, typeof(AvaloniaButton))]
 [TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
 [PseudoClasses(CalendarDisabledPC)]
-internal class CalendarItem : TemplatedControl
+internal class CalendarItem : TemplatedControl,
+                              ITokenResourceConsumer
 {
     internal const string CalendarDisabledPC = ":calendardisabled";
 
@@ -214,7 +220,10 @@ internal class CalendarItem : TemplatedControl
         }
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     protected DateTime _currentMonth;
 
@@ -249,7 +258,12 @@ internal class CalendarItem : TemplatedControl
 
             for (var i = 0; i < Calendar.ColumnsPerMonth; i++)
             {
-                if (DayTitleTemplate?.Build() is Control cell)
+                var cell = DayTitleTemplate?.Build();
+                if (cell is TextBlock textBlockCell)
+                {
+                    this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlockCell, TextBlock.HeightProperty, DatePickerTokenKey.DayTitleHeight));
+                }
+                if (cell is not null)
                 {
                     cell.DataContext = string.Empty;
                     cell.SetValue(Grid.RowProperty, 0);
@@ -745,7 +759,7 @@ internal class CalendarItem : TemplatedControl
     private void SetMonthButtonsForYearMode()
     {
         var count = 0;
-        foreach (object child in YearView!.Children)
+        foreach (var child in YearView!.Children)
         {
             var childButton = (CalendarButton)child;
             // There should be no time component. Time is 12:00 AM
@@ -1317,5 +1331,17 @@ internal class CalendarItem : TemplatedControl
     internal void UpdateDisabled(bool isEnabled)
     {
         PseudoClasses.Set(CalendarDisabledPC, !isEnabled);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

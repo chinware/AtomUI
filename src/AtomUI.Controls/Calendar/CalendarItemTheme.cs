@@ -50,7 +50,7 @@ internal class CalendarItemTheme : BaseControlTheme
                 LastChildFill = true
             };
             BuildHeader(calendarItem, rootLayout, scope);
-            BuildContentView(rootLayout, scope);
+            BuildContentView(calendarItem, rootLayout, scope);
 
             BuildDayTitleTemplate(calendarItem);
             frame.Child = rootLayout;
@@ -79,12 +79,12 @@ internal class CalendarItemTheme : BaseControlTheme
             }
         };
 
-        var previousButton = BuildPreviousButton();
+        var previousButton = BuildPreviousButton(calendarItem);
         previousButton.RegisterInNameScope(scope);
         Grid.SetColumn(previousButton, 0);
         headerLayout.Children.Add(previousButton);
 
-        var previousMonthButton = BuildPreviousMonthButton();
+        var previousMonthButton = BuildPreviousMonthButton(calendarItem);
         previousMonthButton.RegisterInNameScope(scope);
         Grid.SetColumn(previousMonthButton, 1);
         headerLayout.Children.Add(previousMonthButton);
@@ -97,12 +97,12 @@ internal class CalendarItemTheme : BaseControlTheme
         headerButton.RegisterInNameScope(scope);
         headerLayout.Children.Add(headerButton);
 
-        var nextMonthButton = BuildNextMonthButton();
+        var nextMonthButton = BuildNextMonthButton(calendarItem);
         Grid.SetColumn(nextMonthButton, 3);
         nextMonthButton.RegisterInNameScope(scope);
         headerLayout.Children.Add(nextMonthButton);
 
-        var nextButton = BuildNextButton();
+        var nextButton = BuildNextButton(calendarItem);
 
         Grid.SetColumn(nextButton, 4);
         nextButton.RegisterInNameScope(scope);
@@ -112,15 +112,15 @@ internal class CalendarItemTheme : BaseControlTheme
         layout.Children.Add(headerLayout);
     }
 
-    protected virtual IconButton BuildPreviousButton()
+    protected virtual IconButton BuildPreviousButton(CalendarItem calendarItem)
     {
         var previousButtonIcon = AntDesignIconPackage.DoubleLeftOutlined();
-        TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextDescription);
-        TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.NormalFilledBrushProperty,
+            SharedTokenKey.ColorTextDescription));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.ActiveFilledBrushProperty,
+            SharedTokenKey.ColorText));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.SelectedFilledBrushProperty,
+            SharedTokenKey.ColorText));
 
         var previousButton = new IconButton
         {
@@ -128,22 +128,22 @@ internal class CalendarItemTheme : BaseControlTheme
             Icon = previousButtonIcon
         };
 
-        TokenResourceBinder.CreateTokenBinding(previousButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(previousButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButton, IconButton.IconWidthProperty,
+            SharedTokenKey.IconSizeSM));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButton, IconButton.IconHeightProperty,
+            SharedTokenKey.IconSizeSM));
         return previousButton;
     }
 
-    protected virtual IconButton BuildPreviousMonthButton()
+    protected virtual IconButton BuildPreviousMonthButton(CalendarItem calendarItem)
     {
         var previousMonthButtonIcon = AntDesignIconPackage.LeftOutlined();
-        TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextDescription);
-        TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.NormalFilledBrushProperty,
+            SharedTokenKey.ColorTextDescription));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.ActiveFilledBrushProperty,
+            SharedTokenKey.ColorText));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.SelectedFilledBrushProperty,
+            SharedTokenKey.ColorText));
 
         var previousMonthButton = new IconButton
         {
@@ -151,61 +151,61 @@ internal class CalendarItemTheme : BaseControlTheme
             Icon = previousMonthButtonIcon
         };
 
-        TokenResourceBinder.CreateTokenBinding(previousMonthButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(previousMonthButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButton, IconButton.IconWidthProperty,
+            SharedTokenKey.IconSizeSM));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButton, IconButton.IconHeightProperty,
+            SharedTokenKey.IconSizeSM));
         return previousMonthButton;
     }
 
-    protected virtual IconButton BuildNextButton()
+    protected virtual IconButton BuildNextButton(CalendarItem calendarItem)
     {
         var nextButtonIcon = AntDesignIconPackage.DoubleRightOutlined();
-        TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextDescription);
-        TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.NormalFilledBrushProperty,
+            SharedTokenKey.ColorTextDescription));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.ActiveFilledBrushProperty,
+            SharedTokenKey.ColorText));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.SelectedFilledBrushProperty,
+            SharedTokenKey.ColorText));
 
         var nextButton = new IconButton
         {
             Name = NextButtonPart,
             Icon = nextButtonIcon
         };
-        TokenResourceBinder.CreateTokenBinding(nextButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(nextButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButton, IconButton.IconWidthProperty,
+            SharedTokenKey.IconSizeSM));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButton, IconButton.IconHeightProperty,
+            SharedTokenKey.IconSizeSM));
         return nextButton;
     }
 
-    protected virtual IconButton BuildNextMonthButton()
+    protected virtual IconButton BuildNextMonthButton(CalendarItem calendarItem)
     {
         var nextMonthButtonIcon = AntDesignIconPackage.RightOutlined();
-        TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextDescription);
-        TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.NormalFilledBrushProperty,
+            SharedTokenKey.ColorTextDescription));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.ActiveFilledBrushProperty,
+            SharedTokenKey.ColorText));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.SelectedFilledBrushProperty,
+            SharedTokenKey.ColorText));
         var nextMonthButton = new IconButton
         {
             Name = NextMonthButtonPart,
             Icon = nextMonthButtonIcon
         };
-        TokenResourceBinder.CreateTokenBinding(nextMonthButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(nextMonthButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButton, IconButton.IconWidthProperty,
+            SharedTokenKey.IconSizeSM));
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButton, IconButton.IconHeightProperty,
+            SharedTokenKey.IconSizeSM));
         return nextMonthButton;
     }
 
-    private void BuildContentView(DockPanel layout, INameScope scope)
+    private void BuildContentView(CalendarItem calendarItem, DockPanel layout, INameScope scope)
     {
         var dayTitleRowDef = new RowDefinition();
-        TokenResourceBinder.CreateTokenBinding(dayTitleRowDef, RowDefinition.HeightProperty,
-            CalendarTokenKey.DayTitleHeight);
+        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(dayTitleRowDef, RowDefinition.HeightProperty,
+            CalendarTokenKey.DayTitleHeight));
 
         var monthView = new Grid
         {
@@ -280,8 +280,9 @@ internal class DayTitleTemplate : ITemplate<Control>
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment   = VerticalAlignment.Center
         };
+        
+        // TODO 需要观察是否有内存泄漏
         textBlock.Bind(TextBlock.TextProperty, new Binding());
-        TokenResourceBinder.CreateTokenBinding(textBlock, TextBlock.HeightProperty, DatePickerTokenKey.DayTitleHeight);
         return textBlock;
     }
 

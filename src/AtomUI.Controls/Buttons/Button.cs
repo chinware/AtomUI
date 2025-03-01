@@ -37,7 +37,6 @@ public enum ButtonShape
     Circle,
     Round
 }
-// TODO 目前不能动态切换 ButtonType
 
 [PseudoClasses(IconOnlyPC, LoadingPC)]
 public class Button : AvaloniaButton,
