@@ -31,7 +31,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<MenuScrollViewer>((viewer, scope) =>
+        return new FuncControlTemplate<MenuScrollViewer>((menuScrollViewer, scope) =>
         {
             var dockPanel = new DockPanel();
             var scrollUpButton = new IconButton
@@ -43,10 +43,10 @@ internal class MenuScrollViewerTheme : BaseControlTheme
                 RenderTransform     = null
             };
             CreateTemplateParentBinding(scrollUpButton, Button.CommandProperty, nameof(MenuScrollViewer.LineUp), BindingPriority.Template);
-            TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconWidthProperty,
-                MenuTokenKey.ScrollButtonIconSize);
-            TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconHeightProperty,
-                MenuTokenKey.ScrollButtonIconSize);
+            menuScrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconWidthProperty,
+                MenuTokenKey.ScrollButtonIconSize));
+            menuScrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconHeightProperty,
+                MenuTokenKey.ScrollButtonIconSize));
             DockPanel.SetDock(scrollUpButton, Dock.Top);
             var scrollDownButton = new IconButton
             {
@@ -58,13 +58,13 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(scrollDownButton, Avalonia.Controls.Button.CommandProperty,
                 nameof(MenuScrollViewer.LineDown), BindingPriority.Template);
-            TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconWidthProperty,
-                MenuTokenKey.ScrollButtonIconSize);
-            TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconHeightProperty,
-                MenuTokenKey.ScrollButtonIconSize);
+            menuScrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconWidthProperty,
+                MenuTokenKey.ScrollButtonIconSize));
+            menuScrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconHeightProperty,
+                MenuTokenKey.ScrollButtonIconSize));
             DockPanel.SetDock(scrollDownButton, Dock.Bottom);
 
-            var scrollViewContent = CreateScrollContentPresenter(viewer);
+            var scrollViewContent = CreateScrollContentPresenter(menuScrollViewer);
 
             dockPanel.Children.Add(scrollUpButton);
             dockPanel.Children.Add(scrollDownButton);

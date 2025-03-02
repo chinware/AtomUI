@@ -34,9 +34,9 @@ public static class AnimationAwareControlExtensions
     {
         if (sender is Control hostControl)
         {
-            var isMotionEnabledChanged = e.Property.Name == IAnimationAwareControl.IsMotionEnabledPropertyName;
+            var isMotionEnabledChanged = e.Property.Name == AnimationAwareControlProperty.IsMotionEnabledPropertyName;
             var isWaveAnimationEnabledChanged =
-                e.Property.Name == IAnimationAwareControl.IsWaveAnimationEnabledPropertyName;
+                e.Property.Name == AnimationAwareControlProperty.IsWaveAnimationEnabledPropertyName;
             if (isMotionEnabledChanged || isWaveAnimationEnabledChanged)
             {
                 if (e.Priority == BindingPriority.LocalValue)

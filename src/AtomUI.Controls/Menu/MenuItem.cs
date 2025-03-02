@@ -1,6 +1,8 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -11,6 +13,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
@@ -18,7 +21,8 @@ namespace AtomUI.Controls;
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
 [PseudoClasses(TopLevelPC)]
-public class MenuItem : AvaloniaMenuItem
+public class MenuItem : AvaloniaMenuItem,
+                        ITokenResourceConsumer
 {
     public const string TopLevelPC = ":toplevel";
 
@@ -38,10 +42,10 @@ public class MenuItem : AvaloniaMenuItem
     #region 内部属性定义
 
     internal static readonly DirectProperty<MenuItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<MenuItem, bool>(nameof(IsMotionEnabled), 
+        = AvaloniaProperty.RegisterDirect<MenuItem, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
-    
+
     private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
@@ -50,8 +54,11 @@ public class MenuItem : AvaloniaMenuItem
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     #endregion
-    
+
+    private CompositeDisposable? _tokenBindingsDisposable;
     private ContentPresenter? _topLevelContentPresenter;
     private ContentControl? _togglePresenter;
 
@@ -61,7 +68,7 @@ public class MenuItem : AvaloniaMenuItem
     {
         AffectsRender<MenuItem>(BackgroundProperty);
     }
-    
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -99,7 +106,7 @@ public class MenuItem : AvaloniaMenuItem
             }
         }
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -111,10 +118,13 @@ public class MenuItem : AvaloniaMenuItem
         {
             if (Icon is Icon icon)
             {
-                TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize);
-                TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize);
-                TokenResourceBinder.CreateTokenBinding(icon, IconPkg.Icon.NormalFilledBrushProperty,
-                    MenuTokenKey.ItemColor);
+                this.AddTokenBindingDisposable(
+                    TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize));
+                this.AddTokenBindingDisposable(
+                    TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize));
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon,
+                    IconPkg.Icon.NormalFilledBrushProperty,
+                    MenuTokenKey.ItemColor));
             }
         }
         else if (e.Property == ToggleTypeProperty)
@@ -162,7 +172,7 @@ public class MenuItem : AvaloniaMenuItem
     {
         PseudoClasses.Set(TopLevelPC, IsTopLevel);
     }
-    
+
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         if (container is MenuItem menuItem)
@@ -172,5 +182,17 @@ public class MenuItem : AvaloniaMenuItem
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }
