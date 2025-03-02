@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -9,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -21,7 +23,8 @@ public enum GroupBoxTitlePosition
 }
 
 public class GroupBox : ContentControl,
-                        IControlSharedTokenResourcesHost
+                        IControlSharedTokenResourcesHost,
+                        ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -94,9 +97,11 @@ public class GroupBox : ContentControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => GroupBoxToken.ID;
-
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private readonly BorderRenderHelper _borderRenderHelper;
     private Control? _headerContentContainer;
     private Border? _frame;
@@ -113,15 +118,6 @@ public class GroupBox : ContentControl,
         _borderRenderHelper = new BorderRenderHelper();
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -129,8 +125,8 @@ public class GroupBox : ContentControl,
         _frame         = e.NameScope.Find<Border>(GroupBoxTheme.FramePart);
         if (HeaderIcon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(HeaderIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorIcon);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(HeaderIcon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorIcon));
         }
     }
 
@@ -174,5 +170,21 @@ public class GroupBox : ContentControl,
                 context.FillRectangle(Background ?? new SolidColorBrush(Colors.Transparent), bounds);
             }
         }
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }
