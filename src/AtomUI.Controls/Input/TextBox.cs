@@ -1,16 +1,19 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
 public class TextBox : AvaloniaTextBox,
-                       IControlSharedTokenResourcesHost
+                       IControlSharedTokenResourcesHost,
+                       ITokenResourceConsumer
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
@@ -94,8 +97,11 @@ public class TextBox : AvaloniaTextBox,
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static TextBox()
     {
@@ -161,5 +167,17 @@ public class TextBox : AvaloniaTextBox,
     {
         PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
         PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

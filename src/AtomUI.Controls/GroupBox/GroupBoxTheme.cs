@@ -33,13 +33,13 @@ internal class GroupBoxTheme : BaseControlTheme
         return new FuncControlTemplate<GroupBox>((groupBox, scope) =>
         {
             BuildInstanceStyles(groupBox);
-            var Frame = new Border
+            var frame = new Border
             {
                 Name = FramePart
             };
-            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty,
+            CreateTemplateParentBinding(frame, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
-            Frame.RegisterInNameScope(scope);
+            frame.RegisterInNameScope(scope);
             var mainLayout = new DockPanel
             {
                 LastChildFill = true
@@ -107,8 +107,8 @@ internal class GroupBoxTheme : BaseControlTheme
                 ContentControl.ContentTemplateProperty);
 
             mainLayout.Children.Add(contentPresenter);
-            Frame.Child = mainLayout;
-            return Frame;
+            frame.Child = mainLayout;
+            return frame;
         });
     }
 

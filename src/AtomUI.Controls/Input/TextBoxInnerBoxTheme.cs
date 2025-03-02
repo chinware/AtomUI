@@ -1,5 +1,6 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -14,32 +15,38 @@ namespace AtomUI.Controls;
 internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
 {
     public const string RevealButtonPart = "PART_RevealButton";
-    
+
     public TextBoxInnerBoxTheme() : base(typeof(TextBoxInnerBox))
     {
     }
 
-    protected override void BuildRightAddOnItems(AddOnDecoratedInnerBox addOnDecoratedInnerBox, StackPanel layout, INameScope scope)
+    protected override void BuildRightAddOnItems(AddOnDecoratedInnerBox addOnDecoratedInnerBox, StackPanel layout,
+                                                 INameScope scope)
     {
         base.BuildRightAddOnItems(addOnDecoratedInnerBox, layout, scope);
-        BuildRevealButtonButton(layout, scope);
+        BuildRevealButtonButton((TextBoxInnerBox)addOnDecoratedInnerBox, layout, scope);
     }
-    
-    protected virtual void BuildRevealButtonButton(StackPanel addOnLayout, INameScope scope)
+
+    protected virtual void BuildRevealButtonButton(TextBoxInnerBox textBoxInnerBox, StackPanel addOnLayout,
+                                                   INameScope scope)
     {
         var eyeOutlinedIcon          = AntDesignIconPackage.EyeOutlined();
         var eyeInvisibleOutlinedIcon = AntDesignIconPackage.EyeInvisibleOutlined();
-        
-         TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextTertiary);
-        TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        
-        TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextTertiary);
-        TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        
+
+        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon,
+            Icon.NormalFilledBrushProperty,
+            SharedTokenKey.ColorTextTertiary));
+        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon,
+            Icon.ActiveFilledBrushProperty,
+            SharedTokenKey.ColorText));
+
+        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon,
+            Icon.NormalFilledBrushProperty,
+            SharedTokenKey.ColorTextTertiary));
+        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon,
+            Icon.ActiveFilledBrushProperty,
+            SharedTokenKey.ColorText));
+
         var revealButtonIconButton = new ToggleIconButton
         {
             Name          = RevealButtonPart,
@@ -47,11 +54,14 @@ internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
             UnCheckedIcon = eyeInvisibleOutlinedIcon
         };
 
-        CreateTemplateParentBinding(revealButtonIconButton, ToggleIconButton.IsCheckedProperty, TextBoxInnerBox.IsRevealButtonCheckedProperty, BindingMode.TwoWay);
-        TokenResourceBinder.CreateTokenBinding(revealButtonIconButton, ToggleIconButton.IconHeightProperty,
-            SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateTokenBinding(revealButtonIconButton, ToggleIconButton.IconWidthProperty,
-            SharedTokenKey.IconSize);
+        CreateTemplateParentBinding(revealButtonIconButton, ToggleIconButton.IsCheckedProperty,
+            TextBoxInnerBox.IsRevealButtonCheckedProperty, BindingMode.TwoWay);
+        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(revealButtonIconButton,
+            ToggleIconButton.IconHeightProperty,
+            SharedTokenKey.IconSize));
+        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(revealButtonIconButton,
+            ToggleIconButton.IconWidthProperty,
+            SharedTokenKey.IconSize));
 
         revealButtonIconButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(revealButtonIconButton, Visual.IsVisibleProperty,
