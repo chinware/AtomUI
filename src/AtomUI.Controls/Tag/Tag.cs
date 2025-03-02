@@ -1,4 +1,4 @@
-using AtomUI.Controls.Internal;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -7,12 +7,12 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -43,7 +43,8 @@ internal struct TagStatusCalcColor
 }
 
 public class Tag : TemplatedControl,
-                   IControlSharedTokenResourcesHost
+                   IControlSharedTokenResourcesHost,
+                   ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -116,12 +117,14 @@ public class Tag : TemplatedControl,
         get => GetValue(TagTextPaddingInlineProperty);
         set => SetValue(TagTextPaddingInlineProperty, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TagToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private bool _isPresetColorTag;
     private bool _hasColorSet;
     private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
@@ -149,19 +152,27 @@ public class Tag : TemplatedControl,
         this.RegisterResources();
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        SetupTokenBindings();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         SetupPresetColorMap();
         SetupStatusColorMap();
         base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _closeButton          = scope.Find<IconButton>(TagTheme.CloseButtonPart);
-        _lineText            = scope.Find<SingleLineText>(TagTheme.TagTextLabelPart);
-        _iconContentPresenter = scope.Find<ContentPresenter>(TagTheme.IconPart);
+        _closeButton          = e.NameScope.Find<IconButton>(TagTheme.CloseButtonPart);
+        _lineText             = e.NameScope.Find<SingleLineText>(TagTheme.TagTextLabelPart);
+        _iconContentPresenter = e.NameScope.Find<ContentPresenter>(TagTheme.IconPart);
 
         if (TagColor is not null)
         {
@@ -170,33 +181,12 @@ public class Tag : TemplatedControl,
 
         SetupTagClosable();
         SetupTagIcon();
-        SetupTokenBindings();
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
-    }
-
-    private void SetupTokenBindings()
-    {
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness =>
-            {
-                if (!Bordered)
-                {
-                    return new Thickness(0);
-                }
-
-                return thickness;
-            }));
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (VisualRoot is not null)
+        if (this.IsAttachedToLogicalTree())
         {
             if (e.Property == IsClosableProperty)
             {
@@ -207,6 +197,22 @@ public class Tag : TemplatedControl,
                 SetupTagIcon();
             }
         }
+    }
+
+    private void SetupTokenBindings()
+    {
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness =>
+            {
+                if (!Bordered)
+                {
+                    return new Thickness(0);
+                }
+
+                return thickness;
+            })));
     }
 
     private static void SetupPresetColorMap()
@@ -316,8 +322,8 @@ public class Tag : TemplatedControl,
             Bordered     = false;
             _hasColorSet = true;
             Background   = new SolidColorBrush(color);
-            TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty,
-                SharedTokenKey.ColorTextLightSolid);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty,
+                SharedTokenKey.ColorTextLightSolid));
         }
     }
 
@@ -329,19 +335,24 @@ public class Tag : TemplatedControl,
             {
                 CloseIcon = AntDesignIconPackage.CloseOutlined();
 
-                TokenResourceBinder.CreateTokenBinding(CloseIcon, WidthProperty, TagTokenKey.TagCloseIconSize);
-                TokenResourceBinder.CreateTokenBinding(CloseIcon, HeightProperty, TagTokenKey.TagCloseIconSize);
+                this.AddTokenBindingDisposable(
+                    TokenResourceBinder.CreateTokenBinding(CloseIcon, WidthProperty, TagTokenKey.TagCloseIconSize));
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon, HeightProperty,
+                    TagTokenKey.TagCloseIconSize));
                 if (_hasColorSet && !_isPresetColorTag)
                 {
-                    TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                        SharedTokenKey.ColorTextLightSolid);
+                    this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
+                        Icon.NormalFilledBrushProperty,
+                        SharedTokenKey.ColorTextLightSolid));
                 }
                 else
                 {
-                    TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                        SharedTokenKey.ColorIcon);
-                    TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
-                        SharedTokenKey.ColorIconHover);
+                    this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
+                        Icon.NormalFilledBrushProperty,
+                        SharedTokenKey.ColorIcon));
+                    this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
+                        Icon.ActiveFilledBrushProperty,
+                        SharedTokenKey.ColorIconHover));
                 }
             }
         }
@@ -351,12 +362,15 @@ public class Tag : TemplatedControl,
     {
         if (Icon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(Icon, WidthProperty, TagTokenKey.TagIconSize);
-            TokenResourceBinder.CreateTokenBinding(Icon, HeightProperty, TagTokenKey.TagIconSize);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(Icon, WidthProperty, TagTokenKey.TagIconSize));
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(Icon, HeightProperty, TagTokenKey.TagIconSize));
             if (_hasColorSet)
             {
-                TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                    SharedTokenKey.ColorTextLightSolid);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.NormalFilledBrushProperty,
+                    SharedTokenKey.ColorTextLightSolid));
             }
             else if (_isPresetColorTag)
             {

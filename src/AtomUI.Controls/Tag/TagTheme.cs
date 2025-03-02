@@ -81,10 +81,10 @@ internal class TagTheme : BaseControlTheme
             };
             closeBtn.RegisterInNameScope(scope);
             Grid.SetColumn(closeBtn, 2);
-            TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSizeXS);
-            TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSizeXS);
+            tag.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
+                SharedTokenKey.IconSizeXS));
+            tag.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
+                SharedTokenKey.IconSizeXS));
 
             CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Tag.IsClosableProperty);
             CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Tag.CloseIconProperty);
