@@ -401,6 +401,10 @@ public class SplitButton : ContentControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
         _flyoutStateHelper.NotifyAttachedToVisualTree();
     }
 
@@ -450,10 +454,6 @@ public class SplitButton : ContentControl,
 
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderBrushProperty,
             SharedTokenKey.ColorBorder));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
 
         // Control attached again, set Hotkey to create a hotkey manager for this control
         SetCurrentValue(HotKeyProperty, _hotkey);

@@ -128,12 +128,17 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
         return true;
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderBrushProperty,
             SharedTokenKey.ColorBorder));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,

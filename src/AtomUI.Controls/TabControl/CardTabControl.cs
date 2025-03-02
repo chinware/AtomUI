@@ -168,11 +168,16 @@ public class CardTabControl : BaseTabControl
     {
         base.OnAttachedToLogicalTree(e);
         SetupSizeTypeBinding();
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
     }
 
     protected override Size ArrangeOverride(Size finalSize)

@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -8,10 +10,12 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
-internal class TimePickerPresenter : PickerPresenterBase
+internal class TimePickerPresenter : PickerPresenterBase,
+                                     ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -108,6 +112,8 @@ internal class TimePickerPresenter : PickerPresenterBase
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
 
     #region 公共事件定义
@@ -124,6 +130,7 @@ internal class TimePickerPresenter : PickerPresenterBase
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private IDisposable? _choosingStateDisposable;
     private Button? _nowButton;
     private Button? _confirmButton;
@@ -284,9 +291,9 @@ internal class TimePickerPresenter : PickerPresenterBase
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0)));
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
         if (_timeView is not null)
         {
             _choosingStateDisposable = TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
@@ -301,5 +308,17 @@ internal class TimePickerPresenter : PickerPresenterBase
         base.OnDetachedFromVisualTree(e);
         _choosingStateDisposable?.Dispose();
         _choosingStateDisposable = null;
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

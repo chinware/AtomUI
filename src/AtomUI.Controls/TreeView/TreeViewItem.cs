@@ -344,6 +344,15 @@ public class TreeViewItem : AvaloniaTreeItem,
         _borderRenderHelper = new BorderRenderHelper();
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
@@ -358,10 +367,6 @@ public class TreeViewItem : AvaloniaTreeItem,
             SharedTokenKey.MotionDurationSlow));
         this.AddTokenBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, TitleHeightProperty, TreeViewTokenKey.TitleHeight));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

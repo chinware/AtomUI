@@ -142,9 +142,6 @@ internal class DatePickerPresenter : PickerPresenterBase,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
         this.AddTokenBindingDisposable(PickerCalendar.IsPointerInMonthViewProperty.Changed.Subscribe(args =>
         {
             if (_calendarView is not null)
@@ -165,6 +162,14 @@ internal class DatePickerPresenter : PickerPresenterBase,
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

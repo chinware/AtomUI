@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.TimePickerLang;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -10,6 +12,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
@@ -59,7 +62,8 @@ internal class CellDbClickedEventArgs : EventArgs
     }
 }
 
-internal class DateTimePickerPanel : Panel, ILogicalScrollable
+internal class DateTimePickerPanel : Panel, ILogicalScrollable,
+                                     ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -141,6 +145,7 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     #endregion
 
     #region 内部事件定义
@@ -149,7 +154,8 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
     internal event EventHandler<CellDbClickedEventArgs>? CellDbClicked;
 
     #endregion
-
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
     //Backing fields for properties
     private int _minimumValue = 1;
     private int _maximumValue = 2;
@@ -605,8 +611,8 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                 }
             };
 
-            TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
-                TimePickerTokenKey.ItemPadding, BindingPriority.LocalValue);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
+                TimePickerTokenKey.ItemPadding, BindingPriority.LocalValue));
             children.Add(item);
         }
 
@@ -790,5 +796,18 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                 EnableCellHoverAnimation();
             }
         }
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

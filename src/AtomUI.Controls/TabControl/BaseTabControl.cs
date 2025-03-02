@@ -128,20 +128,7 @@ public class BaseTabControl : AvaloniaTabControl,
         _alignWrapper   = e.NameScope.Find<Panel>(BaseTabControlTheme.AlignWrapperPart);
         HandlePlacementChanged();
     }
-
-    private void SetupBorderBinding()
-    {
-        if (_frame is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-                SharedTokenKey.BorderThickness, BindingPriority.Template,
-                new RenderScaleAwareThicknessConfigure(this)));
-        }
-
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
-            TabControlTokenKey.TabAndContentGutter));
-    }
-
+    
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
@@ -155,7 +142,9 @@ public class BaseTabControl : AvaloniaTabControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        SetupBorderBinding();
+
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
+            TabControlTokenKey.TabAndContentGutter));
         UpdatePseudoClasses();
     }
 
@@ -163,6 +152,17 @@ public class BaseTabControl : AvaloniaTabControl,
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (_frame is not null)
+        {
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+                SharedTokenKey.BorderThickness, BindingPriority.Template,
+                new RenderScaleAwareThicknessConfigure(this)));
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

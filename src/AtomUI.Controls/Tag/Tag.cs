@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
@@ -15,6 +16,7 @@ using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -111,11 +113,24 @@ public class Tag : TemplatedControl,
 
     internal static readonly StyledProperty<Thickness> TagTextPaddingInlineProperty
         = AvaloniaProperty.Register<Tag, Thickness>(nameof(TagTextPaddingInline));
+    
+    internal static readonly DirectProperty<Tag, Thickness> RenderScaleAwareBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<Tag, Thickness>(nameof(RenderScaleAwareBorderThickness),
+            o => o.RenderScaleAwareBorderThickness,
+            (o, v) => o.RenderScaleAwareBorderThickness = v);
 
     internal Thickness TagTextPaddingInline
     {
         get => GetValue(TagTextPaddingInlineProperty);
         set => SetValue(TagTextPaddingInlineProperty, value);
+    }
+    
+    private Thickness _renderScaleAwareBorderThickness;
+
+    internal Thickness RenderScaleAwareBorderThickness
+    {
+        get => _renderScaleAwareBorderThickness;
+        set => SetAndRaise(RenderScaleAwareBorderThicknessProperty, ref _renderScaleAwareBorderThickness, value);
     }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -156,13 +171,21 @@ public class Tag : TemplatedControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        SetupTokenBindings();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, RenderScaleAwareBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -178,7 +201,7 @@ public class Tag : TemplatedControl,
         {
             SetupTagColorInfo(TagColor);
         }
-
+        SetupBorderThicknessBinding();
         SetupTagClosable();
         SetupTagIcon();
     }
@@ -196,23 +219,23 @@ public class Tag : TemplatedControl,
             {
                 SetupTagIcon();
             }
+            else if (e.Property == BorderedProperty)
+            {
+                SetupBorderThicknessBinding();
+            }
         }
     }
 
-    private void SetupTokenBindings()
+    private void SetupBorderThicknessBinding()
     {
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness =>
-            {
-                if (!Bordered)
-                {
-                    return new Thickness(0);
-                }
-
-                return thickness;
-            })));
+        if (Bordered)
+        {
+            BindUtils.RelayBind(this, RenderScaleAwareBorderThicknessProperty, this, BorderThicknessProperty);
+        }
+        else
+        {
+            SetValue(BorderThicknessProperty, new Thickness(), BindingPriority.Template);
+        }
     }
 
     private static void SetupPresetColorMap()

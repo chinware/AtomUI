@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -9,12 +11,14 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 internal class TimeSelectedEventArgs : EventArgs
 {
     public TimeSpan? Time { get; }
+
     public TimeSelectedEventArgs(TimeSpan? value)
     {
         Time = value;
@@ -28,10 +32,11 @@ internal class TimeSelectedEventArgs : EventArgs
 [TemplatePart(TimeViewTheme.PeriodSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
 [TemplatePart(TimeViewTheme.PickerSelectorContainerPart, typeof(Grid), IsRequired = true)]
 [TemplatePart(TimeViewTheme.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
-internal class TimeView : TemplatedControl
+internal class TimeView : TemplatedControl,
+                          ITokenResourceConsumer
 {
     #region 公共属性定义
-    
+
     public static readonly StyledProperty<int> MinuteIncrementProperty =
         TimePicker.MinuteIncrementProperty.AddOwner<TimeView>();
 
@@ -40,13 +45,13 @@ internal class TimeView : TemplatedControl
 
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<TimeView>();
-    
+
     public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
         AvaloniaProperty.Register<TimeView, TimeSpan?>(nameof(SelectedTime));
 
     public static readonly StyledProperty<bool> IsShowHeaderProperty =
         AvaloniaProperty.Register<TimeView, bool>(nameof(IsShowHeader), true);
-    
+
     public static readonly StyledProperty<int> SelectorRowCountProperty =
         AvaloniaProperty.Register<TimeView, int>(nameof(SelectorRowCount), 7);
 
@@ -73,7 +78,7 @@ internal class TimeView : TemplatedControl
         get => GetValue(ClockIdentifierProperty);
         set => SetValue(ClockIdentifierProperty, value);
     }
-    
+
     public TimeSpan? SelectedTime
     {
         get => GetValue(SelectedTimeProperty);
@@ -91,7 +96,7 @@ internal class TimeView : TemplatedControl
         get => GetValue(SelectorRowCountProperty);
         set => SetValue(SelectorRowCountProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -100,17 +105,17 @@ internal class TimeView : TemplatedControl
         AvaloniaProperty.RegisterDirect<TimeView, double>(nameof(SpacerWidth),
             o => o.SpacerWidth,
             (o, v) => o.SpacerWidth = v);
-    
+
     internal static readonly DirectProperty<TimeView, double> ItemHeightProperty =
         AvaloniaProperty.RegisterDirect<TimeView, double>(nameof(ItemHeight),
             o => o.ItemHeight,
             (o, v) => o.ItemHeight = v);
-    
+
     internal static readonly StyledProperty<bool> IsPointerInSelectorProperty =
         AvaloniaProperty.Register<TimeView, bool>(nameof(IsPointerInSelector), false);
-    
+
     internal static readonly DirectProperty<TimeView, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<TimeView, bool>(nameof(IsMotionEnabled), 
+        = AvaloniaProperty.RegisterDirect<TimeView, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
 
@@ -121,7 +126,7 @@ internal class TimeView : TemplatedControl
         get => _spacerWidth;
         set => SetAndRaise(SpacerThicknessProperty, ref _spacerWidth, value);
     }
-    
+
     internal bool IsPointerInSelector
     {
         get => GetValue(IsPointerInSelectorProperty);
@@ -129,12 +134,13 @@ internal class TimeView : TemplatedControl
     }
 
     private double _itemHeight;
+
     internal double ItemHeight
     {
         get => _itemHeight;
         set => SetAndRaise(ItemHeightProperty, ref _itemHeight, value);
     }
-    
+
     private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
@@ -142,6 +148,8 @@ internal class TimeView : TemplatedControl
         get => _isMotionEnabled;
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
+
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
@@ -152,6 +160,8 @@ internal class TimeView : TemplatedControl
     public event EventHandler<TimeSelectedEventArgs>? HoverTimeChanged;
 
     #endregion
+
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static TimeView()
     {
@@ -168,20 +178,17 @@ internal class TimeView : TemplatedControl
     private DateTimePickerPanel? _minuteSelector;
     private DateTimePickerPanel? _secondSelector;
     private DateTimePickerPanel? _periodSelector;
-    
+
     private IDisposable? _pointerPositionDisposable;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
-            BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
     }
-    
+
     private void DetectPointerPosition(RawInputEventArgs args)
     {
         if (args is RawPointerEventArgs pointerEventArgs)
@@ -196,16 +203,17 @@ internal class TimeView : TemplatedControl
             }
         }
     }
-    
+
     protected virtual bool CheckPointerInSelectors(Point position)
     {
         if (ClockIdentifier == ClockIdentifierType.HourClock12)
         {
-            return CheckPointerInSelector(_hourSelector, position) || 
+            return CheckPointerInSelector(_hourSelector, position) ||
                    CheckPointerInSelector(_minuteSelector, position) ||
                    CheckPointerInSelector(_secondSelector, position) ||
                    CheckPointerInSelector(_periodSelector, position);
         }
+
         return CheckPointerInSelector(_hourSelector, position) ||
                CheckPointerInSelector(_minuteSelector, position) ||
                CheckPointerInSelector(_secondSelector, position);
@@ -224,14 +232,31 @@ internal class TimeView : TemplatedControl
 
     private Rect GetSelectorGlobalRect(DateTimePickerPanel selector)
     {
-        var pos  = selector.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(selector)!) ?? default;
+        var pos = selector.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(selector)!) ?? default;
         return new Rect(pos, selector.Bounds.Size);
     }
-    
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _pointerPositionDisposable?.Dispose();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, ItemHeightProperty, TimePickerTokenKey.ItemHeight));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -247,12 +272,10 @@ internal class TimeView : TemplatedControl
         _secondSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.SecondSelectorPart);
         _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.PeriodSelectorPart);
         SetupPickerSelectorContainerHeight();
-        
-        TokenResourceBinder.CreateTokenBinding(this, ItemHeightProperty, TimePickerTokenKey.ItemHeight);
 
         _spacer3 = e.NameScope.Get<Rectangle>(TimeViewTheme.ThirdSpacerPart);
         InitPicker();
-        
+
         if (_hourSelector is not null)
         {
             _hourSelector.SelectionChanged += HandleSelectionChanged;
@@ -296,10 +319,10 @@ internal class TimeView : TemplatedControl
         var selectedTime  = CollectValue(false);
         var hour          = selectedTime.Hours;
         var minute        = selectedTime.Minutes;
-        var second       = selectedTime.Seconds;
-        var period = _periodSelector?.SelectedValue ?? default;
+        var second        = selectedTime.Seconds;
+        var period        = _periodSelector?.SelectedValue ?? default;
         var cellHoverInfo = args.CellHoverInfo;
-        
+
         if (cellHoverInfo.HasValue)
         {
             var panelType = cellHoverInfo.Value.PanelType;
@@ -307,17 +330,20 @@ internal class TimeView : TemplatedControl
             if (panelType == DateTimePickerPanelType.Hour)
             {
                 hour = cellValue;
-              
-            } else if (panelType == DateTimePickerPanelType.Minute)
+            }
+            else if (panelType == DateTimePickerPanelType.Minute)
             {
                 minute = cellValue;
-            } else if (panelType == DateTimePickerPanelType.Second)
+            }
+            else if (panelType == DateTimePickerPanelType.Second)
             {
                 second = cellValue;
-            } else if (panelType == DateTimePickerPanelType.TimePeriod)
+            }
+            else if (panelType == DateTimePickerPanelType.TimePeriod)
             {
                 period = cellValue;
             }
+
             if (ClockIdentifier == ClockIdentifierType.HourClock12)
             {
                 if (period == 0 && hour == 12)
@@ -331,6 +357,7 @@ internal class TimeView : TemplatedControl
                     hour += 12;
                 }
             }
+
             var hoverTime = new TimeSpan(hour, minute, second);
             HoverTimeChanged?.Invoke(this, new TimeSelectedEventArgs(hoverTime));
         }
@@ -363,9 +390,9 @@ internal class TimeView : TemplatedControl
             if (ClockIdentifier == ClockIdentifierType.HourClock12)
             {
                 hour = period == 1 ? hour == 12 ? 12 : hour + 12 : period == 0 && hour == 12 ? 0 : hour;
-            } 
+            }
         }
-        
+
         return new TimeSpan(hour, minute, second);
     }
 
@@ -410,15 +437,16 @@ internal class TimeView : TemplatedControl
         {
             _minuteSelector.SelectedValue = time.Minutes;
         }
-        
+
         if (_secondSelector is not null)
         {
             _secondSelector.SelectedValue = time.Seconds;
         }
-        
+
         if (_periodSelector is not null)
         {
-            _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;;
+            _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;
+            ;
         }
     }
 
@@ -428,6 +456,7 @@ internal class TimeView : TemplatedControl
         {
             return;
         }
+
         var selectedTime   = SelectedTime ?? TimeSpan.Zero;
         var clock12        = ClockIdentifier == ClockIdentifierType.HourClock12;
         var use24HourClock = ClockIdentifier == ClockIdentifierType.HourClock24;

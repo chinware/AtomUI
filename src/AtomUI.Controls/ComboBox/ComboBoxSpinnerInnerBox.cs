@@ -86,9 +86,6 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderBrushProperty,
             SharedTokenKey.ColorBorder));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,

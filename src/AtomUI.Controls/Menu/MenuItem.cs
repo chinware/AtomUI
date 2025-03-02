@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Media;
@@ -83,6 +84,7 @@ public class MenuItem : AvaloniaMenuItem,
             _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
         }
 
+        SetupIconBindings();
         HandleToggleTypeChanged();
         SetupTransitions();
         UpdatePseudoClasses();
@@ -114,19 +116,6 @@ public class MenuItem : AvaloniaMenuItem,
         {
             UpdatePseudoClasses();
         }
-        else if (e.Property == IconProperty)
-        {
-            if (Icon is Icon icon)
-            {
-                this.AddTokenBindingDisposable(
-                    TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize));
-                this.AddTokenBindingDisposable(
-                    TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize));
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon,
-                    IconPkg.Icon.NormalFilledBrushProperty,
-                    MenuTokenKey.ItemColor));
-            }
-        }
         else if (e.Property == ToggleTypeProperty)
         {
             HandleToggleTypeChanged();
@@ -134,6 +123,28 @@ public class MenuItem : AvaloniaMenuItem,
         else if (e.Property == IsMotionEnabledProperty)
         {
             SetupTransitions();
+        }
+
+        if (this.IsAttachedToLogicalTree())
+        {
+            if (e.Property == IconProperty)
+            {
+                SetupIconBindings();
+            }
+        }
+    }
+
+    private void SetupIconBindings()
+    {
+        if (Icon is Icon icon)
+        {
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize));
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon,
+                IconPkg.Icon.NormalFilledBrushProperty,
+                MenuTokenKey.ItemColor));
         }
     }
 

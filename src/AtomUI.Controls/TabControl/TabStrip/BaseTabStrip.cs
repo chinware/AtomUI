@@ -134,13 +134,18 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
         UpdatePseudoClasses();
-        SetupBorderBinding();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupBorderBinding();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
