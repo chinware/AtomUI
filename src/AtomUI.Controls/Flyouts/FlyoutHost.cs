@@ -192,6 +192,7 @@ public class FlyoutHost : Control,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+        SetupFlyoutProperties();
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
         
         BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
@@ -244,11 +245,14 @@ public class FlyoutHost : Control,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == FlyoutProperty)
+        if (this.IsAttachedToLogicalTree())
         {
-            if (Flyout is not null)
+            if (change.Property == FlyoutProperty)
             {
-                SetupFlyoutProperties();
+                if (Flyout is not null)
+                {
+                    SetupFlyoutProperties();
+                }
             }
         }
     }

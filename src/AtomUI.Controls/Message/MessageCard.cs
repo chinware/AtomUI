@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -185,15 +186,13 @@ public class MessageCard : TemplatedControl,
     {
         base.OnPropertyChanged(e);
 
-        if (e.Property == MessageTypeProperty)
+        if (this.IsAttachedToLogicalTree())
         {
-            SetupMessageIcon();
-            UpdateMessageType();
-        }
-
-        if (e.Property == MessageTypeProperty)
-        {
-            UpdateMessageType();
+            if (e.Property == MessageTypeProperty)
+            {
+                SetupMessageIcon();
+                UpdateMessageType();
+            }
         }
 
         if (e.Property == IsClosedProperty)
@@ -204,9 +203,8 @@ public class MessageCard : TemplatedControl,
             }
 
             RaiseEvent(new RoutedEventArgs(MessageClosedEvent));
-        }
-
-        if (e.Property == IsClosingProperty)
+        } 
+        else if (e.Property == IsClosingProperty)
         {
             if (IsClosing)
             {

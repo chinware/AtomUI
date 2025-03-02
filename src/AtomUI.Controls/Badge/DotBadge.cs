@@ -214,8 +214,8 @@ public class DotBadge : Control,
             else
             {
                 _dotBadgeAdorner.IsAdornerMode = true;
-                VisualChildren.Add(DecoratedTarget);
                 DecoratedTarget.SetLogicalParent(this);
+                VisualChildren.Add(DecoratedTarget);
             }
         }
     }

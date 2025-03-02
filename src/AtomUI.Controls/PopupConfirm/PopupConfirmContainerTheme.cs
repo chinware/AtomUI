@@ -115,6 +115,8 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Bottom
         };
         DockPanel.SetDock(buttonLayout, Dock.Bottom);
+        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(buttonLayout, Layoutable.MarginProperty,
+            PopupConfirmTokenKey.ButtonContainerMargin));
 
         var cancelButton = new Button
         {
@@ -124,9 +126,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             Width               = double.NaN,
             Height              = double.NaN
         };
-
-        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonContainerMargin));
+        
         cancelButton.RegisterInNameScope(scope);
         popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
             PopupConfirmTokenKey.ButtonMargin));
@@ -143,8 +143,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             Width               = double.NaN,
             Height              = double.NaN
         };
-        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonContainerMargin));
+
         okButton.RegisterInNameScope(scope);
         popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
             PopupConfirmTokenKey.ButtonMargin));

@@ -624,13 +624,4 @@ public abstract class PopupFlyoutBase : FlyoutBase,
     {
         Popup.Child = null;
     }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == TargetProperty && Target != null)
-        {
-            BindUtils.RelayBind(Target, AnimationAwareControlProperty.IsMotionEnabledProperty, this, IsMotionEnabledProperty);
-        }
-    }
 }
