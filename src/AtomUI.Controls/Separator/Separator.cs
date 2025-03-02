@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using System.Reactive.Disposables;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -8,6 +9,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -23,8 +25,11 @@ public enum SeparatorTitlePosition
 }
 
 public class Separator : AvaloniaSeparator,
-                         IControlSharedTokenResourcesHost
+                         IControlSharedTokenResourcesHost,
+                         ITokenResourceConsumer
 {
+    private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
+    
     #region 公共属性定义
 
     public static readonly StyledProperty<string?> TitleProperty =
@@ -163,11 +168,12 @@ public class Separator : AvaloniaSeparator,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SeparatorToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private Label? _titleLabel;
-    private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
     private double _currentEdgeDistance;
 
     static Separator()
@@ -190,12 +196,25 @@ public class Separator : AvaloniaSeparator,
     {
         base.OnApplyTemplate(e);
         _titleLabel = e.NameScope.Find<Label>(SeparatorTheme.TitlePart);
+
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         SetupTokenBindings();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth));
     }
 
     // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度

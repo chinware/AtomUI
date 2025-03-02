@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -10,13 +12,16 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
-public class SegmentedItem : ContentControl, ISelectable
+public class SegmentedItem : ContentControl,
+                             ISelectable,
+                             ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -64,8 +69,12 @@ public class SegmentedItem : ContentControl, ISelectable
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
+    
     static SegmentedItem()
     {
         SelectableMixin.Attach<SegmentedItem>(IsSelectedProperty);
@@ -76,8 +85,15 @@ public class SegmentedItem : ContentControl, ISelectable
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         Debug.Assert(Parent is Segmented, "SegmentedItem's Parent must be Segmented Control.");
         SetupTransitions();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -102,11 +118,14 @@ public class SegmentedItem : ContentControl, ISelectable
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IconProperty)
+        if (this.IsAttachedToLogicalTree())
         {
-            SetupItemIcon();
-        } 
-        else if (change.Property == IsMotionEnabledProperty)
+            if (change.Property == IconProperty)
+            {
+                SetupItemIcon();
+            } 
+        }
+        if (change.Property == IsMotionEnabledProperty)
         {
             SetupTransitions();    
         }
@@ -137,13 +156,14 @@ public class SegmentedItem : ContentControl, ISelectable
     {
         if (Icon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                SegmentedTokenKey.ItemColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
-                SegmentedTokenKey.ItemHoverColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
-                SegmentedTokenKey.ItemSelectedColor);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+                SegmentedTokenKey.ItemColor));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
+                SegmentedTokenKey.ItemHoverColor));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
+                SegmentedTokenKey.ItemSelectedColor));
             Icon.SetTemplatedParent(this);
         }
     }
+
 }
