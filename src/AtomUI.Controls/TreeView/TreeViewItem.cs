@@ -1,8 +1,10 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -21,7 +23,8 @@ namespace AtomUI.Controls;
 
 using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
-public class TreeViewItem : AvaloniaTreeItem
+public class TreeViewItem : AvaloniaTreeItem,
+                            ITokenResourceConsumer
 {
     public const string TreeNodeHoverPC = ":treenode-hover";
 
@@ -311,12 +314,13 @@ public class TreeViewItem : AvaloniaTreeItem
     }
 
     internal TreeView? OwnerTreeView { get; set; }
-    private bool _animating;
-    private bool _tempAnimationDisabled = false;
+
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;private bool _tempAnimationDisabled = false;
     
     #endregion
 
-    private bool _initialized;
+    private CompositeDisposable? _tokenBindingsDisposable;
+    private bool _animating;
     private ContentPresenter? _headerPresenter;
     private MotionActorControl? _itemsPresenterMotionActor;
     private Border? _frame;
@@ -343,28 +347,27 @@ public class TreeViewItem : AvaloniaTreeItem
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        if (!_initialized)
+        _tokenBindingsDisposable = new CompositeDisposable();
+        OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault<TreeView>();
+        if (IsChecked.HasValue && IsChecked.Value)
         {
-            TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
-            TokenResourceBinder.CreateTokenBinding(this, TitleHeightProperty, TreeViewTokenKey.TitleHeight);
-            OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault<TreeView>();
-            if (IsChecked.HasValue && IsChecked.Value)
-            {
-                // 注册到 TreeView
-                OwnerTreeView?.DefaultCheckedItems.Add(this);
-            }
-            
-            CreateNodeSwitcherDefaultIcons();
-            SetNodeSwitcherIcons();
-            SetupSwitcherButtonIconMode();
-            _initialized = true;
+            // 注册到 TreeView
+            OwnerTreeView?.DefaultCheckedItems.Add(this);
         }
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
+            SharedTokenKey.MotionDurationSlow));
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, TitleHeightProperty, TreeViewTokenKey.TitleHeight));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot is not null)
+        if (this.IsAttachedToLogicalTree())
         {
             if (change.Property == NodeHoverModeProperty)
             {
@@ -578,11 +581,6 @@ public class TreeViewItem : AvaloniaTreeItem
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        
         base.OnApplyTemplate(e);
         SetNodeSwitcherIcons();
         _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.HeaderPresenterPart);
@@ -592,6 +590,7 @@ public class TreeViewItem : AvaloniaTreeItem
         _itemsPresenterMotionActor = e.NameScope.Find<MotionActorControl>(TreeViewItemTheme.ItemsPresenterMotionActorPart);
         
         SetupSwitcherButtonIconMode();
+        CreateNodeSwitcherDefaultIcons();
 
         if (_frame is not null)
         {
@@ -760,42 +759,42 @@ public class TreeViewItem : AvaloniaTreeItem
     {
         if (SwitcherExpandIcon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(SwitcherExpandIcon, WidthProperty,
-                SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateTokenBinding(SwitcherExpandIcon, HeightProperty,
-                SharedTokenKey.IconSize);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherExpandIcon, WidthProperty,
+                SharedTokenKey.IconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherExpandIcon, HeightProperty,
+                SharedTokenKey.IconSize));
         }
 
         if (SwitcherCollapseIcon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(SwitcherCollapseIcon, WidthProperty,
-                SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateTokenBinding(SwitcherCollapseIcon, HeightProperty,
-                SharedTokenKey.IconSize);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherCollapseIcon, WidthProperty,
+                SharedTokenKey.IconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherCollapseIcon, HeightProperty,
+                SharedTokenKey.IconSize));
         }
 
         if (SwitcherRotationIcon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(SwitcherRotationIcon, WidthProperty,
-                SharedTokenKey.IconSizeXS);
-            TokenResourceBinder.CreateTokenBinding(SwitcherRotationIcon, HeightProperty,
-                SharedTokenKey.IconSizeXS);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherRotationIcon, WidthProperty,
+                SharedTokenKey.IconSizeXS));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherRotationIcon, HeightProperty,
+                SharedTokenKey.IconSizeXS));
         }
 
         if (SwitcherLoadingIcon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(SwitcherLoadingIcon, WidthProperty,
-                SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateTokenBinding(SwitcherLoadingIcon, HeightProperty,
-                SharedTokenKey.IconSize);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherLoadingIcon, WidthProperty,
+                SharedTokenKey.IconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherLoadingIcon, HeightProperty,
+                SharedTokenKey.IconSize));
         }
 
         if (SwitcherLeafIcon is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(SwitcherLeafIcon, WidthProperty,
-                SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateTokenBinding(SwitcherLeafIcon, HeightProperty,
-                SharedTokenKey.IconSize);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherLeafIcon, WidthProperty,
+                SharedTokenKey.IconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherLeafIcon, HeightProperty,
+                SharedTokenKey.IconSize));
         }
     }
 

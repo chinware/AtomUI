@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
+using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -13,6 +15,7 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 
@@ -23,7 +26,8 @@ public class ToolTip : ContentControl,
                         IControlSharedTokenResourcesHost,
                         IAnimationAwareControl,
                         IPopupHostProvider,
-                        IShadowMaskInfoProvider
+                        IShadowMaskInfoProvider,
+                        ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -308,6 +312,7 @@ public class ToolTip : ContentControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ToolTipToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
@@ -320,6 +325,7 @@ public class ToolTip : ContentControl,
     private Action<IPopupHost?>? _popupHostChangedHandler;
     private CompositeDisposable? _subscriptions;
     private ArrowDecoratedBox? _arrowDecoratedBox;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static ToolTip()
     {
@@ -624,5 +630,17 @@ public class ToolTip : ContentControl,
         }
 
         return new Point(offsetX, offsetY);
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

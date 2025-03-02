@@ -23,13 +23,14 @@ internal class ToolTipTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<ToolTip>((tip, scope) =>
+        return new FuncControlTemplate<ToolTip>((tooltip, scope) =>
         {
             var arrowDecoratedBox = new ArrowDecoratedBox
             {
                 Name = ToolTipContainerPart,
             };
-            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentProperty, ToolTip.ContentProperty, BindingPriority.Template,
+            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentProperty, ToolTip.ContentProperty,
+                BindingPriority.Template,
                 BindingMode.Default, new FuncValueConverter<object?, object?>(o =>
                 {
                     if (o is string str)
@@ -40,14 +41,16 @@ internal class ToolTipTheme : BaseControlTheme
                             VerticalAlignment   = VerticalAlignment.Stretch,
                             HorizontalAlignment = HorizontalAlignment.Center,
                         };
-                        TokenResourceBinder.CreateTokenBinding(text, SingleLineText.HeightProperty, SharedTokenKey.FontSize);
+                        tooltip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(text,
+                            SingleLineText.HeightProperty, SharedTokenKey.FontSize));
                         return text;
                     }
 
                     return o;
                 }));
-            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentTemplateProperty, ToolTip.ContentTemplateProperty);
-            
+            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentTemplateProperty,
+                ToolTip.ContentTemplateProperty);
+
             arrowDecoratedBox.RegisterInNameScope(scope);
             return arrowDecoratedBox;
         });

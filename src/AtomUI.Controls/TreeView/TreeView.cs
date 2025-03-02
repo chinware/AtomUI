@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -11,6 +12,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -29,7 +31,8 @@ public enum TreeItemHoverMode
 [PseudoClasses(DraggablePC)]
 public class TreeView : AvaloniaTreeView,
                         IAnimationAwareControl,
-                        IControlSharedTokenResourcesHost
+                        IControlSharedTokenResourcesHost,
+                        ITokenResourceConsumer
 {
     public const string DraggablePC = ":draggable";
 
@@ -167,9 +170,11 @@ public class TreeView : AvaloniaTreeView,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TreeViewToken.ID;
-
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     internal List<TreeViewItem> DefaultCheckedItems { get; set; }
     private Point? _lastPoint;
     private TreeViewItem? _beingDraggedTreeItem;
@@ -316,19 +321,26 @@ public class TreeView : AvaloniaTreeView,
         base.OnAttachedToVisualTree(e);
         if (IsDefaultExpandAll)
         {
-            Dispatcher.UIThread.Post(() => { ExpandAll(); });
+            Dispatcher.UIThread.Post(() => ExpandAll());
         }
 
         ApplyDefaultChecked();
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, DragIndicatorLineWidthProperty,
-            TreeViewTokenKey.DragIndicatorLineWidth);
-        TokenResourceBinder.CreateTokenBinding(this, DragIndicatorBrushProperty,
-            SharedTokenKey.ColorPrimary);
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragIndicatorLineWidthProperty,
+            TreeViewTokenKey.DragIndicatorLineWidth));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragIndicatorBrushProperty,
+            SharedTokenKey.ColorPrimary));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     private void ApplyDefaultChecked()
