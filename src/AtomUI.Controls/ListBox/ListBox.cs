@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -7,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -14,7 +16,8 @@ using AvaloniaListBox = Avalonia.Controls.ListBox;
 
 public class ListBox : AvaloniaListBox,
                        IAnimationAwareControl,
-                       IControlSharedTokenResourcesHost
+                       IControlSharedTokenResourcesHost,
+                       ITokenResourceConsumer
 {
     #region 公共属性定义
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -59,8 +62,11 @@ public class ListBox : AvaloniaListBox,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ListBoxToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     public ListBox()
     {
@@ -92,13 +98,20 @@ public class ListBox : AvaloniaListBox,
                 ListBoxItem.DisabledItemHoverEffectProperty);
         }
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }
