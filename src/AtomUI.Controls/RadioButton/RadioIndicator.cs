@@ -1,5 +1,7 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -12,7 +14,9 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class RadioIndicator : Control, IWaveAdornerInfoProvider
+internal class RadioIndicator : Control, 
+                                IWaveAdornerInfoProvider,
+                                ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -137,10 +141,13 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
         get => _isWaveAnimationEnabled;
         set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private IPen? _cachedPen;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static RadioIndicator()
     {
@@ -152,14 +159,21 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
             RadioBorderThicknessProperty,
             RadioDotEffectSizeProperty);
     }
-
+    
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
-        TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
+        _tokenBindingsDisposable = new CompositeDisposable();
+        RadioDotEffectSize       = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     public override void ApplyTemplate()
