@@ -1,4 +1,5 @@
 ﻿using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -33,9 +34,9 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         return ID;
     }
 
-    protected override Control BuildMenuIndicatorIcon(INameScope scope)
+    protected override Control BuildMenuIndicatorIcon(NavMenuItem navMenuItem, INameScope scope)
     {
-        var indicatorIcon = base.BuildMenuIndicatorIcon(scope);
+        var indicatorIcon = base.BuildMenuIndicatorIcon(navMenuItem, scope);
         var menuIndicatorIconPresenter = new Border()
         {
             Name = MenuIndicatorIconLayoutPart
@@ -58,7 +59,8 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         {
             Name = ChildItemsLayoutTransformPart,
         };
-        TokenResourceBinder.CreateTokenBinding(childItemsLayoutTransform, MotionActorControl.MarginProperty,
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(childItemsLayoutTransform,
+            MotionActorControl.MarginProperty,
             NavMenuTokenKey.VerticalItemsPanelSpacing, BindingPriority.Template,
             (v) =>
             {
@@ -68,7 +70,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
                 }
 
                 return new Thickness();
-            });
+            }));
         childItemsLayoutTransform.RegisterInNameScope(scope);
 
         var itemsPresenter = new ItemsPresenter
@@ -95,7 +97,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
             Indent = navMenuItem.InlineItemIndentUnit
         };
         CreateTemplateParentBinding(infoGrid, Grid.MarginProperty,
-            NavMenuItem.LevelProperty, 
+            NavMenuItem.LevelProperty,
             BindingMode.OneWay,
             indentConverter);
 
@@ -117,20 +119,23 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
     {
         {
             // 动画设置
-            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsMotionEnabledProperty, true));
+            var isMotionEnabledStyle = new Style(selector =>
+                selector.Nesting().PropertyEquals(NavMenuItem.IsMotionEnabledProperty, true));
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
-            menuIndicatorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
-            {
-                AnimationUtils.CreateTransition<TransformOperationsTransition>(ContentPresenter.RenderTransformProperty)
-            }));
+            menuIndicatorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() =>
+                new Transitions
+                {
+                    AnimationUtils.CreateTransition<TransformOperationsTransition>(ContentPresenter
+                        .RenderTransformProperty)
+                }));
             isMotionEnabledStyle.Add(menuIndicatorStyle);
             Add(isMotionEnabledStyle);
         }
         {
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
-          
+
             menuIndicatorStyle.Add(Border.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
             {
                 var transformOptions = new TransformOperations.Builder(1);
@@ -144,7 +149,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
         {
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconLayoutPart));
-            
+
             menuIndicatorStyle.Add(Border.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
             {
                 var transformOptions = new TransformOperations.Builder(1);

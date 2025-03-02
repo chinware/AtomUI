@@ -1,10 +1,12 @@
-﻿using System.Windows.Input;
+﻿using System.Reactive.Disposables;
+using System.Windows.Input;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Media;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -32,7 +34,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                            ISelectable,
                            ICommandSource,
                            IClickableControl,
-                           ICustomHitTest
+                           ICustomHitTest,
+                           ITokenResourceConsumer
 {
     public const string TopLevelPC = ":toplevel";
     public const string SeparatorPC = ":separator";
@@ -370,6 +373,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     #endregion
 
     #region 公共事件定义
@@ -466,13 +470,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private bool _commandCanExecute = true;
     private bool _commandBindingError;
     private Popup? _popup;
     private KeyGesture? _hotkey;
     private bool _isEmbeddedInMenu;
     private Border? _horizontalFrame;
-    private IDisposable? _itemContainerThemeDisposable;
     private MotionActorControl? _childItemsLayoutTransform;
     private Border? _headerFrame;
     private bool _animating = false;
@@ -571,6 +575,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
 
         Level = CalculateDistanceFromLogicalParent<NavMenu>(this) - 1;
 
@@ -590,8 +595,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _isEmbeddedInMenu = parent?.FindLogicalAncestorOfType<INavMenu>(true) != null;
-        TokenResourceBinder.CreateTokenBinding(this, InlineItemIndentUnitProperty,
-            NavMenuTokenKey.InlineItemIndentUnit);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, InlineItemIndentUnitProperty,
+            NavMenuTokenKey.InlineItemIndentUnit));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty,
+            NavMenuTokenKey.MenuPopupMinWidth));
     }
 
     /// <inheritdoc />
@@ -617,6 +624,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             Command.CanExecuteChanged -= CanExecuteChangedHandler;
         }
+        this.DisposeTokenBindings();
     }
 
     /// <summary>
@@ -702,7 +710,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _horizontalFrame = e.NameScope.Find<Border>(TopLevelHorizontalNavMenuItemTheme.FramePart);
-        TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty, NavMenuTokenKey.MenuPopupMinWidth);
+   
         SetupItemIcon();
         if (Mode == NavMenuMode.Inline)
         {
@@ -713,8 +721,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _childItemsLayoutTransform.SetCurrentValue(MotionActorControl.IsVisibleProperty, IsSubMenuOpen);
             }
 
-            TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
-                SharedTokenKey.MotionDurationSlow);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
+                SharedTokenKey.MotionDurationSlow));
         }
         SetupTransitions();
     }
@@ -936,35 +944,35 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     private void SetupItemIcon()
     {
-        if (Icon is Icon menuItemIcon)
+        if (Icon is not null)
         {
-            BindUtils.RelayBind(this, IsEnabledProperty, menuItemIcon, Icon.IsEnabledProperty);
-            TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.WidthProperty,
-                NavMenuTokenKey.ItemIconSize);
-            TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.HeightProperty,
-                NavMenuTokenKey.ItemIconSize);
+            BindUtils.RelayBind(this, IsEnabledProperty, Icon, Icon.IsEnabledProperty);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.WidthProperty,
+                NavMenuTokenKey.ItemIconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.HeightProperty,
+                NavMenuTokenKey.ItemIconSize));
 
             if (IsDarkStyle)
             {
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.NormalFilledBrushProperty,
-                    NavMenuTokenKey.DarkItemColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.SelectedFilledBrushProperty,
-                    NavMenuTokenKey.DarkItemSelectedColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.ActiveFilledBrushProperty,
-                    NavMenuTokenKey.DarkItemHoverColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.DisabledFilledBrushProperty,
-                    NavMenuTokenKey.DarkItemDisabledColor);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+                    NavMenuTokenKey.DarkItemColor));
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
+                    NavMenuTokenKey.DarkItemSelectedColor));
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
+                    NavMenuTokenKey.DarkItemHoverColor));
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
+                    NavMenuTokenKey.DarkItemDisabledColor));
             }
             else
             {
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.NormalFilledBrushProperty,
-                    NavMenuTokenKey.ItemColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.SelectedFilledBrushProperty,
-                    NavMenuTokenKey.ItemSelectedColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.ActiveFilledBrushProperty,
-                    NavMenuTokenKey.ItemHoverColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.DisabledFilledBrushProperty,
-                    NavMenuTokenKey.ItemDisabledColor);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+                    NavMenuTokenKey.ItemColor));
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
+                    NavMenuTokenKey.ItemSelectedColor));
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
+                    NavMenuTokenKey.ItemHoverColor));
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
+                    NavMenuTokenKey.ItemDisabledColor));
             }
         }
     }
@@ -1237,12 +1245,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (ItemContainerTheme is null || force)
         {
-            _itemContainerThemeDisposable?.Dispose();
             if (Mode == NavMenuMode.Inline)
             {
-                _itemContainerThemeDisposable =
-                    TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty,
-                        InlineNavMenuItemTheme.ID);
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty,
+                    InlineNavMenuItemTheme.ID));
             }
         }
     }

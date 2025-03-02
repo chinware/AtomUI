@@ -34,12 +34,12 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<NavMenuItem>((item, scope) =>
+        return new FuncControlTemplate<NavMenuItem>((navMenuItem, scope) =>
         {
             // 仅仅为了把 Popup 包进来，没有其他什么作用
             var layoutWrapper = new Panel();
-            var header        = BuildMenuItemContent(item, scope);
-            BuildExtraItem(layoutWrapper, scope);
+            var header        = BuildMenuItemContent(navMenuItem, scope);
+            BuildExtraItem(navMenuItem, layoutWrapper, scope);
             layoutWrapper.Children.Add(header);
             return layoutWrapper;
         });
@@ -90,12 +90,15 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         Grid.SetColumn(iconPresenter, 0);
         iconPresenter.RegisterInNameScope(scope);
         CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, NavMenuItem.IconProperty);
-        TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin);
-        TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.WidthProperty,
-            NavMenuTokenKey.ItemIconSize);
-        TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.HeightProperty,
-            NavMenuTokenKey.ItemIconSize);
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
+            Layoutable.MarginProperty,
+            NavMenuTokenKey.ItemMargin));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
+            Layoutable.WidthProperty,
+            NavMenuTokenKey.ItemIconSize));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
+            Layoutable.HeightProperty,
+            NavMenuTokenKey.ItemIconSize));
 
         var itemTextPresenter = new ContentPresenter
         {
@@ -106,8 +109,9 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             IsHitTestVisible    = false
         };
         Grid.SetColumn(itemTextPresenter, 1);
-        TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin);
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(itemTextPresenter,
+            Layoutable.MarginProperty,
+            NavMenuTokenKey.ItemMargin));
         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
             HeaderedSelectingItemsControl.HeaderProperty);
         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty,
@@ -123,8 +127,9 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Center
         };
         Grid.SetColumn(inputGestureText, 2);
-        TokenResourceBinder.CreateTokenBinding(inputGestureText, Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin);
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(inputGestureText,
+            Layoutable.MarginProperty,
+            NavMenuTokenKey.ItemMargin));
         CreateTemplateParentBinding(inputGestureText,
             SingleLineText.TextProperty,
             NavMenuItem.InputGestureProperty,
@@ -133,7 +138,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
         inputGestureText.RegisterInNameScope(scope);
 
-        var menuIndicatorIcon = BuildMenuIndicatorIcon(scope);
+        var menuIndicatorIcon = BuildMenuIndicatorIcon(navMenuItem, scope);
         Grid.SetColumn(menuIndicatorIcon, 3);
 
         layout.Children.Add(iconPresenter);
@@ -143,11 +148,11 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         return layout;
     }
 
-    protected virtual void BuildExtraItem(Panel layout, INameScope scope)
+    protected virtual void BuildExtraItem(NavMenuItem navMenuItem, Panel layout, INameScope scope)
     {
     }
 
-    protected virtual Control BuildMenuIndicatorIcon(INameScope scope)
+    protected virtual Control BuildMenuIndicatorIcon(NavMenuItem navMenuItem, INameScope scope)
     {
         var menuIndicatorIcon = AntDesignIconPackage.RightOutlined();
         menuIndicatorIcon.Name                = MenuIndicatorIconPart;
@@ -156,10 +161,12 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
         CreateTemplateParentBinding(menuIndicatorIcon, Icon.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
 
-        TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
-            NavMenuTokenKey.MenuArrowSize);
-        TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
-            NavMenuTokenKey.MenuArrowSize);
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon,
+            Layoutable.WidthProperty,
+            NavMenuTokenKey.MenuArrowSize));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon,
+            Layoutable.HeightProperty,
+            NavMenuTokenKey.MenuArrowSize));
         menuIndicatorIcon.RegisterInNameScope(scope);
 
         return menuIndicatorIcon;

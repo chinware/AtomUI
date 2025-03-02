@@ -60,7 +60,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
                 LastChildFill = true
             };
             
-            var popup = CreateMenuPopup();
+            var popup = CreateMenuPopup(menuItem);
             popup.RegisterInNameScope(scope);
             contentLayout.Children.Add(popup);
             
@@ -77,8 +77,8 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsVisibleProperty, NavMenuItem.IconProperty,
                 BindingMode.Default,
                 ObjectConverters.IsNotNull);
-            TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
-                NavMenuTokenKey.IconMargin);
+            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
+                NavMenuTokenKey.IconMargin));
             
             contentLayout.Children.Add(iconPresenter);
             
@@ -140,7 +140,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         });
     }
 
-    private Popup CreateMenuPopup()
+    private Popup CreateMenuPopup(NavMenuItem navMenuItem)
     {
         var popup = new Popup
         {
@@ -154,20 +154,20 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         
         CreateTemplateParentBinding(border, Border.MinWidthProperty, NavMenuItem.EffectivePopupMinWidthProperty);
     
-        TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            SharedTokenKey.ColorBgContainer);
-        TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            MenuTokenKey.MenuPopupBorderRadius);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
-            MenuTokenKey.MenuPopupMinWidth);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxWidthProperty,
-            MenuTokenKey.MenuPopupMaxWidth);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinHeightProperty,
-            MenuTokenKey.MenuPopupMinHeight);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxHeightProperty,
-            MenuTokenKey.MenuPopupMaxHeight);
-        TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            MenuTokenKey.MenuPopupContentPadding);
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
+            SharedTokenKey.ColorBgContainer));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
+            MenuTokenKey.MenuPopupBorderRadius));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
+            MenuTokenKey.MenuPopupMinWidth));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxWidthProperty,
+            MenuTokenKey.MenuPopupMaxWidth));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinHeightProperty,
+            MenuTokenKey.MenuPopupMinHeight));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxHeightProperty,
+            MenuTokenKey.MenuPopupMaxHeight));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
+            MenuTokenKey.MenuPopupContentPadding));
     
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
@@ -181,10 +181,10 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         border.Child         = scrollViewer;
         popup.Child          = border;
     
-        TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            MenuTokenKey.TopLevelItemPopupMarginToAnchor);
-        TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            MenuTokenKey.MenuPopupBoxShadows);
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
+            MenuTokenKey.TopLevelItemPopupMarginToAnchor));
+        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
+            MenuTokenKey.MenuPopupBoxShadows));
     
         CreateTemplateParentBinding(popup, Popup.IsOpenProperty,
             NavMenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);

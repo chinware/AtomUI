@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -35,8 +36,8 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
         DockPanel.SetDock(horizontalLine, Dock.Bottom);
         CreateTemplateParentBinding(horizontalLine, Rectangle.HeightProperty,
             NavMenu.HorizontalBorderThicknessProperty);
-        TokenResourceBinder.CreateTokenBinding(horizontalLine, Rectangle.FillProperty,
-            SharedTokenKey.ColorBorderSecondary);
+        navMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(horizontalLine, Rectangle.FillProperty,
+            SharedTokenKey.ColorBorderSecondary));
 
         layout.Children.Add(BuildItemPresenter(true, scope));
         return layout;

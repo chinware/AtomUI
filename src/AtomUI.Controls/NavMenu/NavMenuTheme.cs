@@ -26,7 +26,7 @@ internal class NavMenuTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<NavMenu>((menu, scope) =>
+        return new FuncControlTemplate<NavMenu>((navMenu, scope) =>
         {
             var itemPresenter = new ItemsPresenter
             {
@@ -47,8 +47,8 @@ internal class NavMenuTheme : BaseControlTheme
             CreateTemplateParentBinding(horizontalLine, Rectangle.IsVisibleProperty, NavMenu.ModeProperty,
                 BindingMode.Default,
                 new FuncValueConverter<NavMenuMode, bool>(v => v == NavMenuMode.Horizontal));
-            TokenResourceBinder.CreateTokenBinding(horizontalLine, Rectangle.FillProperty,
-                SharedTokenKey.ColorBorderSecondary);
+            navMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(horizontalLine, Rectangle.FillProperty,
+                SharedTokenKey.ColorBorderSecondary));
 
             var border = new Border
             {
