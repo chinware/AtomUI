@@ -37,9 +37,9 @@ internal class NotificationCardTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<NotificationCard>((card, scope) =>
+        return new FuncControlTemplate<NotificationCard>((notificationCard, scope) =>
         {
-            BuildInstanceStyles(card);
+            BuildInstanceStyles(notificationCard);
             var motionActor = new MotionActorControl()
             {
                 Name         = MotionActorPart,
@@ -69,9 +69,9 @@ internal class NotificationCardTheme : BaseControlTheme
             };
 
             frame.Child = mainLayout;
-            BuildHeader(mainLayout, scope);
-            BuildContent(mainLayout, scope);
-            BuildProgressBar(mainLayout, scope);
+            BuildHeader(notificationCard, mainLayout, scope);
+            BuildContent(notificationCard, mainLayout, scope);
+            BuildProgressBar(notificationCard, mainLayout, scope);
             frame.RegisterInNameScope(scope);
 
             motionActor.Child = frame;
@@ -79,7 +79,7 @@ internal class NotificationCardTheme : BaseControlTheme
         });
     }
 
-    private void BuildHeader(Grid layout, INameScope scope)
+    private void BuildHeader(NotificationCard notificationCard, Grid layout, INameScope scope)
     {
         var iconContent = new ContentPresenter
         {
@@ -89,8 +89,8 @@ internal class NotificationCardTheme : BaseControlTheme
             BindingMode.Default,
             ObjectConverters.IsNotNull);
         CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, NotificationCard.IconProperty);
-        TokenResourceBinder.CreateTokenBinding(iconContent, Layoutable.MarginProperty,
-            NotificationTokenKey.NotificationIconMargin);
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconContent, Layoutable.MarginProperty,
+            NotificationTokenKey.NotificationIconMargin));
         Grid.SetRow(iconContent, 0);
         Grid.SetColumn(iconContent, 0);
 
@@ -106,18 +106,18 @@ internal class NotificationCardTheme : BaseControlTheme
         {
             Name = HeaderTitlePart
         };
-        TokenResourceBinder.CreateTokenBinding(headerTitle, SelectableTextBlock.SelectionBrushProperty,
-            SharedTokenKey.SelectionBackground);
-        TokenResourceBinder.CreateTokenBinding(headerTitle, SelectableTextBlock.SelectionForegroundBrushProperty,
-            SharedTokenKey.SelectionForeground);
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(headerTitle, SelectableTextBlock.SelectionBrushProperty,
+            SharedTokenKey.SelectionBackground));
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(headerTitle, SelectableTextBlock.SelectionForegroundBrushProperty,
+            SharedTokenKey.SelectionForeground));
 
         CreateTemplateParentBinding(headerTitle, TextBlock.TextProperty, NotificationCard.TitleProperty);
    
         var closeIcon = AntDesignIconPackage.CloseOutlined();
-        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorIcon);
-        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorIconHover);
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
+            SharedTokenKey.ColorIcon));
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
+            SharedTokenKey.ColorIconHover));
         var closeIconButton = new IconButton
         {
             Name                = CloseButtonPart,
@@ -127,7 +127,7 @@ internal class NotificationCardTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Center
         };
         closeIconButton.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(closeIconButton, TemplatedControl.PaddingProperty,
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIconButton, TemplatedControl.PaddingProperty,
             SharedTokenKey.PaddingXXS, BindingPriority.Template,
             o =>
             {
@@ -137,13 +137,13 @@ internal class NotificationCardTheme : BaseControlTheme
                 }
 
                 return new Thickness(0);
-            });
-        TokenResourceBinder.CreateTokenBinding(closeIconButton, TemplatedControl.CornerRadiusProperty,
-            SharedTokenKey.BorderRadiusSM);
-        TokenResourceBinder.CreateTokenBinding(closeIconButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(closeIconButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
+            }));
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIconButton, TemplatedControl.CornerRadiusProperty,
+            SharedTokenKey.BorderRadiusSM));
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIconButton, IconButton.IconHeightProperty,
+            SharedTokenKey.IconSizeSM));
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIconButton, IconButton.IconWidthProperty,
+            SharedTokenKey.IconSizeSM));
         DockPanel.SetDock(closeIconButton, Dock.Right);
         headerContainer.Children.Add(closeIconButton);
         headerContainer.Children.Add(headerTitle);
@@ -153,15 +153,15 @@ internal class NotificationCardTheme : BaseControlTheme
         layout.Children.Add(headerContainer);
     }
 
-    private void BuildContent(Grid layout, INameScope scope)
+    private void BuildContent(NotificationCard notificationCard, Grid layout, INameScope scope)
     {
         var contentPresenter = new ContentPresenter
         {
             Name         = ContentPart,
             TextWrapping = TextWrapping.Wrap
         };
-        TokenResourceBinder.CreateTokenBinding(contentPresenter, Layoutable.MarginProperty,
-            NotificationTokenKey.NotificationContentMargin);
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(contentPresenter, Layoutable.MarginProperty,
+            NotificationTokenKey.NotificationContentMargin));
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
             ContentControl.ContentProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -171,7 +171,7 @@ internal class NotificationCardTheme : BaseControlTheme
         layout.Children.Add(contentPresenter);
     }
 
-    private void BuildProgressBar(Grid layout, INameScope scope)
+    private void BuildProgressBar(NotificationCard notificationCard, Grid layout, INameScope scope)
     {
         var progressBar = new NotificationProgressBar
         {
@@ -180,8 +180,8 @@ internal class NotificationCardTheme : BaseControlTheme
         progressBar.RegisterInNameScope(scope);
         CreateTemplateParentBinding(progressBar, Visual.IsVisibleProperty,
             NotificationCard.EffectiveShowProgressProperty);
-        TokenResourceBinder.CreateTokenBinding(progressBar, Layoutable.MarginProperty,
-            NotificationTokenKey.NotificationProgressMargin);
+        notificationCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(progressBar, Layoutable.MarginProperty,
+            NotificationTokenKey.NotificationProgressMargin));
         Grid.SetColumn(progressBar, 0);
         Grid.SetRow(progressBar, 1);
         Grid.SetColumnSpan(progressBar, 2);

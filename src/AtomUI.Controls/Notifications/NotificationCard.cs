@@ -1,4 +1,6 @@
-﻿using AtomUI.IconPkg;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
@@ -19,13 +21,14 @@ namespace AtomUI.Controls;
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC)]
 public class NotificationCard : ContentControl,
                                 IAnimationAwareControl,
-                                IControlSharedTokenResourcesHost
+                                IControlSharedTokenResourcesHost,
+                                ITokenResourceConsumer
 {
     public const string ErrorPC = ":error";
     public const string InformationPC = ":information";
     public const string SuccessPC = ":success";
     public const string WarningPC = ":warning";
-    
+
     internal const double AnimationMaxOffsetY = 150d;
     internal const double AnimationMaxOffsetX = 500d;
 
@@ -51,7 +54,7 @@ public class NotificationCard : ContentControl,
     /// </summary>
     public static readonly StyledProperty<NotificationType> NotificationTypeProperty =
         AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NotificationCard>();
 
@@ -123,7 +126,7 @@ public class NotificationCard : ContentControl,
         add => AddHandler(NotificationClosedEvent, value);
         remove => RemoveHandler(NotificationClosedEvent, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -150,10 +153,10 @@ public class NotificationCard : ContentControl,
             nameof(Position),
             o => o.Position,
             (o, v) => o.Position = v);
-    
+
     internal static readonly DirectProperty<NotificationCard, TimeSpan> OpenCloseMotionDurationProperty =
         AvaloniaProperty.RegisterDirect<NotificationCard, TimeSpan>(nameof(OpenCloseMotionDuration),
-            o => o.OpenCloseMotionDuration, 
+            o => o.OpenCloseMotionDuration,
             (o, v) => o.OpenCloseMotionDuration = v);
 
     private bool _effectiveShowProgress;
@@ -173,18 +176,22 @@ public class NotificationCard : ContentControl,
     }
 
     private TimeSpan _openCloseMotionDuration;
+
     internal TimeSpan OpenCloseMotionDuration
     {
         get => _openCloseMotionDuration;
         set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
     }
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
-    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     #endregion
-    
+
+    private CompositeDisposable? _tokenBindingsDisposable;
+
     /// <summary>
     /// Gets the expiration time of the notification after which it will automatically close.
     /// If the value is null then the notification will remain open until the user closes it.
@@ -225,7 +232,16 @@ public class NotificationCard : ContentControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
+            SharedTokenKey.MotionDurationMid));
         UpdatePseudoClasses(Position);
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -236,11 +252,11 @@ public class NotificationCard : ContentControl,
             SetupNotificationIcon();
             UpdateNotificationType();
         }
-        TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
+
         _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
         _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
-        
+
         if (_progressBar is not null)
         {
             if (Expiration is null)
@@ -260,6 +276,7 @@ public class NotificationCard : ContentControl,
 
         SetupEffectiveShowProgress();
         ApplyShowMotion();
+        SetupContent();
     }
 
     private void ApplyShowMotion()
@@ -274,33 +291,34 @@ public class NotificationCard : ContentControl,
             AbstractMotion? motion;
             if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
             {
-                motion = new NotificationMoveLeftInMotion(Position == NotificationPosition.TopLeft, AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveLeftInMotion(Position == NotificationPosition.TopLeft, AnimationMaxOffsetX,
+                    _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
             {
-                motion = new NotificationMoveRightInMotion(Position == NotificationPosition.TopRight, AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveRightInMotion(Position == NotificationPosition.TopRight,
+                    AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopCenter)
             {
-                motion = new NotificationMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                    new CubicEaseOut());
             }
             else
             {
-                motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                    new CubicEaseOut());
             }
-        
+
             _motionActor.IsVisible = false;
-            MotionInvoker.Invoke(_motionActor, motion, () =>
-            {
-                _motionActor.IsVisible = true;
-            });
+            MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.IsVisible = true; });
         }
         else
         {
             _motionActor.IsVisible = true;
         }
     }
-    
+
     private void ApplyHideMotion()
     {
         if (_motionActor is null)
@@ -313,25 +331,26 @@ public class NotificationCard : ContentControl,
             AbstractMotion? motion;
             if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
             {
-                motion = new NotificationMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration,
+                    new CubicEaseIn());
             }
             else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
             {
-                motion = new NotificationMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration,
+                    new CubicEaseIn());
             }
             else if (Position == NotificationPosition.TopCenter)
             {
-                motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                    new CubicEaseIn());
             }
             else
             {
-                motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                    new CubicEaseIn());
             }
-        
-            MotionInvoker.Invoke(_motionActor, motion, null, () =>
-            {
-                IsClosed = true;
-            });
+
+            MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
         }
         else
         {
@@ -348,12 +367,25 @@ public class NotificationCard : ContentControl,
     {
         base.OnPropertyChanged(e);
 
-        if (e.Property == NotificationTypeProperty)
+        if (this.IsAttachedToLogicalTree())
         {
-            SetupNotificationIcon();
-            UpdateNotificationType();
+            if (this.IsAttachedToLogicalTree())
+            {
+                UpdateNotificationType();
+            }  
+            else if (e.Property == ContentProperty)
+            {
+                if (e.NewValue is string)
+                {
+                    SetupContent();
+                }
+            }
+            else  if (e.Property == NotificationTypeProperty)
+            {
+                SetupNotificationIcon();
+            }
         }
-
+        
         if (e.Property == IsClosedProperty)
         {
             if (!IsClosing && !IsClosed)
@@ -362,14 +394,6 @@ public class NotificationCard : ContentControl,
             }
 
             RaiseEvent(new RoutedEventArgs(NotificationClosedEvent));
-        }
-
-        if (e.Property == ContentProperty)
-        {
-            if (e.NewValue is string)
-            {
-                SetupContent();
-            }
         }
 
         if (e.Property == IsShowProgressProperty ||
@@ -382,7 +406,7 @@ public class NotificationCard : ContentControl,
         {
             UpdatePseudoClasses(e.GetNewValue<NotificationPosition>());
         }
-        
+
         if (e.Property == IsClosingProperty)
         {
             if (IsClosing)
@@ -442,23 +466,23 @@ public class NotificationCard : ContentControl,
     {
         if (NotificationType == NotificationType.Error)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorError);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorError));
         }
         else if (NotificationType == NotificationType.Information)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorPrimary);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorPrimary));
         }
         else if (NotificationType == NotificationType.Success)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorSuccess);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorSuccess));
         }
         else if (NotificationType == NotificationType.Warning)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorWarning);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorWarning));
         }
     }
 
@@ -470,10 +494,11 @@ public class NotificationCard : ContentControl,
             {
                 Text = content
             };
-            TokenResourceBinder.CreateTokenBinding(textBlock, SelectableTextBlock.SelectionBrushProperty,
-                SharedTokenKey.SelectionBackground);
-            TokenResourceBinder.CreateTokenBinding(textBlock,
-                SelectableTextBlock.SelectionForegroundBrushProperty, SharedTokenKey.SelectionForeground);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlock,
+                SelectableTextBlock.SelectionBrushProperty,
+                SharedTokenKey.SelectionBackground));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlock,
+                SelectableTextBlock.SelectionForegroundBrushProperty, SharedTokenKey.SelectionForeground));
             Content = textBlock;
         }
     }

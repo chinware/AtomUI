@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media.Imaging;
 
 namespace AtomUI.Controls.Utils;
@@ -24,5 +25,10 @@ internal static class ControlExtensions
             new Vector(96 * scaling, 96 * scaling));
         bitmap.Render(control);
         return bitmap;
+    }
+
+    public static bool IsAttachedToLogicalTree(this Control control)
+    {
+        return ((ILogical)control).IsAttachedToLogicalTree;
     }
 }

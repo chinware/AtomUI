@@ -291,12 +291,12 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsDarkStyle),
             o => o.IsDarkStyle,
             (o, v) => o.IsDarkStyle = v);
-    
+
     internal static readonly DirectProperty<NavMenuItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsMotionEnabled), 
+        = AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
-    
+
     internal double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
@@ -364,7 +364,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         get => _isDarkStyle;
         set => SetAndRaise(IsDarkStyleProperty, ref _isDarkStyle, value);
     }
-    
+
     private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
@@ -374,6 +374,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     #endregion
 
     #region 公共事件定义
@@ -624,6 +625,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             Command.CanExecuteChanged -= CanExecuteChangedHandler;
         }
+
         this.DisposeTokenBindings();
     }
 
@@ -710,7 +712,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _horizontalFrame = e.NameScope.Find<Border>(TopLevelHorizontalNavMenuItemTheme.FramePart);
-   
+
         SetupItemIcon();
         if (Mode == NavMenuMode.Inline)
         {
@@ -724,6 +726,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
                 SharedTokenKey.MotionDurationSlow));
         }
+
         SetupTransitions();
     }
 
@@ -935,10 +938,12 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             SetupEffectivePopupMinWidth();
         }
 
-        if (change.Property == IconProperty ||
-            change.Property == IsDarkStyleProperty)
+        if (VisualRoot != null)
         {
-            SetupItemIcon();
+            if (change.Property == IconProperty || change.Property == IsDarkStyleProperty)
+            {
+                SetupItemIcon();
+            }
         }
     }
 
@@ -954,24 +959,32 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
             if (IsDarkStyle)
             {
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.NormalFilledBrushProperty,
                     NavMenuTokenKey.DarkItemColor));
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.SelectedFilledBrushProperty,
                     NavMenuTokenKey.DarkItemSelectedColor));
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.ActiveFilledBrushProperty,
                     NavMenuTokenKey.DarkItemHoverColor));
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.DisabledFilledBrushProperty,
                     NavMenuTokenKey.DarkItemDisabledColor));
             }
             else
             {
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.NormalFilledBrushProperty,
                     NavMenuTokenKey.ItemColor));
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.SelectedFilledBrushProperty,
                     NavMenuTokenKey.ItemSelectedColor));
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.ActiveFilledBrushProperty,
                     NavMenuTokenKey.ItemHoverColor));
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
+                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
+                    Icon.DisabledFilledBrushProperty,
                     NavMenuTokenKey.ItemDisabledColor));
             }
         }
@@ -1315,5 +1328,4 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         var targetRect = new Rect(offset, targetFrame.Bounds.Size);
         return targetRect.Contains(point);
     }
-    
 }

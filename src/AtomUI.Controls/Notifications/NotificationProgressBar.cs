@@ -1,4 +1,6 @@
-﻿using AtomUI.Theme.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -8,7 +10,8 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class NotificationProgressBar : Control
+internal class NotificationProgressBar : Control,
+                                         ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -50,6 +53,14 @@ internal class NotificationProgressBar : Control
 
     #endregion
 
+    #region 内部属性定义
+
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
+    #endregion
+
+    private CompositeDisposable? _tokenBindingsDisposable;
+
     static NotificationProgressBar()
     {
         AffectsMeasure<NotificationProgressBar>(ProgressIndicatorThicknessProperty);
@@ -66,10 +77,17 @@ internal class NotificationProgressBar : Control
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
-            NotificationTokenKey.NotificationProgressHeight);
-        TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
-            NotificationTokenKey.NotificationProgressBg);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
+            NotificationTokenKey.NotificationProgressHeight));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
+            NotificationTokenKey.NotificationProgressBg));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     public override void Render(DrawingContext context)
