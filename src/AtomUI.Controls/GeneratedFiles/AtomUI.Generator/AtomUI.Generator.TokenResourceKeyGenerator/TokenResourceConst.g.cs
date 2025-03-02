@@ -625,6 +625,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SwitchLoadingIconColor = new TokenResourceKey("ToggleSwitch.SwitchLoadingIconColor");
         public static readonly TokenResourceKey ExtraInfoFontSize = new TokenResourceKey("ToggleSwitch.ExtraInfoFontSize");
         public static readonly TokenResourceKey ExtraInfoFontSizeSM = new TokenResourceKey("ToggleSwitch.ExtraInfoFontSizeSM");
+        public static readonly TokenResourceKey LoadingAnimationDuration = new TokenResourceKey("ToggleSwitch.LoadingAnimationDuration");
     }
 
     public static class TabControlTokenKey

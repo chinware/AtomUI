@@ -1,5 +1,7 @@
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -7,12 +9,15 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls.Switch;
 
-internal class SwitchKnob : Control
+internal class SwitchKnob : Control,
+                            ITokenResourceConsumer
 {
     #region 公共属性定义
     
@@ -96,9 +101,11 @@ internal class SwitchKnob : Control
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
     
-    private bool _initialized;
+    private CompositeDisposable? _tokenBindingsDisposable;
     private bool _isLoading;
     private CancellationTokenSource? _cancellationTokenSource;
 
@@ -108,11 +115,9 @@ internal class SwitchKnob : Control
         = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
             o => o._loadingBgOpacity,
             (o, v) => o._loadingBgOpacity = v);
-
-    // TODO 这个属性可以考虑放出去
+    
     internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
-        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration),
-            TimeSpan.FromMilliseconds(300));
+        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration));
 
     internal TimeSpan LoadingAnimationDuration
     {
@@ -151,18 +156,13 @@ internal class SwitchKnob : Control
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        if (!_initialized)
+        Effect ??= new DropShadowEffect
         {
-            Effect = new DropShadowEffect
-            {
-                OffsetX    = KnobBoxShadow.OffsetX,
-                OffsetY    = KnobBoxShadow.OffsetY,
-                Color      = KnobBoxShadow.Color,
-                BlurRadius = KnobBoxShadow.Blur
-            };
-            SetupTokenBindings();
-            _initialized = true;
-        }
+            OffsetX    = KnobBoxShadow.OffsetX,
+            OffsetY    = KnobBoxShadow.OffsetY,
+            Color      = KnobBoxShadow.Color,
+            BlurRadius = KnobBoxShadow.Blur
+        };
     }
 
     public void NotifyStartLoading()
@@ -241,6 +241,19 @@ internal class SwitchKnob : Control
             KnobRenderWidth = KnobSize.Width;
         }
     }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        SetupTokenBindings();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -262,9 +275,10 @@ internal class SwitchKnob : Control
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
-            ToggleSwitchTokenKey.SwitchDisabledOpacity);
-        LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
+            ToggleSwitchTokenKey.SwitchDisabledOpacity));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
+            ToggleSwitchTokenKey.LoadingAnimationDuration));
     }
 
     public sealed override void Render(DrawingContext context)

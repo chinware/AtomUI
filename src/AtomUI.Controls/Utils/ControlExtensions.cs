@@ -6,7 +6,7 @@ using Avalonia.Media.Imaging;
 
 namespace AtomUI.Controls.Utils;
 
-internal static class ControlExtensions
+internal static class ControlUtilsExtensions
 {
     public static RenderTargetBitmap CaptureCurrentBitmap(this Control control)
     {
