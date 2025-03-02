@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using System.Reactive.Disposables;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
@@ -11,13 +12,15 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC, LoadingPC)]
 public class MessageCard : TemplatedControl,
                            IAnimationAwareControl,
-                           IControlSharedTokenResourcesHost
+                           IControlSharedTokenResourcesHost,
+                           ITokenResourceConsumer
 {
     public const string ErrorPC = ":error";
     public const string InformationPC = ":information";
@@ -58,7 +61,7 @@ public class MessageCard : TemplatedControl,
 
     public static readonly StyledProperty<string> MessageProperty =
         AvaloniaProperty.Register<MessageCard, string>(nameof(Message));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageCard>();
 
@@ -112,7 +115,7 @@ public class MessageCard : TemplatedControl,
         get => GetValue(MessageProperty);
         set => SetValue(MessageProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -141,12 +144,15 @@ public class MessageCard : TemplatedControl,
         get => _openCloseMotionDuration;
         set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
     }
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MessageToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
+
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     private bool _isClosing;
     private MotionActorControl? _motionActor;
@@ -218,7 +224,6 @@ public class MessageCard : TemplatedControl,
             UpdateMessageType();
         }
 
-        TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
         _motionActor = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
         ApplyShowMotion();
     }
@@ -246,7 +251,8 @@ public class MessageCard : TemplatedControl,
         {
             if (IsMotionEnabled)
             {
-                var motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                var motion =
+                    new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
                 MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
             }
             else
@@ -291,24 +297,24 @@ public class MessageCard : TemplatedControl,
     {
         if (MessageType == MessageType.Error)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorError);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorError));
         }
         else if (MessageType == MessageType.Information ||
                  MessageType == MessageType.Loading)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorPrimary);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorPrimary));
         }
         else if (MessageType == MessageType.Success)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorSuccess);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorSuccess));
         }
         else if (MessageType == MessageType.Warning)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorWarning);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorWarning));
         }
     }
 
@@ -343,5 +349,19 @@ public class MessageCard : TemplatedControl,
         }
 
         SetCurrentValue(IconProperty, icon);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
+            SharedTokenKey.MotionDurationMid));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

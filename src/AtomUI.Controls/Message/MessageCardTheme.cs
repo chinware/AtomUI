@@ -30,9 +30,9 @@ internal class MessageCardTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<MessageCard>((card, scope) =>
+        return new FuncControlTemplate<MessageCard>((messageCard, scope) =>
         {
-            BuildInstanceStyles(card);
+            BuildInstanceStyles(messageCard);
             var motionActor = new MotionActorControl()
             {
                 Name         = MotionActorPart,
@@ -44,8 +44,8 @@ internal class MessageCardTheme : BaseControlTheme
             {
                 Name = FramePart
             };
-            
-            var header = BuildContent(scope);
+
+            var header = BuildContent(messageCard, scope);
             frame.Child = header;
 
             frame.RegisterInNameScope(scope);
@@ -55,7 +55,7 @@ internal class MessageCardTheme : BaseControlTheme
         });
     }
 
-    private DockPanel BuildContent(INameScope scope)
+    private DockPanel BuildContent(MessageCard messageCard, INameScope scope)
     {
         var headerLayout = new DockPanel
         {
@@ -71,8 +71,9 @@ internal class MessageCardTheme : BaseControlTheme
             BindingMode.Default,
             ObjectConverters.IsNotNull);
         CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, MessageCard.IconProperty);
-        TokenResourceBinder.CreateTokenBinding(iconContent, Layoutable.MarginProperty,
-            MessageTokenKey.MessageIconMargin);
+        messageCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconContent,
+            Layoutable.MarginProperty,
+            MessageTokenKey.MessageIconMargin));
 
         headerLayout.Children.Add(iconContent);
 
@@ -80,10 +81,12 @@ internal class MessageCardTheme : BaseControlTheme
         {
             Name = MessagePart
         };
-        TokenResourceBinder.CreateTokenBinding(message, SelectableTextBlock.SelectionBrushProperty,
-            SharedTokenKey.SelectionBackground);
-        TokenResourceBinder.CreateTokenBinding(message, SelectableTextBlock.SelectionForegroundBrushProperty,
-            SharedTokenKey.SelectionForeground);
+        messageCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(message,
+            SelectableTextBlock.SelectionBrushProperty,
+            SharedTokenKey.SelectionBackground));
+        messageCard.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(message,
+            SelectableTextBlock.SelectionForegroundBrushProperty,
+            SharedTokenKey.SelectionForeground));
 
         CreateTemplateParentBinding(message, SelectableTextBlock.TextProperty, MessageCard.MessageProperty);
         headerLayout.Children.Add(message);
