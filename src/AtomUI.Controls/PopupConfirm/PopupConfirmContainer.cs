@@ -1,16 +1,22 @@
-﻿using AtomUI.IconPkg;
+﻿using System.Reactive.Disposables;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 internal class PopupConfirmContainer : TemplatedControl,
-                                       IControlSharedTokenResourcesHost
+                                       IControlSharedTokenResourcesHost,
+                                       ITokenResourceConsumer
 {
     #region 内部属性定义
 
@@ -97,9 +103,11 @@ internal class PopupConfirmContainer : TemplatedControl,
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => PopupConfirmToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     internal WeakReference<PopupConfirm> PopupConfirmRef { get; set; }
     private Button? _okButton;
     private Button? _cancelButton;
@@ -147,5 +155,17 @@ internal class PopupConfirmContainer : TemplatedControl,
             popupConfirm.RaiseEvent(popupEventArgs);
             popupConfirm.HideFlyout(true);
         }
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

@@ -94,7 +94,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     string IControlSharedTokenResourcesHost.TokenId => NumericUpDownToken.ID;
     
     #endregion
-
+    
     public NumericUpDown()
     {
         this.RegisterResources();

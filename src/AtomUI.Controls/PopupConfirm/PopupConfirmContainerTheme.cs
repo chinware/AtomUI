@@ -43,10 +43,12 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             mainLayout.Children.Add(buttons);
             var content = BuildContent(popupConfirmContainer, scope);
             mainLayout.Children.Add(content);
-            TokenResourceBinder.CreateTokenBinding(mainLayout, Layoutable.MinWidthProperty,
-                PopupConfirmTokenKey.PopupMinWidth);
-            TokenResourceBinder.CreateTokenBinding(mainLayout, Layoutable.MinHeightProperty,
-                PopupConfirmTokenKey.PopupMinHeight);
+            popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(mainLayout,
+                Layoutable.MinWidthProperty,
+                PopupConfirmTokenKey.PopupMinWidth));
+            popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(mainLayout,
+                Layoutable.MinHeightProperty,
+                PopupConfirmTokenKey.PopupMinHeight));
             BuildInstanceStyles(popupConfirmContainer);
             return mainLayout;
         });
@@ -82,7 +84,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
 
         var titleTextBlock = new SingleLineText()
         {
-            Name         = TitlePart,
+            Name              = TitlePart,
             VerticalAlignment = VerticalAlignment.Center,
         };
         CreateTemplateParentBinding(titleTextBlock, SingleLineText.TextProperty, PopupConfirmContainer.TitleProperty);
@@ -123,11 +125,11 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             Height              = double.NaN
         };
 
-        TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonContainerMargin);
+        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
+            PopupConfirmTokenKey.ButtonContainerMargin));
         cancelButton.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonMargin);
+        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
+            PopupConfirmTokenKey.ButtonMargin));
         CreateTemplateParentBinding(cancelButton, Button.TextProperty, PopupConfirmContainer.CancelTextProperty);
         CreateTemplateParentBinding(cancelButton, Visual.IsVisibleProperty,
             PopupConfirmContainer.IsShowCancelButtonProperty);
@@ -141,11 +143,11 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             Width               = double.NaN,
             Height              = double.NaN
         };
-        TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonContainerMargin);
+        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
+            PopupConfirmTokenKey.ButtonContainerMargin));
         okButton.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonMargin);
+        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
+            PopupConfirmTokenKey.ButtonMargin));
         CreateTemplateParentBinding(okButton, Button.TextProperty, PopupConfirmContainer.OkTextProperty);
         CreateTemplateParentBinding(okButton, Button.ButtonTypeProperty, PopupConfirmContainer.OkButtonTypeProperty);
         buttonLayout.Children.Add(okButton);

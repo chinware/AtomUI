@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.MotionScene;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -23,7 +25,8 @@ namespace AtomUI.Controls;
 using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
 public class Popup : AvaloniaPopup,
-                     IAnimationAwareControl
+                     IAnimationAwareControl,
+                     ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -102,18 +105,18 @@ public class Popup : AvaloniaPopup,
 
     Control IAnimationAwareControl.PropertyBindTarget => this;
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private PopupShadowLayer? _shadowLayer;
-
     private IDisposable? _selfLightDismissDisposable;
-
     private IManagedPopupPositionerPopup? _managedPopupPositioner;
-
     private bool _isNeedDetectFlip = true;
 
     // 在翻转之后或者恢复正常，会有属性的变动，在变动之后捕捉动画需要等一个事件循环，保证布局已经生效
-    private bool _isNeedWaitFlipSync = false;
+    private bool _isNeedWaitFlipSync;
     private bool _openAnimating;
     private bool _closeAnimating;
 
@@ -139,9 +142,18 @@ public class Popup : AvaloniaPopup,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         CreateShadowLayer();
-        TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationFast);
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
+            SharedTokenKey.MotionDurationFast));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected Control? GetEffectivePlacementTarget()
