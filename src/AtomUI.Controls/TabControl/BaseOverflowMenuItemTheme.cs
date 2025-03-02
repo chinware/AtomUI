@@ -33,7 +33,7 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<BaseOverflowMenuItem>((item, scope) =>
+        return new FuncControlTemplate<BaseOverflowMenuItem>((menuItem, scope) =>
         {
             var container = new Border
             {
@@ -63,8 +63,8 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             };
 
             Grid.SetColumn(itemTextPresenter, 0);
-            TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
-                MenuTokenKey.ItemMargin);
+            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
+                MenuTokenKey.ItemMargin));
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
                 HeaderedSelectingItemsControl.HeaderProperty,
                 BindingMode.Default,
@@ -100,15 +100,15 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             };
 
             CreateTemplateParentBinding(closeButton, Visual.IsVisibleProperty, BaseOverflowMenuItem.IsClosableProperty);
-            TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorIcon);
-            TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorIconHover);
+            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorIcon));
+            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Icon.ActiveFilledBrushProperty,
+                SharedTokenKey.ColorIconHover));
 
-            TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Layoutable.WidthProperty,
-                SharedTokenKey.IconSizeSM);
-            TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Layoutable.HeightProperty,
-                SharedTokenKey.IconSizeSM);
+            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Layoutable.WidthProperty,
+                SharedTokenKey.IconSizeSM));
+            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Layoutable.HeightProperty,
+                SharedTokenKey.IconSizeSM));
 
             Grid.SetColumn(menuCloseIcon, 4);
             closeButton.RegisterInNameScope(scope);

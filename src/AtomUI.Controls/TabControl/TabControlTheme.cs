@@ -1,6 +1,6 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -37,7 +37,7 @@ internal class TabControlTheme : BaseTabControlTheme
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
             BaseTabStrip.TabStripPlacementProperty);
 
-        var contentPanel = CreateTabStripContentPanel(scope);
+        var contentPanel = CreateTabStripContentPanel(baseTabControl, scope);
         tabScrollViewer.Content    = contentPanel;
         tabScrollViewer.TabControl = baseTabControl;
         tabScrollViewer.RegisterInNameScope(scope);
@@ -46,7 +46,7 @@ internal class TabControlTheme : BaseTabControlTheme
         container.Children.Add(alignWrapper);
     }
 
-    private Panel CreateTabStripContentPanel(INameScope scope)
+    private Panel CreateTabStripContentPanel(BaseTabControl baseTabControl, INameScope scope)
     {
         var layout = new Panel();
         var itemsPresenter = new ItemsPresenter
@@ -59,8 +59,9 @@ internal class TabControlTheme : BaseTabControlTheme
             Name = SelectedItemIndicatorPart
         };
         border.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            TabControlTokenKey.InkBarColor);
+        baseTabControl.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border,
+            Border.BackgroundProperty,
+            TabControlTokenKey.InkBarColor));
 
         layout.Children.Add(itemsPresenter);
         layout.Children.Add(border);

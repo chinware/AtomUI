@@ -1,9 +1,9 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -19,7 +19,8 @@ using AvaloniaTabStrip = Avalonia.Controls.Primitives.TabStrip;
 public abstract class BaseTabStrip : AvaloniaTabStrip, 
                                      ISizeTypeAware,
                                      IAnimationAwareControl,
-                                     IControlSharedTokenResourcesHost
+                                     IControlSharedTokenResourcesHost,
+                                     ITokenResourceConsumer
 {
     public const string TopPC = ":top";
     public const string RightPC = ":right";
@@ -82,10 +83,12 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
-
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
 
     private Border? _frame;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static BaseTabStrip()
     {
@@ -103,16 +106,15 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     {
         base.OnApplyTemplate(e);
         _frame = e.NameScope.Find<Border>(BaseTabStripTheme.FramePart);
-        SetupBorderBinding();
     }
 
     private void SetupBorderBinding()
     {
         if (_frame is not null)
         {
-            TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
                 SharedTokenKey.BorderThickness, BindingPriority.Template,
-                new RenderScaleAwareThicknessConfigure(this));
+                new RenderScaleAwareThicknessConfigure(this)));
         }
     }
 
@@ -126,11 +128,19 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             BindUtils.RelayBind(this, IsMotionEnabledProperty, tabStripItem, TabStripItem.IsMotionEnabledProperty);
         }
     }
-
+    
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         UpdatePseudoClasses();
+        SetupBorderBinding();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

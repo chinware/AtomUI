@@ -1,5 +1,6 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -50,17 +51,17 @@ internal class CardTabStripTheme : BaseTabStripTheme
         
         var addTabIcon = AntDesignIconPackage.PlusOutlined();
 
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.NormalFilledBrushProperty,
-            TabControlTokenKey.ItemColor);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.ActiveFilledBrushProperty,
-            TabControlTokenKey.ItemHoverColor);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ColorTextDisabled);
+        baseTabStrip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.NormalFilledBrushProperty,
+            TabControlTokenKey.ItemColor));
+        baseTabStrip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.ActiveFilledBrushProperty,
+            TabControlTokenKey.ItemHoverColor));
+        baseTabStrip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
+            SharedTokenKey.ColorTextDisabled));
 
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Layoutable.WidthProperty,
-            SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Layoutable.HeightProperty,
-            SharedTokenKey.IconSize);
+        baseTabStrip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabIcon, Layoutable.WidthProperty,
+            SharedTokenKey.IconSize));
+        baseTabStrip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabIcon, Layoutable.HeightProperty,
+            SharedTokenKey.IconSize));
 
         var addTabButton = new IconButton
         {
@@ -75,8 +76,8 @@ internal class CardTabStripTheme : BaseTabStripTheme
             CardTabStrip.CardBorderRadiusProperty);
         CreateTemplateParentBinding(addTabButton, Visual.IsVisibleProperty, CardTabStrip.IsShowAddTabButtonProperty);
 
-        TokenResourceBinder.CreateTokenBinding(addTabButton, TemplatedControl.BorderBrushProperty,
-            SharedTokenKey.ColorBorderSecondary);
+        baseTabStrip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabButton, TemplatedControl.BorderBrushProperty,
+            SharedTokenKey.ColorBorderSecondary));
 
         addTabButton.RegisterInNameScope(scope);
 

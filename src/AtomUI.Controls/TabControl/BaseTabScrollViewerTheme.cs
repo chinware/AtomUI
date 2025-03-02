@@ -48,18 +48,18 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Center;
             menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
-            TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextSecondary);
+            scrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorTextSecondary));
 
             var menuIndicator = new IconButton
             {
                 Name = ScrollMenuIndicatorPart,
                 Icon = menuIndicatorIcon
             };
-            TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSize);
-            TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSize);
+            scrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconWidthProperty,
+                SharedTokenKey.IconSize));
+            scrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconHeightProperty,
+                SharedTokenKey.IconSize));
             menuIndicator.RegisterInNameScope(scope);
 
             var scrollViewContent = CreateScrollContentPresenter();

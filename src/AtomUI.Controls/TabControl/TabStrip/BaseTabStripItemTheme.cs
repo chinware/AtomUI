@@ -58,8 +58,8 @@ internal class BaseTabStripItemTheme : BaseControlTheme
         containerLayout.Children.Add(contentPresenter);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ContentControl.ContentProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-            ContentControl.ContentTemplateProperty, 
-            BindingMode.Default, 
+            ContentControl.ContentTemplateProperty,
+            BindingMode.Default,
             new FuncValueConverter<object?, object?>(
                 o =>
                 {
@@ -80,7 +80,8 @@ internal class BaseTabStripItemTheme : BaseControlTheme
             Name = ItemCloseButtonPart
         };
         iconButton.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(iconButton, Layoutable.MarginProperty, TabControlTokenKey.CloseIconMargin);
+        stripItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconButton,
+            Layoutable.MarginProperty, TabControlTokenKey.CloseIconMargin));
 
         CreateTemplateParentBinding(iconButton, IconButton.IconProperty, TabStripItem.CloseIconProperty);
         CreateTemplateParentBinding(iconButton, Visual.IsVisibleProperty, TabStripItem.IsClosableProperty);
@@ -92,7 +93,8 @@ internal class BaseTabStripItemTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        commonStyle.Add(InputElement.CursorProperty,
+            new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenKey.ItemColor);
 
         // Icon 一些通用属性

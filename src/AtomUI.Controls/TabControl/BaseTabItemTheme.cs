@@ -81,8 +81,8 @@ internal class BaseTabItemTheme : BaseControlTheme
             Name = ItemCloseButtonPart
         };
         iconButton.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(iconButton, Layoutable.MarginProperty,
-            TabControlTokenKey.CloseIconMargin);
+        tabItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconButton, Layoutable.MarginProperty,
+            TabControlTokenKey.CloseIconMargin));
 
         CreateTemplateParentBinding(iconButton, IconButton.IconProperty, TabItem.CloseIconProperty);
         CreateTemplateParentBinding(iconButton, Visual.IsVisibleProperty, TabItem.IsClosableProperty);

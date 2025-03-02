@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Reactive.Disposables;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -9,6 +11,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input.Raw;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Colors = Avalonia.Media.Colors;
 using GradientStop = Avalonia.Media.GradientStop;
@@ -19,7 +22,8 @@ namespace AtomUI.Controls;
 [TemplatePart(BaseTabScrollViewerTheme.ScrollEndEdgeIndicatorPart, typeof(Control))]
 [TemplatePart(BaseTabScrollViewerTheme.ScrollMenuIndicatorPart, typeof(IconButton))]
 [TemplatePart(BaseTabScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
-internal abstract class BaseTabScrollViewer : ScrollViewer
+internal abstract class BaseTabScrollViewer : ScrollViewer,
+                                              ITokenResourceConsumer
 {
     private const int EdgeIndicatorZIndex = 1000;
 
@@ -63,6 +67,8 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
         get => _menuEdgeThickness;
         set => SetAndRaise(MenuEdgeThicknessProperty, ref _menuEdgeThickness, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
@@ -70,6 +76,7 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     private protected Border? _startEdgeIndicator;
     private protected Border? _endEdgeIndicator;
     private protected MenuFlyout? _menuFlyout;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static BaseTabScrollViewer()
     {
@@ -202,12 +209,23 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
         _startEdgeIndicator = e.NameScope.Find<Border>(BaseTabScrollViewerTheme.ScrollStartEdgeIndicatorPart);
         _endEdgeIndicator   = e.NameScope.Find<Border>(BaseTabScrollViewerTheme.ScrollEndEdgeIndicatorPart);
 
-        TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty,
-            SharedTokenKey.ColorFillSecondary);
-        TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty,
-            TabControlTokenKey.MenuEdgeThickness);
-
         SetupIndicatorsVisibility();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty,
+            SharedTokenKey.ColorFillSecondary));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty,
+            TabControlTokenKey.MenuEdgeThickness));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override Size MeasureOverride(Size availableSize)
