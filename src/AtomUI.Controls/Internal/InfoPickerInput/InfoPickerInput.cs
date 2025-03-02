@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -10,7 +11,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -19,7 +19,8 @@ namespace AtomUI.Controls.Internal;
 [PseudoClasses(FlyoutOpenPC)]
 public abstract class InfoPickerInput : TemplatedControl,
                                         IAnimationAwareControl,
-                                        IControlSharedTokenResourcesHost
+                                        IControlSharedTokenResourcesHost,
+                                        ITokenResourceConsumer
 {
     internal const string FlyoutOpenPC = ":flyout-open";
     internal const string ChoosingPC = ":choosing";
@@ -192,12 +193,12 @@ public abstract class InfoPickerInput : TemplatedControl,
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
-    
+
     internal static readonly DirectProperty<InfoPickerInput, double> PreferredInputWidthProperty
         = AvaloniaProperty.RegisterDirect<InfoPickerInput, double>(nameof(PreferredInputWidth),
             o => o.PreferredInputWidth,
             (o, v) => o.PreferredInputWidth = v);
-    
+
     private double _preferredInputWidth = double.NaN;
 
     internal double PreferredInputWidth
@@ -209,9 +210,11 @@ public abstract class InfoPickerInput : TemplatedControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => InfoPickerInputToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private protected AddOnDecoratedBox? _decoratedBox;
     private protected PickerClearUpButton? _pickerClearUpButton;
     private protected readonly FlyoutStateHelper _flyoutStateHelper;
@@ -226,8 +229,6 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     static InfoPickerInput()
     {
-        HorizontalAlignmentProperty.OverrideDefaultValue<InfoPickerInput>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<InfoPickerInput>(VerticalAlignment.Top);
         AffectsMeasure<InfoPickerInput>(PreferredInputWidthProperty, SizeTypeProperty);
     }
 
@@ -392,7 +393,6 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
 
         _flyoutStateHelper.AnchorTarget = _pickerInnerBox;
-        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
         SetupFlyoutProperties();
     }
 
@@ -427,10 +427,19 @@ public abstract class InfoPickerInput : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
         BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseEnterDelayProperty);
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -484,5 +493,4 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         return false;
     }
-    
 }

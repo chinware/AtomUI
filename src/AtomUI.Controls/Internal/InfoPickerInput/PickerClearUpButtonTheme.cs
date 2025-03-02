@@ -29,7 +29,7 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
         {
             BuildInstanceStyles(pickerClearUpButton);
             var container = new Panel();
-            BuildClearButton(container, scope);
+            BuildClearButton(pickerClearUpButton, container, scope);
             BuildClockIconContent(container, scope);
             return container;
         });
@@ -49,7 +49,7 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
         layout.Children.Add(iconContent);
     }
 
-    private void BuildClearButton(Panel layout, INameScope scope)
+    private void BuildClearButton(PickerClearUpButton clearUpButton, Panel layout, INameScope scope)
     {
         var closeIcon = AntDesignIconPackage.CloseCircleFilled();
         var clearButton = new IconButton
@@ -58,16 +58,16 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
             Icon = closeIcon
         };
 
-        TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextQuaternary);
-        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorTextTertiary);
-        TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
+        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconHeightProperty,
+            SharedTokenKey.IconSize));
+        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconWidthProperty,
+            SharedTokenKey.IconSize));
+        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
+            SharedTokenKey.ColorTextQuaternary));
+        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
+            SharedTokenKey.ColorTextTertiary));
+        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
+            SharedTokenKey.ColorText));
 
         clearButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(clearButton, Visual.IsVisibleProperty,
