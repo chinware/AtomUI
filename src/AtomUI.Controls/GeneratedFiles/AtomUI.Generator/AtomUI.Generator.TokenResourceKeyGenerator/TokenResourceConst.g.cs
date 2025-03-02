@@ -505,7 +505,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IconMargin = new TokenResourceKey("PopupConfirm.IconMargin");
         public static readonly TokenResourceKey ContentContainerMargin = new TokenResourceKey("PopupConfirm.ContentContainerMargin");
         public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("PopupConfirm.TitleMargin");
-        public static readonly TokenResourceKey ButtonContainerMargin = new TokenResourceKey("PopupConfirm.ButtonContainerMargin");
     }
 
     public static class ProgressBarTokenKey

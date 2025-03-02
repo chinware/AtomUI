@@ -115,8 +115,6 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Bottom
         };
         DockPanel.SetDock(buttonLayout, Dock.Bottom);
-        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(buttonLayout, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonContainerMargin));
 
         var cancelButton = new Button
         {
@@ -145,8 +143,6 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         };
 
         okButton.RegisterInNameScope(scope);
-        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(okButton, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonMargin));
         CreateTemplateParentBinding(okButton, Button.TextProperty, PopupConfirmContainer.OkTextProperty);
         CreateTemplateParentBinding(okButton, Button.ButtonTypeProperty, PopupConfirmContainer.OkButtonTypeProperty);
         buttonLayout.Children.Add(okButton);
@@ -201,6 +197,14 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         var contentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPart));
         contentStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.ContentContainerMargin);
         commonStyle.Add(contentStyle);
+        
+        var okButtonStyle = new Style(selector => selector.Nesting().Template().Name(OkButtonPart));
+        okButtonStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.ButtonMargin);
+        commonStyle.Add(okButtonStyle);
+        
+        var cancelButtonStyle = new Style(selector => selector.Nesting().Template().Name(CancelButtonPart));
+        cancelButtonStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.ButtonMargin);
+        commonStyle.Add(cancelButtonStyle);
 
         Add(commonStyle);
     }
