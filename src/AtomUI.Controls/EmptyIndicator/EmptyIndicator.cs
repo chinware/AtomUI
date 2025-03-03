@@ -35,7 +35,7 @@ public class EmptyIndicator : TemplatedControl,
         AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(ImageSource));
 
     public static readonly StyledProperty<string?> DescriptionProperty =
-        AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(Description));
+        AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(Description), "No data");
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         AvaloniaProperty.Register<EmptyIndicator, SizeType>(nameof(SizeType));
@@ -83,10 +83,6 @@ public class EmptyIndicator : TemplatedControl,
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<double> DescriptionMarginProperty =
-        AvaloniaProperty.Register<EmptyIndicator, double>(
-            nameof(DescriptionMargin));
-
     private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFill),
@@ -110,12 +106,6 @@ public class EmptyIndicator : TemplatedControl,
             nameof(_colorBgContainer),
             o => o._colorBgContainer,
             (o, v) => o._colorBgContainer = v);
-
-    internal double DescriptionMargin
-    {
-        get => GetValue(DescriptionMarginProperty);
-        set => SetValue(DescriptionMarginProperty, value);
-    }
 
     private IBrush? _colorFill;
 
@@ -267,7 +257,6 @@ public class EmptyIndicator : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment   = VerticalAlignment.Center;

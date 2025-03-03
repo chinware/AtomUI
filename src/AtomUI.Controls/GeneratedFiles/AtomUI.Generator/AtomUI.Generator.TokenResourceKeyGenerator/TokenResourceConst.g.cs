@@ -237,6 +237,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("EmptyIndicator.EmptyImgHeight");
         public static readonly TokenResourceKey EmptyImgHeightSM = new TokenResourceKey("EmptyIndicator.EmptyImgHeightSM");
         public static readonly TokenResourceKey EmptyImgHeightMD = new TokenResourceKey("EmptyIndicator.EmptyImgHeightMD");
+        public static readonly TokenResourceKey DescriptionMargin = new TokenResourceKey("EmptyIndicator.DescriptionMargin");
+        public static readonly TokenResourceKey DescriptionMarginSM = new TokenResourceKey("EmptyIndicator.DescriptionMarginSM");
     }
 
     public static class ExpanderTokenKey

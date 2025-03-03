@@ -17,6 +17,7 @@ namespace AtomUI.Controls;
 internal class EmptyIndicatorTheme : BaseControlTheme
 {
     public const string SvgImagePart = "PART_SvgImage";
+    public const string DescriptionPart = "PART_Description";
 
     public EmptyIndicatorTheme()
         : base(typeof(EmptyIndicator))
@@ -41,20 +42,11 @@ internal class EmptyIndicatorTheme : BaseControlTheme
 
             var description = new TextBlock
             {
+                Name = DescriptionPart,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 TextWrapping        = TextWrapping.Wrap,
-                Text                = indicator.Description ?? "No data"
             };
-
-            RegisterTokenResourceBindings(indicator, () =>
-            {
-                indicator.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(description,
-                    TextBlock.ForegroundProperty,
-                    SharedTokenKey.ColorTextDescription));
-            });
-            BindUtils.RelayBind(indicator, EmptyIndicator.DescriptionMarginProperty, description,
-                Layoutable.MarginProperty,
-                d => new Thickness(0, d, 0, 0));
+            CreateTemplateParentBinding(description, TextBlock.TextProperty, EmptyIndicator.DescriptionProperty);
             layout.Children.Add(description);
 
             return layout;
@@ -64,18 +56,32 @@ internal class EmptyIndicatorTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         // 设置本身样式
+        BuildSvgStyle();
+        
         var sizeSmallAndMiddleStyle = new Style(selector => Selectors.Or(
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Middle),
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Small)));
-        sizeSmallAndMiddleStyle.Add(EmptyIndicator.DescriptionMarginProperty, SharedTokenKey.MarginXS);
+        {
+            var descriptionStyle = new Style(selector => selector.Nesting().Template().Name(DescriptionPart));
+            descriptionStyle.Add(TextBlock.MarginProperty, EmptyIndicatorTokenKey.DescriptionMarginSM);
+            Add(descriptionStyle);
+        }
         Add(sizeSmallAndMiddleStyle);
 
         var sizeLargeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Large));
-        sizeLargeStyle.Add(EmptyIndicator.DescriptionMarginProperty, SharedTokenKey.MarginSM);
+        {
+            var descriptionStyle = new Style(selector => selector.Nesting().Template().Name(DescriptionPart));
+            descriptionStyle.Add(TextBlock.MarginProperty, EmptyIndicatorTokenKey.DescriptionMargin);
+            Add(descriptionStyle);
+        }
         Add(sizeLargeStyle);
 
-        BuildSvgStyle();
+        {
+            var descriptionStyle = new Style(selector => selector.Nesting().Template().Name(DescriptionPart));
+            descriptionStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorTextDescription);
+            Add(descriptionStyle);
+        }
     }
 
     private void BuildSvgStyle()

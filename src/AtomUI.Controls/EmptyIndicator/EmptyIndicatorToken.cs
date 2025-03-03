@@ -1,4 +1,5 @@
 ﻿using AtomUI.Theme.TokenSystem;
+using Avalonia;
 
 namespace AtomUI.Controls;
 
@@ -14,6 +15,9 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
 
     public double EmptyImgHeightSM { get; set; }
     public double EmptyImgHeightMD { get; set; }
+    
+    public Thickness DescriptionMargin { get; set; }
+    public Thickness DescriptionMarginSM { get; set; }
 
     public EmptyIndicatorToken()
         : base(ID)
@@ -24,8 +28,10 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         var controlHeightLG = SharedToken.ControlHeightLG;
-        EmptyImgHeight   = controlHeightLG * 2.5;
-        EmptyImgHeightMD = controlHeightLG;
-        EmptyImgHeightSM = controlHeightLG * 0.875;
+        EmptyImgHeight      = controlHeightLG * 2.5;
+        EmptyImgHeightMD    = controlHeightLG;
+        EmptyImgHeightSM    = controlHeightLG * 0.875;
+        DescriptionMargin   = new Thickness(0, SharedToken.MarginSM, 0, 0);
+        DescriptionMarginSM = new Thickness(0, SharedToken.MarginXS, 0, 0);
     }
 }
