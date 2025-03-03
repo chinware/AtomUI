@@ -20,6 +20,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
 {
     public const string DecoratedBoxPart = "PART_DecoratedBox";
     public const string SpinnerInnerBoxPart = "PART_SpinnerInnerBox";
+    public const string SpinnerButtonsLayoutPart = "PART_SpinnerButtonsLayout";
     public const string IncreaseButtonPart = "PART_IncreaseButton";
     public const string DecreaseButtonPart = "PART_DecreaseButton";
     public const string SpinnerHandleDecoratorPart = "PART_SpinnerHandleDecorator";
@@ -32,6 +33,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
     {
         return new FuncControlTemplate<ButtonSpinner>((buttonSpinner, scope) =>
         {
+            ResetTokenResourceBindings(buttonSpinner);
             var decoratedBox = BuildSpinnerDecoratedBox(buttonSpinner, scope);
             var innerBox     = BuildSpinnerContent(buttonSpinner, scope);
             decoratedBox.Content = innerBox;
@@ -100,7 +102,8 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         var spinnerLayout = new UniformGrid
         {
             Columns = 1,
-            Rows    = 2
+            Rows    = 2,
+            Name = SpinnerButtonsLayoutPart
         };
         
         decoratorLayout.Children.Add(spinnerLayout);
@@ -145,26 +148,36 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         spinnerLayout.Children.Add(decreaseButton);
 
         spinnerInnerBox.SpinnerContent = decoratorLayout;
-        
+
+        // 这里必须这么处理，因为这些内容设置到 SpinnerContent，跟现在不是一个作用域了
         RegisterTokenResourceBindings(buttonSpinner, () =>
         {
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(spinnerLayout, Layoutable.WidthProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(spinnerLayout,
+                Layoutable.WidthProperty,
                 ButtonSpinnerTokenKey.HandleWidth));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButtonIcon, Icon.ActiveFilledBrushProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButtonIcon,
+                Icon.ActiveFilledBrushProperty,
                 ButtonSpinnerTokenKey.HandleHoverColor));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButtonIcon, Icon.SelectedFilledBrushProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButtonIcon,
+                Icon.SelectedFilledBrushProperty,
                 SharedTokenKey.ColorPrimaryActive));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconWidthProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButton,
+                IconButton.IconWidthProperty,
                 ButtonSpinnerTokenKey.HandleIconSize));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButton, IconButton.IconHeightProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButton,
+                IconButton.IconHeightProperty,
                 ButtonSpinnerTokenKey.HandleIconSize));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
+                Icon.ActiveFilledBrushProperty,
                 ButtonSpinnerTokenKey.HandleHoverColor));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
+                Icon.SelectedFilledBrushProperty,
                 SharedTokenKey.ColorPrimaryActive));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconWidthProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButton,
+                IconButton.IconWidthProperty,
                 ButtonSpinnerTokenKey.HandleIconSize));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButton, IconButton.IconHeightProperty,
+            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButton,
+                IconButton.IconHeightProperty,
                 ButtonSpinnerTokenKey.HandleIconSize));
         });
 
@@ -200,7 +213,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         }));
         isEnableMotionStyle.Add(iconStyle);
         commonStyle.Add(isEnableMotionStyle);
-
         Add(commonStyle);
     }
+    
 }
