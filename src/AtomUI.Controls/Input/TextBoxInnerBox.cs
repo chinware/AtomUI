@@ -1,6 +1,4 @@
-﻿using AtomUI.Theme;
-using Avalonia;
-using Avalonia.Controls.Primitives;
+﻿using Avalonia;
 
 namespace AtomUI.Controls;
 
@@ -66,11 +64,5 @@ internal class TextBoxInnerBox : AddOnDecoratedInnerBox
         {
             base.BuildEffectiveInnerBoxPadding();
         }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
     }
 }

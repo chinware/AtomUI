@@ -1,7 +1,4 @@
-﻿using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
+﻿using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -30,14 +27,11 @@ internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
     protected virtual void BuildRevealButtonButton(TextBoxInnerBox textBoxInnerBox, StackPanel addOnLayout,
                                                    INameScope scope)
     {
-        var eyeOutlinedIcon          = AntDesignIconPackage.EyeOutlined();
-        var eyeInvisibleOutlinedIcon = AntDesignIconPackage.EyeInvisibleOutlined();
-        
         var revealButtonIconButton = new ToggleIconButton
         {
             Name          = RevealButtonPart,
-            CheckedIcon   = eyeOutlinedIcon,
-            UnCheckedIcon = eyeInvisibleOutlinedIcon
+            CheckedIcon   = AntDesignIconPackage.EyeOutlined(),
+            UnCheckedIcon = AntDesignIconPackage.EyeInvisibleOutlined()
         };
 
         CreateTemplateParentBinding(revealButtonIconButton, ToggleIconButton.IsCheckedProperty,
@@ -47,29 +41,23 @@ internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
         CreateTemplateParentBinding(revealButtonIconButton, Visual.IsVisibleProperty,
             TextBoxInnerBox.IsRevealButtonVisibleProperty);
         addOnLayout.Children.Add(revealButtonIconButton);
-        
-        RegisterTokenResourceBindings(textBoxInnerBox, () =>
-        {
-            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon,
-                Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextTertiary));
-            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon,
-                Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorText));
+    }
 
-            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon,
-                Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextTertiary));
-            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon,
-                Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(revealButtonIconButton,
-                ToggleIconButton.IconHeightProperty,
-                SharedTokenKey.IconSize));
-            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(revealButtonIconButton,
-                ToggleIconButton.IconWidthProperty,
-                SharedTokenKey.IconSize));
-        });
+    protected override void BuildStyles()
+    {
+        base.BuildStyles();
+        BuildRevealButtonButtonStyle();
+    }
+
+    private void BuildRevealButtonButtonStyle()
+    {
+        var revealButtonStyle = new Style(selector => selector.Nesting().Template().Name(RevealButtonPart));
+        revealButtonStyle.Add(ToggleIconButton.IconWidthProperty, SharedTokenKey.IconSize);
+        revealButtonStyle.Add(ToggleIconButton.IconHeightProperty, SharedTokenKey.IconSize);
+        revealButtonStyle.Add(ToggleIconButton.NormalIconColorProperty, SharedTokenKey.ColorTextTertiary);
+        revealButtonStyle.Add(ToggleIconButton.ActiveIconColorProperty, SharedTokenKey.ColorText);
+        revealButtonStyle.Add(ToggleIconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
+        Add(revealButtonStyle);
     }
 
     protected override void BuildDisabledStyle()
