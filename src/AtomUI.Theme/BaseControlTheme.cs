@@ -4,6 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
+using Avalonia.LogicalTree;
 using Avalonia.Styling;
 
 namespace AtomUI.Theme;
@@ -64,6 +65,18 @@ public abstract class BaseControlTheme : ControlTheme
 
     protected virtual void NotifyBuildCompleted()
     {
+    }
+
+    protected static void RegisterTokenResourceBindings(Control hostControl, Action resourceBindingAction)
+    {
+        if (((ILogical)hostControl).IsAttachedToLogicalTree)
+        {
+            resourceBindingAction();
+        }
+        hostControl.AttachedToLogicalTree += (sender, args) =>
+        {
+            resourceBindingAction();
+        };
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(

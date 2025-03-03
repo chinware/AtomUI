@@ -17,6 +17,7 @@ using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
 
@@ -239,8 +240,7 @@ public class Button : AvaloniaButton,
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
-    private bool _initialized;
+    
     private Icon? _loadingIcon;
     private CompositeDisposable? _tokenBindingsDisposable;
 
@@ -269,7 +269,7 @@ public class Button : AvaloniaButton,
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        var size         = base.MeasureOverride(availableSize);
+        var size         = base.MeasureOverride(availableSize); 
         var targetWidth  = size.Width;
         var targetHeight = size.Height;
 
@@ -287,7 +287,7 @@ public class Button : AvaloniaButton,
             CornerRadius = new CornerRadius(targetHeight);
             targetWidth  = Math.Max(targetWidth, targetHeight + targetHeight / 2);
         }
-
+      
         return new Size(targetWidth, targetHeight);
     }
 
@@ -295,62 +295,57 @@ public class Button : AvaloniaButton,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        if (!_initialized)
+        if (Text is null && Content is string content)
         {
-            if (Text is null && Content is string content)
-            {
-                Text    = content;
-                Content = null;
-            }
+            Text    = content;
+            Content = null;
+        }
 
-            if (ButtonType == ButtonType.Default)
+        if (ButtonType == ButtonType.Default)
+        {
+            if (IsDanger)
             {
-                if (IsDanger)
+                Effect = new DropShadowEffect
                 {
-                    Effect = new DropShadowEffect
-                    {
-                        OffsetX    = DangerShadow.OffsetX,
-                        OffsetY    = DangerShadow.OffsetY,
-                        Color      = DangerShadow.Color,
-                        BlurRadius = DangerShadow.Blur
-                    };
-                }
-                else
-                {
-                    Effect = new DropShadowEffect
-                    {
-                        OffsetX    = DefaultShadow.OffsetX,
-                        OffsetY    = DefaultShadow.OffsetY,
-                        Color      = DefaultShadow.Color,
-                        BlurRadius = DefaultShadow.Blur
-                    };
-                }
+                    OffsetX    = DangerShadow.OffsetX,
+                    OffsetY    = DangerShadow.OffsetY,
+                    Color      = DangerShadow.Color,
+                    BlurRadius = DangerShadow.Blur
+                };
             }
-            else if (ButtonType == ButtonType.Primary)
+            else
             {
-                if (IsDanger)
+                Effect = new DropShadowEffect
                 {
-                    Effect = new DropShadowEffect
-                    {
-                        OffsetX    = DangerShadow.OffsetX,
-                        OffsetY    = DangerShadow.OffsetY,
-                        Color      = DangerShadow.Color,
-                        BlurRadius = DangerShadow.Blur
-                    };
-                }
-                else
-                {
-                    Effect = new DropShadowEffect
-                    {
-                        OffsetX    = PrimaryShadow.OffsetX,
-                        OffsetY    = PrimaryShadow.OffsetY,
-                        Color      = PrimaryShadow.Color,
-                        BlurRadius = PrimaryShadow.Blur
-                    };
-                }
+                    OffsetX    = DefaultShadow.OffsetX,
+                    OffsetY    = DefaultShadow.OffsetY,
+                    Color      = DefaultShadow.Color,
+                    BlurRadius = DefaultShadow.Blur
+                };
             }
-
-            _initialized = true;
+        }
+        else if (ButtonType == ButtonType.Primary)
+        {
+            if (IsDanger)
+            {
+                Effect = new DropShadowEffect
+                {
+                    OffsetX    = DangerShadow.OffsetX,
+                    OffsetY    = DangerShadow.OffsetY,
+                    Color      = DangerShadow.Color,
+                    BlurRadius = DangerShadow.Blur
+                };
+            }
+            else
+            {
+                Effect = new DropShadowEffect
+                {
+                    OffsetX    = PrimaryShadow.OffsetX,
+                    OffsetY    = PrimaryShadow.OffsetY,
+                    Color      = PrimaryShadow.Color,
+                    BlurRadius = PrimaryShadow.Blur
+                };
+            }
         }
 
         SetupControlThemeBindings();

@@ -43,13 +43,19 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             mainLayout.Children.Add(buttons);
             var content = BuildContent(popupConfirmContainer, scope);
             mainLayout.Children.Add(content);
-            popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(mainLayout,
-                Layoutable.MinWidthProperty,
-                PopupConfirmTokenKey.PopupMinWidth));
-            popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(mainLayout,
-                Layoutable.MinHeightProperty,
-                PopupConfirmTokenKey.PopupMinHeight));
+     
             BuildInstanceStyles(popupConfirmContainer);
+            
+            RegisterTokenResourceBindings(popupConfirmContainer, () =>
+            {
+                popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(mainLayout,
+                    Layoutable.MinWidthProperty,
+                    PopupConfirmTokenKey.PopupMinWidth));
+                popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(mainLayout,
+                    Layoutable.MinHeightProperty,
+                    PopupConfirmTokenKey.PopupMinHeight));
+            });
+            
             return mainLayout;
         });
     }
@@ -120,11 +126,11 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         {
             Name                = CancelButtonPart,
             SizeType            = SizeType.Small,
+            Margin = new Thickness(0),
+            Width = double.NaN,
         };
         
         cancelButton.RegisterInNameScope(scope);
-        popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(cancelButton, Layoutable.MarginProperty,
-            PopupConfirmTokenKey.ButtonMargin));
         CreateTemplateParentBinding(cancelButton, Button.TextProperty, PopupConfirmContainer.CancelTextProperty);
         CreateTemplateParentBinding(cancelButton, Visual.IsVisibleProperty,
             PopupConfirmContainer.IsShowCancelButtonProperty);
@@ -134,6 +140,8 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         {
             Name     = OkButtonPart,
             SizeType = SizeType.Small,
+            Margin   = new Thickness(0),
+            Width    = double.NaN,
         };
 
         okButton.RegisterInNameScope(scope);
@@ -191,14 +199,11 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         var contentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPart));
         contentStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.ContentContainerMargin);
         commonStyle.Add(contentStyle);
-        
-        var okButtonStyle = new Style(selector => selector.Nesting().Template().Name(OkButtonPart));
-        okButtonStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.ButtonMargin);
-        commonStyle.Add(okButtonStyle);
-        
-        var cancelButtonStyle = new Style(selector => selector.Nesting().Template().Name(CancelButtonPart));
-        cancelButtonStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.ButtonMargin);
-        commonStyle.Add(cancelButtonStyle);
+
+        var buttonContainerStyle = new Style(selector => selector.Nesting().Template().Name(ButtonLayoutPart));
+        buttonContainerStyle.Add(StackPanel.SpacingProperty, PopupConfirmTokenKey.ButtonSpacing);
+        buttonContainerStyle.Add(StackPanel.MarginProperty, PopupConfirmTokenKey.ButtonContainerMargin);
+        commonStyle.Add(buttonContainerStyle);
 
         Add(commonStyle);
     }

@@ -188,6 +188,12 @@ public class Popup : AvaloniaPopup,
             {
                 _managedPopupPositioner = managedPopupPositioner.GetManagedPopupPositionerPopup();
             }
+#if DEBUG
+            if (popupRoot is TopLevel topLevel)
+            {
+                topLevel.AttachDevTools();
+            }
+#endif
         }
 
         var placementTarget = GetEffectivePlacementTarget();

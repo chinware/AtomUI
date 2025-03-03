@@ -83,8 +83,6 @@ public class MenuItem : AvaloniaMenuItem,
         {
             _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
         }
-
-        SetupIconBindings();
         HandleToggleTypeChanged();
         SetupTransitions();
         UpdatePseudoClasses();
@@ -199,6 +197,7 @@ public class MenuItem : AvaloniaMenuItem,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+        SetupIconBindings();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

@@ -501,9 +501,10 @@ namespace AtomUI.Theme.Styling
     {
         public static readonly TokenResourceKey PopupMinWidth = new TokenResourceKey("PopupConfirm.PopupMinWidth");
         public static readonly TokenResourceKey PopupMinHeight = new TokenResourceKey("PopupConfirm.PopupMinHeight");
-        public static readonly TokenResourceKey ButtonMargin = new TokenResourceKey("PopupConfirm.ButtonMargin");
+        public static readonly TokenResourceKey ButtonSpacing = new TokenResourceKey("PopupConfirm.ButtonSpacing");
         public static readonly TokenResourceKey IconMargin = new TokenResourceKey("PopupConfirm.IconMargin");
         public static readonly TokenResourceKey ContentContainerMargin = new TokenResourceKey("PopupConfirm.ContentContainerMargin");
+        public static readonly TokenResourceKey ButtonContainerMargin = new TokenResourceKey("PopupConfirm.ButtonContainerMargin");
         public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("PopupConfirm.TitleMargin");
     }
 

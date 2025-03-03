@@ -30,20 +30,24 @@ internal class ContextMenuTheme : BaseControlTheme
             {
                 Name = RootContainerPart
             };
-            contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Border.BackgroundProperty,
-                MenuTokenKey.MenuBgColor));
-            contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MinWidthProperty,
-                MenuTokenKey.MenuPopupMinWidth));
-            contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MaxWidthProperty,
-                MenuTokenKey.MenuPopupMaxWidth));
-            contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MinHeightProperty,
-                MenuTokenKey.MenuPopupMinHeight));
-            contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MaxHeightProperty,
-                MenuTokenKey.MenuPopupMaxHeight));
-            contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Decorator.PaddingProperty,
-                MenuTokenKey.MenuPopupContentPadding));
-            contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Border.CornerRadiusProperty,
-                MenuTokenKey.MenuPopupBorderRadius));
+            
+            RegisterTokenResourceBindings(contextMenu, () =>
+            {
+                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Border.BackgroundProperty,
+                    MenuTokenKey.MenuBgColor));
+                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MinWidthProperty,
+                    MenuTokenKey.MenuPopupMinWidth));
+                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MaxWidthProperty,
+                    MenuTokenKey.MenuPopupMaxWidth));
+                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MinHeightProperty,
+                    MenuTokenKey.MenuPopupMinHeight));
+                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MaxHeightProperty,
+                    MenuTokenKey.MenuPopupMaxHeight));
+                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Decorator.PaddingProperty,
+                    MenuTokenKey.MenuPopupContentPadding));
+                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Border.CornerRadiusProperty,
+                    MenuTokenKey.MenuPopupBorderRadius));
+            });
 
             var scrollViewer = new MenuScrollViewer();
             var itemsPresenter = new ItemsPresenter

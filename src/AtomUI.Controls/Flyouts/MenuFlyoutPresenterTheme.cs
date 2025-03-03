@@ -36,18 +36,22 @@ internal class MenuFlyoutPresenterTheme : BaseControlTheme
             CreateTemplateParentBinding(arrowDecorator, ArrowDecoratedBox.ArrowPositionProperty,
                 MenuFlyoutPresenter.ArrowPositionProperty);
 
-            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.BackgroundProperty,
-                MenuTokenKey.MenuBgColor));
-            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinWidthProperty,
-                MenuTokenKey.MenuPopupMinWidth));
-            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxWidthProperty,
-                MenuTokenKey.MenuPopupMaxWidth));
-            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinHeightProperty,
-                MenuTokenKey.MenuPopupMinHeight));
-            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxHeightProperty,
-                MenuTokenKey.MenuPopupMaxHeight));
-            menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.PaddingProperty,
-                MenuTokenKey.MenuPopupContentPadding));
+            
+            RegisterTokenResourceBindings(menuFlyoutPresenter, () =>
+            {
+                menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.BackgroundProperty,
+                    MenuTokenKey.MenuBgColor));
+                menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinWidthProperty,
+                    MenuTokenKey.MenuPopupMinWidth));
+                menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxWidthProperty,
+                    MenuTokenKey.MenuPopupMaxWidth));
+                menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinHeightProperty,
+                    MenuTokenKey.MenuPopupMinHeight));
+                menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxHeightProperty,
+                    MenuTokenKey.MenuPopupMaxHeight));
+                menuFlyoutPresenter.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.PaddingProperty,
+                    MenuTokenKey.MenuPopupContentPadding));
+            });
 
             var scrollViewer = new MenuScrollViewer
             {
