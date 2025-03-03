@@ -26,16 +26,18 @@ internal class VerticalNavMenuTheme : BaseNavMenuTheme
     protected override Control BuildMenuContent(NavMenu navMenu, INameScope scope)
     {
         var scrollViewer = new ScrollViewer();
-        BindUtils.RelayBind(navMenu, ScrollViewer.AllowAutoHideProperty, scrollViewer,
+
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.AllowAutoHideProperty,
             ScrollViewer.AllowAutoHideProperty);
-        BindUtils.RelayBind(navMenu, ScrollViewer.HorizontalScrollBarVisibilityProperty, scrollViewer,
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.HorizontalScrollBarVisibilityProperty,
             ScrollViewer.HorizontalScrollBarVisibilityProperty);
-        BindUtils.RelayBind(navMenu, ScrollViewer.VerticalScrollBarVisibilityProperty, scrollViewer,
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.VerticalScrollBarVisibilityProperty,
             ScrollViewer.VerticalScrollBarVisibilityProperty);
-        BindUtils.RelayBind(navMenu, ScrollViewer.IsScrollChainingEnabledProperty, scrollViewer,
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsScrollChainingEnabledProperty,
             ScrollViewer.IsScrollChainingEnabledProperty);
-        BindUtils.RelayBind(navMenu, ScrollViewer.IsDeferredScrollingEnabledProperty, scrollViewer,
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsDeferredScrollingEnabledProperty,
             ScrollViewer.IsDeferredScrollingEnabledProperty);
+        
         var presenter    = BuildItemPresenter(false, scope);
         scrollViewer.Content = presenter;
         return scrollViewer;

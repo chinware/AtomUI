@@ -24,11 +24,13 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
 {
     public const string ID = "TopLevelHorizontalNavMenuItem";
     public const string PopupPart = "PART_Popup";
+    public const string PopupFramePart = "PART_PopupFrame";
     public const string FramePart = "PART_Frame";
     public const string HeaderPresenterPart = "PART_HeaderPresenter";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     public const string ItemIconPresenterPart = "PART_ItemIconPresenter";
     public const string ActiveIndicatorPart = "PART_ActiveIndicator";
+    public const string ItemIconPart = "PART_ItemIcon";
     
     public TopLevelHorizontalNavMenuItemTheme() : base(typeof(NavMenuItem))
     {
@@ -60,7 +62,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
                 LastChildFill = true
             };
             
-            var popup = CreateMenuPopup(menuItem);
+            var popup = CreateMenuPopup();
             popup.RegisterInNameScope(scope);
             contentLayout.Children.Add(popup);
             
@@ -77,8 +79,6 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsVisibleProperty, NavMenuItem.IconProperty,
                 BindingMode.Default,
                 ObjectConverters.IsNotNull);
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
-                NavMenuTokenKey.IconMargin));
             
             contentLayout.Children.Add(iconPresenter);
             
@@ -140,7 +140,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         });
     }
 
-    private Popup CreateMenuPopup(NavMenuItem navMenuItem)
+    private Popup CreateMenuPopup()
     {
         var popup = new Popup
         {
@@ -150,25 +150,13 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             Placement                  = PlacementMode.BottomEdgeAlignedLeft
         };
 
-        var border = new Border();
+        var popupFrame = new Border()
+        {
+            Name = PopupFramePart
+        };
         
-        CreateTemplateParentBinding(border, Border.MinWidthProperty, NavMenuItem.EffectivePopupMinWidthProperty);
-    
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            SharedTokenKey.ColorBgContainer));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            MenuTokenKey.MenuPopupBorderRadius));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
-            MenuTokenKey.MenuPopupMinWidth));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxWidthProperty,
-            MenuTokenKey.MenuPopupMaxWidth));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinHeightProperty,
-            MenuTokenKey.MenuPopupMinHeight));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxHeightProperty,
-            MenuTokenKey.MenuPopupMaxHeight));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            MenuTokenKey.MenuPopupContentPadding));
-    
+        CreateTemplateParentBinding(popupFrame, Border.MinWidthProperty, NavMenuItem.EffectivePopupMinWidthProperty);
+        
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
         {
@@ -178,13 +166,8 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         Grid.SetIsSharedSizeScope(itemsPresenter, true);
         KeyboardNavigation.SetTabNavigation(itemsPresenter, KeyboardNavigationMode.Continue);
         scrollViewer.Content = itemsPresenter;
-        border.Child         = scrollViewer;
-        popup.Child          = border;
-    
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            MenuTokenKey.TopLevelItemPopupMarginToAnchor));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            MenuTokenKey.MenuPopupBoxShadows));
+        popupFrame.Child     = scrollViewer;
+        popup.Child          = popupFrame;
     
         CreateTemplateParentBinding(popup, Popup.IsOpenProperty,
             NavMenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
@@ -208,10 +191,30 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         var presenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
         presenterStyle.Add(ContentPresenter.LineHeightProperty, NavMenuTokenKey.HorizontalLineHeight);
         commonStyle.Add(presenterStyle);
-        
+
+        var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+        iconPresenterStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.IconMargin);
+        commonStyle.Add(iconPresenterStyle);
+        BuildPopupStyle(commonStyle);
         BuildActiveIndicatorStyle(commonStyle);
         Add(commonStyle);
         BuildDisabledStyle();
+    }
+
+    private void BuildPopupStyle(Style commonStyle)
+    {
+        var popupStyle = new Style(selector => selector.Nesting().Template().Name(PopupPart));
+        popupStyle.Add(Popup.MarginToAnchorProperty, NavMenuTokenKey.TopLevelItemPopupMarginToAnchor);
+        popupStyle.Add(Popup.MaskShadowsProperty, NavMenuTokenKey.MenuPopupBoxShadows);
+        commonStyle.Add(popupStyle);
+        var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
+        popupFrameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+        popupFrameStyle.Add(Border.CornerRadiusProperty, NavMenuTokenKey.MenuPopupBorderRadius);
+        popupFrameStyle.Add(Layoutable.MinWidthProperty, NavMenuTokenKey.MenuPopupMinWidth);
+        popupFrameStyle.Add(Layoutable.MaxWidthProperty, NavMenuTokenKey.MenuPopupMaxWidth);
+        popupFrameStyle.Add(Layoutable.MaxHeightProperty, NavMenuTokenKey.MenuPopupMaxHeight);
+        popupFrameStyle.Add(Decorator.PaddingProperty, NavMenuTokenKey.MenuPopupContentPadding);
+        commonStyle.Add(popupFrameStyle);
     }
     
     private void BuildActiveIndicatorStyle(Style commonStyle)
@@ -258,7 +261,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     
     protected override void BuildInstanceStyles(Control control)
     {
-        var iconStyle = new Style(selector => selector.Name(ThemeConstants.ItemIconPart));
+        var iconStyle = new Style(selector => selector.Name(ItemIconPart));
         iconStyle.Add(Icon.WidthProperty, NavMenuTokenKey.ItemIconSize);
         iconStyle.Add(Icon.HeightProperty, NavMenuTokenKey.ItemIconSize);
         iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorText);

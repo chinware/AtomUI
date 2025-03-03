@@ -27,7 +27,6 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(ThemeConstants.PopupPart, typeof(Popup))]
 [PseudoClasses(SeparatorPC, IconPC, StdPseudoClass.Open, StdPseudoClass.Pressed, StdPseudoClass.Selected, TopLevelPC)]
 public class NavMenuItem : HeaderedSelectingItemsControl,
                            INavMenuItem,
@@ -690,6 +689,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <inheritdoc/>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        base.OnApplyTemplate(e);
         if (_popup != null)
         {
             _popup.Opened             -= PopupOpened;
@@ -697,7 +697,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             _popup.DependencyResolver =  null;
         }
 
-        _popup       = e.NameScope.Find<Popup>(ThemeConstants.PopupPart);
+        _popup       = e.NameScope.Find<Popup>(NavMenuItemTheme.PopupPart);
         _headerFrame = e.NameScope.Find<Border>(BaseNavMenuItemTheme.HeaderDecoratorPart);
         if (_headerFrame is not null)
         {

@@ -18,6 +18,7 @@ namespace AtomUI.Controls;
 internal class NavMenuTheme : BaseControlTheme
 {
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
+    public const string HorizontalLinePart = "PART_HorizontalLine";
 
     public NavMenuTheme()
         : base(typeof(NavMenu))
@@ -39,7 +40,10 @@ internal class NavMenuTheme : BaseControlTheme
                 LastChildFill = true
             };
 
-            var horizontalLine = new Rectangle();
+            var horizontalLine = new Rectangle()
+            {
+                Name = HorizontalLinePart
+            };
             rootLayout.Children.Add(horizontalLine);
             DockPanel.SetDock(horizontalLine, Dock.Bottom);
             CreateTemplateParentBinding(horizontalLine, Rectangle.HeightProperty,
@@ -47,8 +51,6 @@ internal class NavMenuTheme : BaseControlTheme
             CreateTemplateParentBinding(horizontalLine, Rectangle.IsVisibleProperty, NavMenu.ModeProperty,
                 BindingMode.Default,
                 new FuncValueConverter<NavMenuMode, bool>(v => v == NavMenuMode.Horizontal));
-            navMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(horizontalLine, Rectangle.FillProperty,
-                SharedTokenKey.ColorBorderSecondary));
 
             var border = new Border
             {
@@ -72,6 +74,10 @@ internal class NavMenuTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
+        
+        var horizontalLineStyle = new Style(selector => selector.Nesting().Template().Name(HorizontalLinePart));
+        horizontalLineStyle.Add(Rectangle.FillProperty, SharedTokenKey.ColorBorderSecondary);
+        commonStyle.Add(horizontalLineStyle);
 
         commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
 

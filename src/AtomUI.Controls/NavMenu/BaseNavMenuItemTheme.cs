@@ -12,6 +12,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -90,16 +91,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         Grid.SetColumn(iconPresenter, 0);
         iconPresenter.RegisterInNameScope(scope);
         CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, NavMenuItem.IconProperty);
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
-            Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
-            Layoutable.WidthProperty,
-            NavMenuTokenKey.ItemIconSize));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
-            Layoutable.HeightProperty,
-            NavMenuTokenKey.ItemIconSize));
-
+        
         var itemTextPresenter = new ContentPresenter
         {
             Name                = ItemTextPresenterPart,
@@ -109,11 +101,22 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             IsHitTestVisible    = false
         };
         Grid.SetColumn(itemTextPresenter, 1);
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(itemTextPresenter,
-            Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin));
+
         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
-            HeaderedSelectingItemsControl.HeaderProperty);
+            HeaderedSelectingItemsControl.HeaderProperty, BindingMode.Default, new FuncValueConverter<object?, object?>(
+                o =>
+                {
+                    if (o is string str)
+                    {
+                        return new SingleLineText
+                        {
+                            Text = str,
+                            VerticalAlignment = VerticalAlignment.Center,
+                        };
+                    }
+
+                    return o;
+                }));
         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty,
             HeaderedSelectingItemsControl.HeaderTemplateProperty);
 
@@ -127,9 +130,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Center
         };
         Grid.SetColumn(inputGestureText, 2);
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(inputGestureText,
-            Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin));
+
         CreateTemplateParentBinding(inputGestureText,
             SingleLineText.TextProperty,
             NavMenuItem.InputGestureProperty,
@@ -160,13 +161,6 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
         CreateTemplateParentBinding(menuIndicatorIcon, Icon.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
-
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon,
-            Layoutable.WidthProperty,
-            NavMenuTokenKey.MenuArrowSize));
-        navMenuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon,
-            Layoutable.HeightProperty,
-            NavMenuTokenKey.MenuArrowSize));
         menuIndicatorIcon.RegisterInNameScope(scope);
 
         return menuIndicatorIcon;
@@ -188,6 +182,17 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
             keyGestureStyle.Add(SingleLineText.ForegroundProperty, NavMenuTokenKey.KeyGestureColor);
             commonStyle.Add(keyGestureStyle);
+        }
+        
+        // 按钮元素外间距
+        {
+            var itemTextPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemTextPresenterPart));
+            itemTextPresenterStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.ItemMargin);
+            commonStyle.Add(itemTextPresenterStyle);
+            
+            var inputGestureTextStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
+            inputGestureTextStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.ItemMargin);
+            commonStyle.Add(inputGestureTextStyle);
         }
 
         {
@@ -367,13 +372,14 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
     private void BuildMenuIndicatorStyle()
     {
         {
+            // 设置颜色
             var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
             menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
             menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.ItemColor);
             menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.ItemSelectedColor);
             menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.ItemDisabledColor);
-            // 设置颜色
-
+            menuIndicatorStyle.Add(Layoutable.WidthProperty, NavMenuTokenKey.MenuArrowSize);
+            menuIndicatorStyle.Add(Layoutable.HeightProperty, NavMenuTokenKey.MenuArrowSize);
             Add(menuIndicatorStyle);
         }
         {
@@ -414,6 +420,10 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             var iconContentPresenterStyle =
                 new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
             iconContentPresenterStyle.Add(Visual.IsVisibleProperty, false);
+            iconContentPresenterStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.ItemMargin);
+            iconContentPresenterStyle.Add(Layoutable.WidthProperty, NavMenuTokenKey.ItemIconSize);
+            iconContentPresenterStyle.Add(Layoutable.HeightProperty, NavMenuTokenKey.ItemIconSize);
+            
             Add(iconContentPresenterStyle);
         }
 
@@ -434,11 +444,21 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             disabledStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemDisabledColor);
             Add(disabledStyle);
         }
+        {
+            var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.Disabled));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemDisabledColor);
+            Add(headerDecoratorStyle);
+        }
         var darkStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
         {
             var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
             disabledStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemDisabledColor);
             darkStyle.Add(disabledStyle);
+        }
+        {
+            var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.Disabled));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemDisabledColor);
+            darkStyle.Add(headerDecoratorStyle);
         }
         Add(darkStyle);
     }

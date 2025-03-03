@@ -14,6 +14,7 @@ namespace AtomUI.Controls;
 internal class HorizontalNavMenuTheme : BaseNavMenuTheme
 {
     public const string ID = "HorizontalNavMenu";
+    public const string HorizontalLinePart = "PART_HorizontalLine";
 
     public HorizontalNavMenuTheme()
         : base(typeof(NavMenu))
@@ -31,13 +32,14 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
         {
             LastChildFill = true
         };
-        var horizontalLine = new Rectangle();
+        var horizontalLine = new Rectangle()
+        {
+            Name = HorizontalLinePart
+        };
         layout.Children.Add(horizontalLine);
         DockPanel.SetDock(horizontalLine, Dock.Bottom);
         CreateTemplateParentBinding(horizontalLine, Rectangle.HeightProperty,
             NavMenu.HorizontalBorderThicknessProperty);
-        navMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(horizontalLine, Rectangle.FillProperty,
-            SharedTokenKey.ColorBorderSecondary));
 
         layout.Children.Add(BuildItemPresenter(true, scope));
         return layout;
@@ -47,6 +49,10 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
+        
+        var horizontalLineStyle = new Style(selector => selector.Nesting().Template().Name(HorizontalLinePart));
+        horizontalLineStyle.Add(Rectangle.FillProperty, SharedTokenKey.ColorBorderSecondary);
+        commonStyle.Add(horizontalLineStyle);
 
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
         horizontalStyle.Add(NavMenu.BackgroundProperty, SharedTokenKey.ColorBgContainer);

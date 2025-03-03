@@ -191,6 +191,11 @@ internal class NavMenuToken : AbstractControlDesignToken
     public double VerticalItemsPanelSpacing { get; set; }
     
     /// <summary>
+    /// 垂直面板的外间距
+    /// </summary>
+    public Thickness VerticalChildItemsMargin { get; set; }
+    
+    /// <summary>
     /// 垂直面板的内容内间距
     /// </summary>
     public Thickness VerticalMenuContentPadding { get; set; }
@@ -456,6 +461,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         MenuPopupContentPadding   = new Thickness(SharedToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
         MenuPopupBoxShadows       = SharedToken.BoxShadowsSecondary;
         VerticalItemsPanelSpacing = SharedToken.MarginXXS;
+        VerticalChildItemsMargin = new Thickness(0, SharedToken.MarginXXS, 0, 0);
 
         InlineItemIndentUnit       = ItemHeight / 2;
         VerticalMenuContentPadding = new Thickness(SharedToken.PaddingXXS);
