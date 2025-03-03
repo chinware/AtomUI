@@ -1,5 +1,4 @@
-﻿using AtomUI.Data;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -38,7 +37,7 @@ internal class ListBoxTheme : BaseControlTheme
             CreateTemplateParentBinding(frameBorder, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
 
             var itemsPresenter = BuildItemsPresenter(listBox, scope);
-            var scrollViewer   = BuildScrollViewer(listBox, scope);
+            var scrollViewer   = BuildScrollViewer();
 
             scrollViewer.Content = itemsPresenter;
             frameBorder.Child    = scrollViewer;
@@ -47,24 +46,19 @@ internal class ListBoxTheme : BaseControlTheme
         });
     }
 
-    private ScrollViewer BuildScrollViewer(ListBox listBox, INameScope scope)
+    private ScrollViewer BuildScrollViewer()
     {
         var scrollViewer = new ScrollViewer
         {
             Name = ScrollViewerPart
         };
-        BindUtils.RelayBind(listBox, ScrollViewer.AllowAutoHideProperty, scrollViewer,
-            ScrollViewer.AllowAutoHideProperty);
-        BindUtils.RelayBind(listBox, ScrollViewer.HorizontalScrollBarVisibilityProperty, scrollViewer,
-            ScrollViewer.HorizontalScrollBarVisibilityProperty);
-        BindUtils.RelayBind(listBox, ScrollViewer.VerticalScrollBarVisibilityProperty, scrollViewer,
-            ScrollViewer.VerticalScrollBarVisibilityProperty);
-        BindUtils.RelayBind(listBox, ScrollViewer.IsScrollChainingEnabledProperty, scrollViewer,
-            ScrollViewer.IsScrollChainingEnabledProperty);
-        BindUtils.RelayBind(listBox, ScrollViewer.IsDeferredScrollingEnabledProperty, scrollViewer,
-            ScrollViewer.IsDeferredScrollingEnabledProperty);
-        BindUtils.RelayBind(listBox, ScrollViewer.IsScrollInertiaEnabledProperty, scrollViewer,
-            ScrollViewer.IsScrollInertiaEnabledProperty);
+
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.AllowAutoHideProperty, ScrollViewer.AllowAutoHideProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollViewer.HorizontalScrollBarVisibilityProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollViewer.VerticalScrollBarVisibilityProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsScrollChainingEnabledProperty, ScrollViewer.IsScrollChainingEnabledProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsDeferredScrollingEnabledProperty, ScrollViewer.IsDeferredScrollingEnabledProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsScrollInertiaEnabledProperty, ScrollViewer.IsScrollInertiaEnabledProperty);
 
         return scrollViewer;
     }
