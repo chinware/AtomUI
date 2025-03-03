@@ -45,17 +45,13 @@ public class MenuScrollViewer : AvaloniaScrollViewer,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _scrollUpButton    = scope.Find<IconButton>(MenuScrollViewerTheme.ScrollUpButtonPart);
-        _scrollDownButton  = scope.Find<IconButton>(MenuScrollViewerTheme.ScrollDownButtonPart);
+        this.RunThemeTokenBindingActions();
+        _scrollUpButton   = e.NameScope.Find<IconButton>(MenuScrollViewerTheme.ScrollUpButtonPart);
+        _scrollDownButton = e.NameScope.Find<IconButton>(MenuScrollViewerTheme.ScrollDownButtonPart);
 
         SetupScrollButtonVisibility();
     }
-
+    
     private void SetupScrollButtonVisibility()
     {
         var args = new List<object?>();

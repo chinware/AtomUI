@@ -42,12 +42,15 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
         arrowIcon.Name = RangePickerArrowPart;
         arrowIcon.RegisterInNameScope(scope);
 
-        infoPickerInput.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.HeightProperty,
-            SharedTokenKey.IconSize));
-        infoPickerInput.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.WidthProperty,
-            SharedTokenKey.IconSize));
-        infoPickerInput.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextQuaternary));
+        RegisterTokenResourceBindings(infoPickerInput, () =>
+        {
+            infoPickerInput.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.HeightProperty,
+                SharedTokenKey.IconSize));
+            infoPickerInput.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.WidthProperty,
+                SharedTokenKey.IconSize));
+            infoPickerInput.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(arrowIcon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorTextQuaternary));
+        });
 
         var rangeStartTextBox = BuildPickerTextBox(InfoInputBoxPart);
         

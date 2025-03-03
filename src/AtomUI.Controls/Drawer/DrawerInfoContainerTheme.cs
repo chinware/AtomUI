@@ -112,12 +112,15 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
 
         var closeIcon = AntDesignIconPackage.CloseOutlined();
 
-        drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-            Icon.NormalFilledBrushProperty, SharedTokenKey.ColorIcon));
-        drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-            Icon.ActiveFilledBrushProperty, SharedTokenKey.ColorIconHover));
-        drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-            Icon.SelectedFilledBrushProperty, SharedTokenKey.ColorIconHover));
+        RegisterTokenResourceBindings(drawerInfoContainer, () =>
+        {
+            drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+                Icon.NormalFilledBrushProperty, SharedTokenKey.ColorIcon));
+            drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+                Icon.ActiveFilledBrushProperty, SharedTokenKey.ColorIconHover));
+            drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+                Icon.SelectedFilledBrushProperty, SharedTokenKey.ColorIconHover));
+        });
 
         var closeButton = new IconButton()
         {

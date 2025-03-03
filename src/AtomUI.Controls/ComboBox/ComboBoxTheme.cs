@@ -101,12 +101,7 @@ internal class ComboBoxTheme : BaseControlTheme
 
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
 
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
-            Icon.ActiveFilledBrushProperty,
-            ButtonSpinnerTokenKey.HandleHoverColor));
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
-            Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorPrimaryActive));
+
 
         var openButton = new IconButton
         {
@@ -119,17 +114,28 @@ internal class ComboBoxTheme : BaseControlTheme
 
         openButton.RegisterInNameScope(scope);
 
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton, Layoutable.WidthProperty,
-            ComboBoxTokenKey.OpenIndicatorWidth));
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton,
-            IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM));
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton,
-            IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM));
+      
 
         spinnerHandleDecorator.Child   = openButton;
         spinnerInnerBox.SpinnerContent = spinnerHandleDecorator;
+        
+        RegisterTokenResourceBindings(comboBox, () =>
+        {
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
+                Icon.ActiveFilledBrushProperty,
+                ButtonSpinnerTokenKey.HandleHoverColor));
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
+                Icon.SelectedFilledBrushProperty,
+                SharedTokenKey.ColorPrimaryActive));
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton, Layoutable.WidthProperty,
+                ComboBoxTokenKey.OpenIndicatorWidth));
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton,
+                IconButton.IconWidthProperty,
+                SharedTokenKey.IconSizeSM));
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton,
+                IconButton.IconHeightProperty,
+                SharedTokenKey.IconSizeSM));
+        });
 
         return spinnerInnerBox;
     }
@@ -183,13 +189,7 @@ internal class ComboBoxTheme : BaseControlTheme
 
         var border = new Border();
 
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            SharedTokenKey.ColorBgContainer));
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            ComboBoxTokenKey.PopupBorderRadius));
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            ComboBoxTokenKey.PopupContentPadding));
-
+       
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
         {
@@ -201,15 +201,25 @@ internal class ComboBoxTheme : BaseControlTheme
         border.Child         = scrollViewer;
 
         popup.Child = border;
-
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            ComboBoxTokenKey.PopupMarginToAnchor));
-        comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            ComboBoxTokenKey.PopupBoxShadows));
+        
         CreateTemplateParentBinding(popup, Layoutable.MaxHeightProperty,
             ComboBox.MaxDropDownHeightProperty);
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
             ComboBox.IsDropDownOpenProperty, BindingMode.TwoWay);
+        
+        RegisterTokenResourceBindings(comboBox, () =>
+        {
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
+                SharedTokenKey.ColorBgContainer));
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
+                ComboBoxTokenKey.PopupBorderRadius));
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
+                ComboBoxTokenKey.PopupContentPadding));
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
+                ComboBoxTokenKey.PopupMarginToAnchor));
+            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
+                ComboBoxTokenKey.PopupBoxShadows));
+        });
 
         return popup;
     }

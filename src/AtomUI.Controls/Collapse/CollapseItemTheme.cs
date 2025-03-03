@@ -57,8 +57,11 @@ internal class CollapseItemTheme : BaseControlTheme
                 Name = ContentPresenterPart
             };
             motionActor.Child = contentPresenter;
-            collapseItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
-                SharedTokenKey.ColorBorder));
+            RegisterTokenResourceBindings(collapseItem, () =>
+            {
+                collapseItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(contentPresenter, ContentPresenter.BorderBrushProperty,
+                    SharedTokenKey.ColorBorder));
+            });
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty,
                 BindingMode.Default, 
@@ -95,9 +98,7 @@ internal class CollapseItemTheme : BaseControlTheme
         };
         headerDecorator.RegisterInNameScope(scope);
         DockPanel.SetDock(headerDecorator, Dock.Top);
-
-        collapseItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(headerDecorator, Border.BorderBrushProperty,
-            SharedTokenKey.ColorBorder));
+        
         CreateTemplateParentBinding(headerDecorator, Border.BorderThicknessProperty,
             CollapseItem.HeaderBorderThicknessProperty);
 
@@ -117,10 +118,7 @@ internal class CollapseItemTheme : BaseControlTheme
             Name              = ExpandButtonPart,
             VerticalAlignment = VerticalAlignment.Center
         };
-        collapseItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSize));
-        collapseItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSize));
+       
         expandButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(expandButton, IconButton.IconProperty, CollapseItem.ExpandIconProperty);
         CreateTemplateParentBinding(expandButton, Visual.IsVisibleProperty, CollapseItem.IsShowExpandIconProperty);
@@ -160,6 +158,16 @@ internal class CollapseItemTheme : BaseControlTheme
 
         headerDecorator.Child = headerLayout;
         layout.Children.Add(headerDecorator);
+        
+        RegisterTokenResourceBindings(collapseItem, () =>
+        {
+            collapseItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(headerDecorator, Border.BorderBrushProperty,
+                SharedTokenKey.ColorBorder));
+            collapseItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton, IconButton.IconWidthProperty,
+                SharedTokenKey.IconSize));
+            collapseItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton, IconButton.IconHeightProperty,
+                SharedTokenKey.IconSize));
+        });
     }
 
     protected override void BuildStyles()

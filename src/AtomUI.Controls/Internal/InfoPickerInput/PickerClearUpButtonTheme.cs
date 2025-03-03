@@ -57,17 +57,20 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
             Name = ClearButtonPart,
             Icon = closeIcon
         };
-
-        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSize));
-        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSize));
-        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextQuaternary));
-        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorTextTertiary));
-        clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText));
+        
+        RegisterTokenResourceBindings(clearButton, () =>
+        {
+            clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconHeightProperty,
+                SharedTokenKey.IconSize));
+            clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconWidthProperty,
+                SharedTokenKey.IconSize));
+            clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorTextQuaternary));
+            clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.ActiveFilledBrushProperty,
+                SharedTokenKey.ColorTextTertiary));
+            clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon, Icon.SelectedFilledBrushProperty,
+                SharedTokenKey.ColorText));
+        });
 
         clearButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(clearButton, Visual.IsVisibleProperty,

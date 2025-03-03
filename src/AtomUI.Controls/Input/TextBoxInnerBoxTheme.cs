@@ -32,21 +32,7 @@ internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
     {
         var eyeOutlinedIcon          = AntDesignIconPackage.EyeOutlined();
         var eyeInvisibleOutlinedIcon = AntDesignIconPackage.EyeInvisibleOutlined();
-
-        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon,
-            Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextTertiary));
-        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon,
-            Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText));
-
-        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon,
-            Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextTertiary));
-        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon,
-            Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText));
-
+        
         var revealButtonIconButton = new ToggleIconButton
         {
             Name          = RevealButtonPart,
@@ -56,17 +42,34 @@ internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
 
         CreateTemplateParentBinding(revealButtonIconButton, ToggleIconButton.IsCheckedProperty,
             TextBoxInnerBox.IsRevealButtonCheckedProperty, BindingMode.TwoWay);
-        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(revealButtonIconButton,
-            ToggleIconButton.IconHeightProperty,
-            SharedTokenKey.IconSize));
-        textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(revealButtonIconButton,
-            ToggleIconButton.IconWidthProperty,
-            SharedTokenKey.IconSize));
-
+        
         revealButtonIconButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(revealButtonIconButton, Visual.IsVisibleProperty,
             TextBoxInnerBox.IsRevealButtonVisibleProperty);
         addOnLayout.Children.Add(revealButtonIconButton);
+        
+        RegisterTokenResourceBindings(textBoxInnerBox, () =>
+        {
+            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon,
+                Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorTextTertiary));
+            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeOutlinedIcon,
+                Icon.ActiveFilledBrushProperty,
+                SharedTokenKey.ColorText));
+
+            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon,
+                Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorTextTertiary));
+            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(eyeInvisibleOutlinedIcon,
+                Icon.ActiveFilledBrushProperty,
+                SharedTokenKey.ColorText));
+            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(revealButtonIconButton,
+                ToggleIconButton.IconHeightProperty,
+                SharedTokenKey.IconSize));
+            textBoxInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(revealButtonIconButton,
+                ToggleIconButton.IconWidthProperty,
+                SharedTokenKey.IconSize));
+        });
     }
 
     protected override void BuildDisabledStyle()

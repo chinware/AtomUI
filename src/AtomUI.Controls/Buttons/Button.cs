@@ -349,7 +349,8 @@ public class Button : AvaloniaButton,
         }
 
         SetupControlThemeBindings();
-        
+        ApplyShapeStyleConfig();
+        SetupIconBrush();
         UpdatePseudoClasses();
     }
 
@@ -427,7 +428,7 @@ public class Button : AvaloniaButton,
             SetupEffectiveBorderThickness();
         }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToLogicalTree())
         {
             if (e.Property == IconProperty)
             {
@@ -527,11 +528,10 @@ public class Button : AvaloniaButton,
     {
         base.OnApplyTemplate(e);
         _loadingIcon = e.NameScope.Find<Icon>(BaseButtonTheme.LoadingIconPart);
-        ApplyShapeStyleConfig();
+
         ApplyIconModeStyleConfig();
         UpdatePseudoClasses();
         SetupIcon();
-        SetupIconBrush();
         SetupTransitions();
     }
 

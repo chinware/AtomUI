@@ -344,6 +344,8 @@ internal class CalendarItem : TemplatedControl,
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         HeaderButton = e.NameScope.Get<HeadTextButton>(CalendarItemTheme.HeaderButtonPart);
         PreviousButton = e.NameScope.Get<IconButton>(CalendarItemTheme.PreviousButtonPart);
         PreviousMonthButton =

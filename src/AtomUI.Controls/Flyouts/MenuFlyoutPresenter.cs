@@ -178,6 +178,7 @@ public class MenuFlyoutPresenter : MenuBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutPresenterTheme.RootContainerPart);
     }
 

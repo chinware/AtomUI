@@ -216,6 +216,7 @@ public class MessageCard : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         if (Icon is null)
         {
             SetupMessageIcon();

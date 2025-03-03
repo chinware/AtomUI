@@ -267,6 +267,7 @@ public class EmptyIndicator : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment   = VerticalAlignment.Center;

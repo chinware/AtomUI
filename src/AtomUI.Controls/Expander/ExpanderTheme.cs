@@ -70,9 +70,14 @@ internal class ExpanderTheme : BaseControlTheme
             };
             motionActor.SetCurrentValue(Visual.IsVisibleProperty, false);
             motionActor.Child = contentPresenter;
-            expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(contentPresenter,
-                ContentPresenter.BorderBrushProperty,
-                SharedTokenKey.ColorBorder));
+            
+            RegisterTokenResourceBindings(expander, () =>
+            {
+                expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(contentPresenter,
+                    ContentPresenter.BorderBrushProperty,
+                    SharedTokenKey.ColorBorder));
+            });
+            
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -120,12 +125,16 @@ internal class ExpanderTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Left
         };
-        expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton,
-            IconButton.IconWidthProperty,
-            SharedTokenKey.IconSize));
-        expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton,
-            IconButton.IconHeightProperty,
-            SharedTokenKey.IconSize));
+        
+        RegisterTokenResourceBindings(expander, () =>
+        {
+            expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton,
+                IconButton.IconWidthProperty,
+                SharedTokenKey.IconSize));
+            expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton,
+                IconButton.IconHeightProperty,
+                SharedTokenKey.IconSize));
+        });
 
         expandButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(expandButton, IconButton.IconProperty, Expander.ExpandIconProperty);

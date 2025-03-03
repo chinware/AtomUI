@@ -128,6 +128,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             SizeType            = SizeType.Small,
             Margin = new Thickness(0),
             Width = double.NaN,
+            Height = double.NaN,
         };
         
         cancelButton.RegisterInNameScope(scope);
@@ -142,6 +143,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             SizeType = SizeType.Small,
             Margin   = new Thickness(0),
             Width    = double.NaN,
+            Height   = double.NaN,
         };
 
         okButton.RegisterInNameScope(scope);

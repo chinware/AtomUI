@@ -248,10 +248,10 @@ public class CollapseItem : HeaderedContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
-        SetupIconButton();
         _tempAnimationDisabled = true;
         HandleSelectedChanged();
         _tempAnimationDisabled = false;
@@ -264,16 +264,19 @@ public class CollapseItem : HeaderedContentControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ExpandIconProperty)
-        {
-            SetupIconButton();
-        }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToLogicalTree())
         {
             if (change.Property == IsSelectedProperty)
             {
                 HandleSelectedChanged();
+            }
+            else if (change.Property == ExpandIconProperty)
+            {
+                var oldExpandIcon = change.GetOldValue<Icon?>();
+                oldExpandIcon?.SetTemplatedParent(null);
+
+                SetupIconButton();
             }
         }
 
@@ -289,16 +292,7 @@ public class CollapseItem : HeaderedContentControl,
                 newControl.SetTemplatedParent(this);
             }
         }
-        else if (change.Property == ExpandIconProperty)
-        {
-            var oldExpandIcon = change.GetOldValue<Icon?>();
-            if (oldExpandIcon is not null)
-            {
-                oldExpandIcon.SetTemplatedParent(null);
-            }
-
-            SetupIconButton();
-        }
+       
     }
 
     private void HandleSelectedChanged()
@@ -386,6 +380,7 @@ public class CollapseItem : HeaderedContentControl,
         _tokenBindingsDisposable = new CompositeDisposable();
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationSlow));
+        SetupIconButton();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

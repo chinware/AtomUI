@@ -118,6 +118,7 @@ internal class PopupConfirmContainer : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         _okButton     = e.NameScope.Find<Button>(PopupConfirmContainerTheme.OkButtonPart);
         _cancelButton = e.NameScope.Find<Button>(PopupConfirmContainerTheme.CancelButtonPart);
         if (_okButton is not null)

@@ -60,19 +60,22 @@ internal class DualMonthCalendarItemTheme : CalendarItemTheme
         base.NotifyBuildMonthViews(calendarItem, monthViewLayout, scope);
         var monthView = BuildMonthViewItem(SecondaryMonthViewPart);
         BindUtils.RelayBind(monthViewLayout, Visual.IsVisibleProperty, monthView, Visual.IsVisibleProperty);
-
-        calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(monthView,
-            Layoutable.MarginProperty,
-            DatePickerTokenKey.RangeCalendarSpacing, BindingPriority.Template,
-            v =>
-            {
-                if (v is double dval)
+        
+        RegisterTokenResourceBindings(calendarItem, () =>
+        {
+            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(monthView,
+                Layoutable.MarginProperty,
+                DatePickerTokenKey.RangeCalendarSpacing, BindingPriority.Template,
+                v =>
                 {
-                    return new Thickness(dval, 0, 0, 0);
-                }
+                    if (v is double dval)
+                    {
+                        return new Thickness(dval, 0, 0, 0);
+                    }
 
-                return new Thickness();
-            }));
+                    return new Thickness();
+                }));
+        });
 
         monthView.RegisterInNameScope(scope);
         monthViewLayout.Children.Add(monthView);

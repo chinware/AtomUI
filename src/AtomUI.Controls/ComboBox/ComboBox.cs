@@ -156,6 +156,7 @@ public class ComboBox : AvaloniaComboBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         _popup               = e.NameScope.Find<Popup>(ComboBoxTheme.PopupPart);
         _openIndicatorButton = e.NameScope.Find<IconButton>(ComboBoxTheme.OpenIndicatorButtonPart);
         _spinnerInnerBox     = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxTheme.SpinnerInnerBoxPart);
