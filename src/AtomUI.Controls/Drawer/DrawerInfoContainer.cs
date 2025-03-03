@@ -186,7 +186,7 @@ internal class DrawerInfoContainer : HeaderedContentControl,
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions()
+            Transitions ??= new Transitions
             {
                 AnimationUtils.CreateTransition<TransformOperationsTransition>(DrawerInfoContainer.RenderTransformProperty)
             };
@@ -236,7 +236,6 @@ internal class DrawerInfoContainer : HeaderedContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _closeButton = e.NameScope.Find<IconButton>(DrawerInfoContainerTheme.CloseButtonPart);
         if (_closeButton != null)
         {

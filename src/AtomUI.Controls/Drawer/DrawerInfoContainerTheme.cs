@@ -57,7 +57,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
             };
             rootLayout.Children.Add(infoLayout);
 
-            BuildHeader(drawerInfoContainer, infoLayout, scope);
+            BuildHeader(infoLayout, scope);
             var separator = new Separator();
             Grid.SetRow(separator, 1);
             infoLayout.Children.Add(separator);
@@ -95,7 +95,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         });
     }
 
-    private void BuildHeader(DrawerInfoContainer drawerInfoContainer, Grid rootLayout, INameScope scope)
+    private void BuildHeader(Grid rootLayout, INameScope scope)
     {
         var headerLayout = new Grid
         {
@@ -110,22 +110,10 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         Grid.SetRow(headerLayout, 0);
         rootLayout.Children.Add(headerLayout);
 
-        var closeIcon = AntDesignIconPackage.CloseOutlined();
-
-        RegisterTokenResourceBindings(drawerInfoContainer, () =>
-        {
-            drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-                Icon.NormalFilledBrushProperty, SharedTokenKey.ColorIcon));
-            drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-                Icon.ActiveFilledBrushProperty, SharedTokenKey.ColorIconHover));
-            drawerInfoContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-                Icon.SelectedFilledBrushProperty, SharedTokenKey.ColorIconHover));
-        });
-
-        var closeButton = new IconButton()
+        var closeButton = new IconButton
         {
             Name                = CloseButtonPart,
-            Icon                = closeIcon,
+            Icon                = AntDesignIconPackage.CloseOutlined(),
             IsEnableHoverEffect = true,
             VerticalAlignment   = VerticalAlignment.Center,
         };
@@ -176,6 +164,16 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
         BuildHeaderStyle();
         BuildContentStyle();
         BuildFooterStyle();
+        BuildCloseButtonsStyle();
+    }
+
+    private void BuildCloseButtonsStyle()
+    {
+        var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
+        closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
+        closeButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
+        closeButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorIconHover);
+        Add(closeButtonStyle);
     }
 
     private void BuildShadowsStyle()
@@ -218,7 +216,7 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
     private void BuildDialogSizeStyle()
     {
         // 摆放位置样式
-        // TODO Error 这样直接设置 Binding 所有的该对样公用一个会不会内存泄漏
+        // TODO Error 这样直接设置 Binding 所有的该样式公用一个会不会内存泄漏
         // TODO review memory leak
         var topPlacementStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(DrawerInfoContainer.PlacementProperty, DrawerPlacement.Top));
