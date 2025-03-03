@@ -71,13 +71,6 @@ internal class ExpanderTheme : BaseControlTheme
             motionActor.SetCurrentValue(Visual.IsVisibleProperty, false);
             motionActor.Child = contentPresenter;
             
-            RegisterTokenResourceBindings(expander, () =>
-            {
-                expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(contentPresenter,
-                    ContentPresenter.BorderBrushProperty,
-                    SharedTokenKey.ColorBorder));
-            });
-            
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -123,18 +116,8 @@ internal class ExpanderTheme : BaseControlTheme
         {
             Name                = ExpandButtonPart,
             VerticalAlignment   = VerticalAlignment.Center,
-            HorizontalAlignment = HorizontalAlignment.Left
+            HorizontalAlignment = HorizontalAlignment.Left,
         };
-        
-        RegisterTokenResourceBindings(expander, () =>
-        {
-            expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton,
-                IconButton.IconWidthProperty,
-                SharedTokenKey.IconSize));
-            expander.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(expandButton,
-                IconButton.IconHeightProperty,
-                SharedTokenKey.IconSize));
-        });
 
         expandButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(expandButton, IconButton.IconProperty, Expander.ExpandIconProperty);
@@ -227,11 +210,11 @@ internal class ExpanderTheme : BaseControlTheme
         commonStyle.Add(headerPresenter);
 
         // ExpandIcon 
-        var expandIconStyle = new Style(selector =>
-            selector.Nesting().Template().Name(ExpandButtonPart).Descendant().OfType<Icon>());
-        expandIconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeSM);
-        expandIconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeSM);
-        commonStyle.Add(expandIconStyle);
+        var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
+        expandButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+        expandButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+        expandButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+        commonStyle.Add(expandButtonStyle);
 
         {
             // 打开关闭指示按钮的动画
@@ -239,7 +222,7 @@ internal class ExpanderTheme : BaseControlTheme
                 selector.Nesting().PropertyEquals(Expander.IsMotionEnabledProperty, true));
             var expandIconButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandIconButtonStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() =>
-                new Transitions()
+                new Transitions
                 {
                     AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
                 }));
@@ -418,6 +401,11 @@ internal class ExpanderTheme : BaseControlTheme
 
     private void BuildSizeTypeStyle()
     {
+        {
+            var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
+            contentPresenterStyle.Add(ContentPresenter.BorderBrushProperty, SharedTokenKey.ColorBorder);
+            Add(contentPresenterStyle);
+        }
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(Expander.SizeTypeProperty, SizeType.Large));
         {

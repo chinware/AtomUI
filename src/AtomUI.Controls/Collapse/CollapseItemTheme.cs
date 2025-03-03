@@ -188,11 +188,12 @@ internal class CollapseItemTheme : BaseControlTheme
 
         {
             // ExpandIcon 
-            var expandIconStyle =
+            var expandButtonStyle =
                 new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-            expandIconStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
-            expandIconStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
-            commonStyle.Add(expandIconStyle);
+            expandButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+            expandButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+            expandButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+            commonStyle.Add(expandButtonStyle);
         }
         
         // 动画相关
@@ -205,13 +206,13 @@ internal class CollapseItemTheme : BaseControlTheme
             }));
             isMotionEnabledStyle.Add(decoratorStyle);
             
-            var expandIconStyle =
+            var expandButtonStyle =
                 new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-            expandIconStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+            expandButtonStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
                 AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
             }));
-            isMotionEnabledStyle.Add(expandIconStyle);
+            isMotionEnabledStyle.Add(expandButtonStyle);
         }
         commonStyle.Add(isMotionEnabledStyle);
 
@@ -307,9 +308,9 @@ internal class CollapseItemTheme : BaseControlTheme
         var iconTriggerHandleStyle =
             new Style(selector => selector.Nesting()
                                           .PropertyEquals(CollapseItem.TriggerTypeProperty, CollapseTriggerType.Icon));
-        var expandIconStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
-        expandIconStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
-        iconTriggerHandleStyle.Add(expandIconStyle);
+        var expandButtonStyle = new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
+        expandButtonStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        iconTriggerHandleStyle.Add(expandButtonStyle);
         Add(iconTriggerHandleStyle);
     }
 
