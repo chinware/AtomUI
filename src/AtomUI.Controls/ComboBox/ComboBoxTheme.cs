@@ -26,6 +26,7 @@ internal class ComboBoxTheme : BaseControlTheme
     public const string SpinnerHandleDecoratorPart = "PART_SpinnerHandleDecorator";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     public const string PopupPart = "PART_Popup";
+    public const string PopupFramePart = "PART_PopupFrame";
     public const string PlaceholderTextPart = "PART_PlaceholderText";
     public const string SelectedContentPresenterPart = "PART_SelectedContentPresenter";
 
@@ -100,9 +101,7 @@ internal class ComboBoxTheme : BaseControlTheme
         spinnerHandleDecorator.RegisterInNameScope(scope);
 
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
-
-
-
+        
         var openButton = new IconButton
         {
             Name                = OpenIndicatorButtonPart,
@@ -113,9 +112,7 @@ internal class ComboBoxTheme : BaseControlTheme
         };
 
         openButton.RegisterInNameScope(scope);
-
-      
-
+        
         spinnerHandleDecorator.Child   = openButton;
         spinnerInnerBox.SpinnerContent = spinnerHandleDecorator;
         
@@ -187,8 +184,10 @@ internal class ComboBoxTheme : BaseControlTheme
         };
         popup.RegisterInNameScope(scope);
 
-        var border = new Border();
-
+        var border = new Border()
+        {
+            Name = PopupFramePart
+        };
        
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
@@ -206,20 +205,6 @@ internal class ComboBoxTheme : BaseControlTheme
             ComboBox.MaxDropDownHeightProperty);
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
             ComboBox.IsDropDownOpenProperty, BindingMode.TwoWay);
-        
-        RegisterTokenResourceBindings(comboBox, () =>
-        {
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-                SharedTokenKey.ColorBgContainer));
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-                ComboBoxTokenKey.PopupBorderRadius));
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-                ComboBoxTokenKey.PopupContentPadding));
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-                ComboBoxTokenKey.PopupMarginToAnchor));
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-                ComboBoxTokenKey.PopupBoxShadows));
-        });
 
         return popup;
     }
@@ -261,6 +246,21 @@ internal class ComboBoxTheme : BaseControlTheme
         commonStyle.Add(smallStyle);
         BuildStatusStyle();
         Add(commonStyle);
+        BuildPopupStyle();
+    }
+
+    private void BuildPopupStyle()
+    {
+        var popupStyle = new Style(selector => selector.Nesting().Template().Name(PopupPart));
+        popupStyle.Add(Popup.MarginToAnchorProperty, ComboBoxTokenKey.PopupMarginToAnchor);
+        popupStyle.Add(Popup.MaskShadowsProperty, ComboBoxTokenKey.PopupBoxShadows);
+        Add(popupStyle);
+        
+        var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
+        popupFrameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+        popupFrameStyle.Add(Border.CornerRadiusProperty, ComboBoxTokenKey.PopupBorderRadius);
+        popupFrameStyle.Add(Border.PaddingProperty, ComboBoxTokenKey.PopupContentPadding);
+        Add(popupFrameStyle);
     }
 
     private void BuildStatusStyle()
