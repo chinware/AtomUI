@@ -248,7 +248,6 @@ public class CollapseItem : HeaderedContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
