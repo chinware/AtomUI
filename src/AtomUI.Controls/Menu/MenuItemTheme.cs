@@ -1,5 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.IconPkg.AntDesign;
+﻿using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -31,6 +30,7 @@ internal class MenuItemTheme : BaseControlTheme
     public const string InputGestureTextPart = "PART_InputGestureText";
     public const string MenuIndicatorIconPart = "PART_MenuIndicatorIcon";
     public const string PopupPart = "PART_Popup";
+    public const string PopupFramePart = "PART_PopupFrame";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 
     public MenuItemTheme()
@@ -98,7 +98,6 @@ internal class MenuItemTheme : BaseControlTheme
             Grid.SetColumn(iconPresenter, 1);
             iconPresenter.RegisterInNameScope(scope);
             CreateTemplateParentBinding(iconPresenter, ContentControl.ContentProperty, MenuItem.IconProperty);
-
 
             var itemTextPresenter = new ContentPresenter
             {
@@ -170,38 +169,6 @@ internal class MenuItemTheme : BaseControlTheme
 
             container.Child = layout;
             layoutWrapper.Children.Add(container);
-
-            RegisterTokenResourceBindings(menuItem, () =>
-            {
-                menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(togglePresenter,
-                    Layoutable.MarginProperty,
-                    MenuTokenKey.ItemMargin));
-
-                menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(inputGestureText,
-                    Layoutable.MarginProperty,
-                    MenuTokenKey.ItemMargin));
-
-                menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
-                    Layoutable.MarginProperty,
-                    MenuTokenKey.ItemMargin));
-                menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
-                    Layoutable.WidthProperty,
-                    MenuTokenKey.ItemIconSize));
-                menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconPresenter,
-                    Layoutable.HeightProperty,
-                    MenuTokenKey.ItemIconSize));
-
-                menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(itemTextPresenter,
-                    Layoutable.MarginProperty,
-                    MenuTokenKey.ItemMargin));
-
-                menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon,
-                    Layoutable.WidthProperty,
-                    SharedTokenKey.IconSizeXS));
-                menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon,
-                    Layoutable.HeightProperty,
-                    SharedTokenKey.IconSizeXS));
-            });
             return layoutWrapper;
         });
     }
@@ -216,9 +183,11 @@ internal class MenuItemTheme : BaseControlTheme
             Placement                  = PlacementMode.RightEdgeAlignedTop
         };
 
-        var border = new Border();
-
-
+        var border = new Border()
+        {
+            Name = PopupFramePart
+        };
+        
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
         {
@@ -234,52 +203,44 @@ internal class MenuItemTheme : BaseControlTheme
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
             Avalonia.Controls.MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
 
-        RegisterTokenResourceBindings(menuItem, () =>
-        {
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-                SharedTokenKey.ColorBgContainer));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border,
-                Border.CornerRadiusProperty,
-                MenuTokenKey.MenuPopupBorderRadius));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border,
-                Layoutable.MinWidthProperty,
-                MenuTokenKey.MenuPopupMinWidth));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border,
-                Layoutable.MaxWidthProperty,
-                MenuTokenKey.MenuPopupMaxWidth));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border,
-                Layoutable.MinHeightProperty,
-                MenuTokenKey.MenuPopupMinHeight));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border,
-                Layoutable.MaxHeightProperty,
-                MenuTokenKey.MenuPopupMaxHeight));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-                MenuTokenKey.MenuPopupContentPadding));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup,
-                Popup.MarginToAnchorProperty,
-                MenuTokenKey.TopLevelItemPopupMarginToAnchor));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-                MenuTokenKey.MenuPopupBoxShadows));
-        });
-
         return popup;
     }
 
     protected override void BuildStyles()
     {
-        var commonStyle = new Style(selector => selector.Nesting());
-        BuildCommonStyle(commonStyle);
+        BuildCommonStyle();
         BuildMenuIndicatorStyle();
         BuildMenuIconStyle();
-        Add(commonStyle);
+        BuildPopupStyle();
         BuildDisabledStyle();
     }
 
-    private void BuildCommonStyle(Style commonStyle)
+    private void BuildCommonStyle()
     {
+        var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemColor);
         commonStyle.Add(TemplatedControl.CursorProperty,
             new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        
+        // 设置元素外间距
+        var togglePresenterStyle = new Style(selector => selector.Nesting().Template().Name(TogglePresenterPart));
+        togglePresenterStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
+        commonStyle.Add(togglePresenterStyle);
+
+        var inputGestureTextStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
+        inputGestureTextStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
+        commonStyle.Add(inputGestureTextStyle);
+
+        var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+        iconPresenterStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
+        iconPresenterStyle.Add(Layoutable.WidthProperty, MenuTokenKey.ItemIconSize);
+        iconPresenterStyle.Add(Layoutable.HeightProperty, MenuTokenKey.ItemIconSize);
+        commonStyle.Add(iconPresenterStyle);
+        
+        var itemTextPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemTextPresenterPart));
+        itemTextPresenterStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
+        commonStyle.Add(itemTextPresenterStyle);
+        
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
             keyGestureStyle.Add(SingleLineText.ForegroundProperty, MenuTokenKey.KeyGestureColor);
@@ -316,6 +277,7 @@ internal class MenuItemTheme : BaseControlTheme
             commonStyle.Add(isMotionEnabledStyle);
         }
         commonStyle.Add(hoverStyle);
+        Add(commonStyle);
     }
 
     private void BuildMenuIndicatorStyle()
@@ -323,6 +285,8 @@ internal class MenuItemTheme : BaseControlTheme
         {
             var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
             menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
+            menuIndicatorStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeXS);
+            menuIndicatorStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeXS);
             Add(menuIndicatorStyle);
         }
         var hasSubMenuStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Empty));
@@ -349,6 +313,25 @@ internal class MenuItemTheme : BaseControlTheme
             hasIconStyle.Add(iconPresenterStyle);
         }
         Add(hasIconStyle);
+    }
+
+    private void BuildPopupStyle()
+    {
+        var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
+        popupFrameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+        popupFrameStyle.Add(Border.CornerRadiusProperty, MenuTokenKey.MenuPopupBorderRadius);
+        popupFrameStyle.Add(Layoutable.MinWidthProperty, MenuTokenKey.MenuPopupMinWidth);
+        popupFrameStyle.Add(Layoutable.MaxWidthProperty, MenuTokenKey.MenuPopupMaxWidth);
+        popupFrameStyle.Add(Layoutable.MinHeightProperty, MenuTokenKey.MenuPopupMinHeight);
+        popupFrameStyle.Add(Layoutable.MaxHeightProperty, MenuTokenKey.MenuPopupMaxHeight);
+        popupFrameStyle.Add(Decorator.PaddingProperty, MenuTokenKey.MenuPopupContentPadding);
+        
+        Add(popupFrameStyle);
+        
+        var popupStyle = new Style(selector => selector.Nesting().Template().Name(PopupPart));
+        popupStyle.Add(Popup.MarginToAnchorProperty, MenuTokenKey.TopLevelItemPopupMarginToAnchor);
+        popupStyle.Add(Popup.MaskShadowsProperty, MenuTokenKey.MenuPopupBoxShadows);
+        Add(popupStyle);
     }
 
     private void BuildDisabledStyle()

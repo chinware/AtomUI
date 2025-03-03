@@ -67,18 +67,6 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             scrollDownButton.RegisterInNameScope(scope);
             scrollViewContent.RegisterInNameScope(scope);
             
-            RegisterTokenResourceBindings(menuScrollViewer, () =>
-            {
-                menuScrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconWidthProperty,
-                    MenuTokenKey.ScrollButtonIconSize));
-                menuScrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(scrollUpButton, IconButton.IconHeightProperty,
-                    MenuTokenKey.ScrollButtonIconSize));
-                menuScrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconWidthProperty,
-                    MenuTokenKey.ScrollButtonIconSize));
-                menuScrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(scrollDownButton, IconButton.IconHeightProperty,
-                    MenuTokenKey.ScrollButtonIconSize));
-            });
-            
             return dockPanel;
         });
     }
@@ -99,6 +87,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             ScrollViewer.VerticalSnapPointsAlignmentProperty);
         CreateTemplateParentBinding(scrollViewContent, ScrollContentPresenter.VerticalSnapPointsTypeProperty,
             ScrollViewer.VerticalSnapPointsTypeProperty);
+        
         var scrollGestureRecognizer = new ScrollGestureRecognizer();
         BindUtils.RelayBind(scrollViewContent, ScrollContentPresenter.CanHorizontallyScrollProperty,
             scrollGestureRecognizer,
@@ -121,6 +110,8 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             iconButtonStyle.Add(TemplatedControl.PaddingProperty, MenuTokenKey.ScrollButtonPadding);
             iconButtonStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ScrollButtonMargin);
             iconButtonStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+            iconButtonStyle.Add(IconButton.IconWidthProperty, MenuTokenKey.ScrollButtonIconSize);
+            iconButtonStyle.Add(IconButton.IconHeightProperty, MenuTokenKey.ScrollButtonIconSize);
             Add(iconButtonStyle);
         }
 

@@ -73,7 +73,6 @@ public class MenuItem : AvaloniaMenuItem,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         HorizontalAlignment = HorizontalAlignment.Stretch;
         var scope = e.NameScope;
         if (IsTopLevel)

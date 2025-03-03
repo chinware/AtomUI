@@ -1,5 +1,4 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -8,6 +7,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -30,24 +30,6 @@ internal class ContextMenuTheme : BaseControlTheme
             {
                 Name = RootContainerPart
             };
-            
-            RegisterTokenResourceBindings(contextMenu, () =>
-            {
-                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Border.BackgroundProperty,
-                    MenuTokenKey.MenuBgColor));
-                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MinWidthProperty,
-                    MenuTokenKey.MenuPopupMinWidth));
-                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MaxWidthProperty,
-                    MenuTokenKey.MenuPopupMaxWidth));
-                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MinHeightProperty,
-                    MenuTokenKey.MenuPopupMinHeight));
-                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Layoutable.MaxHeightProperty,
-                    MenuTokenKey.MenuPopupMaxHeight));
-                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Decorator.PaddingProperty,
-                    MenuTokenKey.MenuPopupContentPadding));
-                contextMenu.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(wrapper, Border.CornerRadiusProperty,
-                    MenuTokenKey.MenuPopupBorderRadius));
-            });
 
             var scrollViewer = new MenuScrollViewer();
             var itemsPresenter = new ItemsPresenter
@@ -68,5 +50,15 @@ internal class ContextMenuTheme : BaseControlTheme
     {
         this.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         this.Add(TemplatedControl.CornerRadiusProperty, MenuTokenKey.MenuPopupBorderRadius);
+
+        var rootContainerStyle = new Style(selector => selector.Nesting().Template().Name(RootContainerPart));
+        rootContainerStyle.Add(Border.BackgroundProperty, MenuTokenKey.MenuBgColor);
+        rootContainerStyle.Add(Layoutable.MinWidthProperty, MenuTokenKey.MenuPopupMinWidth);
+        rootContainerStyle.Add(Layoutable.MaxWidthProperty, MenuTokenKey.MenuPopupMaxWidth);
+        rootContainerStyle.Add(Layoutable.MinHeightProperty, MenuTokenKey.MenuPopupMinHeight);
+        rootContainerStyle.Add(Layoutable.MaxHeightProperty, MenuTokenKey.MenuPopupMaxHeight);
+        rootContainerStyle.Add(Decorator.PaddingProperty, MenuTokenKey.MenuPopupContentPadding);
+        rootContainerStyle.Add(Border.CornerRadiusProperty, MenuTokenKey.MenuPopupBorderRadius);
+        Add(rootContainerStyle);
     }
 }
