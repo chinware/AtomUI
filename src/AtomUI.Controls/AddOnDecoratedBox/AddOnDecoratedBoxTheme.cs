@@ -87,11 +87,14 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             BindingMode.Default,
             ObjectConverters.IsNotNull);
         leftAddOnContentPresenter.RegisterInNameScope(scope);
-
-        decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-            AddOnDecoratedBoxTokenKey.AddonBg));
-        decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-            SharedTokenKey.ColorBorder));
+        
+        RegisterTokenResourceBindings(decoratedBox, () =>
+        {
+            decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BackgroundProperty,
+                AddOnDecoratedBoxTokenKey.AddonBg));
+            decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
+                SharedTokenKey.ColorBorder));
+        });
 
         Grid.SetColumn(leftAddOnContentPresenter, 0);
         layout.Children.Add(leftAddOnContentPresenter);
@@ -130,11 +133,14 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             AddOnDecoratedBox.RightAddOnProperty,
             BindingMode.Default, 
             ObjectConverters.IsNotNull);
-
-        decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-            AddOnDecoratedBoxTokenKey.AddonBg));
-        decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-            SharedTokenKey.ColorBorder));
+        
+        RegisterTokenResourceBindings(decoratedBox, () =>
+        {
+            decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BackgroundProperty,
+                AddOnDecoratedBoxTokenKey.AddonBg));
+            decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
+                SharedTokenKey.ColorBorder));
+        });
 
         rightAddOnContentPresenter.RegisterInNameScope(scope);
         layout.Children.Add(rightAddOnContentPresenter);

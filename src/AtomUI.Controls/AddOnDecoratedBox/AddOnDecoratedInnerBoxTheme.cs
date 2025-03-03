@@ -105,9 +105,12 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Name        = LeftAddOnLayoutPart,
             Orientation = Orientation.Horizontal
         };
-        addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addLayout,
-            StackPanel.SpacingProperty,
-            SharedTokenKey.PaddingXXS));
+        RegisterTokenResourceBindings(addOnDecoratedInnerBox, () =>
+        {
+            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addLayout,
+                StackPanel.SpacingProperty,
+                SharedTokenKey.PaddingXXS));
+        });
         addLayout.RegisterInNameScope(scope);
 
         var leftAddOnContentPresenter = new ContentPresenter
@@ -154,10 +157,15 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Name        = RightAddOnLayoutPart,
             Orientation = Orientation.Horizontal
         };
-        addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addLayout,
-            StackPanel.SpacingProperty,
-            SharedTokenKey.PaddingXXS));
+    
         addLayout.RegisterInNameScope(scope);
+        
+        RegisterTokenResourceBindings(addOnDecoratedInnerBox, () =>
+        {
+            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addLayout,
+                StackPanel.SpacingProperty,
+                SharedTokenKey.PaddingXXS));
+        });
 
         BuildRightAddOnItems(addOnDecoratedInnerBox, addLayout, scope);
 
@@ -195,21 +203,24 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Icon = closeIcon
         };
 
-        addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton,
-            IconButton.IconHeightProperty,
-            SharedTokenKey.IconSize));
-        addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton,
-            IconButton.IconWidthProperty,
-            SharedTokenKey.IconSize));
-        addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-            Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextQuaternary));
-        addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-            Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorTextTertiary));
-        addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-            Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText));
+        RegisterTokenResourceBindings(addOnDecoratedInnerBox, () =>
+        {
+            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton,
+                IconButton.IconHeightProperty,
+                SharedTokenKey.IconSize));
+            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton,
+                IconButton.IconWidthProperty,
+                SharedTokenKey.IconSize));
+            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+                Icon.NormalFilledBrushProperty,
+                SharedTokenKey.ColorTextQuaternary));
+            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+                Icon.ActiveFilledBrushProperty,
+                SharedTokenKey.ColorTextTertiary));
+            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
+                Icon.SelectedFilledBrushProperty,
+                SharedTokenKey.ColorText));
+        });
 
         clearButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(clearButton, Visual.IsVisibleProperty,
