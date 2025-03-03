@@ -261,7 +261,11 @@ internal class CalendarItem : TemplatedControl,
                 var cell = DayTitleTemplate?.Build();
                 if (cell is TextBlock textBlockCell)
                 {
-                    this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlockCell, TextBlock.HeightProperty, DatePickerTokenKey.DayTitleHeight));
+                    this.AddThemeTokenBindingAction(() =>
+                    {
+                        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlockCell,
+                            TextBlock.HeightProperty, DatePickerTokenKey.DayTitleHeight));
+                    });
                 }
                 if (cell is not null)
                 {
@@ -346,7 +350,7 @@ internal class CalendarItem : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
+
         HeaderButton        = e.NameScope.Find<HeadTextButton>(CalendarItemTheme.HeaderButtonPart);
         PreviousButton      = e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousButtonPart);
         PreviousMonthButton = e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousMonthButtonPart);
@@ -401,6 +405,7 @@ internal class CalendarItem : TemplatedControl,
                 YearView.IsVisible  = false;
             }
         }
+        this.RunThemeTokenBindingActions();
     }
 
     protected void SetDayTitles()

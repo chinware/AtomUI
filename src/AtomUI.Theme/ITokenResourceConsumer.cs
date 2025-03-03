@@ -35,6 +35,11 @@ public static class StyledElementTokenBindingsExtensions
         control.AttachedToLogicalTree += HandleTokenResourceConsumerAttachedToLogicalTree;
     }
 
+    public static void AddThemeTokenBindingAction(this TemplatedControl control, Action action)
+    {
+        TokenResourceConsumerProperty.AddBindingAction(control, action);
+    }
+
     internal static void HandleTokenResourceConsumerAttachedToLogicalTree(object? sender, LogicalTreeAttachmentEventArgs args)
     {
         if (sender is TemplatedControl templatedControl)

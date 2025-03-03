@@ -7,6 +7,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -36,16 +37,21 @@ internal class BaseCalendarDayButtonTheme : BaseControlTheme
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
 
-            var buttonLabel = new SingleLineText()
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            
-            contentPresenter.Content = buttonLabel;
-            BindUtils.RelayBind(calendarDayButton, BaseCalendarDayButton.ContentProperty, buttonLabel, SingleLineText.TextProperty,
-                input => input?.ToString());
-            BindUtils.RelayBind(contentPresenter, ContentPresenter.ForegroundProperty, buttonLabel, SingleLineText.ForegroundProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, BaseCalendarDayButton.ContentProperty,
+                BindingMode.Default, new FuncValueConverter<object?, object?>(o =>
+                {
+                    if (o is string str)
+                    {
+                       return new SingleLineText()
+                        {
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment   = VerticalAlignment.Center,
+                            Text = str
+                        };
+                    }
+
+                    return o;
+                }));
 
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.PaddingProperty,
                 TemplatedControl.PaddingProperty);

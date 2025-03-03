@@ -39,6 +39,7 @@ internal class CalendarItemTheme : BaseControlTheme
     {
         return new FuncControlTemplate<CalendarItem>((calendarItem, scope) =>
         {
+            ResetTokenResourceBindings(calendarItem);
             var frame = new Border
             {
                 Name = ItemFramePart
@@ -121,22 +122,7 @@ internal class CalendarItemTheme : BaseControlTheme
             Name = PreviousButtonPart,
             Icon = previousButtonIcon
         };
-        
-        RegisterTokenResourceBindings(calendarItem, () =>
-        {
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextDescription));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.SelectedFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButton, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSizeSM));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousButton, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSizeSM));
-        });
-        
+
         return previousButton;
     }
 
@@ -150,20 +136,6 @@ internal class CalendarItemTheme : BaseControlTheme
             Icon = previousMonthButtonIcon
         };
         
-        RegisterTokenResourceBindings(calendarItem, () =>
-        {
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextDescription));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.SelectedFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButton, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSizeSM));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(previousMonthButton, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSizeSM));
-        });
-        
         return previousMonthButton;
     }
 
@@ -175,20 +147,6 @@ internal class CalendarItemTheme : BaseControlTheme
             Name = NextButtonPart,
             Icon = nextButtonIcon
         };
-        
-        RegisterTokenResourceBindings(calendarItem, () =>
-        {
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextDescription));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.SelectedFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButton, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSizeSM));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextButton, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSizeSM));
-        });
         
         return nextButton;
     }
@@ -203,19 +161,6 @@ internal class CalendarItemTheme : BaseControlTheme
             Icon = nextMonthButtonIcon
         };
         
-        RegisterTokenResourceBindings(calendarItem, () =>
-        {
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextDescription));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.SelectedFilledBrushProperty,
-                SharedTokenKey.ColorText));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButton, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSizeSM));
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(nextMonthButton, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSizeSM));
-        });
         return nextMonthButton;
     }
 
@@ -223,6 +168,7 @@ internal class CalendarItemTheme : BaseControlTheme
     {
         var dayTitleRowDef = new RowDefinition();
         
+        // 这个必须这样设置
         RegisterTokenResourceBindings(calendarItem, () =>
         {
             calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(dayTitleRowDef, RowDefinition.HeightProperty,
@@ -288,8 +234,22 @@ internal class CalendarItemTheme : BaseControlTheme
         headerLayoutStyle.Add(Layoutable.MarginProperty, CalendarTokenKey.HeaderMargin);
 
         commonStyle.Add(headerLayoutStyle);
-
+        BuildButtonsStyles(commonStyle);
         Add(commonStyle);
+    }
+
+    private void BuildButtonsStyles(Style commonStyle)
+    {
+        var buttonsStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(PreviousButtonPart),
+            selector.Nesting().Template().Name(PreviousMonthButtonPart),
+            selector.Nesting().Template().Name(NextButtonPart),
+            selector.Nesting().Template().Name(NextMonthButtonPart)));
+        buttonsStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+        buttonsStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+        buttonsStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextDescription);
+        buttonsStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorText);
+        buttonsStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
+        commonStyle.Add(buttonsStyle);
     }
 }
 
