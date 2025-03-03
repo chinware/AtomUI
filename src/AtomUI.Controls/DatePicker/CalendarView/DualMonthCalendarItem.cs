@@ -1,5 +1,4 @@
-﻿using AtomUI.Theme;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
@@ -167,7 +166,6 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         SecondaryNextMonthButton = e.NameScope.Get<IconButton>(DualMonthCalendarItemTheme.SecondaryNextMonthButtonPart);
         
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         SetupMonthViewMode();
     }
 

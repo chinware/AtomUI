@@ -1,13 +1,11 @@
 ﻿using AtomUI.Data;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls.CalendarView;
 
@@ -59,25 +57,18 @@ internal class DualMonthCalendarItemTheme : CalendarItemTheme
     {
         base.NotifyBuildMonthViews(calendarItem, monthViewLayout, scope);
         var monthView = BuildMonthViewItem(SecondaryMonthViewPart);
+        // 不会造成内存泄漏
         BindUtils.RelayBind(monthViewLayout, Visual.IsVisibleProperty, monthView, Visual.IsVisibleProperty);
         
-        RegisterTokenResourceBindings(calendarItem, () =>
-        {
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(monthView,
-                Layoutable.MarginProperty,
-                DatePickerTokenKey.RangeCalendarSpacing, BindingPriority.Template,
-                v =>
-                {
-                    if (v is double dval)
-                    {
-                        return new Thickness(dval, 0, 0, 0);
-                    }
-
-                    return new Thickness();
-                }));
-        });
-
         monthView.RegisterInNameScope(scope);
         monthViewLayout.Children.Add(monthView);
+    }
+
+    protected override void BuildStyles()
+    {
+        base.BuildStyles();
+        var secondaryMonthViewStyle = new Style(selector => selector.Nesting().Template().Name(SecondaryMonthViewPart));
+        secondaryMonthViewStyle.Add(Layoutable.MarginProperty, DatePickerTokenKey.RangeCalendarMonthViewMargin);
+        Add(secondaryMonthViewStyle);
     }
 }

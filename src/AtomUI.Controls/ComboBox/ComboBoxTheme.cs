@@ -38,6 +38,7 @@ internal class ComboBoxTheme : BaseControlTheme
     {
         return new FuncControlTemplate<ComboBox>((comboBox, scope) =>
         {
+            ResetTokenResourceBindings(comboBox);
             var panel        = new Panel();
             var decoratedBox = BuildSpinnerDecoratedBox(comboBox, scope);
             var innerBox     = BuildSpinnerContent(comboBox, scope);

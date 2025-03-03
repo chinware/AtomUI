@@ -27,6 +27,7 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
     {
         return new FuncControlTemplate<PickerClearUpButton>((pickerClearUpButton, scope) =>
         {
+            ResetTokenResourceBindings(pickerClearUpButton);
             BuildInstanceStyles(pickerClearUpButton);
             var container = new Panel();
             BuildClearButton(pickerClearUpButton, container, scope);
@@ -58,7 +59,7 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
             Icon = closeIcon
         };
         
-        RegisterTokenResourceBindings(clearButton, () =>
+        RegisterTokenResourceBindings(clearUpButton, () =>
         {
             clearUpButton.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton, IconButton.IconHeightProperty,
                 SharedTokenKey.IconSize));
