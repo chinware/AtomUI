@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Diagnostics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -67,16 +68,14 @@ public abstract class BaseControlTheme : ControlTheme
     {
     }
 
-    protected static void RegisterTokenResourceBindings(Control hostControl, Action resourceBindingAction)
+    protected static void RegisterTokenResourceBindings(TemplatedControl hostControl, Action resourceBindingAction)
     {
-        if (((ILogical)hostControl).IsAttachedToLogicalTree)
-        {
-            resourceBindingAction();
-        }
-        hostControl.AttachedToLogicalTree += (sender, args) =>
-        {
-            resourceBindingAction();
-        };
+        TokenResourceConsumerProperty.AddBindingAction(hostControl, resourceBindingAction);
+    }
+
+    protected static void ResetTokenResourceBindings(TemplatedControl hostControl)
+    {
+        TokenResourceConsumerProperty.SetBindingActions(hostControl, null);
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(

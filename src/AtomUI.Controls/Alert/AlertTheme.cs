@@ -116,12 +116,15 @@ internal class AlertTheme : BaseControlTheme
             Name = CloseBtnPart
         };
 
-        alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM));
-        alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM));
-        alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.MarginProperty,
-            AlertTokenKey.ExtraElementMargin));
+        RegisterTokenResourceBindings(alert, () =>
+        {
+            alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
+                SharedTokenKey.IconSizeSM));
+            alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
+                SharedTokenKey.IconSizeSM));
+            alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.MarginProperty,
+                AlertTokenKey.ExtraElementMargin));
+        });
 
         CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Alert.IsClosableProperty);
         CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Alert.CloseIconProperty);
@@ -182,16 +185,19 @@ internal class AlertTheme : BaseControlTheme
             Padding                    = new Thickness(0),
             IsVisible                  = !string.IsNullOrEmpty(alert.Description)
         };
-        alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(descriptionLabel, Layoutable.MarginProperty,
-            SharedTokenKey.MarginXS, BindingPriority.Template,
-            o =>
-            {
-                if (o is double value)
+        RegisterTokenResourceBindings(alert, () =>
+        {
+            alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(descriptionLabel, Layoutable.MarginProperty,
+                SharedTokenKey.MarginXS, BindingPriority.Template,
+                o =>
                 {
-                    return new Thickness(0, value, 0, 0);
-                }
-                return o;
-            }));
+                    if (o is double value)
+                    {
+                        return new Thickness(0, value, 0, 0);
+                    }
+                    return o;
+                }));
+        });
         BindUtils.RelayBind(alert, Alert.DescriptionProperty, descriptionLabel, ContentControl.ContentProperty);
         TextBlock.SetTextWrapping(descriptionLabel, TextWrapping.Wrap);
         return descriptionLabel;

@@ -36,6 +36,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
     {
         return new FuncControlTemplate<AddOnDecoratedBox>((decoratedBox, scope) =>
         {
+            ResetTokenResourceBindings(decoratedBox);
             var mainLayout = new Grid
             {
                 Name = MainLayoutPart,

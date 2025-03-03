@@ -23,11 +23,11 @@ namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Open)]
 public class ToolTip : ContentControl,
-                        IControlSharedTokenResourcesHost,
-                        IAnimationAwareControl,
-                        IPopupHostProvider,
-                        IShadowMaskInfoProvider,
-                        ITokenResourceConsumer
+                       IControlSharedTokenResourcesHost,
+                       IAnimationAwareControl,
+                       IPopupHostProvider,
+                       IShadowMaskInfoProvider,
+                       ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -336,7 +336,7 @@ public class ToolTip : ContentControl,
     {
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
-    
+
     public CornerRadius GetMaskCornerRadius()
     {
         Debug.Assert(_arrowDecoratedBox != null);
@@ -368,12 +368,12 @@ public class ToolTip : ContentControl,
             _popup.Closed          += HandlePopupClosed;
             _popup.PositionFlipped += HandlePopupPositionFlipped;
         }
-        
+
         if (_popup is IPopupHostProvider popupHostProvider)
         {
             popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
         }
-        
+
         // 这里评估是 tooltip 会多次复用，所以这里把绑定管理起来，关闭的时候释放
         // 不知道对不对
         _subscriptions = new CompositeDisposable(new[]
@@ -385,16 +385,16 @@ public class ToolTip : ContentControl,
             _popup.Bind(Popup.CustomPopupPlacementCallbackProperty,
                 control.GetBindingObservable(CustomPopupPlacementCallbackProperty)),
         });
-        
+
         var placement        = GetPlacement(control);
         var anchorAndGravity = PopupUtils.GetAnchorAndGravity(placement);
 
-        _popup.PlacementTarget = control;
-        _popup.Placement = placement;
-        _popup.PlacementAnchor = anchorAndGravity.Item1;
+        _popup.PlacementTarget  = control;
+        _popup.Placement        = placement;
+        _popup.PlacementAnchor  = anchorAndGravity.Item1;
         _popup.PlacementGravity = anchorAndGravity.Item2;
         _popup.SetPopupParent(control);
-        
+
         if (_arrowDecoratedBox is not null)
         {
             SetupArrowDecoratedBox(control);
@@ -403,7 +403,7 @@ public class ToolTip : ContentControl,
         {
             TemplateApplied += DeferSetupArrowDecoratedBox;
         }
-        
+
         _popup.MotionAwareOpen();
     }
 
@@ -428,6 +428,7 @@ public class ToolTip : ContentControl,
                         return PopupUtils.CanEnabledArrow(_popup.Placement, _popup.PlacementAnchor,
                             _popup.PlacementGravity);
                     }
+
                     return flag;
                 })));
             if (_popup is not null)
@@ -437,7 +438,7 @@ public class ToolTip : ContentControl,
             }
         }
     }
-    
+
     private void SetupArrowPosition(PlacementMode placement, PopupAnchor? anchor = null, PopupGravity? gravity = null)
     {
         var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
@@ -446,7 +447,7 @@ public class ToolTip : ContentControl,
             _arrowDecoratedBox.ArrowPosition = arrowPosition.Value;
         }
     }
-    
+
     private void HandlePopupPositionFlipped(object? sender, PopupFlippedEventArgs e)
     {
         if (sender is Popup popup)
@@ -463,7 +464,7 @@ public class ToolTip : ContentControl,
             var args = new RoutedEventArgs(ToolTipClosingEvent);
             adornedControl.RaiseEvent(args);
         }
-        
+
         if (_popup is not null)
         {
             _popup.MotionAwareClose(() =>
@@ -474,6 +475,7 @@ public class ToolTip : ContentControl,
                 {
                     popupHostProvider.PopupHostChanged -= HandlePopupHostChanged;
                 }
+
                 _subscriptions?.Dispose();
             });
         }
@@ -540,7 +542,7 @@ public class ToolTip : ContentControl,
             toolTip.Close();
         }
     }
-    
+
     private void HandlePopupHostChanged(IPopupHost? host)
     {
         if (_popup is not null)
@@ -549,13 +551,14 @@ public class ToolTip : ContentControl,
             if (control is not null)
             {
                 // 如果指定这个，那么用户指定的 offset 失效
-                var offset = CalculatePopupPositionDelta(control, _popup.Placement, _popup.PlacementAnchor, _popup.PlacementGravity);
+                var offset = CalculatePopupPositionDelta(control, _popup.Placement, _popup.PlacementAnchor,
+                    _popup.PlacementGravity);
                 control.SetValue(HorizontalOffsetProperty, offset.X);
                 control.SetValue(VerticalOffsetProperty, offset.Y);
             }
         }
     }
-    
+
     private void HandlePopupClosed(object? sender, EventArgs e)
     {
         // This condition is true, when Popup was closed by any other reason outside of ToolTipService/ToolTip, keeping IsOpen=true.
@@ -586,7 +589,7 @@ public class ToolTip : ContentControl,
         base.OnApplyTemplate(e);
         _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
     }
-    
+
     private Point CalculatePopupPositionDelta(Control control,
                                               PlacementMode placement,
                                               PopupAnchor? anchor = null,
@@ -631,7 +634,7 @@ public class ToolTip : ContentControl,
 
         return new Point(offsetX, offsetY);
     }
-    
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);

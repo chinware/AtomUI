@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
@@ -182,7 +183,7 @@ public class AddOnDecoratedBox : ContentControl,
     {
         base.OnPropertyChanged(change);
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToLogicalTree())
         {
             if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
             {
@@ -247,6 +248,7 @@ public class AddOnDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         _leftAddOnPresenter  = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.LeftAddOnPart);
         _rightAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.RightAddOnPart);
         SetupInnerBoxCornerRadius();
@@ -294,6 +296,16 @@ public class AddOnDecoratedBox : ContentControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+        
+        if (LeftAddOn is Icon leftIconAddOn)
+        {
+            SetupIconTypeAddOnSize(leftIconAddOn);
+        }
+
+        if (RightAddOn is Icon rightIconAddOn)
+        {
+            SetupIconTypeAddOnSize(rightIconAddOn);
+        }
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

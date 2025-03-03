@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
@@ -134,15 +135,28 @@ public class Alert : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
+        if (this.IsAttachedToLogicalTree())
+        {
+            if (e.Property == IsClosableProperty)
+            {
+                SetupCloseButton();
+            }
+        }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+        SetupCloseButton();
     }
 
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -152,27 +166,10 @@ public class Alert : TemplatedControl,
             new RenderScaleAwareThicknessConfigure(this)));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SetupCloseButton();
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (VisualRoot is not null)
-        {
-            if (e.Property == IsClosableProperty)
-            {
-                SetupCloseButton();
-            }
-        }
+        this.RunThemeTokenBindingActions();
     }
 
     private void SetupCloseButton()

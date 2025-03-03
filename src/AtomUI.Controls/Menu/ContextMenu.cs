@@ -6,6 +6,7 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 
@@ -96,5 +97,10 @@ public class ContextMenu : AvaloniaContextMenu,
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
-    
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
+    }
 }
