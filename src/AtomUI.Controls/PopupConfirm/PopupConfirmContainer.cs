@@ -1,14 +1,11 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 

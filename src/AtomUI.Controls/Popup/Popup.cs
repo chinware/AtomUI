@@ -485,8 +485,8 @@ public class Popup : AvaloniaPopup,
 
         if (!IsMotionEnabled)
         {
-            _shadowLayer?.Open();
             Open();
+            _shadowLayer?.Open();
             opened?.Invoke();
             return;
         }
@@ -613,10 +613,10 @@ public class Popup : AvaloniaPopup,
         motionActor.SceneParent = topLevel;
         Dispatcher.UIThread.Post(() =>
         {
+            _shadowLayer?.Close();
             MotionInvoker.InvokeInPopupLayer(motionActor, motion, () =>
             {
-                _shadowLayer?.Close();
-                popupRoot.Opacity = 0;
+                popupRoot.Hide();
             }, () =>
             {
                 _closeAnimating   = false;

@@ -571,11 +571,11 @@ public class Button : AvaloniaButton,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupEffectiveBorderThickness();
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+        SetupEffectiveBorderThickness();
     }
 
     private void SetupEffectiveBorderThickness()

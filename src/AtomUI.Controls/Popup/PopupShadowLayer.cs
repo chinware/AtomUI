@@ -148,33 +148,8 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
         
         var popupHost = OverlayPopupHost.CreatePopupHost(_target.PlacementTarget ?? _target.GetVisualParent()!, DependencyResolver.Instance);
         popupHost.Topmost = false;
-        NotifyPopupHostCreated(popupHost);
-        if (popupHost is PopupRoot popupRoot)
-        {
-            popupRoot.SetWindowIgnoreMouseEvents(true);
-            if (popupRoot.PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
-            {
-                _managedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
-            }
-        }
-
+        
         var handlerCleanup = new CompositeDisposable(7);
-
-        if (Child == null && _target.Child != null)
-        {
-            // 尝试手动
-            CreateShadowRenderer();
-        }
-        else
-        {
-            ConfigureShadowRenderer();
-        }
-        
-        popupHost.SetChild(Child);
-        ((ILogical)popupHost).SetLogicalParent(_target);
-        
-        UpdateLayoutHostPositionAndSize(popupHost);
-
         if (popupHost is PopupRoot topLevelPopup)
         {
             topLevelPopup
@@ -216,6 +191,32 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
         });
 
         _openState        = new ShadowLayerPopupOpenState(popupHost, cleanupPopup);
+        
+        NotifyPopupHostCreated(popupHost);
+        if (popupHost is PopupRoot popupRoot)
+        {
+            popupRoot.SetWindowIgnoreMouseEvents(true);
+            if (popupRoot.PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
+            {
+                _managedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
+            }
+        }
+
+        if (Child == null && _target.Child != null)
+        {
+            // 尝试手动
+            CreateShadowRenderer();
+        }
+        else
+        {
+            ConfigureShadowRenderer();
+        }
+        
+        ((ILogical)popupHost).SetLogicalParent(_target);
+        popupHost.SetChild(Child);
+        
+        UpdateLayoutHostPositionAndSize(popupHost);
+        
         popupHost.Show();
     
         if (targetPopupRoot != null)

@@ -369,9 +369,10 @@ public class NotificationCard : ContentControl,
 
         if (this.IsAttachedToLogicalTree())
         {
-            if (this.IsAttachedToLogicalTree())
+            if (e.Property == NotificationTypeProperty)
             {
                 UpdateNotificationType();
+                SetupNotificationIcon();
             }  
             else if (e.Property == ContentProperty)
             {
@@ -379,10 +380,6 @@ public class NotificationCard : ContentControl,
                 {
                     SetupContent();
                 }
-            }
-            else  if (e.Property == NotificationTypeProperty)
-            {
-                SetupNotificationIcon();
             }
         }
         

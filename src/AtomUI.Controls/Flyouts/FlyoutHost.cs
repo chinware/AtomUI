@@ -192,7 +192,7 @@ public class FlyoutHost : Control,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        SetupFlyoutProperties();
+
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
         
         BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
@@ -202,11 +202,7 @@ public class FlyoutHost : Control,
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
-        if (AnchorTarget is not null)
-        {
-            AnchorTarget.SetLogicalParent(this);
-            VisualChildren.Add(AnchorTarget);
-        }
+        SetupFlyoutProperties();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -253,6 +249,23 @@ public class FlyoutHost : Control,
                 {
                     SetupFlyoutProperties();
                 }
+            }
+        }
+
+        if (change.Property == AnchorTargetProperty)
+        {
+            var oldAnchorTarget = change.GetOldValue<Control?>();
+            var newAnchorTarget = change.GetNewValue<Control?>();
+            if (oldAnchorTarget != null)
+            {
+                LogicalChildren.Remove(oldAnchorTarget);
+                VisualChildren.Remove(oldAnchorTarget);
+            }
+
+            if (newAnchorTarget != null)
+            {
+                LogicalChildren.Add(newAnchorTarget);
+                VisualChildren.Add(newAnchorTarget);
             }
         }
     }

@@ -82,7 +82,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         wrapperLayout.Children.Add(iconContentPresenter);
         wrapperLayout.Children.Add(contentLayout);
 
-        var titleTextBlock = new SingleLineText()
+        var titleTextBlock = new SingleLineText
         {
             Name              = TitlePart,
             VerticalAlignment = VerticalAlignment.Center,
@@ -105,14 +105,14 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         return wrapperLayout;
     }
 
-    private StackPanel BuildButtons(PopupConfirmContainer popupConfirmContainer, INameScope scope)
+    private Panel BuildButtons(PopupConfirmContainer popupConfirmContainer, INameScope scope)
     {
         var buttonLayout = new StackPanel
         {
             Name                = ButtonLayoutPart,
             Orientation         = Orientation.Horizontal,
             HorizontalAlignment = HorizontalAlignment.Right,
-            VerticalAlignment   = VerticalAlignment.Bottom
+            VerticalAlignment   = VerticalAlignment.Bottom,
         };
         DockPanel.SetDock(buttonLayout, Dock.Bottom);
 
@@ -120,9 +120,6 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         {
             Name                = CancelButtonPart,
             SizeType            = SizeType.Small,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            Width               = double.NaN,
-            Height              = double.NaN
         };
         
         cancelButton.RegisterInNameScope(scope);
@@ -135,11 +132,8 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
 
         var okButton = new Button
         {
-            Name                = OkButtonPart,
-            SizeType            = SizeType.Small,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            Width               = double.NaN,
-            Height              = double.NaN
+            Name     = OkButtonPart,
+            SizeType = SizeType.Small,
         };
 
         okButton.RegisterInNameScope(scope);
