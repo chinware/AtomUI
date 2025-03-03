@@ -122,11 +122,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == CornerRadiusProperty)
-        {
-            SetupSpinnerHandleCornerRadius();
-        }
-        else if (change.Property == ButtonSpinnerLocationProperty)
+        if (change.Property == CornerRadiusProperty || change.Property == ButtonSpinnerLocationProperty)
         {
             SetupSpinnerHandleCornerRadius();
         }
@@ -164,6 +160,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
         _spinnerHandleDecorator = e.NameScope.Find<Border>(ButtonSpinnerTheme.SpinnerHandleDecoratorPart);
         _decoratedBox           = e.NameScope.Find<ButtonSpinnerDecoratedBox>(ButtonSpinnerTheme.DecoratedBoxPart);
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         SetupSpinnerHandleCornerRadius();
     }
 
