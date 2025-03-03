@@ -6,6 +6,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
@@ -27,6 +28,22 @@ public class IconButton : AvaloniaButton,
 
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         Icon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
+    
+    public static readonly StyledProperty<IBrush?> NormalIconColorProperty =
+        AvaloniaProperty.Register<IconButton, IBrush?>(
+            nameof(NormalIconColor));
+    
+    public static readonly StyledProperty<IBrush?> ActiveIconColorProperty =
+        AvaloniaProperty.Register<IconButton, IBrush?>(
+            nameof(ActiveIconColor));
+    
+    public static readonly StyledProperty<IBrush?> SelectedIconColorProperty =
+        AvaloniaProperty.Register<IconButton, IBrush?>(
+            nameof(SelectedIconColor));
+    
+    public static readonly StyledProperty<IBrush?> DisabledIconColorProperty =
+        AvaloniaProperty.Register<IconButton, IBrush?>(
+            nameof(DisabledIconColor));
 
     public static readonly StyledProperty<double> IconWidthProperty
         = AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
@@ -91,6 +108,30 @@ public class IconButton : AvaloniaButton,
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
     
+    public IBrush? NormalIconColor
+    {
+        get => GetValue(NormalIconColorProperty);
+        set => SetValue(NormalIconColorProperty, value);
+    }
+
+    public IBrush? ActiveIconColor
+    {
+        get => GetValue(ActiveIconColorProperty);
+        set => SetValue(ActiveIconColorProperty, value);
+    }
+
+    public IBrush? SelectedIconColor
+    {
+        get => GetValue(SelectedIconColorProperty);
+        set => SetValue(SelectedIconColorProperty, value);
+    }
+
+    public IBrush? DisabledIconColor
+    {
+        get => GetValue(DisabledIconColorProperty);
+        set => SetValue(DisabledIconColorProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -152,6 +193,14 @@ public class IconButton : AvaloniaButton,
                 Icon.LoadingAnimationDurationProperty);
             BindUtils.RelayBind(this, IconHeightProperty, Icon, HeightProperty);
             BindUtils.RelayBind(this, IconWidthProperty, Icon, WidthProperty);
+
+            if (Icon.ThemeType != IconThemeType.TwoTone)
+            {
+                BindUtils.RelayBind(this, NormalIconColorProperty, Icon, Icon.NormalFilledBrushProperty);
+                BindUtils.RelayBind(this, ActiveIconColorProperty, Icon, Icon.ActiveFilledBrushProperty);
+                BindUtils.RelayBind(this, SelectedIconColorProperty, Icon, Icon.SelectedFilledBrushProperty);
+                BindUtils.RelayBind(this, DisabledIconColorProperty, Icon, Icon.DisabledFilledBrushProperty);
+            }
         }
     }
 

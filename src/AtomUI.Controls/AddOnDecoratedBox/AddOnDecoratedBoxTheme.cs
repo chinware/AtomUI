@@ -36,7 +36,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
     {
         return new FuncControlTemplate<AddOnDecoratedBox>((decoratedBox, scope) =>
         {
-            ResetTokenResourceBindings(decoratedBox);
             var mainLayout = new Grid
             {
                 Name = MainLayoutPart,
@@ -88,14 +87,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             BindingMode.Default,
             ObjectConverters.IsNotNull);
         leftAddOnContentPresenter.RegisterInNameScope(scope);
-        
-        RegisterTokenResourceBindings(decoratedBox, () =>
-        {
-            decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-                AddOnDecoratedBoxTokenKey.AddonBg));
-            decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-                SharedTokenKey.ColorBorder));
-        });
 
         Grid.SetColumn(leftAddOnContentPresenter, 0);
         layout.Children.Add(leftAddOnContentPresenter);
@@ -134,14 +125,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             AddOnDecoratedBox.RightAddOnProperty,
             BindingMode.Default, 
             ObjectConverters.IsNotNull);
-        
-        RegisterTokenResourceBindings(decoratedBox, () =>
-        {
-            decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-                AddOnDecoratedBoxTokenKey.AddonBg));
-            decoratedBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-                SharedTokenKey.ColorBorder));
-        });
 
         rightAddOnContentPresenter.RegisterInNameScope(scope);
         layout.Children.Add(rightAddOnContentPresenter);
@@ -158,6 +141,14 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorText);
+
+        {
+            var addOnStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
+                selector.Nesting().Template().Name(RightAddOnPart)));
+            addOnStyle.Add(ContentPresenter.BackgroundProperty, AddOnDecoratedBoxTokenKey.AddonBg);
+            addOnStyle.Add(ContentPresenter.BorderBrushProperty, SharedTokenKey.ColorBorder);
+            commonStyle.Add(addOnStyle);
+        }
 
         var largeStyle =
             new Style(selector =>

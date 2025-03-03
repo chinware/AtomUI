@@ -2,7 +2,6 @@
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -105,12 +104,6 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Name        = LeftAddOnLayoutPart,
             Orientation = Orientation.Horizontal
         };
-        RegisterTokenResourceBindings(addOnDecoratedInnerBox, () =>
-        {
-            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addLayout,
-                StackPanel.SpacingProperty,
-                SharedTokenKey.PaddingXXS));
-        });
         addLayout.RegisterInNameScope(scope);
 
         var leftAddOnContentPresenter = new ContentPresenter
@@ -159,13 +152,6 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         };
     
         addLayout.RegisterInNameScope(scope);
-        
-        RegisterTokenResourceBindings(addOnDecoratedInnerBox, () =>
-        {
-            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addLayout,
-                StackPanel.SpacingProperty,
-                SharedTokenKey.PaddingXXS));
-        });
 
         BuildRightAddOnItems(addOnDecoratedInnerBox, addLayout, scope);
 
@@ -202,26 +188,6 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
             Name = ClearButtonPart,
             Icon = closeIcon
         };
-
-        RegisterTokenResourceBindings(addOnDecoratedInnerBox, () =>
-        {
-            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton,
-                IconButton.IconHeightProperty,
-                SharedTokenKey.IconSize));
-            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(clearButton,
-                IconButton.IconWidthProperty,
-                SharedTokenKey.IconSize));
-            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-                Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextQuaternary));
-            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-                Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorTextTertiary));
-            addOnDecoratedInnerBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeIcon,
-                Icon.SelectedFilledBrushProperty,
-                SharedTokenKey.ColorText));
-        });
-
         clearButton.RegisterInNameScope(scope);
         CreateTemplateParentBinding(clearButton, Visual.IsVisibleProperty,
             AddOnDecoratedInnerBox.IsClearButtonVisibleProperty);
@@ -231,10 +197,22 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         BuildCommonStyle();
+        BuildCloseBtnStyle();
         BuildOutLineStyle();
         BuildFilledStyle();
         BuildAddOnStyle();
         BuildDisabledStyle();
+    }
+
+    private void BuildCloseBtnStyle()
+    {
+        var closeBtnStyle = new Style(selector => selector.Nesting().Template().Name(ClearButtonPart));
+        closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
+        closeBtnStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
+        closeBtnStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextQuaternary);
+        closeBtnStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorTextTertiary);
+        closeBtnStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
+        Add(closeBtnStyle);
     }
 
     private void BuildCommonStyle()
@@ -536,6 +514,10 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 
     private void BuildAddOnStyle()
     {
+        var addOnLayoutStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnLayoutPart),
+            selector.Nesting().Template().Name(RightAddOnLayoutPart)));
+        addOnLayoutStyle.Add(StackPanel.SpacingProperty, SharedTokenKey.PaddingXXS);
+        Add(addOnLayoutStyle);
         {
             var errorStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(AddOnDecoratedInnerBox.StatusProperty, AddOnDecoratedStatus.Error));

@@ -248,7 +248,6 @@ public class AddOnDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _leftAddOnPresenter  = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.LeftAddOnPart);
         _rightAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxTheme.RightAddOnPart);
         SetupInnerBoxCornerRadius();

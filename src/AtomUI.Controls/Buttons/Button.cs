@@ -18,6 +18,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -428,7 +429,7 @@ public class Button : AvaloniaButton,
             SetupEffectiveBorderThickness();
         }
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == IconProperty)
             {
