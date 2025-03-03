@@ -73,15 +73,10 @@ internal class TextBoxTheme : BaseControlTheme
             Focusable = true
         };
 
-        // TODO attach 属性不知道怎么指定 Avalonia 控件所在的名称控件，无法用模板绑定的方式进行绑定
-        BindUtils.RelayBind(textBox, ScrollViewer.AllowAutoHideProperty, scrollViewer,
-            ScrollViewer.AllowAutoHideProperty);
-        BindUtils.RelayBind(textBox, ScrollViewer.HorizontalScrollBarVisibilityProperty, scrollViewer,
-            ScrollViewer.HorizontalScrollBarVisibilityProperty);
-        BindUtils.RelayBind(textBox, ScrollViewer.VerticalScrollBarVisibilityProperty, scrollViewer,
-            ScrollViewer.VerticalScrollBarVisibilityProperty);
-        BindUtils.RelayBind(textBox, ScrollViewer.VerticalScrollBarVisibilityProperty, scrollViewer,
-            ScrollViewer.IsScrollChainingEnabledProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.AllowAutoHideProperty, ScrollViewer.AllowAutoHideProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollViewer.HorizontalScrollBarVisibilityProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollViewer.VerticalScrollBarVisibilityProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsScrollChainingEnabledProperty, ScrollViewer.IsScrollChainingEnabledProperty);
 
         scrollViewer.RegisterInNameScope(scope);
 
