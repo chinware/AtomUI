@@ -166,12 +166,6 @@ public class Alert : TemplatedControl,
             new RenderScaleAwareThicknessConfigure(this)));
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
-    }
-
     private void SetupCloseButton()
     {
         if (CloseIcon is null)

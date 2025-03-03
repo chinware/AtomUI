@@ -34,7 +34,7 @@ internal class AlertTheme : BaseControlTheme
     {
         var controlTemplate = new FuncControlTemplate<Alert>((alert, scope) =>
         {
-            var borderContainer = CreateBorderContainer(alert, scope);
+            var borderContainer = CreateBorderContainer();
             var infoStack = new StackPanel
             {
                 Orientation       = Orientation.Vertical,
@@ -61,7 +61,7 @@ internal class AlertTheme : BaseControlTheme
 
             mainLayout.Children.Add(infoStack);
 
-            var closeBtn = CreateCloseButton(alert, scope);
+            var closeBtn = CreateCloseButton();
             mainLayout.Children.Add(closeBtn);
 
             var infoIcon = CreateInfoIcon(scope);
@@ -92,39 +92,25 @@ internal class AlertTheme : BaseControlTheme
         return controlTemplate;
     }
 
-    private Border CreateBorderContainer(Alert alert, INameScope scope)
+    private Border CreateBorderContainer()
     {
         var borderContainer = new Border();
 
-        BindUtils.RelayBind(alert, TemplatedControl.BackgroundProperty, borderContainer,
-            ContentPresenter.BackgroundProperty);
-        BindUtils.RelayBind(alert, TemplatedControl.BorderBrushProperty, borderContainer,
-            ContentPresenter.BorderBrushProperty);
-        BindUtils.RelayBind(alert, TemplatedControl.CornerRadiusProperty, borderContainer,
-            ContentPresenter.CornerRadiusProperty);
-        BindUtils.RelayBind(alert, TemplatedControl.BorderThicknessProperty, borderContainer,
-            ContentPresenter.BorderThicknessProperty);
-        BindUtils.RelayBind(alert, TemplatedControl.PaddingProperty, borderContainer, ContentPresenter.PaddingProperty);
+        CreateTemplateParentBinding(borderContainer, Border.BackgroundProperty, Alert.BackgroundProperty);
+        CreateTemplateParentBinding(borderContainer, Border.BorderBrushProperty, Alert.BorderBrushProperty);
+        CreateTemplateParentBinding(borderContainer, Border.CornerRadiusProperty, Alert.CornerRadiusProperty);
+        CreateTemplateParentBinding(borderContainer, Border.BorderThicknessProperty, Alert.BorderThicknessProperty);
+        CreateTemplateParentBinding(borderContainer, Border.PaddingProperty, Alert.PaddingProperty);
 
         return borderContainer;
     }
 
-    private IconButton CreateCloseButton(Alert alert, INameScope scope)
+    private IconButton CreateCloseButton()
     {
         var closeBtn = new IconButton
         {
             Name = CloseBtnPart
         };
-
-        RegisterTokenResourceBindings(alert, () =>
-        {
-            alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSizeSM));
-            alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSizeSM));
-            alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, Layoutable.MarginProperty,
-                AlertTokenKey.ExtraElementMargin));
-        });
 
         CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Alert.IsClosableProperty);
         CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Alert.CloseIconProperty);
@@ -157,7 +143,7 @@ internal class AlertTheme : BaseControlTheme
             Padding                    = new Thickness(0)
         };
         TextBlock.SetTextWrapping(label, TextWrapping.Wrap);
-        BindUtils.RelayBind(alert, Alert.MessageProperty, label, ContentControl.ContentProperty);
+        CreateTemplateParentBinding(label, ContentControl.ContentProperty, Alert.MessageProperty);
         return label;
     }
 
@@ -170,7 +156,7 @@ internal class AlertTheme : BaseControlTheme
             Padding             = new Thickness(0)
         };
         CreateTemplateParentBinding(label, Visual.IsVisibleProperty, Alert.IsMessageMarqueEnabledProperty);
-        BindUtils.RelayBind(alert, Alert.MessageProperty, label, MarqueeLabel.TextProperty);
+        CreateTemplateParentBinding(label, MarqueeLabel.TextProperty, Alert.MessageProperty);
         return label;
     }
 
@@ -198,7 +184,7 @@ internal class AlertTheme : BaseControlTheme
                     return o;
                 }));
         });
-        BindUtils.RelayBind(alert, Alert.DescriptionProperty, descriptionLabel, ContentControl.ContentProperty);
+        CreateTemplateParentBinding(descriptionLabel, ContentControl.ContentProperty, Alert.DescriptionProperty);
         TextBlock.SetTextWrapping(descriptionLabel, TextWrapping.Wrap);
         return descriptionLabel;
     }
@@ -305,7 +291,8 @@ internal class AlertTheme : BaseControlTheme
 
     private void BuildCloseBtnStyle()
     {
-        var closeBtnSelector = default(Selector).Nesting().Template().OfType<IconButton>().Name(CloseBtnPart);
+        var closeBtnSelector = default(Selector).Nesting().Template().Name(CloseBtnPart);
+        
         // 设置根据 Description 是否显示 Close 按钮的相关样式
         {
             // 为空
@@ -324,6 +311,14 @@ internal class AlertTheme : BaseControlTheme
             closeBtnStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             descriptionStyle.Add(closeBtnStyle);
             Add(descriptionStyle);
+        }
+
+        {
+            var closeBtnStyle = new Style(selector => selector.Nesting().Template().Name(CloseBtnPart));
+            closeBtnStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+            closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+            closeBtnStyle.Add(IconButton.MarginProperty, AlertTokenKey.ExtraElementMargin);
+            Add(closeBtnStyle);
         }
     }
 
