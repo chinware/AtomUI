@@ -467,6 +467,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey NotificationIconSize = new TokenResourceKey("Notification.NotificationIconSize");
         public static readonly TokenResourceKey NotificationIconMargin = new TokenResourceKey("Notification.NotificationIconMargin");
         public static readonly TokenResourceKey NotificationCloseButtonSize = new TokenResourceKey("Notification.NotificationCloseButtonSize");
+        public static readonly TokenResourceKey NotificationCloseButtonPadding = new TokenResourceKey("Notification.NotificationCloseButtonPadding");
         public static readonly TokenResourceKey NotificationMarginBottom = new TokenResourceKey("Notification.NotificationMarginBottom");
         public static readonly TokenResourceKey NotificationTopMargin = new TokenResourceKey("Notification.NotificationTopMargin");
         public static readonly TokenResourceKey NotificationBottomMargin = new TokenResourceKey("Notification.NotificationBottomMargin");
