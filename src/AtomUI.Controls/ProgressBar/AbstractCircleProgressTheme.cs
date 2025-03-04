@@ -31,10 +31,6 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         exceptionCompletedIcon.VerticalAlignment   = VerticalAlignment.Center;
         
         exceptionCompletedIcon.RegisterInNameScope(scope);
-        progressBar.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorError));
-        progressBar.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ControlItemBgActiveDisabled));
 
         var successCompletedIcon = AntDesignIconPackage.CheckOutlined();
         successCompletedIcon.Name                = SuccessCompletedIconPart;
@@ -42,10 +38,6 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         successCompletedIcon.VerticalAlignment   = VerticalAlignment.Center;
         
         successCompletedIcon.RegisterInNameScope(scope);
-        progressBar.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorSuccess));
-        progressBar.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ControlItemBgActiveDisabled));
 
         container.Children.Add(exceptionCompletedIcon);
         container.Children.Add(successCompletedIcon);
@@ -54,6 +46,17 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
     protected override void BuildStyles()
     {
         base.BuildStyles();
+        
+        // 完成图标样式
+        var exceptionCompletedIconStyle = new Style(selector => selector.Nesting().Template().Name(ExceptionCompletedIconPart));
+        exceptionCompletedIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+        exceptionCompletedIconStyle.Add(Icon.DisabledFilledBrushProperty, SharedTokenKey.ControlItemBgActiveDisabled);
+        Add(exceptionCompletedIconStyle);
+        
+        var successCompletedIconStyle = new Style(selector => selector.Nesting().Template().Name(SuccessCompletedIconPart));
+        successCompletedIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorSuccess);
+        successCompletedIconStyle.Add(Icon.DisabledFilledBrushProperty, SharedTokenKey.ControlItemBgActiveDisabled);
+        Add(successCompletedIconStyle);
 
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(AbstractCircleProgress.CircleMinimumTextFontSizeProperty,

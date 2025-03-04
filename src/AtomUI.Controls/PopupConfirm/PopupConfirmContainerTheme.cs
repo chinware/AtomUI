@@ -1,6 +1,5 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -45,16 +44,6 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             mainLayout.Children.Add(content);
      
             BuildInstanceStyles(popupConfirmContainer);
-            
-            RegisterTokenResourceBindings(popupConfirmContainer, () =>
-            {
-                popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(mainLayout,
-                    Layoutable.MinWidthProperty,
-                    PopupConfirmTokenKey.PopupMinWidth));
-                popupConfirmContainer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(mainLayout,
-                    Layoutable.MinHeightProperty,
-                    PopupConfirmTokenKey.PopupMinHeight));
-            });
             
             return mainLayout;
         });
@@ -187,6 +176,11 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
+
+        var mainLayoutStyle = new Style(selector => selector.Nesting().Template().Name(MainLayoutPart));
+        mainLayoutStyle.Add(Layoutable.MinWidthProperty, PopupConfirmTokenKey.PopupMinWidth);
+        mainLayoutStyle.Add(Layoutable.MinHeightProperty, PopupConfirmTokenKey.PopupMinHeight);
+        commonStyle.Add(mainLayoutStyle);
 
         var iconContentPresenter = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
         iconContentPresenter.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.IconMargin);
