@@ -15,6 +15,7 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -247,6 +248,7 @@ public class CollapseItem : HeaderedContentControl,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ExpandIcon ??= AntDesignIconPackage.RightOutlined();
         base.OnApplyTemplate(e);
         _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
@@ -264,18 +266,11 @@ public class CollapseItem : HeaderedContentControl,
     {
         base.OnPropertyChanged(change);
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsSelectedProperty)
             {
                 HandleSelectedChanged();
-            }
-            else if (change.Property == ExpandIconProperty)
-            {
-                var oldExpandIcon = change.GetOldValue<Icon?>();
-                oldExpandIcon?.SetTemplatedParent(null);
-
-                SetupIconButton();
             }
         }
 
@@ -291,7 +286,6 @@ public class CollapseItem : HeaderedContentControl,
                 newControl.SetTemplatedParent(this);
             }
         }
-       
     }
 
     private void HandleSelectedChanged()
@@ -349,20 +343,7 @@ public class CollapseItem : HeaderedContentControl,
             InAnimating = false;
         });
     }
-
-    private void SetupIconButton()
-    {
-        if (ExpandIcon is null)
-        {
-            ExpandIcon = AntDesignIconPackage.RightOutlined();
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(ExpandIcon,
-                Icon.DisabledFilledBrushProperty,
-                SharedTokenKey.ColorTextDisabled));
-        }
-
-        ExpandIcon.SetTemplatedParent(this);
-    }
-
+    
     internal bool IsPointInHeaderBounds(Point position)
     {
         if (_headerDecorator is not null && TriggerType != CollapseTriggerType.Icon)
@@ -379,7 +360,6 @@ public class CollapseItem : HeaderedContentControl,
         _tokenBindingsDisposable = new CompositeDisposable();
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationSlow));
-        SetupIconButton();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
