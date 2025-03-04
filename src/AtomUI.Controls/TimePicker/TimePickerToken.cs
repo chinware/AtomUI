@@ -22,6 +22,11 @@ internal class TimePickerToken : AbstractControlDesignToken
     /// 时间选择项宽度
     /// </summary>
     public double ItemWidth { get; set; }
+    
+    /// <summary>
+    /// 上下午选择项的宽度
+    /// </summary>
+    public double PeriodHostWidth { get; set; }
 
     /// <summary>
     /// 时间选择项内间距
@@ -52,6 +57,7 @@ internal class TimePickerToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         ItemWidth                     = 40;
+        PeriodHostWidth               = 50;
         ItemHeight                    = SharedToken.ControlHeight - 4;
         ItemPadding                   = new Thickness(0, SharedToken.PaddingXXS);
         ButtonsMargin                 = new Thickness(0, SharedToken.MarginXS, 0, 0);

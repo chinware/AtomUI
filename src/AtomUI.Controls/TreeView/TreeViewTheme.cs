@@ -1,5 +1,4 @@
-﻿using AtomUI.Data;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -22,34 +21,29 @@ internal class TreeViewTheme : BaseControlTheme
     {
         return new FuncControlTemplate<TreeView>((view, scope) =>
         {
-            var Frame = new Border
+            var frame = new Border
             {
                 Name = FramePart
             };
             var scrollViewer = new ScrollViewer();
 
-            BindUtils.RelayBind(view, ScrollViewer.AllowAutoHideProperty, scrollViewer,
-                ScrollViewer.AllowAutoHideProperty);
-            BindUtils.RelayBind(view, ScrollViewer.HorizontalScrollBarVisibilityProperty, scrollViewer,
-                ScrollViewer.HorizontalScrollBarVisibilityProperty);
-            BindUtils.RelayBind(view, ScrollViewer.VerticalScrollBarVisibilityProperty, scrollViewer,
-                ScrollViewer.VerticalScrollBarVisibilityProperty);
-            BindUtils.RelayBind(view, ScrollViewer.IsScrollChainingEnabledProperty, scrollViewer,
-                ScrollViewer.IsScrollChainingEnabledProperty);
-            BindUtils.RelayBind(view, ScrollViewer.IsDeferredScrollingEnabledProperty, scrollViewer,
-                ScrollViewer.IsDeferredScrollingEnabledProperty);
+            CreateTemplateParentBinding(scrollViewer, ScrollViewer.AllowAutoHideProperty, ScrollViewer.AllowAutoHideProperty);
+            CreateTemplateParentBinding(scrollViewer, ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollViewer.HorizontalScrollBarVisibilityProperty);
+            CreateTemplateParentBinding(scrollViewer, ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollViewer.VerticalScrollBarVisibilityProperty);
+            CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsScrollChainingEnabledProperty, ScrollViewer.IsScrollChainingEnabledProperty);
+            CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsDeferredScrollingEnabledProperty, ScrollViewer.IsDeferredScrollingEnabledProperty);
 
             var itemsPresenter = new ItemsPresenter
             {
                 Name = ItemsPresenterPart
             };
 
-            BindUtils.RelayBind(view, ItemsControl.ItemsPanelProperty, itemsPresenter,
-                ItemsPresenter.ItemsPanelProperty);
+            CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, ItemsControl.ItemsPanelProperty);
+
             itemsPresenter.RegisterInNameScope(scope);
             scrollViewer.Content = itemsPresenter;
-            Frame.Child = scrollViewer;
-            return Frame;
+            frame.Child          = scrollViewer;
+            return frame;
         });
     }
 }

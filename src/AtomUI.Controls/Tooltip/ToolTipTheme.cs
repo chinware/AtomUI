@@ -1,5 +1,4 @@
-﻿using AtomUI.Data;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls.Primitives;
@@ -25,6 +24,7 @@ internal class ToolTipTheme : BaseControlTheme
     {
         return new FuncControlTemplate<ToolTip>((tooltip, scope) =>
         {
+            ResetTokenResourceBindings(tooltip);
             var arrowDecoratedBox = new ArrowDecoratedBox
             {
                 Name = ToolTipContainerPart,

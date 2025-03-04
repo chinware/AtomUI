@@ -1,5 +1,4 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -83,8 +82,6 @@ internal class TimeViewTheme : BaseControlTheme
 
         CreateTemplateParentBinding(separator, Layoutable.HeightProperty, TimeView.SpacerThicknessProperty);
         CreateTemplateParentBinding(separator, Visual.IsVisibleProperty, TimeView.IsShowHeaderProperty);
-        timeView.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(separator, Shape.FillProperty,
-            SharedTokenKey.ColorBorderSecondary));
         rootLayout.Children.Add(separator);
         Grid.SetRow(separator, 1);
     }
@@ -127,8 +124,6 @@ internal class TimeViewTheme : BaseControlTheme
                 ShouldLoop = true
             };
             hourSelector.RegisterInNameScope(scope);
-            timeView.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(hourSelector, DateTimePickerPanel.ItemHeightProperty,
-                TimePickerTokenKey.ItemHeight));
             CreateTemplateParentBinding(hourSelector, DateTimePickerPanel.IsMotionEnabledProperty, TimeView.IsMotionEnabledProperty);
             scrollViewer.Content = hourSelector;
             hourHost.Children.Add(scrollViewer);
@@ -141,8 +136,6 @@ internal class TimeViewTheme : BaseControlTheme
         };
         firstSpacer.RegisterInNameScope(scope);
         CreateTemplateParentBinding(firstSpacer, Layoutable.WidthProperty, TimeView.SpacerThicknessProperty);
-        timeView.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(firstSpacer, Shape.FillProperty,
-            SharedTokenKey.ColorBorderSecondary));
         Grid.SetColumn(firstSpacer, 1);
         pickerContainer.Children.Add(firstSpacer);
 
@@ -167,8 +160,6 @@ internal class TimeViewTheme : BaseControlTheme
                 ShouldLoop = true
             };
             minuteSelector.RegisterInNameScope(scope);
-            timeView.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(minuteSelector, DateTimePickerPanel.ItemHeightProperty,
-                TimePickerTokenKey.ItemHeight));
             CreateTemplateParentBinding(minuteSelector, DateTimePickerPanel.IsMotionEnabledProperty, TimeView.IsMotionEnabledProperty);
             scrollViewer.Content = minuteSelector;
             minuteHost.Children.Add(scrollViewer);
@@ -182,8 +173,6 @@ internal class TimeViewTheme : BaseControlTheme
         CreateTemplateParentBinding(secondSpacer, Layoutable.WidthProperty,
             TimeView.SpacerThicknessProperty);
         secondSpacer.RegisterInNameScope(scope);
-        timeView.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(secondSpacer, Shape.FillProperty,
-            SharedTokenKey.ColorBorderSecondary));
         Grid.SetColumn(secondSpacer, 3);
         pickerContainer.Children.Add(secondSpacer);
 
@@ -208,8 +197,6 @@ internal class TimeViewTheme : BaseControlTheme
                 ShouldLoop = true
             };
             secondSelector.RegisterInNameScope(scope);
-            timeView.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(secondSelector, DateTimePickerPanel.ItemHeightProperty,
-                TimePickerTokenKey.ItemHeight));
             CreateTemplateParentBinding(secondSelector, DateTimePickerPanel.IsMotionEnabledProperty, TimeView.IsMotionEnabledProperty);
             scrollViewer.Content = secondSelector;
             secondHost.Children.Add(scrollViewer);
@@ -224,8 +211,6 @@ internal class TimeViewTheme : BaseControlTheme
         thirdSpacer.RegisterInNameScope(scope);
         Grid.SetColumn(thirdSpacer, 5);
         pickerContainer.Children.Add(thirdSpacer);
-        timeView.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(thirdSpacer, Shape.FillProperty,
-            SharedTokenKey.ColorBorderSecondary));
 
         var periodHost = new Panel
         {
@@ -248,8 +233,6 @@ internal class TimeViewTheme : BaseControlTheme
                 ShouldLoop = false
             };
             periodSelector.RegisterInNameScope(scope);
-            timeView.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(periodSelector, DateTimePickerPanel.ItemHeightProperty,
-                TimePickerTokenKey.ItemHeight));
             CreateTemplateParentBinding(periodSelector, DateTimePickerPanel.IsMotionEnabledProperty, TimeView.IsMotionEnabledProperty);
             scrollViewer.Content = periodSelector;
             periodHost.Children.Add(scrollViewer);
@@ -269,6 +252,14 @@ internal class TimeViewTheme : BaseControlTheme
         headerTextStyle.Add(SingleLineText.VerticalAlignmentProperty, VerticalAlignment.Center);
         headerTextStyle.Add(SingleLineText.FontWeightProperty, FontWeight.SemiBold);
         headerTextStyle.Add(SingleLineText.MarginProperty, TimePickerTokenKey.HeaderMargin);
+        
+        var dateTimePickerPanelStyle = new Style(selector => selector.Nesting().Template().OfType<DateTimePickerPanel>());
+        dateTimePickerPanelStyle.Add(DateTimePickerPanel.ItemHeightProperty, TimePickerTokenKey.ItemHeight);
+        commonStyle.Add(dateTimePickerPanelStyle);
+        
+        var spacerStyle = new Style(selector => selector.Nesting().Template().OfType<Rectangle>());
+        spacerStyle.Add(Shape.FillProperty, SharedTokenKey.ColorBorderSecondary);
+        commonStyle.Add(spacerStyle);
 
         var hourHostStyle = new Style(selector => selector.Nesting().Template().Name(HourHostPart));
         hourHostStyle.Add(Panel.WidthProperty, TimePickerTokenKey.ItemWidth);
@@ -282,9 +273,9 @@ internal class TimeViewTheme : BaseControlTheme
         secondHostStyle.Add(Panel.WidthProperty, TimePickerTokenKey.ItemWidth);
         commonStyle.Add(secondHostStyle);
         
-        var periodHostHostStyle = new Style(selector => selector.Nesting().Template().Name(PeriodHostPart));
-        periodHostHostStyle.Add(Panel.WidthProperty, TimePickerTokenKey.ItemWidth);
-        commonStyle.Add(periodHostHostStyle);
+        var periodHostStyle = new Style(selector => selector.Nesting().Template().Name(PeriodHostPart));
+        periodHostStyle.Add(Panel.WidthProperty, TimePickerTokenKey.PeriodHostWidth);
+        commonStyle.Add(periodHostStyle);
 
         commonStyle.Add(headerTextStyle);
         Add(commonStyle);

@@ -1,23 +1,17 @@
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -587,6 +581,7 @@ public class ToolTip : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
     }
 

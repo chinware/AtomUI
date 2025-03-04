@@ -169,19 +169,6 @@ internal class AlertTheme : BaseControlTheme
             Padding                    = new Thickness(0),
             IsVisible                  = !string.IsNullOrEmpty(alert.Description)
         };
-        RegisterTokenResourceBindings(alert, () =>
-        {
-            alert.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(descriptionLabel, Layoutable.MarginProperty,
-                SharedTokenKey.MarginXS, BindingPriority.Template,
-                o =>
-                {
-                    if (o is double value)
-                    {
-                        return new Thickness(0, value, 0, 0);
-                    }
-                    return o;
-                }));
-        });
         CreateTemplateParentBinding(descriptionLabel, ContentControl.ContentProperty, Alert.DescriptionProperty);
         TextBlock.SetTextWrapping(descriptionLabel, TextWrapping.Wrap);
         return descriptionLabel;
@@ -284,6 +271,7 @@ internal class AlertTheme : BaseControlTheme
     {
         var normalLabelStyle = new Style(selector => selector.Nesting().Template().Name(DescriptionLabelPart));
         normalLabelStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
+        normalLabelStyle.Add(TextBlock.MarginProperty, AlertTokenKey.DescriptionLabelMargin);
         Add(normalLabelStyle);
     }
 

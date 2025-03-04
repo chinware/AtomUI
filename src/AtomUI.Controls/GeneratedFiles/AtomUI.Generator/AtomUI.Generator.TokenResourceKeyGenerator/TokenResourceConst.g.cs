@@ -33,6 +33,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey WithDescriptionIconSize = new TokenResourceKey("Alert.WithDescriptionIconSize");
         public static readonly TokenResourceKey CloseIconSize = new TokenResourceKey("Alert.CloseIconSize");
         public static readonly TokenResourceKey ExtraElementMargin = new TokenResourceKey("Alert.ExtraElementMargin");
+        public static readonly TokenResourceKey DescriptionLabelMargin = new TokenResourceKey("Alert.DescriptionLabelMargin");
     }
 
     public static class ArrowDecoratedBoxTokenKey
@@ -698,6 +699,7 @@ namespace AtomUI.Theme.Styling
     {
         public static readonly TokenResourceKey ItemHeight = new TokenResourceKey("TimePicker.ItemHeight");
         public static readonly TokenResourceKey ItemWidth = new TokenResourceKey("TimePicker.ItemWidth");
+        public static readonly TokenResourceKey PeriodHostWidth = new TokenResourceKey("TimePicker.PeriodHostWidth");
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("TimePicker.ItemPadding");
         public static readonly TokenResourceKey ButtonsMargin = new TokenResourceKey("TimePicker.ButtonsMargin");
         public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("TimePicker.RangePickerArrowMargin");
