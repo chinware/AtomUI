@@ -31,7 +31,6 @@ internal class MessageCardTheme : BaseControlTheme
     {
         return new FuncControlTemplate<MessageCard>((messageCard, scope) =>
         {
-            BuildInstanceStyles(messageCard);
             var motionActor = new MotionActorControl()
             {
                 Name         = MotionActorPart,
@@ -87,6 +86,51 @@ internal class MessageCardTheme : BaseControlTheme
     {
         BuildCommonStyle();
         BuildContentStyle();
+        BuildIconStyle();
+    }
+
+    private void BuildIconStyle()
+    {
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.WidthProperty, MessageTokenKey.MessageIconSize);
+            iconStyle.Add(Icon.HeightProperty, MessageTokenKey.MessageIconSize);
+            Add(iconStyle);
+        }
+        
+        var infoOrLoadingTypeStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Information),
+            selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Loading)));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorPrimary);
+            infoOrLoadingTypeStyle.Add(iconStyle);
+        }
+        Add(infoOrLoadingTypeStyle);
+        
+        var errorTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Error));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+            errorTypeStyle.Add(iconStyle);
+        }
+        Add(errorTypeStyle);
+        
+        var successTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Success));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorSuccess);
+            successTypeStyle.Add(iconStyle);
+        }
+        Add(successTypeStyle);
+        
+        var warningTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Warning));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
+            warningTypeStyle.Add(iconStyle);
+        }
+        Add(warningTypeStyle);
+ 
     }
 
     private void BuildCommonStyle()
@@ -126,11 +170,11 @@ internal class MessageCardTheme : BaseControlTheme
         Add(iconStyle);
     }
 
-    protected override void BuildInstanceStyles(Control control)
-    {
-        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
-        iconStyle.Add(Layoutable.WidthProperty, MessageTokenKey.MessageIconSize);
-        iconStyle.Add(Layoutable.HeightProperty, MessageTokenKey.MessageIconSize);
-        control.Styles.Add(iconStyle);
-    }
+    // protected override void BuildInstanceStyles(Control control)
+    // {
+    //     var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
+    //     iconStyle.Add(Layoutable.WidthProperty, MessageTokenKey.MessageIconSize);
+    //     iconStyle.Add(Layoutable.HeightProperty, MessageTokenKey.MessageIconSize);
+    //     control.Styles.Add(iconStyle);
+    // }
 }

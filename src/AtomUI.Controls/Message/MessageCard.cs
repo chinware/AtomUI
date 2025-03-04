@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -12,8 +13,10 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -165,7 +168,6 @@ public class MessageCard : TemplatedControl,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        UpdateMessageType();
         ClipToBounds = false;
     }
 
@@ -186,12 +188,25 @@ public class MessageCard : TemplatedControl,
     {
         base.OnPropertyChanged(e);
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == MessageTypeProperty)
             {
                 SetupMessageIcon();
-                UpdateMessageType();
+                SetupPseudoClasses();
+            }
+        }
+
+        if (e.Property == IconProperty)
+        {
+            if (e.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (e.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
             }
         }
 
@@ -215,13 +230,9 @@ public class MessageCard : TemplatedControl,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        SetupPseudoClasses();
+        SetupMessageIcon();
         base.OnApplyTemplate(e);
-        if (Icon is null)
-        {
-            SetupMessageIcon();
-            UpdateMessageType();
-        }
-
         _motionActor = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
         ApplyShowMotion();
     }
@@ -260,7 +271,7 @@ public class MessageCard : TemplatedControl,
         }
     }
 
-    private void UpdateMessageType()
+    private void SetupPseudoClasses()
     {
         switch (MessageType)
         {
@@ -283,36 +294,6 @@ public class MessageCard : TemplatedControl,
             case MessageType.Loading:
                 PseudoClasses.Add(":loading");
                 break;
-        }
-
-        if (Icon is not null)
-        {
-            SetupMessageIconColor(Icon);
-        }
-    }
-
-    private void SetupMessageIconColor(Icon icon)
-    {
-        if (MessageType == MessageType.Error)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorError));
-        }
-        else if (MessageType == MessageType.Information ||
-                 MessageType == MessageType.Loading)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorPrimary));
-        }
-        else if (MessageType == MessageType.Success)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorSuccess));
-        }
-        else if (MessageType == MessageType.Warning)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorWarning));
         }
     }
 
@@ -341,13 +322,14 @@ public class MessageCard : TemplatedControl,
             icon.LoadingAnimation = IconAnimation.Spin;
         }
 
-        if (icon is not null)
+        if (Icon is null)
         {
-            SetupMessageIconColor(icon);
+            ClearValue(IconProperty);
         }
-
-        SetCurrentValue(IconProperty, icon);
+        icon?.SetTemplatedParent(this);
+        SetValue(IconProperty, icon, BindingPriority.Template);
     }
+
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
