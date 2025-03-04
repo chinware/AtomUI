@@ -14,6 +14,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -182,7 +183,7 @@ public class NavMenu : NavMenuBase,
 
         if (change.Property == ModeProperty)
         {
-            if (VisualRoot is not null)
+            if (this.IsAttachedToVisualTree())
             {
                 SetupControlTheme();
                 HandleModeChanged();

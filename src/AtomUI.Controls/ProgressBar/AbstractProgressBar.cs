@@ -15,6 +15,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
@@ -93,7 +94,7 @@ public abstract class AbstractProgressBar : RangeBase,
 
     public static readonly StyledProperty<IBrush?> SuccessThresholdBrushProperty =
         AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractProgressBar>();
 
@@ -190,7 +191,7 @@ public abstract class AbstractProgressBar : RangeBase,
         get => GetValue(SuccessThresholdProperty);
         set => SetValue(SuccessThresholdProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -273,7 +274,7 @@ public abstract class AbstractProgressBar : RangeBase,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ProgressBarToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-    
+
     #endregion
 
     private CompositeDisposable? _tokenBindingsDisposable;
@@ -316,7 +317,7 @@ public abstract class AbstractProgressBar : RangeBase,
             e.Property == ProgressTextFormatProperty)
         {
             UpdateProgress();
-        } 
+        }
         else if (e.Property == IsIndeterminateProperty)
         {
             UpdatePseudoClasses();
@@ -325,6 +326,7 @@ public abstract class AbstractProgressBar : RangeBase,
         {
             SetupTransitions();
         }
+
         HandlePropertyChangedForStyle(e);
     }
 
@@ -407,7 +409,7 @@ public abstract class AbstractProgressBar : RangeBase,
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
                     SharedTokenKey.MotionDurationFast),
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                SharedTokenKey.MotionDurationFast)
+                    SharedTokenKey.MotionDurationFast)
             };
 
             NotifySetupTransitions(ref transitions);
@@ -431,19 +433,16 @@ public abstract class AbstractProgressBar : RangeBase,
         {
             EffectiveSizeType = e.GetNewValue<SizeType>();
         }
-        else if (e.Property == EffectiveSizeTypeProperty)
-        {
-            if (VisualRoot is not null)
-            {
-                NotifyEffectSizeTypeChanged();
-            }
-        }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == WidthProperty || e.Property == HeightProperty)
             {
                 NotifyHandleExtraInfoVisibility();
+            }
+            else if (e.Property == EffectiveSizeTypeProperty)
+            {
+                NotifyEffectSizeTypeChanged();
             }
         }
 
@@ -509,7 +508,7 @@ public abstract class AbstractProgressBar : RangeBase,
     protected virtual void NotifyPrepareDrawingContext(DrawingContext context)
     {
     }
-    
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
@@ -522,5 +521,4 @@ public abstract class AbstractProgressBar : RangeBase,
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
-
 }

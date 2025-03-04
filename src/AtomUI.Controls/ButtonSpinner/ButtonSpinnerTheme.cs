@@ -1,10 +1,10 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -12,6 +12,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
+using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -33,7 +34,6 @@ internal class ButtonSpinnerTheme : BaseControlTheme
     {
         return new FuncControlTemplate<ButtonSpinner>((buttonSpinner, scope) =>
         {
-            ResetTokenResourceBindings(buttonSpinner);
             var decoratedBox = BuildSpinnerDecoratedBox(buttonSpinner, scope);
             var innerBox     = BuildSpinnerContent(buttonSpinner, scope);
             decoratedBox.Content = innerBox;
@@ -105,19 +105,18 @@ internal class ButtonSpinnerTheme : BaseControlTheme
             Rows    = 2,
             Name = SpinnerButtonsLayoutPart
         };
-        
+        StyledElementReflectionExtensions.SetTemplatedParent(spinnerLayout, buttonSpinner);
         decoratorLayout.Children.Add(spinnerLayout);
-        
-        var increaseButtonIcon = AntDesignIconPackage.UpOutlined();
         
         var increaseButton = new IconButton
         {
             Name                = IncreaseButtonPart,
-            Icon                = increaseButtonIcon,
+            Icon                = AntDesignIconPackage.UpOutlined(),
             VerticalAlignment   = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             BackgroundSizing    = BackgroundSizing.InnerBorderEdge,
         };
+        StyledElementReflectionExtensions.SetTemplatedParent(increaseButton, buttonSpinner);
         increaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         {
             var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
@@ -126,17 +125,16 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         }
         
         increaseButton.RegisterInNameScope(scope);
-
-        var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
         
         var decreaseButton = new IconButton
         {
             Name                = DecreaseButtonPart,
-            Icon                = decreaseButtonIcon,
+            Icon                = AntDesignIconPackage.DownOutlined(),
             VerticalAlignment   = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             BackgroundSizing    = BackgroundSizing.InnerBorderEdge
         };
+        StyledElementReflectionExtensions.SetTemplatedParent(decreaseButton, buttonSpinner);
         decreaseButton.SetCurrentValue(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         {
             var handleButtonStyle = new Style(selector => selector.Class(StdPseudoClass.Pressed));
@@ -148,38 +146,6 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         spinnerLayout.Children.Add(decreaseButton);
 
         spinnerInnerBox.SpinnerContent = decoratorLayout;
-
-        // 这里必须这么处理，因为这些内容设置到 SpinnerContent，跟现在不是一个作用域了
-        RegisterTokenResourceBindings(buttonSpinner, () =>
-        {
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(spinnerLayout,
-                Layoutable.WidthProperty,
-                ButtonSpinnerTokenKey.HandleWidth));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButtonIcon,
-                Icon.ActiveFilledBrushProperty,
-                ButtonSpinnerTokenKey.HandleHoverColor));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButtonIcon,
-                Icon.SelectedFilledBrushProperty,
-                SharedTokenKey.ColorPrimaryActive));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButton,
-                IconButton.IconWidthProperty,
-                ButtonSpinnerTokenKey.HandleIconSize));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(increaseButton,
-                IconButton.IconHeightProperty,
-                ButtonSpinnerTokenKey.HandleIconSize));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
-                Icon.ActiveFilledBrushProperty,
-                ButtonSpinnerTokenKey.HandleHoverColor));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
-                Icon.SelectedFilledBrushProperty,
-                SharedTokenKey.ColorPrimaryActive));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButton,
-                IconButton.IconWidthProperty,
-                ButtonSpinnerTokenKey.HandleIconSize));
-            buttonSpinner.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButton,
-                IconButton.IconHeightProperty,
-                ButtonSpinnerTokenKey.HandleIconSize));
-        });
 
         return spinnerInnerBox;
     }
@@ -214,6 +180,23 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         isEnableMotionStyle.Add(iconStyle);
         commonStyle.Add(isEnableMotionStyle);
         Add(commonStyle);
+        BuildUpAndDownButtonStyle();
     }
-    
+
+    private void BuildUpAndDownButtonStyle()
+    {
+        var spinnerButtonsLayoutStyle = new Style(selector => selector.Nesting().Template().Name(SpinnerButtonsLayoutPart));
+        spinnerButtonsLayoutStyle.Add(Layoutable.WidthProperty, ButtonSpinnerTokenKey.HandleWidth);
+        Add(spinnerButtonsLayoutStyle);
+        
+        var upAndDownButtonStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(IncreaseButtonPart),
+            selector.Nesting().Template().Name(DecreaseButtonPart)));
+
+        upAndDownButtonStyle.Add(IconButton.ActiveIconColorProperty, ButtonSpinnerTokenKey.HandleHoverColor);
+        upAndDownButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorPrimaryActive);
+        upAndDownButtonStyle.Add(IconButton.IconWidthProperty, ButtonSpinnerTokenKey.HandleIconSize);
+        upAndDownButtonStyle.Add(IconButton.IconHeightProperty, ButtonSpinnerTokenKey.HandleIconSize);
+        
+        Add(upAndDownButtonStyle);
+    }
 }

@@ -11,6 +11,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -381,7 +382,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
             CalculatePreferredWidth();
         }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == RangeStartSelectedDateProperty)
             {

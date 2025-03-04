@@ -12,6 +12,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -409,7 +410,7 @@ internal class TimeView : TemplatedControl,
 
         if (change.Property == SelectedTimeProperty)
         {
-            if (VisualRoot is not null && SelectedTime is not null)
+            if (this.IsAttachedToVisualTree() && SelectedTime is not null)
             {
                 SyncTimeValueToPanel(SelectedTime.Value);
             }

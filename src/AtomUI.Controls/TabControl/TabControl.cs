@@ -11,6 +11,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Media.Transformation;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -44,7 +45,7 @@ public class TabControl : BaseTabControl
 
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             SetupSelectedIndicator();
         }

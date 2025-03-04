@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Layout;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -146,7 +147,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
             SetupAlignment();
         }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if ((e.Property == WidthProperty && Orientation == Orientation.Vertical) ||
                 (e.Property == HeightProperty && Orientation == Orientation.Horizontal))

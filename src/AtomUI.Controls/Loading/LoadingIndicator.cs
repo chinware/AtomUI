@@ -11,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -193,7 +194,7 @@ public class LoadingIndicator : TemplatedControl,
     {
         if (e.Property == CustomIndicatorIconProperty)
         {
-            if (VisualRoot is not null)
+            if (this.IsAttachedToVisualTree())
             {
                 var oldCustomIcon = e.GetOldValue<Icon?>();
                 if (oldCustomIcon is not null)

@@ -15,6 +15,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -231,6 +232,7 @@ public class Expander : AvaloniaExpander,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ExpandIcon ??= AntDesignIconPackage.RightOutlined();
         base.OnApplyTemplate(e);
         this.RunThemeTokenBindingActions();
         _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderTheme.ContentMotionActorPart);
@@ -238,7 +240,6 @@ public class Expander : AvaloniaExpander,
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
-        SetupIconButton();
         _tempAnimationDisabled = true;
         HandleExpandedChanged();
         _tempAnimationDisabled = false;
@@ -259,17 +260,7 @@ public class Expander : AvaloniaExpander,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ExpandIconProperty)
-        {
-            var oldExpandIcon = change.GetOldValue<Icon?>();
-            if (oldExpandIcon is not null)
-            {
-                oldExpandIcon.SetTemplatedParent(null);
-            }
-
-            SetupIconButton();
-        }
-        else if (change.Property == AddOnContentProperty)
+        if (change.Property == AddOnContentProperty)
         {
             if (change.OldValue is Control oldControl)
             {
@@ -282,7 +273,7 @@ public class Expander : AvaloniaExpander,
             }
         }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsBorderlessProperty)
             {
@@ -320,19 +311,7 @@ public class Expander : AvaloniaExpander,
             HeaderBorderThickness = new Thickness(0, headerBorderThickness, 0, 0);
         }
     }
-
-    private void SetupIconButton()
-    {
-        if (ExpandIcon is null)
-        {
-            ExpandIcon = AntDesignIconPackage.RightOutlined();
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
-                SharedTokenKey.ColorTextDisabled));
-        }
-
-        ExpandIcon.SetTemplatedParent(this);
-    }
-
+    
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);

@@ -117,8 +117,6 @@ public class ComboBox : AvaloniaComboBox,
     string IControlSharedTokenResourcesHost.TokenId => ComboBoxToken.ID;
 
     #endregion
-    
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     static ComboBox()
     {

@@ -11,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -213,7 +214,7 @@ internal class RadioIndicator : Control,
             e.Property == IsEnabledProperty)
         {
             UpdatePseudoClasses();
-            if (VisualRoot is not null)
+            if (this.IsAttachedToVisualTree())
             {
                 RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
             }

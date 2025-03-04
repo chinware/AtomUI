@@ -3,6 +3,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.VisualTree;
 using Math = System.Math;
 
 namespace AtomUI.Controls;
@@ -235,7 +236,7 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
         if (e.Property == WidthProperty || e.Property == HeightProperty)
         {
-            if (VisualRoot is not null)
+            if (this.IsAttachedToVisualTree())
             {
                 CalculateStrokeThickness();
                 SetupExtraInfoFontSize();

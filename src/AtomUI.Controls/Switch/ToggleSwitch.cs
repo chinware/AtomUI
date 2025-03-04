@@ -13,6 +13,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Rendering;
+using Avalonia.VisualTree;
 using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
@@ -407,7 +408,7 @@ public class ToggleSwitch : ToggleButton,
         }
         else if (e.Property == OffContentProperty || e.Property == OnContentProperty)
         {
-            if (VisualRoot is not null)
+            if (this.IsAttachedToVisualTree())
             {
                 if (e.OldValue is Control oldChild)
                 {

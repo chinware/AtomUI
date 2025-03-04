@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -88,7 +89,6 @@ public class LoadingMaskHost : Control
     #endregion
 
     private LoadingMask? _loadingMask;
-    private bool _initialized;
     
     public void ShowLoading()
     {
@@ -135,15 +135,10 @@ public class LoadingMaskHost : Control
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        if (!_initialized)
+        if (MaskTarget is not null)
         {
-            if (MaskTarget is not null)
-            {
-                MaskTarget.SetLogicalParent(this);
-                VisualChildren.Add(MaskTarget);
-            }
-
-            _initialized = true;
+            MaskTarget.SetLogicalParent(this);
+            VisualChildren.Add(MaskTarget);
         }
     }
 
@@ -158,7 +153,7 @@ public class LoadingMaskHost : Control
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (_initialized && VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (IsLoadingProperty == change.Property)
             {

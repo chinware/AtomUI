@@ -163,7 +163,7 @@ public class Collapse : SelectingItemsControl,
 
     private void SetupItemsBorderThickness()
     {
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             for (var i = 0; i < ItemCount; ++i)
             {
@@ -312,7 +312,7 @@ public class Collapse : SelectingItemsControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsBorderlessProperty)
             {
