@@ -1,12 +1,10 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -84,8 +82,7 @@ public enum ArrowPosition
 public class ArrowDecoratedBox : ContentControl,
                                  IArrowAwareShadowMaskInfoProvider,
                                  IAnimationAwareControl,
-                                 IControlSharedTokenResourcesHost,
-                                 ITokenResourceConsumer
+                                 IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -160,7 +157,6 @@ public class ArrowDecoratedBox : ContentControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     public Rect ArrowIndicatorBounds { get; private set; }
 
@@ -173,7 +169,6 @@ public class ArrowDecoratedBox : ContentControl,
     private Control? _arrowIndicatorLayout;
     private ArrowIndicator? _arrowIndicator;
     private bool _arrowPlacementFlipped;
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     static ArrowDecoratedBox()
     {
@@ -232,18 +227,6 @@ public class ArrowDecoratedBox : ContentControl,
                 _arrowPlacementFlipped = true;
             }
         }
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 
     public CornerRadius GetMaskCornerRadius()

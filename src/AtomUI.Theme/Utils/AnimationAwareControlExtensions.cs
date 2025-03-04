@@ -18,22 +18,27 @@ public static class AnimationAwareControlExtensions
                                                AvaloniaProperty isWaveAnimationEnabledProperty)
     {
         var                  bindTarget          = animationAwareControl.PropertyBindTarget;
-        CompositeDisposable? compositeDisposable = null;
         bindTarget.AttachedToLogicalTree += (object? sender, LogicalTreeAttachmentEventArgs args) =>
         {
             if (sender is Control control)
             {
-                compositeDisposable = new CompositeDisposable();
-                compositeDisposable.Add(TokenResourceBinder.CreateTokenBinding(control, isMotionEnabledProperty, SharedTokenKey.EnableMotion));
+                var compositeDisposable = new CompositeDisposable();
+                compositeDisposable.Add(TokenResourceBinder.CreateTokenBinding(control, isMotionEnabledProperty,
+                    SharedTokenKey.EnableMotion));
                 compositeDisposable.Add(TokenResourceBinder.CreateTokenBinding(control, isWaveAnimationEnabledProperty,
                     SharedTokenKey.EnableWaveAnimation));
+                AnimationAwareControlProperty.SetTokenResourceBindingDisposables(control, compositeDisposable);
             }
         };
 
         bindTarget.DetachedFromLogicalTree += (object? sender, LogicalTreeAttachmentEventArgs args) =>
         {
-            compositeDisposable?.Dispose();
-            compositeDisposable = null;
+            if (sender is Control control)
+            {
+                var compositeDisposable = AnimationAwareControlProperty.GetTokenResourceBindingDisposables(control);
+                compositeDisposable?.Dispose();
+                AnimationAwareControlProperty.SetTokenResourceBindingDisposables(control, null);
+            }
         };
 
         // 如果被强行指定，那么在 resource 中记录下来，这样就屏蔽全局的

@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
@@ -12,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -135,7 +135,7 @@ public class Alert : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == IsClosableProperty)
             {
