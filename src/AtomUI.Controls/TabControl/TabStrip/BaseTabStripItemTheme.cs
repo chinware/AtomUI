@@ -80,8 +80,6 @@ internal class BaseTabStripItemTheme : BaseControlTheme
             Name = ItemCloseButtonPart
         };
         iconButton.RegisterInNameScope(scope);
-        stripItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconButton,
-            Layoutable.MarginProperty, TabControlTokenKey.CloseIconMargin));
 
         CreateTemplateParentBinding(iconButton, IconButton.IconProperty, TabStripItem.CloseIconProperty);
         CreateTemplateParentBinding(iconButton, Visual.IsVisibleProperty, TabStripItem.IsClosableProperty);
@@ -96,6 +94,10 @@ internal class BaseTabStripItemTheme : BaseControlTheme
         commonStyle.Add(InputElement.CursorProperty,
             new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenKey.ItemColor);
+
+        var itemCloseButtonStyle = new Style(selector => selector.Nesting().Template().Name(ItemCloseButtonPart));
+        itemCloseButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.CloseIconMargin);
+        commonStyle.Add(itemCloseButtonStyle);
 
         // Icon 一些通用属性
         {

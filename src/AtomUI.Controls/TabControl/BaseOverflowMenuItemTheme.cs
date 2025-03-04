@@ -1,8 +1,6 @@
-﻿using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
+﻿using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -63,8 +61,6 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             };
 
             Grid.SetColumn(itemTextPresenter, 0);
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
-                MenuTokenKey.ItemMargin));
             CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
                 HeaderedSelectingItemsControl.HeaderProperty,
                 BindingMode.Default,
@@ -100,15 +96,6 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             };
 
             CreateTemplateParentBinding(closeButton, Visual.IsVisibleProperty, BaseOverflowMenuItem.IsClosableProperty);
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorIcon));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorIconHover));
-
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Layoutable.WidthProperty,
-                SharedTokenKey.IconSizeSM));
-            menuItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuCloseIcon, Layoutable.HeightProperty,
-                SharedTokenKey.IconSizeSM));
 
             Grid.SetColumn(menuCloseIcon, 4);
             closeButton.RegisterInNameScope(scope);
@@ -123,14 +110,13 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
-        var commonStyle = new Style(selector => selector.Nesting());
-        BuildCommonStyle(commonStyle);
+        BuildCommonStyle();
         BuildDisabledStyle();
-        Add(commonStyle);
     }
 
-    private void BuildCommonStyle(Style commonStyle)
+    private void BuildCommonStyle()
     {
+        var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemColor);
         {
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
@@ -161,7 +147,21 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
             borderStyle.Add(Border.BackgroundProperty, MenuTokenKey.ItemHoverBg);
             hoverStyle.Add(borderStyle);
         }
+        
         commonStyle.Add(hoverStyle);
+        
+        var itemTextPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemTextPresenterPart));
+        itemTextPresenterStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
+        commonStyle.Add(itemTextPresenterStyle);
+        
+        var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(ItemCloseButtonPart));
+        closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
+        closeButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
+        closeButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+        closeButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+        commonStyle.Add(closeButtonStyle);
+        
+        Add(commonStyle);
     }
 
     private void BuildDisabledStyle()

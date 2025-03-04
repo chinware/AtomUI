@@ -48,18 +48,12 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Center;
             menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
-            scrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorTextSecondary));
-
             var menuIndicator = new IconButton
             {
                 Name = ScrollMenuIndicatorPart,
                 Icon = menuIndicatorIcon
             };
-            scrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSize));
-            scrollViewer.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(menuIndicator, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSize));
+            
             menuIndicator.RegisterInNameScope(scope);
 
             var scrollViewContent = CreateScrollContentPresenter();
@@ -110,6 +104,7 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
         CreateTemplateParentBinding(scrollViewContent, ScrollContentPresenter.VerticalSnapPointsTypeProperty,
             ScrollViewer.VerticalSnapPointsTypeProperty);
         var scrollGestureRecognizer = new ScrollGestureRecognizer();
+        
         BindUtils.RelayBind(scrollViewContent, ScrollContentPresenter.CanHorizontallyScrollProperty,
             scrollGestureRecognizer,
             ScrollGestureRecognizer.CanHorizontallyScrollProperty);
@@ -136,6 +131,9 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
             menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlTokenKey.MenuIndicatorPaddingHorizontal);
+            menuIndicatorStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextSecondary);
+            menuIndicatorStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
+            menuIndicatorStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));

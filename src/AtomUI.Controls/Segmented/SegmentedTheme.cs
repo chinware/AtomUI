@@ -24,7 +24,7 @@ internal class SegmentedTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Segmented>((segmented, scope) =>
         {
-            var Frame = new Border
+            var frame = new Border
             {
                 Name         = FramePart,
                 ClipToBounds = true
@@ -41,12 +41,12 @@ internal class SegmentedTheme : BaseControlTheme
                 })
             };
             itemsPresenter.RegisterInNameScope(scope);
-            Frame.Child = itemsPresenter;
+            frame.Child = itemsPresenter;
             
-            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty,
+            CreateTemplateParentBinding(frame, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
-            CreateTemplateParentBinding(Frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
-            return Frame;
+            CreateTemplateParentBinding(frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
+            return frame;
         });
     }
 

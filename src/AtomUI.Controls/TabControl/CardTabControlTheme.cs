@@ -53,36 +53,21 @@ internal class CardTabControlTheme : BaseTabControlTheme
         var contentPanel = CreateTabStripContentPanel(scope);
         tabScrollViewer.Content    = contentPanel;
         tabScrollViewer.TabControl = baseTabControl;
-        
-        var addTabIcon = AntDesignIconPackage.PlusOutlined();
-
-        baseTabControl.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.NormalFilledBrushProperty,
-            TabControlTokenKey.ItemColor));
-        baseTabControl.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.ActiveFilledBrushProperty,
-            TabControlTokenKey.ItemHoverColor));
-        baseTabControl.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ColorTextDisabled));
 
         var addTabButton = new IconButton
         {
             Name            = AddTabButtonPart,
             BorderThickness = new Thickness(1),
-            Icon            = addTabIcon
+            Icon            = AntDesignIconPackage.PlusOutlined()
         };
         DockPanel.SetDock(addTabButton, Dock.Right);
-        baseTabControl.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSize));
-        baseTabControl.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSize));
+        
         CreateTemplateParentBinding(addTabButton, TemplatedControl.BorderThicknessProperty,
             CardTabControl.CardBorderThicknessProperty);
         CreateTemplateParentBinding(addTabButton, TemplatedControl.CornerRadiusProperty,
             CardTabControl.CardBorderRadiusProperty);
         CreateTemplateParentBinding(addTabButton, Visual.IsVisibleProperty, CardTabControl.IsShowAddTabButtonProperty);
-
-        baseTabControl.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(addTabButton, TemplatedControl.BorderBrushProperty,
-            SharedTokenKey.ColorBorderSecondary));
-
+        
         addTabButton.RegisterInNameScope(scope);
 
         cardTabControlContainer.TabScrollViewer = tabScrollViewer;
@@ -109,6 +94,17 @@ internal class CardTabControlTheme : BaseTabControlTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
+        {
+            var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
+            addTabButtonStyle.Add(IconButton.NormalIconColorProperty, TabControlTokenKey.ItemColor);
+            addTabButtonStyle.Add(IconButton.ActiveIconColorProperty, TabControlTokenKey.ItemHoverColor);
+            addTabButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+            addTabButtonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
+            addTabButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
+            addTabButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
+            
+            commonStyle.Add(addTabButtonStyle);
+        }
 
         // 设置 items presenter 面板样式
         // 分为上、右、下、左

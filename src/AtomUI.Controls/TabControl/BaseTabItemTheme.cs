@@ -81,8 +81,6 @@ internal class BaseTabItemTheme : BaseControlTheme
             Name = ItemCloseButtonPart
         };
         iconButton.RegisterInNameScope(scope);
-        tabItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(iconButton, Layoutable.MarginProperty,
-            TabControlTokenKey.CloseIconMargin));
 
         CreateTemplateParentBinding(iconButton, IconButton.IconProperty, TabItem.CloseIconProperty);
         CreateTemplateParentBinding(iconButton, Visual.IsVisibleProperty, TabItem.IsClosableProperty);
@@ -97,12 +95,17 @@ internal class BaseTabItemTheme : BaseControlTheme
         commonStyle.Add(InputElement.CursorProperty,
             new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenKey.ItemColor);
+        
+        var itemCloseButtonStyle = new Style(selector => selector.Nesting().Template().Name(ItemCloseButtonPart));
+        itemCloseButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.CloseIconMargin);
+        commonStyle.Add(itemCloseButtonStyle);
 
         // Icon 一些通用属性
         {
             var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
             iconStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.ItemIconMargin);
             commonStyle.Add(iconStyle);
+            
         }
 
         // hover

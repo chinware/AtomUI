@@ -54,8 +54,6 @@ internal class TabStripTheme : BaseTabStripTheme
             Name = SelectedItemIndicatorPart
         };
         border.RegisterInNameScope(scope);
-        baseTabStrip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            TabControlTokenKey.InkBarColor));
 
         layout.Children.Add(itemsPresenter);
         layout.Children.Add(border);
@@ -67,6 +65,12 @@ internal class TabStripTheme : BaseTabStripTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
+
+        {
+            var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
+            indicatorStyle.Add(Border.BackgroundProperty, TabControlTokenKey.InkBarColor);
+            commonStyle.Add(indicatorStyle);
+        }
 
         // 设置 items presenter 面板样式
         // 分为上、右、下、左

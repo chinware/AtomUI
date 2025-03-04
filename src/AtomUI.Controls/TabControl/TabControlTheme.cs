@@ -59,9 +59,6 @@ internal class TabControlTheme : BaseTabControlTheme
             Name = SelectedItemIndicatorPart
         };
         border.RegisterInNameScope(scope);
-        baseTabControl.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(border,
-            Border.BackgroundProperty,
-            TabControlTokenKey.InkBarColor));
 
         layout.Children.Add(itemsPresenter);
         layout.Children.Add(border);
@@ -74,6 +71,11 @@ internal class TabControlTheme : BaseTabControlTheme
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
 
+        {
+            var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
+            indicatorStyle.Add(Border.BackgroundProperty, TabControlTokenKey.InkBarColor); 
+            commonStyle.Add(indicatorStyle);
+        }
         // 设置 items presenter 面板样式
         // 分为上、右、下、左
         {
@@ -90,8 +92,8 @@ internal class TabControlTheme : BaseTabControlTheme
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
             indicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             indicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+        
             topStyle.Add(indicatorStyle);
-
             topStyle.Add(itemPresenterPanelStyle);
             commonStyle.Add(topStyle);
         }
