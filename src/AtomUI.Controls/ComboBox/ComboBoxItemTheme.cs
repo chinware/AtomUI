@@ -2,7 +2,6 @@
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -50,11 +49,11 @@ internal class ComboBoxItemTheme : BaseControlTheme
                         return o;
                     }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-                ContentControl.ContentTemplateProperty);
+                ComboBoxItem.ContentTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.HorizontalContentAlignmentProperty,
-                ContentControl.HorizontalContentAlignmentProperty);
+                ComboBoxItem.HorizontalContentAlignmentProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.VerticalContentAlignmentProperty,
-                ContentControl.VerticalContentAlignmentProperty);
+                ComboBoxItem.VerticalContentAlignmentProperty);
             return contentPresenter;
         });
     }

@@ -182,6 +182,7 @@ public class DropdownButton : Button
         BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
         
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
+        ExtraContainerVisible = true;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

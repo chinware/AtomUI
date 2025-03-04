@@ -4,7 +4,6 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;

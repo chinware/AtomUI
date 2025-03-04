@@ -14,12 +14,8 @@ using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
 public class ComboBox : AvaloniaComboBox,
                         IAnimationAwareControl,
-                        IControlSharedTokenResourcesHost,
-                        ITokenResourceConsumer
+                        IControlSharedTokenResourcesHost
 {
-    public const string ErrorPC = ":error";
-    public const string WarningPC = ":warning";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -119,7 +115,6 @@ public class ComboBox : AvaloniaComboBox,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ComboBoxToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
     
@@ -156,7 +151,6 @@ public class ComboBox : AvaloniaComboBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _popup               = e.NameScope.Find<Popup>(ComboBoxTheme.PopupPart);
         _openIndicatorButton = e.NameScope.Find<IconButton>(ComboBoxTheme.OpenIndicatorButtonPart);
         _spinnerInnerBox     = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxTheme.SpinnerInnerBoxPart);
@@ -191,19 +185,7 @@ public class ComboBox : AvaloniaComboBox,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
-        PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
     }
 }

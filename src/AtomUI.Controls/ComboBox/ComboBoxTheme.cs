@@ -1,4 +1,6 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -38,7 +40,6 @@ internal class ComboBoxTheme : BaseControlTheme
     {
         return new FuncControlTemplate<ComboBox>((comboBox, scope) =>
         {
-            ResetTokenResourceBindings(comboBox);
             var panel        = new Panel();
             var decoratedBox = BuildSpinnerDecoratedBox(comboBox, scope);
             var innerBox     = BuildSpinnerContent(comboBox, scope);
@@ -113,28 +114,11 @@ internal class ComboBoxTheme : BaseControlTheme
         };
 
         openButton.RegisterInNameScope(scope);
+        openButton.SetTemplatedParent(comboBox);
         
         spinnerHandleDecorator.Child   = openButton;
         spinnerInnerBox.SpinnerContent = spinnerHandleDecorator;
         
-        RegisterTokenResourceBindings(comboBox, () =>
-        {
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
-                Icon.ActiveFilledBrushProperty,
-                ButtonSpinnerTokenKey.HandleHoverColor));
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon,
-                Icon.SelectedFilledBrushProperty,
-                SharedTokenKey.ColorPrimaryActive));
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton, Layoutable.WidthProperty,
-                ComboBoxTokenKey.OpenIndicatorWidth));
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton,
-                IconButton.IconWidthProperty,
-                SharedTokenKey.IconSizeSM));
-            comboBox.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(openButton,
-                IconButton.IconHeightProperty,
-                SharedTokenKey.IconSizeSM));
-        });
-
         return spinnerInnerBox;
     }
 
@@ -149,6 +133,7 @@ internal class ComboBoxTheme : BaseControlTheme
             TextTrimming        = TextTrimming.CharacterEllipsis,
             Opacity             = 0.3
         };
+        placeholder.SetTemplatedParent(comboBox);
 
         CreateTemplateParentBinding(placeholder, Visual.IsVisibleProperty, SelectingItemsControl.SelectedItemProperty,
             BindingMode.Default,
@@ -161,13 +146,14 @@ internal class ComboBoxTheme : BaseControlTheme
         {
             Name                = SelectedContentPresenterPart,
             HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment   = VerticalAlignment.Center
+            VerticalAlignment   = VerticalAlignment.Center,
         };
-
+        
+        contentPresenter.SetTemplatedParent(comboBox);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-            Avalonia.Controls.ComboBox.SelectionBoxItemProperty);
+            ComboBox.SelectionBoxItemProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-            ItemsControl.ItemTemplateProperty);
+            ComboBox.ItemTemplateProperty);
 
         contentLayout.Children.Add(contentPresenter);
 
@@ -212,6 +198,14 @@ internal class ComboBoxTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
+        BuildCommonStyle();
+        BuildStatusStyle();
+        BuildPopupStyle();
+        BuildOpenIndicatorStyle();
+    }
+
+    private void BuildCommonStyle()
+    {
         var commonStyle = new Style(selector => selector.Nesting());
         var largeStyle =
             new Style(selector =>
@@ -245,9 +239,19 @@ internal class ComboBoxTheme : BaseControlTheme
             smallStyle.Add(spinnerInnerBox);
         }
         commonStyle.Add(smallStyle);
-        BuildStatusStyle();
         Add(commonStyle);
-        BuildPopupStyle();
+    }
+
+    private void BuildOpenIndicatorStyle()
+    {
+        var openIndicatorButton = new Style(selector => selector.Nesting().Template().Name(OpenIndicatorButtonPart));
+        openIndicatorButton.Add(IconButton.ActiveIconColorProperty, ButtonSpinnerTokenKey.HandleHoverColor);
+        openIndicatorButton.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorPrimaryActive);
+        openIndicatorButton.Add(IconButton.WidthProperty, ComboBoxTokenKey.OpenIndicatorWidth);
+        openIndicatorButton.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+        openIndicatorButton.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+
+        Add(openIndicatorButton);
     }
 
     private void BuildPopupStyle()
