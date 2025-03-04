@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -183,6 +184,7 @@ internal class CountBadgeAdorner : TemplatedControl,
             _indicatorMotionActor.IsVisible = false;
             _needInitialHide                = false;
         }
+        BuildBoxShadow();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -193,7 +195,6 @@ internal class CountBadgeAdorner : TemplatedControl,
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor));
-        BuildBoxShadow();
         BuildCountText();
     }
 
@@ -221,7 +222,7 @@ internal class CountBadgeAdorner : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == BadgeShadowSizeProperty ||
                 e.Property == BadgeShadowColorProperty)
