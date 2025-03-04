@@ -11,7 +11,10 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Badge.CountBadgeAdornerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Badge.DotBadgeAdornerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DefaultButtonTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DropdownButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DefaultDropdownButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.LinkDropdownButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PrimaryDropdownButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextDropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.IconButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.LinkButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PrimaryButtonTheme());

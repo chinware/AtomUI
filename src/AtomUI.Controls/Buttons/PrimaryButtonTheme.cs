@@ -2,23 +2,13 @@
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Colors = Avalonia.Media.Colors;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
-internal class PrimaryButtonTheme : BaseButtonTheme
+internal abstract class BasePrimaryButtonTheme : BaseButtonTheme
 {
-    public const string ID = "PrimaryButton";
-
-    public PrimaryButtonTheme()
-        : base(typeof(Button))
+    public BasePrimaryButtonTheme(Type targetType) : base(targetType)
     {
-    }
-
-    public override string? ThemeResourceKey()
-    {
-        return ID;
     }
 
     protected override void BuildStyles()
@@ -133,5 +123,21 @@ internal class PrimaryButtonTheme : BaseButtonTheme
         disabledStyle.Add(TemplatedControl.BorderBrushProperty, ButtonTokenKey.BorderColorDisabled);
         disabledStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
         Add(disabledStyle);
+    }
+}
+
+[ControlThemeProvider]
+internal class PrimaryButtonTheme : BasePrimaryButtonTheme
+{
+    public const string ID = "PrimaryButton";
+
+    public PrimaryButtonTheme()
+        : base(typeof(Button))
+    {
+    }
+
+    public override string? ThemeResourceKey()
+    {
+        return ID;
     }
 }

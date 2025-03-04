@@ -6,7 +6,6 @@ using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -17,7 +16,6 @@ using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -186,6 +184,31 @@ public class Button : AvaloniaButton,
     internal static readonly StyledProperty<Thickness> EffectiveBorderThicknessProperty =
         AvaloniaProperty.Register<Button, Thickness>(
             nameof(EffectiveBorderThickness));
+    
+    internal static readonly DirectProperty<Button, IBrush?> IconNormalColorProperty =
+        AvaloniaProperty.RegisterDirect<Button, IBrush?>(nameof(IconNormalColor),
+            o => o.IconNormalColor,
+            (o, v) => o.IconNormalColor = v);
+    
+    internal static readonly DirectProperty<Button, IBrush?> IconHoverColorProperty =
+        AvaloniaProperty.RegisterDirect<Button, IBrush?>(nameof(IconHoverColor),
+            o => o.IconHoverColor,
+            (o, v) => o.IconHoverColor = v);
+    
+    internal static readonly DirectProperty<Button, IBrush?> IconPressedColorProperty =
+        AvaloniaProperty.RegisterDirect<Button, IBrush?>(nameof(IconPressedColor),
+            o => o.IconPressedColor,
+            (o, v) => o.IconPressedColor = v);
+    
+    internal static readonly DirectProperty<Button, IBrush?> IconDisabledColorProperty =
+        AvaloniaProperty.RegisterDirect<Button, IBrush?>(nameof(IconDisabledColor),
+            o => o.IconDisabledColor,
+            (o, v) => o.IconDisabledColor = v);
+    
+    internal static readonly DirectProperty<Button, bool> ExtraContainerVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Button, bool>(nameof(ExtraContainerVisible),
+            o => o.ExtraContainerVisible,
+            (o, v) => o.ExtraContainerVisible = v);
 
     internal double ControlHeight
     {
@@ -234,7 +257,47 @@ public class Button : AvaloniaButton,
         get => GetValue(EffectiveBorderThicknessProperty);
         set => SetValue(EffectiveBorderThicknessProperty, value);
     }
+    
+    private IBrush? _iconNormalColor;
 
+    internal IBrush? IconNormalColor
+    {
+        get => _iconNormalColor;
+        set => SetAndRaise(IconNormalColorProperty, ref _iconNormalColor, value);
+    }
+
+    private IBrush? _iconHoverColor;
+
+    internal IBrush? IconHoverColor
+    {
+        get => _iconHoverColor;
+        set => SetAndRaise(IconHoverColorProperty, ref _iconHoverColor, value);
+    }
+    
+    private IBrush? _iconPressedColor;
+
+    internal IBrush? IconPressedColor
+    {
+        get => _iconPressedColor;
+        set => SetAndRaise(IconPressedColorProperty, ref _iconPressedColor, value);
+    }
+    
+    private IBrush? _iconDisabledColor;
+
+    internal IBrush? IconDisabledColor
+    {
+        get => _iconDisabledColor;
+        set => SetAndRaise(IconDisabledColorProperty, ref _iconDisabledColor, value);
+    }
+    
+    private bool _extraContainerVisible;
+
+    internal bool ExtraContainerVisible
+    {
+        get => _extraContainerVisible;
+        set => SetAndRaise(ExtraContainerVisibleProperty, ref _extraContainerVisible, value);
+    }
+    
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
@@ -294,14 +357,23 @@ public class Button : AvaloniaButton,
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+        SetupControlThemeBindings();
+        base.OnAttachedToLogicalTree(e);
+      
         if (Text is null && Content is string content)
         {
             Text    = content;
             Content = null;
         }
+        
+        SetupShapeStyleBindings();
+        SetupIconBrush();
+        UpdatePseudoClasses();
+    }
 
+    private void SetupShadows()
+    {
         if (ButtonType == ButtonType.Default)
         {
             if (IsDanger)
@@ -348,11 +420,6 @@ public class Button : AvaloniaButton,
                 };
             }
         }
-
-        SetupControlThemeBindings();
-        ApplyShapeStyleConfig();
-        SetupIconBrush();
-        UpdatePseudoClasses();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -364,83 +431,77 @@ public class Button : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.Property == IsPointerOverProperty ||
-            e.Property == IsPressedProperty ||
-            e.Property == IsEnabledProperty)
+        if (e.Property == IsPressedProperty)
         {
-            ApplyIconModeStyleConfig();
-            if (e.Property == IsPressedProperty)
+            if (!IsLoading &&
+                IsWaveAnimationEnabled &&
+                (e.OldValue as bool? == true) &&
+                (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default))
             {
-                if (!IsLoading &&
-                    IsWaveAnimationEnabled &&
-                    (e.OldValue as bool? == true) &&
-                    (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default))
+                WaveType waveType = default;
+                if (Shape == ButtonShape.Default)
                 {
-                    WaveType waveType = default;
-                    if (Shape == ButtonShape.Default)
-                    {
-                        waveType = WaveType.RoundRectWave;
-                    }
-                    else if (Shape == ButtonShape.Round)
-                    {
-                        waveType = WaveType.PillWave;
-                    }
-                    else if (Shape == ButtonShape.Circle)
-                    {
-                        waveType = WaveType.CircleWave;
-                    }
-
-                    Color? waveColor = null;
-                    if (IsDanger)
-                    {
-                        if (ButtonType == ButtonType.Primary && !IsGhost)
-                        {
-                            waveColor = Color.Parse(Background?.ToString()!);
-                        }
-                        else
-                        {
-                            waveColor = Color.Parse(Foreground?.ToString()!);
-                        }
-                    }
-
-                    WaveSpiritAdorner.ShowWaveAdorner(this, waveType, waveColor);
+                    waveType = WaveType.RoundRectWave;
                 }
+                else if (Shape == ButtonShape.Round)
+                {
+                    waveType = WaveType.PillWave;
+                }
+                else if (Shape == ButtonShape.Circle)
+                {
+                    waveType = WaveType.CircleWave;
+                }
+
+                Color? waveColor = null;
+                if (IsDanger)
+                {
+                    if (ButtonType == ButtonType.Primary && !IsGhost)
+                    {
+                        waveColor = Color.Parse(Background?.ToString()!);
+                    }
+                    else
+                    {
+                        waveColor = Color.Parse(Foreground?.ToString()!);
+                    }
+                }
+
+                WaveSpiritAdorner.ShowWaveAdorner(this, waveType, waveColor);
             }
         }
 
-        if (e.Property == ButtonTypeProperty)
-        {
-            if (VisualRoot is not null)
-            {
-                SetupControlThemeBindings();
-            }
-        }
-        else if (e.Property == ContentProperty ||
-                 e.Property == TextProperty ||
-                 e.Property == IsLoadingProperty)
+        if (e.Property == ContentProperty ||
+            e.Property == TextProperty ||
+            e.Property == IsLoadingProperty)
         {
             UpdatePseudoClasses();
         }
-
-        if (e.Property == BorderBrushProperty ||
-            e.Property == ButtonTypeProperty ||
-            e.Property == IsEnabledProperty)
+        else if (e.Property == BorderBrushProperty ||
+                 e.Property == ButtonTypeProperty ||
+                 e.Property == IsEnabledProperty)
         {
             SetupEffectiveBorderThickness();
+        }
+        else if (e.Property == RightExtraContentProperty)
+        {
+            ExtraContainerVisible = SetupExtraContainerVisible();
         }
 
         if (this.IsAttachedToVisualTree())
         {
             if (e.Property == IconProperty)
             {
+                if (e.OldValue is Icon oldIcon)
+                {
+                    oldIcon.SetTemplatedParent(null);
+                }
                 SetupIcon();
                 SetupIconBrush();
             }
-
-            if (e.Property == IsDangerProperty ||
-                e.Property == IsGhostProperty ||
-                e.Property == ButtonTypeProperty)
+            else if (e.Property == IsDangerProperty ||
+                  e.Property == IsGhostProperty ||
+                  e.Property == ButtonTypeProperty)
             {
+                SetupShadows();
                 SetupIconBrush();
             }
             else if (e.Property == IsMotionEnabledProperty ||
@@ -448,10 +509,23 @@ public class Button : AvaloniaButton,
             {
                 SetupTransitions();
             }
+            else if (e.Property == ButtonTypeProperty)
+            {
+                SetupControlThemeBindings();
+            }
+            else if (e.Property == ButtonShapeProperty)
+            {
+                SetupShapeStyleBindings();
+            }
         }
     }
 
-    private void SetupControlThemeBindings()
+    protected virtual bool SetupExtraContainerVisible()
+    {
+        return RightExtraContent != null;
+    }
+
+    protected virtual void SetupControlThemeBindings()
     {
         if (ButtonType == ButtonType.Default)
         {
@@ -475,7 +549,7 @@ public class Button : AvaloniaButton,
         }
     }
 
-    private void ApplyShapeStyleConfig()
+    private void SetupShapeStyleBindings()
     {
         if (Shape == ButtonShape.Circle)
         {
@@ -529,39 +603,10 @@ public class Button : AvaloniaButton,
     {
         base.OnApplyTemplate(e);
         _loadingIcon = e.NameScope.Find<Icon>(BaseButtonTheme.LoadingIconPart);
-
-        ApplyIconModeStyleConfig();
+        SetupShadows();
         UpdatePseudoClasses();
         SetupIcon();
         SetupTransitions();
-    }
-
-    protected virtual void ApplyIconModeStyleConfig()
-    {
-        if (Icon is null)
-        {
-            return;
-        }
-
-        if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
-        {
-            if (PseudoClasses.Contains(StdPseudoClass.Pressed))
-            {
-                Icon.IconMode = IconMode.Selected;
-            }
-            else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
-            {
-                Icon.IconMode = IconMode.Active;
-            }
-            else
-            {
-                Icon.IconMode = IconMode.Normal;
-            }
-        }
-        else
-        {
-            Icon.IconMode = IconMode.Disabled;
-        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -604,6 +649,11 @@ public class Button : AvaloniaButton,
             BindUtils.RelayBind(this, IconSizeProperty, Icon, WidthProperty);
             BindUtils.RelayBind(this, IconSizeProperty, Icon, HeightProperty);
             BindUtils.RelayBind(this, IconMarginProperty, Icon, MarginProperty);
+            BindUtils.RelayBind(this, IconNormalColorProperty, Icon, Icon.NormalFilledBrushProperty);
+            BindUtils.RelayBind(this, IconHoverColorProperty, Icon, Icon.ActiveFilledBrushProperty);
+            BindUtils.RelayBind(this, IconPressedColorProperty, Icon, Icon.SelectedFilledBrushProperty);
+            BindUtils.RelayBind(this, IconDisabledColorProperty, Icon, Icon.DisabledFilledBrushProperty);
+            Icon.SetTemplatedParent(this);
         }
     }
 
@@ -672,46 +722,17 @@ public class Button : AvaloniaButton,
                 activeFilledBrushKey   = SharedTokenKey.ColorErrorHover;
             }
         }
-
-        if (Icon is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                normalFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
-                Icon.SelectedFilledBrushProperty,
-                selectedFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
-                activeFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
-                Icon.DisabledFilledBrushProperty,
-                disabledFilledBrushKey));
-        }
-
-        if (_loadingIcon is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon,
-                Icon.NormalFilledBrushProperty,
-                normalFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon,
-                Icon.SelectedFilledBrushProperty,
-                selectedFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon,
-                Icon.ActiveFilledBrushProperty,
-                activeFilledBrushKey));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(_loadingIcon,
-                Icon.DisabledFilledBrushProperty,
-                disabledFilledBrushKey));
-        }
-
-        NotifyIconBrushCalculated(in normalFilledBrushKey, in selectedFilledBrushKey, in activeFilledBrushKey,
-            in disabledFilledBrushKey);
-    }
-
-    protected virtual void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
-                                                     in TokenResourceKey selectedFilledBrushKey,
-                                                     in TokenResourceKey activeFilledBrushKey,
-                                                     in TokenResourceKey disabledFilledBrushKey)
-    {
+        
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconNormalColorProperty,
+            normalFilledBrushKey));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconHoverColorProperty,
+            activeFilledBrushKey));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconPressedColorProperty,
+            selectedFilledBrushKey));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
+            IconDisabledColorProperty,
+            disabledFilledBrushKey));
+        
     }
 
     public Rect WaveGeometry()

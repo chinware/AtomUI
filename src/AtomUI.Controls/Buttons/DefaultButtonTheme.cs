@@ -4,19 +4,10 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
-internal class DefaultButtonTheme : BaseButtonTheme
+internal abstract class BaseDefaultButtonTheme : BaseButtonTheme
 {
-    public const string ID = "DefaultButton";
-
-    public DefaultButtonTheme()
-        : base(typeof(Button))
+    public BaseDefaultButtonTheme(Type targetType) : base(targetType)
     {
-    }
-
-    public override string ThemeResourceKey()
-    {
-        return ID;
     }
 
     protected override void BuildStyles()
@@ -135,5 +126,25 @@ internal class DefaultButtonTheme : BaseButtonTheme
         disabledStyle.Add(TemplatedControl.BorderBrushProperty, ButtonTokenKey.BorderColorDisabled);
         disabledStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
         Add(disabledStyle);
+    }
+}
+
+[ControlThemeProvider]
+internal class DefaultButtonTheme : BaseDefaultButtonTheme
+{
+    public const string ID = "DefaultButton";
+
+    public DefaultButtonTheme()
+        : base(typeof(Button))
+    {
+    }
+    
+    public DefaultButtonTheme(Type targetType) : base(targetType)
+    {
+    }
+
+    public override string ThemeResourceKey()
+    {
+        return ID;
     }
 }

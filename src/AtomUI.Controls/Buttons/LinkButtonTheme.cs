@@ -5,19 +5,10 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
-internal class LinkButtonTheme : BaseButtonTheme
+internal abstract class BaseLinkButtonTheme : BaseButtonTheme
 {
-    public const string ID = "LinkButton";
-
-    public LinkButtonTheme()
-        : base(typeof(Button))
+    public BaseLinkButtonTheme(Type targetType) : base(targetType)
     {
-    }
-
-    public override string? ThemeResourceKey()
-    {
-        return ID;
     }
 
     protected override void BuildStyles()
@@ -87,5 +78,21 @@ internal class LinkButtonTheme : BaseButtonTheme
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         Add(disabledStyle);
+    }
+}
+
+[ControlThemeProvider]
+internal class LinkButtonTheme : BaseLinkButtonTheme
+{
+    public const string ID = "LinkButton";
+
+    public LinkButtonTheme()
+        : base(typeof(Button))
+    {
+    }
+    
+    public override string ThemeResourceKey()
+    {
+        return ID;
     }
 }
