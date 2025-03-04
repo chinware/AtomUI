@@ -69,7 +69,7 @@ public class Button : AvaloniaButton,
         AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
 
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Button, ButtonSizeType>(nameof(SizeType), ButtonSizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Button>();
 
     public static readonly StyledProperty<Icon?> IconProperty
         = AvaloniaProperty.Register<Button, Icon?>(nameof(Icon));

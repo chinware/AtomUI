@@ -33,7 +33,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<BaseTabStrip, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<BaseTabStrip>();
 
     public static readonly StyledProperty<Dock> TabStripPlacementProperty =
         AvaloniaProperty.Register<BaseTabStrip, Dock>(nameof(TabStripPlacement), Dock.Top);

@@ -49,7 +49,7 @@ public class ToggleSwitch : ToggleButton,
     /// 设置预置的大小类型
     /// </summary>
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<ToggleSwitch, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ToggleSwitch>();
 
     /// <summary>
     /// 是否处于加载状态

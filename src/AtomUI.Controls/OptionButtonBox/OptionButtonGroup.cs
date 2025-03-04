@@ -36,7 +36,7 @@ public class OptionButtonGroup : SelectingItemsControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<OptionButtonGroup, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<OptionButtonGroup>();
 
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));

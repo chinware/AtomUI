@@ -21,7 +21,7 @@ public class LoadingIndicator : TemplatedControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<LoadingIndicator, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<LoadingIndicator>();
 
     public static readonly StyledProperty<string?> LoadingMsgProperty =
         AvaloniaProperty.Register<LoadingIndicator, string?>(nameof(LoadingMsg));

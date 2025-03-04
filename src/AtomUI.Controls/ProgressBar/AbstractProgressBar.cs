@@ -77,7 +77,7 @@ public abstract class AbstractProgressBar : RangeBase,
         AvaloniaProperty.Register<AbstractProgressBar, PenLineCap>(nameof(StrokeLineCap), PenLineCap.Round);
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, SizeType>(nameof(SizeType));
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AbstractProgressBar>();
 
     public static readonly StyledProperty<ProgressStatus> StatusProperty =
         AvaloniaProperty.Register<AbstractProgressBar, ProgressStatus>(nameof(Status));
