@@ -81,10 +81,6 @@ internal class TagTheme : BaseControlTheme
             };
             closeBtn.RegisterInNameScope(scope);
             Grid.SetColumn(closeBtn, 2);
-            tag.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconWidthProperty,
-                SharedTokenKey.IconSizeXS));
-            tag.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(closeBtn, IconButton.IconHeightProperty,
-                SharedTokenKey.IconSizeXS));
 
             CreateTemplateParentBinding(closeBtn, Visual.IsVisibleProperty, Tag.IsClosableProperty);
             CreateTemplateParentBinding(closeBtn, IconButton.IconProperty, Tag.CloseIconProperty);
@@ -104,6 +100,11 @@ internal class TagTheme : BaseControlTheme
         this.Add(Tag.BorderBrushProperty, SharedTokenKey.ColorBorder);
         this.Add(Tag.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         this.Add(Tag.TagTextPaddingInlineProperty, TagTokenKey.TagTextPaddingInline);
+
+        var closeBtnStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
+        closeBtnStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeXS);
+        closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeXS);
+        Add(closeBtnStyle);
 
         var lineTextStyle = new Style(selector => selector.Nesting().Template().Name(TagTextLabelPart));
         lineTextStyle.Add(SingleLineText.LineHeightProperty, TagTokenKey.TagLineHeight);
