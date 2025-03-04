@@ -173,25 +173,6 @@ public class LoadingIndicator : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
-        _loadingText   = scope.Find<SingleLineText>(LoadingIndicatorTheme.LoadingTextPart);
-
-        SetupCustomIndicator();
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
         if (e.Property == CustomIndicatorIconProperty)
         {
             if (this.IsAttachedToVisualTree())
@@ -212,6 +193,20 @@ public class LoadingIndicator : TemplatedControl,
                 HandleIndicatorAngleChanged();
             }
         }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        HandleTemplateApplied(e.NameScope);
+    }
+
+    private void HandleTemplateApplied(INameScope scope)
+    {
+        _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
+        _loadingText   = scope.Find<SingleLineText>(LoadingIndicatorTheme.LoadingTextPart);
+
+        SetupCustomIndicator();
     }
 
     // 只在使用自定义的 Icon 的时候有效

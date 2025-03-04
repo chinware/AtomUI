@@ -15,6 +15,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
@@ -72,6 +73,7 @@ public class MenuItem : AvaloniaMenuItem,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        SetupIcon();
         base.OnApplyTemplate(e);
         HorizontalAlignment = HorizontalAlignment.Stretch;
         var scope = e.NameScope;
@@ -123,25 +125,19 @@ public class MenuItem : AvaloniaMenuItem,
             SetupTransitions();
         }
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == IconProperty)
-            {
-                SetupIconBindings();
-            }
+            SetupIcon();
         }
     }
 
-    private void SetupIconBindings()
+    private void SetupIcon()
     {
         if (Icon is Icon icon)
         {
-            this.AddTokenBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize));
-            this.AddTokenBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon,
-                IconPkg.Icon.NormalFilledBrushProperty,
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize));
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, IconPkg.Icon.NormalFilledBrushProperty,
                 MenuTokenKey.ItemColor));
         }
     }
@@ -197,7 +193,6 @@ public class MenuItem : AvaloniaMenuItem,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        SetupIconBindings();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

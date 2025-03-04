@@ -1,9 +1,10 @@
-﻿using AtomUI.IconPkg.AntDesign;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -16,6 +17,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
+using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -88,7 +90,7 @@ internal class MenuItemTheme : BaseControlTheme
             Grid.SetColumn(togglePresenter, 0);
             togglePresenter.RegisterInNameScope(scope);
 
-            var iconPresenter = new ContentControl()
+            var iconPresenter = new ContentPresenter()
             {
                 Name                = ItemIconPresenterPart,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -97,7 +99,7 @@ internal class MenuItemTheme : BaseControlTheme
 
             Grid.SetColumn(iconPresenter, 1);
             iconPresenter.RegisterInNameScope(scope);
-            CreateTemplateParentBinding(iconPresenter, ContentControl.ContentProperty, MenuItem.IconProperty);
+            CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, MenuItem.IconProperty);
 
             var itemTextPresenter = new ContentPresenter
             {
@@ -152,8 +154,7 @@ internal class MenuItemTheme : BaseControlTheme
             menuIndicatorIcon.Name                = MenuIndicatorIconPart;
             menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Right;
             menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
-
-
+            
             Grid.SetColumn(menuIndicatorIcon, 4);
             menuIndicatorIcon.RegisterInNameScope(scope);
 
