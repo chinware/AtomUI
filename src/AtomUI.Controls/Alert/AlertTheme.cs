@@ -304,6 +304,9 @@ internal class AlertTheme : BaseControlTheme
             closeBtnStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
             closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
             closeBtnStyle.Add(IconButton.MarginProperty, AlertTokenKey.ExtraElementMargin);
+            closeBtnStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextTertiary);
+            closeBtnStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorTextSecondary);
+            closeBtnStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorTextSecondary);
             Add(closeBtnStyle);
         }
     }

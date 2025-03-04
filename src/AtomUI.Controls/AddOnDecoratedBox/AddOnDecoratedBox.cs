@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
@@ -13,6 +12,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -183,7 +183,7 @@ public class AddOnDecoratedBox : ContentControl,
     {
         base.OnPropertyChanged(change);
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
             {

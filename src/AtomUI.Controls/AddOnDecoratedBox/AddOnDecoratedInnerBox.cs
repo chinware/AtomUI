@@ -173,7 +173,9 @@ public class AddOnDecoratedInnerBox : ContentControl,
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == LeftAddOnContentProperty || change.Property == RightAddOnContentProperty)
+        if (change.Property == LeftAddOnContentProperty || 
+            change.Property == RightAddOnContentProperty ||
+            change.Property == ContentProperty)
         {
             if (change.OldValue is Control oldControl)
             {
