@@ -233,6 +233,7 @@ public class Expander : AvaloniaExpander,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         ExpandIcon ??= AntDesignIconPackage.RightOutlined();
+        ExpandIcon.SetTemplatedParent(this);
         base.OnApplyTemplate(e);
         this.RunThemeTokenBindingActions();
         _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderTheme.ContentMotionActorPart);

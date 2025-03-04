@@ -249,6 +249,7 @@ public class CollapseItem : HeaderedContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         ExpandIcon ??= AntDesignIconPackage.RightOutlined();
+        ExpandIcon.SetTemplatedParent(this);
         base.OnApplyTemplate(e);
         _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);

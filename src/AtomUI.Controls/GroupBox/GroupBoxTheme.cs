@@ -20,7 +20,7 @@ internal class GroupBoxTheme : BaseControlTheme
     public const string HeaderContainerPart = "PART_HeaderContainer";
     public const string HeaderContentPart = "PART_HeaderContentLayout";
     public const string ContentPresenterPart = "PART_ContentPresenter";
-    public const string HeaderIconPart = "PART_HeaderIcon";
+    public const string HeaderIconPresenterPart = "PART_HeaderIconPresenter";
     public const string FramePart = "PART_Frame";
 
     public GroupBoxTheme()
@@ -32,7 +32,6 @@ internal class GroupBoxTheme : BaseControlTheme
     {
         return new FuncControlTemplate<GroupBox>((groupBox, scope) =>
         {
-            BuildInstanceStyles(groupBox);
             var frame = new Border
             {
                 Name = FramePart
@@ -68,7 +67,7 @@ internal class GroupBoxTheme : BaseControlTheme
 
             var headerIconContentPresenter = new ContentPresenter
             {
-                Name = HeaderIconPart
+                Name = HeaderIconPresenterPart
             };
             CreateTemplateParentBinding(headerIconContentPresenter, Visual.IsVisibleProperty,
                 GroupBox.HeaderIconProperty,
@@ -129,13 +128,21 @@ internal class GroupBoxTheme : BaseControlTheme
         headerContentStyle.Add(ContentPresenter.PaddingProperty, GroupBoxTokenKey.HeaderContentPadding);
         commonStyle.Add(headerContentStyle);
 
-        var headerIconStyle = new Style(selector => selector.Nesting().Template().Name(HeaderIconPart));
-        headerIconStyle.Add(Layoutable.MarginProperty, GroupBoxTokenKey.HeaderIconMargin);
-        commonStyle.Add(headerIconStyle);
+        var headerIconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderIconPresenterPart));
+        headerIconPresenterStyle.Add(Layoutable.MarginProperty, GroupBoxTokenKey.HeaderIconMargin);
+        commonStyle.Add(headerIconPresenterStyle);
+
+        var headerIcon = new Style(selector => selector.Nesting().Template().Name(HeaderIconPresenterPart).Descendant().OfType<Icon>());
+        headerIcon.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorText);
+        headerIcon.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeLG);
+        headerIcon.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeLG);
+        headerIcon.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
+        commonStyle.Add(headerIcon);
 
         var contentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
         contentStyle.Add(ContentPresenter.PaddingProperty, GroupBoxTokenKey.ContentPadding);
         commonStyle.Add(contentStyle);
+        
         Add(commonStyle);
 
         BuildHeaderPositionStyle();
@@ -169,14 +176,5 @@ internal class GroupBoxTheme : BaseControlTheme
             rightStyle.Add(contentStyle);
         }
         Add(rightStyle);
-    }
-
-    protected override void BuildInstanceStyles(Control control)
-    {
-        var iconStyle = new Style(selector => selector.Name(HeaderIconPart).Descendant().OfType<Icon>());
-        iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeLG);
-        iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeLG);
-        iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
-        control.Styles.Add(iconStyle);
     }
 }

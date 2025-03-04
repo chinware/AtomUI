@@ -123,10 +123,22 @@ public class GroupBox : ContentControl,
         base.OnApplyTemplate(e);
         _headerContentContainer = e.NameScope.Find<Decorator>(GroupBoxTheme.HeaderContentPart);
         _frame         = e.NameScope.Find<Border>(GroupBoxTheme.FramePart);
-        if (HeaderIcon is not null)
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == HeaderIconProperty)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(HeaderIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorIcon));
+            if (change.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (change.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
+            }
         }
     }
 
