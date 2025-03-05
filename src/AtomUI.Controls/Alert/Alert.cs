@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
@@ -142,13 +143,31 @@ public class Alert : TemplatedControl,
                 SetupCloseButton();
             }
         }
+
+        if (e.Property == CloseIconProperty)
+        {
+            if (e.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (e.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
+            }
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        SetupCloseButton();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        SetupCloseButton();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -168,15 +187,12 @@ public class Alert : TemplatedControl,
 
     private void SetupCloseButton()
     {
-        if (CloseIcon is null)
+        if (CloseIcon == null)
         {
-            CloseIcon = AntDesignIconPackage.CloseOutlined();
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
-                Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorIcon));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
-                Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorIconHover));
+            ClearValue(CloseIconProperty);
         }
+
+        SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
+        CloseIcon?.SetTemplatedParent(this);
     }
 }

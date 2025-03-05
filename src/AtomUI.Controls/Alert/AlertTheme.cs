@@ -1,13 +1,11 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -304,9 +302,9 @@ internal class AlertTheme : BaseControlTheme
             closeBtnStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
             closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
             closeBtnStyle.Add(IconButton.MarginProperty, AlertTokenKey.ExtraElementMargin);
-            closeBtnStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextTertiary);
-            closeBtnStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorTextSecondary);
-            closeBtnStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorTextSecondary);
+            closeBtnStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
+            closeBtnStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
+            closeBtnStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorIconHover);
             Add(closeBtnStyle);
         }
     }
