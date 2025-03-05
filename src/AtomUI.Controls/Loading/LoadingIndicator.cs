@@ -173,9 +173,9 @@ public class LoadingIndicator : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.Property == CustomIndicatorIconProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            if (this.IsAttachedToVisualTree())
+            if (e.Property == CustomIndicatorIconProperty)
             {
                 var oldCustomIcon = e.GetOldValue<Icon?>();
                 if (oldCustomIcon is not null)
@@ -186,7 +186,8 @@ public class LoadingIndicator : TemplatedControl,
                 SetupCustomIndicator();
             }
         }
-        else if (e.Property == IndicatorAngleProperty)
+      
+        if (e.Property == IndicatorAngleProperty)
         {
             if (CustomIndicatorIcon is not null)
             {

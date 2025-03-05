@@ -135,8 +135,7 @@ public class TextBox : AvaloniaTextBox,
         {
             UpdatePseudoClasses();
         }
-
-        // TODO 到底是否需要这样，这些控件的管辖区理论上不应该我们控制
+        
         if (change.Property == InnerLeftContentProperty ||
             change.Property == InnerRightContentProperty)
         {

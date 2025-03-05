@@ -1,5 +1,4 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -44,8 +43,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
                 VerticalAlignment   = VerticalAlignment.Center,
                 RecognizesAccessKey = true
             };
-
-            // TODO 后面需要评估一下，能直接绑定到对象，是否还需要这样通过模板绑定
+            
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 HeaderedSelectingItemsControl.HeaderProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
