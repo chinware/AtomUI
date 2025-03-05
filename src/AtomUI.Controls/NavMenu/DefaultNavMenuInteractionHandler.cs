@@ -70,7 +70,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                 {
                     item.Open();
                 }
-                   
             }
         }
         else

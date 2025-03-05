@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -14,7 +15,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -181,7 +181,7 @@ public class NavMenu : NavMenuBase,
             UpdatePseudoClasses();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (this.IsAttachedToLogicalTree())
         {
             if (change.Property == ModeProperty)
             {
@@ -248,16 +248,15 @@ public class NavMenu : NavMenuBase,
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable ??= new CompositeDisposable();
+        _tokenBindingsDisposable = new CompositeDisposable();
         SetupControlTheme();
+        SetupItemContainerTheme();
+        base.OnAttachedToLogicalTree(e);
 
         this.AddTokenBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenKey.ActiveBarWidth));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty,
             NavMenuTokenKey.ActiveBarHeight));
-        
-        SetupItemContainerTheme();
         SetupInteractionHandler();
     }
 

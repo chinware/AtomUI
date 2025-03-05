@@ -1,5 +1,4 @@
-﻿using AtomUI.Data;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
