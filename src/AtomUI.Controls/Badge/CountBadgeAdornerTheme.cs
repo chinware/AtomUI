@@ -46,7 +46,7 @@ internal class CountBadgeAdornerTheme : BaseControlTheme
 
     private void BuildBadgeIndicator(CountBadgeAdorner adorner, Panel layout, INameScope scope)
     {
-        var indicator = new Border()
+        var indicator = new Border
         {
             Name = BadgeIndicatorPart
         };

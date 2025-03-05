@@ -21,7 +21,7 @@ internal class CountBadgeAdorner : TemplatedControl,
     public static readonly StyledProperty<IBrush?> BadgeColorProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
             nameof(BadgeColor));
-    
+
     internal static readonly StyledProperty<Point> OffsetProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, Point>(
             nameof(Offset));
@@ -56,17 +56,17 @@ internal class CountBadgeAdorner : TemplatedControl,
         get => GetValue(SizeProperty);
         set => SetValue(SizeProperty, value);
     }
-    
+
     public int Count
     {
         get => GetValue(CountProperty);
         set => SetValue(CountProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
-    
+
     internal static readonly DirectProperty<CountBadgeAdorner, bool> IsAdornerModeProperty =
         AvaloniaProperty.RegisterDirect<CountBadgeAdorner, bool>(
             nameof(IsAdornerMode),
@@ -78,23 +78,23 @@ internal class CountBadgeAdorner : TemplatedControl,
             nameof(BoxShadow),
             o => o.BoxShadow,
             (o, v) => o.BoxShadow = v);
-    
+
     internal static readonly DirectProperty<CountBadgeAdorner, string?> CountTextProperty =
         AvaloniaProperty.RegisterDirect<CountBadgeAdorner, string?>(
             nameof(CountText),
             o => o.CountText,
             (o, v) => o.CountText = v);
-    
+
     internal static readonly DirectProperty<CountBadgeAdorner, TimeSpan> MotionDurationProperty =
         AvaloniaProperty.RegisterDirect<CountBadgeAdorner, TimeSpan>(
             nameof(MotionDuration),
             o => o.MotionDuration,
             (o, v) => o.MotionDuration = v);
-    
+
     internal static readonly StyledProperty<int> CountProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, int>(
             nameof(Count));
-    
+
     internal static readonly StyledProperty<IBrush?> BadgeShadowColorProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
             nameof(BadgeShadowColor));
@@ -102,12 +102,12 @@ internal class CountBadgeAdorner : TemplatedControl,
     internal static readonly StyledProperty<double> BadgeShadowSizeProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, double>(
             nameof(BadgeShadowSize));
-    
+
     internal static readonly DirectProperty<CountBadgeAdorner, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CountBadgeAdorner, bool>(nameof(IsMotionEnabled), 
+        = AvaloniaProperty.RegisterDirect<CountBadgeAdorner, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
-    
+
     private bool _isAdornerMode;
 
     internal bool IsAdornerMode
@@ -115,28 +115,31 @@ internal class CountBadgeAdorner : TemplatedControl,
         get => _isAdornerMode;
         set => SetAndRaise(IsAdornerModeProperty, ref _isAdornerMode, value);
     }
-    
+
     private BoxShadows _boxShadow;
+
     internal BoxShadows BoxShadow
     {
         get => _boxShadow;
         set => SetAndRaise(BoxShadowProperty, ref _boxShadow, value);
     }
-    
+
     private string? _countText;
+
     internal string? CountText
     {
         get => _countText;
         set => SetAndRaise(CountTextProperty, ref _countText, value);
     }
-    
+
     private TimeSpan _motionDuration;
+
     internal TimeSpan MotionDuration
     {
         get => _motionDuration;
         set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
-    
+
     internal IBrush? BadgeShadowColor
     {
         get => GetValue(BadgeShadowColorProperty);
@@ -148,7 +151,7 @@ internal class CountBadgeAdorner : TemplatedControl,
         get => GetValue(BadgeShadowSizeProperty);
         set => SetValue(BadgeShadowSizeProperty, value);
     }
-    
+
     private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
@@ -156,16 +159,16 @@ internal class CountBadgeAdorner : TemplatedControl,
         get => _isMotionEnabled;
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
-    
+
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-    
+
     #endregion
-    
+
     private MotionActorControl? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
     private bool _needInitialHide;
     private CompositeDisposable? _tokenBindingsDisposable;
-    
+
     static CountBadgeAdorner()
     {
         AffectsMeasure<CountBadgeAdorner>(OverflowCountProperty,
@@ -184,6 +187,7 @@ internal class CountBadgeAdorner : TemplatedControl,
             _indicatorMotionActor.IsVisible = false;
             _needInitialHide                = false;
         }
+
         BuildBoxShadow();
     }
 
@@ -191,10 +195,14 @@ internal class CountBadgeAdorner : TemplatedControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor));
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty,
+            BadgeTokenKey.BadgeShadowColor));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
+            SharedTokenKey.MotionDurationMid));
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor));
         BuildCountText();
     }
 
@@ -241,69 +249,66 @@ internal class CountBadgeAdorner : TemplatedControl,
     {
         CountText = Count > OverflowCount ? $"{OverflowCount}+" : $"{Count}";
     }
-    
+
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
         if (IsAdornerMode && _indicatorMotionActor is not null)
         {
-            var offsetX = Offset.X;
-            var offsetY = Offset.Y;
+            var offsetX       = Offset.X;
+            var offsetY       = Offset.Y;
             var indicatorSize = _indicatorMotionActor.DesiredSize;
             offsetX += finalSize.Width - indicatorSize.Width / 2;
             offsetY -= indicatorSize.Height / 2;
             _indicatorMotionActor.Arrange(new Rect(new Point(offsetX, offsetY), indicatorSize));
         }
+
         return size;
     }
-    
+
     private void ApplyShowMotion()
     {
         if (_indicatorMotionActor is not null)
         {
             _indicatorMotionActor.IsVisible = false;
             var motion = new BadgeZoomBadgeInMotion(MotionDuration);
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, () =>
-            {
-                _indicatorMotionActor.IsVisible = true;
-            }, null, _motionCancellationTokenSource!.Token);
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, () => { _indicatorMotionActor.IsVisible = true; }, null,
+                _motionCancellationTokenSource!.Token);
         }
     }
-    
+
     private void ApplyHideMotion(Action completedAction)
     {
         if (_indicatorMotionActor is not null)
         {
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration);
             _motionCancellationTokenSource?.Cancel();
-            _motionCancellationTokenSource  = new CancellationTokenSource();
-            
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () =>
-            {
-                completedAction();
-            }, _motionCancellationTokenSource.Token);
+            _motionCancellationTokenSource = new CancellationTokenSource();
+
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction(),
+                _motionCancellationTokenSource.Token);
         }
         else
         {
             _needInitialHide = true;
         }
     }
-    
+
     internal void ApplyToTarget(AdornerLayer? adornerLayer, Control adorned)
     {
         if (adornerLayer is not null)
         {
             adornerLayer.Children.Remove(this);
-        
+
             AdornerLayer.SetAdornedElement(this, adorned);
             AdornerLayer.SetIsClipEnabled(this, false);
             adornerLayer.Children.Add(this);
         }
-        
+
         if (IsMotionEnabled)
         {
             _motionCancellationTokenSource?.Cancel();
-            _motionCancellationTokenSource  = new CancellationTokenSource();
+            _motionCancellationTokenSource = new CancellationTokenSource();
             ApplyShowMotion();
         }
         else
@@ -313,7 +318,6 @@ internal class CountBadgeAdorner : TemplatedControl,
                 _indicatorMotionActor.IsVisible = true;
             }
         }
-
     }
 
     internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
@@ -324,7 +328,7 @@ internal class CountBadgeAdorner : TemplatedControl,
             {
                 if (adornerLayer is not null)
                 {
-                    adornerLayer.Children.Remove(this);   
+                    adornerLayer.Children.Remove(this);
                 }
             });
         }

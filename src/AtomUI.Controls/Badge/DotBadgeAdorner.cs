@@ -10,7 +10,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -123,7 +122,6 @@ internal class DotBadgeAdorner : TemplatedControl,
         _tokenBindingsDisposable = new CompositeDisposable();
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationMid));
-        SetupBadgeColorBindings();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -161,50 +159,6 @@ internal class DotBadgeAdorner : TemplatedControl,
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration, null, FillMode.Forward);
             MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction(),
                 _motionCancellationTokenSource.Token);
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == StatusProperty)
-            {
-                SetupBadgeColorBindings();
-            }
-        }
-    }
-
-    private void SetupBadgeColorBindings()
-    {
-        if (Status is not null)
-        {
-            if (Status == DotBadgeStatus.Error)
-            {
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorError));
-            }
-            else if (Status == DotBadgeStatus.Success)
-            {
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorSuccess));
-            }
-            else if (Status == DotBadgeStatus.Warning)
-            {
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorWarning));
-            }
-            else if (Status == DotBadgeStatus.Processing)
-            {
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorInfo));
-            }
-            else if (Status == DotBadgeStatus.Default)
-            {
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeDotColorProperty,
-                    SharedTokenKey.ColorTextPlaceholder));
-            }
         }
     }
 
