@@ -12,9 +12,11 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -211,7 +213,7 @@ public class NotificationCard : ContentControl,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        UpdateNotificationType();
+        SetupPseudoClasses();
         ClipToBounds         = false;
         _notificationManager = manager;
     }
@@ -246,13 +248,11 @@ public class NotificationCard : ContentControl,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        SetupNotificationIcon();
+        SetupPseudoClasses();
+        
         base.OnApplyTemplate(e);
-        if (Icon is null)
-        {
-            SetupNotificationIcon();
-            UpdateNotificationType();
-        }
-
+        
         _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
         _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
@@ -276,7 +276,6 @@ public class NotificationCard : ContentControl,
 
         SetupEffectiveShowProgress();
         ApplyShowMotion();
-        SetupContent();
     }
 
     private void ApplyShowMotion()
@@ -367,19 +366,12 @@ public class NotificationCard : ContentControl,
     {
         base.OnPropertyChanged(e);
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == NotificationTypeProperty)
             {
-                UpdateNotificationType();
                 SetupNotificationIcon();
-            }  
-            else if (e.Property == ContentProperty)
-            {
-                if (e.NewValue is string)
-                {
-                    SetupContent();
-                }
+                SetupPseudoClasses();
             }
         }
         
@@ -392,19 +384,16 @@ public class NotificationCard : ContentControl,
 
             RaiseEvent(new RoutedEventArgs(NotificationClosedEvent));
         }
-
-        if (e.Property == IsShowProgressProperty ||
+        else if (e.Property == IsShowProgressProperty ||
             e.Property == IsClosedProperty)
         {
             SetupEffectiveShowProgress();
         }
-
-        if (e.Property == PositionProperty)
+        else if (e.Property == PositionProperty)
         {
             UpdatePseudoClasses(e.GetNewValue<NotificationPosition>());
-        }
-
-        if (e.Property == IsClosingProperty)
+        } 
+        else if (e.Property == IsClosingProperty)
         {
             if (IsClosing)
             {
@@ -432,7 +421,7 @@ public class NotificationCard : ContentControl,
         }
     }
 
-    private void UpdateNotificationType()
+    private void SetupPseudoClasses()
     {
         switch (NotificationType)
         {
@@ -451,52 +440,6 @@ public class NotificationCard : ContentControl,
             case NotificationType.Warning:
                 PseudoClasses.Add(WarningPC);
                 break;
-        }
-
-        if (Icon is not null)
-        {
-            SetupNotificationIconColor(Icon);
-        }
-    }
-
-    private void SetupNotificationIconColor(Icon icon)
-    {
-        if (NotificationType == NotificationType.Error)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorError));
-        }
-        else if (NotificationType == NotificationType.Information)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorPrimary));
-        }
-        else if (NotificationType == NotificationType.Success)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorSuccess));
-        }
-        else if (NotificationType == NotificationType.Warning)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorWarning));
-        }
-    }
-
-    private void SetupContent()
-    {
-        if (Content is string content)
-        {
-            var textBlock = new SelectableTextBlock
-            {
-                Text = content
-            };
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlock,
-                SelectableTextBlock.SelectionBrushProperty,
-                SharedTokenKey.SelectionBackground));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlock,
-                SelectableTextBlock.SelectionForegroundBrushProperty, SharedTokenKey.SelectionForeground));
-            Content = textBlock;
         }
     }
 
@@ -519,13 +462,13 @@ public class NotificationCard : ContentControl,
         {
             icon = AntDesignIconPackage.ExclamationCircleFilled();
         }
-
-        if (icon is not null)
+        
+        if (Icon is null)
         {
-            SetupNotificationIconColor(icon);
+            ClearValue(IconProperty);
         }
-
-        SetCurrentValue(IconProperty, icon);
+        icon?.SetTemplatedParent(this);
+        SetValue(IconProperty, icon, BindingPriority.Template);
     }
 
     internal bool NotifyCloseTick(TimeSpan cycleDuration)

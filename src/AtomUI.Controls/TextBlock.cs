@@ -1,17 +1,34 @@
+using System.Reactive.Disposables;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 
-public class TextBlock : AvaloniaTextBlock
+public class TextBlock : AvaloniaTextBlock,
+                         ITokenResourceConsumer
 {
+    #region 内部属性定义
+
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
+    #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
+    
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.FontHeight, BindingPriority.Template);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.FontHeight));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

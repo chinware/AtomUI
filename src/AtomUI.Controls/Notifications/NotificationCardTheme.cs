@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
@@ -26,7 +27,7 @@ internal class NotificationCardTheme : BaseControlTheme
     public const string CloseButtonPart = "PART_CloseButton";
     public const string MotionActorPart = "PART_MotionActor";
     public const string ProgressBarPart = "PART_ProgressBar";
-    
+
     public NotificationCardTheme()
         : base(typeof(NotificationCard))
     {
@@ -36,15 +37,14 @@ internal class NotificationCardTheme : BaseControlTheme
     {
         return new FuncControlTemplate<NotificationCard>((notificationCard, scope) =>
         {
-            BuildInstanceStyles(notificationCard);
             var motionActor = new MotionActorControl()
             {
-                Name         = MotionActorPart,
-                ClipToBounds = false,
+                Name               = MotionActorPart,
+                ClipToBounds       = false,
                 UseRenderTransform = false
             };
             motionActor.RegisterInNameScope(scope);
-            
+
             var frame = new Border
             {
                 Name = FramePart
@@ -101,9 +101,9 @@ internal class NotificationCardTheme : BaseControlTheme
         {
             Name = HeaderTitlePart
         };
-        
+
         CreateTemplateParentBinding(headerTitle, TextBlock.TextProperty, NotificationCard.TitleProperty);
-        
+
         var closeButton = new IconButton
         {
             Name                = CloseButtonPart,
@@ -113,7 +113,7 @@ internal class NotificationCardTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Center
         };
         closeButton.RegisterInNameScope(scope);
-       
+
         DockPanel.SetDock(closeButton, Dock.Right);
         headerContainer.Children.Add(closeButton);
         headerContainer.Children.Add(headerTitle);
@@ -132,7 +132,18 @@ internal class NotificationCardTheme : BaseControlTheme
         };
 
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-            ContentControl.ContentProperty);
+            ContentControl.ContentProperty, BindingMode.Default, new FuncValueConverter<object?, object?>(o =>
+            {
+                if (o is string str)
+                {
+                    return new SelectableTextBlock
+                    {
+                        Text = str
+                    };
+                }
+
+                return o;
+            }));
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
             ContentControl.ContentTemplateProperty);
         Grid.SetColumn(contentPresenter, 1);
@@ -160,12 +171,13 @@ internal class NotificationCardTheme : BaseControlTheme
         BuildCommonStyle();
         BuildHeaderStyle();
         BuildContentStyle();
+        BuildIconStyle();
     }
 
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        
+
         var progressBarStyle = new Style(selector => selector.Nesting().Template().Name(ProgressBarPart));
         progressBarStyle.Add(Layoutable.MarginProperty, NotificationTokenKey.NotificationProgressMargin);
         commonStyle.Add(progressBarStyle);
@@ -256,16 +268,66 @@ internal class NotificationCardTheme : BaseControlTheme
         Add(commonStyle);
     }
 
+    private void BuildIconStyle()
+    {
+        {
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.WidthProperty, MessageTokenKey.MessageIconSize);
+            iconStyle.Add(Icon.HeightProperty, MessageTokenKey.MessageIconSize);
+            Add(iconStyle);
+        }
+
+        var infoOrLoadingTypeStyle = new Style(selector => Selectors.Or(
+            selector.Nesting().PropertyEquals(NotificationCard.NotificationTypeProperty, NotificationType.Information),
+            selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Loading)));
+        {
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorPrimary);
+            infoOrLoadingTypeStyle.Add(iconStyle);
+        }
+        Add(infoOrLoadingTypeStyle);
+
+        var errorTypeStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(NotificationCard.NotificationTypeProperty, NotificationType.Error));
+        {
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+            errorTypeStyle.Add(iconStyle);
+        }
+        Add(errorTypeStyle);
+
+        var successTypeStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(NotificationCard.NotificationTypeProperty, NotificationType.Success));
+        {
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorSuccess);
+            successTypeStyle.Add(iconStyle);
+        }
+        Add(successTypeStyle);
+
+        var warningTypeStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(NotificationCard.NotificationTypeProperty, NotificationType.Warning));
+        {
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
+            warningTypeStyle.Add(iconStyle);
+        }
+        Add(warningTypeStyle);
+    }
+
     private void BuildHeaderStyle()
     {
         var titleStyle = new Style(selector => selector.Nesting().Template().Name(HeaderTitlePart));
         titleStyle.Add(ContentPresenter.LineHeightProperty, SharedTokenKey.FontHeightLG);
         titleStyle.Add(ContentPresenter.FontSizeProperty, SharedTokenKey.FontSizeLG);
         titleStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorTextHeading);
-        titleStyle.Add(SelectableTextBlock.SelectionBrushProperty, SharedTokenKey.SelectionBackground);
-        titleStyle.Add(SelectableTextBlock.SelectionForegroundBrushProperty, SharedTokenKey.SelectionForeground);
         Add(titleStyle);
-        
+
         var iconContentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
         iconContentStyle.Add(Layoutable.MarginProperty, NotificationTokenKey.NotificationIconMargin);
         Add(iconContentStyle);
@@ -273,7 +335,7 @@ internal class NotificationCardTheme : BaseControlTheme
         var headerContainer = new Style(selector => selector.Nesting().Template().Name(HeaderContainerPart));
         headerContainer.Add(Layoutable.MarginProperty, NotificationTokenKey.HeaderMargin);
         Add(headerContainer);
-        
+
         var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
         closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
         closeButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
@@ -291,15 +353,6 @@ internal class NotificationCardTheme : BaseControlTheme
         contentStyle.Add(ContentPresenter.FontSizeProperty, SharedTokenKey.FontSize);
         contentStyle.Add(ContentPresenter.LineHeightProperty, SharedTokenKey.FontHeight);
         contentStyle.Add(Layoutable.MarginProperty, NotificationTokenKey.NotificationContentMargin);
-        
         Add(contentStyle);
-    }
-
-    protected override void BuildInstanceStyles(Control control)
-    {
-        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
-        iconStyle.Add(Layoutable.WidthProperty, NotificationTokenKey.NotificationIconSize);
-        iconStyle.Add(Layoutable.HeightProperty, NotificationTokenKey.NotificationIconSize);
-        control.Styles.Add(iconStyle);
     }
 }

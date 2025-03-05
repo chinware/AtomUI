@@ -98,7 +98,8 @@ internal class MessageCardTheme : BaseControlTheme
             Add(iconStyle);
         }
         
-        var infoOrLoadingTypeStyle = new Style(selector => Selectors.Or(selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Information),
+        var infoOrLoadingTypeStyle = new Style(selector => Selectors.Or(
+            selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Information),
             selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Loading)));
         {
             var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
@@ -170,11 +171,4 @@ internal class MessageCardTheme : BaseControlTheme
         Add(iconStyle);
     }
 
-    // protected override void BuildInstanceStyles(Control control)
-    // {
-    //     var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
-    //     iconStyle.Add(Layoutable.WidthProperty, MessageTokenKey.MessageIconSize);
-    //     iconStyle.Add(Layoutable.HeightProperty, MessageTokenKey.MessageIconSize);
-    //     control.Styles.Add(iconStyle);
-    // }
 }
