@@ -93,7 +93,7 @@ public class Slider : RangeBase,
 {
     #region 公共属性定义
 
-        /// <summary>
+    /// <summary>
     /// Defines the <see cref="Orientation" /> property.
     /// </summary>
     public static readonly StyledProperty<Orientation> OrientationProperty =
@@ -131,13 +131,13 @@ public class Slider : RangeBase,
 
     public static readonly StyledProperty<bool> IncludedProperty =
         SliderTrack.IncludedProperty.AddOwner<Slider>();
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
         = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Slider>();
-    
+
     /// <summary>
     /// Gets or sets the orientation of a <see cref="Slider" />.
     /// </summary>
@@ -208,7 +208,7 @@ public class Slider : RangeBase,
         get => GetValue(IncludedProperty);
         set => SetValue(IncludedProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -224,11 +224,11 @@ public class Slider : RangeBase,
     #endregion
 
     #region 内部属性定义
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SliderToken.ID;
-    
+
     #endregion
 
     // Slider required parts
@@ -256,7 +256,7 @@ public class Slider : RangeBase,
         ValueProperty.OverrideMetadata<Slider>(new StyledPropertyMetadata<double>(enableDataValidation: true));
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<Slider>(AutomationControlType.Slider);
     }
-    
+
     /// <summary>
     /// Gets a value indicating whether the <see cref="Slider" /> is currently being dragged.
     /// </summary>
@@ -266,7 +266,7 @@ public class Slider : RangeBase,
     /// Gets the <see cref="SliderTrack" /> part of the <see cref="Slider" />.
     /// </summary>
     protected SliderTrack? SliderTrack { get; private set; }
-    
+
     /// <summary>
     /// Instantiates a new instance of the <see cref="Slider" /> class.
     /// </summary>

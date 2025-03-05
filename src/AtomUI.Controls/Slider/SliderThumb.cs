@@ -73,11 +73,6 @@ public class SliderThumb : TemplatedControl
             BorderBrushProperty);
     }
 
-    public SliderThumb()
-    {
-       
-    }
-
     public event EventHandler<VectorEventArgs>? DragStarted
     {
         add => AddHandler(DragStartedEvent, value);
@@ -132,9 +127,9 @@ public class SliderThumb : TemplatedControl
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         SetupTransitions();
     }
 
