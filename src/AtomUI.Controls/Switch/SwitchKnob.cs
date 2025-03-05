@@ -9,7 +9,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -69,6 +68,14 @@ internal class SwitchKnob : Control,
         = AvaloniaProperty.RegisterDirect<SwitchKnob, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
             (o, v) => o.IsMotionEnabled = v);
+    
+    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
+        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration));
+
+    internal static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
+        = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(LoadingBgOpacity),
+            o => o.LoadingBgOpacity,
+            (o, v) => o.LoadingBgOpacity = v);
 
     internal int Rotation
     {
@@ -102,6 +109,19 @@ internal class SwitchKnob : Control,
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
+    internal TimeSpan LoadingAnimationDuration
+    {
+        get => GetValue(LoadingAnimationDurationProperty);
+        set => SetValue(LoadingAnimationDurationProperty, value);
+    }
+    
+    private double _loadingBgOpacity;
+    internal double LoadingBgOpacity
+    {
+        get => _loadingBgOpacity;
+        set => SetAndRaise(LoadingBgOpacityTokenProperty, ref _loadingBgOpacity, value);
+    }
+    
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
@@ -109,22 +129,6 @@ internal class SwitchKnob : Control,
     private CompositeDisposable? _tokenBindingsDisposable;
     private bool _isLoading;
     private CancellationTokenSource? _cancellationTokenSource;
-
-    private double _loadingBgOpacity;
-
-    private static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
-        = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
-            o => o._loadingBgOpacity,
-            (o, v) => o._loadingBgOpacity = v);
-    
-    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
-        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration));
-
-    internal TimeSpan LoadingAnimationDuration
-    {
-        get => GetValue(LoadingAnimationDurationProperty);
-        set => SetValue(LoadingAnimationDurationProperty, value);
-    }
     
     static SwitchKnob()
     {

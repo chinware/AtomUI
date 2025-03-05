@@ -406,9 +406,32 @@ public class ToggleSwitch : ToggleButton,
         {
             HandleLoadingState(IsLoading);
         }
-        else if (e.Property == OffContentProperty || e.Property == OnContentProperty)
+        else if ((e.Property == IsPointerOverProperty && !IsLoading) ||
+            e.Property == IsCheckedProperty ||
+            e.Property == IsEnabledProperty)
         {
-            if (this.IsAttachedToVisualTree())
+            if (e.Property == IsCheckedProperty && IsWaveAnimationEnabled)
+            {
+                CalculateElementsOffset(Bounds.Size);
+                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
+            }
+        } 
+        else if (e.Property == KnobSizeProperty)
+        {
+            if (_switchKnob is not null)
+            {
+                _switchKnob.KnobSize = KnobSize;
+            }
+        } 
+        
+        if (e.Property == IsCheckedProperty)
+        {
+            _isCheckedChanged = true;
+        }
+        
+        if (this.IsAttachedToVisualTree())
+        {
+            if (e.Property == OffContentProperty || e.Property == OnContentProperty)
             {
                 if (e.OldValue is Control oldChild)
                 {
@@ -431,28 +454,6 @@ public class ToggleSwitch : ToggleButton,
                     _togglePanel?.Children.Add(newControl);
                 }
             }
-        }
-
-        if ((e.Property == IsPointerOverProperty && !IsLoading) ||
-            e.Property == IsCheckedProperty ||
-            e.Property == IsEnabledProperty)
-        {
-            if (e.Property == IsCheckedProperty && IsWaveAnimationEnabled)
-            {
-                CalculateElementsOffset(Bounds.Size);
-                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
-            }
-        } else if (e.Property == KnobSizeProperty)
-        {
-            if (_switchKnob is not null)
-            {
-                _switchKnob.KnobSize = KnobSize;
-            }
-        }
-
-        if (e.Property == IsCheckedProperty)
-        {
-            _isCheckedChanged = true;
         }
     }
 
