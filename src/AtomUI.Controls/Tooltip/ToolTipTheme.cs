@@ -41,8 +41,9 @@ internal class ToolTipTheme : BaseControlTheme
                             VerticalAlignment   = VerticalAlignment.Stretch,
                             HorizontalAlignment = HorizontalAlignment.Center,
                         };
-                        tooltip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(text,
-                            SingleLineText.HeightProperty, SharedTokenKey.FontSize));
+                        ;
+                        tooltip.AddThemeTokenBindingAction(() => tooltip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(text,
+                            SingleLineText.HeightProperty, SharedTokenKey.FontSize)));
                         return text;
                     }
 

@@ -254,9 +254,9 @@ public class TabStripItem : AvaloniaTabStripItem,
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
         SetupShapeThemeBindings();
+        base.OnAttachedToLogicalTree(e);
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

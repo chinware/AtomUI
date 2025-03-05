@@ -620,10 +620,7 @@ public class Popup : AvaloniaPopup,
         Dispatcher.UIThread.Post(() =>
         {
             _shadowLayer?.Close();
-            MotionInvoker.InvokeInPopupLayer(motionActor, motion, () =>
-            {
-                popupRoot.Hide();
-            }, () =>
+            MotionInvoker.InvokeInPopupLayer(motionActor, motion, () => { popupRoot.Hide(); }, () =>
             {
                 _closeAnimating   = false;
                 _isNeedDetectFlip = true;

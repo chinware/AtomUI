@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -188,31 +188,26 @@ public class AddOnDecoratedBox : ContentControl,
             if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
             {
                 SetupInnerBoxCornerRadius();
-                if (change.NewValue is Icon icon)
-                {
-                    SetupIconTypeAddOnSize(icon);
-                }
-            }
-            else if (change.Property == SizeTypeProperty)
-            {
-                if (LeftAddOn is Icon leftIconAddOn)
-                {
-                    SetupIconTypeAddOnSize(leftIconAddOn);
-                }
-
-                if (RightAddOn is Icon rightIconAddOn)
-                {
-                    SetupIconTypeAddOnSize(rightIconAddOn);
-                }
             }
         }
 
-        if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
+        if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
+        {
+            if (change.OldValue is StyledElement oldValue)
+            {
+                oldValue.SetTemplatedParent(null);
+            }
+
+            if (change.NewValue is StyledElement newValue)
+            {
+                newValue.SetTemplatedParent(this);
+            }
+        }
+        else if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
         {
             SetupAddOnBorderInfo();
         }
-
-        if (change.Property == StatusProperty)
+        else if (change.Property == StatusProperty)
         {
             UpdatePseudoClasses();
         } 
@@ -223,25 +218,6 @@ public class AddOnDecoratedBox : ContentControl,
                 BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty);
                 BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty);
             }
-        }
-    }
-
-    private void SetupIconTypeAddOnSize(Icon icon)
-    {
-        if (SizeType == SizeType.Large)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeLG));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeLG));
-        }
-        else if (SizeType == SizeType.Middle)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSize));
-        }
-        else
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeSM));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeSM));
         }
     }
 
@@ -295,16 +271,6 @@ public class AddOnDecoratedBox : ContentControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        
-        if (LeftAddOn is Icon leftIconAddOn)
-        {
-            SetupIconTypeAddOnSize(leftIconAddOn);
-        }
-
-        if (RightAddOn is Icon rightIconAddOn)
-        {
-            SetupIconTypeAddOnSize(rightIconAddOn);
-        }
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

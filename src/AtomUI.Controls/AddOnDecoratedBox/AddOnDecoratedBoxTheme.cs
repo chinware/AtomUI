@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -54,6 +55,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
     {
         BuildFixedStyle();
         BuildCommonStyle();
+        BuildIconAddOnStyle();
         BuildDisabledStyle();
     }
 
@@ -189,6 +191,50 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
         commonStyle.Add(smallStyle);
 
         Add(commonStyle);
+    }
+
+    private void BuildIconAddOnStyle()
+    {
+        var largeStyle =
+            new Style(selector =>
+                selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Large));
+        {
+            var addOnStyle = new Style(selector => Selectors.Or(
+                selector.Nesting().Template().Name(LeftAddOnPart).Nesting().Descendant().OfType<Icon>(),
+                selector.Nesting().Template().Name(RightAddOnPart).Nesting().Descendant().OfType<Icon>()));
+            addOnStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSizeLG);
+            addOnStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSizeLG);
+            largeStyle.Add(addOnStyle);
+        }
+        
+        Add(largeStyle);
+
+        var middleStyle =
+            new Style(
+                selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Middle));
+        {
+            var addOnStyle = new Style(selector => Selectors.Or(
+                selector.Nesting().Template().Name(LeftAddOnPart).Nesting().Descendant().OfType<Icon>(),
+                selector.Nesting().Template().Name(RightAddOnPart).Nesting().Descendant().OfType<Icon>()));
+            addOnStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSize);
+            addOnStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSize);
+            middleStyle.Add(addOnStyle);
+        }
+        
+        Add(middleStyle);
+
+        var smallStyle =
+            new Style(selector =>
+                selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Small));
+        {
+            var addOnStyle = new Style(selector => Selectors.Or(
+                selector.Nesting().Template().Name(LeftAddOnPart).Nesting().Descendant().OfType<Icon>(),
+                selector.Nesting().Template().Name(RightAddOnPart).Nesting().Descendant().OfType<Icon>()));
+            addOnStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSizeSM);
+            addOnStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSizeSM);
+            smallStyle.Add(addOnStyle);
+        }
+        Add(smallStyle);
     }
 
     private void BuildDisabledStyle()
