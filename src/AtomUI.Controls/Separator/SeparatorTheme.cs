@@ -51,6 +51,7 @@ internal class SeparatorTheme : BaseControlTheme
         this.Add(Separator.TextPaddingInlineProperty, SeparatorTokenKey.TextPaddingInline);
         this.Add(Separator.OrientationMarginPercentProperty, SeparatorTokenKey.OrientationMarginPercent);
         this.Add(Separator.VerticalMarginInlineProperty, SeparatorTokenKey.VerticalMarginInline);
+        this.Add(Separator.LineWidthProperty, SharedTokenKey.LineWidth);
 
         var titleSelector = default(Selector).Nesting().Template().OfType<Label>().Name(TitlePart);
         var horizontalStyle =

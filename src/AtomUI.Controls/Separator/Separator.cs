@@ -1,15 +1,11 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Media;
+﻿using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -25,8 +21,7 @@ public enum SeparatorTitlePosition
 }
 
 public class Separator : AvaloniaSeparator,
-                         IControlSharedTokenResourcesHost,
-                         ITokenResourceConsumer
+                         IControlSharedTokenResourcesHost
 {
     private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
     
@@ -168,11 +163,9 @@ public class Separator : AvaloniaSeparator,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SeparatorToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
+    
     private Label? _titleLabel;
     private double _currentEdgeDistance;
 
@@ -199,24 +192,6 @@ public class Separator : AvaloniaSeparator,
 
     }
     
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        SetupTokenBindings();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
-    private void SetupTokenBindings()
-    {
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth));
-    }
-
     // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度
     // 然后保持尽可能保持文字尽可能的显示，如果小于最小分隔部分的两倍的时候，文字隐藏。
     protected override Size MeasureOverride(Size availableSize)
