@@ -8,6 +8,7 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input.Raw;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Internal;
 
@@ -253,7 +254,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             HandleRangeActivatedPartChanged();
         }
 
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             SetupTransitions();
         }

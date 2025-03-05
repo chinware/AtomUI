@@ -12,6 +12,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -134,7 +135,7 @@ public class MarqueeLabel : SingleLineText,
 
     private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == IsPointerOverProperty)
             {

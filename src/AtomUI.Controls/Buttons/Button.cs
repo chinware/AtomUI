@@ -305,7 +305,6 @@ public class Button : AvaloniaButton,
 
     #endregion
     
-    private Icon? _loadingIcon;
     private CompositeDisposable? _tokenBindingsDisposable;
 
     static Button()
@@ -602,7 +601,6 @@ public class Button : AvaloniaButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _loadingIcon = e.NameScope.Find<Icon>(BaseButtonTheme.LoadingIconPart);
         SetupShadows();
         UpdatePseudoClasses();
         SetupIcon();

@@ -13,6 +13,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
@@ -317,7 +318,7 @@ internal class BaseCalendarDayButton : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsMotionEnabledProperty)
             {

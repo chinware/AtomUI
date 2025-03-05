@@ -7,6 +7,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -187,7 +188,7 @@ public class Timeline : ItemsControl,
             SetupPendingItem();
         }
 
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsReverseProperty)
             {

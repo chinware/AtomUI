@@ -13,6 +13,7 @@ using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Switch;
 
@@ -174,7 +175,7 @@ internal class SwitchKnob : Control,
 
         _isLoading = true;
         IsEnabled  = false;
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             StartLoadingAnimation();
         }

@@ -10,6 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -207,7 +208,7 @@ public class EmptyIndicator : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == ColorFillProperty ||
                 change.Property == ColorFillTertiaryProperty ||
