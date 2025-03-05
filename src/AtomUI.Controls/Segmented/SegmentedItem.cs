@@ -12,7 +12,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
@@ -81,6 +80,7 @@ public class SegmentedItem : ContentControl,
         SelectableMixin.Attach<SegmentedItem>(IsSelectedProperty);
         PressedMixin.Attach<SegmentedItem>();
         FocusableProperty.OverrideDefaultValue<SegmentedItem>(true);
+        AffectsRender<SegmentedItem>(BackgroundProperty);
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -88,7 +88,6 @@ public class SegmentedItem : ContentControl,
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
         Debug.Assert(Parent is Segmented, "SegmentedItem's Parent must be Segmented Control.");
-        SetupTransitions();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -116,22 +115,34 @@ public class SegmentedItem : ContentControl,
         }
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupTransitions();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToLogicalTree())
-        {
-            if (change.Property == IconProperty)
-            {
-                SetupItemIcon();
-            } 
-        }
 
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsMotionEnabledProperty)
             {
                 SetupTransitions();    
+            }
+        }
+
+        if (change.Property == IconProperty)
+        {
+            if (change.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (change.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
             }
         }
     }
@@ -150,25 +161,4 @@ public class SegmentedItem : ContentControl,
             Transitions = null;
         }
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupItemIcon();
-    }
-
-    private void SetupItemIcon()
-    {
-        if (Icon is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                SegmentedTokenKey.ItemColor));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
-                SegmentedTokenKey.ItemHoverColor));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
-                SegmentedTokenKey.ItemSelectedColor));
-            Icon.SetTemplatedParent(this);
-        }
-    }
-
 }

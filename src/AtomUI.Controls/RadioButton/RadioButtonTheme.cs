@@ -31,7 +31,7 @@ internal class RadioButtonTheme : BaseControlTheme
         {
             var frame = new Border
             {
-                Name = FramePart,
+                Name    = FramePart,
                 Padding = new Thickness(0, 1, 0, 1)
             };
 
@@ -47,23 +47,25 @@ internal class RadioButtonTheme : BaseControlTheme
 
             var indicator = new RadioIndicator
             {
-                Name = IndicatorPart,
+                Name              = IndicatorPart,
                 VerticalAlignment = VerticalAlignment.Center
             };
             DockPanel.SetDock(indicator, Dock.Left);
-            CreateTemplateParentBinding(indicator, RadioIndicator.IsMotionEnabledProperty, RadioButton.IsMotionEnabledProperty);
-            CreateTemplateParentBinding(indicator, RadioIndicator.IsWaveAnimationEnabledProperty, RadioButton.IsWaveAnimationEnabledProperty);
+            CreateTemplateParentBinding(indicator, RadioIndicator.IsMotionEnabledProperty,
+                RadioButton.IsMotionEnabledProperty);
+            CreateTemplateParentBinding(indicator, RadioIndicator.IsWaveAnimationEnabledProperty,
+                RadioButton.IsWaveAnimationEnabledProperty);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsEnabledProperty, RadioButton.IsEnabledProperty);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsCheckedProperty, RadioButton.IsCheckedProperty);
             layout.Children.Add(indicator);
 
             var labelText = new SingleLineText()
             {
-                Name = LabelTextPart,
+                Name              = LabelTextPart,
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, RadioButton.ContentProperty, 
+            CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, RadioButton.ContentProperty,
                 BindingMode.Default,
                 new FuncValueConverter<object?, string?>(content => content?.ToString()));
             CreateTemplateParentBinding(labelText, SingleLineText.FontSizeProperty, RadioButton.FontSizeProperty);
@@ -80,7 +82,8 @@ internal class RadioButtonTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(RadioButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        commonStyle.Add(RadioButton.CursorProperty,
+            new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(RadioButton.HorizontalAlignmentProperty, HorizontalAlignment.Left);
 
         var disableStyle =
