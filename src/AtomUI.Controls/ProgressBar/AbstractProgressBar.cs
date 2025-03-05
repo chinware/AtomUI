@@ -1,4 +1,5 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -322,9 +323,13 @@ public abstract class AbstractProgressBar : RangeBase,
         {
             UpdatePseudoClasses();
         }
-        else if (e.Property == IsMotionEnabledProperty)
-        {
-            SetupTransitions();
+
+        if (this.IsAttachedToVisualTree())
+        { 
+            if (e.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
 
         HandlePropertyChangedForStyle(e);

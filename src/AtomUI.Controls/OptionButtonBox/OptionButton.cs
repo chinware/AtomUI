@@ -8,6 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -172,9 +173,13 @@ public class OptionButton : AvaloniaRadioButton,
                 CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
             }
         }
-        else if (e.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (e.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 

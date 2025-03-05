@@ -10,6 +10,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -208,9 +209,13 @@ internal class DrawerInfoContainer : HeaderedContentControl,
         {
             HasExtra = Extra != null || ExtraTemplate != null;
         }
-        else if (change.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 

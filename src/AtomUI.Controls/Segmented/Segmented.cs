@@ -12,6 +12,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -251,9 +252,12 @@ public class Segmented : SelectingItemsControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 }

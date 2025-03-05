@@ -20,6 +20,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
+using Avalonia.VisualTree;
 using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
@@ -745,11 +746,6 @@ public class SliderTrack : Control,
         {
             HandleRangeModeChanged();
         }
-        
-        else if (change.Property == IsMotionEnabledProperty)
-        {
-            SetupTransitions();
-        }
 
         if (this.IsAttachedToLogicalTree())
         {
@@ -761,6 +757,15 @@ public class SliderTrack : Control,
             else if (change.Property == MarksProperty)
             {
                 CalculateMaxMarkSize();
+            }
+           
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
             }
         }
     }

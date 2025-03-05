@@ -14,6 +14,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -245,10 +246,13 @@ public class TabStripItem : AvaloniaTabStripItem,
                 SetupCloseIcon();
             }
         }
-       
-        if (change.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 

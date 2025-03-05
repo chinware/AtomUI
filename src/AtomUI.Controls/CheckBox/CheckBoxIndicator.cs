@@ -12,6 +12,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -242,9 +243,12 @@ internal class CheckBoxIndicator : Control,
             SetupIndicatorCheckedMarkEffectSize();
         }
 
-        if (e.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (e.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 

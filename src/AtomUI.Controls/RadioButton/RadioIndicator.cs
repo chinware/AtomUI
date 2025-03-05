@@ -227,10 +227,13 @@ internal class RadioIndicator : Control,
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.CircleWave);
             }
         }
-        
-        if (e.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (e.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 

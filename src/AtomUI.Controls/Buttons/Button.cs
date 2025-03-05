@@ -503,11 +503,6 @@ public class Button : AvaloniaButton,
                 SetupShadows();
                 SetupIconBrush();
             }
-            else if (e.Property == IsMotionEnabledProperty ||
-                     e.Property == IsWaveAnimationEnabledProperty)
-            {
-                SetupTransitions();
-            }
             else if (e.Property == ButtonTypeProperty)
             {
                 SetupControlThemeBindings();
@@ -515,6 +510,15 @@ public class Button : AvaloniaButton,
             else if (e.Property == ButtonShapeProperty)
             {
                 SetupShapeStyleBindings();
+            }
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (e.Property == IsMotionEnabledProperty ||
+                e.Property == IsWaveAnimationEnabledProperty)
+            {
+                SetupTransitions();
             }
         }
     }

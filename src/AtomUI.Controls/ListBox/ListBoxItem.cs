@@ -3,6 +3,7 @@ using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -76,9 +77,12 @@ public class ListBoxItem : AvaloniaListBoxItem
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 }

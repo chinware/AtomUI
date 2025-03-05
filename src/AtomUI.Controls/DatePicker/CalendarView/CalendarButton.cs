@@ -8,6 +8,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls.CalendarView;
@@ -228,9 +229,12 @@ internal sealed class CalendarButton : AvaloniaButton
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 }

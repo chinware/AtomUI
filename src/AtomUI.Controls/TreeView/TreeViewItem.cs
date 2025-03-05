@@ -18,6 +18,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -441,10 +442,15 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             SetupSwitcherButtonIconMode();
         }
-        else if (change.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
+        
     }
 
     private void SetupSwitcherButtonIconMode()

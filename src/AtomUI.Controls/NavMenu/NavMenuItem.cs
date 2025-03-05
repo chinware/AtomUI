@@ -925,19 +925,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         else if (change.Property == ItemCountProperty)
         {
             HasSubMenu = ItemCount > 0;
-        }
-        else if (change.Property == IsMotionEnabledProperty)
-        {
-            SetupTransitions();
-        }
-
-        if (change.Property == BoundsProperty ||
-            change.Property == PopupMinWidthProperty)
+        } 
+        else if (change.Property == BoundsProperty ||
+              change.Property == PopupMinWidthProperty)
         {
             SetupEffectivePopupMinWidth();
-        }
-
-        if (change.Property == IconProperty)
+        } 
+        else if (change.Property == IconProperty)
         {
             if (change.OldValue is Icon oldIcon)
             {
@@ -949,6 +943,14 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 newIcon.SetTemplatedParent(this);
                 PseudoClasses.Add(IconPC);
+            }
+        }
+
+        if (this.IsAttachedToVisualTree())
+        { 
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
             }
         }
     }

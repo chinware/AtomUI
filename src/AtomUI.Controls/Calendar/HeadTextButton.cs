@@ -4,6 +4,7 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -49,9 +50,12 @@ internal class HeadTextButton : AvaloniaButton
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 }

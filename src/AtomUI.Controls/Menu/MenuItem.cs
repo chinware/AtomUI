@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Media;
@@ -120,9 +119,13 @@ public class MenuItem : AvaloniaMenuItem,
         {
             HandleToggleTypeChanged();
         }
-        else if (e.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (e.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
 
         if (this.IsAttachedToVisualTree())

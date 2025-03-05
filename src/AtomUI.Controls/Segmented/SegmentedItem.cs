@@ -15,6 +15,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -125,9 +126,13 @@ public class SegmentedItem : ContentControl,
                 SetupItemIcon();
             } 
         }
-        if (change.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();    
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();    
+            }
         }
     }
 
