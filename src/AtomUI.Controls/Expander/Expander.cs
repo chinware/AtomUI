@@ -318,8 +318,8 @@ public class Expander : AvaloniaExpander,
         if (ExpandIcon is null)
         {
             ClearValue(ExpandIconProperty);
+            SetValue(ExpandIconProperty, AntDesignIconPackage.RightOutlined(), BindingPriority.Template);
         }
-        SetValue(ExpandIconProperty, AntDesignIconPackage.RightOutlined(), BindingPriority.Template);
         Debug.Assert(ExpandIcon is not null);
         ExpandIcon.SetTemplatedParent(this);
     }

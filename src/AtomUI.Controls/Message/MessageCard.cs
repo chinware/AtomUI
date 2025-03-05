@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -324,11 +325,11 @@ public class MessageCard : TemplatedControl,
         if (Icon is null)
         {
             ClearValue(IconProperty);
+            SetValue(IconProperty, icon, BindingPriority.Template);
         }
-        icon?.SetTemplatedParent(this);
-        SetValue(IconProperty, icon, BindingPriority.Template);
+        Debug.Assert(Icon != null);
+        Icon.SetTemplatedParent(this);
     }
-
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {

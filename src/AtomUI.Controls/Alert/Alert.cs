@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -190,9 +191,9 @@ public class Alert : TemplatedControl,
         if (CloseIcon == null)
         {
             ClearValue(CloseIconProperty);
+            SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
-
-        SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
-        CloseIcon?.SetTemplatedParent(this);
+        Debug.Assert(CloseIcon != null);
+        CloseIcon.SetTemplatedParent(this);
     }
 }
