@@ -174,7 +174,7 @@ public class OptionButton : AvaloniaRadioButton,
             }
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (this.IsAttachedToLogicalTree())
         {
             if (e.Property == IsMotionEnabledProperty)
             {

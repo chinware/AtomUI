@@ -385,7 +385,7 @@ public class NotificationCard : ContentControl,
             RaiseEvent(new RoutedEventArgs(NotificationClosedEvent));
         }
         else if (e.Property == IsShowProgressProperty ||
-            e.Property == IsClosedProperty)
+                 e.Property == IsClosedProperty)
         {
             SetupEffectiveShowProgress();
         }
