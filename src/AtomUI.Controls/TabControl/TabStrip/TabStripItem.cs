@@ -32,7 +32,7 @@ public class TabStripItem : AvaloniaTabStripItem,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        BaseTabStrip.SizeTypeProperty.AddOwner<TabStripItem>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TabStripItem>();
 
     public static readonly StyledProperty<Icon?> IconProperty =
         AvaloniaProperty.Register<TabStripItem, Icon?>(nameof(Icon));

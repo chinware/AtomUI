@@ -22,7 +22,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<AddOnDecoratedInnerBox>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedInnerBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<AddOnDecoratedInnerBox>();

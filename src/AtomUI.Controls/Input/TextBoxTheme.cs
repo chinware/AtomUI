@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -33,7 +34,7 @@ internal class TextBoxTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<TextBox>((textBox, scope) => { return BuildTextBoxStructure(textBox, scope); });
+        return new FuncControlTemplate<TextBox>((textBox, scope) => BuildTextBoxStructure(textBox, scope));
     }
 
     protected virtual Control BuildTextBoxStructure(TextBox textBox, INameScope scope)
@@ -72,6 +73,7 @@ internal class TextBoxTheme : BaseControlTheme
             Name      = ScrollViewerPart,
             Focusable = true
         };
+        scrollViewer.SetTemplatedParent(textBox);
 
         CreateTemplateParentBinding(scrollViewer, ScrollViewer.AllowAutoHideProperty, ScrollViewer.AllowAutoHideProperty);
         CreateTemplateParentBinding(scrollViewer, ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollViewer.HorizontalScrollBarVisibilityProperty);
@@ -86,6 +88,7 @@ internal class TextBoxTheme : BaseControlTheme
         {
             Name    = WatermarkPart,
         };
+        watermark.SetTemplatedParent(textBox);
         CreateTemplateParentBinding(watermark, Layoutable.HorizontalAlignmentProperty,
             TextBox.HorizontalContentAlignmentProperty);
         CreateTemplateParentBinding(watermark, Layoutable.VerticalAlignmentProperty,
@@ -105,7 +108,7 @@ internal class TextBoxTheme : BaseControlTheme
         {
             Name = TextPresenterPart,
         };
-
+        textPresenter.SetTemplatedParent(textBox);
         CreateTemplateParentBinding(textPresenter, TextPresenter.HorizontalAlignmentProperty,
             TextBox.HorizontalContentAlignmentProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.VerticalAlignmentProperty,

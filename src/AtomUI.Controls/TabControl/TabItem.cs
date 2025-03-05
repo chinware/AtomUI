@@ -57,7 +57,7 @@ public class TabItem : AvaloniaTabItem,
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        BaseTabControl.SizeTypeProperty.AddOwner<TabItem>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TabItem>();
 
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabItem, TabSharp>(nameof(Shape));

@@ -38,7 +38,7 @@ public class EmptyIndicator : TemplatedControl,
         AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(Description), "No data");
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<EmptyIndicator, SizeType>(nameof(SizeType));
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<EmptyIndicator>();
 
     public static readonly StyledProperty<bool> IsShowDescriptionProperty =
         AvaloniaProperty.Register<EmptyIndicator, bool>(nameof(IsShowDescription), true);

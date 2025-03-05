@@ -37,7 +37,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         = AvaloniaProperty.Register<InfoPickerInput, object?>(nameof(InnerLeftContent));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<InfoPickerInput>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<InfoPickerInput>();

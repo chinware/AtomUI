@@ -14,7 +14,7 @@ public class LoadingMaskHost : Control
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        LoadingIndicator.SizeTypeProperty.AddOwner<LoadingMaskHost>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<LoadingMaskHost>();
 
     public static readonly StyledProperty<string?> LoadingMsgProperty =
         LoadingIndicator.LoadingMsgProperty.AddOwner<LoadingMaskHost>();

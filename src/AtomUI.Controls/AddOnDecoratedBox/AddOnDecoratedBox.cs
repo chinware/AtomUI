@@ -49,7 +49,7 @@ public class AddOnDecoratedBox : ContentControl,
         AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(RightAddOn));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<AddOnDecoratedBox, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, AddOnDecoratedVariant>(

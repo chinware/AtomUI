@@ -31,7 +31,7 @@ public class MenuItem : AvaloniaMenuItem,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        Menu.SizeTypeProperty.AddOwner<MenuItem>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
 
     public SizeType SizeType
     {

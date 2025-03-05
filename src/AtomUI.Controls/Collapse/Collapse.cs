@@ -39,7 +39,7 @@ public class Collapse : SelectingItemsControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Collapse, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Collapse>();
 
     public static readonly StyledProperty<bool> IsGhostStyleProperty =
         AvaloniaProperty.Register<Collapse, bool>(nameof(IsGhostStyle));

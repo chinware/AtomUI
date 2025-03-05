@@ -64,7 +64,7 @@ public class SingleLineText : Control
         TextElement.FontFeaturesProperty.AddOwner<SingleLineText>();
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<SingleLineText, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SingleLineText>();
     
     public TextLayout TextLayout => _textLayout ??= CreateTextLayout(Text);
 

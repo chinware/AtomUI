@@ -62,8 +62,8 @@ public class Drawer : Control,
     public static readonly StyledProperty<IDataTemplate?> ExtraTemplateProperty =
         AvaloniaProperty.Register<Drawer, IDataTemplate?>(nameof(ExtraTemplate));
 
-    public static readonly StyledProperty<SizeType> DialogSizeTypeProperty =
-        AvaloniaProperty.Register<Drawer, SizeType>(nameof(DialogSizeType), SizeType.Small);
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Drawer>();
 
     public static readonly StyledProperty<double> DialogSizeProperty =
         AvaloniaProperty.Register<Drawer, double>(nameof(DialogSize));
@@ -159,10 +159,10 @@ public class Drawer : Control,
         set => SetValue(ExtraTemplateProperty, value);
     }
 
-    public SizeType DialogSizeType
+    public SizeType SizeType
     {
-        get => GetValue(DialogSizeTypeProperty);
-        set => SetValue(DialogSizeTypeProperty, value);
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
 
     public double DialogSize
@@ -209,6 +209,11 @@ public class Drawer : Control,
 
     private DrawerContainer? _container;
     private CompositeDisposable? _tokenBindingsDisposable;
+
+    static Drawer()
+    {
+        SizeTypeProperty.OverrideDefaultValue<Drawer>(SizeType.Small);
+    }
 
     public Drawer()
     {
@@ -266,12 +271,12 @@ public class Drawer : Control,
 
     private void SetupDialogSizeTypeBindings()
     {
-        if (DialogSizeType == SizeType.Large)
+        if (SizeType == SizeType.Large)
         {
             this.AddTokenBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.LargeSize));
         }
-        else if (DialogSizeType == SizeType.Middle)
+        else if (SizeType == SizeType.Middle)
         {
             this.AddTokenBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.MiddleSize));
@@ -317,7 +322,7 @@ public class Drawer : Control,
             {
                 HandleIsOpenChanged();
             }
-            else if (change.Property == DialogSizeTypeProperty)
+            else if (change.Property == SizeTypeProperty)
             {
                 SetupDialogSizeTypeBindings();
             }

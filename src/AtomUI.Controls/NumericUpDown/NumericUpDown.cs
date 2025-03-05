@@ -20,7 +20,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         AddOnDecoratedBox.RightAddOnProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<NumericUpDown>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<NumericUpDown>();

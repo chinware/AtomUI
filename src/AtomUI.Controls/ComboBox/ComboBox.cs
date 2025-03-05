@@ -6,7 +6,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -25,7 +24,7 @@ public class ComboBox : AvaloniaComboBox,
         AddOnDecoratedBox.RightAddOnProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<ComboBox>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<ComboBox>();

@@ -48,7 +48,7 @@ public class SegmentedItem : ContentControl,
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        Segmented.SizeTypeProperty.AddOwner<SegmentedItem>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SegmentedItem>();
 
     internal static readonly DirectProperty<SegmentedItem, bool> IsMotionEnabledProperty
         = AvaloniaProperty.RegisterDirect<SegmentedItem, bool>(nameof(IsMotionEnabled),

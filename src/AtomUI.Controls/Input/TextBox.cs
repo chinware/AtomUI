@@ -21,7 +21,7 @@ public class TextBox : AvaloniaTextBox,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<TextBox>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TextBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<TextBox>();
@@ -94,13 +94,13 @@ public class TextBox : AvaloniaTextBox,
         get => _embedMode;
         set => SetAndRaise(EmbedModeProperty, ref _embedMode, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-    
+
     private CompositeDisposable? _tokenBindingsDisposable;
 
     static TextBox()

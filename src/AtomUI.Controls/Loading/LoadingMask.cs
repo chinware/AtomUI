@@ -14,7 +14,7 @@ internal class LoadingMask : AvaloniaObject, IDisposable
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        LoadingIndicator.SizeTypeProperty.AddOwner<LoadingMask>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<LoadingMask>();
 
     public static readonly StyledProperty<string?> LoadingMsgProperty =
         LoadingIndicator.LoadingMsgProperty.AddOwner<LoadingMask>();

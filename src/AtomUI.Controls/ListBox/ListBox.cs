@@ -19,8 +19,9 @@ public class ListBox : AvaloniaListBox,
                        ITokenResourceConsumer
 {
     #region 公共属性定义
+
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<ListBox, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBox>();
 
     public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
