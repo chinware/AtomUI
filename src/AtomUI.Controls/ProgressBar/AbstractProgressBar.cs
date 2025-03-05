@@ -1,5 +1,4 @@
 using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -438,6 +437,15 @@ public abstract class AbstractProgressBar : RangeBase,
         {
             EffectiveSizeType = e.GetNewValue<SizeType>();
         }
+        else if (e.Property == ValueProperty)
+        {
+            IsCompleted = MathUtils.AreClose(Value, Maximum);
+            UpdatePseudoClasses();
+        }
+        else if (e.Property == IsCompletedProperty)
+        {
+            InvalidateMeasure();
+        }
 
         if (this.IsAttachedToVisualTree())
         {
@@ -450,17 +458,6 @@ public abstract class AbstractProgressBar : RangeBase,
                 NotifyEffectSizeTypeChanged();
             }
         }
-
-        if (e.Property == ValueProperty)
-        {
-            IsCompleted = MathUtils.AreClose(Value, Maximum);
-            UpdatePseudoClasses();
-        }
-        else if (e.Property == IsCompletedProperty)
-        {
-            InvalidateMeasure();
-        }
-
         NotifyPropertyChanged(e);
     }
 

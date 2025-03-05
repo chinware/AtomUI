@@ -233,10 +233,10 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.NotifyPropertyChanged(e);
-
-        if (e.Property == WidthProperty || e.Property == HeightProperty)
+        
+        if (this.IsAttachedToVisualTree())
         {
-            if (this.IsAttachedToVisualTree())
+            if (e.Property == WidthProperty || e.Property == HeightProperty)
             {
                 CalculateStrokeThickness();
                 SetupExtraInfoFontSize();
