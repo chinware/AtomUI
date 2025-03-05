@@ -2,7 +2,6 @@
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -90,6 +89,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
         Grid.SetColumn(iconPresenter, 0);
         iconPresenter.RegisterInNameScope(scope);
+        CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
         CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, NavMenuItem.IconProperty);
         
         var itemTextPresenter = new ContentPresenter
@@ -433,6 +433,30 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
             iconContentPresenterStyle.Add(Visual.IsVisibleProperty, true);
             hasIconStyle.Add(iconContentPresenterStyle);
+
+            {
+                var iconStyle = new Style(selector =>
+                    selector.Nesting().Template().Name(ItemIconPresenterPart).Child().OfType<Icon>());
+                iconStyle.Add(Icon.WidthProperty, NavMenuTokenKey.ItemIconSize);
+                iconStyle.Add(Icon.HeightProperty, NavMenuTokenKey.ItemIconSize);
+                
+                iconStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.ItemColor);
+                iconStyle.Add(Icon.ActiveFilledBrushProperty, NavMenuTokenKey.ItemHoverColor);
+                iconStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.ItemSelectedColor);
+                iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.ItemDisabledColor);
+                hasIconStyle.Add(iconStyle);
+            }
+            var darkStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+            {
+                var iconStyle = new Style(selector =>
+                    selector.Nesting().Template().Name(ItemIconPresenterPart).Child().OfType<Icon>());
+                iconStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.DarkItemColor);
+                iconStyle.Add(Icon.ActiveFilledBrushProperty, NavMenuTokenKey.DarkItemHoverColor);
+                iconStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.DarkItemSelectedColor);
+                iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.DarkItemDisabledColor);
+                darkStyle.Add(iconStyle);
+            }
+            hasIconStyle.Add(darkStyle);
         }
         Add(hasIconStyle);
     }

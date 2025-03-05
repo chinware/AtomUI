@@ -181,9 +181,9 @@ public class NavMenu : NavMenuBase,
             UpdatePseudoClasses();
         }
 
-        if (change.Property == ModeProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            if (this.IsAttachedToVisualTree())
+            if (change.Property == ModeProperty)
             {
                 SetupControlTheme();
                 HandleModeChanged();
@@ -250,18 +250,13 @@ public class NavMenu : NavMenuBase,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable ??= new CompositeDisposable();
-
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
-            SharedTokenKey.LineWidth,
-            BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this)));
+        SetupControlTheme();
 
         this.AddTokenBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenKey.ActiveBarWidth));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty,
             NavMenuTokenKey.ActiveBarHeight));
-
-        SetupControlTheme();
+        
         SetupItemContainerTheme();
         SetupInteractionHandler();
     }
@@ -275,6 +270,10 @@ public class NavMenu : NavMenuBase,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
+            SharedTokenKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this)));
         InteractionHandler?.Attach(this);
     }
 
