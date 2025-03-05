@@ -1,8 +1,11 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -17,6 +20,7 @@ namespace AtomUI.Controls;
 
 internal abstract class BaseButtonTheme : BaseControlTheme
 {
+    public const string FramePart = "PART_Frame";
     public const string LabelPart = "PART_Label";
     public const string MainInfoLayoutPart = "PART_MainInfoLayout";
     public const string RootLayoutPart = "PART_RootLayout";
@@ -93,14 +97,16 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             rootLayout.Children.Add(extraContentLayout);
             rootLayout.Children.Add(mainInfoLayout);
 
-            var frame = new Border();
+            var frame = new Border()
+            {
+                Name = FramePart
+            };
 
             CreateTemplateParentBinding(frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
             CreateTemplateParentBinding(frame, Border.BorderThicknessProperty,
                 Button.EffectiveBorderThicknessProperty);
             CreateTemplateParentBinding(frame, Border.BorderBrushProperty,
                 TemplatedControl.BorderBrushProperty);
-            CreateTemplateParentBinding(frame, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
             CreateTemplateParentBinding(frame, Border.BackgroundSizingProperty,
                 TemplatedControl.BackgroundSizingProperty);
             CreateTemplateParentBinding(frame, Border.CornerRadiusProperty,
@@ -149,6 +155,16 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         BuildSizeStyle();
         BuildIconStyle();
         BuildLoadingStyle();
+        
+        // 动画设置
+        var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsMotionEnabledProperty, true));
+        var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        frameStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+        {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
+        }));
+        isMotionEnabledStyle.Add(frameStyle);
+        Add(isMotionEnabledStyle);
     }
 
     private void BuildSizeStyle()

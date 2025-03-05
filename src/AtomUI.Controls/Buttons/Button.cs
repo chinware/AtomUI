@@ -570,7 +570,6 @@ public class Button : AvaloniaButton,
                 var transitions = new Transitions();
                 if (ButtonType == ButtonType.Primary)
                 {
-                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
                     if (IsGhost)
                     {
                         transitions.Add(
@@ -582,10 +581,6 @@ public class Button : AvaloniaButton,
                 {
                     transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
                     transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-                }
-                else if (ButtonType == ButtonType.Text)
-                {
-                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
                 }
                 else if (ButtonType == ButtonType.Link)
                 {

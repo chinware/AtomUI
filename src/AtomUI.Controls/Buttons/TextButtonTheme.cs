@@ -1,5 +1,7 @@
 ﻿using AtomUI.Theme.Styling;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -96,20 +98,32 @@ internal class TextButtonTheme : BaseTextButtonTheme
     {
         var enabledStyle = new Style(selector => selector.Nesting());
         // 正常状态
-        enabledStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, Brushes.Transparent);
+            enabledStyle.Add(frameStyle);
+        }
         enabledStyle.Add(TemplatedControl.ForegroundProperty, ButtonTokenKey.DefaultColor);
 
         // 正常 hover
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.BackgroundProperty, ButtonTokenKey.TextHoverBg);
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, ButtonTokenKey.TextHoverBg);
+                hoverStyle.Add(frameStyle);
+            }
             enabledStyle.Add(hoverStyle);
         }
         // 正常按下
         {
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-            pressedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgTextActive);
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgTextActive);
+                pressedStyle.Add(frameStyle);
+            }
             enabledStyle.Add(pressedStyle);
         }
 
@@ -120,7 +134,11 @@ internal class TextButtonTheme : BaseTextButtonTheme
         // 危险状态 hover
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorErrorBgHover);
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorErrorBgHover);
+                hoverStyle.Add(frameStyle);
+            }
             dangerStyle.Add(hoverStyle);
         }
 
@@ -128,7 +146,11 @@ internal class TextButtonTheme : BaseTextButtonTheme
         {
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-            pressedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorErrorBgActive);
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorErrorBgActive);
+                pressedStyle.Add(frameStyle);
+            }
             dangerStyle.Add(pressedStyle);
         }
         enabledStyle.Add(dangerStyle);

@@ -1,6 +1,8 @@
 ﻿using AtomUI.Theme.Styling;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -22,8 +24,13 @@ internal abstract class BaseLinkButtonTheme : BaseButtonTheme
     {
         var enabledStyle = new Style(selector => selector.Nesting());
         // 正常状态
-        enabledStyle.Add(TemplatedControl.BackgroundProperty, ButtonTokenKey.DefaultBg);
         enabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorLink);
+        
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, ButtonTokenKey.DefaultBg);
+            enabledStyle.Add(frameStyle);
+        }
 
         // 正常 hover
         {
@@ -68,8 +75,11 @@ internal abstract class BaseLinkButtonTheme : BaseButtonTheme
     {
         var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
         // 正常状态
-        ghostStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
-
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, Brushes.Transparent);
+            ghostStyle.Add(frameStyle);
+        }
         Add(ghostStyle);
     }
 
