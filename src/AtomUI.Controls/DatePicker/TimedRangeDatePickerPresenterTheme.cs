@@ -27,9 +27,12 @@ internal class TimedRangeDatePickerPresenterTheme : DatePickerPresenterTheme
         {
             Name = CalendarViewPart,
         };
-        CreateTemplateParentBinding(calendarView, RangeCalendar.IsMotionEnabledProperty, TimedRangeDatePickerPresenter.IsMotionEnabledProperty);
-        CreateTemplateParentBinding(calendarView, RangeCalendar.SelectedDateProperty, TimedRangeDatePickerPresenter.SelectedDateTimeProperty);
-        CreateTemplateParentBinding(calendarView, RangeCalendar.SecondarySelectedDateProperty, TimedRangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
+        CreateTemplateParentBinding(calendarView, RangeCalendar.IsMotionEnabledProperty,
+            TimedRangeDatePickerPresenter.IsMotionEnabledProperty);
+        CreateTemplateParentBinding(calendarView, RangeCalendar.SelectedDateProperty,
+            TimedRangeDatePickerPresenter.SelectedDateTimeProperty);
+        CreateTemplateParentBinding(calendarView, RangeCalendar.SecondarySelectedDateProperty,
+            TimedRangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
         calendarView.RegisterInNameScope(scope);
         calendarLayout.Children.Add(calendarView);
 
@@ -38,12 +41,15 @@ internal class TimedRangeDatePickerPresenterTheme : DatePickerPresenterTheme
             Name              = TimeViewPart,
             VerticalAlignment = VerticalAlignment.Top,
         };
-        CreateTemplateParentBinding(timeView, TimeView.IsMotionEnabledProperty, TimedRangeDatePickerPresenter.IsMotionEnabledProperty);
-        CreateTemplateParentBinding(timeView, TimeView.ClockIdentifierProperty, TimedRangeDatePickerPresenter.ClockIdentifierProperty);
-        CreateTemplateParentBinding(timeView, TimeView.IsVisibleProperty, TimedRangeDatePickerPresenter.IsShowTimeProperty);
+        CreateTemplateParentBinding(timeView, TimeView.IsMotionEnabledProperty,
+            TimedRangeDatePickerPresenter.IsMotionEnabledProperty);
+        CreateTemplateParentBinding(timeView, TimeView.ClockIdentifierProperty,
+            TimedRangeDatePickerPresenter.ClockIdentifierProperty);
+        CreateTemplateParentBinding(timeView, TimeView.IsVisibleProperty,
+            TimedRangeDatePickerPresenter.IsShowTimeProperty);
         timeView.RegisterInNameScope(scope);
         calendarLayout.Children.Add(timeView);
-        
+
         return calendarLayout;
     }
 }

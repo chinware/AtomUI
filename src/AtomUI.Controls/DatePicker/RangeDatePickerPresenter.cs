@@ -10,7 +10,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     public static readonly StyledProperty<DateTime?> SecondarySelectedDateTimeProperty =
         AvaloniaProperty.Register<RangeDatePickerPresenter, DateTime?>(nameof(SecondarySelectedDateTime));
-    
+
     public DateTime? SecondarySelectedDateTime
     {
         get => GetValue(SecondarySelectedDateTimeProperty);
@@ -46,7 +46,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             rangeCalendar.IsRepairReverseRange = isRepair;
         }
     }
-    
+
     protected override void NotifyTimeViewHoverChanged(TimeSpan? newTime)
     {
         if (_calendarView is RangeCalendar rangeCalendar)
@@ -90,11 +90,13 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             // 部分确认
             if (rangeCalendar.IsSelectRangeStart)
             {
-                SelectedDateTime = CollectDateTime(rangeCalendar.SelectedDate, TempSelectedTime ?? _timeView?.SelectedTime);
+                SelectedDateTime =
+                    CollectDateTime(rangeCalendar.SelectedDate, TempSelectedTime ?? _timeView?.SelectedTime);
             }
             else
             {
-                SecondarySelectedDateTime = CollectDateTime(rangeCalendar.SecondarySelectedDate, TempSelectedTime ?? _timeView?.SelectedTime);
+                SecondarySelectedDateTime = CollectDateTime(rangeCalendar.SecondarySelectedDate,
+                    TempSelectedTime ?? _timeView?.SelectedTime);
             }
 
             if (!IsNeedConfirm)
@@ -117,7 +119,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         base.OnDismiss();
         SecondarySelectedDateTime = null;
     }
-    
+
     protected override void OnConfirmed()
     {
         EmitChoosingStatueChanged(false);
@@ -131,7 +133,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             EmitConfirmed();
         }
     }
-    
+
     protected override void SyncTimeViewTimeValue()
     {
         if (_timeView is not null && _calendarView is RangeCalendar rangeCalendar)
@@ -163,13 +165,14 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             }
         }
     }
-    
+
     protected override void SetupConfirmButtonEnableStatus()
     {
         if (_confirmButton is null)
         {
             return;
         }
+
         if (_calendarView is RangeCalendar rangeCalendar)
         {
             if (rangeCalendar.IsSelectRangeStart)
@@ -178,7 +181,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             }
             else
             {
-                _confirmButton.IsEnabled  = SecondarySelectedDateTime is not null;
+                _confirmButton.IsEnabled = SecondarySelectedDateTime is not null;
             }
         }
     }

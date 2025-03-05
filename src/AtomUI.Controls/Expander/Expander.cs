@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -232,8 +233,7 @@ public class Expander : AvaloniaExpander,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        ExpandIcon ??= AntDesignIconPackage.RightOutlined();
-        ExpandIcon.SetTemplatedParent(this);
+        SetupDefaultIcon();
         base.OnApplyTemplate(e);
         this.RunThemeTokenBindingActions();
         _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderTheme.ContentMotionActorPart);
@@ -261,16 +261,34 @@ public class Expander : AvaloniaExpander,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == AddOnContentProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            if (change.OldValue is Control oldControl)
+            if (change.Property == AddOnContentProperty)
             {
-                oldControl.SetTemplatedParent(null);
+                if (change.OldValue is Control oldControl)
+                {
+                    oldControl.SetTemplatedParent(null);
+                }
+
+                if (change.NewValue is Control newControl)
+                {
+                    newControl.SetTemplatedParent(this);
+                }
+
+                SetupDefaultIcon();
+            }
+        }
+
+        if (change.Property == ExpandIconProperty)
+        {
+            if (change.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
             }
 
-            if (change.NewValue is Control newControl)
+            if (change.NewValue is Icon newIcon)
             {
-                newControl.SetTemplatedParent(this);
+                newIcon.SetTemplatedParent(this);
             }
         }
 
@@ -293,6 +311,17 @@ public class Expander : AvaloniaExpander,
         {
             SetupExpanderBorderThickness();
         }
+    }
+
+    private void SetupDefaultIcon()
+    {
+        if (ExpandIcon is null)
+        {
+            ClearValue(ExpandIconProperty);
+        }
+        SetValue(ExpandIconProperty, AntDesignIconPackage.RightOutlined(), BindingPriority.Template);
+        Debug.Assert(ExpandIcon is not null);
+        ExpandIcon.SetTemplatedParent(this);
     }
 
     private void SetupExpanderBorderThickness()
