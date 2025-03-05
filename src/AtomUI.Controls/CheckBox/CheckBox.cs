@@ -1,4 +1,3 @@
-using System.Reactive.Disposables;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
