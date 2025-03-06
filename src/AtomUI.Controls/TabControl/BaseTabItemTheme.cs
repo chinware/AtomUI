@@ -16,7 +16,7 @@ namespace AtomUI.Controls;
 
 internal class BaseTabItemTheme : BaseControlTheme
 {
-    public const string DecoratorPart = "PART_Decorator";
+    public const string FramePart = "PART_Decorator";
     public const string ContentLayoutPart = "PART_ContentLayout";
     public const string ContentPresenterPart = "PART_ContentPresenter";
     public const string ItemIconPart = "PART_ItemIcon";
@@ -31,13 +31,13 @@ internal class BaseTabItemTheme : BaseControlTheme
         return new FuncControlTemplate<TabItem>((tabItem, scope) =>
         {
             // 做边框
-            var decorator = new Border
+            var frame = new Border
             {
-                Name = DecoratorPart
+                Name = FramePart
             };
-            decorator.RegisterInNameScope(scope);
-            NotifyBuildControlTemplate(tabItem, scope, decorator);
-            return decorator;
+            frame.RegisterInNameScope(scope);
+            NotifyBuildControlTemplate(tabItem, scope, frame);
+            return frame;
         });
     }
 
@@ -50,6 +50,15 @@ internal class BaseTabItemTheme : BaseControlTheme
         };
         containerLayout.RegisterInNameScope(scope);
 
+        var iconPresenter = new ContentPresenter()
+        {
+            Name = ItemIconPart,
+        };
+        CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, TabItem.IconProperty);
+        CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsVisibleProperty, TabItem.IconProperty,
+            BindingMode.Default,
+            ObjectConverters.IsNotNull);
+        containerLayout.Children.Add(iconPresenter);
         var contentPresenter = new ContentPresenter
         {
             Name = ContentPresenterPart

@@ -101,7 +101,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             {
                 Name = FramePart
             };
-
+            frame.RegisterInNameScope(scope);
             CreateTemplateParentBinding(frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
             CreateTemplateParentBinding(frame, Border.BorderThicknessProperty,
                 Button.EffectiveBorderThicknessProperty);

@@ -178,6 +178,10 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemColor);
+        commonStyle.Add(NavMenuItem.InlineItemIndentUnitProperty, NavMenuTokenKey.InlineItemIndentUnit);
+        commonStyle.Add(NavMenuItem.PopupMinWidthProperty, NavMenuTokenKey.MenuPopupMinWidth);
+        commonStyle.Add(NavMenuItem.OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationSlow);
+        
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
             keyGestureStyle.Add(SingleLineText.ForegroundProperty, NavMenuTokenKey.KeyGestureColor);

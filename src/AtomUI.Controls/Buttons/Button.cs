@@ -306,6 +306,7 @@ public class Button : AvaloniaButton,
     #endregion
     
     private CompositeDisposable? _tokenBindingsDisposable;
+    private Border? _frame;
 
     static Button()
     {
@@ -456,7 +457,7 @@ public class Button : AvaloniaButton,
                 {
                     if (ButtonType == ButtonType.Primary && !IsGhost)
                     {
-                        waveColor = Color.Parse(Background?.ToString()!);
+                        waveColor = Color.Parse(_frame?.Background?.ToString()!);
                     }
                     else
                     {
@@ -600,6 +601,8 @@ public class Button : AvaloniaButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        // 为了防止意外被用户改变背景，做了一个 frame
+        _frame = e.NameScope.Find<Border>(BaseButtonTheme.FramePart);
         SetupShadows();
         UpdatePseudoClasses();
         SetupIcon();

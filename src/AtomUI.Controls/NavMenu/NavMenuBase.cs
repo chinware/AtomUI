@@ -17,10 +17,7 @@ public abstract class NavMenuBase : SelectingItemsControl,
                                     IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="IsOpen"/> property.
-    /// </summary>
+    
     public static readonly DirectProperty<NavMenuBase, bool> IsOpenProperty =
         AvaloniaProperty.RegisterDirect<NavMenuBase, bool>(
             nameof(IsOpen),
@@ -33,10 +30,7 @@ public abstract class NavMenuBase : SelectingItemsControl,
         = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<NavMenuBase>();
 
     private bool _isOpen;
-
-    /// <summary>
-    /// Gets a value indicating whether the menu is open.
-    /// </summary>
+    
     public bool IsOpen
     {
         get => _isOpen;

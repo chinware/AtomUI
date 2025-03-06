@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -15,6 +14,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -41,9 +41,6 @@ public class NavMenu : NavMenuBase,
 
     #region 公共属性定义
 
-    /// <summary>
-    /// Defines the <see cref="Mode"/> property.
-    /// </summary>
     public static readonly StyledProperty<NavMenuMode> ModeProperty =
         AvaloniaProperty.Register<NavMenu, NavMenuMode>(nameof(Mode), NavMenuMode.Horizontal);
 
@@ -181,7 +178,7 @@ public class NavMenu : NavMenuBase,
             UpdatePseudoClasses();
         }
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == ModeProperty)
             {
@@ -230,6 +227,11 @@ public class NavMenu : NavMenuBase,
                 BindUtils.RelayBind(this, ActiveBarHeightProperty, navMenuItem, NavMenuItem.ActiveBarHeightProperty);
                 BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty);
             }
+            else
+            {
+                BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem,
+                    NavMenuItem.ItemContainerThemeProperty);
+            }
 
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty);
             BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty);
@@ -257,6 +259,7 @@ public class NavMenu : NavMenuBase,
             TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenKey.ActiveBarWidth));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty,
             NavMenuTokenKey.ActiveBarHeight));
+        
         SetupInteractionHandler();
     }
 
@@ -323,7 +326,7 @@ public class NavMenu : NavMenuBase,
             }
 
             this.AddTokenBindingDisposable(
-                TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, resourceKey));
+                TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, resourceKey));
         }
     }
 

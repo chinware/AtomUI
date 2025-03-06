@@ -47,7 +47,8 @@ internal class VerticalNavMenuTheme : BaseNavMenuTheme
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
 
-        var verticalOrInlineStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(NavMenu.VerticalModePC),
+        var verticalOrInlineStyle = new Style(selector => Selectors.Or(
+            selector.Nesting().Class(NavMenu.VerticalModePC),
             selector.Nesting().Class(NavMenu.InlineModePC)));
         verticalOrInlineStyle.Add(NavMenu.PaddingProperty, NavMenuTokenKey.VerticalMenuContentPadding);
         verticalOrInlineStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Left);

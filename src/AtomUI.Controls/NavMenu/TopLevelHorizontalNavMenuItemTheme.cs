@@ -3,6 +3,7 @@ using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -29,7 +30,6 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     public const string ItemIconPresenterPart = "PART_ItemIconPresenter";
     public const string ActiveIndicatorPart = "PART_ActiveIndicator";
-    public const string ItemIconPart = "PART_ItemIcon";
     
     public TopLevelHorizontalNavMenuItemTheme() : base(typeof(NavMenuItem))
     {
@@ -44,8 +44,6 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
     {
         return new FuncControlTemplate<NavMenuItem>((menuItem, scope) =>
         {
-            BuildInstanceStyles(menuItem);
-
             var rootLayout = new Panel();
 
             var frame = new Border()
@@ -63,7 +61,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             
             var popup = CreateMenuPopup();
             popup.RegisterInNameScope(scope);
-            contentLayout.Children.Add(popup);
+            rootLayout.Children.Add(popup);
             
             var iconPresenter = new ContentPresenter()
             {
@@ -73,7 +71,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             };
             iconPresenter.RegisterInNameScope(scope);
             DockPanel.SetDock(iconPresenter, Dock.Left);
-            
+            CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
             CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, NavMenuItem.IconProperty);
             CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsVisibleProperty, NavMenuItem.IconProperty,
                 BindingMode.Default,
@@ -176,6 +174,15 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
+        BuildCommonStyle();
+        BuildPopupStyle();
+        BuildActiveIndicatorStyle();
+        BuildMenuIconStyle();
+        BuildDisabledStyle();
+    }
+
+    private void BuildCommonStyle()
+    {
         var commonStyle =
             new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
@@ -194,18 +201,15 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
         iconPresenterStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.IconMargin);
         commonStyle.Add(iconPresenterStyle);
-        BuildPopupStyle(commonStyle);
-        BuildActiveIndicatorStyle(commonStyle);
         Add(commonStyle);
-        BuildDisabledStyle();
     }
 
-    private void BuildPopupStyle(Style commonStyle)
+    private void BuildPopupStyle()
     {
         var popupStyle = new Style(selector => selector.Nesting().Template().Name(PopupPart));
         popupStyle.Add(Popup.MarginToAnchorProperty, NavMenuTokenKey.TopLevelItemPopupMarginToAnchor);
         popupStyle.Add(Popup.MaskShadowsProperty, NavMenuTokenKey.MenuPopupBoxShadows);
-        commonStyle.Add(popupStyle);
+        Add(popupStyle);
         var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
         popupFrameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
         popupFrameStyle.Add(Border.CornerRadiusProperty, NavMenuTokenKey.MenuPopupBorderRadius);
@@ -213,10 +217,10 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         popupFrameStyle.Add(Layoutable.MaxWidthProperty, NavMenuTokenKey.MenuPopupMaxWidth);
         popupFrameStyle.Add(Layoutable.MaxHeightProperty, NavMenuTokenKey.MenuPopupMaxHeight);
         popupFrameStyle.Add(Decorator.PaddingProperty, NavMenuTokenKey.MenuPopupContentPadding);
-        commonStyle.Add(popupFrameStyle);
+        Add(popupFrameStyle);
     }
     
-    private void BuildActiveIndicatorStyle(Style commonStyle)
+    private void BuildActiveIndicatorStyle()
     {
         {
             // 动画设置
@@ -227,12 +231,12 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty)
             }));
             isMotionEnabledStyle.Add(indicatorStyle);
-            commonStyle.Add(isMotionEnabledStyle);
+            Add(isMotionEnabledStyle);
         }
         {
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(ActiveIndicatorPart));
             indicatorStyle.Add(Rectangle.FillProperty, Brushes.Transparent);
-            commonStyle.Add(indicatorStyle);
+            Add(indicatorStyle);
         }
         var hoverStyle = new Style(selector => Selectors.Or(selector.Nesting().Class(StdPseudoClass.PointerOver),
             selector.Nesting().Class(StdPseudoClass.Open),
@@ -242,13 +246,13 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             indicatorStyle.Add(Rectangle.FillProperty, SharedTokenKey.ColorPrimary);
             hoverStyle.Add(indicatorStyle);
         }
-        commonStyle.Add(hoverStyle);
+        Add(hoverStyle);
         
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         {
             selectedStyle.Add(NavMenuItem.ForegroundProperty, SharedTokenKey.ColorPrimary);
         }
-        commonStyle.Add(selectedStyle);
+        Add(selectedStyle);
     }
     
     private void BuildDisabledStyle()
@@ -258,18 +262,51 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
         Add(disabledStyle);
     }
     
-    protected override void BuildInstanceStyles(Control control)
+     private void BuildMenuIconStyle()
     {
-        var iconStyle = new Style(selector => selector.Name(ItemIconPart));
-        iconStyle.Add(Icon.WidthProperty, NavMenuTokenKey.ItemIconSize);
-        iconStyle.Add(Icon.HeightProperty, NavMenuTokenKey.ItemIconSize);
-        iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorText);
-        iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.ItemDisabledColor);
-        iconStyle.Add(Icon.SelectedFilledBrushProperty, SharedTokenKey.ColorPrimary);
-        control.Styles.Add(iconStyle);
-        
-        var disabledIconStyle = new Style(selector => selector.OfType<Icon>().Class(StdPseudoClass.Disabled));
-        disabledIconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);
-        control.Styles.Add(disabledIconStyle);
+        {
+            var iconContentPresenterStyle =
+                new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+            iconContentPresenterStyle.Add(Visual.IsVisibleProperty, false);
+            iconContentPresenterStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.ItemMargin);
+            iconContentPresenterStyle.Add(Layoutable.WidthProperty, NavMenuTokenKey.ItemIconSize);
+            iconContentPresenterStyle.Add(Layoutable.HeightProperty, NavMenuTokenKey.ItemIconSize);
+            
+            Add(iconContentPresenterStyle);
+        }
+
+        var hasIconStyle = new Style(selector => selector.Nesting().Class(":icon"));
+        {
+            var iconContentPresenterStyle =
+                new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+            iconContentPresenterStyle.Add(Visual.IsVisibleProperty, true);
+            hasIconStyle.Add(iconContentPresenterStyle);
+
+            {
+                var iconStyle = new Style(selector =>
+                    selector.Nesting().Template().Name(ItemIconPresenterPart).Child().OfType<Icon>());
+                iconStyle.Add(Icon.WidthProperty, NavMenuTokenKey.ItemIconSize);
+                iconStyle.Add(Icon.HeightProperty, NavMenuTokenKey.ItemIconSize);
+                
+                iconStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.ItemColor);
+                iconStyle.Add(Icon.ActiveFilledBrushProperty, NavMenuTokenKey.ItemHoverColor);
+                iconStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.ItemSelectedColor);
+                iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.ItemDisabledColor);
+                hasIconStyle.Add(iconStyle);
+            }
+            var darkStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+            {
+                var iconStyle = new Style(selector =>
+                    selector.Nesting().Template().Name(ItemIconPresenterPart).Child().OfType<Icon>());
+                iconStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.DarkItemColor);
+                iconStyle.Add(Icon.ActiveFilledBrushProperty, NavMenuTokenKey.DarkItemHoverColor);
+                iconStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.DarkItemSelectedColor);
+                iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.DarkItemDisabledColor);
+                darkStyle.Add(iconStyle);
+            }
+            hasIconStyle.Add(darkStyle);
+        }
+        Add(hasIconStyle);
     }
+    
 }

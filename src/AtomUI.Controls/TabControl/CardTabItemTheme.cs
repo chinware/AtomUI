@@ -39,7 +39,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
         var commonStyle = new Style(selector => selector.Nesting());
 
         {
-            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             decoratorStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.HorizontalItemMargin);
             decoratorStyle.Add(Border.BackgroundProperty, TabControlTokenKey.CardBg);
             decoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
@@ -49,7 +49,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             // 动画设置
             var isMotionEnabledStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(TabItem.IsMotionEnabledProperty, true));
-            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             decoratorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
@@ -61,7 +61,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
         // 选中
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         {
-            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             decoratorStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
             selectedStyle.Add(decoratorStyle);
         }
@@ -83,7 +83,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             var largeSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Large));
             {
-                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
                 decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.CardPaddingLG);
                 largeSizeStyle.Add(decoratorStyle);
             }
@@ -92,7 +92,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             var middleSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Middle));
             {
-                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
                 decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.CardPadding);
                 middleSizeStyle.Add(decoratorStyle);
             }
@@ -101,7 +101,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             var smallSizeType = new Style(selector =>
                 selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Small));
             {
-                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
                 decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.CardPaddingSM);
                 smallSizeType.Add(decoratorStyle);
             }
@@ -117,7 +117,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             var largeSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Large));
             {
-                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
                 decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.VerticalItemPadding);
                 largeSizeStyle.Add(decoratorStyle);
             }
@@ -126,7 +126,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             var middleSizeStyle = new Style(selector =>
                 selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Middle));
             {
-                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
                 decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.VerticalItemPadding);
                 middleSizeStyle.Add(decoratorStyle);
             }
@@ -135,7 +135,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             var smallSizeType = new Style(selector =>
                 selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Small));
             {
-                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+                var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
                 decoratorStyle.Add(Decorator.PaddingProperty, TabControlTokenKey.VerticalItemPadding);
                 smallSizeType.Add(decoratorStyle);
             }
@@ -157,7 +157,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             topStyle.Add(iconStyle);
 
-            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+            var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             decoratorStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
 
             Add(topStyle);
@@ -196,7 +196,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
     private void BuildDisabledStyle()
     {
         var disabledStyle  = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(DecoratorPart));
+        var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
         decoratorStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
         disabledStyle.Add(decoratorStyle);
         Add(disabledStyle);
