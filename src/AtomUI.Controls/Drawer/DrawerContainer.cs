@@ -3,8 +3,6 @@ using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -21,8 +19,7 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-internal class DrawerContainer : ContentControl,
-                                 ITokenResourceConsumer
+internal class DrawerContainer : ContentControl
 {
     #region 内部属性定义
 
@@ -208,31 +205,15 @@ internal class DrawerContainer : ContentControl,
         set => SetAndRaise(MaskBgColorProperty, ref _maskBgColor, value);
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     #endregion
 
     internal WeakReference<Drawer>? Drawer { get; set; }
-
-    private CompositeDisposable? _tokenBindingsDisposable;
+    
     private MotionActorControl? _motionActor;
     private DrawerInfoContainer? _infoContainer;
     private ITransform? _originInfoContainerTransform;
     private bool _openAnimating;
     private bool _closeAnimating;
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MaskBgColorProperty, SharedTokenKey.ColorBgMask));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {

@@ -75,6 +75,8 @@ internal class DrawerContainerTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(DrawerContainer.MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
+        commonStyle.Add(DrawerContainer.MaskBgColorProperty, SharedTokenKey.ColorBgMask);
         commonStyle.Add(Border.BackgroundProperty, Brushes.Transparent);
         {
             var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerContainer.IsMotionEnabledProperty, true));

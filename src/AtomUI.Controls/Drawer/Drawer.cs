@@ -248,6 +248,7 @@ public class Drawer : Control,
         }
         else
         {
+            // TODO 需要评估是否会造成资源泄漏
             Bind(OpenOnProperty, new Binding()
             {
                 Priority = BindingPriority.Template,
