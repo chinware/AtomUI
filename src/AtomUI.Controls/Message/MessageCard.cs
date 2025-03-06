@@ -1,12 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -15,7 +12,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -23,8 +19,7 @@ namespace AtomUI.Controls;
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC, LoadingPC)]
 public class MessageCard : TemplatedControl,
                            IAnimationAwareControl,
-                           IControlSharedTokenResourcesHost,
-                           ITokenResourceConsumer
+                           IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
     public const string InformationPC = ":information";
@@ -152,11 +147,8 @@ public class MessageCard : TemplatedControl,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MessageToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     private bool _isClosing;
     private MotionActorControl? _motionActor;
@@ -330,18 +322,5 @@ public class MessageCard : TemplatedControl,
         Debug.Assert(Icon != null);
         Icon.SetTemplatedParent(this);
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
-            SharedTokenKey.MotionDurationMid));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
+    
 }
