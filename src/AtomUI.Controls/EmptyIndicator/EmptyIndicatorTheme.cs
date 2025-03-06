@@ -1,13 +1,8 @@
-﻿using AtomUI.Data;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
+﻿using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -57,6 +52,11 @@ internal class EmptyIndicatorTheme : BaseControlTheme
     {
         // 设置本身样式
         BuildSvgStyle();
+
+        this.Add(EmptyIndicator.ColorFillProperty, SharedTokenKey.ColorFill);
+        this.Add(EmptyIndicator.ColorFillTertiaryProperty, SharedTokenKey.ColorFillTertiary);
+        this.Add(EmptyIndicator.ColorFillQuaternaryProperty, SharedTokenKey.ColorFillQuaternary);
+        this.Add(EmptyIndicator.ColorBgContainerProperty, SharedTokenKey.ColorBgContainer);
         
         var sizeSmallAndMiddleStyle = new Style(selector => Selectors.Or(
             selector.Nesting().PropertyEquals(EmptyIndicator.SizeTypeProperty, SizeType.Middle),

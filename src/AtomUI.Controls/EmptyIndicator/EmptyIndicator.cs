@@ -1,14 +1,10 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Media;
+﻿using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -21,8 +17,7 @@ public enum PresetEmptyImage
 }
 
 public class EmptyIndicator : TemplatedControl,
-                              IControlSharedTokenResourcesHost,
-                              ITokenResourceConsumer
+                              IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -84,25 +79,25 @@ public class EmptyIndicator : TemplatedControl,
 
     #region 内部属性定义
 
-    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillProperty =
+    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFill),
             o => o._colorFill,
             (o, v) => o._colorFill = v);
 
-    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillTertiaryProperty =
+    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillTertiaryProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFillTertiary),
             o => o._colorFillTertiary,
             (o, v) => o._colorFillTertiary = v);
 
-    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillQuaternaryProperty =
+    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillQuaternaryProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFillQuaternary),
             o => o._colorFillQuaternary,
             (o, v) => o._colorFillQuaternary = v);
 
-    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorBgContainerProperty =
+    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorBgContainerProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorBgContainer),
             o => o._colorBgContainer,
@@ -143,11 +138,9 @@ public class EmptyIndicator : TemplatedControl,
 
     string IControlSharedTokenResourcesHost.TokenId => EmptyIndicatorToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
+    
     private Avalonia.Svg.Svg? _svg;
 
     static EmptyIndicator()
@@ -191,18 +184,6 @@ public class EmptyIndicator : TemplatedControl,
             throw new ApplicationException(
                 "ImagePath, ImageSource and PresetEmptyImage cannot be set at the same time.");
         }
-    }
-
-    private void SetupTokenBindings()
-    {
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, ColorFillProperty, SharedTokenKey.ColorFill));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryProperty,
-            SharedTokenKey.ColorFillTertiary));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ColorFillQuaternaryProperty,
-            SharedTokenKey.ColorFillQuaternary));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ColorBgContainerProperty,
-            SharedTokenKey.ColorBgContainer));
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -263,18 +244,5 @@ public class EmptyIndicator : TemplatedControl,
         VerticalAlignment   = VerticalAlignment.Center;
         CheckImageSource();
         SetupImage();
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        SetupTokenBindings();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }
