@@ -30,7 +30,13 @@ internal class IconButtonTheme : BaseControlTheme
             var iconContent = new ContentPresenter
             {
                 Name = IconContentPart,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
             };
+            CreateTemplateParentBinding(iconContent, ContentPresenter.BorderThicknessProperty,
+                TemplatedControl.BorderThicknessProperty);
+            CreateTemplateParentBinding(iconContent, ContentPresenter.BorderBrushProperty,
+                TemplatedControl.BorderBrushProperty);
             CreateTemplateParentBinding(iconContent, ContentPresenter.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
             CreateTemplateParentBinding(iconContent, ContentPresenter.BackgroundProperty,
@@ -91,5 +97,39 @@ internal class IconButtonTheme : BaseControlTheme
         
         commonStyle.Add(iconStyle);
         Add(commonStyle);
+
+        BuildIconModeStyle();
+    }
+
+    private void BuildIconModeStyle()
+    {
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Normal);
+            Add(iconStyle);
+        }
+        var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Active);
+            hoverStyle.Add(iconStyle);
+        }
+        Add(hoverStyle);
+        
+        var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Pressed));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Selected);
+            pressedStyle.Add(iconStyle);
+        }
+        Add(hoverStyle);
+        
+        var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);
+            disabledStyle.Add(iconStyle);
+        }
+        Add(disabledStyle);
     }
 }

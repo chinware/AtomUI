@@ -19,7 +19,7 @@ internal class BaseTabItemTheme : BaseControlTheme
     public const string FramePart = "PART_Decorator";
     public const string ContentLayoutPart = "PART_ContentLayout";
     public const string ContentPresenterPart = "PART_ContentPresenter";
-    public const string ItemIconPart = "PART_ItemIcon";
+    public const string ItemIconPresenterPart = "PART_ItemIconPresenter";
     public const string ItemCloseButtonPart = "PART_ItemCloseButton";
 
     public BaseTabItemTheme(Type targetType) : base(targetType)
@@ -52,7 +52,7 @@ internal class BaseTabItemTheme : BaseControlTheme
 
         var iconPresenter = new ContentPresenter()
         {
-            Name = ItemIconPart,
+            Name = ItemIconPresenterPart,
         };
         CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, TabItem.IconProperty);
         CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsVisibleProperty, TabItem.IconProperty,
@@ -84,16 +84,16 @@ internal class BaseTabItemTheme : BaseControlTheme
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
             HeaderedContentControl.HeaderTemplateProperty);
 
-        var iconButton = new IconButton
+        var closeButton = new IconButton
         {
             Name = ItemCloseButtonPart
         };
-        iconButton.RegisterInNameScope(scope);
+        closeButton.RegisterInNameScope(scope);
 
-        CreateTemplateParentBinding(iconButton, IconButton.IconProperty, TabItem.CloseIconProperty);
-        CreateTemplateParentBinding(iconButton, Visual.IsVisibleProperty, TabItem.IsClosableProperty);
+        CreateTemplateParentBinding(closeButton, IconButton.IconProperty, TabItem.CloseIconProperty);
+        CreateTemplateParentBinding(closeButton, Visual.IsVisibleProperty, TabItem.IsClosableProperty);
 
-        containerLayout.Children.Add(iconButton);
+        containerLayout.Children.Add(closeButton);
         container.Child = containerLayout;
     }
 
@@ -103,54 +103,63 @@ internal class BaseTabItemTheme : BaseControlTheme
         commonStyle.Add(InputElement.CursorProperty,
             new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenKey.ItemColor);
-        
-        var itemCloseButtonStyle = new Style(selector => selector.Nesting().Template().Name(ItemCloseButtonPart));
-        itemCloseButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.CloseIconMargin);
-        commonStyle.Add(itemCloseButtonStyle);
 
+        Add(commonStyle);
+        BuildItemIconStyle();
+        BuildCloseButtonStyle();
+        BuildPlacementStyle();
+        BuildDisabledStyle();
+    }
+    
+    private void BuildItemIconStyle()
+    {
         // Icon 一些通用属性
-        {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
-            iconStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.ItemIconMargin);
-            commonStyle.Add(iconStyle);
-            
-        }
+        var iconPresenterStyle = new Style(selector =>
+            selector.Nesting().Template().Name(ItemIconPresenterPart));
+        iconPresenterStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.ItemIconMargin);
+        Add(iconPresenterStyle);
 
+        {
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(ItemIconPresenterPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, TabControlTokenKey.ItemColor);
+            iconStyle.Add(Icon.ActiveFilledBrushProperty, TabControlTokenKey.ItemHoverColor);
+            iconStyle.Add(Icon.SelectedFilledBrushProperty, TabControlTokenKey.ItemSelectedColor);
+            iconStyle.Add(Icon.DisabledFilledBrushProperty, SharedTokenKey.ColorTextDisabled);
+            Add(iconStyle);
+        }
+        
         // hover
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
         hoverStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenKey.ItemHoverColor);
         {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(ItemIconPresenterPart).Descendant().OfType<Icon>());
             iconStyle.Add(Icon.IconModeProperty, IconMode.Active);
             hoverStyle.Add(iconStyle);
         }
 
-        commonStyle.Add(hoverStyle);
+        Add(hoverStyle);
 
         // 选中
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         selectedStyle.Add(TemplatedControl.ForegroundProperty, TabControlTokenKey.ItemSelectedColor);
         {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(ItemIconPresenterPart).Descendant().OfType<Icon>());
             iconStyle.Add(Icon.IconModeProperty, IconMode.Selected);
             selectedStyle.Add(iconStyle);
         }
-        commonStyle.Add(selectedStyle);
-        Add(commonStyle);
-        BuildSizeTypeStyle();
-        BuildPlacementStyle();
-        BuildDisabledStyle();
-    }
-
-    private void BuildSizeTypeStyle()
-    {
+        Add(selectedStyle);
+        
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Large));
 
         largeSizeStyle.Add(TemplatedControl.FontSizeProperty, TabControlTokenKey.TitleFontSizeLG);
         {
             // Icon
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(ItemIconPresenterPart).Descendant().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSize);
             iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSize);
             largeSizeStyle.Add(iconStyle);
@@ -162,7 +171,8 @@ internal class BaseTabItemTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(TabItem.SizeTypeProperty, SizeType.Middle));
         {
             // Icon
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(ItemIconPresenterPart).Descendant().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSize);
             iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSize);
             middleSizeStyle.Add(iconStyle);
@@ -175,7 +185,8 @@ internal class BaseTabItemTheme : BaseControlTheme
 
         {
             // Icon
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPart));
+            var iconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(ItemIconPresenterPart).Descendant().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeSM);
             iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeSM);
             smallSizeType.Add(iconStyle);
@@ -183,6 +194,20 @@ internal class BaseTabItemTheme : BaseControlTheme
 
         smallSizeType.Add(TemplatedControl.FontSizeProperty, TabControlTokenKey.TitleFontSizeSM);
         Add(smallSizeType);
+    }
+
+    private void BuildCloseButtonStyle()
+    {
+        var itemCloseButtonStyle = new Style(selector => selector.Nesting().Template().Name(ItemCloseButtonPart));
+        itemCloseButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.CloseIconMargin);
+        itemCloseButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+        itemCloseButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+        itemCloseButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
+        itemCloseButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
+        itemCloseButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorIconHover);
+        itemCloseButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+        
+        Add(itemCloseButtonStyle);
     }
 
     private void BuildPlacementStyle()

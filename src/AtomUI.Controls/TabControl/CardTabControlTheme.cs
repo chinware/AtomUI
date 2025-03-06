@@ -54,7 +54,6 @@ internal class CardTabControlTheme : BaseTabControlTheme
         var addTabButton = new IconButton
         {
             Name            = AddTabButtonPart,
-            BorderThickness = new Thickness(1),
             Icon            = AntDesignIconPackage.PlusOutlined()
         };
         DockPanel.SetDock(addTabButton, Dock.Right);
@@ -96,7 +95,7 @@ internal class CardTabControlTheme : BaseTabControlTheme
             addTabButtonStyle.Add(IconButton.NormalIconColorProperty, TabControlTokenKey.ItemColor);
             addTabButtonStyle.Add(IconButton.ActiveIconColorProperty, TabControlTokenKey.ItemHoverColor);
             addTabButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
-            addTabButtonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
+            addTabButtonStyle.Add(IconButton.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
             addTabButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
             addTabButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
             

@@ -52,7 +52,6 @@ internal class CardTabStripTheme : BaseTabStripTheme
         var addTabButton = new IconButton
         {
             Name            = AddTabButtonPart,
-            BorderThickness = new Thickness(1),
             Icon            = AntDesignIconPackage.PlusOutlined()
         };
 

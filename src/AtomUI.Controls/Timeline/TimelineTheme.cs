@@ -24,7 +24,7 @@ internal class TimelineTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Timeline>((timeline, scope) =>
         {
-            var Frame = new Border()
+            var frame = new Border()
             {
                 Name = FramePart
             };
@@ -32,15 +32,15 @@ internal class TimelineTheme : BaseControlTheme
             var itemsPresenter = BuildItemsPresenter(timeline, scope);
             var scrollViewer   = BuildScrollViewer(timeline, scope);
             
-            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
-            CreateTemplateParentBinding(Frame, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
-            CreateTemplateParentBinding(Frame, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
-            CreateTemplateParentBinding(Frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
+            CreateTemplateParentBinding(frame, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
+            CreateTemplateParentBinding(frame, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
+            CreateTemplateParentBinding(frame, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
+            CreateTemplateParentBinding(frame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
 
             scrollViewer.Content = itemsPresenter;
-            Frame.Child = scrollViewer;
+            frame.Child          = scrollViewer;
 
-            return Frame;
+            return frame;
         });
     }
     

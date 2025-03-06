@@ -6,6 +6,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
@@ -154,13 +155,6 @@ public class IconButton : AvaloniaButton,
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupIcon();
-        SetupIconMode();
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -168,19 +162,17 @@ public class IconButton : AvaloniaButton,
         {
             if (e.Property == IconProperty)
             {
-                var oldIcon = e.GetOldValue<Icon?>();
-                if (oldIcon is not null)
+                if (e.OldValue is Icon oldIcon)
                 {
-                    oldIcon.SetLogicalParent(null);
+                    oldIcon.SetTemplatedParent(null);
+                }
+
+                if (e.NewValue is Icon newIcon)
+                {
+                    newIcon.SetTemplatedParent(this);
                 }
 
                 SetupIcon();
-            }
-            else if (e.Property == IsPressedProperty ||
-                     e.Property == IsPointerOverProperty ||
-                     e.Property == IsEnabledProperty)
-            {
-                SetupIconMode();
             }
         }
     }
@@ -202,35 +194,16 @@ public class IconButton : AvaloniaButton,
                 BindUtils.RelayBind(this, SelectedIconColorProperty, Icon, Icon.SelectedFilledBrushProperty);
                 BindUtils.RelayBind(this, DisabledIconColorProperty, Icon, Icon.DisabledFilledBrushProperty);
             }
+            Icon.SetTemplatedParent(this);
         }
     }
 
-    private void SetupIconMode()
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        if (Icon is not null)
-        {
-            if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
-            {
-                if (PseudoClasses.Contains(StdPseudoClass.Pressed))
-                {
-                    Icon.IconMode = IconMode.Selected;
-                }
-                else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
-                {
-                    Icon.IconMode = IconMode.Active;
-                }
-                else
-                {
-                    Icon.IconMode = IconMode.Normal;
-                }
-            }
-            else
-            {
-                Icon.IconMode = IconMode.Disabled;
-            }
-        }
+        base.OnAttachedToLogicalTree(e);
+        SetupIcon();
     }
-    
+
     public bool HitTest(Point point)
     {
         return true;

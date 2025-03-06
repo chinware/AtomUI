@@ -23,13 +23,13 @@ internal class BaseTabStripTheme : BaseControlTheme
     {
         return new FuncControlTemplate<BaseTabStrip>((strip, scope) =>
         {
-            var Frame = new Border
+            var frame = new Border
             {
                 Name = FramePart
             };
-            Frame.RegisterInNameScope(scope);
-            NotifyBuildControlTemplate(strip, scope, Frame);
-            return Frame;
+            frame.RegisterInNameScope(scope);
+            NotifyBuildControlTemplate(strip, scope, frame);
+            return frame;
         });
     }
 

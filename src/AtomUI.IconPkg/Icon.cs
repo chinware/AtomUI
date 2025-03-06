@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using AtomUI.Controls;
+﻿using AtomUI.Controls;
 using AtomUI.Media;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -444,40 +443,8 @@ public class Icon : Control,
     {
         base.OnAttachedToLogicalTree(e);
         SetupRotateAnimation();
-        Classes.CollectionChanged += HandleClassesChanged;
     }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        Classes.CollectionChanged -= HandleClassesChanged;
-    }
-
-    private void HandleClassesChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        SetupModeFromClasses();
-    }
-
-    private void SetupModeFromClasses()
-    {
-        if (Classes.Contains(DisabledPC))
-        {
-            IconMode = IconMode.Disabled;
-        }
-        else if (Classes.Contains(SelectedPC) || Classes.Contains(PressedPC))
-        {
-            IconMode = IconMode.Selected;
-        }
-        else if (Classes.Contains(PointerOverPC))
-        {
-            IconMode = IconMode.Active;
-        }
-        else
-        {
-            IconMode = IconMode.Normal;
-        }
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);

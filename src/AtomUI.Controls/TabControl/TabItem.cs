@@ -92,40 +92,11 @@ public class TabItem : AvaloniaTabItem,
 
     #endregion
 
-    // private StackPanel? _contentLayout;
     private IconButton? _closeButton;
     private CompositeDisposable? _tokenBindingsDisposable;
+    
 
-    // private void SetupItemIcon()
-    // {
-    //     if (Icon is not null)
-    //     {
-    //         Icon.SetTemplatedParent(this);
-    //         Icon.Name = BaseTabItemTheme.ItemIconPart;
-    //         if (Icon.ThemeType != IconThemeType.TwoTone)
-    //         {
-    //             this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
-    //                 Icon.NormalFilledBrushProperty,
-    //                 TabControlTokenKey.ItemColor));
-    //             this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
-    //                 Icon.ActiveFilledBrushProperty,
-    //                 TabControlTokenKey.ItemHoverColor));
-    //             this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
-    //                 Icon.SelectedFilledBrushProperty,
-    //                 TabControlTokenKey.ItemSelectedColor));
-    //             this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
-    //                 Icon.DisabledFilledBrushProperty,
-    //                 SharedTokenKey.ColorTextDisabled));
-    //         }
-    //
-    //         if (_contentLayout is not null)
-    //         {
-    //             _contentLayout.Children.Insert(0, Icon);
-    //         }
-    //     }
-    // }
-
-    private void SetupCloseIcon()
+    private void SetupDefaultCloseIcon()
     {
         if (CloseIcon is null)
         {
@@ -134,40 +105,12 @@ public class TabItem : AvaloniaTabItem,
         }
         Debug.Assert(CloseIcon is not null);
         CloseIcon.SetTemplatedParent(this);
-        // if (CloseIcon is null)
-        // {
-        //     CloseIcon = AntDesignIconPackage.CloseOutlined();
-        //     this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon, WidthProperty,
-        //         SharedTokenKey.IconSizeSM));
-        //     this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon, HeightProperty,
-        //         SharedTokenKey.IconSizeSM));
-        // }
-        //
-        // CloseIcon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-        //
-        // CloseIcon.SetTemplatedParent(this);
-        // if (CloseIcon.ThemeType != IconThemeType.TwoTone)
-        // {
-        //     this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
-        //         Icon.NormalFilledBrushProperty,
-        //         SharedTokenKey.ColorIcon));
-        //     this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
-        //         Icon.ActiveFilledBrushProperty,
-        //         SharedTokenKey.ColorIconHover));
-        //     this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
-        //         Icon.DisabledFilledBrushProperty,
-        //         SharedTokenKey.ColorTextDisabled));
-        // }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        // _contentLayout = e.NameScope.Find<StackPanel>(BaseTabItemTheme.ContentLayoutPart);
         _closeButton   = e.NameScope.Find<IconButton>(BaseTabItemTheme.ItemCloseButtonPart);
-
-        // SetupItemIcon();
-        // SetupCloseIcon();
 
         SetupTransitions();
 
@@ -228,6 +171,15 @@ public class TabItem : AvaloniaTabItem,
                 SetupShapeThemeBindings();
             }
         }
+        
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
+        }
+        
         if (change.Property == IconProperty ||
             change.Property == CloseIconProperty)
         {
@@ -242,15 +194,7 @@ public class TabItem : AvaloniaTabItem,
 
             if (change.Property == CloseIconProperty)
             {
-                SetupCloseIcon();
-            }
-        }
-        
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == IsMotionEnabledProperty)
-            {
-                SetupTransitions();
+                SetupDefaultCloseIcon();
             }
         }
     }
@@ -260,6 +204,7 @@ public class TabItem : AvaloniaTabItem,
         _tokenBindingsDisposable = new CompositeDisposable();
         SetupShapeThemeBindings();
         base.OnAttachedToLogicalTree(e);
+        SetupDefaultCloseIcon();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
