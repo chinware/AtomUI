@@ -16,7 +16,7 @@ namespace AtomUI.Controls;
 internal class PickerClearUpButtonTheme : BaseControlTheme
 {
     public const string ClearButtonPart = "PART_ClearButton";
-    public const string InfoIconContentPart = "PART_InfoIconContent";
+    public const string InfoIconPresenterPart = "PART_InfoIconContent";
 
     public PickerClearUpButtonTheme() : base(typeof(PickerClearUpButton))
     {
@@ -35,16 +35,16 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
 
     private void BuildClockIconContent(Panel layout, INameScope scope)
     {
-        var iconContent = new ContentPresenter()
+        var infoIconPresenter = new ContentPresenter()
         {
-            Name = InfoIconContentPart
+            Name = InfoIconPresenterPart
         };
-        CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, PickerClearUpButton.IconProperty);
-        CreateTemplateParentBinding(iconContent, Visual.IsVisibleProperty,
+        CreateTemplateParentBinding(infoIconPresenter, ContentPresenter.ContentProperty, PickerClearUpButton.IconProperty);
+        CreateTemplateParentBinding(infoIconPresenter, Visual.IsVisibleProperty,
             PickerClearUpButton.IsInClearModeProperty,
             BindingMode.Default,
             BoolConverters.Not);
-        layout.Children.Add(iconContent);
+        layout.Children.Add(infoIconPresenter);
     }
 
     private void BuildClearButton(Panel layout, INameScope scope)
@@ -70,10 +70,10 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
         clearUpButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
         Add(clearUpButtonStyle);
         
-        var iconStyle = new Style(selector => selector.Nesting().Template().Name(InfoIconContentPart).Descendant().OfType<Icon>());
-        iconStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSize);
-        iconStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSize);
-        iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorTextQuaternary);
-        Add(iconStyle);
+        var infoIconStyle = new Style(selector => selector.Nesting().Template().Name(InfoIconPresenterPart).Descendant().OfType<Icon>());
+        infoIconStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSize);
+        infoIconStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSize);
+        infoIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorTextQuaternary);
+        Add(infoIconStyle);
     }
 }
