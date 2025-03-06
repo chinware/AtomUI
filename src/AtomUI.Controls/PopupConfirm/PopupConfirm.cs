@@ -1,17 +1,12 @@
-﻿using System.Diagnostics;
-using AtomUI.Controls.PopupConfirmLang;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.PopupConfirmLang;
 using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 

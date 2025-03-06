@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -17,8 +16,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 internal class PopupConfirmContainer : TemplatedControl,
-                                       IControlSharedTokenResourcesHost,
-                                       ITokenResourceConsumer
+                                       IControlSharedTokenResourcesHost
 {
     #region 内部属性定义
 
@@ -105,11 +103,9 @@ internal class PopupConfirmContainer : TemplatedControl,
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => PopupConfirmToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
+    
     internal WeakReference<PopupConfirm> PopupConfirmRef { get; set; }
     private Button? _okButton;
     private Button? _cancelButton;
@@ -123,7 +119,7 @@ internal class PopupConfirmContainer : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        // this.RunThemeTokenBindingActions();
+
         _okButton     = e.NameScope.Find<Button>(PopupConfirmContainerTheme.OkButtonPart);
         _cancelButton = e.NameScope.Find<Button>(PopupConfirmContainerTheme.CancelButtonPart);
         if (_okButton is not null)
@@ -175,7 +171,6 @@ internal class PopupConfirmContainer : TemplatedControl,
                 {
                     newIcon.SetTemplatedParent(this);
                 }
-
                 SetupDefaultIcon();
             }
         }
@@ -195,18 +190,6 @@ internal class PopupConfirmContainer : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
         SetupDefaultIcon();
     }
 }
