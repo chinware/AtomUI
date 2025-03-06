@@ -1,6 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -88,7 +87,6 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _secondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputTheme.SecondaryInfoInputBoxPart);
         _rangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputTheme.RangePickerIndicatorPart);
         _rangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputTheme.RangePickerArrowPart);

@@ -26,8 +26,6 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
     {
         return new FuncControlTemplate<PickerClearUpButton>((pickerClearUpButton, scope) =>
         {
-            ResetTokenResourceBindings(pickerClearUpButton);
-            BuildInstanceStyles(pickerClearUpButton);
             var container = new Panel();
             BuildClearButton(container, scope);
             BuildClockIconContent(container, scope);
@@ -71,14 +69,11 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
         clearUpButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorTextQuaternary);
         clearUpButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
         Add(clearUpButtonStyle);
-    }
-
-    protected override void BuildInstanceStyles(Control control)
-    {
-        var iconStyle = new Style(selector => selector.Name(InfoIconContentPart).Child().OfType<Icon>());
+        
+        var iconStyle = new Style(selector => selector.Nesting().Template().Name(InfoIconContentPart).Descendant().OfType<Icon>());
         iconStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSize);
         iconStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSize);
         iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorTextQuaternary);
-        control.Styles.Add(iconStyle);
+        Add(iconStyle);
     }
 }

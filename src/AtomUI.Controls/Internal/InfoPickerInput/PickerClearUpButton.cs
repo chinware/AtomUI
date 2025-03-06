@@ -1,19 +1,12 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.IconPkg;
-using AtomUI.Theme;
+﻿using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
-internal class PickerClearUpButton : TemplatedControl,
-                                     ITokenResourceConsumer
+internal class PickerClearUpButton : TemplatedControl
 {
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-    private CompositeDisposable? _tokenBindingsDisposable;
-    
     public event EventHandler? ClearRequest;
 
     public static readonly StyledProperty<bool> IsInClearModeProperty =
@@ -39,23 +32,10 @@ internal class PickerClearUpButton : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _clearButton = e.NameScope.Get<IconButton>(PickerClearUpButtonTheme.ClearButtonPart);
         if (_clearButton is not null)
         {
             _clearButton.Click += (sender, args) => { ClearRequest?.Invoke(this, EventArgs.Empty); };
         }
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-    }
-    
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }
