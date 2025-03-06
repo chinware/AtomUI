@@ -246,6 +246,9 @@ internal class TimeViewTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle     = new Style(selector => selector.Nesting());
+        
+        commonStyle.Add(TimeView.ItemHeightProperty, TimePickerTokenKey.ItemHeight);
+        
         var headerTextStyle = new Style(selector => selector.Nesting().Template().Name(HeaderTextPart));
         headerTextStyle.Add(SingleLineText.HeightProperty, TimePickerTokenKey.ItemHeight);
         headerTextStyle.Add(SingleLineText.HorizontalAlignmentProperty, HorizontalAlignment.Center);

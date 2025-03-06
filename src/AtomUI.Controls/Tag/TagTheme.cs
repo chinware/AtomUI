@@ -137,6 +137,7 @@ internal class TagTheme : BaseControlTheme
         {
             var tagIconStyle = new Style(selector =>
                 selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<Icon>());
+            // TODO 需要评估是否会造成内存泄漏
             tagIconStyle.Add(Icon.NormalFilledBrushProperty, new Binding(Tag.ForegroundProperty.Name)
             {
                 RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)

@@ -247,8 +247,6 @@ internal class TimeView : TemplatedControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, ItemHeightProperty, TimePickerTokenKey.ItemHeight));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this)));

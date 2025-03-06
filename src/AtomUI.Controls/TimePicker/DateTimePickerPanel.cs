@@ -63,7 +63,8 @@ internal class CellDbClickedEventArgs : EventArgs
     }
 }
 
-internal class DateTimePickerPanel : Panel, ILogicalScrollable,
+internal class DateTimePickerPanel : Panel,
+                                     ILogicalScrollable,
                                      ITokenResourceConsumer
 {
     #region 公共属性定义
