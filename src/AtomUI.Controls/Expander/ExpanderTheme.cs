@@ -191,7 +191,9 @@ internal class ExpanderTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-
+        
+        commonStyle.Add(Expander.MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
+        
         var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
         frameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorder);
         frameStyle.Add(Border.CornerRadiusProperty, ExpanderTokenKey.ExpanderBorderRadius);
