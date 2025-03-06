@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -10,13 +11,11 @@ using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -113,24 +112,50 @@ public class Tag : TemplatedControl,
 
     internal static readonly StyledProperty<Thickness> TagTextPaddingInlineProperty
         = AvaloniaProperty.Register<Tag, Thickness>(nameof(TagTextPaddingInline));
-    
+
     internal static readonly DirectProperty<Tag, Thickness> RenderScaleAwareBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<Tag, Thickness>(nameof(RenderScaleAwareBorderThickness),
             o => o.RenderScaleAwareBorderThickness,
             (o, v) => o.RenderScaleAwareBorderThickness = v);
+
+    internal static readonly DirectProperty<Tag, bool> IsPresetColorTagProperty =
+        AvaloniaProperty.RegisterDirect<Tag, bool>(nameof(IsPresetColorTag),
+            o => o.IsPresetColorTag,
+            (o, v) => o.IsPresetColorTag = v);
+
+    internal static readonly DirectProperty<Tag, bool> IsColorSetProperty =
+        AvaloniaProperty.RegisterDirect<Tag, bool>(nameof(IsColorSet),
+            o => o.IsColorSet,
+            (o, v) => o.IsColorSet = v);
 
     internal Thickness TagTextPaddingInline
     {
         get => GetValue(TagTextPaddingInlineProperty);
         set => SetValue(TagTextPaddingInlineProperty, value);
     }
-    
+
     private Thickness _renderScaleAwareBorderThickness;
 
     internal Thickness RenderScaleAwareBorderThickness
     {
         get => _renderScaleAwareBorderThickness;
         set => SetAndRaise(RenderScaleAwareBorderThicknessProperty, ref _renderScaleAwareBorderThickness, value);
+    }
+
+    private bool _isPresetColorTag;
+
+    internal bool IsPresetColorTag
+    {
+        get => _isPresetColorTag;
+        set => SetAndRaise(IsPresetColorTagProperty, ref _isPresetColorTag, value);
+    }
+
+    private bool _isColorSet;
+
+    internal bool IsColorSet
+    {
+        get => _isColorSet;
+        set => SetAndRaise(IsPresetColorTagProperty, ref _isColorSet, value);
     }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -140,14 +165,8 @@ public class Tag : TemplatedControl,
     #endregion
 
     private CompositeDisposable? _tokenBindingsDisposable;
-    private bool _isPresetColorTag;
-    private bool _hasColorSet;
     private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
-    private SingleLineText? _lineText;
-    private ContentPresenter? _iconContentPresenter;
-    private IconButton? _closeButton;
-    private readonly BorderRenderHelper _borderRenderHelper;
 
     static Tag()
     {
@@ -163,7 +182,6 @@ public class Tag : TemplatedControl,
 
     public Tag()
     {
-        _borderRenderHelper = new BorderRenderHelper();
         this.RegisterResources();
     }
 
@@ -171,6 +189,7 @@ public class Tag : TemplatedControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+        SetupDefaultCloseIcon();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -182,7 +201,8 @@ public class Tag : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, RenderScaleAwareBorderThicknessProperty,
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
+            RenderScaleAwareBorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
@@ -193,35 +213,35 @@ public class Tag : TemplatedControl,
         SetupPresetColorMap();
         SetupStatusColorMap();
         base.OnApplyTemplate(e);
-        _closeButton          = e.NameScope.Find<IconButton>(TagTheme.CloseButtonPart);
-        _lineText             = e.NameScope.Find<SingleLineText>(TagTheme.TagTextLabelPart);
-        _iconContentPresenter = e.NameScope.Find<ContentPresenter>(TagTheme.IconPart);
 
         if (TagColor is not null)
         {
             SetupTagColorInfo(TagColor);
         }
+
         SetupBorderThicknessBinding();
-        SetupTagClosable();
-        SetupTagIcon();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (this.IsAttachedToLogicalTree())
+
+        if (e.Property == IconProperty ||
+            e.Property == CloseIconProperty)
         {
-            if (e.Property == IsClosableProperty)
+            if (e.OldValue is Icon oldIcon)
             {
-                SetupTagClosable();
+                oldIcon.SetTemplatedParent(null);
             }
-            else if (e.Property == IconProperty)
+
+            if (e.NewValue is Icon newIcon)
             {
-                SetupTagIcon();
+                newIcon.SetTemplatedParent(this);
             }
-            else if (e.Property == BorderedProperty)
+
+            if (e.Property == CloseIconProperty)
             {
-                SetupBorderThicknessBinding();
+                SetupDefaultCloseIcon();
             }
         }
     }
@@ -310,8 +330,8 @@ public class Tag : TemplatedControl,
 
     private void SetupTagColorInfo(string colorStr)
     {
-        _isPresetColorTag = false;
-        _hasColorSet      = false;
+        IsPresetColorTag = false;
+        IsColorSet       = false;
         colorStr          = colorStr.Trim().ToLower();
 
         foreach (var entry in _presetColorMap)
@@ -322,7 +342,7 @@ public class Tag : TemplatedControl,
                 Foreground        = new SolidColorBrush(colorInfo.TextColor);
                 BorderBrush       = new SolidColorBrush(colorInfo.LightBorderColor);
                 Background        = new SolidColorBrush(colorInfo.LightColor);
-                _isPresetColorTag = true;
+                IsPresetColorTag = true;
                 return;
             }
         }
@@ -335,70 +355,29 @@ public class Tag : TemplatedControl,
                 Foreground        = new SolidColorBrush(colorInfo.Color);
                 BorderBrush       = new SolidColorBrush(colorInfo.BorderColor);
                 Background        = new SolidColorBrush(colorInfo.Background);
-                _isPresetColorTag = true;
+                IsPresetColorTag = true;
                 return;
             }
         }
 
         if (Color.TryParse(colorStr, out var color))
         {
-            Bordered     = false;
-            _hasColorSet = true;
-            Background   = new SolidColorBrush(color);
+            Bordered    = false;
+            IsColorSet = true;
+            Background  = new SolidColorBrush(color);
             this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty,
                 SharedTokenKey.ColorTextLightSolid));
         }
     }
 
-    private void SetupTagClosable()
+    private void SetupDefaultCloseIcon()
     {
-        if (IsClosable)
+        if (CloseIcon is null)
         {
-            if (CloseIcon is null)
-            {
-                CloseIcon = AntDesignIconPackage.CloseOutlined();
-
-                this.AddTokenBindingDisposable(
-                    TokenResourceBinder.CreateTokenBinding(CloseIcon, WidthProperty, TagTokenKey.TagCloseIconSize));
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon, HeightProperty,
-                    TagTokenKey.TagCloseIconSize));
-                if (_hasColorSet && !_isPresetColorTag)
-                {
-                    this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
-                        Icon.NormalFilledBrushProperty,
-                        SharedTokenKey.ColorTextLightSolid));
-                }
-                else
-                {
-                    this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
-                        Icon.NormalFilledBrushProperty,
-                        SharedTokenKey.ColorIcon));
-                    this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(CloseIcon,
-                        Icon.ActiveFilledBrushProperty,
-                        SharedTokenKey.ColorIconHover));
-                }
-            }
-        }
-    }
-
-    private void SetupTagIcon()
-    {
-        if (Icon is not null)
-        {
-            this.AddTokenBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(Icon, WidthProperty, TagTokenKey.TagIconSize));
-            this.AddTokenBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(Icon, HeightProperty, TagTokenKey.TagIconSize));
-            if (_hasColorSet)
-            {
-                this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(Icon,
-                    Icon.NormalFilledBrushProperty,
-                    SharedTokenKey.ColorTextLightSolid));
-            }
-            else if (_isPresetColorTag)
-            {
-                Icon.NormalFilledBrush = Foreground;
-            }
+            ClearValue(CloseIconProperty);
+            SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined());
+            Debug.Assert(CloseIcon != null);
+            CloseIcon.SetTemplatedParent(this);
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -15,7 +16,7 @@ internal class TagTheme : BaseControlTheme
 {
     public const string ElementsLayoutPart = "PART_ElementsLayout";
     public const string FramePart = "PART_Frame";
-    public const string IconPart = "PART_Icon";
+    public const string IconPresenterPart = "PART_IconPresenter";
     public const string CloseButtonPart = "PART_CloseButton";
     public const string TagTextLabelPart = "PART_TagTextLabel";
 
@@ -38,9 +39,9 @@ internal class TagTheme : BaseControlTheme
             CreateTemplateParentBinding(frame, Border.BorderBrushProperty, Tag.BorderBrushProperty);
             CreateTemplateParentBinding(frame, Border.CornerRadiusProperty, Tag.CornerRadiusProperty);
             CreateTemplateParentBinding(frame, Border.BorderThicknessProperty, Tag.BorderThicknessProperty);
-            
+
             rootLayout.Children.Add(frame);
-            
+
             var elementsLayout = new Grid
             {
                 Name = ElementsLayoutPart,
@@ -54,10 +55,10 @@ internal class TagTheme : BaseControlTheme
             CreateTemplateParentBinding(elementsLayout, Grid.MarginProperty, Tag.PaddingProperty);
             elementsLayout.RegisterInNameScope(scope);
             rootLayout.Children.Add(elementsLayout);
-            
+
             var iconContentPresenter = new ContentPresenter()
             {
-                Name = IconPart
+                Name = IconPresenterPart
             };
             Grid.SetColumn(iconContentPresenter, 0);
             iconContentPresenter.RegisterInNameScope(scope);
@@ -90,7 +91,7 @@ internal class TagTheme : BaseControlTheme
             return rootLayout;
         });
     }
-    
+
     protected override void BuildStyles()
     {
         this.Add(Tag.BackgroundProperty, TagTokenKey.DefaultBg);
@@ -101,13 +102,71 @@ internal class TagTheme : BaseControlTheme
         this.Add(Tag.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         this.Add(Tag.TagTextPaddingInlineProperty, TagTokenKey.TagTextPaddingInline);
 
-        var closeBtnStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
-        closeBtnStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeXS);
-        closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeXS);
-        Add(closeBtnStyle);
-
         var lineTextStyle = new Style(selector => selector.Nesting().Template().Name(TagTextLabelPart));
         lineTextStyle.Add(SingleLineText.LineHeightProperty, TagTokenKey.TagLineHeight);
         Add(lineTextStyle);
+
+        BuildTagIconStyle();
+        BuildCloseButtonStyle();
+    }
+
+    private void BuildTagIconStyle()
+    {
+        {
+            var tagIconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<Icon>());
+            tagIconStyle.Add(Icon.WidthProperty, TagTokenKey.TagIconSize);
+            tagIconStyle.Add(Icon.HeightProperty, TagTokenKey.TagIconSize);
+
+            tagIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorIcon);
+            tagIconStyle.Add(Icon.ActiveFilledBrushProperty, SharedTokenKey.ColorIconHover);
+            Add(tagIconStyle);
+        }
+
+        var isColorSetStyle = new Style(selector => selector.Nesting().PropertyEquals(Tag.IsColorSetProperty, true));
+
+        {
+            var tagIconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<Icon>());
+            tagIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorTextLightSolid);
+            isColorSetStyle.Add(tagIconStyle);
+        }
+        Add(isColorSetStyle);
+        var isPresetColorTagStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(Tag.IsPresetColorTagProperty, true));
+        {
+            var tagIconStyle = new Style(selector =>
+                selector.Nesting().Template().Name(IconPresenterPart).Descendant().OfType<Icon>());
+            tagIconStyle.Add(Icon.NormalFilledBrushProperty, new Binding(Tag.ForegroundProperty.Name)
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)
+            });
+            isPresetColorTagStyle.Add(tagIconStyle);
+        }
+        Add(isPresetColorTagStyle);
+    }
+
+    private void BuildCloseButtonStyle()
+    {
+        {
+            var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
+            closeButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeXS);
+            closeButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeXS);
+            closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
+            closeButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
+            Add(closeButtonStyle);
+        }
+
+        var isColorSetAndNotPresetTagStyle = new Style(selector => selector
+                                                                   .Nesting().PropertyEquals(Tag.IsColorSetProperty,
+                                                                       true)
+                                                                   .PropertyEquals(Tag.IsPresetColorTagProperty,
+                                                                       false));
+        {
+            var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
+            closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextLightSolid);
+            isColorSetAndNotPresetTagStyle.Add(closeButtonStyle);
+        }
+        Add(isColorSetAndNotPresetTagStyle);
     }
 }
