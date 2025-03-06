@@ -159,16 +159,11 @@ public class Alert : TemplatedControl,
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupCloseButton();
-    }
-
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+        SetupCloseButton();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

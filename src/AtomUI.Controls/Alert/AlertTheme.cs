@@ -275,14 +275,13 @@ internal class AlertTheme : BaseControlTheme
 
     private void BuildCloseBtnStyle()
     {
-        var closeBtnSelector = default(Selector).Nesting().Template().Name(CloseBtnPart);
-        
+      
         // 设置根据 Description 是否显示 Close 按钮的相关样式
         {
             // 为空
             var descriptionStyle =
                 new Style(selector => selector.Nesting().PropertyEquals(Alert.DescriptionProperty, null));
-            var closeBtnStyle = new Style(selector => closeBtnSelector);
+            var closeBtnStyle = new Style(selector => selector.Nesting().Template().Name(CloseBtnPart));
             closeBtnStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
             descriptionStyle.Add(closeBtnStyle);
             Add(descriptionStyle);
@@ -291,7 +290,7 @@ internal class AlertTheme : BaseControlTheme
             // 不为空
             var descriptionStyle = new Style(selector =>
                 selector.Nesting().Not(x => x.PropertyEquals(Alert.DescriptionProperty, null)));
-            var closeBtnStyle = new Style(selector => closeBtnSelector);
+            var closeBtnStyle = new Style(selector => selector.Nesting().Template().Name(CloseBtnPart));
             closeBtnStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             descriptionStyle.Add(closeBtnStyle);
             Add(descriptionStyle);
@@ -302,6 +301,7 @@ internal class AlertTheme : BaseControlTheme
             closeBtnStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
             closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
             closeBtnStyle.Add(IconButton.MarginProperty, AlertTokenKey.ExtraElementMargin);
+            
             closeBtnStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
             closeBtnStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
             closeBtnStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorIconHover);
