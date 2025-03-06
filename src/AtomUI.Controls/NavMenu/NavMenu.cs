@@ -254,11 +254,6 @@ public class NavMenu : NavMenuBase,
         SetupControlTheme();
         SetupItemContainerTheme();
         base.OnAttachedToLogicalTree(e);
-
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenKey.ActiveBarWidth));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty,
-            NavMenuTokenKey.ActiveBarHeight));
         
         SetupInteractionHandler();
     }

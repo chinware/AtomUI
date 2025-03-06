@@ -78,6 +78,8 @@ internal class NavMenuTheme : BaseControlTheme
         horizontalLineStyle.Add(Rectangle.FillProperty, SharedTokenKey.ColorBorderSecondary);
         commonStyle.Add(horizontalLineStyle);
 
+        commonStyle.Add(NavMenu.ActiveBarWidthProperty, NavMenuTokenKey.ActiveBarWidth);
+        commonStyle.Add(NavMenu.ActiveBarHeightProperty, NavMenuTokenKey.ActiveBarHeight);
         commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
 
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
