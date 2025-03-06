@@ -1,8 +1,6 @@
-using System.Reactive.Disposables;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -13,7 +11,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
@@ -32,8 +29,7 @@ public enum ProgressStatus
 public abstract class AbstractProgressBar : RangeBase,
                                             ISizeTypeAware,
                                             IAnimationAwareControl,
-                                            IControlSharedTokenResourcesHost,
-                                            ITokenResourceConsumer
+                                            IControlSharedTokenResourcesHost
 {
     protected const double LARGE_STROKE_THICKNESS = 8;
     protected const double MIDDLE_STROKE_THICKNESS = 6;
@@ -273,11 +269,9 @@ public abstract class AbstractProgressBar : RangeBase,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ProgressBarToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
     protected LayoutTransformControl? _layoutTransformLabel;
     protected Label? _percentageLabel;
     protected Icon? _successCompletedIcon;
@@ -425,12 +419,6 @@ public abstract class AbstractProgressBar : RangeBase,
         }
     }
 
-    private void SetupTokenBindings()
-    {
-        ApplyIndicatorBarBackgroundStyleConfig();
-        NotifySetupTokenBindings();
-    }
-
     private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == SizeTypeProperty)
@@ -465,10 +453,6 @@ public abstract class AbstractProgressBar : RangeBase,
     {
     }
 
-    protected virtual void ApplyIndicatorBarBackgroundStyleConfig()
-    {
-    }
-
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(IndeterminatePC, IsIndeterminate);
@@ -477,12 +461,6 @@ public abstract class AbstractProgressBar : RangeBase,
 
     protected virtual void NotifySetupUI()
     {
-    }
-
-    protected virtual void NotifySetupTokenBindings()
-    {
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SuccessThresholdBrushProperty,
-            SharedTokenKey.ColorSuccess));
     }
 
     protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -509,18 +487,5 @@ public abstract class AbstractProgressBar : RangeBase,
 
     protected virtual void NotifyPrepareDrawingContext(DrawingContext context)
     {
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        SetupTokenBindings();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }
