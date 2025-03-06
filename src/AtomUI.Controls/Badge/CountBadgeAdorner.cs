@@ -1,9 +1,5 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Badge;
+﻿using AtomUI.Controls.Badge;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -13,8 +9,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class CountBadgeAdorner : TemplatedControl,
-                                   ITokenResourceConsumer
+internal class CountBadgeAdorner : TemplatedControl
 {
     #region 公共属性定义
 
@@ -160,14 +155,11 @@ internal class CountBadgeAdorner : TemplatedControl,
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-
     #endregion
 
     private MotionActorControl? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
     private bool _needInitialHide;
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     static CountBadgeAdorner()
     {
@@ -194,22 +186,7 @@ internal class CountBadgeAdorner : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty,
-            BadgeTokenKey.BadgeShadowColor));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
-            SharedTokenKey.MotionDurationMid));
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, BadgeColorProperty, BadgeTokenKey.BadgeColor));
         BuildCountText();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 
     private void BuildBoxShadow()

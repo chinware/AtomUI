@@ -1,21 +1,17 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Badge;
+﻿using AtomUI.Controls.Badge;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class DotBadgeAdorner : TemplatedControl,
-                                 ITokenResourceConsumer
+internal class DotBadgeAdorner : TemplatedControl
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
         AvaloniaProperty.Register<DotBadgeAdorner, IBrush?>(
             nameof(BadgeDotColor));
@@ -25,8 +21,24 @@ internal class DotBadgeAdorner : TemplatedControl,
             nameof(Status),
             o => o.Status,
             (o, v) => o.Status = v);
+    
+    public static readonly DirectProperty<DotBadgeAdorner, string?> TextProperty =
+        AvaloniaProperty.RegisterDirect<DotBadgeAdorner, string?>(
+            nameof(Text),
+            o => o.Text,
+            (o, v) => o.Text = v);
+    
+    public static readonly DirectProperty<DotBadgeAdorner, bool> IsAdornerModeProperty =
+        AvaloniaProperty.RegisterDirect<DotBadgeAdorner, bool>(
+            nameof(IsAdornerMode),
+            o => o.IsAdornerMode,
+            (o, v) => o.IsAdornerMode = v);
+    
+    public static readonly StyledProperty<Point> OffsetProperty =
+        AvaloniaProperty.Register<DotBadgeAdorner, Point>(
+            nameof(Offset));
 
-    internal IBrush? BadgeDotColor
+    public IBrush? BadgeDotColor
     {
         get => GetValue(BadgeDotColorProperty);
         set => SetValue(BadgeDotColorProperty, value);
@@ -40,12 +52,6 @@ internal class DotBadgeAdorner : TemplatedControl,
         set => SetAndRaise(StatusProperty, ref _status, value);
     }
 
-    public static readonly DirectProperty<DotBadgeAdorner, string?> TextProperty =
-        AvaloniaProperty.RegisterDirect<DotBadgeAdorner, string?>(
-            nameof(Text),
-            o => o.Text,
-            (o, v) => o.Text = v);
-
     private string? _text;
 
     public string? Text
@@ -53,16 +59,6 @@ internal class DotBadgeAdorner : TemplatedControl,
         get => _text;
         set => SetAndRaise(TextProperty, ref _text, value);
     }
-
-    public static readonly DirectProperty<DotBadgeAdorner, bool> IsAdornerModeProperty =
-        AvaloniaProperty.RegisterDirect<DotBadgeAdorner, bool>(
-            nameof(IsAdornerMode),
-            o => o.IsAdornerMode,
-            (o, v) => o.IsAdornerMode = v);
-
-    public static readonly StyledProperty<Point> OffsetProperty =
-        AvaloniaProperty.Register<DotBadgeAdorner, Point>(
-            nameof(Offset));
 
     private bool _isAdornerMode;
 
@@ -78,6 +74,8 @@ internal class DotBadgeAdorner : TemplatedControl,
         set => SetValue(OffsetProperty, value);
     }
 
+    #endregion
+   
     #region 内部属性定义
 
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
@@ -103,33 +101,16 @@ internal class DotBadgeAdorner : TemplatedControl,
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-    
     #endregion
 
     private MotionActorControl? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     static DotBadgeAdorner()
     {
         AffectsMeasure<DotBadge>(TextProperty, IsAdornerModeProperty);
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
-            SharedTokenKey.MotionDurationMid));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);

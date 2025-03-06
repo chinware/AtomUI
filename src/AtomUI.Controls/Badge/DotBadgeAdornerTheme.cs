@@ -79,6 +79,8 @@ internal class DotBadgeAdornerTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(DotBadgeAdorner.ClipToBoundsProperty, false);
         commonStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, BadgeTokenKey.BadgeColor);
+        commonStyle.Add(DotBadgeAdorner.MotionDurationProperty, SharedTokenKey.MotionDurationMid);
+        
         var inAdornerStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.IsAdornerModeProperty, true));
         var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
         layoutStyle.Add(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Right);

@@ -1,15 +1,11 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -24,8 +20,7 @@ public enum CountBadgeSize
 
 public class CountBadge : Control,
                           IControlSharedTokenResourcesHost,
-                          IAnimationAwareControl,
-                          ITokenResourceConsumer
+                          IAnimationAwareControl
 {
     #region 公共属性定义
 
@@ -127,27 +122,15 @@ public class CountBadge : Control,
 
     #region 内部属性定义
 
-    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.Register<CountBadge, TimeSpan>(
-            nameof(MotionDuration));
-
-    public TimeSpan MotionDuration
-    {
-        get => GetValue(MotionDurationProperty);
-        set => SetValue(MotionDurationProperty, value);
-    }
-
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => BadgeToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private CountBadgeAdorner? _badgeAdorner;
     private AdornerLayer? _adornerLayer;
     private bool _isInitialized;
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     static CountBadge()
     {
@@ -177,20 +160,6 @@ public class CountBadge : Control,
             SetupShowZero();
             _isInitialized = true;
         }
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
-            SharedTokenKey.MotionDurationSlow));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 
     private CountBadgeAdorner CreateBadgeAdorner()

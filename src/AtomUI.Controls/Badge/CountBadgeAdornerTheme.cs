@@ -75,6 +75,11 @@ internal class CountBadgeAdornerTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(CountBadgeAdorner.ClipToBoundsProperty, false);
+        commonStyle.Add(CountBadgeAdorner.BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize);
+        commonStyle.Add(CountBadgeAdorner.BadgeShadowColorProperty, BadgeTokenKey.BadgeShadowColor);
+        commonStyle.Add(CountBadgeAdorner.MotionDurationProperty, SharedTokenKey.MotionDurationMid);
+        commonStyle.Add(CountBadgeAdorner.BadgeColorProperty, BadgeTokenKey.BadgeColor);
+        
         var inAdornerStyle = new Style(selector => selector.Nesting().PropertyEquals(CountBadgeAdorner.IsAdornerModeProperty, true));
         var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
         layoutStyle.Add(Panel.HorizontalAlignmentProperty, HorizontalAlignment.Right);
