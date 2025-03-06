@@ -1,8 +1,5 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Data;
+﻿using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -19,8 +16,7 @@ namespace AtomUI.Controls.Internal;
 [PseudoClasses(FlyoutOpenPC)]
 public abstract class InfoPickerInput : TemplatedControl,
                                         IAnimationAwareControl,
-                                        IControlSharedTokenResourcesHost,
-                                        ITokenResourceConsumer
+                                        IControlSharedTokenResourcesHost
 {
     internal const string FlyoutOpenPC = ":flyout-open";
     internal const string ChoosingPC = ":choosing";
@@ -210,11 +206,9 @@ public abstract class InfoPickerInput : TemplatedControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => InfoPickerInputToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
     private protected AddOnDecoratedBox? _decoratedBox;
     private protected PickerClearUpButton? _pickerClearUpButton;
     private protected readonly FlyoutStateHelper _flyoutStateHelper;
@@ -427,21 +421,12 @@ public abstract class InfoPickerInput : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
         BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseEnterDelayProperty);
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
     }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);

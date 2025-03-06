@@ -153,42 +153,9 @@ public class PopupConfirm : FlyoutHost,
     public sealed override void ApplyTemplate()
     {
         Flyout ??= new PopupConfirmFlyout(this);
-        SetupDefaultIcon();
         LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
         LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);
         base.ApplyTemplate();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == IconProperty)
-            {
-                if (change.OldValue is Icon oldIcon)
-                {
-                    oldIcon.SetTemplatedParent(null);
-                }
-                if (change.NewValue is Icon newIcon)
-                {
-                    newIcon.SetTemplatedParent(this);
-                }
-
-                SetupDefaultIcon();
-            }
-        }
-    }
-
-    private void SetupDefaultIcon()
-    {
-        if (Icon == null)
-        {
-            ClearValue(IconProperty);
-            SetValue(IconProperty, AntDesignIconPackage.ExclamationCircleFilled(), BindingPriority.Template);
-        }
-        Debug.Assert(Icon != null);
-        Icon.SetTemplatedParent(this);
     }
 }
 

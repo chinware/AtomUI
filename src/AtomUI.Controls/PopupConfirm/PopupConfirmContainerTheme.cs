@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -42,8 +43,6 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
             mainLayout.Children.Add(buttons);
             var content = BuildContent(popupConfirmContainer, scope);
             mainLayout.Children.Add(content);
-     
-            BuildInstanceStyles(popupConfirmContainer);
             
             return mainLayout;
         });
@@ -65,7 +64,7 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         {
             Name = IconContentPart
         };
-
+        iconContentPresenter.SetTemplatedParent(popupConfirmContainer);
         CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.ContentProperty,
             PopupConfirmContainer.IconProperty);
         CreateTemplateParentBinding(iconContentPresenter, Visual.IsVisibleProperty,
@@ -178,31 +177,38 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
     private void BuildInfoIconStyle()
     {
         {
-            var iconStyle = new Style(selector => selector.Name(IconContentPart).Descendant().OfType<Icon>());
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeLG);
             iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeLG);
             iconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
             Add(iconStyle);
         }
-        var infoStatusStyle = new Style(selector => selector
-                                                    .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
-                                                        PopupConfirmStatus.Info)
-                                                    .Descendant().Name(IconContentPart).Descendant().OfType<Icon>());
-        infoStatusStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorPrimary);
+        
+        var infoStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
+                                                                PopupConfirmStatus.Info));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorPrimary);
+            infoStatusStyle.Add(iconStyle);
+        }
         Add(infoStatusStyle);
 
-        var warningStatusStyle = new Style(selector => selector
-                                                       .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
-                                                           PopupConfirmStatus.Warning)
-                                                       .Descendant().Name(IconContentPart).Descendant().OfType<Icon>());
-        warningStatusStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
+        var warningStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
+                                                           PopupConfirmStatus.Warning));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
+            warningStatusStyle.Add(iconStyle);
+        }
         Add(warningStatusStyle);
 
-        var errorStatusStyle = new Style(selector => selector
-                                                     .PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
-                                                         PopupConfirmStatus.Error)
-                                                     .Descendant().Name(IconContentPart).Descendant().OfType<Icon>());
-        errorStatusStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+        var errorStatusStyle = new Style(selector => selector.Nesting().PropertyEquals(PopupConfirmContainer.ConfirmStatusProperty,
+                                                                 PopupConfirmStatus.Error));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+            errorStatusStyle.Add(iconStyle);
+        }
         Add(errorStatusStyle);
     }
 }
