@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using System.Reactive.Disposables;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -15,7 +16,8 @@ namespace AtomUI.Controls;
 
 [TemplatePart(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
 internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, 
-                                       ICustomHitTest
+                                       ICustomHitTest,
+                                       ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -96,9 +98,12 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
         get => _spinnerHandleWidthToken;
         set => SetAndRaise(SpinnerHandleWidthTokenProperty, ref _spinnerHandleWidthToken, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
     private ContentPresenter? _handleContentPresenter;
 
     protected override void BuildEffectiveInnerBoxPadding()
@@ -139,10 +144,13 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderBrushProperty,
-            SharedTokenKey.ColorBorder));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
-            ButtonSpinnerTokenKey.HandleWidth));
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

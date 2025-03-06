@@ -1,23 +1,17 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 [TemplatePart(AddOnDecoratedInnerBoxTheme.ContentPresenterPart, typeof(ContentPresenter), IsRequired = true)]
 public class AddOnDecoratedInnerBox : ContentControl,
-                                      IAnimationAwareControl,
-                                      ITokenResourceConsumer
+                                      IAnimationAwareControl
 {
     #region 公共属性定义
 
@@ -110,7 +104,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
             o => o.ContentPresenterMargin,
             (o, v) => o.ContentPresenterMargin = v);
 
-    private static readonly DirectProperty<AddOnDecoratedInnerBox, double> MarginXSTokenProperty =
+    internal static readonly DirectProperty<AddOnDecoratedInnerBox, double> MarginXSTokenProperty =
         AvaloniaProperty.RegisterDirect<AddOnDecoratedInnerBox, double>(nameof(MarginXSToken),
             o => o.MarginXSToken,
             (o, v) => o.MarginXSToken = v);
@@ -146,14 +140,12 @@ public class AddOnDecoratedInnerBox : ContentControl,
     }
 
     Control IAnimationAwareControl.PropertyBindTarget => this;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private StackPanel? _leftAddOnLayout;
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     public AddOnDecoratedInnerBox()
     {
@@ -186,20 +178,6 @@ public class AddOnDecoratedInnerBox : ContentControl,
                 newControl.SetTemplatedParent(this);
             }
         }
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, MarginXSTokenProperty, SharedTokenKey.MarginXS));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

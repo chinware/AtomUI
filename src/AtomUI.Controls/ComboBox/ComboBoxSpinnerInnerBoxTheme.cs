@@ -38,6 +38,10 @@ internal class ComboBoxSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
     protected override void BuildStyles()
     {
         base.BuildStyles();
+        
+        this.Add(ComboBoxSpinnerInnerBox.SpinnerBorderBrushProperty, SharedTokenKey.ColorBorder);
+        this.Add(ComboBoxSpinnerInnerBox.SpinnerHandleWidthTokenProperty, ButtonSpinnerTokenKey.HandleWidth);
+        
         var notFilledStyle =
             new Style(selector => selector.Nesting().Not(innerSelector =>
                 innerSelector.Nesting()

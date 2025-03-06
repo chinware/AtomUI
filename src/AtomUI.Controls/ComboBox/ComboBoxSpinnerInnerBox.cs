@@ -1,10 +1,6 @@
-﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;
 
@@ -80,14 +76,5 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox,
     public bool HitTest(Point point)
     {
         return true;
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderBrushProperty,
-            SharedTokenKey.ColorBorder));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
-            ButtonSpinnerTokenKey.HandleWidth));
     }
 }

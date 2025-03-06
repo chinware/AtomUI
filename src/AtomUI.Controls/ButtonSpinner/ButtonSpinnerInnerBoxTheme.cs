@@ -41,6 +41,8 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
         base.BuildStyles();
 
         var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(ButtonSpinnerInnerBox.SpinnerBorderBrushProperty, SharedTokenKey.ColorBorder);
+        commonStyle.Add(ButtonSpinnerInnerBox.SpinnerHandleWidthTokenProperty, ButtonSpinnerTokenKey.HandleWidth);
 
         // spinner 的位置
         var leftPositionStyle = new Style(selector =>

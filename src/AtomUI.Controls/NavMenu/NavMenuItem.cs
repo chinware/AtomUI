@@ -605,8 +605,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             Command.CanExecuteChanged -= CanExecuteChangedHandler;
         }
-
-        this.DisposeTokenBindings();
     }
 
     /// <inheritdoc />

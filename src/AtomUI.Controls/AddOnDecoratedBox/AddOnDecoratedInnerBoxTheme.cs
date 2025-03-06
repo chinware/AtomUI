@@ -218,7 +218,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-
+        commonStyle.Add(AddOnDecoratedInnerBox.MarginXSTokenProperty, SharedTokenKey.MarginXS);
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
             decoratorStyle.Add(Visual.ZIndexProperty, AddOnDecoratedBoxTheme.NormalZIndex);
