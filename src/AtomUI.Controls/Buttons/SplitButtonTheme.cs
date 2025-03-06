@@ -68,6 +68,7 @@ internal class SplitButtonTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
+        this.Add(SplitButton.BorderBrushProperty, SharedTokenKey.ColorBorder);
         BuildSizeStyle();
         BuildZIndexStyle();
     }

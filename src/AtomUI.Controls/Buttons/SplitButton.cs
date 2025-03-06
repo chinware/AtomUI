@@ -451,9 +451,7 @@ public class SplitButton : ContentControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderBrushProperty,
-            SharedTokenKey.ColorBorder));
+        
 
         // Control attached again, set Hotkey to create a hotkey manager for this control
         SetCurrentValue(HotKeyProperty, _hotkey);

@@ -155,6 +155,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         BuildSizeStyle();
         BuildIconStyle();
         BuildLoadingStyle();
+        BuildShapeStyle();
         
         // 动画设置
         var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsMotionEnabledProperty, true));
@@ -337,5 +338,12 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         }
         loadingStyle.Add(Visual.OpacityProperty, SharedTokenKey.OpacityLoading);
         Add(loadingStyle);
+    }
+
+    private void BuildShapeStyle()
+    {
+        var circleStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.ButtonShapeProperty, ButtonShape.Circle));
+        circleStyle.Add(Button.PaddingProperty, ButtonTokenKey.CirclePadding);
+        Add(circleStyle);
     }
 }

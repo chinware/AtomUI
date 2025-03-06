@@ -367,7 +367,6 @@ public class Button : AvaloniaButton,
             Content = null;
         }
         
-        SetupShapeStyleBindings();
         SetupIconBrush();
         UpdatePseudoClasses();
     }
@@ -508,10 +507,6 @@ public class Button : AvaloniaButton,
             {
                 SetupControlThemeBindings();
             }
-            else if (e.Property == ButtonShapeProperty)
-            {
-                SetupShapeStyleBindings();
-            }
         }
 
         if (this.IsAttachedToVisualTree())
@@ -550,15 +545,6 @@ public class Button : AvaloniaButton,
         {
             this.AddTokenBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID));
-        }
-    }
-
-    private void SetupShapeStyleBindings()
-    {
-        if (Shape == ButtonShape.Circle)
-        {
-            this.AddTokenBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, PaddingProperty, ButtonTokenKey.CirclePadding));
         }
     }
 

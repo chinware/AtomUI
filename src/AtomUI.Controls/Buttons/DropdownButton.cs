@@ -181,7 +181,6 @@ public class DropdownButton : Button
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
         
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
         ExtraContainerVisible = true;
     }
 

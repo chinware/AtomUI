@@ -13,6 +13,9 @@ internal static class DropdownButtonThemeUtils
     public static Style BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
+
+        commonStyle.Add(DropdownButton.MarginToAnchorProperty, SharedTokenKey.MarginXXS);
+     
         {
             var openIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(OpenIndicatorPart));
             openIndicatorStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSizeSM);
