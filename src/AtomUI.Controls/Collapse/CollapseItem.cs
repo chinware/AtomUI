@@ -1,11 +1,7 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Automation.Peers;
@@ -14,15 +10,13 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
 public class CollapseItem : HeaderedContentControl,
-                            ISelectable,
-                            ITokenResourceConsumer
+                            ISelectable
 {
     #region 公共属性定义
 
@@ -192,11 +186,7 @@ public class CollapseItem : HeaderedContentControl,
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     static CollapseItem()
     {
@@ -251,9 +241,9 @@ public class CollapseItem : HeaderedContentControl,
         ExpandIcon ??= AntDesignIconPackage.RightOutlined();
         ExpandIcon.SetTemplatedParent(this);
         base.OnApplyTemplate(e);
-        _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
-        _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
-        _expandButton    = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
+        _motionActor           = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
+        _headerDecorator       = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
+        _expandButton          = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
         _tempAnimationDisabled = true;
         HandleSelectedChanged();
         _tempAnimationDisabled = false;
@@ -344,7 +334,7 @@ public class CollapseItem : HeaderedContentControl,
             InAnimating = false;
         });
     }
-    
+
     internal bool IsPointInHeaderBounds(Point position)
     {
         if (_headerDecorator is not null && TriggerType != CollapseTriggerType.Icon)
@@ -353,19 +343,5 @@ public class CollapseItem : HeaderedContentControl,
         }
 
         return false;
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
-            SharedTokenKey.MotionDurationSlow));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }

@@ -170,6 +170,8 @@ internal class CollapseItemTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle    = new Style(selector => selector.Nesting());
+        commonStyle.Add(CollapseItem.MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
+
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Border.BackgroundProperty, CollapseTokenKey.HeaderBg);
