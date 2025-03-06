@@ -176,7 +176,8 @@ internal class NotificationCardTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-
+        
+        commonStyle.Add(NotificationCard.OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
         var progressBarStyle = new Style(selector => selector.Nesting().Template().Name(ProgressBarPart));
         progressBarStyle.Add(Layoutable.MarginProperty, NotificationTokenKey.NotificationProgressMargin);
         commonStyle.Add(progressBarStyle);
@@ -272,8 +273,8 @@ internal class NotificationCardTheme : BaseControlTheme
         {
             var iconStyle = new Style(selector =>
                 selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
-            iconStyle.Add(Icon.WidthProperty, MessageTokenKey.MessageIconSize);
-            iconStyle.Add(Icon.HeightProperty, MessageTokenKey.MessageIconSize);
+            iconStyle.Add(Icon.WidthProperty, NotificationTokenKey.NotificationIconSize);
+            iconStyle.Add(Icon.HeightProperty, NotificationTokenKey.NotificationIconSize);
             Add(iconStyle);
         }
 

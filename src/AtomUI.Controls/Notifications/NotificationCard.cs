@@ -1,12 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -24,8 +21,7 @@ namespace AtomUI.Controls;
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC)]
 public class NotificationCard : ContentControl,
                                 IAnimationAwareControl,
-                                IControlSharedTokenResourcesHost,
-                                ITokenResourceConsumer
+                                IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
     public const string InformationPC = ":information";
@@ -36,25 +32,16 @@ public class NotificationCard : ContentControl,
     internal const double AnimationMaxOffsetX = 500d;
 
     #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="IsClosing" /> property.
-    /// </summary>
+    
     public static readonly DirectProperty<NotificationCard, bool> IsClosingProperty =
         AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(IsClosing), o => o.IsClosing);
-
-    /// <summary>
-    /// Defines the <see cref="IsClosed" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> IsClosedProperty =
         AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsClosed));
 
     public static readonly StyledProperty<bool> IsShowProgressProperty =
         AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsShowProgress));
-
-    /// <summary>
-    /// Defines the <see cref="NotificationType" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<NotificationType> NotificationTypeProperty =
         AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
 
@@ -63,10 +50,7 @@ public class NotificationCard : ContentControl,
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
         = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<NotificationCard>();
-
-    /// <summary>
-    /// Defines the <see cref="NotificationClosed" /> event.
-    /// </summary>
+    
     public static readonly RoutedEvent<RoutedEventArgs> NotificationClosedEvent =
         RoutedEvent.Register<NotificationCard, RoutedEventArgs>(nameof(NotificationClosed), RoutingStrategies.Bubble);
 
@@ -75,19 +59,13 @@ public class NotificationCard : ContentControl,
 
     public static readonly StyledProperty<Icon?> IconProperty
         = AvaloniaProperty.Register<NotificationCard, Icon?>(nameof(Icon));
-
-    /// <summary>
-    /// Determines if the notification is already closing.
-    /// </summary>
+    
     public bool IsClosing
     {
         get => _isClosing;
         private set => SetAndRaise(IsClosingProperty, ref _isClosing, value);
     }
-
-    /// <summary>
-    /// Determines if the notification is closed.
-    /// </summary>
+    
     public bool IsClosed
     {
         get => GetValue(IsClosedProperty);
@@ -100,9 +78,6 @@ public class NotificationCard : ContentControl,
         set => SetValue(IsShowProgressProperty, value);
     }
 
-    /// <summary>
-    /// Gets or sets the type of the notification
-    /// </summary>
     public NotificationType NotificationType
     {
         get => GetValue(NotificationTypeProperty);
@@ -121,9 +96,6 @@ public class NotificationCard : ContentControl,
         set => SetValue(IconProperty, value);
     }
 
-    /// <summary>
-    /// Raised when the <see cref="NotificationCard" /> has closed.
-    /// </summary>
     public event EventHandler<RoutedEventArgs>? NotificationClosed
     {
         add => AddHandler(NotificationClosedEvent, value);
@@ -189,12 +161,9 @@ public class NotificationCard : ContentControl,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
-
+    
     /// <summary>
     /// Gets the expiration time of the notification after which it will automatically close.
     /// If the value is null then the notification will remain open until the user closes it.
@@ -214,7 +183,6 @@ public class NotificationCard : ContentControl,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        SetupPseudoClasses();
         ClipToBounds         = false;
         _notificationManager = manager;
     }
@@ -235,22 +203,13 @@ public class NotificationCard : ContentControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
-            SharedTokenKey.MotionDurationMid));
-        UpdatePseudoClasses(Position);
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        SetupPositionPseudoClasses(Position);
+        SetupNotificationTypePseudoClasses();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SetupNotificationIcon();
-        SetupPseudoClasses();
+        SetupNotificationDefaultIcon();
         
         base.OnApplyTemplate(e);
         
@@ -325,7 +284,7 @@ public class NotificationCard : ContentControl,
         {
             return;
         }
-
+        
         if (IsMotionEnabled)
         {
             AbstractMotion? motion;
@@ -349,7 +308,7 @@ public class NotificationCard : ContentControl,
                 motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
                     new CubicEaseIn());
             }
-
+        
             MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
         }
         else
@@ -371,8 +330,7 @@ public class NotificationCard : ContentControl,
         {
             if (e.Property == NotificationTypeProperty)
             {
-                SetupNotificationIcon();
-                SetupPseudoClasses();
+                SetupNotificationTypePseudoClasses();
             }
         }
         
@@ -392,7 +350,7 @@ public class NotificationCard : ContentControl,
         }
         else if (e.Property == PositionProperty)
         {
-            UpdatePseudoClasses(e.GetNewValue<NotificationPosition>());
+            SetupPositionPseudoClasses(e.GetNewValue<NotificationPosition>());
         } 
         else if (e.Property == IsClosingProperty)
         {
@@ -400,6 +358,20 @@ public class NotificationCard : ContentControl,
             {
                 ApplyHideMotion();
             }
+        } 
+        else if (e.Property == IconProperty)
+        {
+            if (e.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (e.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
+            }
+
+            SetupNotificationDefaultIcon();
         }
     }
 
@@ -422,7 +394,7 @@ public class NotificationCard : ContentControl,
         }
     }
 
-    private void SetupPseudoClasses()
+    private void SetupNotificationTypePseudoClasses()
     {
         switch (NotificationType)
         {
@@ -444,31 +416,32 @@ public class NotificationCard : ContentControl,
         }
     }
 
-    private void SetupNotificationIcon()
+    private void SetupNotificationDefaultIcon()
     {
-        Icon? icon = null;
-        if (NotificationType == NotificationType.Information)
-        {
-            icon = AntDesignIconPackage.InfoCircleFilled();
-        }
-        else if (NotificationType == NotificationType.Success)
-        {
-            icon = AntDesignIconPackage.CheckCircleFilled();
-        }
-        else if (NotificationType == NotificationType.Error)
-        {
-            icon = AntDesignIconPackage.CloseCircleFilled();
-        }
-        else if (NotificationType == NotificationType.Warning)
-        {
-            icon = AntDesignIconPackage.ExclamationCircleFilled();
-        }
-        
         if (Icon is null)
         {
+            Icon? icon = null;
+            if (NotificationType == NotificationType.Information)
+            {
+                icon = AntDesignIconPackage.InfoCircleFilled();
+            }
+            else if (NotificationType == NotificationType.Success)
+            {
+                icon = AntDesignIconPackage.CheckCircleFilled();
+            }
+            else if (NotificationType == NotificationType.Error)
+            {
+                icon = AntDesignIconPackage.CloseCircleFilled();
+            }
+            else if (NotificationType == NotificationType.Warning)
+            {
+                icon = AntDesignIconPackage.ExclamationCircleFilled();
+            }
+        
             ClearValue(IconProperty);
             SetValue(IconProperty, icon, BindingPriority.Template);
         }
+        
         Debug.Assert(Icon != null);
         Icon.SetTemplatedParent(this);
     }
@@ -503,7 +476,7 @@ public class NotificationCard : ContentControl,
             _notificationManager.StopExpiredTimer();
         }
     }
-
+    
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
@@ -512,7 +485,7 @@ public class NotificationCard : ContentControl,
             _notificationManager.StopExpiredTimer();
         }
     }
-
+    
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
@@ -522,7 +495,7 @@ public class NotificationCard : ContentControl,
         }
     }
 
-    private void UpdatePseudoClasses(NotificationPosition position)
+    private void SetupPositionPseudoClasses(NotificationPosition position)
     {
         PseudoClasses.Set(WindowNotificationManager.TopLeftPC, position == NotificationPosition.TopLeft);
         PseudoClasses.Set(WindowNotificationManager.TopRightPC, position == NotificationPosition.TopRight);
