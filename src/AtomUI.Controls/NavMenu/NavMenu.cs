@@ -229,8 +229,7 @@ public class NavMenu : NavMenuBase,
             }
             else
             {
-                BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem,
-                    NavMenuItem.ItemContainerThemeProperty);
+                BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty);
             }
 
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty);
