@@ -212,6 +212,7 @@ public class DropdownButton : Button
             BindUtils.RelayBind(this, IsShowArrowProperty, DropdownFlyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, DropdownFlyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, DropdownFlyout);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, DropdownFlyout, MenuFlyout.IsMotionEnabledProperty);
             
             DropdownFlyout.Opened += HandleFlyoutOpened;
             DropdownFlyout.Closed += HandleFlyoutClosed;

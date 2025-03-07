@@ -407,6 +407,7 @@ public abstract class InfoPickerInput : TemplatedControl,
             BindUtils.RelayBind(this, IsShowArrowProperty, _pickerFlyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, _pickerFlyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, _pickerFlyout);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _pickerFlyout, Flyout.IsMotionEnabledProperty);
         }
     }
 
