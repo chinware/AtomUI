@@ -12,10 +12,9 @@ using AvaloniaListBoxItem = Avalonia.Controls.ListBoxItem;
 public class ListBoxItem : AvaloniaListBoxItem
 {
     #region 内部属性定义
-    internal static readonly DirectProperty<ListBoxItem, SizeType> SizeTypeProperty =
-        AvaloniaProperty.RegisterDirect<ListBoxItem, SizeType>(nameof(SizeType),
-            o => o.SizeType,
-            (o, v) => o.SizeType = v);
+
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBoxItem>();
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBoxItem>();
@@ -25,12 +24,10 @@ public class ListBoxItem : AvaloniaListBoxItem
             o => o.DisabledItemHoverEffect,
             (o, v) => o.DisabledItemHoverEffect = v);
 
-    private SizeType _sizeType = SizeType.Middle;
-
     internal SizeType SizeType
     {
-        get => _sizeType;
-        set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
 
     internal bool IsMotionEnabled
