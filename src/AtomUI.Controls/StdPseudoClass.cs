@@ -21,4 +21,5 @@ public static class StdPseudoClass
    public const string InActive = ":inactive";
    public const string Error = ":error";
    public const string Warning = ":warning";
+   public const string Draggable = ":draggable";
 }

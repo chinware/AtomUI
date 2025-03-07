@@ -1,11 +1,15 @@
+using System.Diagnostics;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
+using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -32,9 +36,6 @@ internal class NodeSwitcherButton : ToggleButton
 
     public static readonly StyledProperty<Icon?> LeafIconProperty
         = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LeafIcon));
-
-    public static readonly StyledProperty<bool> IsLeafProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeaf));
     
     public static readonly StyledProperty<bool> IsLoadingProperty
         = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLoading), false);
@@ -52,12 +53,6 @@ internal class NodeSwitcherButton : ToggleButton
     {
         get => GetValue(LeafIconProperty);
         set => SetValue(LeafIconProperty, value);
-    }
-
-    public bool IsLeaf
-    {
-        get => GetValue(IsLeafProperty);
-        set => SetValue(IsLeafProperty, value);
     }
     
     public bool IsLoading
@@ -97,18 +92,6 @@ internal class NodeSwitcherButton : ToggleButton
             o => o.IconMode,
             (o, v) => o.IconMode = v);
     
-    internal static readonly DirectProperty<NodeSwitcherButton, bool> ExpandIconVisibleProperty =
-        AvaloniaProperty.RegisterDirect<NodeSwitcherButton, bool>(
-            nameof(ExpandIconVisible),
-            o => o.ExpandIconVisible,
-            (o, v) => o.ExpandIconVisible = v);
-    
-    internal static readonly DirectProperty<NodeSwitcherButton, bool> CollapseIconVisibleProperty =
-        AvaloniaProperty.RegisterDirect<NodeSwitcherButton, bool>(
-            nameof(CollapseIconVisible),
-            o => o.CollapseIconVisible,
-            (o, v) => o.CollapseIconVisible = v);
-    
     internal static readonly DirectProperty<NodeSwitcherButton, bool> IsMotionEnabledProperty
         = AvaloniaProperty.RegisterDirect<NodeSwitcherButton, bool>(nameof(IsMotionEnabled),
             o => o.IsMotionEnabled,
@@ -128,20 +111,6 @@ internal class NodeSwitcherButton : ToggleButton
         set => SetAndRaise(IconModeProperty, ref _iconMode, value);
     }
     
-    private bool _expandIconVisible;
-    internal bool ExpandIconVisible
-    {
-        get => _expandIconVisible;
-        set => SetAndRaise(ExpandIconVisibleProperty, ref _expandIconVisible, value);
-    }
-    
-    private bool _collapseIconVisible;
-    internal bool CollapseIconVisible
-    {
-        get => _collapseIconVisible;
-        set => SetAndRaise(CollapseIconVisibleProperty, ref _collapseIconVisible, value);
-    }
-    
     private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
@@ -150,6 +119,8 @@ internal class NodeSwitcherButton : ToggleButton
         set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
     }
 
+    internal bool IsNodeAnimating { get; set; } = false;
+    
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper;
@@ -169,8 +140,13 @@ internal class NodeSwitcherButton : ToggleButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SetupIconVisibility(IsChecked ?? false);
         SetupTransitions();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupDefaultIcons();
     }
 
     private void SetupTransitions()
@@ -179,7 +155,7 @@ internal class NodeSwitcherButton : ToggleButton
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
             };
         }
         else
@@ -191,47 +167,30 @@ internal class NodeSwitcherButton : ToggleButton
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == CollapseIconProperty ||
-            change.Property == ExpandIconProperty ||
-            change.Property == LoadingIconProperty ||
-            change.Property == RotationIconProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            if (change.NewValue is Icon icon)
+            if (change.Property == CollapseIconProperty ||
+                change.Property == ExpandIconProperty ||
+                change.Property == LoadingIconProperty ||
+                change.Property == RotationIconProperty)
             {
-                icon.HorizontalAlignment = HorizontalAlignment.Center;
-                icon.VerticalAlignment = VerticalAlignment.Center;
+                if (change.OldValue is Icon oldIcon)
+                {
+                    oldIcon.SetTemplatedParent(null);
+                }
+
+                if (change.NewValue is Icon newIcon)
+                {
+                    newIcon.SetTemplatedParent(this);
+                }
+
+                SetupDefaultIcons();
             }
         }
-        else if (change.Property == IsCheckedProperty)
-        {
-            var isChecked = (bool?)change.NewValue ?? false;
-            SetupIconVisibility(isChecked);
-        }
-        else if (change.Property == IconModeProperty)
+        
+        if (change.Property == IconModeProperty)
         {
             SetupTransitions();
-        }
-    }
-
-    private void SetupIconVisibility(bool isChecked)
-    {
-        if (_iconMode != NodeSwitcherButtonIconMode.Default)
-        {
-            ExpandIconVisible = false;
-            CollapseIconVisible = false;
-        }
-        else
-        {
-            if (isChecked)
-            {
-                ExpandIconVisible = false;
-                CollapseIconVisible = true;
-            }
-            else
-            {
-                ExpandIconVisible = true;
-                CollapseIconVisible = false;
-            }
         }
     }
 
@@ -248,5 +207,52 @@ internal class NodeSwitcherButton : ToggleButton
                 null,
                 default);
         }
+    }
+    
+    private void SetupDefaultIcons()
+    {
+        if (ExpandIcon == null)
+        {
+            ClearValue(ExpandIconProperty);
+            SetValue(ExpandIconProperty, AntDesignIconPackage.PlusSquareOutlined(), BindingPriority.Template);
+        }
+        
+        if (CollapseIcon == null)
+        {
+            ClearValue(CollapseIconProperty);
+            SetValue(CollapseIconProperty, AntDesignIconPackage.MinusSquareOutlined(), BindingPriority.Template);
+        }
+        
+        if (RotationIcon == null)
+        {
+            ClearValue(RotationIconProperty);
+            SetValue(RotationIconProperty, AntDesignIconPackage.CaretRightOutlined(), BindingPriority.Template);
+        }
+        
+        if (LeafIcon == null)
+        {
+            ClearValue(LeafIconProperty);
+            SetValue(LeafIconProperty, AntDesignIconPackage.FileOutlined(), BindingPriority.Template);
+        }
+        Debug.Assert(ExpandIcon != null);
+        ExpandIcon.SetTemplatedParent(this);
+        
+        Debug.Assert(CollapseIcon != null);
+        CollapseIcon.SetTemplatedParent(this);
+        
+        Debug.Assert(RotationIcon != null);
+        RotationIcon.SetTemplatedParent(this);
+        
+        Debug.Assert(LeafIcon != null);
+        LeafIcon.SetTemplatedParent(this);
+    }
+
+    protected override void Toggle()
+    {
+        if (IsNodeAnimating)
+        {
+            return;
+        }
+        base.Toggle();
     }
 }

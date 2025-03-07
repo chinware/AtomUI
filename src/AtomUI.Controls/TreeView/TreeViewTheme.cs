@@ -46,4 +46,10 @@ internal class TreeViewTheme : BaseControlTheme
             return frame;
         });
     }
+    
+    protected override void BuildStyles()
+    {
+        this.Add(TreeView.DragIndicatorLineWidthProperty, TreeViewTokenKey.DragIndicatorLineWidth);
+        this.Add(TreeView.DragIndicatorBrushProperty, SharedTokenKey.ColorPrimary);
+    }
 }

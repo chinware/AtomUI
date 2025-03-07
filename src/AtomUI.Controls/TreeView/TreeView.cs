@@ -1,9 +1,6 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -12,7 +9,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -28,14 +24,11 @@ public enum TreeItemHoverMode
     WholeLine
 }
 
-[PseudoClasses(DraggablePC)]
+[PseudoClasses(StdPseudoClass.Draggable)]
 public class TreeView : AvaloniaTreeView,
                         IAnimationAwareControl,
-                        IControlSharedTokenResourcesHost,
-                        ITokenResourceConsumer
+                        IControlSharedTokenResourcesHost
 {
-    public const string DraggablePC = ":draggable";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsDraggableProperty =
@@ -55,6 +48,9 @@ public class TreeView : AvaloniaTreeView,
 
     public static readonly StyledProperty<bool> IsShowLeafIconProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafIcon));
+    
+    public static readonly StyledProperty<bool> IsSwitcherRotationProperty
+        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsSwitcherRotation), true);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeView>();
@@ -96,6 +92,12 @@ public class TreeView : AvaloniaTreeView,
     {
         get => GetValue(IsShowLeafIconProperty);
         set => SetValue(IsShowLeafIconProperty, value);
+    }
+    
+    public bool IsSwitcherRotation
+    {
+        get => GetValue(IsSwitcherRotationProperty);
+        set => SetValue(IsSwitcherRotationProperty, value);
     }
 
     public bool IsMotionEnabled
@@ -170,11 +172,9 @@ public class TreeView : AvaloniaTreeView,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TreeViewToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
+    
     internal List<TreeViewItem> DefaultCheckedItems { get; set; }
     private Point? _lastPoint;
     private TreeViewItem? _beingDraggedTreeItem;
@@ -278,7 +278,7 @@ public class TreeView : AvaloniaTreeView,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(DraggablePC, IsDraggable);
+        PseudoClasses.Set(StdPseudoClass.Draggable, IsDraggable);
     }
 
     protected override Control CreateContainerForItemOverride(
@@ -313,6 +313,7 @@ public class TreeView : AvaloniaTreeView,
             BindUtils.RelayBind(this, IsShowLeafIconProperty, treeViewItem,
                 TreeViewItem.IsShowLeafIconProperty);
             BindUtils.RelayBind(this, IsCheckableProperty, treeViewItem, TreeViewItem.IsCheckboxVisibleProperty);
+            BindUtils.RelayBind(this, IsSwitcherRotationProperty, treeViewItem, TreeViewItem.IsSwitcherRotationProperty);
         }
     }
 
@@ -325,22 +326,6 @@ public class TreeView : AvaloniaTreeView,
         }
 
         ApplyDefaultChecked();
-    }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragIndicatorLineWidthProperty,
-            TreeViewTokenKey.DragIndicatorLineWidth));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragIndicatorBrushProperty,
-            SharedTokenKey.ColorPrimary));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 
     private void ApplyDefaultChecked()

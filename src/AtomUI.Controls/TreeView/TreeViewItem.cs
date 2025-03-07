@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
@@ -205,6 +204,18 @@ public class TreeViewItem : AvaloniaTreeItem,
         AvaloniaProperty.RegisterDirect<TreeViewItem, TimeSpan>(nameof(MotionDuration),
             o => o.MotionDuration,
             (o, v) => o.MotionDuration = v);
+    
+    internal static readonly DirectProperty<TreeViewItem, NodeSwitcherButtonIconMode> SwitcherModeProperty =
+        AvaloniaProperty.RegisterDirect<TreeViewItem, NodeSwitcherButtonIconMode>(
+            nameof(SwitcherMode),
+            o => o.SwitcherMode,
+            (o, v) => o.SwitcherMode = v);
+    
+    internal static readonly DirectProperty<TreeViewItem, bool> IsSwitcherRotationProperty =
+        AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(
+            nameof(IsSwitcherRotation),
+            o => o.IsSwitcherRotation,
+            (o, v) => o.IsSwitcherRotation = v);
 
     private double _titleHeight;
 
@@ -313,7 +324,23 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => _motionDuration;
         set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
+    
+    private NodeSwitcherButtonIconMode _switcherMode;
 
+    internal NodeSwitcherButtonIconMode SwitcherMode
+    {
+        get => _switcherMode;
+        set => SetAndRaise(SwitcherModeProperty, ref _switcherMode, value);
+    }
+    
+    private bool _isSwitcherRotation;
+
+    internal bool IsSwitcherRotation
+    {
+        get => _isSwitcherRotation;
+        set => SetAndRaise(IsSwitcherRotationProperty, ref _isSwitcherRotation, value);
+    }
+    
     internal TreeView? OwnerTreeView { get; set; }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;private bool _tempAnimationDisabled = false;
@@ -364,10 +391,8 @@ public class TreeViewItem : AvaloniaTreeItem,
             // 注册到 TreeView
             OwnerTreeView?.DefaultCheckedItems.Add(this);
         }
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
-            SharedTokenKey.MotionDurationSlow));
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, TitleHeightProperty, TreeViewTokenKey.TitleHeight));
+
+        SetupSwitcherButtonIconMode();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -378,13 +403,6 @@ public class TreeViewItem : AvaloniaTreeItem,
             if (change.Property == NodeHoverModeProperty)
             {
                 CalculateEffectiveBgRect();
-            }
-            else if (change.Property == SwitcherExpandIconProperty ||
-                     change.Property == SwitcherCollapseIconProperty ||
-                     change.Property == SwitcherRotationIconProperty)
-            {
-                SetNodeSwitcherIcons();
-                SetupSwitcherButtonIconMode();
             }
             else if (change.Property == IsEnabledProperty ||
                      change.Property == IsCheckableProperty)
@@ -405,11 +423,6 @@ public class TreeViewItem : AvaloniaTreeItem,
                         OwnerTreeView?.UnCheckedSubTree(this);
                     }
                 }
-            }      
-            else if (change.Property == IsShowLineProperty)
-            {
-                CreateNodeSwitcherDefaultIcons();
-                SetNodeSwitcherIcons();
             }
             else if (change.Property == IsExpandedProperty)
             {
@@ -438,7 +451,9 @@ public class TreeViewItem : AvaloniaTreeItem,
                 newIcon.SetTemplatedParent(this);
             }
         } 
-        else if (change.Property == IsLoadingProperty || change.Property == IsLeafProperty)
+        else if (change.Property == IsLoadingProperty || 
+                 change.Property == IsLeafProperty ||
+                 change.Property == IsSwitcherRotationProperty)
         {
             SetupSwitcherButtonIconMode();
         }
@@ -455,30 +470,27 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     private void SetupSwitcherButtonIconMode()
     {
-        if (_switcherButton is not null)
+        if (!IsLeaf)
         {
-            if (!IsLeaf)
+            if (IsLoading)
             {
-                if (IsLoading)
-                {
-                    _switcherButton.IconMode = NodeSwitcherButtonIconMode.Loading;
-                }
-                else
-                {
-                    if (SwitcherExpandIcon != null && SwitcherCollapseIcon != null)
-                    {
-                        _switcherButton.IconMode = NodeSwitcherButtonIconMode.Default;
-                    } 
-                    else if (SwitcherRotationIcon != null)
-                    {
-                        _switcherButton.IconMode = NodeSwitcherButtonIconMode.Rotation;
-                    }
-                }
+                SwitcherMode = NodeSwitcherButtonIconMode.Loading;
             }
             else
             {
-                _switcherButton.IconMode = NodeSwitcherButtonIconMode.Leaf;
+                if (IsSwitcherRotation)
+                {
+                    SwitcherMode = NodeSwitcherButtonIconMode.Rotation;
+                } 
+                else
+                {
+                    SwitcherMode = NodeSwitcherButtonIconMode.Default;
+                }
             }
+        }
+        else
+        {
+            SwitcherMode = NodeSwitcherButtonIconMode.Leaf;
         }
     }
     
@@ -511,6 +523,11 @@ public class TreeViewItem : AvaloniaTreeItem,
         }
 
         _animating = true;
+        if (_switcherButton != null)
+        {
+            _switcherButton.IsNodeAnimating = true;
+        }
+
         var motion = new ExpandMotion(Direction.Top,
             MotionDuration,
             new CubicEaseOut());
@@ -519,6 +536,10 @@ public class TreeViewItem : AvaloniaTreeItem,
             {
                 _itemsPresenterMotionActor.IsVisible = true;
                 _animating                           = false;
+                if (_switcherButton != null)
+                {
+                    _switcherButton.IsNodeAnimating = false;
+                }
             });
     }
 
@@ -538,6 +559,10 @@ public class TreeViewItem : AvaloniaTreeItem,
         }
 
         _animating = true;
+        if (_switcherButton != null)
+        {
+            _switcherButton.IsNodeAnimating = true;
+        }
         var motion = new CollapseMotion(Direction.Top,
             MotionDuration,
             new CubicEaseIn());
@@ -545,42 +570,11 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             _itemsPresenterMotionActor.IsVisible = false;
             _animating = false;
+            if (_switcherButton != null)
+            {
+                _switcherButton.IsNodeAnimating = false;
+            }
         });
-    }
-
-    private void CreateNodeSwitcherDefaultIcons()
-    {
-        if (IsShowLine)
-        {
-            if (SwitcherExpandIcon == null)
-            {
-                SetValue(SwitcherExpandIconProperty, AntDesignIconPackage.PlusSquareOutlined(), BindingPriority.Template);
-            }
-
-            if (SwitcherCollapseIcon == null)
-            {
-                SetValue(SwitcherCollapseIconProperty, AntDesignIconPackage.MinusSquareOutlined(), BindingPriority.Template);
-            }
-        }
-        else
-        {
-            if (SwitcherRotationIcon == null)
-            {
-                SetValue(SwitcherRotationIconProperty, AntDesignIconPackage.CaretRightOutlined(), BindingPriority.Template);
-            }
-        }
-        
-        if (SwitcherLoadingIcon == null)
-        {
-            var loadingIcon = AntDesignIconPackage.LoadingOutlined();
-            loadingIcon.LoadingAnimation = IconAnimation.Spin;
-            SetValue(SwitcherLoadingIconProperty, loadingIcon, BindingPriority.Template);
-        }
-        
-        if (SwitcherLeafIcon == null)
-        {
-            SetValue(SwitcherLeafIconProperty, AntDesignIconPackage.FileOutlined(), BindingPriority.Template);
-        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -593,16 +587,12 @@ public class TreeViewItem : AvaloniaTreeItem,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SetNodeSwitcherIcons();
         _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.HeaderPresenterPart);
         _iconPresenter   = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.IconPresenterPart);
         _frame  = e.NameScope.Find<Border>(TreeViewItemTheme.FramePart);
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemTheme.NodeSwitcherButtonPart);
         _itemsPresenterMotionActor = e.NameScope.Find<MotionActorControl>(TreeViewItemTheme.ItemsPresenterMotionActorPart);
         
-        SetupSwitcherButtonIconMode();
-        CreateNodeSwitcherDefaultIcons();
-
         if (_frame is not null)
         {
             _frame.PointerEntered += HandleFrameEntered;
@@ -620,7 +610,6 @@ public class TreeViewItem : AvaloniaTreeItem,
             _iconPresenter.PointerEntered += HandleHeaderPresenterEntered;
             _iconPresenter.PointerExited  += HandleHeaderPresenterExited;
         }
-
         
         IsLeaf                 = ItemCount == 0;
         _tempAnimationDisabled = true;
@@ -763,49 +752,6 @@ public class TreeViewItem : AvaloniaTreeItem,
 
                 context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint, childEndPoint);
             }
-        }
-    }
-
-    private void SetNodeSwitcherIcons()
-    {
-        if (SwitcherExpandIcon is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherExpandIcon, WidthProperty,
-                SharedTokenKey.IconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherExpandIcon, HeightProperty,
-                SharedTokenKey.IconSize));
-        }
-
-        if (SwitcherCollapseIcon is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherCollapseIcon, WidthProperty,
-                SharedTokenKey.IconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherCollapseIcon, HeightProperty,
-                SharedTokenKey.IconSize));
-        }
-
-        if (SwitcherRotationIcon is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherRotationIcon, WidthProperty,
-                SharedTokenKey.IconSizeXS));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherRotationIcon, HeightProperty,
-                SharedTokenKey.IconSizeXS));
-        }
-
-        if (SwitcherLoadingIcon is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherLoadingIcon, WidthProperty,
-                SharedTokenKey.IconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherLoadingIcon, HeightProperty,
-                SharedTokenKey.IconSize));
-        }
-
-        if (SwitcherLeafIcon is not null)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherLeafIcon, WidthProperty,
-                SharedTokenKey.IconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(SwitcherLeafIcon, HeightProperty,
-                SharedTokenKey.IconSize));
         }
     }
 

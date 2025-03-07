@@ -83,6 +83,8 @@ internal class TreeViewItemTheme : BaseControlTheme
             nodeSwitcherButton.RegisterInNameScope(scope);
             CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.IsMotionEnabledProperty,
                 TreeViewItem.IsMotionEnabledProperty);
+            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.IconModeProperty,
+                TreeViewItem.SwitcherModeProperty);
             CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.CollapseIconProperty,
                 TreeViewItem.SwitcherCollapseIconProperty);
             CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.ExpandIconProperty,
@@ -95,8 +97,6 @@ internal class TreeViewItemTheme : BaseControlTheme
                 TreeViewItem.SwitcherLeafIconProperty);
             CreateTemplateParentBinding(nodeSwitcherButton, ToggleButton.IsCheckedProperty,
                 Avalonia.Controls.TreeViewItem.IsExpandedProperty, BindingMode.TwoWay);
-            CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.IsLeafProperty,
-                TreeViewItem.IsLeafProperty);
             CreateTemplateParentBinding(nodeSwitcherButton, NodeSwitcherButton.IsLoadingProperty,
                 TreeViewItem.IsLoadingProperty);
 
@@ -207,6 +207,9 @@ internal class TreeViewItemTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorder);
         commonStyle.Add(TemplatedControl.BorderThicknessProperty, SharedTokenKey.BorderThickness);
         commonStyle.Add(TreeViewItem.EffectiveNodeBgProperty, Brushes.Transparent);
+        commonStyle.Add(TreeViewItem.MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
+        commonStyle.Add(TreeViewItem.TitleHeightProperty, TreeViewTokenKey.TitleHeight);
+        
         var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
         frameStyle.Add(Layoutable.HeightProperty, TreeViewTokenKey.TitleHeight);
         frameStyle.Add(Layoutable.MarginProperty, TreeViewTokenKey.TreeItemMargin);

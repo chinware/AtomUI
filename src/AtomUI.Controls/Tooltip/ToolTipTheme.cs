@@ -1,10 +1,7 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -29,26 +26,7 @@ internal class ToolTipTheme : BaseControlTheme
             {
                 Name = ToolTipContainerPart,
             };
-            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentProperty, ToolTip.ContentProperty,
-                BindingPriority.Template,
-                BindingMode.Default, new FuncValueConverter<object?, object?>(o =>
-                {
-                    if (o is string str)
-                    {
-                        var text = new SingleLineText
-                        {
-                            Text                = str,
-                            VerticalAlignment   = VerticalAlignment.Stretch,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                        };
-                        ;
-                        tooltip.AddThemeTokenBindingAction(() => tooltip.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(text,
-                            SingleLineText.HeightProperty, SharedTokenKey.FontSize)));
-                        return text;
-                    }
-
-                    return o;
-                }));
+            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentProperty, ToolTip.ContentProperty);
             CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentTemplateProperty,
                 ToolTip.ContentTemplateProperty);
 
