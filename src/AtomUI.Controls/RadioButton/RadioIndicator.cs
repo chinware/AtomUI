@@ -120,10 +120,8 @@ internal class RadioIndicator : Control,
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<RadioIndicator>();
 
-    internal static readonly DirectProperty<RadioIndicator, bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.RegisterDirect<RadioIndicator, bool>(nameof(IsWaveAnimationEnabled),
-            o => o.IsWaveAnimationEnabled,
-            (o, v) => o.IsWaveAnimationEnabled = v);
+    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<CheckBox>();
 
     internal bool IsMotionEnabled
     {
@@ -131,12 +129,10 @@ internal class RadioIndicator : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    private bool _isWaveAnimationEnabled = true;
-
     internal bool IsWaveAnimationEnabled
     {
-        get => _isWaveAnimationEnabled;
-        set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
     
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

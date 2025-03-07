@@ -119,10 +119,8 @@ internal class CheckBoxIndicator : Control,
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBoxIndicator>();
 
-    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsWaveAnimationEnabled),
-            o => o.IsWaveAnimationEnabled,
-            (o, v) => o.IsWaveAnimationEnabled = v);
+    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<CheckBoxIndicator>();
 
     internal bool IsMotionEnabled
     {
@@ -130,12 +128,10 @@ internal class CheckBoxIndicator : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    private bool _isWaveAnimationEnabled = true;
-
     internal bool IsWaveAnimationEnabled
     {
-        get => _isWaveAnimationEnabled;
-        set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
     
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

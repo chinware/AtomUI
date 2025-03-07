@@ -86,10 +86,8 @@ public class OptionButton : AvaloniaRadioButton,
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButton>();
 
-    internal static readonly DirectProperty<OptionButton, bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.RegisterDirect<OptionButton, bool>(nameof(IsWaveAnimationEnabled),
-            o => o.IsWaveAnimationEnabled,
-            (o, v) => o.IsWaveAnimationEnabled = v);
+    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<OptionButton>();
 
     internal bool IsMotionEnabled
     {
@@ -97,12 +95,10 @@ public class OptionButton : AvaloniaRadioButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    private bool _isWaveAnimationEnabled = true;
-
     internal bool IsWaveAnimationEnabled
     {
-        get => _isWaveAnimationEnabled;
-        set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
