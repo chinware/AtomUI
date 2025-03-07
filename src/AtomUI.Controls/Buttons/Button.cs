@@ -366,9 +366,6 @@ public class Button : AvaloniaButton,
             Text    = content;
             Content = null;
         }
-        
-        SetupIconBrush();
-        UpdatePseudoClasses();
     }
 
     private void SetupShadows()
@@ -507,16 +504,13 @@ public class Button : AvaloniaButton,
             {
                 SetupControlThemeBindings();
             }
-        }
-
-        if (this.IsAttachedToVisualTree())
-        {
-            if (e.Property == IsMotionEnabledProperty ||
-                e.Property == IsWaveAnimationEnabledProperty)
+            else if (e.Property == IsMotionEnabledProperty ||
+                     e.Property == IsWaveAnimationEnabledProperty)
             {
                 SetupTransitions();
             }
         }
+        
     }
 
     protected virtual bool SetupExtraContainerVisible()
@@ -589,9 +583,6 @@ public class Button : AvaloniaButton,
         base.OnApplyTemplate(e);
         // 为了防止意外被用户改变背景，做了一个 frame
         _frame = e.NameScope.Find<Border>(BaseButtonTheme.FramePart);
-        SetupShadows();
-        UpdatePseudoClasses();
-        SetupIcon();
         SetupTransitions();
     }
 
@@ -603,6 +594,10 @@ public class Button : AvaloniaButton,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
         SetupEffectiveBorderThickness();
+        SetupShadows();
+        SetupIconBrush();
+        SetupIcon();
+        UpdatePseudoClasses();
     }
 
     private void SetupEffectiveBorderThickness()

@@ -183,7 +183,7 @@ public class SingleLineText : Control
         ClipToBoundsProperty.OverrideDefaultValue<SingleLineText>(true);
         AffectsRender<SingleLineText>(BackgroundProperty, ForegroundProperty);
     }
-
+    
     private static bool IsValidLineHeight(double lineHeight) => double.IsNaN(lineHeight) || lineHeight > 0;
     
     public sealed override void Render(DrawingContext context)
@@ -201,20 +201,6 @@ public class SingleLineText : Control
         var scale      = LayoutHelper.GetLayoutScale(this);
         var padding    = LayoutHelper.RoundLayoutThickness(Padding, scale, scale);
         var top        = padding.Top;
-        var textHeight = TextLayout.Height;
-        if (Bounds.Height >= textHeight)
-        {
-            switch (VerticalAlignment)
-            {
-                case VerticalAlignment.Center:
-                    top += (Bounds.Height - textHeight + TextLayout.OverhangTrailing) / 2;
-                    break;
-
-                case VerticalAlignment.Bottom:
-                    top += Bounds.Height - textHeight;
-                    break;
-            }
-        }
 
         RenderTextLayout(context, new Point(padding.Left, top));
     }
