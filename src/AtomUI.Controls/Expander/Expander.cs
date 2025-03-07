@@ -278,6 +278,14 @@ public class Expander : AvaloniaExpander,
             }
         }
 
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsBorderlessProperty)
+            {
+                SetupEffectiveBorderThickness();
+            }
+        }
+
         if (change.Property == ExpandIconProperty)
         {
             if (change.OldValue is Icon oldIcon)
@@ -290,16 +298,7 @@ public class Expander : AvaloniaExpander,
                 newIcon.SetTemplatedParent(this);
             }
         }
-
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == IsBorderlessProperty)
-            {
-                SetupEffectiveBorderThickness();
-            }
-        }
-
-        if (change.Property == IsExpandedProperty)
+        else if (change.Property == IsExpandedProperty)
         {
             HandleExpandedChanged();
         }
@@ -309,6 +308,18 @@ public class Expander : AvaloniaExpander,
                  change.Property == ExpandDirectionProperty)
         {
             SetupExpanderBorderThickness();
+        }
+        else if (change.Property == AddOnContentProperty)
+        {
+            if (change.OldValue is Control oldControl)
+            {
+                oldControl.SetTemplatedParent(null);
+            }
+
+            if (change.NewValue is Control newControl)
+            {
+                newControl.SetTemplatedParent(this);
+            }
         }
     }
 
