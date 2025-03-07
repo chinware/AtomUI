@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Media;
@@ -68,11 +69,11 @@ public class MenuItem : AvaloniaMenuItem,
     static MenuItem()
     {
         AffectsRender<MenuItem>(BackgroundProperty);
+        AffectsMeasure<MenuItem>(IconProperty);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SetupIcon();
         base.OnApplyTemplate(e);
         HorizontalAlignment = HorizontalAlignment.Stretch;
         var scope = e.NameScope;
@@ -128,9 +129,12 @@ public class MenuItem : AvaloniaMenuItem,
             }
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (this.IsAttachedToLogicalTree())
         {
-            SetupIcon();
+            if (e.Property == IconProperty)
+            {
+                SetupIcon();
+            }
         }
     }
 
@@ -196,6 +200,7 @@ public class MenuItem : AvaloniaMenuItem,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+        SetupIcon();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
