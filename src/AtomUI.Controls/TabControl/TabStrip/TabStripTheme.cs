@@ -28,8 +28,11 @@ internal class TabStripTheme : BaseTabStripTheme
         {
             Name = TabsContainerPart
         };
+        tabScrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
             BaseTabStrip.TabStripPlacementProperty);
+        CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.IsMotionEnabledProperty,
+            BaseTabStrip.IsMotionEnabledProperty);
         var contentPanel = CreateTabStripContentPanel(baseTabStrip, scope);
         tabScrollViewer.Content  = contentPanel;
         tabScrollViewer.TabStrip = baseTabStrip;

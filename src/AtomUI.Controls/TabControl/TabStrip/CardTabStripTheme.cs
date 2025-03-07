@@ -39,9 +39,12 @@ internal class CardTabStripTheme : BaseTabStripTheme
         {
             Name = CardTabStripScrollViewerPart
         };
+        tabScrollViewer.IsScrollChainingEnabled = false;
         tabScrollViewer.RegisterInNameScope(scope);
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
             BaseTabStrip.TabStripPlacementProperty);
+        CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.IsMotionEnabledProperty,
+            BaseTabStrip.IsMotionEnabledProperty);
         var contentPanel = CreateTabStripContentPanel(scope);
         tabScrollViewer.Content  = contentPanel;
         tabScrollViewer.TabStrip = baseTabStrip;

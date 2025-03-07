@@ -47,6 +47,8 @@ internal class CardTabControlTheme : BaseTabControlTheme
         tabScrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
             Avalonia.Controls.TabControl.TabStripPlacementProperty);
+        CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.IsMotionEnabledProperty,
+            TabControl.IsMotionEnabledProperty);
         tabScrollViewer.RegisterInNameScope(scope);
         var contentPanel = CreateTabStripContentPanel(scope);
         tabScrollViewer.Content    = contentPanel;

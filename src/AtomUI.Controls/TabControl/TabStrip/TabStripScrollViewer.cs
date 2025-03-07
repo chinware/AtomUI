@@ -23,11 +23,11 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         base.OnApplyTemplate(e);
         if (_menuIndicator is not null)
         {
-            _menuIndicator.Click += HandleMenuIndicator;
+            _menuIndicator.Click += HandleMenuIndicatorClicked;
         }
     }
 
-    private void HandleMenuIndicator(object? sender, RoutedEventArgs args)
+    private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
     {
         if (_menuFlyout is null)
         {
@@ -36,6 +36,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                 IsShowArrow = false,
                 ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
             };
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _menuFlyout, MenuFlyout.IsMotionEnabledProperty);
         }
 
         if (TabStripPlacement == Dock.Top)
