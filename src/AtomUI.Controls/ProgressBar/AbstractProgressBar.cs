@@ -291,6 +291,7 @@ public abstract class AbstractProgressBar : RangeBase,
             ValueProperty);
         ValueProperty.OverrideMetadata<AbstractProgressBar>(
             new StyledPropertyMetadata<double>(defaultBindingMode: BindingMode.OneWay));
+        SizeTypeProperty.OverrideDefaultValue<AbstractProgressBar>(SizeType.Large);
     }
 
     public AbstractProgressBar()
