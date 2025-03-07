@@ -1,4 +1,4 @@
-using System.Reactive.Disposables;
+﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -247,6 +247,7 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
     {
         if (_target.Host is PopupRoot targetPopupRoot && _shadowRenderer != null)
         {
+            ConfigureShadowRenderer();
             var    impl           = targetPopupRoot.PlatformImpl!;
             var    targetPosition = impl.Position;
             double offsetX        = targetPosition.X;
