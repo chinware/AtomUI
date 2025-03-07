@@ -1,12 +1,10 @@
-﻿using System.Reactive.Disposables;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Media;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -288,10 +286,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.IsDarkStyle,
             (o, v) => o.IsDarkStyle = v);
 
-    internal static readonly DirectProperty<NavMenuItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
 
     internal double ActiveBarWidth
     {
@@ -361,12 +357,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         set => SetAndRaise(IsDarkStyleProperty, ref _isDarkStyle, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion

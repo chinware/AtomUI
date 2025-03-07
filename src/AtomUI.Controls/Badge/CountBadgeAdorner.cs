@@ -98,10 +98,8 @@ internal class CountBadgeAdorner : TemplatedControl
         AvaloniaProperty.Register<CountBadgeAdorner, double>(
             nameof(BadgeShadowSize));
 
-    internal static readonly DirectProperty<CountBadgeAdorner, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CountBadgeAdorner, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CountBadgeAdorner>();
 
     private bool _isAdornerMode;
 
@@ -147,12 +145,10 @@ internal class CountBadgeAdorner : TemplatedControl
         set => SetValue(BadgeShadowSizeProperty, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion

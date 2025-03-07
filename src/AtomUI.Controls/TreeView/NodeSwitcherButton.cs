@@ -92,10 +92,8 @@ internal class NodeSwitcherButton : ToggleButton
             o => o.IconMode,
             (o, v) => o.IconMode = v);
     
-    internal static readonly DirectProperty<NodeSwitcherButton, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<NodeSwitcherButton, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NodeSwitcherButton>();
 
     internal bool IsLeafIconVisible
     {
@@ -111,12 +109,10 @@ internal class NodeSwitcherButton : ToggleButton
         set => SetAndRaise(IconModeProperty, ref _iconMode, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     internal bool IsNodeAnimating { get; set; } = false;

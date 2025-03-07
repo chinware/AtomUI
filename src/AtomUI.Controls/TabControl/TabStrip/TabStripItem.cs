@@ -86,10 +86,8 @@ public class TabStripItem : AvaloniaTabStripItem,
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));
     
-    internal static readonly DirectProperty<TabStripItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<TabStripItem, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabStripItem>();
 
     public TabSharp Shape
     {
@@ -97,12 +95,10 @@ public class TabStripItem : AvaloniaTabStripItem,
         set => SetValue(ShapeProperty, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

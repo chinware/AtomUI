@@ -116,22 +116,18 @@ internal class CheckBoxIndicator : Control,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBoxIndicator>();
 
     internal static readonly DirectProperty<CheckBoxIndicator, bool> IsWaveAnimationEnabledProperty
         = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsWaveAnimationEnabled),
             o => o.IsWaveAnimationEnabled,
             (o, v) => o.IsWaveAnimationEnabled = v);
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     private bool _isWaveAnimationEnabled = true;

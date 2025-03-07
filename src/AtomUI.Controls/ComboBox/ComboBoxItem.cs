@@ -21,17 +21,13 @@ public class ComboBoxItem : AvaloniaComboBoxItem
         set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
     }
     
-    internal static readonly DirectProperty<ComboBoxItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<ComboBoxItem, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-
-    private bool _isMotionEnabled;
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBoxItem>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     #endregion
 }

@@ -64,10 +64,8 @@ internal class DrawerInfoContainer : HeaderedContentControl
             o => o.HasExtra,
             (o, v) => o.HasExtra = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerInfoContainer>();
 
     private DrawerPlacement _placement = DrawerPlacement.Right;
 
@@ -149,12 +147,10 @@ internal class DrawerInfoContainer : HeaderedContentControl
         set => SetAndRaise(HasExtraProperty, ref _hasExtra, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     #endregion

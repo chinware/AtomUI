@@ -82,10 +82,8 @@ internal class DotBadgeAdorner : TemplatedControl
         AvaloniaProperty.Register<DotBadgeAdorner, TimeSpan>(
             nameof(MotionDuration));
     
-    internal static readonly DirectProperty<DotBadgeAdorner, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DotBadgeAdorner, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadgeAdorner>();
     
     internal TimeSpan MotionDuration
     {
@@ -93,12 +91,10 @@ internal class DotBadgeAdorner : TemplatedControl
         set => SetValue(MotionDurationProperty, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     #endregion

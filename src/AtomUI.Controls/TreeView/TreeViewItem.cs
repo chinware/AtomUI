@@ -195,10 +195,8 @@ public class TreeViewItem : AvaloniaTreeItem,
     internal static readonly StyledProperty<CornerRadius> EffectiveNodeCornerRadiusProperty
         = AvaloniaProperty.Register<TreeViewItem, CornerRadius>(nameof(EffectiveNodeCornerRadius));
     
-    internal static readonly DirectProperty<TreeViewItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeViewItem>();
     
     internal static readonly DirectProperty<TreeViewItem, TimeSpan> MotionDurationProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, TimeSpan>(nameof(MotionDuration),
@@ -309,12 +307,10 @@ public class TreeViewItem : AvaloniaTreeItem,
         set => SetValue(EffectiveNodeCornerRadiusProperty, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     private TimeSpan _motionDuration;

@@ -32,17 +32,13 @@ internal sealed class CalendarDayButton : AvaloniaButton,
     internal const string BlackoutPC = ":blackout";
     internal const string DayfocusedPC = ":dayfocused";
     
-    internal static readonly DirectProperty<CalendarDayButton, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CalendarDayButton, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-
-    private bool _isMotionEnabled;
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarDayButton>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

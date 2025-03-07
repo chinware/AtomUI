@@ -64,10 +64,8 @@ internal class SwitchKnob : Control,
     internal static readonly StyledProperty<double> KnobRenderWidthProperty
         = AvaloniaProperty.Register<SwitchKnob, double>(nameof(KnobRenderWidth));
     
-    internal static readonly DirectProperty<SwitchKnob, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<SwitchKnob, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SwitchKnob>();
     
     internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
         = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration));
@@ -101,12 +99,10 @@ internal class SwitchKnob : Control,
         set => SetValue(KnobRenderWidthProperty, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     internal TimeSpan LoadingAnimationDuration

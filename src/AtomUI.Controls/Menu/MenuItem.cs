@@ -43,17 +43,13 @@ public class MenuItem : AvaloniaMenuItem,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<MenuItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<MenuItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-
-    private bool _isMotionEnabled;
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuItem>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

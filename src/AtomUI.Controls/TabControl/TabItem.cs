@@ -63,10 +63,8 @@ public class TabItem : AvaloniaTabItem,
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabItem, TabSharp>(nameof(Shape));
 
-    internal static readonly DirectProperty<TabItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<TabItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabItem>();
 
     public SizeType SizeType
     {
@@ -79,13 +77,11 @@ public class TabItem : AvaloniaTabItem,
         get => GetValue(ShapeProperty);
         set => SetValue(ShapeProperty, value);
     }
-
-    private bool _isMotionEnabled;
-
+    
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

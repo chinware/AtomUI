@@ -109,10 +109,8 @@ public class CollapseItem : HeaderedContentControl,
             o => o.MotionDuration,
             (o, v) => o.MotionDuration = v);
 
-    internal static readonly DirectProperty<CollapseItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CollapseItem>();
 
     private SizeType _sizeType;
 
@@ -178,12 +176,10 @@ public class CollapseItem : HeaderedContentControl,
         set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion
@@ -301,7 +297,7 @@ public class CollapseItem : HeaderedContentControl,
             return;
         }
 
-        if (!_isMotionEnabled || _tempAnimationDisabled)
+        if (!IsMotionEnabled || _tempAnimationDisabled)
         {
             _motionActor.IsVisible = true;
             return;
@@ -320,7 +316,7 @@ public class CollapseItem : HeaderedContentControl,
             return;
         }
 
-        if (!_isMotionEnabled || _tempAnimationDisabled)
+        if (!IsMotionEnabled || _tempAnimationDisabled)
         {
             _motionActor.IsVisible = false;
             return;

@@ -115,10 +115,8 @@ internal class TimeView : TemplatedControl,
     internal static readonly StyledProperty<bool> IsPointerInSelectorProperty =
         AvaloniaProperty.Register<TimeView, bool>(nameof(IsPointerInSelector), false);
 
-    internal static readonly DirectProperty<TimeView, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<TimeView, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TimeView>();
 
     private double _spacerWidth;
 
@@ -142,12 +140,10 @@ internal class TimeView : TemplatedControl,
         set => SetAndRaise(ItemHeightProperty, ref _itemHeight, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

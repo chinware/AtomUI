@@ -231,10 +231,8 @@ public class SliderTrack : Control,
     internal static readonly RoutedEvent<PointerReleasedEventArgs> TrailReleasedEvent =
         RoutedEvent.Register<SliderTrack, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
 
-    internal static readonly DirectProperty<SliderTrack, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<SliderTrack, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderTrack>();
 
     internal double SliderTrackSize
     {
@@ -284,12 +282,10 @@ public class SliderTrack : Control,
         set => SetValue(MarkBorderThicknessProperty, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.TimePickerLang;
-using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -68,62 +67,37 @@ internal class DateTimePickerPanel : Panel,
                                      ITokenResourceConsumer
 {
     #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="ItemHeight" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<double> ItemHeightProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, double>(nameof(ItemHeight), 40.0);
-
-    /// <summary>
-    /// Defines the <see cref="PanelType" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<DateTimePickerPanelType> PanelTypeProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, DateTimePickerPanelType>(nameof(PanelType));
-
-    /// <summary>
-    /// Defines the <see cref="ItemFormat" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<string> ItemFormatProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, string>(nameof(ItemFormat), "yyyy");
 
-    /// <summary>
-    /// Defines the <see cref="ShouldLoop" /> property
-    /// </summary>
     public static readonly StyledProperty<bool> ShouldLoopProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, bool>(nameof(ShouldLoop));
-
-    /// <summary>
-    /// Gets or sets the height of each item
-    /// </summary>
+    
     public double ItemHeight
     {
         get => GetValue(ItemHeightProperty);
         set => SetValue(ItemHeightProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets what this panel displays in date or time units
-    /// </summary>
+    
     public DateTimePickerPanelType PanelType
     {
         get => GetValue(PanelTypeProperty);
         set => SetValue(PanelTypeProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the string format for the items, using standard
-    /// .net DateTime or TimeSpan formatting. Format must match panel type
-    /// </summary>
+    
     public string ItemFormat
     {
         get => GetValue(ItemFormatProperty);
         set => SetValue(ItemFormatProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets whether the panel should loop
-    /// </summary>
+    
     public bool ShouldLoop
     {
         get => GetValue(ShouldLoopProperty);
@@ -134,17 +108,13 @@ internal class DateTimePickerPanel : Panel,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<DateTimePickerPanel, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DateTimePickerPanel, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-
-    private bool _isMotionEnabled;
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DateTimePickerPanel>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

@@ -1,8 +1,6 @@
 using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -12,7 +10,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Threading;
@@ -68,10 +65,8 @@ internal class DrawerContainer : ContentControl
             o => o.DialogSize,
             (o, v) => o.DialogSize = v);
 
-    internal static readonly DirectProperty<DrawerContainer, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerContainer>();
 
     internal static readonly DirectProperty<DrawerContainer, bool> CloseWhenClickOnMaskProperty
         = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(CloseWhenClickOnMask),
@@ -165,14 +160,12 @@ internal class DrawerContainer : ContentControl
         set => SetAndRaise(DialogSizeProperty, ref _dialogSize, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
-
+    
     private bool _closeWhenClickOnMask;
 
     internal bool CloseWhenClickOnMask

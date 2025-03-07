@@ -23,18 +23,14 @@ public class MenuScrollViewer : AvaloniaScrollViewer,
     private IconButton? _scrollDownButton;
 
     #region 内部属性定义
-
-    internal static readonly DirectProperty<MenuScrollViewer, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<MenuScrollViewer, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-
-    private bool _isMotionEnabled;
+    
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuScrollViewer>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

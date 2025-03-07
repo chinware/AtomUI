@@ -271,17 +271,13 @@ internal class Calendar : TemplatedControl
 
     #region 内部属性定义
     
-    internal static readonly DirectProperty<Calendar, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<Calendar, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     internal CalendarDayButton? FocusButton { get; set; }

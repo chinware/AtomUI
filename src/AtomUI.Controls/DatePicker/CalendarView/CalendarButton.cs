@@ -22,17 +22,13 @@ internal sealed class CalendarButton : AvaloniaButton
 {
     internal const string BtnFocusedPC = ":btnfocused";
     
-    internal static readonly DirectProperty<CalendarButton, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CalendarButton, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-
-    private bool _isMotionEnabled;
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarButton>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     /// <summary>

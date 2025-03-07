@@ -4,8 +4,6 @@ using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -49,11 +47,9 @@ public class SegmentedItem : ContentControl,
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SegmentedItem>();
-
-    internal static readonly DirectProperty<SegmentedItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<SegmentedItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SegmentedItem>();
     
     internal SizeType SizeType
     {
@@ -61,12 +57,10 @@ public class SegmentedItem : ContentControl,
         set => SetValue(SizeTypeProperty, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

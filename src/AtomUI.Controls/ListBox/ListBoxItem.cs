@@ -17,10 +17,8 @@ public class ListBoxItem : AvaloniaListBoxItem
             o => o.SizeType,
             (o, v) => o.SizeType = v);
 
-    internal static readonly DirectProperty<ListBoxItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBoxItem>();
 
     internal static readonly DirectProperty<ListBoxItem, bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(DisabledItemHoverEffect),
@@ -35,12 +33,10 @@ public class ListBoxItem : AvaloniaListBoxItem
         set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     private bool _disabledItemHoverEffect;

@@ -151,10 +151,8 @@ public abstract class PopupFlyoutBase : FlyoutBase,
     internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
         AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
 
-    internal static readonly DirectProperty<PopupFlyoutBase, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<PopupFlyoutBase, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
     
     internal bool IsDetectMouseClickEnabled
     {
@@ -162,12 +160,10 @@ public abstract class PopupFlyoutBase : FlyoutBase,
         set => SetValue(IsDetectMouseClickEnabledProperty, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion

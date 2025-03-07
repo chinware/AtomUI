@@ -69,10 +69,8 @@ internal class CalendarItem : TemplatedControl,
             o => o.IsMonthViewMode,
             (o, v) => o.IsMonthViewMode = v);
     
-    internal static readonly DirectProperty<CalendarItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CalendarItem, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();
 
     private bool _isMonthViewMode = true;
 
@@ -85,12 +83,10 @@ internal class CalendarItem : TemplatedControl,
         set => SetAndRaise(IsMonthViewModeProperty, ref _isMonthViewMode, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     /// <summary>

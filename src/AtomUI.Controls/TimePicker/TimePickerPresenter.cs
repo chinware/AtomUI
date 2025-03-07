@@ -99,17 +99,13 @@ internal class TimePickerPresenter : PickerPresenterBase,
         set => SetValue(TempSelectedTimeProperty, value);
     }
     
-    internal static readonly DirectProperty<TimePickerPresenter, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<TimePickerPresenter, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TimePickerPresenter>();
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;

@@ -3,7 +3,6 @@ using System.Reactive.Disposables;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
