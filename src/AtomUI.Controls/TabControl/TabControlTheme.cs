@@ -65,7 +65,7 @@ internal class TabControlTheme : BaseTabControlTheme
         layout.Children.Add(border);
         CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, ItemsControl.ItemsPanelProperty);
         return layout;
-    }
+    } 
 
     protected override void BuildStyles()
     {
