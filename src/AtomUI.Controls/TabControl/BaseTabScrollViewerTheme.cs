@@ -41,15 +41,13 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             {
                 Name = ScrollViewLayoutPart
             };
-            
-            var menuIndicatorIcon = AntDesignIconPackage.EllipsisOutlined();
-            menuIndicatorIcon.HorizontalAlignment = HorizontalAlignment.Center;
-            menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
             var menuIndicator = new IconButton
             {
                 Name = ScrollMenuIndicatorPart,
-                Icon = menuIndicatorIcon
+                Icon = AntDesignIconPackage.EllipsisOutlined(),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
             };
             
             menuIndicator.RegisterInNameScope(scope);
@@ -119,6 +117,13 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
+        {
+            var menuIndicatorStyle =
+                new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
+            menuIndicatorStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
+            menuIndicatorStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
+            Add(menuIndicatorStyle);
+        }
         var topPlacementStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(BaseTabScrollViewer.TabStripPlacementProperty, Dock.Top));
         {
@@ -130,8 +135,6 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
             menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlTokenKey.MenuIndicatorPaddingHorizontal);
             menuIndicatorStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextSecondary);
-            menuIndicatorStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
-            menuIndicatorStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));

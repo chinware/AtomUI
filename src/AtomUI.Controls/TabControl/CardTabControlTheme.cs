@@ -38,12 +38,13 @@ internal class CardTabControlTheme : BaseTabControlTheme
         };
         cardTabControlContainer.RegisterInNameScope(scope);
         CreateTemplateParentBinding(cardTabControlContainer, TabsContainerPanel.TabStripPlacementProperty,
-            BaseTabStrip.TabStripPlacementProperty);
+            BaseTabControl.TabStripPlacementProperty);
 
         var tabScrollViewer = new TabControlScrollViewer
         {
             Name = CardTabStripScrollViewerPart
         };
+        tabScrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
             Avalonia.Controls.TabControl.TabStripPlacementProperty);
         tabScrollViewer.RegisterInNameScope(scope);

@@ -5,7 +5,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;
@@ -186,7 +185,6 @@ public class IconButton : AvaloniaButton,
                 Icon.LoadingAnimationDurationProperty);
             BindUtils.RelayBind(this, IconHeightProperty, Icon, HeightProperty);
             BindUtils.RelayBind(this, IconWidthProperty, Icon, WidthProperty);
-
             if (Icon.ThemeType != IconThemeType.TwoTone)
             {
                 BindUtils.RelayBind(this, NormalIconColorProperty, Icon, Icon.NormalFilledBrushProperty);

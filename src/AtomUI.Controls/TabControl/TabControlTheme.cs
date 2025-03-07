@@ -30,10 +30,11 @@ internal class TabControlTheme : BaseTabControlTheme
 
         var tabScrollViewer = new TabControlScrollViewer
         {
-            Name = TabsContainerPart
+            Name = TabsContainerPart,
         };
+        tabScrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
-            BaseTabStrip.TabStripPlacementProperty);
+            BaseTabControl.TabStripPlacementProperty);
 
         var contentPanel = CreateTabStripContentPanel(baseTabControl, scope);
         tabScrollViewer.Content    = contentPanel;
