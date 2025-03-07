@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using System.Windows.Input;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -22,6 +23,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -258,7 +260,6 @@ public class SplitButton : ContentControl,
     private KeyGesture? _hotkey;
 
     private bool _commandCanExecute = true;
-    private bool _isAttachedToLogicalTree;
     private bool _isFlyoutOpen;
     private bool _isKeyboardPressed;
     private readonly FlyoutStateHelper _flyoutStateHelper;
@@ -406,31 +407,29 @@ public class SplitButton : ContentControl,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
         _flyoutStateHelper.NotifyAttachedToVisualTree();
+        UpdatePseudoClasses();
+        SetupEffectiveButtonType();
+        FlyoutButtonIcon ??= AntDesignIconPackage.EllipsisOutlined();
+        SetupFlyoutProperties();
+        RegisterFlyoutEvents(Flyout);
     }
 
     /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
+
         UnregisterEvents();
         UnregisterFlyoutEvents(Flyout);
 
         _primaryButton                  = e.NameScope.Find<Button>(SplitButtonTheme.PrimaryButtonPart);
         _secondaryButton                = e.NameScope.Find<Button>(SplitButtonTheme.SecondaryButtonPart);
         _flyoutStateHelper.AnchorTarget = _secondaryButton;
-
+        SetupButtonCornerRadius();
         if (_primaryButton != null)
         {
             _primaryButton.Click += HandlePrimaryButtonClick;
         }
-
-        FlyoutButtonIcon ??= AntDesignIconPackage.EllipsisOutlined();
-        SetupButtonCornerRadius();
-        SetupEffectiveButtonType();
-        SetupFlyoutProperties();
-        RegisterFlyoutEvents(Flyout);
-        UpdatePseudoClasses();
     }
 
     private void SetupFlyoutProperties()
@@ -468,8 +467,6 @@ public class SplitButton : ContentControl,
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
-
-        _isAttachedToLogicalTree = true;
     }
 
     /// <inheritdoc />
@@ -486,7 +483,6 @@ public class SplitButton : ContentControl,
             Command.CanExecuteChanged -= CanExecuteChanged;
         }
         this.DisposeTokenBindings();
-        _isAttachedToLogicalTree = false;
     }
 
     /// <inheritdoc />
@@ -497,7 +493,7 @@ public class SplitButton : ContentControl,
             // Must unregister events here while a reference to the old command still exists
             var (oldValue, newValue) = e.GetOldAndNewValue<ICommand?>();
 
-            if (_isAttachedToLogicalTree)
+            if (this.IsAttachedToLogicalTree())
             {
                 if (oldValue is not null)
                 {
@@ -534,13 +530,17 @@ public class SplitButton : ContentControl,
             RegisterFlyoutEvents(newFlyout);
             UpdatePseudoClasses();
         }
-        else if (e.Property == CornerRadiusProperty)
-        {
-            SetupButtonCornerRadius();
-        }
         else if (e.Property == IsPrimaryButtonTypeProperty)
         {
             SetupEffectiveButtonType();
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (e.Property == CornerRadiusProperty)
+            {
+                SetupButtonCornerRadius();
+            }
         }
 
         base.OnPropertyChanged(e);

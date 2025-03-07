@@ -227,7 +227,8 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
                 {
                     _target.Host.Topmost = true;
                 }
-                targetPopupRoot.Activate();
+                // TODO POPUP 需要评估跨平台一致性
+                // targetPopupRoot.Activate();
             });
         }
     }
