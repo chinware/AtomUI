@@ -25,13 +25,13 @@ internal class LoadingIndicatorTheme : BaseControlTheme
     {
         return new FuncControlTemplate<LoadingIndicator>((indicator, scope) =>
         {
-            var loadingText = new SingleLineText()
+            var loadingText = new TextBlock()
             {
                 Name                = LoadingTextPart,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
             };
-            CreateTemplateParentBinding(loadingText, SingleLineText.TextProperty, LoadingIndicator.LoadingMsgProperty);
+            CreateTemplateParentBinding(loadingText, TextBlock.TextProperty, LoadingIndicator.LoadingMsgProperty);
             loadingText.RegisterInNameScope(scope);
             var mainContainer = new Canvas
             {
@@ -53,8 +53,8 @@ internal class LoadingIndicatorTheme : BaseControlTheme
         commonStyle.Add(LoadingIndicator.MotionDurationProperty, LoadingIndicatorTokenKey.IndicatorDuration);
         commonStyle.Add(LoadingIndicator.DotBgBrushProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(LoadingIndicator.IndicatorTextMarginProperty, SharedTokenKey.MarginXXS);
-        var loadingTextStyle = new Style(selector => selector.Nesting().Template().OfType<SingleLineText>());
-        loadingTextStyle.Add(SingleLineText.ForegroundProperty, SharedTokenKey.ColorPrimary);
+        var loadingTextStyle = new Style(selector => selector.Nesting().Template().OfType<TextBlock>());
+        loadingTextStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(loadingTextStyle);
         BuildDotSizeStyle(commonStyle);
         BuildCustomIconStyle();

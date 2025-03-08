@@ -122,7 +122,7 @@ internal class ComboBoxTheme : BaseControlTheme
     private Panel BuildComboBoxContent(ComboBox comboBox, INameScope scope)
     {
         var contentLayout = new Panel();
-        var placeholder = new SingleLineText()
+        var placeholder = new TextBlock()
         {
             Name                = PlaceholderTextPart,
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -135,7 +135,7 @@ internal class ComboBoxTheme : BaseControlTheme
         CreateTemplateParentBinding(placeholder, Visual.IsVisibleProperty, SelectingItemsControl.SelectedItemProperty,
             BindingMode.Default,
             ObjectConverters.IsNull);
-        CreateTemplateParentBinding(placeholder, SingleLineText.TextProperty,
+        CreateTemplateParentBinding(placeholder, TextBlock.TextProperty,
             Avalonia.Controls.ComboBox.PlaceholderTextProperty);
         contentLayout.Children.Add(placeholder);
 

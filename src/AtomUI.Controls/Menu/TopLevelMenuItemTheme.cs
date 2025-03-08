@@ -86,6 +86,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         {
             Name = ItemsPresenterPart
         };
+        scrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, ItemsControl.ItemsPanelProperty);
         Grid.SetIsSharedSizeScope(itemsPresenter, true);
         KeyboardNavigation.SetTabNavigation(itemsPresenter, KeyboardNavigationMode.Continue);

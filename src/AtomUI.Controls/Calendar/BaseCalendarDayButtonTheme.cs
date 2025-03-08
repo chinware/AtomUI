@@ -42,7 +42,7 @@ internal class BaseCalendarDayButtonTheme : BaseControlTheme
                 {
                     if (o is string str)
                     {
-                       return new SingleLineText()
+                       return new TextBlock()
                         {
                             HorizontalAlignment = HorizontalAlignment.Center,
                             VerticalAlignment   = VerticalAlignment.Center,

@@ -36,6 +36,7 @@ internal class ContextMenuTheme : BaseControlTheme
             {
                 Name = ItemsPresenterPart
             };
+            scrollViewer.IsScrollChainingEnabled = false;
             CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty,
                 ItemsControl.ItemsPanelProperty);
             KeyboardNavigation.SetTabNavigation(itemsPresenter, KeyboardNavigationMode.Continue);

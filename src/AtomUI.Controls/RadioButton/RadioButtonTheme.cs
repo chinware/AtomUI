@@ -59,17 +59,17 @@ internal class RadioButtonTheme : BaseControlTheme
             CreateTemplateParentBinding(indicator, RadioIndicator.IsCheckedProperty, RadioButton.IsCheckedProperty);
             layout.Children.Add(indicator);
 
-            var labelText = new SingleLineText()
+            var labelText = new TextBlock()
             {
                 Name              = LabelTextPart,
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, RadioButton.ContentProperty,
+            CreateTemplateParentBinding(labelText, TextBlock.TextProperty, RadioButton.ContentProperty,
                 BindingMode.Default,
                 new FuncValueConverter<object?, string?>(content => content?.ToString()));
-            CreateTemplateParentBinding(labelText, SingleLineText.FontSizeProperty, RadioButton.FontSizeProperty);
-            CreateTemplateParentBinding(labelText, SingleLineText.IsVisibleProperty, RadioButton.ContentProperty,
+            CreateTemplateParentBinding(labelText, TextBlock.FontSizeProperty, RadioButton.FontSizeProperty);
+            CreateTemplateParentBinding(labelText, TextBlock.IsVisibleProperty, RadioButton.ContentProperty,
                 BindingMode.Default,
                 ObjectConverters.IsNotNull);
 

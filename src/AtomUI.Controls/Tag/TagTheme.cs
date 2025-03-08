@@ -65,15 +65,15 @@ internal class TagTheme : BaseControlTheme
             CreateTemplateParentBinding(iconContentPresenter, ContentPresenter.ContentProperty, Tag.IconProperty);
             elementsLayout.Children.Add(iconContentPresenter);
 
-            var lineText = new SingleLineText()
+            var lineText = new TextBlock()
             {
                 Name              = TagTextLabelPart,
                 VerticalAlignment = VerticalAlignment.Center,
             };
             Grid.SetColumn(lineText, 1);
             lineText.RegisterInNameScope(scope);
-            CreateTemplateParentBinding(lineText, SingleLineText.TextProperty, Tag.TagTextProperty);
-            CreateTemplateParentBinding(lineText, SingleLineText.PaddingProperty, Tag.TagTextPaddingInlineProperty);
+            CreateTemplateParentBinding(lineText, TextBlock.TextProperty, Tag.TagTextProperty);
+            CreateTemplateParentBinding(lineText, TextBlock.PaddingProperty, Tag.TagTextPaddingInlineProperty);
             elementsLayout.Children.Add(lineText);
 
             var closeBtn = new IconButton
@@ -103,7 +103,7 @@ internal class TagTheme : BaseControlTheme
         this.Add(Tag.TagTextPaddingInlineProperty, TagTokenKey.TagTextPaddingInline);
 
         var lineTextStyle = new Style(selector => selector.Nesting().Template().Name(TagTextLabelPart));
-        lineTextStyle.Add(SingleLineText.LineHeightProperty, TagTokenKey.TagLineHeight);
+        lineTextStyle.Add(TextBlock.LineHeightProperty, TagTokenKey.TagLineHeight);
         Add(lineTextStyle);
 
         BuildTagIconStyle();

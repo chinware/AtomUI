@@ -108,7 +108,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
                 {
                     if (o is string str)
                     {
-                        return new SingleLineText
+                        return new TextBlock
                         {
                             Text = str,
                             VerticalAlignment = VerticalAlignment.Center,
@@ -122,7 +122,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
         itemTextPresenter.RegisterInNameScope(scope);
 
-        var inputGestureText = new SingleLineText()
+        var inputGestureText = new TextBlock()
         {
             Name                = InputGestureTextPart,
             HorizontalAlignment = HorizontalAlignment.Right,
@@ -132,7 +132,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         Grid.SetColumn(inputGestureText, 2);
 
         CreateTemplateParentBinding(inputGestureText,
-            SingleLineText.TextProperty,
+            TextBlock.TextProperty,
             NavMenuItem.InputGestureProperty,
             BindingMode.Default,
             NavMenuItem.KeyGestureConverter);
@@ -184,7 +184,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
-            keyGestureStyle.Add(SingleLineText.ForegroundProperty, NavMenuTokenKey.KeyGestureColor);
+            keyGestureStyle.Add(TextBlock.ForegroundProperty, NavMenuTokenKey.KeyGestureColor);
             commonStyle.Add(keyGestureStyle);
         }
         

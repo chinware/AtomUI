@@ -142,7 +142,7 @@ internal class ExpanderTheme : BaseControlTheme
                 {
                     if (o is string str)
                     {
-                        return new SingleLineText()
+                        return new TextBlock()
                         {
                             Text              = str,
                             VerticalAlignment = VerticalAlignment.Center
@@ -413,7 +413,7 @@ internal class ExpanderTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPaddingLG);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSizeLG);
-            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeightLG);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeightLG);
             largeSizeStyle.Add(decoratorStyle);
         }
 
@@ -431,7 +431,7 @@ internal class ExpanderTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPadding);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
-            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeight);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
             middleSizeStyle.Add(decoratorStyle);
         }
 
@@ -448,7 +448,7 @@ internal class ExpanderTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, ExpanderTokenKey.HeaderPaddingSM);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
-            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeight);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
             smallSizeStyle.Add(decoratorStyle);
         }
 

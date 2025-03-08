@@ -67,7 +67,7 @@ internal class TimeViewTheme : BaseControlTheme
 
     private void BuildHeader(TimeView timeView, Grid rootLayout, INameScope scope)
     {
-        var headerText = new SingleLineText()
+        var headerText = new TextBlock()
         {
             Name = HeaderTextPart
         };
@@ -250,11 +250,11 @@ internal class TimeViewTheme : BaseControlTheme
         commonStyle.Add(TimeView.ItemHeightProperty, TimePickerTokenKey.ItemHeight);
         
         var headerTextStyle = new Style(selector => selector.Nesting().Template().Name(HeaderTextPart));
-        headerTextStyle.Add(SingleLineText.HeightProperty, TimePickerTokenKey.ItemHeight);
-        headerTextStyle.Add(SingleLineText.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-        headerTextStyle.Add(SingleLineText.VerticalAlignmentProperty, VerticalAlignment.Center);
-        headerTextStyle.Add(SingleLineText.FontWeightProperty, FontWeight.SemiBold);
-        headerTextStyle.Add(SingleLineText.MarginProperty, TimePickerTokenKey.HeaderMargin);
+        headerTextStyle.Add(TextBlock.HeightProperty, TimePickerTokenKey.ItemHeight);
+        headerTextStyle.Add(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        headerTextStyle.Add(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+        headerTextStyle.Add(TextBlock.FontWeightProperty, FontWeight.SemiBold);
+        headerTextStyle.Add(TextBlock.MarginProperty, TimePickerTokenKey.HeaderMargin);
         
         var dateTimePickerPanelStyle = new Style(selector => selector.Nesting().Template().OfType<DateTimePickerPanel>());
         dateTimePickerPanelStyle.Add(DateTimePickerPanel.ItemHeightProperty, TimePickerTokenKey.ItemHeight);

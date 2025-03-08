@@ -64,7 +64,7 @@ internal class CollapseItemTheme : BaseControlTheme
                     {
                         if (o is string str)
                         {
-                            return new SingleLineText()
+                            return new TextBlock()
                             {
                                 Text              = str,
                                 VerticalAlignment = VerticalAlignment.Center
@@ -245,7 +245,7 @@ internal class CollapseItemTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenKey.CollapseHeaderPaddingLG);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSizeLG);
-            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeightLG);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeightLG);
             largeSizeStyle.Add(decoratorStyle);
         }
 
@@ -264,7 +264,7 @@ internal class CollapseItemTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Decorator.PaddingProperty, CollapseTokenKey.HeaderPadding);
             decoratorStyle.Add(TextElement.FontSizeProperty, SharedTokenKey.FontSize);
-            decoratorStyle.Add(SingleLineText.LineHeightProperty, SharedTokenKey.FontHeight);
+            decoratorStyle.Add(TextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
             middleSizeStyle.Add(decoratorStyle);
         }
 

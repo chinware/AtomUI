@@ -32,7 +32,7 @@ internal class OptionButtonTheme : BaseControlTheme
                 VerticalAlignment   = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
-            var label = new SingleLineText
+            var label = new TextBlock
             {
                 Padding             = new Thickness(0),
                 VerticalAlignment   = VerticalAlignment.Center,
@@ -40,7 +40,7 @@ internal class OptionButtonTheme : BaseControlTheme
             };
 
             stackPanel.Children.Add(label);
-            CreateTemplateParentBinding(label, SingleLineText.TextProperty, OptionButton.TextProperty);
+            CreateTemplateParentBinding(label, TextBlock.TextProperty, OptionButton.TextProperty);
             return stackPanel;
         });
     }

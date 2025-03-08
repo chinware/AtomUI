@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Data;
+﻿using AtomUI.Data;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -131,17 +130,7 @@ public class LoadingMaskHost : Control
             ShowLoading();
         }
     }
-
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        if (MaskTarget is not null)
-        {
-            MaskTarget.SetLogicalParent(this);
-            VisualChildren.Add(MaskTarget);
-        }
-    }
-
+    
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -165,6 +154,20 @@ public class LoadingMaskHost : Control
                 {
                     HideLoading();
                 }
+            }
+        }
+        else if (change.Property == MaskTargetProperty)
+        {
+            if (change.OldValue is Control oldMaskTarget)
+            {
+                LogicalChildren.Remove(oldMaskTarget);
+                VisualChildren.Remove(oldMaskTarget);
+            }
+
+            if (change.NewValue is Control newMaskTarget)
+            {
+                LogicalChildren.Add(newMaskTarget);
+                VisualChildren.Add(newMaskTarget);
             }
         }
     }

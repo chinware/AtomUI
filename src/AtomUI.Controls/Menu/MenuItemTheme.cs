@@ -116,7 +116,7 @@ internal class MenuItemTheme : BaseControlTheme
                     {
                         if (o is string str)
                         {
-                            return new SingleLineText()
+                            return new TextBlock
                             {
                                 Text              = str,
                                 VerticalAlignment = VerticalAlignment.Center
@@ -130,7 +130,7 @@ internal class MenuItemTheme : BaseControlTheme
 
             itemTextPresenter.RegisterInNameScope(scope);
 
-            var inputGestureText = new SingleLineText()
+            var inputGestureText = new TextBlock
             {
                 Name                = InputGestureTextPart,
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -140,7 +140,7 @@ internal class MenuItemTheme : BaseControlTheme
             Grid.SetColumn(inputGestureText, 3);
 
             CreateTemplateParentBinding(inputGestureText,
-                SingleLineText.TextProperty,
+                TextBlock.TextProperty,
                 Avalonia.Controls.MenuItem.InputGestureProperty,
                 BindingMode.Default,
                 MenuItem.KeyGestureConverter);
@@ -181,12 +181,13 @@ internal class MenuItemTheme : BaseControlTheme
             Placement                  = PlacementMode.RightEdgeAlignedTop
         };
 
-        var border = new Border()
+        var border = new Border
         {
             Name = PopupFramePart
         };
         
         var scrollViewer = new MenuScrollViewer();
+        scrollViewer.IsScrollChainingEnabled = false;
         var itemsPresenter = new ItemsPresenter
         {
             Name = ItemsPresenterPart
@@ -241,7 +242,7 @@ internal class MenuItemTheme : BaseControlTheme
         
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
-            keyGestureStyle.Add(SingleLineText.ForegroundProperty, MenuTokenKey.KeyGestureColor);
+            keyGestureStyle.Add(TextBlock.ForegroundProperty, MenuTokenKey.KeyGestureColor);
             commonStyle.Add(keyGestureStyle);
         }
         {

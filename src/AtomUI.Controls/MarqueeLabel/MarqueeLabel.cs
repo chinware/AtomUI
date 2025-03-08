@@ -1,4 +1,3 @@
-using System.Reactive.Disposables;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -16,9 +15,8 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class MarqueeLabel : SingleLineText,
-                            IControlSharedTokenResourcesHost,
-                            ITokenResourceConsumer
+public class MarqueeLabel : TextBlock,
+                            IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -64,11 +62,9 @@ public class MarqueeLabel : SingleLineText,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MarqueeLabelToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
+    
     private CancellationTokenSource? _cancellationTokenSource;
     private Animation? _animation;
     private bool _animationRunning;
@@ -264,13 +260,6 @@ public class MarqueeLabel : SingleLineText,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
         SetupTokenBindings();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }

@@ -56,14 +56,13 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, Button.IconProperty);
 
-            var labelText = new SingleLineText
+            var labelText = new TextBlock()
             {
                 Name              = LabelPart,
                 VerticalAlignment = VerticalAlignment.Center
             };
-
-            CreateTemplateParentBinding(labelText, SingleLineText.SizeTypeProperty, Button.SizeTypeProperty);
-            CreateTemplateParentBinding(labelText, SingleLineText.TextProperty, Button.TextProperty);
+            
+            CreateTemplateParentBinding(labelText, TextBlock.TextProperty, Button.TextProperty);
             labelText.RegisterInNameScope(scope);
 
             var mainInfoLayout = new StackPanel

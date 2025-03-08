@@ -76,12 +76,12 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
         wrapperLayout.Children.Add(iconContentPresenter);
         wrapperLayout.Children.Add(contentLayout);
 
-        var titleTextBlock = new SingleLineText
+        var titleTextBlock = new TextBlock
         {
             Name              = TitlePart,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        CreateTemplateParentBinding(titleTextBlock, SingleLineText.TextProperty, PopupConfirmContainer.TitleProperty);
+        CreateTemplateParentBinding(titleTextBlock, TextBlock.TextProperty, PopupConfirmContainer.TitleProperty);
         DockPanel.SetDock(titleTextBlock, Dock.Top);
         contentLayout.Children.Add(titleTextBlock);
 
@@ -156,8 +156,8 @@ internal class PopupConfirmContainerTheme : BaseControlTheme
 
         var titleStyle = new Style(selector => selector.Nesting().Template().Name(TitlePart));
         titleStyle.Add(Layoutable.MarginProperty, PopupConfirmTokenKey.TitleMargin);
-        titleStyle.Add(SingleLineText.ForegroundProperty, SharedTokenKey.ColorTextHeading);
-        titleStyle.Add(SingleLineText.FontWeightProperty, FontWeight.SemiBold);
+        titleStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorTextHeading);
+        titleStyle.Add(TextBlock.FontWeightProperty, FontWeight.SemiBold);
         commonStyle.Add(titleStyle);
 
         var contentStyle = new Style(selector => selector.Nesting().Template().Name(ContentPart));

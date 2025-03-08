@@ -96,7 +96,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
                     {
                         if (o is string str)
                         {
-                            return new SingleLineText()
+                            return new TextBlock()
                             {
                                 Text              = str,
                                 VerticalAlignment = VerticalAlignment.Center

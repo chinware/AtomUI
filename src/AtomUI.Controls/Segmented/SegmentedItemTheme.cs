@@ -67,7 +67,7 @@ internal class SegmentedItemTheme : BaseControlTheme
                 {
                     if (content is string text)
                     {
-                        return new SingleLineText()
+                        return new TextBlock()
                         {
                             Text = text,
                             VerticalAlignment = VerticalAlignment.Center,
