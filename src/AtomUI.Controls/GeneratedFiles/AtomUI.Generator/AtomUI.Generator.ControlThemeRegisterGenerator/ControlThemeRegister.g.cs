@@ -10,6 +10,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ArrowDecoratedBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Badge.CountBadgeAdornerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Badge.DotBadgeAdornerTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerInnerBoxTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DefaultButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.DefaultDropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.LinkDropdownButtonTheme());
@@ -21,8 +23,6 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SplitButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.TextButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ToggleIconButtonTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerInnerBoxTheme());
-            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.BaseCalendarButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.BaseCalendarDayButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.CalendarItemTheme());

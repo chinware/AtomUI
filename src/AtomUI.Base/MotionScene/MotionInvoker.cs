@@ -51,7 +51,11 @@ internal static class MotionInvoker
                         completedAction();
                     }
                 }, cancellationToken);
-                compositeDisposable.Dispose();
+                DispatcherTimer.RunOnce(() =>
+                {
+                    compositeDisposable.Dispose();
+                    compositeDisposable = null;
+                }, TimeSpan.FromMilliseconds(100));
             });
         });
     }
@@ -89,8 +93,11 @@ internal static class MotionInvoker
                    completedAction?.Invoke();
                    Dispatcher.UIThread.Post(() => actor.Opacity = 0d);
                 }, cancellationToken);
-                compositeDisposable.Dispose();
-                compositeDisposable = null;
+                DispatcherTimer.RunOnce(() =>
+                {
+                    compositeDisposable.Dispose();
+                    compositeDisposable = null;
+                }, TimeSpan.FromMilliseconds(100));
             });
         });
     }
