@@ -1,5 +1,4 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -8,6 +7,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -36,19 +36,6 @@ internal class MenuFlyoutPresenterTheme : BaseControlTheme
             CreateTemplateParentBinding(arrowDecorator, ArrowDecoratedBox.ArrowPositionProperty,
                 MenuFlyoutPresenter.ArrowPositionProperty);
 
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.BackgroundProperty,
-                MenuTokenKey.MenuBgColor);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinWidthProperty,
-                MenuTokenKey.MenuPopupMinWidth);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxWidthProperty,
-                MenuTokenKey.MenuPopupMaxWidth);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MinHeightProperty,
-                MenuTokenKey.MenuPopupMinHeight);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, Layoutable.MaxHeightProperty,
-                MenuTokenKey.MenuPopupMaxHeight);
-            TokenResourceBinder.CreateTokenBinding(arrowDecorator, TemplatedControl.PaddingProperty,
-                MenuTokenKey.MenuPopupContentPadding);
-
             var scrollViewer = new MenuScrollViewer
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -75,5 +62,14 @@ internal class MenuFlyoutPresenterTheme : BaseControlTheme
     {
         this.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         this.Add(TemplatedControl.CornerRadiusProperty, MenuTokenKey.MenuPopupBorderRadius);
+
+        var arrowDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(RootContainerPart));
+        arrowDecoratorStyle.Add(TemplatedControl.BackgroundProperty, MenuTokenKey.MenuBgColor);
+        arrowDecoratorStyle.Add(Layoutable.MinWidthProperty, MenuTokenKey.MenuPopupMinWidth);
+        arrowDecoratorStyle.Add(Layoutable.MaxWidthProperty, MenuTokenKey.MenuPopupMaxWidth);
+        arrowDecoratorStyle.Add(Layoutable.MinHeightProperty, MenuTokenKey.MenuPopupMinHeight);
+        arrowDecoratorStyle.Add(Layoutable.MaxHeightProperty, MenuTokenKey.MenuPopupMaxHeight);
+        arrowDecoratorStyle.Add(TemplatedControl.PaddingProperty, MenuTokenKey.MenuPopupContentPadding);
+        Add(arrowDecoratorStyle);
     }
 }

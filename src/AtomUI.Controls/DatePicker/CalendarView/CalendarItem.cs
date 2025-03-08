@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -12,6 +14,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls.CalendarView;
@@ -23,7 +26,8 @@ namespace AtomUI.Controls.CalendarView;
 [TemplatePart(CalendarItemTheme.NextButtonPart, typeof(IconButton))]
 [TemplatePart(CalendarItemTheme.NextMonthButtonPart, typeof(IconButton))]
 [TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
-internal class CalendarItem : TemplatedControl
+internal class CalendarItem : TemplatedControl,
+                              ITokenResourceConsumer
 {
     internal const string CalendarDisabledPC = ":calendardisabled";
 
@@ -65,10 +69,8 @@ internal class CalendarItem : TemplatedControl
             o => o.IsMonthViewMode,
             (o, v) => o.IsMonthViewMode = v);
     
-    internal static readonly DirectProperty<CalendarItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CalendarItem, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();
 
     private bool _isMonthViewMode = true;
 
@@ -81,12 +83,10 @@ internal class CalendarItem : TemplatedControl
         set => SetAndRaise(IsMonthViewModeProperty, ref _isMonthViewMode, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     /// <summary>
@@ -205,9 +205,12 @@ internal class CalendarItem : TemplatedControl
             }
         }
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     protected DateTime _currentMonth;
     protected UniformGrid? _headerLayout;
     protected bool _isMouseLeftButtonDownYearView;
@@ -337,6 +340,7 @@ internal class CalendarItem : TemplatedControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        base.OnApplyTemplate(e);
         HeaderButton = e.NameScope.Get<HeadTextButton>(CalendarItemTheme.HeaderButtonPart);
         PreviousButton = e.NameScope.Get<IconButton>(CalendarItemTheme.PreviousButtonPart);
         PreviousMonthButton =
@@ -1142,12 +1146,12 @@ internal class CalendarItem : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom)));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SetCalendarDayButtons();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom))));
     }
 
     private void DetectPointerPosition(RawInputEventArgs args)
@@ -1210,4 +1214,17 @@ internal class CalendarItem : TemplatedControl
         return new Rect(firstDayPos,
             new Size(monthView.Bounds.Width, monthViewPos.Y + monthView.Bounds.Height - firstDayPos.Y));
     }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+    
 }

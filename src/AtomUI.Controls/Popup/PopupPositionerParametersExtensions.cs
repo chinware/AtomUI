@@ -8,7 +8,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal static class PopupPositionerExtensions
+internal static class PopupPositionerParametersExtensions
 {
     public static void ConfigurePosition(ref this PopupPositionerParameters positionerParameters,
         TopLevel topLevel,

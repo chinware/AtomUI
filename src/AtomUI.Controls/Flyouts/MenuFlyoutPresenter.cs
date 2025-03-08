@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -6,13 +7,15 @@ using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 public class MenuFlyoutPresenter : MenuBase,
                                    IShadowMaskInfoProvider,
                                    IAnimationAwareControl,
-                                   IControlSharedTokenResourcesHost
+                                   IControlSharedTokenResourcesHost,
+                                   ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -28,10 +31,10 @@ public class MenuFlyoutPresenter : MenuBase,
             RoutingStrategies.Bubble);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<MenuFlyoutPresenter, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuFlyoutPresenter>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<MenuFlyoutPresenter, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<MenuFlyoutPresenter>();
 
     /// <summary>
     /// 是否显示指示箭头
@@ -78,9 +81,11 @@ public class MenuFlyoutPresenter : MenuBase,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
     private ArrowDecoratedBox? _arrowDecoratedBox;
 
     public MenuFlyoutPresenter()
@@ -187,6 +192,18 @@ public class MenuFlyoutPresenter : MenuBase,
                 menuItem.IsSubMenuOpen = false;
             }
         }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     public CornerRadius GetMaskCornerRadius()

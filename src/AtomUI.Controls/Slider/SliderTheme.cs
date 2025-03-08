@@ -32,7 +32,7 @@ internal class SliderTheme : BaseControlTheme
             CreateTemplateParentBinding(startSliderThumb, SliderThumb.IsMotionEnabledProperty,
                 Slider.IsMotionEnabledProperty);
             ToolTip.SetPlacement(startSliderThumb, PlacementMode.Top);
-            ToolTip.SetShowDelay(startSliderThumb, 0);
+            ToolTip.SetShowDelay(startSliderThumb, 20);
             startSliderThumb.RegisterInNameScope(scope);
 
             var endSliderThumb = new SliderThumb
@@ -44,7 +44,7 @@ internal class SliderTheme : BaseControlTheme
             
             endSliderThumb.RegisterInNameScope(scope);
             ToolTip.SetPlacement(endSliderThumb, PlacementMode.Top);
-            ToolTip.SetShowDelay(endSliderThumb, 0);
+            ToolTip.SetShowDelay(endSliderThumb, 20);
 
             var sliderTrack = new SliderTrack
             {

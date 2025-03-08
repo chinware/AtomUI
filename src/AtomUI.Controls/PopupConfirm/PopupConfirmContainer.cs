@@ -1,11 +1,17 @@
-﻿using AtomUI.IconPkg;
+﻿using System.Diagnostics;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -99,7 +105,7 @@ internal class PopupConfirmContainer : TemplatedControl,
     string IControlSharedTokenResourcesHost.TokenId => PopupConfirmToken.ID;
 
     #endregion
-
+    
     internal WeakReference<PopupConfirm> PopupConfirmRef { get; set; }
     private Button? _okButton;
     private Button? _cancelButton;
@@ -113,6 +119,7 @@ internal class PopupConfirmContainer : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+
         _okButton     = e.NameScope.Find<Button>(PopupConfirmContainerTheme.OkButtonPart);
         _cancelButton = e.NameScope.Find<Button>(PopupConfirmContainerTheme.CancelButtonPart);
         if (_okButton is not null)
@@ -147,5 +154,42 @@ internal class PopupConfirmContainer : TemplatedControl,
             popupConfirm.RaiseEvent(popupEventArgs);
             popupConfirm.HideFlyout(true);
         }
+    }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IconProperty)
+            {
+                if (change.OldValue is Icon oldIcon)
+                {
+                    oldIcon.SetTemplatedParent(null);
+                }
+                if (change.NewValue is Icon newIcon)
+                {
+                    newIcon.SetTemplatedParent(this);
+                }
+                SetupDefaultIcon();
+            }
+        }
+    }
+
+    private void SetupDefaultIcon()
+    {
+        if (Icon == null)
+        {
+            ClearValue(IconProperty);
+            SetValue(IconProperty, AntDesignIconPackage.ExclamationCircleFilled(), BindingPriority.Template);
+        }
+        Debug.Assert(Icon != null);
+        Icon.SetTemplatedParent(this);
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupDefaultIcon();
     }
 }

@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -12,6 +13,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -31,12 +33,13 @@ public enum CollapseExpandIconPosition
 [TemplatePart(CollapseTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Collapse : SelectingItemsControl,
                         IAnimationAwareControl,
-                        IControlSharedTokenResourcesHost
+                        IControlSharedTokenResourcesHost,
+                        ITokenResourceConsumer
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Collapse, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Collapse>();
 
     public static readonly StyledProperty<bool> IsGhostStyleProperty =
         AvaloniaProperty.Register<Collapse, bool>(nameof(IsGhostStyle));
@@ -54,10 +57,10 @@ public class Collapse : SelectingItemsControl,
         AvaloniaProperty.Register<Collapse, CollapseExpandIconPosition>(nameof(ExpandIconPosition));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Collapse, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Collapse>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Collapse, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Collapse>();
 
     public SizeType SizeType
     {
@@ -133,8 +136,11 @@ public class Collapse : SelectingItemsControl,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CollapseToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static Collapse()
     {
@@ -157,7 +163,7 @@ public class Collapse : SelectingItemsControl,
 
     private void SetupItemsBorderThickness()
     {
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             for (var i = 0; i < ItemCount; ++i)
             {
@@ -172,9 +178,6 @@ public class Collapse : SelectingItemsControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
         SetupSelectionMode();
     }
@@ -309,7 +312,7 @@ public class Collapse : SelectingItemsControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsBorderlessProperty)
             {
@@ -350,5 +353,25 @@ public class Collapse : SelectingItemsControl,
         {
             SelectionMode = SelectionMode.Multiple | SelectionMode.Toggle;
         }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
     }
 }

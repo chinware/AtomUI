@@ -1,12 +1,13 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -14,20 +15,22 @@ using AvaloniaListBox = Avalonia.Controls.ListBox;
 
 public class ListBox : AvaloniaListBox,
                        IAnimationAwareControl,
-                       IControlSharedTokenResourcesHost
+                       IControlSharedTokenResourcesHost,
+                       ITokenResourceConsumer
 {
     #region 公共属性定义
+
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<ListBox, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBox>();
 
     public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ListBox, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ListBox, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ListBox>();
 
     public SizeType SizeType
     {
@@ -59,8 +62,11 @@ public class ListBox : AvaloniaListBox,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ListBoxToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     public ListBox()
     {
@@ -92,13 +98,25 @@ public class ListBox : AvaloniaListBox,
                 ListBoxItem.DisabledItemHoverEffectProperty);
         }
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
     }
 }

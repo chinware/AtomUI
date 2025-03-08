@@ -1,5 +1,7 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -9,10 +11,13 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class RadioIndicator : Control, IWaveAdornerInfoProvider
+internal class RadioIndicator : Control, 
+                                IWaveAdornerInfoProvider,
+                                ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -112,35 +117,30 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<RadioIndicator, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<RadioIndicator, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<RadioIndicator>();
 
-    internal static readonly DirectProperty<RadioIndicator, bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.RegisterDirect<RadioIndicator, bool>(nameof(IsWaveAnimationEnabled),
-            o => o.IsWaveAnimationEnabled,
-            (o, v) => o.IsWaveAnimationEnabled = v);
-
-    private bool _isMotionEnabled;
+    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<CheckBox>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    private bool _isWaveAnimationEnabled = true;
 
     internal bool IsWaveAnimationEnabled
     {
-        get => _isWaveAnimationEnabled;
-        set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private IPen? _cachedPen;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static RadioIndicator()
     {
@@ -152,14 +152,26 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
             RadioBorderThicknessProperty,
             RadioDotEffectSizeProperty);
     }
-
+    
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
-        TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
+        _tokenBindingsDisposable = new CompositeDisposable();
+        RadioDotEffectSize       = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
     }
 
     public override void ApplyTemplate()
@@ -194,7 +206,7 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
             e.Property == IsEnabledProperty)
         {
             UpdatePseudoClasses();
-            if (VisualRoot is not null)
+            if (this.IsAttachedToVisualTree())
             {
                 RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
             }
@@ -207,10 +219,13 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.CircleWave);
             }
         }
-        
-        if (e.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (e.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 

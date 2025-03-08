@@ -10,6 +10,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.IconPkg;
 
@@ -17,6 +18,11 @@ public class Icon : Control,
                     ICustomHitTest,
                     IAnimationAwareControl
 {
+    public const string DisabledPC = ":disabled";
+    public const string PressedPC = ":pressed";
+    public const string SelectedPC = ":selected";
+    public const string PointerOverPC = ":pointerover";
+    
     public static readonly StyledProperty<IconInfo?> IconInfoProperty =
         AvaloniaProperty.Register<Icon, IconInfo?>(nameof(IconInfo));
 
@@ -62,10 +68,10 @@ public class Icon : Control,
         AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Icon, bool>(nameof(IsMotionEnabled), true);
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Icon, bool>(nameof(IsWaveAnimationEnabled), true);
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Icon>();
 
     public IconInfo? IconInfo
     {
@@ -247,7 +253,7 @@ public class Icon : Control,
             SetCurrentValue(RenderTransformProperty, new RotateTransform(AngleAnimationRotate));
         }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == LoadingAnimationProperty)
             {
@@ -438,7 +444,7 @@ public class Icon : Control,
         base.OnAttachedToLogicalTree(e);
         SetupRotateAnimation();
     }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);

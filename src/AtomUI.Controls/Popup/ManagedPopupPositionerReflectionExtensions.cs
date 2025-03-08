@@ -5,12 +5,12 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 
 namespace AtomUI.Controls;
 
-internal static class ManagedPopupPositionerReflectionUtils
+internal static class ManagedPopupPositionerReflectionExtensions
 {
     #region 反射信息定义
 
     private static readonly Lazy<FieldInfo> ManagedPopupPositionerPopupInfo = new Lazy<FieldInfo>(
-        typeof(ManagedPopupPositioner).GetFieldInfoOrThrow("_popup",
+        () => typeof(ManagedPopupPositioner).GetFieldInfoOrThrow("_popup",
             BindingFlags.Instance | BindingFlags.NonPublic));
 
     #endregion

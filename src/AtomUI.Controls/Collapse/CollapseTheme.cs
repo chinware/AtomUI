@@ -22,7 +22,7 @@ internal class CollapseTheme : BaseControlTheme
     {
         return new FuncControlTemplate<Collapse>((collapse, scope) =>
         {
-            var Frame = new Border
+            var frame = new Border
             {
                 Name         = FramePart,
                 ClipToBounds = true
@@ -32,18 +32,18 @@ internal class CollapseTheme : BaseControlTheme
                 Name = ItemsPresenterPart
             };
             itemsPresenter.RegisterInNameScope(scope);
-            Frame.Child = itemsPresenter;
+            frame.Child = itemsPresenter;
 
             CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty,
                 ItemsControl.ItemsPanelProperty);
-            CreateTemplateParentBinding(Frame, Border.BorderThicknessProperty,
+            CreateTemplateParentBinding(frame, Border.BorderThicknessProperty,
                 Collapse.EffectiveBorderThicknessProperty);
-            CreateTemplateParentBinding(Frame, Border.BorderBrushProperty,
+            CreateTemplateParentBinding(frame, Border.BorderBrushProperty,
                 TemplatedControl.BorderBrushProperty);
-            CreateTemplateParentBinding(Frame, Border.CornerRadiusProperty,
+            CreateTemplateParentBinding(frame, Border.CornerRadiusProperty,
                 TemplatedControl.CornerRadiusProperty);
 
-            return Frame;
+            return frame;
         });
     }
 

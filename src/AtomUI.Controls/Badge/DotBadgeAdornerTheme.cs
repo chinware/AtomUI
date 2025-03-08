@@ -62,7 +62,7 @@ internal class DotBadgeAdornerTheme : BaseControlTheme
 
     private void BuildLabel(DockPanel layout, INameScope scope)
     {
-        var label = new Label()
+        var label = new Label
         {
             Name = LabelPart
         };
@@ -79,6 +79,8 @@ internal class DotBadgeAdornerTheme : BaseControlTheme
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(DotBadgeAdorner.ClipToBoundsProperty, false);
         commonStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, BadgeTokenKey.BadgeColor);
+        commonStyle.Add(DotBadgeAdorner.MotionDurationProperty, SharedTokenKey.MotionDurationMid);
+        
         var inAdornerStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.IsAdornerModeProperty, true));
         var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
         layoutStyle.Add(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Right);
@@ -101,5 +103,30 @@ internal class DotBadgeAdornerTheme : BaseControlTheme
         commonStyle.Add(indicatorStyle);
 
         Add(commonStyle);
+
+        BuildDotBadgeColorStyle();
+    }
+
+    protected void BuildDotBadgeColorStyle()
+    {
+        var errorStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Error));
+        errorStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, SharedTokenKey.ColorError);
+        Add(errorStyle);
+        
+        var successStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Success));
+        successStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, SharedTokenKey.ColorSuccess);
+        Add(successStyle);
+        
+        var warningStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Warning));
+        warningStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, SharedTokenKey.ColorWarning);
+        Add(warningStyle);
+        
+        var processingStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Processing));
+        processingStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, SharedTokenKey.ColorInfo);
+        Add(processingStyle);
+        
+        var defaultStyle = new Style(selector => selector.Nesting().PropertyEquals(DotBadgeAdorner.StatusProperty, DotBadgeStatus.Default));
+        defaultStyle.Add(DotBadgeAdorner.BadgeDotColorProperty, SharedTokenKey.ColorTextPlaceholder);
+        Add(defaultStyle);
     }
 }

@@ -21,7 +21,7 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
     {
     }
 
-    protected override void NotifyBuildExtraChild(Panel layout, AddOnDecoratedInnerBox decoratedBox, INameScope scope)
+    protected override void NotifyBuildExtraChild(AddOnDecoratedInnerBox addOnDecoratedInnerBox, Panel layout, INameScope scope)
     {
         var contentPresenter = new ContentPresenter
         {
@@ -41,6 +41,8 @@ internal class ButtonSpinnerInnerBoxTheme : AddOnDecoratedInnerBoxTheme
         base.BuildStyles();
 
         var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(ButtonSpinnerInnerBox.SpinnerBorderBrushProperty, SharedTokenKey.ColorBorder);
+        commonStyle.Add(ButtonSpinnerInnerBox.SpinnerHandleWidthTokenProperty, ButtonSpinnerTokenKey.HandleWidth);
 
         // spinner 的位置
         var leftPositionStyle = new Style(selector =>

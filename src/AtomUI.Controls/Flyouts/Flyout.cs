@@ -125,14 +125,6 @@ public class Flyout : PopupFlyoutBase
         IsShowArrowProperty.OverrideDefaultValue<Flyout>(false);
     }
 
-    public Flyout()
-    {
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty,
-            SharedTokenKey.MotionDurationMid);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty,
-            SharedTokenKey.BoxShadowsSecondary);
-    }
-
     private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
     {
         SetupArrowPosition(Popup);
@@ -153,6 +145,7 @@ public class Flyout : PopupFlyoutBase
         var anchor    = popup.PlacementAnchor;
         var gravity   = popup.PlacementGravity;
 
+        // TODO 可以改进成绑定，可以参考 Tooltip 的做法
         if (flyoutPresenter is not null)
         {
             var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
@@ -208,11 +201,15 @@ public class Flyout : PopupFlyoutBase
         {
             CompositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
         }
+
+        CompositeDisposable.Add(TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty,
+            SharedTokenKey.MotionDurationMid));
+        CompositeDisposable.Add(TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty,
+            SharedTokenKey.BoxShadowsSecondary));
     }
 
     protected override void OnClosed()
     {
-        base.OnClosed();
         CompositeDisposable?.Dispose();
     }
 
@@ -346,10 +343,7 @@ public class Flyout : PopupFlyoutBase
         IsOpen = true;
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            Popup.OpenAnimation(() =>
-            {
-                HandlePopupOpened(placementTarget);
-            });
+            Popup.MotionAwareOpen(() => { HandlePopupOpened(placementTarget); });
         });
         return true;
     }
@@ -375,7 +369,7 @@ public class Flyout : PopupFlyoutBase
         }
 
         IsOpen = false;
-        Dispatcher.UIThread.InvokeAsync(() => { Popup.CloseAnimation(HandlePopupClosed); });
+        Dispatcher.UIThread.InvokeAsync(() => { Popup.MotionAwareClose(HandlePopupClosed); });
         return true;
     }
 

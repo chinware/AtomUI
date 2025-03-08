@@ -50,11 +50,6 @@ internal class ToolTipToken : AbstractControlDesignToken
     public TimeSpan ToolTipMotionDuration { get; set; }
 
     /// <summary>
-    /// 默认距离锚控件的间距
-    /// </summary>
-    public double MarginToAnchor { get; set; }
-
-    /// <summary>
     /// ToolTip 箭头三角形大小
     /// </summary>
     public double ToolTipArrowSize { get; set; }
@@ -73,6 +68,5 @@ internal class ToolTipToken : AbstractControlDesignToken
         ToolTipPadding        = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingSM / 2 + 2);
         ToolTipShadows        = SharedToken.BoxShadowsSecondary;
         ToolTipMotionDuration = SharedToken.MotionDurationMid;
-        MarginToAnchor        = SharedToken.MarginXXS / 2;
     }
 }

@@ -1,6 +1,4 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -32,12 +30,15 @@ internal class TabControlTheme : BaseTabControlTheme
 
         var tabScrollViewer = new TabControlScrollViewer
         {
-            Name = TabsContainerPart
+            Name = TabsContainerPart,
         };
+        tabScrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
-            BaseTabStrip.TabStripPlacementProperty);
+            BaseTabControl.TabStripPlacementProperty);
+        CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.IsMotionEnabledProperty,
+            BaseTabControl.IsMotionEnabledProperty);
 
-        var contentPanel = CreateTabStripContentPanel(scope);
+        var contentPanel = CreateTabStripContentPanel(baseTabControl, scope);
         tabScrollViewer.Content    = contentPanel;
         tabScrollViewer.TabControl = baseTabControl;
         tabScrollViewer.RegisterInNameScope(scope);
@@ -46,7 +47,7 @@ internal class TabControlTheme : BaseTabControlTheme
         container.Children.Add(alignWrapper);
     }
 
-    private Panel CreateTabStripContentPanel(INameScope scope)
+    private Panel CreateTabStripContentPanel(BaseTabControl baseTabControl, INameScope scope)
     {
         var layout = new Panel();
         var itemsPresenter = new ItemsPresenter
@@ -59,20 +60,23 @@ internal class TabControlTheme : BaseTabControlTheme
             Name = SelectedItemIndicatorPart
         };
         border.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            TabControlTokenKey.InkBarColor);
 
         layout.Children.Add(itemsPresenter);
         layout.Children.Add(border);
         CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, ItemsControl.ItemsPanelProperty);
         return layout;
-    }
+    } 
 
     protected override void BuildStyles()
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
 
+        {
+            var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
+            indicatorStyle.Add(Border.BackgroundProperty, TabControlTokenKey.InkBarColor); 
+            commonStyle.Add(indicatorStyle);
+        }
         // 设置 items presenter 面板样式
         // 分为上、右、下、左
         {
@@ -89,8 +93,8 @@ internal class TabControlTheme : BaseTabControlTheme
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
             indicatorStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             indicatorStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+        
             topStyle.Add(indicatorStyle);
-
             topStyle.Add(itemPresenterPanelStyle);
             commonStyle.Add(topStyle);
         }

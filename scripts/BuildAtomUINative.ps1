@@ -27,8 +27,10 @@ if ($IsWindows) {
     )
 
     $msbuildExecutale = $possiblePaths | Where-Object { Test-Path $_ }
-    $msbuildPath = Split-Path (Get-Item $msbuildExecutale).FullName -Parent
-    $env:PATH += ";$msbuildPath"
+    if (![string]::IsNullOrEmpty($msbuildExecutale)) {
+        $msbuildPath = Split-Path (Get-Item $msbuildExecutale).FullName -Parent
+        $env:PATH += ";$msbuildPath"
+    }
     cmake -B $buildDir -S $sourceDir -DCMAKE_INSTALL_PREFIX="$installPrefix" -DCMAKE_BUILD_TYPE="$buildType" -G $cmakeGenerator
     msbuild $buildDir/atomui.sln /p:Configuration=$buildType
     cmake --install $buildDir --config $buildType

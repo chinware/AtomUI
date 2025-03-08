@@ -6,6 +6,8 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
+using TabStripControl = AtomUI.Controls.TabStrip;
+
 internal class TabStripScrollViewer : BaseTabScrollViewer
 {
     #region 内部属性定义
@@ -21,11 +23,11 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         base.OnApplyTemplate(e);
         if (_menuIndicator is not null)
         {
-            _menuIndicator.Click += HandleMenuIndicator;
+            _menuIndicator.Click += HandleMenuIndicatorClicked;
         }
     }
 
-    private void HandleMenuIndicator(object? sender, RoutedEventArgs args)
+    private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
     {
         if (_menuFlyout is null)
         {
@@ -34,6 +36,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                 IsShowArrow = false,
                 ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
             };
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _menuFlyout, MenuFlyout.IsMotionEnabledProperty);
         }
 
         if (TabStripPlacement == Dock.Top)
@@ -62,24 +65,40 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                 var itemContainer = TabStrip.ContainerFromIndex(i)!;
                 if (itemContainer is TabStripItem tabStripItem)
                 {
-                    var itemBounds = itemContainer.Bounds;
-                    var left       = Math.Floor(itemBounds.Left - Offset.X);
-                    var right      = Math.Floor(itemBounds.Right - Offset.X);
+                    var needAddToMenu = false;
+                    var itemBounds    = itemContainer.Bounds;
                     if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom)
                     {
+                        var left  = Math.Floor(itemBounds.Left - Offset.X);
+                        var right = Math.Floor(itemBounds.Right - Offset.X);
                         if (left < 0 || right > Viewport.Width)
                         {
-                            var menuItem = new TabStripOverflowMenuItem
-                            {
-                                Header       = tabStripItem.Content,
-                                TabStripItem = tabStripItem,
-                                IsClosable   = tabStripItem.IsClosable
-                            };
-                            BindUtils.RelayBind(TabStrip, AtomUI.Controls.TabStrip.IsMotionEnabledProperty, menuItem, BaseOverflowMenuItem.IsMotionEnabledProperty);
-                            menuItem.Click    += HandleMenuItemClicked;
-                            menuItem.CloseTab += HandleCloseTabRequest;
-                            _menuFlyout.Items.Add(menuItem);
+                            needAddToMenu = true;
                         }
+                    }
+                    else
+                    {
+                        var top    = Math.Floor(itemBounds.Top - Offset.Y);
+                        var bottom = Math.Floor(itemBounds.Bottom - Offset.Y);
+
+                        if (top < 0 || bottom > Viewport.Height)
+                        {
+                            needAddToMenu = true;
+                        }
+                    }
+
+                    if (needAddToMenu)
+                    {
+                        var menuItem = new TabStripOverflowMenuItem
+                        {
+                            Header       = tabStripItem.Content,
+                            TabStripItem = tabStripItem,
+                            IsClosable   = tabStripItem.IsClosable
+                        };
+                        BindUtils.RelayBind(TabStrip, TabStripControl.IsMotionEnabledProperty, menuItem, BaseOverflowMenuItem.IsMotionEnabledProperty);
+                        menuItem.Click    += HandleMenuItemClicked;
+                        menuItem.CloseTab += HandleCloseTabRequest;
+                        _menuFlyout.Items.Add(menuItem);
                     }
                 }
             }

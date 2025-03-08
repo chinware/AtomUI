@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
@@ -10,28 +11,29 @@ namespace AtomUI.Controls;
 
 using AvaloniaMenu = Avalonia.Controls.Menu;
 
-public class Menu : AvaloniaMenu, 
+public class Menu : AvaloniaMenu,
                     ISizeTypeAware,
                     IAnimationAwareControl,
-                    IControlSharedTokenResourcesHost
+                    IControlSharedTokenResourcesHost,
+                    ITokenResourceConsumer
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Menu, SizeType>(nameof(SizeType), SizeType.Middle);
-    
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Menu>();
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Menu, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Menu>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Menu, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Menu>();
 
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -45,28 +47,22 @@ public class Menu : AvaloniaMenu,
     }
 
     #endregion
-    
+
     #region 内部属性定义
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
+
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     public Menu()
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        if (ItemContainerTheme is null)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, TopLevelMenuItemTheme.ID);
-        }
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -78,5 +74,19 @@ public class Menu : AvaloniaMenu,
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, TopLevelMenuItemTheme.ID));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

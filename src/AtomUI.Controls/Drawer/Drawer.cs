@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -17,7 +18,8 @@ namespace AtomUI.Controls;
 
 public class Drawer : Control,
                       IAnimationAwareControl,
-                      IControlSharedTokenResourcesHost
+                      IControlSharedTokenResourcesHost,
+                      ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -60,8 +62,8 @@ public class Drawer : Control,
     public static readonly StyledProperty<IDataTemplate?> ExtraTemplateProperty =
         AvaloniaProperty.Register<Drawer, IDataTemplate?>(nameof(ExtraTemplate));
 
-    public static readonly StyledProperty<SizeType> DialogSizeTypeProperty =
-        AvaloniaProperty.Register<Drawer, SizeType>(nameof(DialogSizeType), SizeType.Small);
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Drawer>();
 
     public static readonly StyledProperty<double> DialogSizeProperty =
         AvaloniaProperty.Register<Drawer, double>(nameof(DialogSize));
@@ -70,10 +72,10 @@ public class Drawer : Control,
         AvaloniaProperty.Register<Drawer, double>(nameof(PushOffsetPercent));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Drawer, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Drawer>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Drawer, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Drawer>();
 
     [Content]
     [DependsOn(nameof(ContentTemplate))]
@@ -157,10 +159,10 @@ public class Drawer : Control,
         set => SetValue(ExtraTemplateProperty, value);
     }
 
-    public SizeType DialogSizeType
+    public SizeType SizeType
     {
-        get => GetValue(DialogSizeTypeProperty);
-        set => SetValue(DialogSizeTypeProperty, value);
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
 
     public double DialogSize
@@ -201,10 +203,17 @@ public class Drawer : Control,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => DrawerToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private DrawerContainer? _container;
+    private CompositeDisposable? _tokenBindingsDisposable;
+
+    static Drawer()
+    {
+        SizeTypeProperty.OverrideDefaultValue<Drawer>(SizeType.Small);
+    }
 
     public Drawer()
     {
@@ -226,6 +235,7 @@ public class Drawer : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         var parentDrawer = FindParentDrawer();
         if (parentDrawer != null)
         {
@@ -238,6 +248,7 @@ public class Drawer : Control,
         }
         else
         {
+            // TODO 需要评估是否会造成资源泄漏
             Bind(OpenOnProperty, new Binding()
             {
                 Priority = BindingPriority.Template,
@@ -248,23 +259,33 @@ public class Drawer : Control,
             });
         }
 
-        TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty, DrawerTokenKey.PushOffsetPercent);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty,
+            DrawerTokenKey.PushOffsetPercent));
         SetupDialogSizeTypeBindings();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     private void SetupDialogSizeTypeBindings()
     {
-        if (DialogSizeType == SizeType.Large)
+        if (SizeType == SizeType.Large)
         {
-            TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.LargeSize);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.LargeSize));
         }
-        else if (DialogSizeType == SizeType.Middle)
+        else if (SizeType == SizeType.Middle)
         {
-            TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.MiddleSize);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.MiddleSize));
         }
         else
         {
-            TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.SmallSize);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.SmallSize));
         }
     }
 
@@ -296,13 +317,13 @@ public class Drawer : Control,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsOpenProperty)
             {
                 HandleIsOpenChanged();
             }
-            else if (change.Property == DialogSizeTypeProperty)
+            else if (change.Property == SizeTypeProperty)
             {
                 SetupDialogSizeTypeBindings();
             }

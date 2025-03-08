@@ -45,16 +45,12 @@ public class ScopeAwareAdornerLayer : Canvas
     private static readonly AttachedProperty<ScopeAwareAdornerLayer?> SavedAdornerLayerProperty =
         AvaloniaProperty.RegisterAttached<Visual, Visual, ScopeAwareAdornerLayer?>("SavedAdornerLayer");
 
-    private static readonly MethodInfo AddLayerMethodInfo;
-
     #endregion
 
     static ScopeAwareAdornerLayer()
     {
         AdornedElementProperty.Changed.Subscribe(HandleAdornedElementChanged);
         AdornerProperty.Changed.Subscribe(HandleAdornerChanged);
-        AddLayerMethodInfo =
-            typeof(VisualLayerManager).GetMethod("AddLayer", BindingFlags.Instance | BindingFlags.NonPublic)!;
     }
 
     public ScopeAwareAdornerLayer()
@@ -294,7 +290,7 @@ public class ScopeAwareAdornerLayer : Canvas
 
         SetAdornedElement(adorner, visual);
 
-        ((ISetLogicalParent)adorner).SetParent(visual);
+        adorner.SetLogicalParent(visual);
         layer.Children.Add(adorner);
     }
 
@@ -306,7 +302,7 @@ public class ScopeAwareAdornerLayer : Canvas
         }
 
         layer.Children.Remove(adorner);
-        ((ISetLogicalParent)adorner).SetParent(null);
+        adorner.SetLogicalParent(null);
     }
 
     private static void VisualOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
@@ -333,11 +329,6 @@ public class ScopeAwareAdornerLayer : Canvas
         }
     }
 
-    private static void AddLayerToVisualLayerManager(VisualLayerManager visualLayerManager, Control layer, int zindex)
-    {
-        AddLayerMethodInfo.Invoke(visualLayerManager, [layer, zindex]);
-    }
-
     private static ScopeAwareAdornerLayer InjectLayer(Layoutable layerHost)
     {
         var layer = FindAdornerLayer(layerHost);
@@ -356,7 +347,7 @@ public class ScopeAwareAdornerLayer : Canvas
         layer.LayerHost = layerHost;
         if (layerHost is VisualLayerManager visualLayerManager)
         {
-            AddLayerToVisualLayerManager(visualLayerManager, layer, visualLayerManager.ZIndex);
+            visualLayerManager.AddLayer(layer, visualLayerManager.ZIndex);
         }
         else if (layerHost is ScrollContentPresenter scrollContentPresenter)
         {

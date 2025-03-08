@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
+using System.Reactive.Disposables;
 using AtomUI.Data;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -14,19 +14,17 @@ using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 
 public class ContextMenu : AvaloniaContextMenu,
                            IAnimationAwareControl,
-                           IControlSharedTokenResourcesHost
+                           IControlSharedTokenResourcesHost,
+                           ITokenResourceConsumer
 {
-    private static readonly FieldInfo PopupFieldInfo;
-    private static readonly EventInfo ClosingEventInfo;
-
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ContextMenu, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ContextMenu, bool>(nameof(IsWaveAnimationEnabled));
-    
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ContextMenu>();
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -42,19 +40,15 @@ public class ContextMenu : AvaloniaContextMenu,
     #endregion
 
     #region 内部属性定义
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-
-    static ContextMenu()
-    {
-        PopupFieldInfo = typeof(AvaloniaContextMenu).GetField("_popup",
-            BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)!;
-        ClosingEventInfo = typeof(Popup).GetEvent("Closing", BindingFlags.NonPublic | BindingFlags.Instance)!;
-    }
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     public ContextMenu()
     {
@@ -68,38 +62,18 @@ public class ContextMenu : AvaloniaContextMenu,
             OverlayDismissEventPassThrough = true
         };
         BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
-        popup.Opened += CreateEventHandler("PopupOpened");
-        popup.Closed += CreateEventHandler<EventArgs>("PopupClosed");
+        popup.Opened += this.CreateEventHandler("PopupOpened");
+        popup.Closed += this.CreateEventHandler<EventArgs>("PopupClosed");
 
-        var closingEventAddMethod = ClosingEventInfo.GetAddMethod(true);
-        closingEventAddMethod?.Invoke(popup, new object?[] { CreateEventHandler<CancelEventArgs>("PopupClosing") });
-
-        popup.KeyUp += CreateEventHandler<KeyEventArgs>("PopupKeyUp");
-        PopupFieldInfo.SetValue(this, popup);
-    }
-
-    private EventHandler<T>? CreateEventHandler<T>(string methodName)
-    {
-        var parentType = typeof(AvaloniaContextMenu);
-        if (parentType.TryGetMethodInfo(methodName, out var methodInfo, BindingFlags.NonPublic | BindingFlags.Instance))
+        popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
+        popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
+        Closing += (sender, args) =>
         {
-            return (EventHandler<T>)Delegate.CreateDelegate(typeof(EventHandler<T>), this, methodInfo);
-        }
-
-        return null;
+            args.Cancel = true;
+        };
+        this.SetPopup(popup);
     }
 
-    private EventHandler? CreateEventHandler(string methodName)
-    {
-        var parentType = typeof(ContextMenu);
-        if (parentType.TryGetMethodInfo(methodName, out var methodInfo, BindingFlags.NonPublic | BindingFlags.Instance))
-        {
-            return (EventHandler)Delegate.CreateDelegate(typeof(EventHandler), this, methodInfo);
-        }
-
-        return null;
-    }
-    
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         if (container is MenuItem menuItem)
@@ -108,5 +82,17 @@ public class ContextMenu : AvaloniaContextMenu,
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

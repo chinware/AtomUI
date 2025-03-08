@@ -1,4 +1,4 @@
-using System.Reactive.Disposables;
+﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -10,8 +10,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -53,7 +55,6 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
     private Popup _target;
     private ShadowLayerPopupOpenState? _openState;
     private ShadowRenderer? _shadowRenderer;
-    private bool _isOpenRequested;
     private IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
 
     public PopupShadowLayer(Popup target)
@@ -133,19 +134,6 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
         return new Size(targetWidth, targetHeight);
     }
 
-    private void HandleTargetOpened(object? sender, EventArgs args)
-    {
-        if (_isOpenRequested)
-        {
-            Open();
-        }
-    }
-
-    private void HandleTargetClosed(object? sender, EventArgs args)
-    {
-        Close();
-    }
-
     protected virtual void NotifyPopupHostCreated(IPopupHost popupHost)
     {
     }
@@ -157,40 +145,11 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
         {
             return;
         }
-
-        if (_target.Host == null)
-        {
-            _isOpenRequested = true;
-            return;
-        }
-
-        _isOpenRequested = false;
-
-        var popupHost = OverlayPopupHost.CreatePopupHost(_target.PlacementTarget!, DependencyResolver.Instance);
+        
+        var popupHost = OverlayPopupHost.CreatePopupHost(_target.PlacementTarget ?? _target.GetVisualParent()!, DependencyResolver.Instance);
         popupHost.Topmost = false;
-        NotifyPopupHostCreated(popupHost);
-        if (popupHost is PopupRoot popupRoot)
-        {
-            popupRoot.SetWindowIgnoreMouseEvents(true);
-            if (popupRoot.PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
-            {
-                _managedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
-            }
-        }
-
+        
         var handlerCleanup = new CompositeDisposable(7);
-
-        if (Child == null && _target.Child != null)
-        {
-            // 尝试手动
-            CreateShadowRenderer();
-        }
-        
-        popupHost.SetChild(Child);
-        ((ISetLogicalParent)popupHost).SetParent(_target);
-        
-        UpdateLayoutHostPositionAndSize(popupHost);
-
         if (popupHost is PopupRoot topLevelPopup)
         {
             topLevelPopup
@@ -209,7 +168,7 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
         if (targetPopupRoot != null)
         {
             SubscribeToEventHandler<PopupRoot, EventHandler<PixelPointEventArgs>>(targetPopupRoot,
-                ParentPopupPositionChanged,
+                HandleParentPopupPositionChanged,
                 (x, handler) => x.PositionChanged += handler,
                 (x, handler) => x.PositionChanged -= handler).DisposeWith(handlerCleanup);
         }
@@ -218,12 +177,6 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
             HandleTargetPropertyChanged,
             (x, handler) => x.PropertyChanged += handler,
             (x, handler) => x.PropertyChanged -= handler).DisposeWith(handlerCleanup);
-        SubscribeToEventHandler<Popup, EventHandler>(_target, HandleTargetOpened,
-            (x, handler) => x.Opened += handler,
-            (x, handler) => x.Opened -= handler).DisposeWith(handlerCleanup);
-        SubscribeToEventHandler<Popup, EventHandler<EventArgs>>(_target, HandleTargetClosed,
-            (x, handler) => x.Closed += handler,
-            (x, handler) => x.Closed -= handler).DisposeWith(handlerCleanup);
 
         var cleanupPopup = Disposable.Create((popupHost, handlerCleanup), state =>
         {
@@ -232,27 +185,57 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
             state.popupHost.SetChild(null);
             state.popupHost.Hide();
 
-            ((ISetLogicalParent)state.popupHost).SetParent(null);
+            ((ILogical)state.popupHost).SetLogicalParent(null);
             _managedPopupPositionerPopup = null;
             state.popupHost.Dispose();
         });
 
         _openState        = new ShadowLayerPopupOpenState(popupHost, cleanupPopup);
-        popupHost.Show();
-    
-        if (targetPopupRoot != null)
+        
+        NotifyPopupHostCreated(popupHost);
+        if (popupHost is PopupRoot popupRoot)
         {
-            Dispatcher.UIThread.Post(() =>
+            popupRoot.SetWindowIgnoreMouseEvents(true);
+            if (popupRoot.PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
             {
-                _target.Host.Topmost = true;
-                targetPopupRoot.Activate();
-            });
+                _managedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
+            }
+        }
+
+        if (Child == null && _target.Child != null)
+        {
+            // 尝试手动
+            CreateShadowRenderer();
+        }
+        else
+        {
+            ConfigureShadowRenderer();
+        }
+        
+        ((ILogical)popupHost).SetLogicalParent(_target);
+        popupHost.SetChild(Child);
+        
+        UpdateLayoutHostPositionAndSize(popupHost);
+        popupHost.Topmost = false;
+        if (popupHost is WindowBase window)
+        {
+            window.ShowWithoutActive();
+        }
+    }
+
+    public void Hide()
+    {
+        if (_openState != null)
+        {
+            if (_openState.PopupHost is PopupRoot popupRoot)
+            {
+                popupRoot.Opacity = 0d;
+            }
         }
     }
 
     public virtual void Close()
     {
-        _isOpenRequested = false;
         if (_openState is null)
         {
             return;
@@ -266,6 +249,7 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
     {
         if (_target.Host is PopupRoot targetPopupRoot && _shadowRenderer != null)
         {
+            ConfigureShadowRenderer();
             var    impl           = targetPopupRoot.PlatformImpl!;
             var    targetPosition = impl.Position;
             double offsetX        = targetPosition.X;
@@ -285,11 +269,14 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
         }
     }
 
-    private void ParentPopupPositionChanged(object? src, PixelPointEventArgs e) => HandlePositionChange();
-
-    private void HandlePositionChange()
+    private void HandleParentPopupPositionChanged(object? src, PixelPointEventArgs e)
     {
+        if (src is PopupRoot targetPopupRoot)
+        {
+            UpdateLayoutHostPositionAndSize(targetPopupRoot);
+        }
     }
+    
 
     private void RootTemplateApplied(object? sender, TemplateAppliedEventArgs e)
     {

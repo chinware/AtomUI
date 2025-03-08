@@ -34,7 +34,7 @@ internal class CalendarItemTheme : BaseControlTheme
         : this(typeof(CalendarItem))
     {
     }
-    
+
     public CalendarItemTheme(Type targetType) : base(targetType)
     {
     }
@@ -56,8 +56,8 @@ internal class CalendarItemTheme : BaseControlTheme
                 Name          = ItemRootLayoutPart,
                 LastChildFill = true
             };
-            BuildHeader(rootLayout, scope);
-            BuildContentView(rootLayout, scope);
+            BuildHeader(calendarItem, rootLayout, scope);
+            BuildContentView(calendarItem, rootLayout, scope);
 
             BuildDayTitleTemplate(calendarItem);
             frame.Child = rootLayout;
@@ -71,36 +71,37 @@ internal class CalendarItemTheme : BaseControlTheme
         calendarItem.DayTitleTemplate = new DayTitleTemplate();
     }
 
-    protected void BuildHeader(DockPanel layout, INameScope scope)
+    protected void BuildHeader(CalendarItem calendarItem, DockPanel layout, INameScope scope)
     {
         var headerFrame = new Border()
         {
             Name = HeaderFramePart
         };
         CreateTemplateParentBinding(headerFrame, Border.BorderThicknessProperty, CalendarItem.BorderThicknessProperty);
-        
+
         var headerLayout = new UniformGrid
         {
             Name    = HeaderLayoutPart,
             Columns = 1
         };
         headerLayout.RegisterInNameScope(scope);
-        NotifyConfigureHeaderLayout(headerLayout);
-        NotifyBuildHeaderItems(headerLayout, scope);
+        NotifyConfigureHeaderLayout(calendarItem, headerLayout);
+        NotifyBuildHeaderItems(calendarItem, headerLayout, scope);
 
         DockPanel.SetDock(headerFrame, Dock.Top);
         headerFrame.Child = headerLayout;
         layout.Children.Add(headerFrame);
     }
 
-    protected virtual void NotifyConfigureHeaderLayout(UniformGrid headerLayout)
+    protected virtual void NotifyConfigureHeaderLayout(CalendarItem calendarItem, UniformGrid headerLayout)
     {
         headerLayout.Columns = 1;
     }
 
-    protected virtual void NotifyBuildHeaderItems(UniformGrid headerLayout, INameScope scope)
+    protected virtual void NotifyBuildHeaderItems(CalendarItem calendarItem, UniformGrid headerLayout, INameScope scope)
     {
-        BuildHeaderItem(headerLayout,
+        BuildHeaderItem(calendarItem,
+            headerLayout,
             PreviousButtonPart,
             PreviousMonthButtonPart,
             HeaderButtonPart,
@@ -109,7 +110,8 @@ internal class CalendarItemTheme : BaseControlTheme
             scope);
     }
 
-    protected void BuildHeaderItem(UniformGrid layout,
+    protected void BuildHeaderItem(CalendarItem calendarItem, 
+                                   UniformGrid layout,
                                    string previousButtonName,
                                    string previousMonthButtonName,
                                    string headerButtonName,
@@ -129,12 +131,12 @@ internal class CalendarItemTheme : BaseControlTheme
             }
         };
 
-        var previousButton = BuildPreviousButton(previousButtonName);
+        var previousButton = BuildPreviousButton(calendarItem, previousButtonName);
         previousButton.RegisterInNameScope(scope);
         Grid.SetColumn(previousButton, 0);
         headerLayout.Children.Add(previousButton);
 
-        var previousMonthButton = BuildPreviousMonthButton(previousMonthButtonName);
+        var previousMonthButton = BuildPreviousMonthButton(calendarItem, previousMonthButtonName);
         CreateTemplateParentBinding(previousMonthButton, Visual.IsVisibleProperty,
             CalendarItem.IsMonthViewModeProperty);
         previousMonthButton.RegisterInNameScope(scope);
@@ -151,14 +153,14 @@ internal class CalendarItemTheme : BaseControlTheme
         headerButton.RegisterInNameScope(scope);
         headerLayout.Children.Add(headerButton);
 
-        var nextMonthButton = BuildNextMonthButton(nextMonthButtonName);
+        var nextMonthButton = BuildNextMonthButton(calendarItem, nextMonthButtonName);
         CreateTemplateParentBinding(nextMonthButton, Visual.IsVisibleProperty, CalendarItem.IsMonthViewModeProperty);
         nextMonthButton.IsVisible = false;
         nextMonthButton.RegisterInNameScope(scope);
         Grid.SetColumn(nextMonthButton, 3);
         headerLayout.Children.Add(nextMonthButton);
 
-        var nextButton = BuildNextButton(nextButtonName);
+        var nextButton = BuildNextButton(calendarItem, nextButtonName);
         nextButton.RegisterInNameScope(scope);
         Grid.SetColumn(nextButton, 4);
         headerLayout.Children.Add(nextButton);
@@ -166,96 +168,58 @@ internal class CalendarItemTheme : BaseControlTheme
         layout.Children.Add(headerLayout);
     }
 
-    protected virtual IconButton BuildPreviousButton(string name)
+    protected virtual IconButton BuildPreviousButton(CalendarItem calendarItem, string name)
     {
         var previousButtonIcon = AntDesignIconPackage.DoubleLeftOutlined();
-        TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextDescription);
-        TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        TokenResourceBinder.CreateTokenBinding(previousButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
-
         var previousButton = new IconButton
         {
             Name = name,
             Icon = previousButtonIcon
         };
-
-        TokenResourceBinder.CreateTokenBinding(previousButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(previousButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        
         return previousButton;
     }
 
-    protected virtual IconButton BuildPreviousMonthButton(string name)
+    protected virtual IconButton BuildPreviousMonthButton(CalendarItem calendarItem, string name)
     {
         var previousMonthButtonIcon = AntDesignIconPackage.LeftOutlined();
-        TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextDescription);
-        TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        TokenResourceBinder.CreateTokenBinding(previousMonthButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
-
+      
         var previousMonthButton = new IconButton
         {
             Name = name,
             Icon = previousMonthButtonIcon
         };
-
-        TokenResourceBinder.CreateTokenBinding(previousMonthButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(previousMonthButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        
         return previousMonthButton;
     }
 
-    protected virtual IconButton BuildNextButton(string name)
+    protected virtual IconButton BuildNextButton(CalendarItem calendarItem, string name)
     {
         var nextButtonIcon = AntDesignIconPackage.DoubleRightOutlined();
-        TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextDescription);
-        TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        TokenResourceBinder.CreateTokenBinding(nextButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
-
+        
         var nextButton = new IconButton
         {
             Name = name,
             Icon = nextButtonIcon
         };
-        TokenResourceBinder.CreateTokenBinding(nextButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(nextButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        
         return nextButton;
     }
 
-    protected virtual IconButton BuildNextMonthButton(string name)
+    protected virtual IconButton BuildNextMonthButton(CalendarItem calendarItem, string name)
     {
         var nextMonthButtonIcon = AntDesignIconPackage.RightOutlined();
-        TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextDescription);
-        TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.ActiveFilledBrushProperty,
-            SharedTokenKey.ColorText);
-        TokenResourceBinder.CreateTokenBinding(nextMonthButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorText);
+      
         var nextMonthButton = new IconButton
         {
             Name = name,
             Icon = nextMonthButtonIcon
         };
-        TokenResourceBinder.CreateTokenBinding(nextMonthButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(nextMonthButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
+        
         return nextMonthButton;
     }
 
-    private void BuildContentView(DockPanel layout, INameScope scope)
+    private void BuildContentView(CalendarItem calendarItem, DockPanel layout, INameScope scope)
     {
         var monthViewLayout = new UniformGrid
         {
@@ -265,9 +229,9 @@ internal class CalendarItemTheme : BaseControlTheme
         };
         monthViewLayout.RegisterInNameScope(scope);
 
-        NotifyConfigureMonthViewLayout(monthViewLayout, scope);
-        NotifyBuildMonthViews(monthViewLayout, scope);
-        
+        NotifyConfigureMonthViewLayout(calendarItem, monthViewLayout, scope);
+        NotifyBuildMonthViews(calendarItem, monthViewLayout, scope);
+
         layout.Children.Add(monthViewLayout);
 
         var yearView = new Grid
@@ -291,20 +255,23 @@ internal class CalendarItemTheme : BaseControlTheme
         yearView.RegisterInNameScope(scope);
         layout.Children.Add(yearView);
     }
-    
-    protected virtual void NotifyConfigureMonthViewLayout(UniformGrid monthViewLayout, INameScope scope)
+
+    protected virtual void NotifyConfigureMonthViewLayout(CalendarItem calendarItem, UniformGrid monthViewLayout,
+                                                          INameScope scope)
     {
         monthViewLayout.Columns = 1;
     }
 
-    protected virtual void NotifyBuildMonthViews(UniformGrid monthViewLayout, INameScope scope)
+    protected virtual void NotifyBuildMonthViews(CalendarItem calendarItem, UniformGrid monthViewLayout,
+                                                 INameScope scope)
     {
         var monthView = BuildMonthViewItem(MonthViewPart);
+        // 不会造成内存泄漏
         BindUtils.RelayBind(monthViewLayout, Visual.IsVisibleProperty, monthView, Visual.IsVisibleProperty);
         monthView.RegisterInNameScope(scope);
         monthViewLayout.Children.Add(monthView);
     }
-    
+
     protected Grid BuildMonthViewItem(string name)
     {
         var monthViewLayout = new Grid
@@ -342,14 +309,28 @@ internal class CalendarItemTheme : BaseControlTheme
 
         commonStyle.Add(CalendarItem.MinHeightProperty, DatePickerTokenKey.ItemPanelMinHeight);
         commonStyle.Add(CalendarItem.MinWidthProperty, DatePickerTokenKey.ItemPanelMinWidth);
-        
+
         var headerFrameStyle = new Style(selector => selector.Nesting().Template().Name(HeaderFramePart));
         headerFrameStyle.Add(Border.MarginProperty, DatePickerTokenKey.HeaderMargin);
         headerFrameStyle.Add(Border.PaddingProperty, DatePickerTokenKey.HeaderPadding);
         headerFrameStyle.Add(Border.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
 
         commonStyle.Add(headerFrameStyle);
-
+        BuildButtonsStyles(commonStyle);
         Add(commonStyle);
+    }
+    
+    private void BuildButtonsStyles(Style commonStyle)
+    {
+        var buttonsStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(PreviousButtonPart),
+            selector.Nesting().Template().Name(PreviousMonthButtonPart),
+            selector.Nesting().Template().Name(NextButtonPart),
+            selector.Nesting().Template().Name(NextMonthButtonPart)));
+        buttonsStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+        buttonsStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+        buttonsStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextDescription);
+        buttonsStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorText);
+        buttonsStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
+        commonStyle.Add(buttonsStyle);
     }
 }

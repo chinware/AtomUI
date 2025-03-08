@@ -7,6 +7,7 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input.Raw;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Internal;
 
@@ -86,7 +87,6 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
         _secondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputTheme.SecondaryInfoInputBoxPart);
         _rangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputTheme.RangePickerIndicatorPart);
         _rangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputTheme.RangePickerArrowPart);
@@ -252,7 +252,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             HandleRangeActivatedPartChanged();
         }
 
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             SetupTransitions();
         }

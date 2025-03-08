@@ -1,6 +1,5 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
@@ -40,13 +39,6 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
         var arrowIcon = AntDesignIconPackage.SwapRightOutlined();
         arrowIcon.Name = RangePickerArrowPart;
         arrowIcon.RegisterInNameScope(scope);
-
-        TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.HeightProperty,
-            SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateTokenBinding(arrowIcon, Layoutable.WidthProperty,
-            SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateTokenBinding(arrowIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorTextQuaternary);
 
         var rangeStartTextBox = BuildPickerTextBox(InfoInputBoxPart);
         
@@ -96,10 +88,13 @@ internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
 
-        var arrowStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerArrowPart));
-        arrowStyle.Add(Layoutable.MarginProperty, InfoPickerInputTokenKey.RangePickerArrowMargin);
+        var arrowIconStyle = new Style(selector => selector.Nesting().Template().Name(RangePickerArrowPart));
+        arrowIconStyle.Add(Layoutable.MarginProperty, InfoPickerInputTokenKey.RangePickerArrowMargin);
+        arrowIconStyle.Add(Layoutable.HeightProperty,  SharedTokenKey.IconSize);
+        arrowIconStyle.Add(Layoutable.WidthProperty,  SharedTokenKey.IconSize);
+        arrowIconStyle.Add(Icon.NormalFilledBrushProperty,  SharedTokenKey.ColorTextQuaternary);
 
-        commonStyle.Add(arrowStyle);
+        commonStyle.Add(arrowIconStyle);
 
         BuildIndicatorStyle(commonStyle);
         Add(commonStyle);

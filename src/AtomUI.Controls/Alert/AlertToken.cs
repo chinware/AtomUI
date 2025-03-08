@@ -57,6 +57,11 @@ internal class AlertToken : AbstractControlDesignToken
     /// 额外元素的外间距
     /// </summary>
     public Thickness ExtraElementMargin { get; set; }
+    
+    /// <summary>
+    /// 描述标签外间距
+    /// </summary>
+    public Thickness DescriptionLabelMargin { get; set; }
 
     internal override void CalculateFromAlias()
     {
@@ -70,6 +75,7 @@ internal class AlertToken : AbstractControlDesignToken
         IconDefaultMargin            = new Thickness(0, 0, SharedToken.MarginXS, 0);
         IconWithDescriptionMargin    = new Thickness(0, 0, SharedToken.MarginSM, 0);
         ExtraElementMargin           = new Thickness(SharedToken.MarginXS, 0, 0, 0);
+        DescriptionLabelMargin       = new Thickness(0, SharedToken.MarginXS, 0, 0);
 
         CloseIconSize = SharedToken.FontSizeIcon + 2;
         IconSize      = SharedToken.FontSizeLG;

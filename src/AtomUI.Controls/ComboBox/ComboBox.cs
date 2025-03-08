@@ -14,9 +14,6 @@ public class ComboBox : AvaloniaComboBox,
                         IAnimationAwareControl,
                         IControlSharedTokenResourcesHost
 {
-    public const string ErrorPC = ":error";
-    public const string WarningPC = ":warning";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -26,7 +23,7 @@ public class ComboBox : AvaloniaComboBox,
         AddOnDecoratedBox.RightAddOnProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<ComboBox>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<ComboBox>();
@@ -44,10 +41,10 @@ public class ComboBox : AvaloniaComboBox,
         TextBox.IsEnableClearButtonProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ComboBox, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ComboBox, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ComboBox>();
 
     public object? LeftAddOn
     {
@@ -184,7 +181,7 @@ public class ComboBox : AvaloniaComboBox,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
-        PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
+        PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
     }
 }

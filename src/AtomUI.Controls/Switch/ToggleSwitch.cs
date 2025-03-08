@@ -13,6 +13,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Rendering;
+using Avalonia.VisualTree;
 using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
@@ -49,19 +50,19 @@ public class ToggleSwitch : ToggleButton,
     /// 设置预置的大小类型
     /// </summary>
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Button, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ToggleSwitch>();
 
     /// <summary>
     /// 是否处于加载状态
     /// </summary>
     public static readonly StyledProperty<bool> IsLoadingProperty =
-        AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
+        AvaloniaProperty.Register<ToggleSwitch, bool>(nameof(IsLoading));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleSwitch>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ToggleSwitch>();
 
     /// <summary>
     /// Gets or Sets the Content that is displayed when in the On State.
@@ -405,9 +406,32 @@ public class ToggleSwitch : ToggleButton,
         {
             HandleLoadingState(IsLoading);
         }
-        else if (e.Property == OffContentProperty || e.Property == OnContentProperty)
+        else if ((e.Property == IsPointerOverProperty && !IsLoading) ||
+            e.Property == IsCheckedProperty ||
+            e.Property == IsEnabledProperty)
         {
-            if (VisualRoot is not null)
+            if (e.Property == IsCheckedProperty && IsWaveAnimationEnabled)
+            {
+                CalculateElementsOffset(Bounds.Size);
+                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
+            }
+        } 
+        else if (e.Property == KnobSizeProperty)
+        {
+            if (_switchKnob is not null)
+            {
+                _switchKnob.KnobSize = KnobSize;
+            }
+        } 
+        
+        if (e.Property == IsCheckedProperty)
+        {
+            _isCheckedChanged = true;
+        }
+        
+        if (this.IsAttachedToVisualTree())
+        {
+            if (e.Property == OffContentProperty || e.Property == OnContentProperty)
             {
                 if (e.OldValue is Control oldChild)
                 {
@@ -430,28 +454,6 @@ public class ToggleSwitch : ToggleButton,
                     _togglePanel?.Children.Add(newControl);
                 }
             }
-        }
-
-        if ((e.Property == IsPointerOverProperty && !IsLoading) ||
-            e.Property == IsCheckedProperty ||
-            e.Property == IsEnabledProperty)
-        {
-            if (e.Property == IsCheckedProperty && IsWaveAnimationEnabled)
-            {
-                CalculateElementsOffset(Bounds.Size);
-                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
-            }
-        } else if (e.Property == KnobSizeProperty)
-        {
-            if (_switchKnob is not null)
-            {
-                _switchKnob.KnobSize = KnobSize;
-            }
-        }
-
-        if (e.Property == IsCheckedProperty)
-        {
-            _isCheckedChanged = true;
         }
     }
 
@@ -532,7 +534,7 @@ public class ToggleSwitch : ToggleButton,
         }
         else if (content is string offStr)
         {
-            var label = new SingleLineText()
+            var label = new TextBlock()
             {
                 Text = offStr,
                 VerticalAlignment = VerticalAlignment.Center,

@@ -111,6 +111,11 @@ internal class DatePickerToken : AbstractControlDesignToken
     public double RangeCalendarSpacing { get; set; }
     
     /// <summary>
+    /// 双 Calendar 两个月视图的外间距
+    /// </summary>
+    public Thickness RangeCalendarMonthViewMargin { get; set; }
+    
+    /// <summary>
     /// 按钮区域面板外间距
     /// </summary>
     public Thickness ButtonsPanelMargin { get; set; }
@@ -121,25 +126,26 @@ internal class DatePickerToken : AbstractControlDesignToken
 
         var colorPrimary = SharedToken.ColorPrimary;
 
-        CellHoverBg                 = SharedToken.ControlItemBgHover;
-        CellActiveWithRangeBg       = SharedToken.ControlItemBgActive;
-        CellHoverWithRangeBg        = colorPrimary.Lighten(35);
-        CellRangeBorderColor        = colorPrimary.Lighten(20);
-        CellBgDisabled              = SharedToken.ColorBgContainerDisabled;
-        CellWidth                   = SharedToken.ControlHeightSM;
-        CellHeight                  = SharedToken.ControlHeightSM;
-        TextHeight                  = SharedToken.ControlHeightLG;
-        WithoutTimeCellHeight       = SharedToken.ControlHeightLG * 1.65;
-        CellMargin                  = new Thickness(SharedToken.MarginXXS);
-        PanelContentPadding         = new Thickness(SharedToken.PaddingSM);
-        ItemPanelMinWidth           = 225;
-        ItemPanelMinHeight          = 270;
-        RangeItemPanelMinWidth      = 260;
-        DayTitleHeight              = SharedToken.ControlHeightSM;
-        HeaderMargin                = new Thickness(0, 0, 0, SharedToken.MarginSM);
-        HeaderPadding               = new Thickness(0, 0, 0, SharedToken.PaddingSM);
-        CellLineHeight              = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
-        RangeCalendarSpacing        = 20;
-        ButtonsPanelMargin          = new Thickness(0, SharedToken.MarginXS, 0, 0);
+        CellHoverBg                  = SharedToken.ControlItemBgHover;
+        CellActiveWithRangeBg        = SharedToken.ControlItemBgActive;
+        CellHoverWithRangeBg         = colorPrimary.Lighten(35);
+        CellRangeBorderColor         = colorPrimary.Lighten(20);
+        CellBgDisabled               = SharedToken.ColorBgContainerDisabled;
+        CellWidth                    = SharedToken.ControlHeightSM;
+        CellHeight                   = SharedToken.ControlHeightSM;
+        TextHeight                   = SharedToken.ControlHeightLG;
+        WithoutTimeCellHeight        = SharedToken.ControlHeightLG * 1.65;
+        CellMargin                   = new Thickness(SharedToken.MarginXXS);
+        PanelContentPadding          = new Thickness(SharedToken.PaddingSM);
+        ItemPanelMinWidth            = 225;
+        ItemPanelMinHeight           = 270;
+        RangeItemPanelMinWidth       = 260;
+        DayTitleHeight               = SharedToken.ControlHeightSM;
+        HeaderMargin                 = new Thickness(0, 0, 0, SharedToken.MarginSM);
+        HeaderPadding                = new Thickness(0, 0, 0, SharedToken.PaddingSM);
+        CellLineHeight               = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
+        RangeCalendarSpacing         = 20;
+        RangeCalendarMonthViewMargin = new Thickness(RangeCalendarSpacing, 0, 0, 0);
+        ButtonsPanelMargin           = new Thickness(0, SharedToken.MarginXS, 0, 0);
     }
 }

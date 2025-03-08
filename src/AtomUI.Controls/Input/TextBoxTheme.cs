@@ -1,4 +1,4 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -33,7 +33,7 @@ internal class TextBoxTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<TextBox>((textBox, scope) => { return BuildTextBoxStructure(textBox, scope); });
+        return new FuncControlTemplate<TextBox>((textBox, scope) => BuildTextBoxStructure(textBox, scope));
     }
 
     protected virtual Control BuildTextBoxStructure(TextBox textBox, INameScope scope)
@@ -72,16 +72,12 @@ internal class TextBoxTheme : BaseControlTheme
             Name      = ScrollViewerPart,
             Focusable = true
         };
+        scrollViewer.SetTemplatedParent(textBox);
 
-        // TODO attach 属性不知道怎么指定 Avalonia 控件所在的名称控件，无法用模板绑定的方式进行绑定
-        BindUtils.RelayBind(textBox, ScrollViewer.AllowAutoHideProperty, scrollViewer,
-            ScrollViewer.AllowAutoHideProperty);
-        BindUtils.RelayBind(textBox, ScrollViewer.HorizontalScrollBarVisibilityProperty, scrollViewer,
-            ScrollViewer.HorizontalScrollBarVisibilityProperty);
-        BindUtils.RelayBind(textBox, ScrollViewer.VerticalScrollBarVisibilityProperty, scrollViewer,
-            ScrollViewer.VerticalScrollBarVisibilityProperty);
-        BindUtils.RelayBind(textBox, ScrollViewer.VerticalScrollBarVisibilityProperty, scrollViewer,
-            ScrollViewer.IsScrollChainingEnabledProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.AllowAutoHideProperty, ScrollViewer.AllowAutoHideProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollViewer.HorizontalScrollBarVisibilityProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollViewer.VerticalScrollBarVisibilityProperty);
+        CreateTemplateParentBinding(scrollViewer, ScrollViewer.IsScrollChainingEnabledProperty, ScrollViewer.IsScrollChainingEnabledProperty);
 
         scrollViewer.RegisterInNameScope(scope);
 
@@ -91,6 +87,7 @@ internal class TextBoxTheme : BaseControlTheme
         {
             Name    = WatermarkPart,
         };
+        watermark.SetTemplatedParent(textBox);
         CreateTemplateParentBinding(watermark, Layoutable.HorizontalAlignmentProperty,
             TextBox.HorizontalContentAlignmentProperty);
         CreateTemplateParentBinding(watermark, Layoutable.VerticalAlignmentProperty,
@@ -110,7 +107,7 @@ internal class TextBoxTheme : BaseControlTheme
         {
             Name = TextPresenterPart,
         };
-
+        textPresenter.SetTemplatedParent(textBox);
         CreateTemplateParentBinding(textPresenter, TextPresenter.HorizontalAlignmentProperty,
             TextBox.HorizontalContentAlignmentProperty);
         CreateTemplateParentBinding(textPresenter, TextPresenter.VerticalAlignmentProperty,

@@ -1,5 +1,5 @@
-﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
+﻿using AtomUI.IconPkg;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -55,17 +55,18 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
     {
         BuildFixedStyle();
         BuildCommonStyle();
+        BuildIconAddOnStyle();
         BuildDisabledStyle();
     }
 
     protected virtual void BuildGridChildren(AddOnDecoratedBox decoratedBox, Grid mainLayout, INameScope scope)
     {
-        BuildLeftAddOn(mainLayout, scope);
+        BuildLeftAddOn(decoratedBox, mainLayout, scope);
         BuildInnerBox(decoratedBox, mainLayout, scope);
-        BuildRightAddOn(mainLayout, scope);
+        BuildRightAddOn(decoratedBox, mainLayout, scope);
     }
 
-    protected virtual void BuildLeftAddOn(Grid layout, INameScope scope)
+    protected virtual void BuildLeftAddOn(AddOnDecoratedBox decoratedBox, Grid layout, INameScope scope)
     {
         var leftAddOnContentPresenter = new ContentPresenter
         {
@@ -88,11 +89,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             ObjectConverters.IsNotNull);
         leftAddOnContentPresenter.RegisterInNameScope(scope);
 
-        TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-            AddOnDecoratedBoxTokenKey.AddonBg);
-        TokenResourceBinder.CreateTokenBinding(leftAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-            SharedTokenKey.ColorBorder);
-
         Grid.SetColumn(leftAddOnContentPresenter, 0);
         layout.Children.Add(leftAddOnContentPresenter);
     }
@@ -110,7 +106,7 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
         Grid.SetColumn(innerBox, 1);
     }
 
-    protected virtual void BuildRightAddOn(Grid layout, INameScope scope)
+    protected virtual void BuildRightAddOn(AddOnDecoratedBox decoratedBox, Grid layout, INameScope scope)
     {
         var rightAddOnContentPresenter = new ContentPresenter
         {
@@ -131,11 +127,6 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
             BindingMode.Default, 
             ObjectConverters.IsNotNull);
 
-        TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BackgroundProperty,
-            AddOnDecoratedBoxTokenKey.AddonBg);
-        TokenResourceBinder.CreateTokenBinding(rightAddOnContentPresenter, ContentPresenter.BorderBrushProperty,
-            SharedTokenKey.ColorBorder);
-
         rightAddOnContentPresenter.RegisterInNameScope(scope);
         layout.Children.Add(rightAddOnContentPresenter);
         Grid.SetColumn(rightAddOnContentPresenter, 2);
@@ -151,6 +142,14 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorText);
+
+        {
+            var addOnStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(LeftAddOnPart),
+                selector.Nesting().Template().Name(RightAddOnPart)));
+            addOnStyle.Add(ContentPresenter.BackgroundProperty, AddOnDecoratedBoxTokenKey.AddonBg);
+            addOnStyle.Add(ContentPresenter.BorderBrushProperty, SharedTokenKey.ColorBorder);
+            commonStyle.Add(addOnStyle);
+        }
 
         var largeStyle =
             new Style(selector =>
@@ -192,6 +191,50 @@ internal class AddOnDecoratedBoxTheme : BaseControlTheme
         commonStyle.Add(smallStyle);
 
         Add(commonStyle);
+    }
+
+    private void BuildIconAddOnStyle()
+    {
+        var largeStyle =
+            new Style(selector =>
+                selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Large));
+        {
+            var addOnStyle = new Style(selector => Selectors.Or(
+                selector.Nesting().Template().Name(LeftAddOnPart).Nesting().Descendant().OfType<Icon>(),
+                selector.Nesting().Template().Name(RightAddOnPart).Nesting().Descendant().OfType<Icon>()));
+            addOnStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSizeLG);
+            addOnStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSizeLG);
+            largeStyle.Add(addOnStyle);
+        }
+        
+        Add(largeStyle);
+
+        var middleStyle =
+            new Style(
+                selector => selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Middle));
+        {
+            var addOnStyle = new Style(selector => Selectors.Or(
+                selector.Nesting().Template().Name(LeftAddOnPart).Nesting().Descendant().OfType<Icon>(),
+                selector.Nesting().Template().Name(RightAddOnPart).Nesting().Descendant().OfType<Icon>()));
+            addOnStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSize);
+            addOnStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSize);
+            middleStyle.Add(addOnStyle);
+        }
+        
+        Add(middleStyle);
+
+        var smallStyle =
+            new Style(selector =>
+                selector.Nesting().PropertyEquals(AddOnDecoratedBox.SizeTypeProperty, SizeType.Small));
+        {
+            var addOnStyle = new Style(selector => Selectors.Or(
+                selector.Nesting().Template().Name(LeftAddOnPart).Nesting().Descendant().OfType<Icon>(),
+                selector.Nesting().Template().Name(RightAddOnPart).Nesting().Descendant().OfType<Icon>()));
+            addOnStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSizeSM);
+            addOnStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSizeSM);
+            smallStyle.Add(addOnStyle);
+        }
+        Add(smallStyle);
     }
 
     private void BuildDisabledStyle()

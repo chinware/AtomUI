@@ -1,6 +1,5 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -16,13 +15,13 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
     {
     }
 
-    protected override void NotifyBuildControlTemplate(AbstractProgressBar bar, INameScope scope, Canvas container)
+    protected override void NotifyBuildControlTemplate(AbstractProgressBar progressBar, INameScope scope, Canvas container)
     {
-        base.NotifyBuildControlTemplate(bar, scope, container);
-        CreateCompletedIcons(scope, container);
+        base.NotifyBuildControlTemplate(progressBar, scope, container);
+        CreateCompletedIcons(progressBar, scope, container);
     }
 
-    private void CreateCompletedIcons(INameScope scope, Canvas container)
+    private void CreateCompletedIcons(AbstractProgressBar progressBar, INameScope scope, Canvas container)
     {
         var exceptionCompletedIcon = AntDesignIconPackage.CloseOutlined();
         exceptionCompletedIcon.Name                = ExceptionCompletedIconPart;
@@ -30,10 +29,6 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         exceptionCompletedIcon.VerticalAlignment   = VerticalAlignment.Center;
         
         exceptionCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorError);
-        TokenResourceBinder.CreateTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ControlItemBgActiveDisabled);
 
         var successCompletedIcon = AntDesignIconPackage.CheckOutlined();
         successCompletedIcon.Name                = SuccessCompletedIconPart;
@@ -41,10 +36,6 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
         successCompletedIcon.VerticalAlignment   = VerticalAlignment.Center;
         
         successCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorSuccess);
-        TokenResourceBinder.CreateTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);
         container.Children.Add(successCompletedIcon);
@@ -53,6 +44,17 @@ internal class AbstractCircleProgressTheme : AbstractProgressBarTheme
     protected override void BuildStyles()
     {
         base.BuildStyles();
+        
+        // 完成图标样式
+        var exceptionCompletedIconStyle = new Style(selector => selector.Nesting().Template().Name(ExceptionCompletedIconPart));
+        exceptionCompletedIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+        exceptionCompletedIconStyle.Add(Icon.DisabledFilledBrushProperty, SharedTokenKey.ControlItemBgActiveDisabled);
+        Add(exceptionCompletedIconStyle);
+        
+        var successCompletedIconStyle = new Style(selector => selector.Nesting().Template().Name(SuccessCompletedIconPart));
+        successCompletedIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorSuccess);
+        successCompletedIconStyle.Add(Icon.DisabledFilledBrushProperty, SharedTokenKey.ControlItemBgActiveDisabled);
+        Add(successCompletedIconStyle);
 
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(AbstractCircleProgress.CircleMinimumTextFontSizeProperty,

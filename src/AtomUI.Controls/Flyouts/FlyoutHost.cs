@@ -1,4 +1,6 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -20,7 +22,8 @@ public enum FlyoutTriggerType
 }
 
 public class FlyoutHost : Control,
-                          IAnimationAwareControl
+                          IAnimationAwareControl,
+                          ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -61,10 +64,10 @@ public class FlyoutHost : Control,
         Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<FlyoutHost>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<FlyoutHost, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
     /// 距离 anchor 的边距，根据垂直和水平进行设置
@@ -167,16 +170,18 @@ public class FlyoutHost : Control,
     #region 内部属性定义
 
     Control IAnimationAwareControl.PropertyBindTarget => this;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
+    private readonly FlyoutStateHelper _flyoutStateHelper;
+    
     static FlyoutHost()
     {
         PlacementProperty.OverrideDefaultValue<FlyoutHost>(PlacementMode.Top);
     }
-
-    private readonly FlyoutStateHelper _flyoutStateHelper;
-
+    
     public FlyoutHost()
     {
         _flyoutStateHelper = new FlyoutStateHelper();
@@ -186,7 +191,9 @@ public class FlyoutHost : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
+        _tokenBindingsDisposable = new CompositeDisposable();
+
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
         
         BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
         BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
@@ -195,11 +202,13 @@ public class FlyoutHost : Control,
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
-        if (AnchorTarget is not null)
-        {
-            ((ISetLogicalParent)AnchorTarget).SetParent(this);
-            VisualChildren.Add(AnchorTarget);
-        }
+        SetupFlyoutProperties();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -218,12 +227,12 @@ public class FlyoutHost : Control,
     {
         if (Flyout is not null)
         {
-            BindUtils.RelayBind(this, PlacementProperty, Flyout);
-            BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout);
-            BindUtils.RelayBind(this, PlacementGravityProperty, Flyout);
-            BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
-            BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
-            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
+            BindUtils.RelayBind(this, PlacementProperty, Flyout, FlyoutControl.PlacementProperty);
+            BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout, FlyoutControl.PlacementAnchorProperty);
+            BindUtils.RelayBind(this, PlacementGravityProperty, Flyout, FlyoutControl.PlacementGravityProperty);
+            BindUtils.RelayBind(this, IsShowArrowProperty, Flyout, FlyoutControl.IsShowArrowProperty);
+            BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout, FlyoutControl.IsPointAtCenterProperty);
+            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout, PopupFlyoutBase.MarginToAnchorProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, PopupFlyoutBase.IsMotionEnabledProperty);
             Flyout.IsDetectMouseClickEnabled = false;
         }
@@ -232,11 +241,31 @@ public class FlyoutHost : Control,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == FlyoutProperty)
+        if (this.IsAttachedToLogicalTree())
         {
-            if (Flyout is not null)
+            if (change.Property == FlyoutProperty)
             {
-                SetupFlyoutProperties();
+                if (Flyout is not null)
+                {
+                    SetupFlyoutProperties();
+                }
+            }
+        }
+
+        if (change.Property == AnchorTargetProperty)
+        {
+            var oldAnchorTarget = change.GetOldValue<Control?>();
+            var newAnchorTarget = change.GetNewValue<Control?>();
+            if (oldAnchorTarget != null)
+            {
+                LogicalChildren.Remove(oldAnchorTarget);
+                VisualChildren.Remove(oldAnchorTarget);
+            }
+
+            if (newAnchorTarget != null)
+            {
+                LogicalChildren.Add(newAnchorTarget);
+                VisualChildren.Add(newAnchorTarget);
             }
         }
     }

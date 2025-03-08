@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -17,7 +18,8 @@ using AvaloniaTabControl = Avalonia.Controls.TabControl;
 
 public class BaseTabControl : AvaloniaTabControl,
                               IAnimationAwareControl,
-                              IControlSharedTokenResourcesHost
+                              IControlSharedTokenResourcesHost,
+                              ITokenResourceConsumer
 {
     public const string TopPC = ":top";
     public const string RightPC = ":right";
@@ -30,16 +32,16 @@ public class BaseTabControl : AvaloniaTabControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<BaseTabControl, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<BaseTabControl>();
 
     public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
         AvaloniaProperty.Register<BaseTabControl, bool>(nameof(TabAlignmentCenter));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<BaseTabControl, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabControl>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<BaseTabControl, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<BaseTabControl>();
 
     public SizeType SizeType
     {
@@ -98,13 +100,15 @@ public class BaseTabControl : AvaloniaTabControl,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
-
+    
     #endregion
 
     private Border? _frame;
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
+    private CompositeDisposable? _tokenBindingsDisposable;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     static BaseTabControl()
     {
@@ -122,23 +126,9 @@ public class BaseTabControl : AvaloniaTabControl,
         base.OnApplyTemplate(e);
         _frame = e.NameScope.Find<Border>(BaseTabControlTheme.FramePart);
         _alignWrapper   = e.NameScope.Find<Panel>(BaseTabControlTheme.AlignWrapperPart);
-        SetupBorderBinding();
         HandlePlacementChanged();
     }
-
-    private void SetupBorderBinding()
-    {
-        if (_frame is not null)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-                SharedTokenKey.BorderThickness, BindingPriority.Template,
-                new RenderScaleAwareThicknessConfigure(this));
-        }
-
-        TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
-            TabControlTokenKey.TabAndContentGutter);
-    }
-
+    
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
@@ -147,11 +137,32 @@ public class BaseTabControl : AvaloniaTabControl,
             BindUtils.RelayBind(this, SizeTypeProperty, tabItem, TabItem.SizeTypeProperty);
         }
     }
-
+    
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
+            TabControlTokenKey.TabAndContentGutter));
         UpdatePseudoClasses();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (_frame is not null)
+        {
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+                SharedTokenKey.BorderThickness, BindingPriority.Template,
+                new RenderScaleAwareThicknessConfigure(this)));
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -236,4 +247,5 @@ public class BaseTabControl : AvaloniaTabControl,
         });
         context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
     }
+    
 }

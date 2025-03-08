@@ -1,6 +1,6 @@
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Reflection;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
@@ -13,20 +13,34 @@ namespace AtomUI.Theme.Utils;
 
 public static class AnimationAwareControlExtensions
 {
-    public static void BindAnimationProperties(this IAnimationAwareControl animationAwareControl, 
+    public static void BindAnimationProperties(this IAnimationAwareControl animationAwareControl,
                                                AvaloniaProperty isMotionEnabledProperty,
                                                AvaloniaProperty isWaveAnimationEnabledProperty)
     {
-        var bindTarget = animationAwareControl.PropertyBindTarget;
+        var                  bindTarget          = animationAwareControl.PropertyBindTarget;
         bindTarget.AttachedToLogicalTree += (object? sender, LogicalTreeAttachmentEventArgs args) =>
         {
             if (sender is Control control)
             {
-                TokenResourceBinder.CreateTokenBinding(control, isMotionEnabledProperty, SharedTokenKey.EnableMotion);
-                TokenResourceBinder.CreateTokenBinding(control, isWaveAnimationEnabledProperty, SharedTokenKey.EnableWaveAnimation);
+                var compositeDisposable = new CompositeDisposable();
+                compositeDisposable.Add(TokenResourceBinder.CreateTokenBinding(control, isMotionEnabledProperty,
+                    SharedTokenKey.EnableMotion));
+                compositeDisposable.Add(TokenResourceBinder.CreateTokenBinding(control, isWaveAnimationEnabledProperty,
+                    SharedTokenKey.EnableWaveAnimation));
+                AnimationAwareControlProperty.SetTokenResourceBindingDisposables(control, compositeDisposable);
             }
         };
-        
+
+        bindTarget.DetachedFromLogicalTree += (object? sender, LogicalTreeAttachmentEventArgs args) =>
+        {
+            if (sender is Control control)
+            {
+                var compositeDisposable = AnimationAwareControlProperty.GetTokenResourceBindingDisposables(control);
+                compositeDisposable?.Dispose();
+                AnimationAwareControlProperty.SetTokenResourceBindingDisposables(control, null);
+            }
+        };
+
         // 如果被强行指定，那么在 resource 中记录下来，这样就屏蔽全局的
         bindTarget.PropertyChanged += HandlePropertyChanged;
     }
@@ -35,15 +49,15 @@ public static class AnimationAwareControlExtensions
     {
         if (sender is Control hostControl)
         {
-            var isMotionEnabledChanged = e.Property.Name == IAnimationAwareControl.IsMotionEnabledPropertyName;
+            var isMotionEnabledChanged = e.Property.Name == AnimationAwareControlProperty.IsMotionEnabledPropertyName;
             var isWaveAnimationEnabledChanged =
-                e.Property.Name == IAnimationAwareControl.IsWaveAnimationEnabledPropertyName;
+                e.Property.Name == AnimationAwareControlProperty.IsWaveAnimationEnabledPropertyName;
             if (isMotionEnabledChanged || isWaveAnimationEnabledChanged)
             {
                 if (e.Priority == BindingPriority.LocalValue)
                 {
                     ResourceDictionary? resourceDictionary;
-                    var                 themeVariant       = TokenFinderUtils.FindThemeVariant(hostControl);
+                    var                 themeVariant = TokenFinderUtils.FindThemeVariant(hostControl);
                     if (!hostControl.Resources.ThemeDictionaries.ContainsKey(themeVariant))
                     {
                         resourceDictionary = new ResourceDictionary();
@@ -51,11 +65,13 @@ public static class AnimationAwareControlExtensions
                     }
                     else
                     {
-                        resourceDictionary = hostControl.Resources.ThemeDictionaries[themeVariant] as ResourceDictionary;
+                        resourceDictionary =
+                            hostControl.Resources.ThemeDictionaries[themeVariant] as ResourceDictionary;
                     }
+
                     Debug.Assert(resourceDictionary != null);
-                    
-                    var               newValue    = e.GetNewValue<bool>();
+
+                    var               newValue = e.GetNewValue<bool>();
                     TokenResourceKey? resourceKey;
                     if (isMotionEnabledChanged)
                     {
@@ -70,6 +86,7 @@ public static class AnimationAwareControlExtensions
                     {
                         resourceDictionary.Remove(resourceKey);
                     }
+
                     resourceDictionary.Add(resourceKey, newValue);
                 }
             }

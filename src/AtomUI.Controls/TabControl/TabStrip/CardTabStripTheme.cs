@@ -1,6 +1,4 @@
-﻿using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
-using AtomUI.Theme.Data;
+﻿using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -41,32 +39,20 @@ internal class CardTabStripTheme : BaseTabStripTheme
         {
             Name = CardTabStripScrollViewerPart
         };
+        tabScrollViewer.IsScrollChainingEnabled = false;
         tabScrollViewer.RegisterInNameScope(scope);
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
             BaseTabStrip.TabStripPlacementProperty);
+        CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.IsMotionEnabledProperty,
+            BaseTabStrip.IsMotionEnabledProperty);
         var contentPanel = CreateTabStripContentPanel(scope);
         tabScrollViewer.Content  = contentPanel;
         tabScrollViewer.TabStrip = baseTabStrip;
         
-        var addTabIcon = AntDesignIconPackage.PlusOutlined();
-
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.NormalFilledBrushProperty,
-            TabControlTokenKey.ItemColor);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.ActiveFilledBrushProperty,
-            TabControlTokenKey.ItemHoverColor);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ColorTextDisabled);
-
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Layoutable.WidthProperty,
-            SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Layoutable.HeightProperty,
-            SharedTokenKey.IconSize);
-
         var addTabButton = new IconButton
         {
             Name            = AddTabButtonPart,
-            BorderThickness = new Thickness(1),
-            Icon            = addTabIcon
+            Icon            = AntDesignIconPackage.PlusOutlined()
         };
 
         CreateTemplateParentBinding(addTabButton, TemplatedControl.BorderThicknessProperty,
@@ -74,9 +60,6 @@ internal class CardTabStripTheme : BaseTabStripTheme
         CreateTemplateParentBinding(addTabButton, TemplatedControl.CornerRadiusProperty,
             CardTabStrip.CardBorderRadiusProperty);
         CreateTemplateParentBinding(addTabButton, Visual.IsVisibleProperty, CardTabStrip.IsShowAddTabButtonProperty);
-
-        TokenResourceBinder.CreateTokenBinding(addTabButton, TemplatedControl.BorderBrushProperty,
-            SharedTokenKey.ColorBorderSecondary);
 
         addTabButton.RegisterInNameScope(scope);
 
@@ -105,6 +88,18 @@ internal class CardTabStripTheme : BaseTabStripTheme
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
 
+        {
+            var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
+            addTabButtonStyle.Add(IconButton.NormalIconColorProperty, TabControlTokenKey.ItemColor);
+            addTabButtonStyle.Add(IconButton.ActiveIconColorProperty, TabControlTokenKey.ItemHoverColor);
+            addTabButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+            addTabButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
+            addTabButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
+            addTabButtonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
+
+            commonStyle.Add(addTabButtonStyle);
+        }
+        
         // 设置 items presenter 面板样式
         // 分为上、右、下、左
         {

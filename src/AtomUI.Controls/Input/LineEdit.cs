@@ -17,11 +17,11 @@ public class LineEdit : TextBox,
         AvaloniaProperty.Register<LineEdit, object?>(nameof(RightAddOn));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<LineEdit>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<LineEdit, bool>(nameof(IsWaveAnimationEnabled));
-    
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<LineEdit>();
+
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -45,7 +45,7 @@ public class LineEdit : TextBox,
         get => GetValue(IsWaveAnimationEnabledProperty);
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -58,22 +58,21 @@ public class LineEdit : TextBox,
     {
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        // TODO 到底是否需要这样，这些控件的管辖区理论上不应该我们控制
         if (change.Property == LeftAddOnProperty ||
             change.Property == RightAddOnProperty)
         {
             if (change.OldValue is Control oldControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldControl, null);
+                oldControl.SetTemplatedParent(null);
             }
 
             if (change.NewValue is Control newControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(newControl, this);
+                newControl.SetTemplatedParent(this);
             }
         }
     }

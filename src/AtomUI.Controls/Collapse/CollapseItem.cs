@@ -2,8 +2,6 @@
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Automation.Peers;
@@ -12,11 +10,13 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
-public class CollapseItem : HeaderedContentControl, ISelectable
+public class CollapseItem : HeaderedContentControl,
+                            ISelectable
 {
     #region 公共属性定义
 
@@ -69,10 +69,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<CollapseItem, SizeType> SizeTypeProperty =
-        AvaloniaProperty.RegisterDirect<CollapseItem, SizeType>(nameof(SizeType),
-            o => o.SizeType,
-            (o, v) => o.SizeType = v);
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<CollapseItem>();
 
     internal static readonly DirectProperty<CollapseItem, bool> IsGhostStyleProperty =
         AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsGhostStyle),
@@ -108,18 +106,14 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         AvaloniaProperty.RegisterDirect<CollapseItem, TimeSpan>(nameof(MotionDuration),
             o => o.MotionDuration,
             (o, v) => o.MotionDuration = v);
-    
-    internal static readonly DirectProperty<CollapseItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
 
-    private SizeType _sizeType;
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CollapseItem>();
 
     internal SizeType SizeType
     {
-        get => _sizeType;
-        set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
 
     private bool _isGhostStyle;
@@ -177,13 +171,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         get => _motionDuration;
         set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
-    
-    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion
@@ -238,12 +230,12 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ExpandIcon ??= AntDesignIconPackage.RightOutlined();
+        ExpandIcon.SetTemplatedParent(this);
         base.OnApplyTemplate(e);
-        _motionActor     = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
-        _headerDecorator = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
-        _expandButton    = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
-        SetupIconButton();
+        _motionActor           = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
+        _headerDecorator       = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
+        _expandButton          = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
         _tempAnimationDisabled = true;
         HandleSelectedChanged();
         _tempAnimationDisabled = false;
@@ -256,12 +248,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ExpandIconProperty)
-        {
-            SetupIconButton();
-        }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsSelectedProperty)
             {
@@ -273,23 +261,13 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         {
             if (change.OldValue is Control oldControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldControl, null);
+                oldControl.SetTemplatedParent(null);
             }
 
             if (change.NewValue is Control newControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(newControl, this);
+                newControl.SetTemplatedParent(this);
             }
-        }
-        else if (change.Property == ExpandIconProperty)
-        {
-            var oldExpandIcon = change.GetOldValue<Icon?>();
-            if (oldExpandIcon is not null)
-            {
-                VisualAndLogicalUtils.SetTemplateParent(oldExpandIcon, null);
-            }
-
-            SetupIconButton();
         }
     }
 
@@ -315,21 +293,16 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             return;
         }
 
-        if (!_isMotionEnabled || _tempAnimationDisabled)
+        if (!IsMotionEnabled || _tempAnimationDisabled)
         {
             _motionActor.IsVisible = true;
             return;
         }
-        
+
         InAnimating = true;
         var motion = new SlideUpInMotion(MotionDuration, new CubicEaseOut());
-        MotionInvoker.Invoke(_motionActor, motion, () =>
-        {
-            _motionActor.SetCurrentValue(IsVisibleProperty, true);
-        }, () =>
-        {
-            InAnimating = false;
-        });
+        MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
+            () => { InAnimating = false; });
     }
 
     private void CollapseItemContent()
@@ -339,7 +312,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             return;
         }
 
-        if (!_isMotionEnabled || _tempAnimationDisabled)
+        if (!IsMotionEnabled || _tempAnimationDisabled)
         {
             _motionActor.IsVisible = false;
             return;
@@ -352,18 +325,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             _motionActor.SetCurrentValue(IsVisibleProperty, false);
             InAnimating = false;
         });
-    }
-
-    private void SetupIconButton()
-    {
-        if (ExpandIcon is null)
-        {
-            ExpandIcon = AntDesignIconPackage.RightOutlined();
-            TokenResourceBinder.CreateTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
-                SharedTokenKey.ColorTextDisabled);
-        }
-
-        VisualAndLogicalUtils.SetTemplateParent(ExpandIcon, this);
     }
 
     internal bool IsPointInHeaderBounds(Point position)

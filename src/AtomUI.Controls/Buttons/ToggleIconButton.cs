@@ -8,6 +8,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -27,6 +29,22 @@ public class ToggleIconButton : ToggleButton,
 
     public static readonly StyledProperty<double> IconHeightProperty
         = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconHeight));
+        
+    public static readonly StyledProperty<IBrush?> NormalIconColorProperty =
+        AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
+            nameof(NormalIconColor));
+    
+    public static readonly StyledProperty<IBrush?> ActiveIconColorProperty =
+        AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
+            nameof(ActiveIconColor));
+    
+    public static readonly StyledProperty<IBrush?> SelectedIconColorProperty =
+        AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
+            nameof(SelectedIconColor));
+    
+    public static readonly StyledProperty<IBrush?> DisabledIconColorProperty =
+        AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
+            nameof(DisabledIconColor));
 
     public Icon? CheckedIcon
     {
@@ -52,6 +70,30 @@ public class ToggleIconButton : ToggleButton,
         set => SetValue(IconHeightProperty, value);
     }
 
+    public IBrush? NormalIconColor
+    {
+        get => GetValue(NormalIconColorProperty);
+        set => SetValue(NormalIconColorProperty, value);
+    }
+
+    public IBrush? ActiveIconColor
+    {
+        get => GetValue(ActiveIconColorProperty);
+        set => SetValue(ActiveIconColorProperty, value);
+    }
+
+    public IBrush? SelectedIconColor
+    {
+        get => GetValue(SelectedIconColorProperty);
+        set => SetValue(SelectedIconColorProperty, value);
+    }
+
+    public IBrush? DisabledIconColor
+    {
+        get => GetValue(DisabledIconColorProperty);
+        set => SetValue(DisabledIconColorProperty, value);
+    }
+    
     #endregion
     
     #region 内部属性定义
@@ -93,15 +135,23 @@ public class ToggleIconButton : ToggleButton,
     {
         icon.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center, BindingPriority.Template);
         icon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center, BindingPriority.Template);
-        VisualAndLogicalUtils.SetTemplateParent(icon, this);
+        icon.SetTemplatedParent(this);
         BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
         BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
+        
+        if (icon.ThemeType != IconThemeType.TwoTone)
+        {
+            BindUtils.RelayBind(this, NormalIconColorProperty, icon, Icon.NormalFilledBrushProperty);
+            BindUtils.RelayBind(this, ActiveIconColorProperty, icon, Icon.ActiveFilledBrushProperty);
+            BindUtils.RelayBind(this, SelectedIconColorProperty, icon, Icon.SelectedFilledBrushProperty);
+            BindUtils.RelayBind(this, DisabledIconColorProperty, icon, Icon.DisabledFilledBrushProperty);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsCheckedProperty)
             {

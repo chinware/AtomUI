@@ -1,16 +1,19 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
 public class TextBox : AvaloniaTextBox,
-                       IControlSharedTokenResourcesHost
+                       IControlSharedTokenResourcesHost,
+                       ITokenResourceConsumer
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
@@ -18,7 +21,7 @@ public class TextBox : AvaloniaTextBox,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<TextBox>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TextBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<TextBox>();
@@ -91,11 +94,14 @@ public class TextBox : AvaloniaTextBox,
         get => _embedMode;
         set => SetAndRaise(EmbedModeProperty, ref _embedMode, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
+
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static TextBox()
     {
@@ -129,19 +135,18 @@ public class TextBox : AvaloniaTextBox,
         {
             UpdatePseudoClasses();
         }
-
-        // TODO 到底是否需要这样，这些控件的管辖区理论上不应该我们控制
+        
         if (change.Property == InnerLeftContentProperty ||
             change.Property == InnerRightContentProperty)
         {
             if (change.OldValue is Control oldControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldControl, null);
+                oldControl.SetTemplatedParent(null);
             }
 
             if (change.NewValue is Control newControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(newControl, this);
+                newControl.SetTemplatedParent(this);
             }
         }
     }
@@ -161,5 +166,17 @@ public class TextBox : AvaloniaTextBox,
     {
         PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
         PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

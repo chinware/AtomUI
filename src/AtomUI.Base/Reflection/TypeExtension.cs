@@ -35,6 +35,17 @@ public static class TypeExtension
         info = type.GetMethod(name, flags);
         return info is not null;
     }
+    
+    public static bool TryGetEventInfo(
+        this Type type,
+        string name,
+        [NotNullWhen(true)] out EventInfo? info,
+        BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
+                             BindingFlags.FlattenHierarchy)
+    {
+        info = type.GetEvent(name, flags);
+        return info is not null;
+    }
 
     public static PropertyInfo GetPropertyInfoOrThrow(
         this Type type,
@@ -71,6 +82,19 @@ public static class TypeExtension
         if (!type.TryGetMethodInfo(name, out var info, flags))
         {
             throw new MissingMethodException($"Can not find the '{name}' from type '{type}'. We can not reflect it.");
+        }
+
+        return info;
+    }
+
+    public static EventInfo GetEventInfoOrThrow(this Type type, string name,
+                                                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
+                                                                     BindingFlags.Public |
+                                                                     BindingFlags.FlattenHierarchy)
+    {
+        if (!type.TryGetEventInfo(name, out var info, flags))
+        {
+            throw new MissingMemberException($"Can not find the event '{name}' from type '{type}'. We can not reflect it.");
         }
 
         return info;

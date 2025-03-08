@@ -1,3 +1,4 @@
+using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -65,7 +66,7 @@ public static class AtomLayerExtension
         }
 
         visualChildren.Add(layer);
-        ((ISetLogicalParent)layer).SetParent(host);
+        layer.SetLogicalParent(host);
         layer.Host = host;
 
         if (host is ScrollContentPresenter presenter)

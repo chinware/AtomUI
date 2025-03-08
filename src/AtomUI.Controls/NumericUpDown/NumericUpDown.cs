@@ -1,4 +1,5 @@
 ﻿using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -19,7 +20,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         AddOnDecoratedBox.RightAddOnProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<NumericUpDown>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<NumericUpDown>();
@@ -29,12 +30,12 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         TextBox.IsEnableClearButtonProperty.AddOwner<NumericUpDown>();
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<NumericUpDown>();
 
     public object? LeftAddOn
     {
@@ -93,4 +94,10 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     string IControlSharedTokenResourcesHost.TokenId => NumericUpDownToken.ID;
     
     #endregion
+    
+    public NumericUpDown()
+    {
+        this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+    }
 }

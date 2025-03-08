@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
-using System.Reflection;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -15,32 +15,20 @@ namespace AtomUI.Controls;
 
 public class MenuFlyout : Flyout
 {
-    /// <summary>
-    /// Defines the <see cref="ItemsSource" /> property
-    /// </summary>
     public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
         AvaloniaProperty.Register<MenuFlyout, IEnumerable?>(
             nameof(ItemsSource));
-
-    /// <summary>
-    /// Defines the <see cref="ItemTemplate" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<IDataTemplate?> ItemTemplateProperty =
         AvaloniaProperty.Register<MenuFlyout, IDataTemplate?>(nameof(ItemTemplate));
     
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
         ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
     
-    private static readonly MethodInfo SetItemsSourceMethodInfo;
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
     
     private IDisposable? _detectMouseClickDisposable;
     
-    static MenuFlyout()
-    {
-        SetItemsSourceMethodInfo =
-            typeof(ItemCollection).GetMethod("SetItemsSource", BindingFlags.Instance | BindingFlags.NonPublic)!;
-    }
 
     public MenuFlyout()
     {
@@ -171,8 +159,8 @@ public class MenuFlyout : Flyout
 
         if (change.Property == ItemsSourceProperty)
         {
-            SetItemsSourceMethodInfo.Invoke(Items, new object?[] { change.GetNewValue<IEnumerable?>() });
-        } 
+            Items.SetItemsSource(change.GetNewValue<IEnumerable?>());   
+        }
         else if (change.Property == IsDetectMouseClickEnabledProperty && IsOpen)
         {
             if (IsDetectMouseClickEnabled)

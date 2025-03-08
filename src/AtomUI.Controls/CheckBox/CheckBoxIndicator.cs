@@ -1,5 +1,7 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -10,10 +12,13 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
+internal class CheckBoxIndicator : Control, 
+                                   IWaveAdornerInfoProvider,
+                                   ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -111,35 +116,30 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBoxIndicator>();
 
-    internal static readonly DirectProperty<CheckBoxIndicator, bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.RegisterDirect<CheckBoxIndicator, bool>(nameof(IsWaveAnimationEnabled),
-            o => o.IsWaveAnimationEnabled,
-            (o, v) => o.IsWaveAnimationEnabled = v);
-
-    private bool _isMotionEnabled;
+    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<CheckBoxIndicator>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    private bool _isWaveAnimationEnabled = true;
 
     internal bool IsWaveAnimationEnabled
     {
-        get => _isWaveAnimationEnabled;
-        set => SetAndRaise(IsWaveAnimationEnabledProperty, ref _isWaveAnimationEnabled, value);
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     static CheckBoxIndicator()
     {
@@ -162,9 +162,21 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
     }
 
     public override void ApplyTemplate()
@@ -223,9 +235,12 @@ internal class CheckBoxIndicator : Control, IWaveAdornerInfoProvider
             SetupIndicatorCheckedMarkEffectSize();
         }
 
-        if (e.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (e.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 

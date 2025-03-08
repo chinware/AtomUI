@@ -100,6 +100,8 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     public Color SwitchLoadingIconColor { get; set; }
     public double ExtraInfoFontSize { get; set; }
     public double ExtraInfoFontSizeSM { get; set; }
+    
+    public TimeSpan LoadingAnimationDuration { get; set; }
 
     internal override void CalculateFromAlias()
     {
@@ -145,7 +147,8 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
             Color   = Color.FromArgb((int)(255 * 0.2), 0, 35, 11)
         };
 
-        IconSize   = TrackHeightSM;
-        IconSizeSM = TrackHeightSM - SharedToken.PaddingXXS;
+        IconSize                 = TrackHeightSM;
+        IconSizeSM               = TrackHeightSM - SharedToken.PaddingXXS;
+        LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200); // 毫秒
     }
 }

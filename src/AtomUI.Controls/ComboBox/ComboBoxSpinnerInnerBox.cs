@@ -1,17 +1,14 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
 [TemplatePart(ComboBoxSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
-internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
+internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, 
+                                         ICustomHitTest
 {
     #region 公共属性定义
 
@@ -79,17 +76,5 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, ICustomHitTest
     public bool HitTest(Point point)
     {
         return true;
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderBrushProperty,
-            SharedTokenKey.ColorBorder);
-        TokenResourceBinder.CreateTokenBinding(this, SpinnerHandleWidthTokenProperty,
-            ButtonSpinnerTokenKey.HandleWidth);
-        base.OnApplyTemplate(e);
     }
 }

@@ -40,7 +40,7 @@ internal class TagToken : AbstractControlDesignToken
         TagLineHeight    = SharedToken.LineHeightRatioSM * TagFontSize;
         TagCloseIconSize = SharedToken.IconSizeXS;
         TagIconSize      = SharedToken.FontSizeIcon;
-        TagPadding       = new Thickness(SharedToken.SizeXS, 0);
+        TagPadding       = new Thickness(SharedToken.SizeXS - 1, 0);
         // TODO 这个地方需要看看
         DefaultBg            = ColorUtils.OnBackground(SharedToken.ColorFillQuaternary, SharedToken.ColorBgContainer);
         TagBorderlessBg      = DefaultBg;

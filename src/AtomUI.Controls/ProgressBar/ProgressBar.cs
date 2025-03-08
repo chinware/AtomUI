@@ -9,6 +9,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -573,7 +574,7 @@ public class ProgressBar : AbstractLineProgress
     protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.NotifyPropertyChanged(e);
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == IndicatorBarBrushProperty)
             {

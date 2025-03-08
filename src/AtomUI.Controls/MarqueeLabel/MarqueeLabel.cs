@@ -7,13 +7,15 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class MarqueeLabel : SingleLineText,
+public class MarqueeLabel : TextBlock,
                             IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -23,7 +25,7 @@ public class MarqueeLabel : SingleLineText,
 
     public static readonly StyledProperty<double> MoveSpeedProperty =
         AvaloniaProperty.Register<MarqueeLabel, double>(nameof(MoveSpeed), 150);
-    
+
     /// <summary>
     /// 默认的间隔
     /// </summary>
@@ -45,10 +47,10 @@ public class MarqueeLabel : SingleLineText,
     #endregion
 
     #region 内部属性定义
-    
+
     internal static readonly StyledProperty<double> PivotOffsetProperty =
         AvaloniaProperty.Register<MarqueeLabel, double>(nameof(PivotOffset));
-    
+
     /// <summary>
     /// 内部动画使用，当前焦点，也就是文字最左侧
     /// </summary>
@@ -57,14 +59,13 @@ public class MarqueeLabel : SingleLineText,
         get => GetValue(PivotOffsetProperty);
         set => SetValue(PivotOffsetProperty, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MarqueeLabelToken.ID;
 
     #endregion
-
+    
     private CancellationTokenSource? _cancellationTokenSource;
-    private bool _initialized;
     private Animation? _animation;
     private bool _animationRunning;
     private double _lastDesiredWidth;
@@ -103,12 +104,8 @@ public class MarqueeLabel : SingleLineText,
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        if (!_initialized)
-        {
-            HorizontalAlignment = HorizontalAlignment.Stretch;
-            SetupTokenBindings();
-            _initialized = true;
-        }
+        // 为了强制
+        HorizontalAlignment = HorizontalAlignment.Stretch;
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -126,13 +123,15 @@ public class MarqueeLabel : SingleLineText,
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace);
-        TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed);
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace));
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed));
     }
 
     private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
     {
-        if (_initialized)
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == IsPointerOverProperty)
             {
@@ -256,5 +255,11 @@ public class MarqueeLabel : SingleLineText,
         {
             TextLayout.Draw(context, origin + new Point(offset + _lastTextWidth + CycleSpace, 0));
         }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupTokenBindings();
     }
 }

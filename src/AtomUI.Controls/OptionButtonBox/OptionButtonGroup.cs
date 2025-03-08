@@ -36,16 +36,16 @@ public class OptionButtonGroup : SelectingItemsControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<OptionButtonGroup, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<OptionButtonGroup>();
 
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButtonGroup>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<OptionButtonGroup, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<OptionButtonGroup>();
 
     public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
         RoutedEvent.Register<OptionButtonGroup, OptionCheckedChangedEventArgs>(

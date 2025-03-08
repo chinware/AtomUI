@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
@@ -63,7 +64,7 @@ internal class ShadowRenderer : Control
             CreateMaskContent();
             _layout = new Canvas();
             VisualChildren.Add(_layout);
-            ((ISetLogicalParent)_layout).SetParent(this);
+            _layout.SetLogicalParent(this);
             _maskContent = CreateMaskContent();
             SetupContentSizeAndPos();
             _layout.Children.Add(_maskContent);

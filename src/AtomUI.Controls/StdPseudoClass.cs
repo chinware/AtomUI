@@ -19,4 +19,7 @@ public static class StdPseudoClass
    public const string Horizontal = ":horizontal";
    public const string Vertical = ":vertical";
    public const string InActive = ":inactive";
+   public const string Error = ":error";
+   public const string Warning = ":warning";
+   public const string Draggable = ":draggable";
 }

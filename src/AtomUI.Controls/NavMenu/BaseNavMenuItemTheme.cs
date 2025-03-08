@@ -2,7 +2,6 @@
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -12,6 +11,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -27,19 +27,19 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
     public const string ItemTextPresenterPart = "PART_ItemTextPresenter";
     public const string InputGestureTextPart = "PART_InputGestureText";
     public const string MenuIndicatorIconPart = "PART_MenuIndicatorIcon";
-    
+
     protected BaseNavMenuItemTheme(Type targetType) : base(targetType)
     {
     }
-    
+
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<NavMenuItem>((item, scope) =>
+        return new FuncControlTemplate<NavMenuItem>((navMenuItem, scope) =>
         {
             // 仅仅为了把 Popup 包进来，没有其他什么作用
             var layoutWrapper = new Panel();
-            var header        = BuildMenuItemContent(item, scope);
-            BuildExtraItem(layoutWrapper, scope);
+            var header        = BuildMenuItemContent(navMenuItem, scope);
+            BuildExtraItem(navMenuItem, layoutWrapper, scope);
             layoutWrapper.Children.Add(header);
             return layoutWrapper;
         });
@@ -49,7 +49,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
     {
         var headerFrame = new Border
         {
-            Name = HeaderDecoratorPart
+            Name = HeaderDecoratorPart,
         };
         headerFrame.RegisterInNameScope(scope);
         headerFrame.Child = BuildMenuItemInfoGrid(navMenuItem, scope);
@@ -89,14 +89,9 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
 
         Grid.SetColumn(iconPresenter, 0);
         iconPresenter.RegisterInNameScope(scope);
+        CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
         CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, NavMenuItem.IconProperty);
-        TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin);
-        TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.WidthProperty,
-            NavMenuTokenKey.ItemIconSize);
-        TokenResourceBinder.CreateTokenBinding(iconPresenter, Layoutable.HeightProperty,
-            NavMenuTokenKey.ItemIconSize);
-
+        
         var itemTextPresenter = new ContentPresenter
         {
             Name                = ItemTextPresenterPart,
@@ -106,16 +101,28 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             IsHitTestVisible    = false
         };
         Grid.SetColumn(itemTextPresenter, 1);
-        TokenResourceBinder.CreateTokenBinding(itemTextPresenter, Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin);
+
         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentProperty,
-            HeaderedSelectingItemsControl.HeaderProperty);
+            HeaderedSelectingItemsControl.HeaderProperty, BindingMode.Default, new FuncValueConverter<object?, object?>(
+                o =>
+                {
+                    if (o is string str)
+                    {
+                        return new TextBlock
+                        {
+                            Text = str,
+                            VerticalAlignment = VerticalAlignment.Center,
+                        };
+                    }
+
+                    return o;
+                }));
         CreateTemplateParentBinding(itemTextPresenter, ContentPresenter.ContentTemplateProperty,
             HeaderedSelectingItemsControl.HeaderTemplateProperty);
 
         itemTextPresenter.RegisterInNameScope(scope);
 
-        var inputGestureText = new SingleLineText()
+        var inputGestureText = new TextBlock()
         {
             Name                = InputGestureTextPart,
             HorizontalAlignment = HorizontalAlignment.Right,
@@ -123,19 +130,18 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             VerticalAlignment   = VerticalAlignment.Center
         };
         Grid.SetColumn(inputGestureText, 2);
-        TokenResourceBinder.CreateTokenBinding(inputGestureText, Layoutable.MarginProperty,
-            NavMenuTokenKey.ItemMargin);
+
         CreateTemplateParentBinding(inputGestureText,
-            SingleLineText.TextProperty,
+            TextBlock.TextProperty,
             NavMenuItem.InputGestureProperty,
             BindingMode.Default,
             NavMenuItem.KeyGestureConverter);
 
         inputGestureText.RegisterInNameScope(scope);
 
-        var menuIndicatorIcon = BuildMenuIndicatorIcon(scope);
+        var menuIndicatorIcon = BuildMenuIndicatorIcon(navMenuItem, scope);
         Grid.SetColumn(menuIndicatorIcon, 3);
-            
+
         layout.Children.Add(iconPresenter);
         layout.Children.Add(itemTextPresenter);
         layout.Children.Add(inputGestureText);
@@ -143,11 +149,11 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         return layout;
     }
 
-    protected virtual void BuildExtraItem(Panel layout, INameScope scope)
+    protected virtual void BuildExtraItem(NavMenuItem navMenuItem, Panel layout, INameScope scope)
     {
     }
 
-    protected virtual Control BuildMenuIndicatorIcon(INameScope scope)
+    protected virtual Control BuildMenuIndicatorIcon(NavMenuItem navMenuItem, INameScope scope)
     {
         var menuIndicatorIcon = AntDesignIconPackage.RightOutlined();
         menuIndicatorIcon.Name                = MenuIndicatorIconPart;
@@ -155,13 +161,8 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
         menuIndicatorIcon.VerticalAlignment   = VerticalAlignment.Center;
 
         CreateTemplateParentBinding(menuIndicatorIcon, Icon.IsEnabledProperty, NavMenuItem.IsEnabledProperty);
-        
-        TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Layoutable.WidthProperty,
-            NavMenuTokenKey.MenuArrowSize);
-        TokenResourceBinder.CreateTokenBinding(menuIndicatorIcon, Layoutable.HeightProperty,
-            NavMenuTokenKey.MenuArrowSize);
         menuIndicatorIcon.RegisterInNameScope(scope);
-        
+
         return menuIndicatorIcon;
     }
 
@@ -177,23 +178,31 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemColor);
+        commonStyle.Add(NavMenuItem.InlineItemIndentUnitProperty, NavMenuTokenKey.InlineItemIndentUnit);
+        commonStyle.Add(NavMenuItem.PopupMinWidthProperty, NavMenuTokenKey.MenuPopupMinWidth);
+        commonStyle.Add(NavMenuItem.OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationSlow);
+        
         {
             var keyGestureStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
-            keyGestureStyle.Add(SingleLineText.ForegroundProperty, NavMenuTokenKey.KeyGestureColor);
+            keyGestureStyle.Add(TextBlock.ForegroundProperty, NavMenuTokenKey.KeyGestureColor);
             commonStyle.Add(keyGestureStyle);
         }
+        
+        // 按钮元素外间距
         {
-            var borderStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            borderStyle.Add(Border.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
-            borderStyle.Add(Border.MinHeightProperty, NavMenuTokenKey.ItemHeight);
-            borderStyle.Add(Border.PaddingProperty, NavMenuTokenKey.ItemContentPadding);
-            borderStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemBg);
-            borderStyle.Add(Border.CornerRadiusProperty, NavMenuTokenKey.ItemBorderRadius);
-            commonStyle.Add(borderStyle);
+            var itemTextPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemTextPresenterPart));
+            itemTextPresenterStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.ItemMargin);
+            commonStyle.Add(itemTextPresenterStyle);
+            
+            var inputGestureTextStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
+            inputGestureTextStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.ItemMargin);
+            commonStyle.Add(inputGestureTextStyle);
         }
+
         {
             // 动画设置
-            var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsMotionEnabledProperty, true));
+            var isMotionEnabledStyle = new Style(selector =>
+                selector.Nesting().PropertyEquals(NavMenuItem.IsMotionEnabledProperty, true));
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             borderStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
@@ -204,110 +213,185 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             commonStyle.Add(isMotionEnabledStyle);
         }
 
-        // Hover 状态
-        var hoverStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.PointerOver));
-        hoverStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemHoverColor);
-        hoverStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemHoverBg);
-        commonStyle.Add(hoverStyle);
-        
-        // 选中分两种，一种是有子菜单一种是没有子菜单
-        var hasNoSubMenuStyle  = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
+        BuildHeaderDecorator(commonStyle);
+        Add(commonStyle);
+    }
+
+    private void BuildHeaderDecorator(Style commonStyle)
+    {
+        // header 通用设置
+        var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+        headerDecoratorStyle.Add(Border.CursorProperty,
+            new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        headerDecoratorStyle.Add(Border.MinHeightProperty, NavMenuTokenKey.ItemHeight);
+        headerDecoratorStyle.Add(Border.PaddingProperty, NavMenuTokenKey.ItemContentPadding);
+        headerDecoratorStyle.Add(Border.CornerRadiusProperty, NavMenuTokenKey.ItemBorderRadius);
+        commonStyle.Add(headerDecoratorStyle);
+        BuildNormalHeaderDecoratorStyle(commonStyle);
+        BuildDarkHeaderDecoratorStyle(commonStyle);
+    }
+
+    private void BuildNormalHeaderDecoratorStyle(Style commonStyle)
+    {
+        // 没有子菜单
+        var hasNoSubMenuStyle = new Style(selector => selector
+                                                      .Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
+        // 正常状态
         {
-            var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+            var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemColor);
+            headerDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemBg);
+            hasNoSubMenuStyle.Add(headerDecoratorStyle);
+        }
+
+        // Hover 效果
+        {
+            var headerDecoratorStyle = new Style(selector =>
+                selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.PointerOver));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemHoverColor);
+            headerDecoratorStyle.Add(TemplatedControl.BackgroundProperty, NavMenuTokenKey.ItemHoverBg);
+            hasNoSubMenuStyle.Add(headerDecoratorStyle);
+        }
+        {
+            var selectedStyle = new Style(selector => selector
+                                                      .Nesting().Class(StdPseudoClass.Selected));
+            // 选中状态
             {
-                var itemDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-                itemDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemSelectedBg);
-                itemDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemSelectedColor);
-                selectedStyle.Add(itemDecoratorStyle);
+                var headerDecoratorStyle =
+                    new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+                headerDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemSelectedBg);
+                headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty,
+                    NavMenuTokenKey.ItemSelectedColor);
+                selectedStyle.Add(headerDecoratorStyle);
             }
             hasNoSubMenuStyle.Add(selectedStyle);
         }
         commonStyle.Add(hasNoSubMenuStyle);
-        
-        var hasSubMenuStyle  = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, true));
+
+        // 有子菜单
+        var hasSubMenuStyle = new Style(selector => selector
+                                                    .Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, true));
+        // 正常状态
         {
-            var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+            var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemColor);
+            headerDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.ItemBg);
+            hasSubMenuStyle.Add(headerDecoratorStyle);
+        }
+        // Hover 效果
+        {
+            var headerDecoratorStyle = new Style(selector =>
+                selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.PointerOver));
+            headerDecoratorStyle.Add(TemplatedControl.BackgroundProperty, NavMenuTokenKey.ItemHoverBg);
+            hasSubMenuStyle.Add(headerDecoratorStyle);
+        }
+        {
+            var selectedStyle = new Style(selector => selector
+                                                      .Nesting().Class(StdPseudoClass.Selected));
+            // 选中状态
             {
-                var itemDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-                itemDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemSelectedColor);
-                selectedStyle.Add(itemDecoratorStyle);
+                var headerDecoratorStyle =
+                    new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+                headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty,
+                    NavMenuTokenKey.ItemSelectedColor);
+                selectedStyle.Add(headerDecoratorStyle);
             }
             hasSubMenuStyle.Add(selectedStyle);
         }
         commonStyle.Add(hasSubMenuStyle);
-        Add(commonStyle);
-        
-        BuildDarkCommonStyle();
     }
 
-    private void BuildDarkCommonStyle()
+    private void BuildDarkHeaderDecoratorStyle(Style commonStyle)
     {
-        var darkCommonStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
-        darkCommonStyle.Add(NavMenuItem.ForegroundProperty, NavMenuTokenKey.DarkItemColor);
-        
+        var darkCommonStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+        // 没有子菜单
+        var hasNoSubMenuStyle = new Style(selector => selector
+                                                      .Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
+        // 正常状态
         {
-            var borderStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-            borderStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.DarkItemBg);
-            darkCommonStyle.Add(borderStyle);
+            var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemColor);
+            headerDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.DarkItemBg);
+            hasNoSubMenuStyle.Add(headerDecoratorStyle);
         }
-        
-        // 选中分两种，一种是有子菜单一种是没有子菜单
-        var hasNoSubMenuStyle  = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
+        // Hover 效果
         {
-            // Hover 状态
-            var hoverStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemHoverColor);
-            hoverStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.DarkItemHoverBg);
-            hasNoSubMenuStyle.Add(hoverStyle);
-            
-            var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+            var headerDecoratorStyle = new Style(selector =>
+                selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.PointerOver));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemHoverColor);
+            headerDecoratorStyle.Add(TemplatedControl.BackgroundProperty, NavMenuTokenKey.DarkItemHoverBg);
+            hasNoSubMenuStyle.Add(headerDecoratorStyle);
+        }
+        {
+            var selectedStyle = new Style(selector => selector
+                                                      .Nesting().Class(StdPseudoClass.Selected));
+            // 选中状态
             {
-                var itemDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-                itemDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.DarkItemSelectedBg);
-                itemDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemSelectedColor);
-                selectedStyle.Add(itemDecoratorStyle);
+                var headerDecoratorStyle =
+                    new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+                headerDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.DarkItemSelectedBg);
+                headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty,
+                    NavMenuTokenKey.DarkItemSelectedColor);
+                selectedStyle.Add(headerDecoratorStyle);
             }
             hasNoSubMenuStyle.Add(selectedStyle);
         }
         darkCommonStyle.Add(hasNoSubMenuStyle);
-        
-        var hasSubMenuStyle  = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, true));
+
+        // 有子菜单
+        var hasSubMenuStyle = new Style(selector => selector
+                                                    .Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, true));
+        // 正常状态
         {
-            // Hover 状态
-            var hoverStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemColor);
-            hoverStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.DarkItemBg);
-            hasSubMenuStyle.Add(hoverStyle);
-            
-            var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+            var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemColor);
+            headerDecoratorStyle.Add(Border.BackgroundProperty, NavMenuTokenKey.DarkItemBg);
+            hasSubMenuStyle.Add(headerDecoratorStyle);
+        }
+        // Hover 效果
+        {
+            var headerDecoratorStyle = new Style(selector =>
+                selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.PointerOver));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemHoverColor);
+            hasSubMenuStyle.Add(headerDecoratorStyle);
+        }
+        {
+            var selectedStyle = new Style(selector => selector
+                                                      .Nesting().Class(StdPseudoClass.Selected));
+            // 选中状态
             {
-                var itemDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
-                itemDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemSelectedColor);
-                selectedStyle.Add(itemDecoratorStyle);
+                var headerDecoratorStyle =
+                    new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
+                headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty,
+                    NavMenuTokenKey.DarkItemSelectedColor);
+                selectedStyle.Add(headerDecoratorStyle);
             }
             hasSubMenuStyle.Add(selectedStyle);
         }
         darkCommonStyle.Add(hasSubMenuStyle);
-        
-        Add(darkCommonStyle);
+        commonStyle.Add(darkCommonStyle);
     }
 
     private void BuildMenuIndicatorStyle()
     {
         {
+            // 设置颜色
             var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
             menuIndicatorStyle.Add(Visual.IsVisibleProperty, true);
             menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.ItemColor);
             menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.ItemSelectedColor);
             menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.ItemDisabledColor);
-            // 设置颜色
-            
+            menuIndicatorStyle.Add(Layoutable.WidthProperty, NavMenuTokenKey.MenuArrowSize);
+            menuIndicatorStyle.Add(Layoutable.HeightProperty, NavMenuTokenKey.MenuArrowSize);
             Add(menuIndicatorStyle);
         }
         {
-            var darkCommonStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+            var darkCommonStyle = new Style(selector =>
+                selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
             {
-                var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
+                var menuIndicatorStyle =
+                    new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
                 menuIndicatorStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.DarkItemColor);
                 menuIndicatorStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.DarkItemSelectedColor);
                 menuIndicatorStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.DarkItemDisabledColor);
@@ -315,7 +399,7 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             }
             Add(darkCommonStyle);
         }
-        
+
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         {
             var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
@@ -323,8 +407,9 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             selectedStyle.Add(menuIndicatorStyle);
         }
         Add(selectedStyle);
-        
-        var hasNoSubMenuStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
+
+        var hasNoSubMenuStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.HasSubMenuProperty, false));
         {
             var menuIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(MenuIndicatorIconPart));
             menuIndicatorStyle.Add(Visual.IsVisibleProperty, false);
@@ -336,16 +421,46 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
     private void BuildMenuIconStyle()
     {
         {
-            var iconContentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+            var iconContentPresenterStyle =
+                new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
             iconContentPresenterStyle.Add(Visual.IsVisibleProperty, false);
+            iconContentPresenterStyle.Add(Layoutable.MarginProperty, NavMenuTokenKey.ItemMargin);
+            iconContentPresenterStyle.Add(Layoutable.WidthProperty, NavMenuTokenKey.ItemIconSize);
+            iconContentPresenterStyle.Add(Layoutable.HeightProperty, NavMenuTokenKey.ItemIconSize);
+            
             Add(iconContentPresenterStyle);
         }
 
         var hasIconStyle = new Style(selector => selector.Nesting().Class(":icon"));
         {
-            var iconContentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
+            var iconContentPresenterStyle =
+                new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
             iconContentPresenterStyle.Add(Visual.IsVisibleProperty, true);
             hasIconStyle.Add(iconContentPresenterStyle);
+
+            {
+                var iconStyle = new Style(selector =>
+                    selector.Nesting().Template().Name(ItemIconPresenterPart).Child().OfType<Icon>());
+                iconStyle.Add(Icon.WidthProperty, NavMenuTokenKey.ItemIconSize);
+                iconStyle.Add(Icon.HeightProperty, NavMenuTokenKey.ItemIconSize);
+                
+                iconStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.ItemColor);
+                iconStyle.Add(Icon.ActiveFilledBrushProperty, NavMenuTokenKey.ItemHoverColor);
+                iconStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.ItemSelectedColor);
+                iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.ItemDisabledColor);
+                hasIconStyle.Add(iconStyle);
+            }
+            var darkStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
+            {
+                var iconStyle = new Style(selector =>
+                    selector.Nesting().Template().Name(ItemIconPresenterPart).Child().OfType<Icon>());
+                iconStyle.Add(Icon.NormalFilledBrushProperty, NavMenuTokenKey.DarkItemColor);
+                iconStyle.Add(Icon.ActiveFilledBrushProperty, NavMenuTokenKey.DarkItemHoverColor);
+                iconStyle.Add(Icon.SelectedFilledBrushProperty, NavMenuTokenKey.DarkItemSelectedColor);
+                iconStyle.Add(Icon.DisabledFilledBrushProperty, NavMenuTokenKey.DarkItemDisabledColor);
+                darkStyle.Add(iconStyle);
+            }
+            hasIconStyle.Add(darkStyle);
         }
         Add(hasIconStyle);
     }
@@ -357,13 +472,22 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             disabledStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemDisabledColor);
             Add(disabledStyle);
         }
+        {
+            var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.Disabled));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.ItemDisabledColor);
+            Add(headerDecoratorStyle);
+        }
         var darkStyle = new Style(selector => selector.Nesting().PropertyEquals(NavMenuItem.IsDarkStyleProperty, true));
         {
             var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
             disabledStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemDisabledColor);
             darkStyle.Add(disabledStyle);
         }
+        {
+            var headerDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart).Class(StdPseudoClass.Disabled));
+            headerDecoratorStyle.Add(TemplatedControl.ForegroundProperty, NavMenuTokenKey.DarkItemDisabledColor);
+            darkStyle.Add(headerDecoratorStyle);
+        }
         Add(darkStyle);
     }
-    
 }

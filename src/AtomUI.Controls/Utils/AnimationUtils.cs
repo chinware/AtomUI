@@ -1,9 +1,9 @@
-﻿using AtomUI.Theme.Styling;
+﻿using System.Diagnostics;
+using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Controls;
 
 namespace AtomUI.Controls.Utils;
 
@@ -22,11 +22,15 @@ public sealed class AnimationUtils : AtomUI.Utils.AnimationUtils
             Easing   = easing
         };
         var application = Application.Current;
-        if (application is not null)
+        Debug.Assert(application != null);
+        var themeVariant = application.ActualThemeVariant;
+        if (application.TryGetResource(durationResourceKey, themeVariant, out var value))
         {
-            transition.Bind(TransitionBase.DurationProperty, application.GetResourceObservable(durationResourceKey));
+            if (value is TimeSpan duration)
+            {
+                transition.Duration = duration;
+            }
         }
-    
         return transition;
     }
 }

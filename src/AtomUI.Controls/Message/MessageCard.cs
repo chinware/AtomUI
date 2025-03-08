@@ -1,16 +1,18 @@
-﻿using AtomUI.IconPkg;
+﻿using System.Diagnostics;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -58,12 +60,12 @@ public class MessageCard : TemplatedControl,
 
     public static readonly StyledProperty<string> MessageProperty =
         AvaloniaProperty.Register<MessageCard, string>(nameof(Message));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<MessageCard, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageCard>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<MessageCard, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<MessageCard>();
 
     /// <summary>
     /// Determines if the notification is already closing.
@@ -112,7 +114,7 @@ public class MessageCard : TemplatedControl,
         get => GetValue(MessageProperty);
         set => SetValue(MessageProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -141,7 +143,7 @@ public class MessageCard : TemplatedControl,
         get => _openCloseMotionDuration;
         set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
     }
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MessageToken.ID;
@@ -158,7 +160,6 @@ public class MessageCard : TemplatedControl,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        UpdateMessageType();
         ClipToBounds = false;
     }
 
@@ -179,15 +180,26 @@ public class MessageCard : TemplatedControl,
     {
         base.OnPropertyChanged(e);
 
-        if (e.Property == MessageTypeProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupMessageIcon();
-            UpdateMessageType();
+            if (e.Property == MessageTypeProperty)
+            {
+                SetupMessageIcon();
+                SetupPseudoClasses();
+            }
         }
 
-        if (e.Property == MessageTypeProperty)
+        if (e.Property == IconProperty)
         {
-            UpdateMessageType();
+            if (e.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (e.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
+            }
         }
 
         if (e.Property == IsClosedProperty)
@@ -198,9 +210,8 @@ public class MessageCard : TemplatedControl,
             }
 
             RaiseEvent(new RoutedEventArgs(MessageClosedEvent));
-        }
-
-        if (e.Property == IsClosingProperty)
+        } 
+        else if (e.Property == IsClosingProperty)
         {
             if (IsClosing)
             {
@@ -211,14 +222,9 @@ public class MessageCard : TemplatedControl,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        SetupPseudoClasses();
+        SetupMessageIcon();
         base.OnApplyTemplate(e);
-        if (Icon is null)
-        {
-            SetupMessageIcon();
-            UpdateMessageType();
-        }
-
-        TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
         _motionActor = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
         ApplyShowMotion();
     }
@@ -246,7 +252,8 @@ public class MessageCard : TemplatedControl,
         {
             if (IsMotionEnabled)
             {
-                var motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                var motion =
+                    new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
                 MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
             }
             else
@@ -256,7 +263,7 @@ public class MessageCard : TemplatedControl,
         }
     }
 
-    private void UpdateMessageType()
+    private void SetupPseudoClasses()
     {
         switch (MessageType)
         {
@@ -279,36 +286,6 @@ public class MessageCard : TemplatedControl,
             case MessageType.Loading:
                 PseudoClasses.Add(":loading");
                 break;
-        }
-
-        if (Icon is not null)
-        {
-            SetupMessageIconColor(Icon);
-        }
-    }
-
-    private void SetupMessageIconColor(Icon icon)
-    {
-        if (MessageType == MessageType.Error)
-        {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorError);
-        }
-        else if (MessageType == MessageType.Information ||
-                 MessageType == MessageType.Loading)
-        {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorPrimary);
-        }
-        else if (MessageType == MessageType.Success)
-        {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorSuccess);
-        }
-        else if (MessageType == MessageType.Warning)
-        {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorWarning);
         }
     }
 
@@ -337,11 +314,13 @@ public class MessageCard : TemplatedControl,
             icon.LoadingAnimation = IconAnimation.Spin;
         }
 
-        if (icon is not null)
+        if (Icon is null)
         {
-            SetupMessageIconColor(icon);
+            ClearValue(IconProperty);
+            SetValue(IconProperty, icon, BindingPriority.Template);
         }
-
-        SetCurrentValue(IconProperty, icon);
+        Debug.Assert(Icon != null);
+        Icon.SetTemplatedParent(this);
     }
+    
 }

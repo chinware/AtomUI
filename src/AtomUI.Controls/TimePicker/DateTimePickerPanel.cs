@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.TimePickerLang;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -10,6 +12,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
@@ -59,65 +62,42 @@ internal class CellDbClickedEventArgs : EventArgs
     }
 }
 
-internal class DateTimePickerPanel : Panel, ILogicalScrollable
+internal class DateTimePickerPanel : Panel,
+                                     ILogicalScrollable,
+                                     ITokenResourceConsumer
 {
     #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="ItemHeight" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<double> ItemHeightProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, double>(nameof(ItemHeight), 40.0);
-
-    /// <summary>
-    /// Defines the <see cref="PanelType" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<DateTimePickerPanelType> PanelTypeProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, DateTimePickerPanelType>(nameof(PanelType));
-
-    /// <summary>
-    /// Defines the <see cref="ItemFormat" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<string> ItemFormatProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, string>(nameof(ItemFormat), "yyyy");
 
-    /// <summary>
-    /// Defines the <see cref="ShouldLoop" /> property
-    /// </summary>
     public static readonly StyledProperty<bool> ShouldLoopProperty =
         AvaloniaProperty.Register<DateTimePickerPanel, bool>(nameof(ShouldLoop));
-
-    /// <summary>
-    /// Gets or sets the height of each item
-    /// </summary>
+    
     public double ItemHeight
     {
         get => GetValue(ItemHeightProperty);
         set => SetValue(ItemHeightProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets what this panel displays in date or time units
-    /// </summary>
+    
     public DateTimePickerPanelType PanelType
     {
         get => GetValue(PanelTypeProperty);
         set => SetValue(PanelTypeProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the string format for the items, using standard
-    /// .net DateTime or TimeSpan formatting. Format must match panel type
-    /// </summary>
+    
     public string ItemFormat
     {
         get => GetValue(ItemFormatProperty);
         set => SetValue(ItemFormatProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets whether the panel should loop
-    /// </summary>
+    
     public bool ShouldLoop
     {
         get => GetValue(ShouldLoopProperty);
@@ -128,19 +108,16 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<DateTimePickerPanel, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DateTimePickerPanel, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-
-    private bool _isMotionEnabled;
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DateTimePickerPanel>();
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     #endregion
 
     #region 内部事件定义
@@ -149,7 +126,8 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
     internal event EventHandler<CellDbClickedEventArgs>? CellDbClicked;
 
     #endregion
-
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
     //Backing fields for properties
     private int _minimumValue = 1;
     private int _maximumValue = 2;
@@ -605,8 +583,8 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
                 }
             };
 
-            TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
-                TimePickerTokenKey.ItemPadding, BindingPriority.LocalValue);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
+                TimePickerTokenKey.ItemPadding, BindingPriority.LocalValue));
             children.Add(item);
         }
 
@@ -783,12 +761,25 @@ internal class DateTimePickerPanel : Panel, ILogicalScrollable
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsMotionEnabledProperty)
             {
                 EnableCellHoverAnimation();
             }
         }
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

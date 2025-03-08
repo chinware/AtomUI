@@ -17,7 +17,7 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
     {
     }
 
-    protected override void BuildRightAddOn(Grid layout, INameScope scope)
+    protected override void BuildRightAddOn(AddOnDecoratedBox decoratedBox, Grid layout, INameScope scope)
     {
         var searchIcon = AntDesignIconPackage.SearchOutlined();
 

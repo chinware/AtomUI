@@ -4,6 +4,7 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -11,10 +12,11 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 internal class HeadTextButton : AvaloniaButton
 {
+
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<HeadTextButton, bool>(nameof(IsMotionEnabled), true);
-    
-    public bool IsMotionEnabled
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<HeadTextButton>();
+
+    internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
@@ -45,9 +47,12 @@ internal class HeadTextButton : AvaloniaButton
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 }

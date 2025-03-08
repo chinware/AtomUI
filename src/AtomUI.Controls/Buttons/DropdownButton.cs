@@ -1,9 +1,7 @@
 ﻿using AtomUI.Data;
-using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -130,8 +128,7 @@ public class DropdownButton : Button
     }
 
     #endregion
-
-    private Icon? _openIndicatorIcon;
+    
     private MenuFlyoutPresenter? _menuFlyoutPresenter;
     private readonly FlyoutStateHelper _flyoutStateHelper;
 
@@ -149,6 +146,30 @@ public class DropdownButton : Button
         };
         _flyoutStateHelper.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
     }
+    
+    protected override void SetupControlThemeBindings()
+    {
+        if (ButtonType == ButtonType.Default)
+        {
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultDropdownButtonTheme.ID));
+        }
+        else if (ButtonType == ButtonType.Primary)
+        {
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryDropdownButtonTheme.ID));
+        }
+        else if (ButtonType == ButtonType.Text)
+        {
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextDropdownButtonTheme.ID));
+        }
+        else if (ButtonType == ButtonType.Link)
+        {
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkDropdownButtonTheme.ID));
+        }
+    }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
@@ -159,41 +180,14 @@ public class DropdownButton : Button
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
+        
+        ExtraContainerVisible = true;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _openIndicatorIcon = AntDesignIconPackage.DownOutlined();
-
-        TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.WidthProperty, SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.HeightProperty, SharedTokenKey.IconSizeSM);
-
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
         SetupFlyoutProperties();
-        if (IsShowIndicator)
-        {
-            RightExtraContent = _openIndicatorIcon;
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-        if (VisualRoot is not null)
-        {
-            if (e.Property == IsShowIndicatorProperty)
-            {
-                if (IsShowIndicator)
-                {
-                    RightExtraContent = _openIndicatorIcon;
-                }
-                else
-                {
-                    RightExtraContent = null;
-                }
-            }
-        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -218,6 +212,7 @@ public class DropdownButton : Button
             BindUtils.RelayBind(this, IsShowArrowProperty, DropdownFlyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, DropdownFlyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, DropdownFlyout);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, DropdownFlyout, MenuFlyout.IsMotionEnabledProperty);
             
             DropdownFlyout.Opened += HandleFlyoutOpened;
             DropdownFlyout.Closed += HandleFlyoutClosed;
@@ -278,49 +273,8 @@ public class DropdownButton : Button
         RaiseEvent(eventArgs);
     }
 
-    protected override void NotifyIconBrushCalculated(in TokenResourceKey normalFilledBrushKey,
-                                                      in TokenResourceKey selectedFilledBrushKey,
-                                                      in TokenResourceKey activeFilledBrushKey,
-                                                      in TokenResourceKey disabledFilledBrushKey)
+    protected override bool SetupExtraContainerVisible()
     {
-        if (_openIndicatorIcon is not null)
-        {
-            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.NormalFilledBrushProperty,
-                normalFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.SelectedFilledBrushProperty,
-                selectedFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.ActiveFilledBrushProperty,
-                activeFilledBrushKey);
-            TokenResourceBinder.CreateTokenBinding(_openIndicatorIcon, Icon.DisabledFilledBrushProperty,
-                disabledFilledBrushKey);
-        }
-    }
-
-    protected override void ApplyIconModeStyleConfig()
-    {
-        if (_openIndicatorIcon is not null)
-        {
-            if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
-            {
-                if (PseudoClasses.Contains(StdPseudoClass.Pressed))
-                {
-                    _openIndicatorIcon.IconMode = IconMode.Selected;
-                }
-                else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
-                {
-                    _openIndicatorIcon.IconMode = IconMode.Active;
-                }
-                else
-                {
-                    _openIndicatorIcon.IconMode = IconMode.Normal;
-                }
-            }
-            else
-            {
-                _openIndicatorIcon.IconMode = IconMode.Disabled;
-            }
-        }
-
-        base.ApplyIconModeStyleConfig();
+        return true;
     }
 }

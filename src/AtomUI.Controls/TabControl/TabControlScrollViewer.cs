@@ -21,11 +21,11 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         base.OnApplyTemplate(e);
         if (_menuIndicator is not null)
         {
-            _menuIndicator.Click += HandleMenuIndicator;
+            _menuIndicator.Click += HandleMenuIndicatorClicked;
         }
     }
 
-    private void HandleMenuIndicator(object? sender, RoutedEventArgs args)
+    private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
     {
         if (_menuFlyout is null)
         {
@@ -34,6 +34,7 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
                 IsShowArrow = false,
                 ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
             };
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _menuFlyout, MenuFlyout.IsMotionEnabledProperty);
         }
 
         if (TabStripPlacement == Dock.Top)
@@ -92,7 +93,7 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
                             TabItem    = tabItem,
                             IsClosable = tabItem.IsClosable
                         };
-                        BindUtils.RelayBind(TabControl, AtomUI.Controls.TabControl.IsMotionEnabledProperty, menuItem, BaseOverflowMenuItem.IsMotionEnabledProperty);
+                        BindUtils.RelayBind(TabControl, AnimationAwareControlProperty.IsMotionEnabledProperty, menuItem, AnimationAwareControlProperty.IsMotionEnabledProperty);
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
                         _menuFlyout.Items.Add(menuItem);

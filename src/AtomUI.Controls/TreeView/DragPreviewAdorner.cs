@@ -1,8 +1,11 @@
-﻿using AtomUI.Theme.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -44,7 +47,8 @@ internal class DragPreviewAdorner : Decorator
     }
 }
 
-internal class DragPreview : Decorator
+internal class DragPreview : Decorator,
+                             ITokenResourceConsumer
 {
     public static readonly StyledProperty<IBrush?> BackgroundProperty =
         Border.BackgroundProperty.AddOwner<DragPreviewAdorner>();
@@ -56,6 +60,8 @@ internal class DragPreview : Decorator
     }
 
     private readonly VisualBrush _visualBrush;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     public DragPreview(Border previewControl)
     {
@@ -71,10 +77,18 @@ internal class DragPreview : Decorator
         };
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, TreeViewTokenKey.NodeHoverBg);
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, TreeViewTokenKey.NodeHoverBg));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     public override void Render(DrawingContext context)

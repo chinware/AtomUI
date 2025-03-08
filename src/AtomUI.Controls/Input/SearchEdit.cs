@@ -1,8 +1,7 @@
-﻿using AtomUI.Theme.Data;
+﻿using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 
 namespace AtomUI.Controls;
@@ -37,12 +36,12 @@ public class SearchEdit : LineEdit
 
     #endregion
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
     }
 }

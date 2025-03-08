@@ -1,18 +1,20 @@
-﻿using AtomUI.IconPkg;
+﻿using System.Diagnostics;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -25,42 +27,30 @@ public class NotificationCard : ContentControl,
     public const string InformationPC = ":information";
     public const string SuccessPC = ":success";
     public const string WarningPC = ":warning";
-    
+
     internal const double AnimationMaxOffsetY = 150d;
     internal const double AnimationMaxOffsetX = 500d;
 
     #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="IsClosing" /> property.
-    /// </summary>
+    
     public static readonly DirectProperty<NotificationCard, bool> IsClosingProperty =
         AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(IsClosing), o => o.IsClosing);
-
-    /// <summary>
-    /// Defines the <see cref="IsClosed" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> IsClosedProperty =
         AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsClosed));
 
     public static readonly StyledProperty<bool> IsShowProgressProperty =
         AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsShowProgress));
-
-    /// <summary>
-    /// Defines the <see cref="NotificationType" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<NotificationType> NotificationTypeProperty =
         AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NotificationCard>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<NotificationCard, bool>(nameof(IsWaveAnimationEnabled));
-
-    /// <summary>
-    /// Defines the <see cref="NotificationClosed" /> event.
-    /// </summary>
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<NotificationCard>();
+    
     public static readonly RoutedEvent<RoutedEventArgs> NotificationClosedEvent =
         RoutedEvent.Register<NotificationCard, RoutedEventArgs>(nameof(NotificationClosed), RoutingStrategies.Bubble);
 
@@ -69,19 +59,13 @@ public class NotificationCard : ContentControl,
 
     public static readonly StyledProperty<Icon?> IconProperty
         = AvaloniaProperty.Register<NotificationCard, Icon?>(nameof(Icon));
-
-    /// <summary>
-    /// Determines if the notification is already closing.
-    /// </summary>
+    
     public bool IsClosing
     {
         get => _isClosing;
         private set => SetAndRaise(IsClosingProperty, ref _isClosing, value);
     }
-
-    /// <summary>
-    /// Determines if the notification is closed.
-    /// </summary>
+    
     public bool IsClosed
     {
         get => GetValue(IsClosedProperty);
@@ -94,9 +78,6 @@ public class NotificationCard : ContentControl,
         set => SetValue(IsShowProgressProperty, value);
     }
 
-    /// <summary>
-    /// Gets or sets the type of the notification
-    /// </summary>
     public NotificationType NotificationType
     {
         get => GetValue(NotificationTypeProperty);
@@ -115,15 +96,12 @@ public class NotificationCard : ContentControl,
         set => SetValue(IconProperty, value);
     }
 
-    /// <summary>
-    /// Raised when the <see cref="NotificationCard" /> has closed.
-    /// </summary>
     public event EventHandler<RoutedEventArgs>? NotificationClosed
     {
         add => AddHandler(NotificationClosedEvent, value);
         remove => RemoveHandler(NotificationClosedEvent, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -150,10 +128,10 @@ public class NotificationCard : ContentControl,
             nameof(Position),
             o => o.Position,
             (o, v) => o.Position = v);
-    
+
     internal static readonly DirectProperty<NotificationCard, TimeSpan> OpenCloseMotionDurationProperty =
         AvaloniaProperty.RegisterDirect<NotificationCard, TimeSpan>(nameof(OpenCloseMotionDuration),
-            o => o.OpenCloseMotionDuration, 
+            o => o.OpenCloseMotionDuration,
             (o, v) => o.OpenCloseMotionDuration = v);
 
     private bool _effectiveShowProgress;
@@ -173,16 +151,17 @@ public class NotificationCard : ContentControl,
     }
 
     private TimeSpan _openCloseMotionDuration;
+
     internal TimeSpan OpenCloseMotionDuration
     {
         get => _openCloseMotionDuration;
         set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
     }
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
-    
+
     #endregion
     
     /// <summary>
@@ -204,7 +183,6 @@ public class NotificationCard : ContentControl,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        UpdateNotificationType();
         ClipToBounds         = false;
         _notificationManager = manager;
     }
@@ -225,22 +203,20 @@ public class NotificationCard : ContentControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        UpdatePseudoClasses(Position);
+        SetupPositionPseudoClasses(Position);
+        SetupNotificationTypePseudoClasses();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        SetupNotificationDefaultIcon();
+        
         base.OnApplyTemplate(e);
-        if (Icon is null)
-        {
-            SetupNotificationIcon();
-            UpdateNotificationType();
-        }
-        TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
+        
         _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
         _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
-        
+
         if (_progressBar is not null)
         {
             if (Expiration is null)
@@ -274,64 +250,66 @@ public class NotificationCard : ContentControl,
             AbstractMotion? motion;
             if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
             {
-                motion = new NotificationMoveLeftInMotion(Position == NotificationPosition.TopLeft, AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveLeftInMotion(Position == NotificationPosition.TopLeft, AnimationMaxOffsetX,
+                    _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
             {
-                motion = new NotificationMoveRightInMotion(Position == NotificationPosition.TopRight, AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveRightInMotion(Position == NotificationPosition.TopRight,
+                    AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopCenter)
             {
-                motion = new NotificationMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                    new CubicEaseOut());
             }
             else
             {
-                motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                    new CubicEaseOut());
             }
-        
+
             _motionActor.IsVisible = false;
-            MotionInvoker.Invoke(_motionActor, motion, () =>
-            {
-                _motionActor.IsVisible = true;
-            });
+            MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.IsVisible = true; });
         }
         else
         {
             _motionActor.IsVisible = true;
         }
     }
-    
+
     private void ApplyHideMotion()
     {
         if (_motionActor is null)
         {
             return;
         }
-
+        
         if (IsMotionEnabled)
         {
             AbstractMotion? motion;
             if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
             {
-                motion = new NotificationMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration,
+                    new CubicEaseIn());
             }
             else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
             {
-                motion = new NotificationMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration,
+                    new CubicEaseIn());
             }
             else if (Position == NotificationPosition.TopCenter)
             {
-                motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                    new CubicEaseIn());
             }
             else
             {
-                motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+                motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                    new CubicEaseIn());
             }
         
-            MotionInvoker.Invoke(_motionActor, motion, null, () =>
-            {
-                IsClosed = true;
-            });
+            MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
         }
         else
         {
@@ -348,12 +326,14 @@ public class NotificationCard : ContentControl,
     {
         base.OnPropertyChanged(e);
 
-        if (e.Property == NotificationTypeProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupNotificationIcon();
-            UpdateNotificationType();
+            if (e.Property == NotificationTypeProperty)
+            {
+                SetupNotificationTypePseudoClasses();
+            }
         }
-
+        
         if (e.Property == IsClosedProperty)
         {
             if (!IsClosing && !IsClosed)
@@ -363,32 +343,35 @@ public class NotificationCard : ContentControl,
 
             RaiseEvent(new RoutedEventArgs(NotificationClosedEvent));
         }
-
-        if (e.Property == ContentProperty)
-        {
-            if (e.NewValue is string)
-            {
-                SetupContent();
-            }
-        }
-
-        if (e.Property == IsShowProgressProperty ||
-            e.Property == IsClosedProperty)
+        else if (e.Property == IsShowProgressProperty ||
+                 e.Property == IsClosedProperty)
         {
             SetupEffectiveShowProgress();
         }
-
-        if (e.Property == PositionProperty)
+        else if (e.Property == PositionProperty)
         {
-            UpdatePseudoClasses(e.GetNewValue<NotificationPosition>());
-        }
-        
-        if (e.Property == IsClosingProperty)
+            SetupPositionPseudoClasses(e.GetNewValue<NotificationPosition>());
+        } 
+        else if (e.Property == IsClosingProperty)
         {
             if (IsClosing)
             {
                 ApplyHideMotion();
             }
+        } 
+        else if (e.Property == IconProperty)
+        {
+            if (e.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (e.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
+            }
+
+            SetupNotificationDefaultIcon();
         }
     }
 
@@ -411,7 +394,7 @@ public class NotificationCard : ContentControl,
         }
     }
 
-    private void UpdateNotificationType()
+    private void SetupNotificationTypePseudoClasses()
     {
         switch (NotificationType)
         {
@@ -431,79 +414,36 @@ public class NotificationCard : ContentControl,
                 PseudoClasses.Add(WarningPC);
                 break;
         }
-
-        if (Icon is not null)
-        {
-            SetupNotificationIconColor(Icon);
-        }
     }
 
-    private void SetupNotificationIconColor(Icon icon)
+    private void SetupNotificationDefaultIcon()
     {
-        if (NotificationType == NotificationType.Error)
+        if (Icon is null)
         {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorError);
-        }
-        else if (NotificationType == NotificationType.Information)
-        {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorPrimary);
-        }
-        else if (NotificationType == NotificationType.Success)
-        {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorSuccess);
-        }
-        else if (NotificationType == NotificationType.Warning)
-        {
-            TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorWarning);
-        }
-    }
-
-    private void SetupContent()
-    {
-        if (Content is string content)
-        {
-            var textBlock = new SelectableTextBlock
+            Icon? icon = null;
+            if (NotificationType == NotificationType.Information)
             {
-                Text = content
-            };
-            TokenResourceBinder.CreateTokenBinding(textBlock, SelectableTextBlock.SelectionBrushProperty,
-                SharedTokenKey.SelectionBackground);
-            TokenResourceBinder.CreateTokenBinding(textBlock,
-                SelectableTextBlock.SelectionForegroundBrushProperty, SharedTokenKey.SelectionForeground);
-            Content = textBlock;
+                icon = AntDesignIconPackage.InfoCircleFilled();
+            }
+            else if (NotificationType == NotificationType.Success)
+            {
+                icon = AntDesignIconPackage.CheckCircleFilled();
+            }
+            else if (NotificationType == NotificationType.Error)
+            {
+                icon = AntDesignIconPackage.CloseCircleFilled();
+            }
+            else if (NotificationType == NotificationType.Warning)
+            {
+                icon = AntDesignIconPackage.ExclamationCircleFilled();
+            }
+        
+            ClearValue(IconProperty);
+            SetValue(IconProperty, icon, BindingPriority.Template);
         }
-    }
-
-    private void SetupNotificationIcon()
-    {
-        Icon? icon = null;
-        if (NotificationType == NotificationType.Information)
-        {
-            icon = AntDesignIconPackage.InfoCircleFilled();
-        }
-        else if (NotificationType == NotificationType.Success)
-        {
-            icon = AntDesignIconPackage.CheckCircleFilled();
-        }
-        else if (NotificationType == NotificationType.Error)
-        {
-            icon = AntDesignIconPackage.CloseCircleFilled();
-        }
-        else if (NotificationType == NotificationType.Warning)
-        {
-            icon = AntDesignIconPackage.ExclamationCircleFilled();
-        }
-
-        if (icon is not null)
-        {
-            SetupNotificationIconColor(icon);
-        }
-
-        SetCurrentValue(IconProperty, icon);
+        
+        Debug.Assert(Icon != null);
+        Icon.SetTemplatedParent(this);
     }
 
     internal bool NotifyCloseTick(TimeSpan cycleDuration)
@@ -536,7 +476,7 @@ public class NotificationCard : ContentControl,
             _notificationManager.StopExpiredTimer();
         }
     }
-
+    
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
@@ -545,7 +485,7 @@ public class NotificationCard : ContentControl,
             _notificationManager.StopExpiredTimer();
         }
     }
-
+    
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
@@ -555,7 +495,7 @@ public class NotificationCard : ContentControl,
         }
     }
 
-    private void UpdatePseudoClasses(NotificationPosition position)
+    private void SetupPositionPseudoClasses(NotificationPosition position)
     {
         PseudoClasses.Set(WindowNotificationManager.TopLeftPC, position == NotificationPosition.TopLeft);
         PseudoClasses.Set(WindowNotificationManager.TopRightPC, position == NotificationPosition.TopRight);

@@ -1,7 +1,8 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -9,6 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -111,12 +113,8 @@ public class CardTabStrip : BaseTabStrip
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize);
-        _addTabButton          = e.NameScope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
-        _itemsPresenter        = e.NameScope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
+        _addTabButton   = e.NameScope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
+        _itemsPresenter = e.NameScope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
         if (_addTabButton is not null)
         {
             _addTabButton.Click += HandleAddButtonClicked;
@@ -125,19 +123,38 @@ public class CardTabStrip : BaseTabStrip
         HandleSizeTypeChanged();
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == SizeTypeProperty)
+        if (this.IsAttachedToLogicalTree())
         {
-            HandleSizeTypeChanged();
+            if (change.Property == SizeTypeProperty)
+            {
+                HandleSizeTypeChanged();
+            }
         }
-        else if (change.Property == TabStripPlacementProperty)
+
+        if (change.Property == TabStripPlacementProperty)
         {
             HandleTabStripPlacementChanged();
         }
     }
-    
+
     private void HandleAddButtonClicked(object? sender, RoutedEventArgs args)
     {
         RaiseEvent(new RoutedEventArgs(AddTabRequestEvent));
@@ -147,18 +164,18 @@ public class CardTabStrip : BaseTabStrip
     {
         if (SizeType == SizeType.Large)
         {
-            TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
-                SharedTokenKey.BorderRadiusLG);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+                SharedTokenKey.BorderRadiusLG));
         }
         else if (SizeType == SizeType.Middle)
         {
-            TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
-                SharedTokenKey.BorderRadius);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+                SharedTokenKey.BorderRadius));
         }
         else
         {
-            TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
-                SharedTokenKey.BorderRadiusSM);
+            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+                SharedTokenKey.BorderRadiusSM));
         }
     }
 

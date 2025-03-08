@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -12,7 +10,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Threading;
@@ -68,10 +65,8 @@ internal class DrawerContainer : ContentControl
             o => o.DialogSize,
             (o, v) => o.DialogSize = v);
 
-    internal static readonly DirectProperty<DrawerContainer, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerContainer>();
 
     internal static readonly DirectProperty<DrawerContainer, bool> CloseWhenClickOnMaskProperty
         = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(CloseWhenClickOnMask),
@@ -87,6 +82,11 @@ internal class DrawerContainer : ContentControl
         AvaloniaProperty.RegisterDirect<DrawerContainer, double>(nameof(PushOffsetPercent),
             o => o.PushOffsetPercent,
             (o, v) => o.PushOffsetPercent = v);
+    
+    internal static readonly DirectProperty<DrawerContainer, IBrush?> MaskBgColorProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, IBrush?>(nameof(MaskBgColor),
+            o => o.MaskBgColor,
+            (o, v) => o.MaskBgColor = v);
 
     private DrawerPlacement _placement = DrawerPlacement.Right;
 
@@ -160,14 +160,12 @@ internal class DrawerContainer : ContentControl
         set => SetAndRaise(DialogSizeProperty, ref _dialogSize, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
-
+    
     private bool _closeWhenClickOnMask;
 
     internal bool CloseWhenClickOnMask
@@ -191,32 +189,35 @@ internal class DrawerContainer : ContentControl
         get => _pushOffsetPercent;
         set => SetAndRaise(PushOffsetPercentProperty, ref _pushOffsetPercent, value);
     }
+    
+    private IBrush? _maskBgColor;
+
+    internal IBrush? MaskBgColor
+    {
+        get => _maskBgColor;
+        set => SetAndRaise(MaskBgColorProperty, ref _maskBgColor, value);
+    }
+    
     #endregion
 
     internal WeakReference<Drawer>? Drawer { get; set; }
-
+    
     private MotionActorControl? _motionActor;
     private DrawerInfoContainer? _infoContainer;
     private ITransform? _originInfoContainerTransform;
     private bool _openAnimating;
     private bool _closeAnimating;
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, SharedTokenKey.ColorBgMask);
+        Background = MaskBgColor;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, SharedTokenKey.ColorTransparent);
+        Background = Brushes.Transparent;
     }
 
     internal void Open(ScopeAwareAdornerLayer layer)

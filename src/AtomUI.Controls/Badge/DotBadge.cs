@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Utils;
@@ -8,6 +9,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -48,10 +50,10 @@ public class DotBadge : Control,
         AvaloniaProperty.Register<DotBadge, bool>(nameof(BadgeIsVisible));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<DotBadge, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadge>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<DotBadge, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<DotBadge>();
 
     public string? DotColor
     {
@@ -207,14 +209,14 @@ public class DotBadge : Control,
             if (DecoratedTarget is null)
             {
                 _dotBadgeAdorner.IsAdornerMode = false;
-                ((ISetLogicalParent)_dotBadgeAdorner).SetParent(this);
+                _dotBadgeAdorner.SetLogicalParent(this);
                 VisualChildren.Add(_dotBadgeAdorner);
             }
             else
             {
                 _dotBadgeAdorner.IsAdornerMode = true;
+                DecoratedTarget.SetLogicalParent(this);
                 VisualChildren.Add(DecoratedTarget);
-                ((ISetLogicalParent)DecoratedTarget).SetParent(this);
             }
         }
     }
@@ -249,7 +251,7 @@ public class DotBadge : Control,
             }
         }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == DecoratedTargetProperty)
             {

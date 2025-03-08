@@ -7,7 +7,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -65,10 +64,8 @@ internal class DrawerInfoContainer : HeaderedContentControl
             o => o.HasExtra,
             (o, v) => o.HasExtra = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerInfoContainer>();
 
     private DrawerPlacement _placement = DrawerPlacement.Right;
 
@@ -150,12 +147,10 @@ internal class DrawerInfoContainer : HeaderedContentControl
         set => SetAndRaise(HasExtraProperty, ref _hasExtra, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     #endregion
@@ -173,7 +168,7 @@ internal class DrawerInfoContainer : HeaderedContentControl
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions()
+            Transitions ??= new Transitions
             {
                 AnimationUtils.CreateTransition<TransformOperationsTransition>(DrawerInfoContainer.RenderTransformProperty)
             };
@@ -195,9 +190,13 @@ internal class DrawerInfoContainer : HeaderedContentControl
         {
             HasExtra = Extra != null || ExtraTemplate != null;
         }
-        else if (change.Property == IsMotionEnabledProperty)
+
+        if (this.IsAttachedToLogicalTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 

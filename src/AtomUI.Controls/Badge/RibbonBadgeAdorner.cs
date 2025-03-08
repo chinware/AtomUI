@@ -8,6 +8,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -111,7 +112,7 @@ internal class RibbonBadgeAdorner : Control
     #endregion
     
     private bool _initialized;
-    private SingleLineText? _labelText;
+    private TextBlock? _labelText;
     private Geometry? _cornerGeometry;
     private readonly BorderRenderHelper _borderRenderHelper;
 
@@ -144,10 +145,10 @@ internal class RibbonBadgeAdorner : Control
         commonStyle.Add(BadgeRibbonOffsetProperty, BadgeTokenKey.BadgeRibbonOffset);
         commonStyle.Add(BadgeRibbonCornerTransformProperty, BadgeTokenKey.BadgeRibbonCornerTransform);
         commonStyle.Add(BadgeRibbonCornerDarkenAmountProperty, BadgeTokenKey.BadgeRibbonCornerDarkenAmount);
-        var labelStyle = new Style(selector => selector.Nesting().Child().OfType<SingleLineText>());
-        labelStyle.Add(SingleLineText.ForegroundProperty, SharedTokenKey.ColorTextLightSolid);
-        labelStyle.Add(SingleLineText.LineHeightProperty, BadgeTokenKey.BadgeFontHeight);
-        labelStyle.Add(SingleLineText.PaddingProperty, BadgeTokenKey.BadgeRibbonTextPadding);
+        var labelStyle = new Style(selector => selector.Nesting().Child().OfType<TextBlock>());
+        labelStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorTextLightSolid);
+        labelStyle.Add(TextBlock.LineHeightProperty, BadgeTokenKey.BadgeFontHeight);
+        labelStyle.Add(TextBlock.PaddingProperty, BadgeTokenKey.BadgeRibbonTextPadding);
         commonStyle.Add(labelStyle);
         Styles.Add(commonStyle);
     }
@@ -159,13 +160,13 @@ internal class RibbonBadgeAdorner : Control
         {
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment   = VerticalAlignment.Top;
-            _labelText = new SingleLineText()
+            _labelText = new TextBlock()
             {
                 Text                = Text,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment   = VerticalAlignment.Center
             };
-            ((ISetLogicalParent)_labelText).SetParent(this);
+            _labelText.SetLogicalParent(this);
             VisualChildren.Add(_labelText);
             BuildCornerGeometry();
             _initialized = true;
@@ -199,7 +200,7 @@ internal class RibbonBadgeAdorner : Control
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == PlacementProperty)
             {

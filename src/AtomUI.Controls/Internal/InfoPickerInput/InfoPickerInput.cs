@@ -1,7 +1,5 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,7 +8,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -36,7 +33,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         = AvaloniaProperty.Register<InfoPickerInput, object?>(nameof(InnerLeftContent));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<InfoPickerInput>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<InfoPickerInput>();
@@ -73,10 +70,10 @@ public abstract class InfoPickerInput : TemplatedControl,
         AvaloniaProperty.Register<InfoPickerInput, IBrush?>(nameof(InputTextBrush));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<InfoPickerInput>();
 
     public object? LeftAddOn
     {
@@ -192,12 +189,12 @@ public abstract class InfoPickerInput : TemplatedControl,
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
-    
+
     internal static readonly DirectProperty<InfoPickerInput, double> PreferredInputWidthProperty
         = AvaloniaProperty.RegisterDirect<InfoPickerInput, double>(nameof(PreferredInputWidth),
             o => o.PreferredInputWidth,
             (o, v) => o.PreferredInputWidth = v);
-    
+
     private double _preferredInputWidth = double.NaN;
 
     internal double PreferredInputWidth
@@ -226,8 +223,6 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     static InfoPickerInput()
     {
-        HorizontalAlignmentProperty.OverrideDefaultValue<InfoPickerInput>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<InfoPickerInput>(VerticalAlignment.Top);
         AffectsMeasure<InfoPickerInput>(PreferredInputWidthProperty, SizeTypeProperty);
     }
 
@@ -392,7 +387,6 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
 
         _flyoutStateHelper.AnchorTarget = _pickerInnerBox;
-        TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS);
         SetupFlyoutProperties();
     }
 
@@ -413,6 +407,7 @@ public abstract class InfoPickerInput : TemplatedControl,
             BindUtils.RelayBind(this, IsShowArrowProperty, _pickerFlyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, _pickerFlyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, _pickerFlyout);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _pickerFlyout, Flyout.IsMotionEnabledProperty);
         }
     }
 
@@ -432,7 +427,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
     }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -484,5 +479,4 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         return false;
     }
-    
 }

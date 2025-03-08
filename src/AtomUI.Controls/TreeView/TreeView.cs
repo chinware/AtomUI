@@ -1,8 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -26,13 +24,11 @@ public enum TreeItemHoverMode
     WholeLine
 }
 
-[PseudoClasses(DraggablePC)]
+[PseudoClasses(StdPseudoClass.Draggable)]
 public class TreeView : AvaloniaTreeView,
                         IAnimationAwareControl,
                         IControlSharedTokenResourcesHost
 {
-    public const string DraggablePC = ":draggable";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsDraggableProperty =
@@ -53,11 +49,14 @@ public class TreeView : AvaloniaTreeView,
     public static readonly StyledProperty<bool> IsShowLeafIconProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafIcon));
     
+    public static readonly StyledProperty<bool> IsSwitcherRotationProperty
+        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsSwitcherRotation), true);
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeView>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<TreeView>();
 
     public bool IsDraggable
     {
@@ -93,6 +92,12 @@ public class TreeView : AvaloniaTreeView,
     {
         get => GetValue(IsShowLeafIconProperty);
         set => SetValue(IsShowLeafIconProperty, value);
+    }
+    
+    public bool IsSwitcherRotation
+    {
+        get => GetValue(IsSwitcherRotationProperty);
+        set => SetValue(IsSwitcherRotationProperty, value);
     }
 
     public bool IsMotionEnabled
@@ -167,9 +172,9 @@ public class TreeView : AvaloniaTreeView,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TreeViewToken.ID;
-
+    
     #endregion
-
+    
     internal List<TreeViewItem> DefaultCheckedItems { get; set; }
     private Point? _lastPoint;
     private TreeViewItem? _beingDraggedTreeItem;
@@ -220,7 +225,7 @@ public class TreeView : AvaloniaTreeView,
         item.IsChecked = true;
         if (item.Presenter?.Panel == null && this.GetVisualRoot() is ILayoutRoot visualRoot)
         {
-            var layoutManager = LayoutUtils.GetLayoutManager(visualRoot);
+            var layoutManager = visualRoot.GetLayoutManager();
             layoutManager.ExecuteLayoutPass();
         }
 
@@ -253,7 +258,7 @@ public class TreeView : AvaloniaTreeView,
         item.IsChecked = false;
         if (item.Presenter?.Panel == null && this.GetVisualRoot() is ILayoutRoot visualRoot)
         {
-            var layoutManager = LayoutUtils.GetLayoutManager(visualRoot);
+            var layoutManager = visualRoot.GetLayoutManager();
             layoutManager.ExecuteLayoutPass();
         }
 
@@ -273,7 +278,7 @@ public class TreeView : AvaloniaTreeView,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(DraggablePC, IsDraggable);
+        PseudoClasses.Set(StdPseudoClass.Draggable, IsDraggable);
     }
 
     protected override Control CreateContainerForItemOverride(
@@ -308,6 +313,7 @@ public class TreeView : AvaloniaTreeView,
             BindUtils.RelayBind(this, IsShowLeafIconProperty, treeViewItem,
                 TreeViewItem.IsShowLeafIconProperty);
             BindUtils.RelayBind(this, IsCheckableProperty, treeViewItem, TreeViewItem.IsCheckboxVisibleProperty);
+            BindUtils.RelayBind(this, IsSwitcherRotationProperty, treeViewItem, TreeViewItem.IsSwitcherRotationProperty);
         }
     }
 
@@ -316,19 +322,10 @@ public class TreeView : AvaloniaTreeView,
         base.OnAttachedToVisualTree(e);
         if (IsDefaultExpandAll)
         {
-            Dispatcher.UIThread.Post(() => { ExpandAll(); });
+            Dispatcher.UIThread.Post(() => ExpandAll());
         }
 
         ApplyDefaultChecked();
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, DragIndicatorLineWidthProperty,
-            TreeViewTokenKey.DragIndicatorLineWidth);
-        TokenResourceBinder.CreateTokenBinding(this, DragIndicatorBrushProperty,
-            SharedTokenKey.ColorPrimary);
     }
 
     private void ApplyDefaultChecked()

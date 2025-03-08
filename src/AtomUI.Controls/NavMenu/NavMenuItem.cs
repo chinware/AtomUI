@@ -5,8 +5,6 @@ using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Media;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -25,7 +23,6 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(ThemeConstants.PopupPart, typeof(Popup))]
 [PseudoClasses(SeparatorPC, IconPC, StdPseudoClass.Open, StdPseudoClass.Pressed, StdPseudoClass.Selected, TopLevelPC)]
 public class NavMenuItem : HeaderedSelectingItemsControl,
                            INavMenuItem,
@@ -288,12 +285,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsDarkStyle),
             o => o.IsDarkStyle,
             (o, v) => o.IsDarkStyle = v);
-    
-    internal static readonly DirectProperty<NavMenuItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
-    
+
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
+
     internal double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
@@ -361,13 +356,11 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         get => _isDarkStyle;
         set => SetAndRaise(IsDarkStyleProperty, ref _isDarkStyle, value);
     }
-    
-    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion
@@ -465,14 +458,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// </summary>
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
-
+    
     private bool _commandCanExecute = true;
     private bool _commandBindingError;
     private Popup? _popup;
     private KeyGesture? _hotkey;
     private bool _isEmbeddedInMenu;
     private Border? _horizontalFrame;
-    private IDisposable? _itemContainerThemeDisposable;
     private MotionActorControl? _childItemsLayoutTransform;
     private Border? _headerFrame;
     private bool _animating = false;
@@ -569,7 +561,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             SetCurrentValue(HotKeyProperty, _hotkey);
         }
-
+        
         base.OnAttachedToLogicalTree(e);
 
         Level = CalculateDistanceFromLogicalParent<NavMenu>(this) - 1;
@@ -590,16 +582,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _isEmbeddedInMenu = parent?.FindLogicalAncestorOfType<INavMenu>(true) != null;
-        TokenResourceBinder.CreateTokenBinding(this, InlineItemIndentUnitProperty,
-            NavMenuTokenKey.InlineItemIndentUnit);
-    }
-
-    /// <inheritdoc />
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-
-        TryUpdateCanExecute();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -617,6 +599,14 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             Command.CanExecuteChanged -= CanExecuteChangedHandler;
         }
+    }
+
+    /// <inheritdoc />
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        TryUpdateCanExecute();
     }
 
     /// <summary>
@@ -680,6 +670,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <inheritdoc/>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        base.OnApplyTemplate(e);
         if (_popup != null)
         {
             _popup.Opened             -= PopupOpened;
@@ -687,7 +678,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             _popup.DependencyResolver =  null;
         }
 
-        _popup       = e.NameScope.Find<Popup>(ThemeConstants.PopupPart);
+        _popup       = e.NameScope.Find<Popup>(NavMenuItemTheme.PopupPart);
         _headerFrame = e.NameScope.Find<Border>(BaseNavMenuItemTheme.HeaderDecoratorPart);
         if (_headerFrame is not null)
         {
@@ -702,8 +693,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _horizontalFrame = e.NameScope.Find<Border>(TopLevelHorizontalNavMenuItemTheme.FramePart);
-        TokenResourceBinder.CreateTokenBinding(this, PopupMinWidthProperty, NavMenuTokenKey.MenuPopupMinWidth);
-        SetupItemIcon();
+
+        // SetupItemIcon();
         if (Mode == NavMenuMode.Inline)
         {
             _childItemsLayoutTransform =
@@ -712,10 +703,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 _childItemsLayoutTransform.SetCurrentValue(MotionActorControl.IsVisibleProperty, IsSubMenuOpen);
             }
-
-            TokenResourceBinder.CreateTokenBinding(this, OpenCloseMotionDurationProperty,
-                SharedTokenKey.MotionDurationSlow);
         }
+
         SetupTransitions();
     }
 
@@ -879,14 +868,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             HeaderChanged(change);
         }
-
-        if (change.Property == ParentProperty)
+        else if (change.Property == ParentProperty)
         {
             UpdatePseudoClasses();
-        }
-        else if (change.Property == IconProperty)
-        {
-            IconChanged(change);
         }
         else if (change.Property == IsSelectedProperty)
         {
@@ -908,63 +892,35 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             SetupHorizontalEffectiveIndicatorWidth();
         }
-        else if (change.Property == ModeProperty)
-        {
-            SetupItemContainerTheme(true);
-        }
         else if (change.Property == ItemCountProperty)
         {
             HasSubMenu = ItemCount > 0;
         }
-        else if (change.Property == IsMotionEnabledProperty)
-        {
-            SetupTransitions();
-        }
-
-        if (change.Property == BoundsProperty ||
-            change.Property == PopupMinWidthProperty)
+        else if (change.Property == BoundsProperty ||
+                 change.Property == PopupMinWidthProperty)
         {
             SetupEffectivePopupMinWidth();
         }
-
-        if (change.Property == IconProperty ||
-            change.Property == IsDarkStyleProperty)
+        else if (change.Property == IconProperty)
         {
-            SetupItemIcon();
-        }
-    }
-
-    private void SetupItemIcon()
-    {
-        if (Icon is not null && Icon is Icon menuItemIcon)
-        {
-            BindUtils.RelayBind(this, IsEnabledProperty, menuItemIcon, Icon.IsEnabledProperty);
-            TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.WidthProperty,
-                NavMenuTokenKey.ItemIconSize);
-            TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.HeightProperty,
-                NavMenuTokenKey.ItemIconSize);
-
-            if (IsDarkStyle)
+            if (change.OldValue is Icon oldIcon)
             {
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.NormalFilledBrushProperty,
-                    NavMenuTokenKey.DarkItemColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.SelectedFilledBrushProperty,
-                    NavMenuTokenKey.DarkItemSelectedColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.ActiveFilledBrushProperty,
-                    NavMenuTokenKey.DarkItemHoverColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.DisabledFilledBrushProperty,
-                    NavMenuTokenKey.DarkItemDisabledColor);
+                oldIcon.SetTemplatedParent(null);
+                PseudoClasses.Remove(IconPC);
             }
-            else
+
+            if (change.NewValue is Icon newIcon)
             {
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.NormalFilledBrushProperty,
-                    NavMenuTokenKey.ItemColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.SelectedFilledBrushProperty,
-                    NavMenuTokenKey.ItemSelectedColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.ActiveFilledBrushProperty,
-                    NavMenuTokenKey.ItemHoverColor);
-                TokenResourceBinder.CreateTokenBinding(menuItemIcon, Icon.DisabledFilledBrushProperty,
-                    NavMenuTokenKey.ItemDisabledColor);
+                newIcon.SetTemplatedParent(this);
+                PseudoClasses.Add(IconPC);
+            }
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
             }
         }
     }
@@ -1023,27 +979,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     }
 
     /// <summary>
-    /// Called when the <see cref="Icon"/> property changes.
-    /// </summary>
-    /// <param name="e">The property change event.</param>
-    private void IconChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var (oldValue, newValue) = e.GetOldAndNewValue<Icon?>();
-
-        if (oldValue is ILogical oldLogical)
-        {
-            LogicalChildren.Remove(oldLogical);
-            PseudoClasses.Remove(IconPC);
-        }
-
-        if (newValue is ILogical newLogical)
-        {
-            LogicalChildren.Add(newLogical);
-            PseudoClasses.Add(IconPC);
-        }
-    }
-
-    /// <summary>
     /// Called when the <see cref="IsSelected"/> property changes.
     /// </summary>
     /// <param name="e">The property change event.</param>
@@ -1056,15 +991,15 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             Focus();
         }
 
-        if (Icon is not null && Icon is Icon menuIcon)
+        if (Icon is not null)
         {
             if (isSelected)
             {
-                menuIcon.SetValue(Icon.IconModeProperty, IconMode.Selected);
+                Icon.SetValue(Icon.IconModeProperty, IconMode.Selected);
             }
             else
             {
-                menuIcon.SetValue(Icon.IconModeProperty, IconMode.Normal);
+                Icon.SetValue(Icon.IconModeProperty, IconMode.Normal);
             }
         }
     }
@@ -1233,20 +1168,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         return true;
     }
 
-    private void SetupItemContainerTheme(bool force = false)
-    {
-        if (ItemContainerTheme is null || force)
-        {
-            _itemContainerThemeDisposable?.Dispose();
-            if (Mode == NavMenuMode.Inline)
-            {
-                _itemContainerThemeDisposable =
-                    TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty,
-                        InlineNavMenuItemTheme.ID);
-            }
-        }
-    }
-
     protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
     {
         base.PrepareContainerForItemOverride(element, item, index);
@@ -1255,6 +1176,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty);
             BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty);
         }
     }
 
@@ -1309,5 +1231,4 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         var targetRect = new Rect(offset, targetFrame.Bounds.Size);
         return targetRect.Contains(point);
     }
-    
 }

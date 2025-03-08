@@ -1,19 +1,20 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -29,56 +30,54 @@ public class NavMenuItemClickEventArgs : RoutedEventArgs
 }
 
 [PseudoClasses(InlineModePC, HorizontalModePC, VerticalModePC)]
-public class NavMenu : NavMenuBase
+public class NavMenu : NavMenuBase,
+                       ITokenResourceConsumer
 {
     public const string InlineModePC = ":inline-mode";
     public const string HorizontalModePC = ":horizontal-mode";
     public const string VerticalModePC = ":vertical-mode";
     public const string DarkStylePC = ":dark";
     public const string LightStylePC = ":light";
-    
+
     #region 公共属性定义
 
-    /// <summary>
-    /// Defines the <see cref="Mode"/> property.
-    /// </summary>
     public static readonly StyledProperty<NavMenuMode> ModeProperty =
         AvaloniaProperty.Register<NavMenu, NavMenuMode>(nameof(Mode), NavMenuMode.Horizontal);
-    
+
     public static readonly StyledProperty<bool> IsDarkStyleProperty =
         AvaloniaProperty.Register<NavMenu, bool>(nameof(IsDarkStyle), false);
-    
+
     public static readonly StyledProperty<double> ActiveBarWidthProperty =
         AvaloniaProperty.Register<NavMenu, double>(nameof(ActiveBarWidth), 1.0d,
             coerce: (o, v) => Math.Max(Math.Min(v, 1.0), 0.0));
-    
+
     public static readonly StyledProperty<double> ActiveBarHeightProperty =
         AvaloniaProperty.Register<NavMenu, double>(nameof(ActiveBarHeight));
-    
+
     public NavMenuMode Mode
     {
         get => GetValue(ModeProperty);
         set => SetValue(ModeProperty, value);
     }
-    
+
     public bool IsDarkStyle
     {
         get => GetValue(IsDarkStyleProperty);
         set => SetValue(IsDarkStyleProperty, value);
     }
-    
+
     public double ActiveBarWidth
     {
         get => GetValue(ActiveBarWidthProperty);
         set => SetValue(ActiveBarWidthProperty, value);
     }
-    
+
     public double ActiveBarHeight
     {
         get => GetValue(ActiveBarHeightProperty);
         set => SetValue(ActiveBarHeightProperty, value);
     }
-    
+
     #endregion
 
     #region 公共事件定义
@@ -87,7 +86,7 @@ public class NavMenu : NavMenuBase
         RoutedEvent.Register<NavMenu, NavMenuItemClickEventArgs>(
             nameof(NavMenuItemClick),
             RoutingStrategies.Bubble);
-    
+
     public event EventHandler<NavMenuItemClickEventArgs>? NavMenuItemClick
     {
         add => AddHandler(NavMenuItemClickEvent, value);
@@ -100,15 +99,15 @@ public class NavMenu : NavMenuBase
 
     internal static readonly StyledProperty<double> HorizontalBorderThicknessProperty =
         AvaloniaProperty.Register<NavMenuItem, double>(nameof(HorizontalBorderThickness));
-    
+
     public double HorizontalBorderThickness
     {
         get => GetValue(HorizontalBorderThicknessProperty);
         set => SetValue(HorizontalBorderThicknessProperty, value);
     }
-    
+
     #endregion
-    
+
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel { Orientation = Orientation.Vertical });
 
@@ -122,7 +121,9 @@ public class NavMenu : NavMenuBase
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
     }
 
-    private bool _initialized;
+    private CompositeDisposable? _tokenBindingsDisposable;
+
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     public NavMenu()
     {
@@ -176,25 +177,28 @@ public class NavMenu : NavMenuBase
         {
             UpdatePseudoClasses();
         }
-        if (change.Property == ModeProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            if (VisualRoot is not null)
+            if (change.Property == ModeProperty)
             {
                 SetupControlTheme();
                 HandleModeChanged();
             }
         }
     }
-    
+
     private void SetupControlTheme()
     {
         if (Mode == NavMenuMode.Horizontal)
         {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, HorizontalNavMenuTheme.ID);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, HorizontalNavMenuTheme.ID));
         }
         else
         {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, VerticalNavMenuTheme.ID);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, VerticalNavMenuTheme.ID));
         }
     }
 
@@ -221,15 +225,19 @@ public class NavMenu : NavMenuBase
             if (Mode == NavMenuMode.Horizontal)
             {
                 BindUtils.RelayBind(this, ActiveBarHeightProperty, navMenuItem, NavMenuItem.ActiveBarHeightProperty);
-                BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty); 
+                BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty);
             }
+            else
+            {
+                BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty);
+            }
+
             BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty);
             BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, NavMenuItem.IsMotionEnabledProperty);
         }
-
     }
-    
+
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(HorizontalModePC, Mode == NavMenuMode.Horizontal);
@@ -238,39 +246,37 @@ public class NavMenu : NavMenuBase
         PseudoClasses.Set(DarkStylePC, IsDarkStyle);
         PseudoClasses.Set(LightStylePC, !IsDarkStyle);
     }
-    
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
+        _tokenBindingsDisposable = new CompositeDisposable();
+        SetupControlTheme();
+        SetupItemContainerTheme();
         base.OnAttachedToLogicalTree(e);
-        if (!_initialized)
-        {
-            SetupControlTheme();
-            SetupItemContainerTheme();
-            SetupInteractionHandler();
-            _initialized = true;
-        }
+        
+        SetupInteractionHandler();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        InteractionHandler?.Attach(this);
-        TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty, SharedTokenKey.LineWidth,
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
+            SharedTokenKey.LineWidth,
             BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this));
+            new RenderScaleAwareDoubleConfigure(this)));
+        InteractionHandler?.Attach(this);
     }
-    
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         InteractionHandler?.Detach(this);
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, ActiveBarWidthProperty, NavMenuTokenKey.ActiveBarWidth);
-        TokenResourceBinder.CreateTokenBinding(this, ActiveBarHeightProperty, NavMenuTokenKey.ActiveBarHeight);
     }
 
     private void SetupInteractionHandler(bool needMount = false)
@@ -279,6 +285,7 @@ public class NavMenu : NavMenuBase
         {
             InteractionHandler?.Detach(this);
         }
+
         if (Mode == NavMenuMode.Inline)
         {
             InteractionHandler = new InlineNavMenuInteractionHandler();
@@ -287,6 +294,7 @@ public class NavMenu : NavMenuBase
         {
             InteractionHandler = new DefaultNavMenuInteractionHandler();
         }
+
         if (needMount)
         {
             InteractionHandler?.Attach(this);
@@ -297,7 +305,7 @@ public class NavMenu : NavMenuBase
     {
         if (ItemContainerTheme is null || force)
         {
-            var resourceKey = string.Empty; 
+            string resourceKey;
             if (Mode == NavMenuMode.Vertical)
             {
                 resourceKey = VerticalNavMenuItemTheme.ID;
@@ -310,7 +318,9 @@ public class NavMenu : NavMenuBase
             {
                 resourceKey = TopLevelHorizontalNavMenuItemTheme.ID;
             }
-            TokenResourceBinder.CreateGlobalResourceBinding(this, ItemContainerThemeProperty, resourceKey);
+
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, resourceKey));
         }
     }
 
@@ -325,9 +335,13 @@ public class NavMenu : NavMenuBase
         }
     }
 
-    private void ClearSelectionRecursively(NavMenuItem item)
+    internal static void ClearSelectionRecursively(NavMenuItem item, bool skipSelf = false)
     {
-        item.IsSelected = false;
+        if (!skipSelf)
+        {
+            item.IsSelected = false;
+        }
+
         foreach (var childItem in item.Items)
         {
             if (childItem is NavMenuItem navMenuItem)
@@ -367,7 +381,7 @@ public class NavMenu : NavMenuBase
             }
         }
     }
-    
+
     private void CloseInlineItemRecursively(NavMenuItem navMenuItem)
     {
         foreach (var item in navMenuItem.Items)
@@ -377,10 +391,11 @@ public class NavMenu : NavMenuBase
                 CloseInlineItemRecursively(childNavMenuItem);
             }
         }
+
         navMenuItem.CloseInlineItem();
         navMenuItem.IsSubMenuOpen = false;
     }
-    
+
     internal void RaiseNavMenuItemClick(INavMenuItem navMenuItem)
     {
         RaiseEvent(new NavMenuItemClickEventArgs(NavMenuItemClickEvent, navMenuItem));

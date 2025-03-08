@@ -1,7 +1,6 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -30,9 +29,8 @@ internal class MessageCardTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<MessageCard>((card, scope) =>
+        return new FuncControlTemplate<MessageCard>((messageCard, scope) =>
         {
-            BuildInstanceStyles(card);
             var motionActor = new MotionActorControl()
             {
                 Name         = MotionActorPart,
@@ -44,8 +42,8 @@ internal class MessageCardTheme : BaseControlTheme
             {
                 Name = FramePart
             };
-            
-            var header = BuildContent(scope);
+
+            var header = BuildContent(messageCard, scope);
             frame.Child = header;
 
             frame.RegisterInNameScope(scope);
@@ -55,7 +53,7 @@ internal class MessageCardTheme : BaseControlTheme
         });
     }
 
-    private DockPanel BuildContent(INameScope scope)
+    private DockPanel BuildContent(MessageCard messageCard, INameScope scope)
     {
         var headerLayout = new DockPanel
         {
@@ -71,22 +69,16 @@ internal class MessageCardTheme : BaseControlTheme
             BindingMode.Default,
             ObjectConverters.IsNotNull);
         CreateTemplateParentBinding(iconContent, ContentPresenter.ContentProperty, MessageCard.IconProperty);
-        TokenResourceBinder.CreateTokenBinding(iconContent, Layoutable.MarginProperty,
-            MessageTokenKey.MessageIconMargin);
-
         headerLayout.Children.Add(iconContent);
 
         var message = new SelectableTextBlock
         {
             Name = MessagePart
         };
-        TokenResourceBinder.CreateTokenBinding(message, SelectableTextBlock.SelectionBrushProperty,
-            SharedTokenKey.SelectionBackground);
-        TokenResourceBinder.CreateTokenBinding(message, SelectableTextBlock.SelectionForegroundBrushProperty,
-            SharedTokenKey.SelectionForeground);
 
         CreateTemplateParentBinding(message, SelectableTextBlock.TextProperty, MessageCard.MessageProperty);
         headerLayout.Children.Add(message);
+        
         return headerLayout;
     }
 
@@ -94,13 +86,59 @@ internal class MessageCardTheme : BaseControlTheme
     {
         BuildCommonStyle();
         BuildContentStyle();
-        BuildContentStyle();
+        BuildIconStyle();
+    }
+
+    private void BuildIconStyle()
+    {
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.WidthProperty, MessageTokenKey.MessageIconSize);
+            iconStyle.Add(Icon.HeightProperty, MessageTokenKey.MessageIconSize);
+            Add(iconStyle);
+        }
+        
+        var infoOrLoadingTypeStyle = new Style(selector => Selectors.Or(
+            selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Information),
+            selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Loading)));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorPrimary);
+            infoOrLoadingTypeStyle.Add(iconStyle);
+        }
+        Add(infoOrLoadingTypeStyle);
+        
+        var errorTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Error));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+            errorTypeStyle.Add(iconStyle);
+        }
+        Add(errorTypeStyle);
+        
+        var successTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Success));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorSuccess);
+            successTypeStyle.Add(iconStyle);
+        }
+        Add(successTypeStyle);
+        
+        var warningTypeStyle = new Style(selector => selector.Nesting().PropertyEquals(MessageCard.MessageTypeProperty, MessageType.Warning));
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
+            warningTypeStyle.Add(iconStyle);
+        }
+        Add(warningTypeStyle);
+ 
     }
 
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
 
+        commonStyle.Add(MessageCard.OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
 
         var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
@@ -121,18 +159,17 @@ internal class MessageCardTheme : BaseControlTheme
 
     private void BuildContentStyle()
     {
-        var titleStyle = new Style(selector => selector.Nesting().Template().Name(MessagePart));
-        titleStyle.Add(ContentPresenter.LineHeightProperty, SharedTokenKey.FontHeight);
-        titleStyle.Add(ContentPresenter.FontSizeProperty, SharedTokenKey.FontSize);
-        titleStyle.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorText);
-        Add(titleStyle);
+        var messageStyle = new Style(selector => selector.Nesting().Template().Name(MessagePart));
+        messageStyle.Add(SelectableTextBlock.LineHeightProperty, SharedTokenKey.FontHeight);
+        messageStyle.Add(SelectableTextBlock.FontSizeProperty, SharedTokenKey.FontSize);
+        messageStyle.Add(SelectableTextBlock.ForegroundProperty, SharedTokenKey.ColorText);
+        messageStyle.Add(SelectableTextBlock.SelectionBrushProperty, SharedTokenKey.SelectionBackground);
+        messageStyle.Add(SelectableTextBlock.SelectionForegroundBrushProperty, SharedTokenKey.SelectionForeground);
+        Add(messageStyle);
+
+        var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
+        iconStyle.Add(Layoutable.MarginProperty, MessageTokenKey.MessageIconMargin);
+        Add(iconStyle);
     }
 
-    protected override void BuildInstanceStyles(Control control)
-    {
-        var iconStyle = new Style(selector => selector.Name(IconContentPart).Child().OfType<Icon>());
-        iconStyle.Add(Layoutable.WidthProperty, MessageTokenKey.MessageIconSize);
-        iconStyle.Add(Layoutable.HeightProperty, MessageTokenKey.MessageIconSize);
-        control.Styles.Add(iconStyle);
-    }
 }

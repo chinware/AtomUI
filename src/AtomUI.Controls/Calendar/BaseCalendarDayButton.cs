@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -10,6 +12,8 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
@@ -21,20 +25,24 @@ namespace AtomUI.Controls;
     TodayPC,
     BlackoutPC,
     DayfocusedPC)]
-internal class BaseCalendarDayButton : AvaloniaButton
+internal class BaseCalendarDayButton : AvaloniaButton,
+                                       ITokenResourceConsumer
 {
     internal const string TodayPC = ":today";
     internal const string BlackoutPC = ":blackout";
     internal const string DayfocusedPC = ":dayfocused";
-    
+
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<BaseCalendarDayButton, bool>(nameof(IsMotionEnabled), true);
-    
-    public bool IsMotionEnabled
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseCalendarDayButton>();
+
+    internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     /// <summary>
     /// Default content for the CalendarDayButton.
@@ -182,7 +190,7 @@ internal class BaseCalendarDayButton : AvaloniaButton
         SetPseudoClasses();
         SetupTransitions();
     }
-    
+
     private void SetupTransitions()
     {
         if (IsMotionEnabled)
@@ -283,18 +291,30 @@ internal class BaseCalendarDayButton : AvaloniaButton
         }
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsMotionEnabledProperty)
             {

@@ -1,17 +1,20 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -23,12 +26,14 @@ public enum TabSharp
     Card
 }
 
-public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
+public class TabStripItem : AvaloniaTabStripItem,
+                            ICustomHitTest,
+                            ITokenResourceConsumer
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        BaseTabStrip.SizeTypeProperty.AddOwner<TabStripItem>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TabStripItem>();
 
     public static readonly StyledProperty<Icon?> IconProperty =
         AvaloniaProperty.Register<TabStripItem, Icon?>(nameof(Icon));
@@ -81,10 +86,8 @@ public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));
     
-    internal static readonly DirectProperty<TabStripItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<TabStripItem, bool>(nameof(IsMotionEnabled), 
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabStripItem>();
 
     public TabSharp Shape
     {
@@ -92,82 +95,37 @@ public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
         set => SetValue(ShapeProperty, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
 
     private StackPanel? _contentLayout;
     private IconButton? _closeButton;
-
-    private void SetupItemIcon()
-    {
-        if (Icon is not null)
-        {
-            VisualAndLogicalUtils.SetTemplateParent(Icon, this);
-            Icon.Name = BaseTabStripItemTheme.ItemIconPart;
-            if (Icon.ThemeType != IconThemeType.TwoTone)
-            {
-                TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                    TabControlTokenKey.ItemColor);
-                TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
-                    TabControlTokenKey.ItemHoverColor);
-                TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
-                    TabControlTokenKey.ItemSelectedColor);
-                TokenResourceBinder.CreateTokenBinding(Icon, Icon.DisabledFilledBrushProperty,
-                    SharedTokenKey.ColorTextDisabled);
-            }
-
-            if (_contentLayout is not null)
-            {
-                _contentLayout.Children.Insert(0, Icon);
-            }
-        }
-    }
-
-    private void SetupCloseIcon()
+    private CompositeDisposable? _tokenBindingsDisposable;
+    
+    private void SetupDefaultCloseIcon()
     {
         if (CloseIcon is null)
         {
-            CloseIcon = AntDesignIconPackage.CloseOutlined();
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, WidthProperty,
-                SharedTokenKey.IconSizeSM);
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, HeightProperty,
-                SharedTokenKey.IconSizeSM);
+            ClearValue(CloseIconProperty);
+            SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
-
-        CloseIcon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-
-        VisualAndLogicalUtils.SetTemplateParent(CloseIcon, this);
-        if (CloseIcon.ThemeType != IconThemeType.TwoTone)
-        {
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.NormalFilledBrushProperty,
-                SharedTokenKey.ColorIcon);
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.ActiveFilledBrushProperty,
-                SharedTokenKey.ColorIconHover);
-            TokenResourceBinder.CreateTokenBinding(CloseIcon, Icon.DisabledFilledBrushProperty,
-                SharedTokenKey.ColorTextDisabled);
-        }
+        Debug.Assert(CloseIcon is not null);
+        CloseIcon.SetTemplatedParent(this);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _contentLayout = scope.Find<StackPanel>(BaseTabStripItemTheme.ContentLayoutPart);
-        _closeButton   = scope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
-
-        SetupItemIcon();
-        SetupCloseIcon();
+        _contentLayout = e.NameScope.Find<StackPanel>(BaseTabStripItemTheme.ContentLayoutPart);
+        _closeButton   = e.NameScope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
+        
         SetupTransitions();
         if (_closeButton is not null)
         {
@@ -219,55 +177,66 @@ public class TabStripItem : AvaloniaTabStripItem, ICustomHitTest
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot is not null)
+        if (this.IsAttachedToLogicalTree())
         {
-            if (change.Property == IconProperty)
+            if (change.Property == ShapeProperty)
             {
-                var oldIcon = change.GetOldValue<Icon?>();
-                if (oldIcon != null)
-                {
-                    VisualAndLogicalUtils.SetTemplateParent(oldIcon, null);
-                }
-
-                SetupItemIcon();
+                SetupShapeThemeBindings();
             }
         }
 
-        if (change.Property == CloseIconProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            var oldIcon = change.GetOldValue<Icon?>();
-            if (oldIcon != null)
+            if (change.Property == IsMotionEnabledProperty)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldIcon, null);
+                SetupTransitions();
+            }
+        }
+        
+        if (change.Property == IconProperty ||
+            change.Property == CloseIconProperty)
+        {
+            if (change.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+            if (change.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
             }
 
-            SetupCloseIcon();
-        } 
-        else if (change.Property == ShapeProperty)
-        {
-            HandleShapeChanged();
-        }
-        else if (change.Property == IsMotionEnabledProperty)
-        {
-            SetupTransitions();
+            if (change.Property == CloseIconProperty)
+            {
+                SetupDefaultCloseIcon();
+            }
         }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
+        _tokenBindingsDisposable = new CompositeDisposable();
+        SetupShapeThemeBindings();
         base.OnAttachedToLogicalTree(e);
-        HandleShapeChanged();
+        SetupDefaultCloseIcon();
+    }
+    
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
-    private void HandleShapeChanged()
+    private void SetupShapeThemeBindings()
     {
         if (Shape == TabSharp.Line)
         {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabStripItemTheme.ID);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabStripItemTheme.ID));
         }
         else
         {
-            TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, CardTabStripItemTheme.ID);
+            this.AddTokenBindingDisposable(
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, CardTabStripItemTheme.ID));
         }
     }
 

@@ -1,23 +1,16 @@
 ﻿using AtomUI.Theme.Styling;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
-internal class LinkButtonTheme : BaseButtonTheme
+internal abstract class BaseLinkButtonTheme : BaseButtonTheme
 {
-    public const string ID = "LinkButton";
-
-    public LinkButtonTheme()
-        : base(typeof(Button))
+    public BaseLinkButtonTheme(Type targetType) : base(targetType)
     {
-    }
-
-    public override string? ThemeResourceKey()
-    {
-        return ID;
     }
 
     protected override void BuildStyles()
@@ -31,8 +24,13 @@ internal class LinkButtonTheme : BaseButtonTheme
     {
         var enabledStyle = new Style(selector => selector.Nesting());
         // 正常状态
-        enabledStyle.Add(TemplatedControl.BackgroundProperty, ButtonTokenKey.DefaultBg);
         enabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorLink);
+        
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, ButtonTokenKey.DefaultBg);
+            enabledStyle.Add(frameStyle);
+        }
 
         // 正常 hover
         {
@@ -77,8 +75,11 @@ internal class LinkButtonTheme : BaseButtonTheme
     {
         var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
         // 正常状态
-        ghostStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
-
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, Brushes.Transparent);
+            ghostStyle.Add(frameStyle);
+        }
         Add(ghostStyle);
     }
 
@@ -87,5 +88,21 @@ internal class LinkButtonTheme : BaseButtonTheme
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         Add(disabledStyle);
+    }
+}
+
+[ControlThemeProvider]
+internal class LinkButtonTheme : BaseLinkButtonTheme
+{
+    public const string ID = "LinkButton";
+
+    public LinkButtonTheme()
+        : base(typeof(Button))
+    {
+    }
+    
+    public override string ThemeResourceKey()
+    {
+        return ID;
     }
 }

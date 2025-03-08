@@ -6,46 +6,24 @@ namespace AtomUI.MotionScene;
 internal static class MotionInvoker
 {
     public static void Invoke(MotionActorControl actor,
-        AbstractMotion motion,
-        Action? aboutToStart = null,
-        Action? completedAction = null,
-        CancellationToken cancellationToken = default)
+                              AbstractMotion motion,
+                              Action? aboutToStart = null,
+                              Action? completedAction = null,
+                              CancellationToken cancellationToken = default)
     {
         Dispatcher.UIThread.Invoke(async () =>
         {
             await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
         });
     }
-
-    public static async Task InvokeAsync(MotionActorControl actor,
-        AbstractMotion motion,
-        Action? aboutToStart = null,
-        Action? completedAction = null,
-        CancellationToken cancellationToken = default)
-    {
-        await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
-    }
-
+    
     public static void InvokeInPopupLayer(SceneMotionActorControl actor,
-        AbstractMotion motion,
-        Action? aboutToStart = null,
-        Action? completedAction = null,
-        CancellationToken cancellationToken = default)
+                                          AbstractMotion motion,
+                                          Action? aboutToStart = null,
+                                          Action? completedAction = null,
+                                          CancellationToken cancellationToken = default)
     {
-        Dispatcher.UIThread.Invoke(async () =>
-        {
-            await InvokeInPopupLayerAsync(actor, motion, aboutToStart, completedAction, cancellationToken);
-        });
-    }
-
-    public static async Task InvokeInPopupLayerAsync(SceneMotionActorControl actor,
-        AbstractMotion motion,
-        Action? aboutToStart = null,
-        Action? completedAction = null,
-        CancellationToken cancellationToken = default)
-    {
-        actor.BuildGhost();
-        var sceneLayer = PrepareSceneLayer(motion, actor);
+        var sceneLayer          = PrepareSceneLayer(motion, actor);
         var compositeDisposable = new CompositeDisposable();
         compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
         {
@@ -60,18 +38,104 @@ internal static class MotionInvoker
         actor.NotifySceneShowed();
         actor.IsVisible = false;
 
-        await Dispatcher.UIThread.InvokeAsync(async () =>
+        // 等待一个事件循环，让动画窗口置顶
+        Dispatcher.UIThread.Post(() =>
         {
-            // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
-            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-            await motion.RunAsync(actor, aboutToStart, () =>
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                if (completedAction is not null)
+                // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
+                await motion.RunAsync(actor, aboutToStart, () =>
                 {
-                    completedAction();
-                }
-            }, cancellationToken);
-            compositeDisposable.Dispose();
+                    if (completedAction is not null)
+                    {
+                        completedAction();
+                    }
+                }, cancellationToken);
+                DispatcherTimer.RunOnce(() =>
+                {
+                    compositeDisposable.Dispose();
+                    compositeDisposable = null;
+                }, TimeSpan.FromMilliseconds(500));
+            });
+        });
+    }
+
+    public static void DispatchInMotionSceneLayer(SceneMotionActorControl actor,
+                                                  AbstractMotion motion,
+                                                  Action? aboutToStart = null,
+                                                  Action? completedAction = null,
+                                                  CancellationToken cancellationToken = default)
+    {
+        var sceneLayer          = PrepareSceneLayer(motion, actor);
+        var compositeDisposable = new CompositeDisposable();
+        compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
+        {
+            sceneLayer.Hide();
+            sceneLayer.Dispose();
+        }));
+        sceneLayer.SetMotionActor(actor);
+        actor.NotifyMotionTargetAddedToScene();
+        sceneLayer.Topmost = true;
+        actor.IsVisible    = false;
+        sceneLayer.Show();
+        actor.NotifySceneShowed();
+        aboutToStart?.Invoke();
+        // 等待一个事件循环，让动画窗口置顶
+        Dispatcher.UIThread.Post(() =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await motion.RunAsync(actor, () =>
+                {
+                    actor.IsVisible = true;
+                }, () =>
+                {
+                   completedAction?.Invoke();
+                   Dispatcher.UIThread.Post(() => actor.Opacity = 0d);
+                }, cancellationToken);
+                DispatcherTimer.RunOnce(() =>
+                {
+                    compositeDisposable.Dispose();
+                    compositeDisposable = null;
+                }, TimeSpan.FromMilliseconds(500));
+            });
+        });
+    }
+    
+    public static void DispatchOutMotionSceneLayer(SceneMotionActorControl actor,
+                                                   AbstractMotion motion,
+                                                   Action? aboutToStart = null,
+                                                   Action? completedAction = null,
+                                                   CancellationToken cancellationToken = default)
+    {
+        var sceneLayer          = PrepareSceneLayer(motion, actor);
+        var compositeDisposable = new CompositeDisposable();
+        compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
+        {
+            sceneLayer.Hide();
+            sceneLayer.Dispose();
+        }));
+        sceneLayer.SetMotionActor(actor);
+        actor.NotifyMotionTargetAddedToScene();
+        sceneLayer.Topmost = true;
+        sceneLayer.Show();
+        actor.NotifySceneShowed();
+        aboutToStart?.Invoke();
+        // 等待一个事件循环，让动画窗口置顶
+        Dispatcher.UIThread.Post(() =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
+                await motion.RunAsync(actor, null, () =>
+                {
+                    completedAction?.Invoke();
+                    Dispatcher.UIThread.Post(() => actor.IsVisible = false);
+                }, cancellationToken);
+                // 为了避免闪烁，给一个时间间隔
+                compositeDisposable.Dispose();
+                compositeDisposable = null;
+            });
         });
     }
 

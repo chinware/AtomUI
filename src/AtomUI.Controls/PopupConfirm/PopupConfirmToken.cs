@@ -26,7 +26,7 @@ internal class PopupConfirmToken : AbstractControlDesignToken
     /// <summary>
     /// 按钮的外边距
     /// </summary>
-    public Thickness ButtonMargin { get; set; }
+    public double ButtonSpacing { get; set; }
 
     /// <summary>
     /// Icon 外边距
@@ -37,27 +37,27 @@ internal class PopupConfirmToken : AbstractControlDesignToken
     /// 主内容区域外边距
     /// </summary>
     public Thickness ContentContainerMargin { get; set; }
+    
+    /// <summary>
+    /// 按钮内容区域外边距
+    /// </summary>
+    public Thickness ButtonContainerMargin { get; set; }
 
     /// <summary>
     /// 标题栏外边距
     /// </summary>
     public Thickness TitleMargin { get; set; }
 
-    /// <summary>
-    /// 按钮区域外边距
-    /// </summary>
-    public Thickness ButtonContainerMargin { get; set; }
-
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         PopupMinWidth  = 240;
         PopupMinHeight = 80;
-        ButtonMargin   = new Thickness(SharedToken.MarginXS, 0, 0, 0);
-        IconMargin = new Thickness(SharedToken.MarginXS, SharedToken.MarginXS + SharedToken.MarginXXS / 2,
+        ButtonSpacing  = SharedToken.MarginXS;
+        IconMargin = new Thickness(SharedToken.MarginXS, SharedToken.MarginXS,
             SharedToken.MarginXS, 0);
         ContentContainerMargin = new Thickness(0, 0, 0, SharedToken.MarginXS);
         TitleMargin            = new Thickness(0, SharedToken.MarginXS, 0, SharedToken.MarginXS);
-        ButtonContainerMargin  = new Thickness(0, 0, 0, SharedToken.MarginXS / 2);
+        ButtonContainerMargin = new Thickness(0, SharedToken.MarginXS, 0, 0);
     }
 }

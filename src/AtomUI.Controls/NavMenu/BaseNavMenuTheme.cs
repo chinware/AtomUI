@@ -39,21 +39,21 @@ internal abstract class BaseNavMenuTheme : BaseControlTheme
 
         KeyboardNavigation.SetTabNavigation(itemPresenter, KeyboardNavigationMode.Continue);
 
-        var border = new Border
+        var itemFrame = new Border
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             Child               = itemPresenter
         };
 
-        CreateTemplateParentBinding(border, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
-        CreateTemplateParentBinding(border, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
-        CreateTemplateParentBinding(border, Border.BackgroundSizingProperty,
+        CreateTemplateParentBinding(itemFrame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
+        CreateTemplateParentBinding(itemFrame, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
+        CreateTemplateParentBinding(itemFrame, Border.BackgroundSizingProperty,
             TemplatedControl.BackgroundSizingProperty);
-        CreateTemplateParentBinding(border, Border.BorderThicknessProperty,
+        CreateTemplateParentBinding(itemFrame, Border.BorderThicknessProperty,
             TemplatedControl.BorderThicknessProperty);
-        CreateTemplateParentBinding(border, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
-        CreateTemplateParentBinding(border, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
-        return border;
+        CreateTemplateParentBinding(itemFrame, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
+        CreateTemplateParentBinding(itemFrame, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
+        return itemFrame;
     }
 
     protected override void BuildStyles()

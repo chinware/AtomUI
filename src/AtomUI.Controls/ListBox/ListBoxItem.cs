@@ -2,7 +2,6 @@
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -11,35 +10,28 @@ using AvaloniaListBoxItem = Avalonia.Controls.ListBoxItem;
 public class ListBoxItem : AvaloniaListBoxItem
 {
     #region 内部属性定义
-    internal static readonly DirectProperty<ListBoxItem, SizeType> SizeTypeProperty =
-        AvaloniaProperty.RegisterDirect<ListBoxItem, SizeType>(nameof(SizeType),
-            o => o.SizeType,
-            (o, v) => o.SizeType = v);
 
-    internal static readonly DirectProperty<ListBoxItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBoxItem>();
+
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBoxItem>();
 
     internal static readonly DirectProperty<ListBoxItem, bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(DisabledItemHoverEffect),
             o => o.DisabledItemHoverEffect,
             (o, v) => o.DisabledItemHoverEffect = v);
 
-    private SizeType _sizeType = SizeType.Middle;
-
     internal SizeType SizeType
     {
-        get => _sizeType;
-        set => SetAndRaise(SizeTypeProperty, ref _sizeType, value);
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
-
-    private bool _isMotionEnabled;
 
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     private bool _disabledItemHoverEffect;
@@ -51,12 +43,6 @@ public class ListBoxItem : AvaloniaListBoxItem
     }
 
     #endregion
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        SetupTransitions();
-    }
 
     private void SetupTransitions()
     {
@@ -76,9 +62,12 @@ public class ListBoxItem : AvaloniaListBoxItem
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToLogicalTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 }

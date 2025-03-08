@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -12,11 +12,14 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
-public class SegmentedItem : ContentControl, ISelectable
+public class SegmentedItem : ContentControl,
+                             ISelectable,
+                             ITokenResourceConsumer
 {
     #region 公共属性定义
 
@@ -43,12 +46,10 @@ public class SegmentedItem : ContentControl, ISelectable
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        Segmented.SizeTypeProperty.AddOwner<SegmentedItem>();
-
-    internal static readonly DirectProperty<SegmentedItem, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<SegmentedItem, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SegmentedItem>();
+    
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SegmentedItem>();
     
     internal SizeType SizeType
     {
@@ -56,28 +57,37 @@ public class SegmentedItem : ContentControl, ISelectable
         set => SetValue(SizeTypeProperty, value);
     }
 
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
 
+    private CompositeDisposable? _tokenBindingsDisposable;
+    
     static SegmentedItem()
     {
         SelectableMixin.Attach<SegmentedItem>(IsSelectedProperty);
         PressedMixin.Attach<SegmentedItem>();
         FocusableProperty.OverrideDefaultValue<SegmentedItem>(true);
+        AffectsRender<SegmentedItem>(BackgroundProperty);
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
         Debug.Assert(Parent is Segmented, "SegmentedItem's Parent must be Segmented Control.");
-        SetupTransitions();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -99,16 +109,35 @@ public class SegmentedItem : ContentControl, ISelectable
         }
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupTransitions();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();    
+            }
+        }
+
         if (change.Property == IconProperty)
         {
-            SetupItemIcon();
-        } 
-        else if (change.Property == IsMotionEnabledProperty)
-        {
-            SetupTransitions();    
+            if (change.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (change.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
+            }
         }
     }
 
@@ -124,26 +153,6 @@ public class SegmentedItem : ContentControl, ISelectable
         else
         {
             Transitions = null;
-        }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupItemIcon();
-    }
-
-    private void SetupItemIcon()
-    {
-        if (Icon is not null)
-        {
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.NormalFilledBrushProperty,
-                SegmentedTokenKey.ItemColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.ActiveFilledBrushProperty,
-                SegmentedTokenKey.ItemHoverColor);
-            TokenResourceBinder.CreateTokenBinding(Icon, Icon.SelectedFilledBrushProperty,
-                SegmentedTokenKey.ItemSelectedColor);
-            VisualAndLogicalUtils.SetTemplateParent(Icon, this);
         }
     }
 }

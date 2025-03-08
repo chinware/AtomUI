@@ -1,5 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -8,7 +9,9 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 using Avalonia.Media.Transformation;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -42,7 +45,7 @@ public class TabControl : BaseTabControl
 
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             SetupSelectedIndicator();
         }
@@ -146,17 +149,24 @@ public class TabControl : BaseTabControl
         base.OnApplyTemplate(e);
         _selectedIndicator = e.NameScope.Find<Border>(TabControlTheme.SelectedItemIndicatorPart);
         _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(BaseTabControlTheme.ItemsPresenterPart);
+    }
 
-        TokenResourceBinder.CreateTokenBinding(this, SelectedIndicatorThicknessProperty,
-            SharedTokenKey.LineWidthBold);
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectedIndicatorThicknessProperty,
+            SharedTokenKey.LineWidthBold));
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
         }
     }
 }

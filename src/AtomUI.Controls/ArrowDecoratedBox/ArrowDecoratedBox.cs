@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using System.Diagnostics;
+using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -78,7 +79,7 @@ public enum ArrowPosition
     RightEdgeAlignedBottom
 }
 
-public class ArrowDecoratedBox : ContentControl, 
+public class ArrowDecoratedBox : ContentControl,
                                  IArrowAwareShadowMaskInfoProvider,
                                  IAnimationAwareControl,
                                  IControlSharedTokenResourcesHost
@@ -90,14 +91,14 @@ public class ArrowDecoratedBox : ContentControl,
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
-            nameof(ArrowPosition), ArrowPosition.Bottom);
-    
+            nameof(ArrowPosition));
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ArrowDecoratedBox>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, bool>(nameof(IsWaveAnimationEnabled));
-    
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ArrowDecoratedBox>();
+
     /// <summary>
     /// 是否显示指示箭头
     /// </summary>
@@ -115,7 +116,7 @@ public class ArrowDecoratedBox : ContentControl,
         get => GetValue(ArrowPositionProperty);
         set => SetValue(ArrowPositionProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -134,10 +135,10 @@ public class ArrowDecoratedBox : ContentControl,
 
     internal static readonly StyledProperty<double> ArrowSizeProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
-    
+
     internal static readonly StyledProperty<Direction> ArrowDirectionProperty
         = AvaloniaProperty.Register<ArrowDecoratedBox, Direction>(nameof(ArrowDirection));
-    
+
     /// <summary>
     /// 箭头的大小
     /// </summary>
@@ -146,19 +147,19 @@ public class ArrowDecoratedBox : ContentControl,
         get => GetValue(ArrowSizeProperty);
         set => SetValue(ArrowSizeProperty, value);
     }
-    
+
     internal Direction ArrowDirection
     {
         get => GetValue(ArrowDirectionProperty);
         set => SetValue(ArrowDirectionProperty, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
-    
+
     public Rect ArrowIndicatorBounds { get; private set; }
-    
+
     #endregion
 
     // 指针最顶点位置
@@ -167,10 +168,13 @@ public class ArrowDecoratedBox : ContentControl,
     private Border? _contentDecorator;
     private Control? _arrowIndicatorLayout;
     private ArrowIndicator? _arrowIndicator;
+    private bool _arrowPlacementFlipped;
 
     static ArrowDecoratedBox()
     {
-        AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty, ArrowPositionProperty);
+        AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty);
+        AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty);
+        AffectsRender<ArrowDecoratedBox>(BackgroundProperty);
     }
 
     public ArrowDecoratedBox()
@@ -210,6 +214,19 @@ public class ArrowDecoratedBox : ContentControl,
         {
             ArrowDirection = GetDirection(ArrowPosition);
         }
+        else if (e.Property == ArrowDirectionProperty)
+        {
+            // 因为属性更新比布局更新快，我们计算 GetMaskBounds 时候等不及布局更新就要计算坐标了
+            var oldDirection = e.GetOldValue<Direction>();
+            var newDirection = e.GetNewValue<Direction>();
+            if ((oldDirection == Direction.Left && newDirection == Direction.Right) ||
+                (oldDirection == Direction.Right && newDirection == Direction.Left) ||
+                (oldDirection == Direction.Top && newDirection == Direction.Bottom) ||
+                (oldDirection == Direction.Bottom && newDirection == Direction.Top))
+            {
+                _arrowPlacementFlipped = true;
+            }
+        }
     }
 
     public CornerRadius GetMaskCornerRadius()
@@ -219,11 +236,29 @@ public class ArrowDecoratedBox : ContentControl,
 
     public Rect GetMaskBounds()
     {
-        Rect targetRect = default;
-        if (_contentDecorator is not null)
+        Debug.Assert(_arrowIndicatorLayout != null && _contentDecorator != null);
+        var targetRect = _contentDecorator.Bounds;
+        var arrowSize  = _arrowIndicatorLayout.DesiredSize;
+        if (_arrowPlacementFlipped)
         {
-            targetRect = _contentDecorator.Bounds;
+            if (ArrowDirection == Direction.Top)
+            {
+                targetRect = targetRect.WithY(targetRect.Y + arrowSize.Height);
+            }
+            else if (ArrowDirection == Direction.Bottom)
+            {
+                targetRect = targetRect.WithY(targetRect.Y - arrowSize.Height);
+            }
+            else if (ArrowDirection == Direction.Left)
+            {
+                targetRect = targetRect.WithX(targetRect.X + arrowSize.Width);
+            }
+            else
+            {
+                targetRect = targetRect.WithX(targetRect.X - arrowSize.Width);
+            }
         }
+
         return targetRect;
     }
 
@@ -252,13 +287,14 @@ public class ArrowDecoratedBox : ContentControl,
         var targetRect  = _arrowIndicatorLayout.Bounds;
         var center      = targetRect.Center;
         var controlSize = Bounds.Size;
-        
+
         // 计算中点
         var direction = GetDirection(ArrowPosition);
         if (direction == Direction.Left || direction == Direction.Right)
         {
             return (center.Y, controlSize.Height - center.Y);
         }
+
         return (center.X, controlSize.Width - center.X);
     }
 
@@ -269,6 +305,7 @@ public class ArrowDecoratedBox : ContentControl,
         {
             ArrangeArrow(finalSize);
         }
+
         return size;
     }
 
@@ -278,11 +315,12 @@ public class ArrowDecoratedBox : ContentControl,
         {
             return;
         }
+
         var offsetX  = 0d;
         var offsetY  = 0d;
         var position = ArrowPosition;
         var size     = _arrowIndicatorLayout.DesiredSize;
-    
+
         var minValue = Math.Min(size.Width, size.Height);
         var maxValue = Math.Max(size.Width, size.Height);
         if (position == ArrowPosition.Left ||
@@ -383,11 +421,13 @@ public class ArrowDecoratedBox : ContentControl,
                 offsetX = finalSize.Width - maxValue * 2;
             }
         }
+
         _arrowIndicatorLayout.Arrange(new Rect(new Point(offsetX, offsetY), size));
         if (_arrowIndicator != null)
         {
             ArrowIndicatorBounds = _arrowIndicator.Bounds;
         }
 
+        _arrowPlacementFlipped = false;
     }
 }

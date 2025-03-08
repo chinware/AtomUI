@@ -1,7 +1,5 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,7 +16,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<AddOnDecoratedInnerBox>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedInnerBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<AddOnDecoratedInnerBox>();
@@ -34,12 +32,12 @@ public class AddOnDecoratedInnerBox : ContentControl,
 
     public static readonly StyledProperty<bool> IsClearButtonVisibleProperty =
         AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsClearButtonVisible));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedInnerBox>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<AddOnDecoratedInnerBox>();
 
     public SizeType SizeType
     {
@@ -88,7 +86,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
         get => GetValue(IsWaveAnimationEnabledProperty);
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -106,7 +104,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
             o => o.ContentPresenterMargin,
             (o, v) => o.ContentPresenterMargin = v);
 
-    private static readonly DirectProperty<AddOnDecoratedInnerBox, double> MarginXSTokenProperty =
+    internal static readonly DirectProperty<AddOnDecoratedInnerBox, double> MarginXSTokenProperty =
         AvaloniaProperty.RegisterDirect<AddOnDecoratedInnerBox, double>(nameof(MarginXSToken),
             o => o.MarginXSToken,
             (o, v) => o.MarginXSToken = v);
@@ -140,7 +138,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
         get => _contentPresenterMargin;
         set => SetAndRaise(ContentPresenterMarginProperty, ref _contentPresenterMargin, value);
     }
-    
+
     Control IAnimationAwareControl.PropertyBindTarget => this;
 
     #endregion
@@ -167,16 +165,17 @@ public class AddOnDecoratedInnerBox : ContentControl,
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == LeftAddOnContentProperty || change.Property == RightAddOnContentProperty)
+        if (change.Property == LeftAddOnContentProperty || 
+            change.Property == RightAddOnContentProperty)
         {
             if (change.OldValue is Control oldControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldControl, null);
+                oldControl.SetTemplatedParent(null);
             }
 
             if (change.NewValue is Control newControl)
             {
-                VisualAndLogicalUtils.SetTemplateParent(newControl, this);
+                newControl.SetTemplatedParent(this);
             }
         }
     }
@@ -184,7 +183,6 @@ public class AddOnDecoratedInnerBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        TokenResourceBinder.CreateTokenBinding(this, MarginXSTokenProperty, SharedTokenKey.MarginXS);
         _leftAddOnLayout  = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.LeftAddOnLayoutPart);
         _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.RightAddOnLayoutPart);
         _clearButton      = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxTheme.ClearButtonPart);

@@ -27,7 +27,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
         = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerRightContent));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AddOnDecoratedBox.SizeTypeProperty.AddOwner<ButtonSpinner>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<ButtonSpinner>();
@@ -36,10 +36,10 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
         AddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ButtonSpinner>();
 
     public object? LeftAddOn
     {
@@ -117,11 +117,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == CornerRadiusProperty)
-        {
-            SetupSpinnerHandleCornerRadius();
-        }
-        else if (change.Property == ButtonSpinnerLocationProperty)
+        if (change.Property == CornerRadiusProperty || change.Property == ButtonSpinnerLocationProperty)
         {
             SetupSpinnerHandleCornerRadius();
         }

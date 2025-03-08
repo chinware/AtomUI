@@ -1,5 +1,4 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+﻿using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Shapes;
@@ -13,6 +12,7 @@ namespace AtomUI.Controls;
 internal class HorizontalNavMenuTheme : BaseNavMenuTheme
 {
     public const string ID = "HorizontalNavMenu";
+    public const string HorizontalLinePart = "PART_HorizontalLine";
 
     public HorizontalNavMenuTheme()
         : base(typeof(NavMenu))
@@ -26,18 +26,18 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
 
     protected override Control BuildMenuContent(NavMenu navMenu, INameScope scope)
     {
-        var layout = new DockPanel()
+        var layout = new DockPanel
         {
             LastChildFill = true
         };
-        var horizontalLine = new Rectangle();
+        var horizontalLine = new Rectangle()
+        {
+            Name = HorizontalLinePart,
+        };
         layout.Children.Add(horizontalLine);
         DockPanel.SetDock(horizontalLine, Dock.Bottom);
         CreateTemplateParentBinding(horizontalLine, Rectangle.HeightProperty,
             NavMenu.HorizontalBorderThicknessProperty);
-        TokenResourceBinder.CreateTokenBinding(horizontalLine, Rectangle.FillProperty,
-            SharedTokenKey.ColorBorderSecondary);
-
         layout.Children.Add(BuildItemPresenter(true, scope));
         return layout;
     }
@@ -46,12 +46,13 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
-
+        
         var horizontalStyle = new Style(selector => selector.Nesting().Class(NavMenu.HorizontalModePC));
         horizontalStyle.Add(NavMenu.BackgroundProperty, SharedTokenKey.ColorBgContainer);
         horizontalStyle.Add(NavMenu.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         horizontalStyle.Add(NavMenu.VerticalAlignmentProperty, VerticalAlignment.Top);
         horizontalStyle.Add(NavMenu.HeightProperty, NavMenuTokenKey.MenuHorizontalHeight);
+        horizontalStyle.Add(NavMenu.ActiveBarHeightProperty, NavMenuTokenKey.ActiveBarHeight);
         {
             var itemPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
             itemPresenterStyle.Add(ItemsPresenter.ItemsPanelProperty, new FuncTemplate<Panel?>(() => new StackPanel
@@ -60,7 +61,12 @@ internal class HorizontalNavMenuTheme : BaseNavMenuTheme
             }));
             horizontalStyle.Add(itemPresenterStyle);
         }
+        
+        var horizontalLineStyle = new Style(selector => selector.Nesting().Template().Name(HorizontalLinePart));
+        horizontalLineStyle.Add(Rectangle.FillProperty, SharedTokenKey.ColorBorderSecondary);
+        horizontalStyle.Add(horizontalLineStyle);
 
         commonStyle.Add(horizontalStyle);
+        Add(commonStyle);
     }
 }

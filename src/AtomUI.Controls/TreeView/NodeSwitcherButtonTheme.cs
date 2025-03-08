@@ -1,6 +1,9 @@
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
+using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -10,6 +13,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -18,11 +22,11 @@ namespace AtomUI.Controls;
 internal class NodeSwitcherButtonTheme : BaseControlTheme
 {
     public const string RootPart = "PART_Root";
-    public const string RotationIconPart = "PART_RotationIcon";
-    public const string ExpandIconPart = "PART_ExpandIcon";
-    public const string CollapseIconPart = "PART_CollapseIcon";
-    public const string LoadingIconPart = "PART_LoadingIcon";
-    public const string LeafIconPart = "PART_LeafIcon";
+    public const string RotationIconPresenterPart = "PART_RotationIconPresenter";
+    public const string ExpandIconPresenterPart = "PART_ExpandIconPresenter";
+    public const string CollapseIconPresenterPart = "PART_CollapseIconPresenter";
+    public const string LoadingIconPresenterPart = "PART_LoadingIconPresenter";
+    public const string LeafIconPresenterPart = "PART_LeafIconPresenter";
     
     public NodeSwitcherButtonTheme()
         : base(typeof(NodeSwitcherButton))
@@ -48,7 +52,7 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
             // 4、加载状态的图标
             var expandIconPresenter = new ContentPresenter
             {
-                Name = ExpandIconPart,
+                Name = ExpandIconPresenterPart,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
@@ -56,24 +60,20 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
 
             CreateTemplateParentBinding(expandIconPresenter, ContentPresenter.ContentProperty,
                 NodeSwitcherButton.ExpandIconProperty);
-            CreateTemplateParentBinding(expandIconPresenter, ContentPresenter.IsVisibleProperty,
-                NodeSwitcherButton.ExpandIconVisibleProperty);
 
             var collapseIconPresenter = new ContentPresenter
             {
-                Name = CollapseIconPart,
+                Name = CollapseIconPresenterPart,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
             collapseIconPresenter.RegisterInNameScope(scope);
             CreateTemplateParentBinding(collapseIconPresenter, ContentPresenter.ContentProperty,
                 NodeSwitcherButton.CollapseIconProperty);
-            CreateTemplateParentBinding(collapseIconPresenter, ContentPresenter.IsVisibleProperty,
-                NodeSwitcherButton.CollapseIconVisibleProperty);
-
+            
             var rotationIconPresenter = new ContentPresenter
             {
-                Name = RotationIconPart,
+                Name = RotationIconPresenterPart,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
@@ -82,14 +82,11 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
                 NodeSwitcherButton.RotationIconProperty);
             CreateTemplateParentBinding(rotationIconPresenter, ContentPresenter.IsVisibleProperty,
                 NodeSwitcherButton.IconModeProperty, BindingMode.Default, 
-                new FuncValueConverter<NodeSwitcherButtonIconMode, bool>(iconMode =>
-                {
-                    return iconMode == NodeSwitcherButtonIconMode.Rotation;
-                }));
+                new FuncValueConverter<NodeSwitcherButtonIconMode, bool>(iconMode => iconMode == NodeSwitcherButtonIconMode.Rotation));
 
             var loadingIconPresenter = new ContentPresenter
             {
-                Name = LoadingIconPart,
+                Name = LoadingIconPresenterPart,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
@@ -100,14 +97,11 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
             CreateTemplateParentBinding(loadingIconPresenter, ContentPresenter.IsVisibleProperty,
                 NodeSwitcherButton.IconModeProperty, 
                 BindingMode.Default, 
-                new FuncValueConverter<NodeSwitcherButtonIconMode, bool>(iconMode =>
-                {
-                    return iconMode == NodeSwitcherButtonIconMode.Loading;
-                }));
+                new FuncValueConverter<NodeSwitcherButtonIconMode, bool>(iconMode => iconMode == NodeSwitcherButtonIconMode.Loading));
 
             var leafIconPresenter = new ContentPresenter
             {
-                Name = LeafIconPart,
+                Name = LeafIconPresenterPart,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
@@ -115,9 +109,7 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
             
             CreateTemplateParentBinding(leafIconPresenter, ContentPresenter.ContentProperty,
                 NodeSwitcherButton.LeafIconProperty);
-            CreateTemplateParentBinding(leafIconPresenter, ContentPresenter.IsVisibleProperty,
-                NodeSwitcherButton.IsLeafIconVisibleProperty);
-            
+ 
             rootContainer.Children.Add(expandIconPresenter);
             rootContainer.Children.Add(collapseIconPresenter);
             rootContainer.Children.Add(rotationIconPresenter);
@@ -136,11 +128,6 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
         commonStyle.Add(NodeSwitcherButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         commonStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
-        
-        var checkStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked)
-            .PropertyEquals(NodeSwitcherButton.IconModeProperty, NodeSwitcherButtonIconMode.Rotation));
-        checkStyle.Add(NodeSwitcherButton.RenderTransformProperty, new SetterValueFactory<ITransform>(() => new RotateTransform(90)));
-        commonStyle.Add(checkStyle);
         
         Add(commonStyle);
         
@@ -180,5 +167,107 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
             disabledStyle.Add(iconStyle);
         }
         Add(disabledStyle);
+        BuildIconsStyle();
+        BuildModeStyle();
+    }
+
+    private void BuildIconsStyle()
+    {
+        var iconsStyle = new Style(selector => selector.Nesting().Template().Descendant().OfType<Icon>());
+        iconsStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSize);
+        iconsStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSize);
+        Add(iconsStyle);
+
+        {
+            var rotationIconStyle = new Style(selector => selector.Nesting().Template().Name(RotationIconPresenterPart).Descendant().OfType<Icon>());
+            rotationIconStyle.Add(Icon.WidthProperty, SharedTokenKey.IconSizeXS);
+            rotationIconStyle.Add(Icon.HeightProperty, SharedTokenKey.IconSizeXS);
+        
+            Add(rotationIconStyle);
+        }
+        
+        {
+            // 打开关闭指示按钮的动画
+            var isMotionEnabledStyle = new Style(selector =>
+                selector.Nesting().PropertyEquals(NodeSwitcherButton.IsMotionEnabledProperty, true));
+            var rotationIconStyle =
+                new Style(selector => selector.Nesting().Template().Name(RotationIconPresenterPart));
+            rotationIconStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() =>
+                new Transitions
+                {
+                    AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
+                }));
+            isMotionEnabledStyle.Add(rotationIconStyle);
+            Add(isMotionEnabledStyle);
+        }
+        
+        var checkStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Checked)
+                                                       .PropertyEquals(NodeSwitcherButton.IconModeProperty, NodeSwitcherButtonIconMode.Rotation));
+        {
+            var rotationIconStyle = new Style(selector => selector.Nesting().Template().Name(RotationIconPresenterPart));
+            rotationIconStyle.Add(ContentPresenter.RenderTransformProperty, new SetterValueFactory<ITransform>(() =>
+            {
+                var transformOptions = new TransformOperations.Builder(1);
+                transformOptions.AppendRotate(MathUtils.Deg2Rad(90));
+                return transformOptions.Build();
+            }));
+            checkStyle.Add(rotationIconStyle);
+        }
+        Add(checkStyle);
+    }
+
+    private void BuildModeStyle()
+    {
+        {
+            var expandIconPresenter = new Style(selector => selector.Nesting().Template().Name(ExpandIconPresenterPart));
+            expandIconPresenter.Add(Icon.IsVisibleProperty, false);
+            Add(expandIconPresenter);
+
+            var collapseIconPresenter = new Style(selector => selector.Nesting().Template().Name(CollapseIconPresenterPart));
+            collapseIconPresenter.Add(Icon.IsVisibleProperty, false);
+            Add(collapseIconPresenter);
+            
+            var leafIconPresenter = new Style(selector => selector.Nesting().Template().Name(LeafIconPresenterPart));
+            leafIconPresenter.Add(Icon.IsVisibleProperty, false);
+            Add(leafIconPresenter);
+            
+        }
+        var defaultStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(NodeSwitcherButton.IconModeProperty, NodeSwitcherButtonIconMode.Default));
+        {
+            {
+                var expandIconPresenter = new Style(selector => selector.Nesting().Template().Name(ExpandIconPresenterPart));
+                expandIconPresenter.Add(Icon.IsVisibleProperty, true);
+                defaultStyle.Add(expandIconPresenter);
+
+                var collapseIconPresenter = new Style(selector => selector.Nesting().Template().Name(CollapseIconPresenterPart));
+                collapseIconPresenter.Add(Icon.IsVisibleProperty, false);
+                defaultStyle.Add(collapseIconPresenter);
+            }
+            var isChecked = new Style(selector =>
+                selector.Nesting().PropertyEquals(NodeSwitcherButton.IsCheckedProperty, true));
+            {
+                {
+                    var expandIconPresenter = new Style(selector => selector.Nesting().Template().Name(ExpandIconPresenterPart));
+                    expandIconPresenter.Add(Icon.IsVisibleProperty, false);
+                    isChecked.Add(expandIconPresenter);
+
+                    var collapseIconPresenter = new Style(selector => selector.Nesting().Template().Name(CollapseIconPresenterPart));
+                    collapseIconPresenter.Add(Icon.IsVisibleProperty, true);
+                    isChecked.Add(collapseIconPresenter);
+                }
+            }
+            defaultStyle.Add(isChecked);
+        }
+        Add(defaultStyle);
+        
+        var leafModeStyle = new Style(selector => selector.Nesting().PropertyEquals(NodeSwitcherButton.IconModeProperty, NodeSwitcherButtonIconMode.Leaf)
+                                                          .PropertyEquals(NodeSwitcherButton.IsLeafIconVisibleProperty, true));
+        {
+            var leafIconPresenter = new Style(selector => selector.Nesting().Template().Name(LeafIconPresenterPart));
+            leafIconPresenter.Add(Icon.IsVisibleProperty, true);
+            leafModeStyle.Add(leafIconPresenter);
+        }
+        Add(leafModeStyle);
     }
 }

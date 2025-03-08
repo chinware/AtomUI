@@ -1,7 +1,6 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -26,6 +25,7 @@ internal class ComboBoxTheme : BaseControlTheme
     public const string SpinnerHandleDecoratorPart = "PART_SpinnerHandleDecorator";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
     public const string PopupPart = "PART_Popup";
+    public const string PopupFramePart = "PART_PopupFrame";
     public const string PlaceholderTextPart = "PART_PlaceholderText";
     public const string SelectedContentPresenterPart = "PART_SelectedContentPresenter";
 
@@ -100,12 +100,7 @@ internal class ComboBoxTheme : BaseControlTheme
         spinnerHandleDecorator.RegisterInNameScope(scope);
 
         var decreaseButtonIcon = AntDesignIconPackage.DownOutlined();
-
-        TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.ActiveFilledBrushProperty,
-            ButtonSpinnerTokenKey.HandleHoverColor);
-        TokenResourceBinder.CreateTokenBinding(decreaseButtonIcon, Icon.SelectedFilledBrushProperty,
-            SharedTokenKey.ColorPrimaryActive);
-
+        
         var openButton = new IconButton
         {
             Name                = OpenIndicatorButtonPart,
@@ -116,24 +111,18 @@ internal class ComboBoxTheme : BaseControlTheme
         };
 
         openButton.RegisterInNameScope(scope);
-
-        TokenResourceBinder.CreateTokenBinding(openButton, Layoutable.WidthProperty,
-            ComboBoxTokenKey.OpenIndicatorWidth);
-        TokenResourceBinder.CreateTokenBinding(openButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSizeSM);
-        TokenResourceBinder.CreateTokenBinding(openButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSizeSM);
-
+        openButton.SetTemplatedParent(comboBox);
+        
         spinnerHandleDecorator.Child   = openButton;
         spinnerInnerBox.SpinnerContent = spinnerHandleDecorator;
-
+        
         return spinnerInnerBox;
     }
 
     private Panel BuildComboBoxContent(ComboBox comboBox, INameScope scope)
     {
         var contentLayout = new Panel();
-        var placeholder = new SingleLineText()
+        var placeholder = new TextBlock()
         {
             Name                = PlaceholderTextPart,
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -141,11 +130,12 @@ internal class ComboBoxTheme : BaseControlTheme
             TextTrimming        = TextTrimming.CharacterEllipsis,
             Opacity             = 0.3
         };
+        placeholder.SetTemplatedParent(comboBox);
 
         CreateTemplateParentBinding(placeholder, Visual.IsVisibleProperty, SelectingItemsControl.SelectedItemProperty,
             BindingMode.Default,
             ObjectConverters.IsNull);
-        CreateTemplateParentBinding(placeholder, SingleLineText.TextProperty,
+        CreateTemplateParentBinding(placeholder, TextBlock.TextProperty,
             Avalonia.Controls.ComboBox.PlaceholderTextProperty);
         contentLayout.Children.Add(placeholder);
 
@@ -153,13 +143,14 @@ internal class ComboBoxTheme : BaseControlTheme
         {
             Name                = SelectedContentPresenterPart,
             HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment   = VerticalAlignment.Center
+            VerticalAlignment   = VerticalAlignment.Center,
         };
-
+        
+        contentPresenter.SetTemplatedParent(comboBox);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-            Avalonia.Controls.ComboBox.SelectionBoxItemProperty);
+            ComboBox.SelectionBoxItemProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-            ItemsControl.ItemTemplateProperty);
+            ComboBox.ItemTemplateProperty);
 
         contentLayout.Children.Add(contentPresenter);
 
@@ -177,15 +168,11 @@ internal class ComboBoxTheme : BaseControlTheme
         };
         popup.RegisterInNameScope(scope);
 
-        var border = new Border();
-
-        TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            SharedTokenKey.ColorBgContainer);
-        TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            ComboBoxTokenKey.PopupBorderRadius);
-        TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            ComboBoxTokenKey.PopupContentPadding);
-
+        var border = new Border()
+        {
+            Name = PopupFramePart
+        };
+       
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
         {
@@ -197,11 +184,7 @@ internal class ComboBoxTheme : BaseControlTheme
         border.Child         = scrollViewer;
 
         popup.Child = border;
-
-        TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            ComboBoxTokenKey.PopupMarginToAnchor);
-        TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            ComboBoxTokenKey.PopupBoxShadows);
+        
         CreateTemplateParentBinding(popup, Layoutable.MaxHeightProperty,
             ComboBox.MaxDropDownHeightProperty);
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
@@ -211,6 +194,14 @@ internal class ComboBoxTheme : BaseControlTheme
     }
 
     protected override void BuildStyles()
+    {
+        BuildCommonStyle();
+        BuildStatusStyle();
+        BuildPopupStyle();
+        BuildOpenIndicatorStyle();
+    }
+
+    private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
         var largeStyle =
@@ -245,8 +236,33 @@ internal class ComboBoxTheme : BaseControlTheme
             smallStyle.Add(spinnerInnerBox);
         }
         commonStyle.Add(smallStyle);
-        BuildStatusStyle();
         Add(commonStyle);
+    }
+
+    private void BuildOpenIndicatorStyle()
+    {
+        var openIndicatorButton = new Style(selector => selector.Nesting().Template().Name(OpenIndicatorButtonPart));
+        openIndicatorButton.Add(IconButton.ActiveIconColorProperty, ButtonSpinnerTokenKey.HandleHoverColor);
+        openIndicatorButton.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorPrimaryActive);
+        openIndicatorButton.Add(IconButton.WidthProperty, ComboBoxTokenKey.OpenIndicatorWidth);
+        openIndicatorButton.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+        openIndicatorButton.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+
+        Add(openIndicatorButton);
+    }
+
+    private void BuildPopupStyle()
+    {
+        var popupStyle = new Style(selector => selector.Nesting().Template().Name(PopupPart));
+        popupStyle.Add(Popup.MarginToAnchorProperty, ComboBoxTokenKey.PopupMarginToAnchor);
+        popupStyle.Add(Popup.MaskShadowsProperty, ComboBoxTokenKey.PopupBoxShadows);
+        Add(popupStyle);
+        
+        var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
+        popupFrameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+        popupFrameStyle.Add(Border.CornerRadiusProperty, ComboBoxTokenKey.PopupBorderRadius);
+        popupFrameStyle.Add(Border.PaddingProperty, ComboBoxTokenKey.PopupContentPadding);
+        Add(popupFrameStyle);
     }
 
     private void BuildStatusStyle()

@@ -1,8 +1,11 @@
-﻿using Avalonia;
+﻿using System.Diagnostics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 
 namespace AtomUI.Controls;
+
+using NavMenuControl = NavMenu;
 
 internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
 {
@@ -12,6 +15,7 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
     public void Detach(NavMenuBase navMenu) => DetachCore(navMenu);
 
     private bool _currentPressedIsValid = false;
+    private StyledElement? _latestSelectedItem = null;
 
     internal void AttachCore(INavMenu navMenu)
     {
@@ -61,15 +65,81 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
             }
             else
             {
-                if (NavMenu is NavMenu navMenu)
+                // 判断当前选中的是不是自己
+                if (!ReferenceEquals(_latestSelectedItem, item))
                 {
-                    navMenu.ClearSelection();
+                    if (_latestSelectedItem != null)
+                    {
+                        var ancestorInfo = HasCommonAncestor(_latestSelectedItem, item);
+                        if (!ancestorInfo.Item1)
+                        {
+                            if (NavMenu is NavMenu navMenu)
+                            {
+                                navMenu.ClearSelection();
+                            }
+                        }
+                        else
+                        {
+                            if (ancestorInfo.Item2 is NavMenuItem neededClearAncestor)
+                            {
+                                NavMenuControl.ClearSelectionRecursively(neededClearAncestor, true);
+                            }
+                        }
+                    }
+                    
+                    item.SelectItemRecursively();
                 }
-                item?.SelectItemRecursively();
+                _latestSelectedItem = item;
             }
             
             e.Handled = true;
         }
+    }
+
+    private (bool, StyledElement?) HasCommonAncestor(StyledElement lhs, StyledElement rhs)
+    {
+        var lhsAncestors = CollectAncestors(lhs);
+        var rhsAncestors = CollectAncestors(rhs);
+        var hasOverlaps = lhsAncestors.ToHashSet().Overlaps(rhsAncestors.ToHashSet());
+        if (!hasOverlaps)
+        {
+            return (false, null);
+        }
+        // 找共同的祖先
+        StyledElement? commonAncestor = null;
+        for (var i = 0; i < lhsAncestors.Count; i++)
+        {
+            var lhsAncestor = lhsAncestors[i];
+            for (var j = 0; j < rhsAncestors.Count; j++)
+            {
+                var rhsAncestor = rhsAncestors[j];
+                if (object.ReferenceEquals(lhsAncestor, rhsAncestor))
+                {
+                    commonAncestor = lhsAncestor;
+                    break;
+                }
+            }
+
+            if (commonAncestor != null)
+            {
+                break;
+            }
+        }
+        Debug.Assert(commonAncestor != null);
+        return (true, commonAncestor);
+    }
+
+    private IList<StyledElement> CollectAncestors(StyledElement control)
+    {
+        var            ancestors = new List<StyledElement>();
+        StyledElement? current   = control.Parent;
+        while (current != null && (current is NavMenuItem || control is NavMenu))
+        {
+            ancestors.Add(current);
+            current = current.Parent;
+        }
+
+        return ancestors;
     }
     
     protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)

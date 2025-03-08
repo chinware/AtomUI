@@ -1,6 +1,5 @@
 ﻿using AtomUI.Controls.PopupConfirmLang;
 using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
@@ -149,8 +148,6 @@ public class PopupConfirm : FlyoutHost,
     public sealed override void ApplyTemplate()
     {
         Flyout ??= new PopupConfirmFlyout(this);
-        Icon   ??= AntDesignIconPackage.ExclamationCircleFilled();
-
         LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
         LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);
         base.ApplyTemplate();

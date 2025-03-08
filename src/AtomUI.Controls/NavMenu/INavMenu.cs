@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls.Platform;
-using Avalonia.Input;
+﻿using Avalonia.Input;
 using Avalonia.Rendering;
 
 namespace AtomUI.Controls;

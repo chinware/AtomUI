@@ -17,6 +17,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     private IRenderRoot? _root;
     private IDisposable? _currentDelayRunDisposable;
     private bool _currentPressedIsValid = false;
+    private INavMenuItem? _latestSelectedItem = null;
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -70,7 +71,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                 {
                     item.Open();
                 }
-                   
             }
         }
         else
@@ -179,12 +179,17 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                 }
                 else
                 {
-                    if (NavMenu is NavMenu navMenu)
+                    // 判断当前选中的是不是自己
+                    if (!ReferenceEquals(_latestSelectedItem, item))
                     {
-                        navMenu.ClearSelection();
-                    }
+                        if (NavMenu is NavMenu navMenu)
+                        {
+                            navMenu.ClearSelection();
+                        }
 
-                    navMenuItem.SelectItemRecursively();
+                        navMenuItem.SelectItemRecursively();
+                    }
+                    _latestSelectedItem = item;
                 }
             
                 e.Handled = true;
@@ -304,7 +309,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
 
         if (_root is TopLevel tl && tl.PlatformImpl != null)
+        {
             tl.PlatformImpl.LostFocus -= TopLevelLostPlatformFocus;
+        }
 
         _inputManagerSubscription?.Dispose();
 

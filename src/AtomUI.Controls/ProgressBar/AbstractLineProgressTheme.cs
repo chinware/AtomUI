@@ -1,5 +1,6 @@
 ﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
@@ -19,30 +20,22 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
     protected override void NotifyBuildControlTemplate(AbstractProgressBar bar, INameScope scope, Canvas container)
     {
         base.NotifyBuildControlTemplate(bar, scope, container);
-        CreateCompletedIcons(scope, container);
+        CreateCompletedIcons(bar, scope, container);
     }
 
-    private void CreateCompletedIcons(INameScope scope, Canvas container)
+    private void CreateCompletedIcons(AbstractProgressBar progressBar, INameScope scope, Canvas container)
     {
         var exceptionCompletedIcon = AntDesignIconPackage.CloseCircleFilled();
         exceptionCompletedIcon.Name                = ExceptionCompletedIconPart;
         exceptionCompletedIcon.HorizontalAlignment = HorizontalAlignment.Left;
-        
+
         exceptionCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(exceptionCompletedIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorError);
-        TokenResourceBinder.CreateTokenBinding(exceptionCompletedIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ControlItemBgActiveDisabled);
-        
+
         var successCompletedIcon = AntDesignIconPackage.CheckCircleFilled();
         successCompletedIcon.Name                = SuccessCompletedIconPart;
         successCompletedIcon.HorizontalAlignment = HorizontalAlignment.Left;
-        
+
         successCompletedIcon.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(successCompletedIcon, Icon.NormalFilledBrushProperty,
-            SharedTokenKey.ColorSuccess);
-        TokenResourceBinder.CreateTokenBinding(successCompletedIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ControlItemBgActiveDisabled);
 
         container.Children.Add(exceptionCompletedIcon);
         container.Children.Add(successCompletedIcon);
@@ -55,6 +48,18 @@ internal class AbstractLineProgressTheme : AbstractProgressBarTheme
         commonStyle.Add(AbstractLineProgress.LineProgressPaddingProperty, ProgressBarTokenKey.LineProgressPadding);
         commonStyle.Add(AbstractLineProgress.LineExtraInfoMarginProperty, ProgressBarTokenKey.LineExtraInfoMargin);
         Add(commonStyle);
+        
+        // 完成图标样式
+        var exceptionCompletedIconStyle = new Style(selector => selector.Nesting().Template().Name(ExceptionCompletedIconPart));
+        exceptionCompletedIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+        exceptionCompletedIconStyle.Add(Icon.DisabledFilledBrushProperty, SharedTokenKey.ControlItemBgActiveDisabled);
+        Add(exceptionCompletedIconStyle);
+        
+        var successCompletedIconStyle = new Style(selector => selector.Nesting().Template().Name(SuccessCompletedIconPart));
+        successCompletedIconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorSuccess);
+        successCompletedIconStyle.Add(Icon.DisabledFilledBrushProperty, SharedTokenKey.ControlItemBgActiveDisabled);
+        Add(successCompletedIconStyle);
+        
         BuildSizeTypeStyle();
     }
 

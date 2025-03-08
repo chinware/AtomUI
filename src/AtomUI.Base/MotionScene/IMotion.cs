@@ -6,7 +6,6 @@ namespace AtomUI.MotionScene;
 
 internal interface IMotion
 {
-    public bool IsRunning { get; }
     public RelativePoint RenderTransformOrigin { get; }
     public IList<Animation> Animations { get; }
     public TimeSpan Duration { get; }

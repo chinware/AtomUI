@@ -9,8 +9,6 @@ namespace AtomUI.MotionScene;
 
 public class AbstractMotion : IMotion
 {
-    public bool IsRunning { get; }
-
     public RelativePoint RenderTransformOrigin { get; protected set; }
     public IList<Animation> Animations { get; }
     public TimeSpan Duration { get; }
@@ -31,28 +29,23 @@ public class AbstractMotion : IMotion
                                CancellationToken cancellationToken = default)
     {
         Configure();
+        
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
             using var originRestore = new RenderTransformOriginRestore(actor);
             actor.RenderTransformOrigin = RenderTransformOrigin;
             actor.NotifyMotionPreStart();
             NotifyPreStart();
-            if (aboutToStart is not null)
-            {
-                aboutToStart();
-            }
-            actor.IsVisible = true;
+            aboutToStart?.Invoke();
+      
             foreach (var animation in Animations)
             {
                 await animation.RunAsync(actor, cancellationToken);
             }
-            
+
             actor.NotifyMotionCompleted();
             NotifyCompleted();
-            if (completedAction is not null)
-            {
-                completedAction();
-            }
+            completedAction?.Invoke();
         });
     }
 

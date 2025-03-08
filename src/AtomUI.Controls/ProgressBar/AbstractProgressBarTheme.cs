@@ -7,7 +7,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -64,11 +63,15 @@ internal class AbstractProgressBarTheme : BaseControlTheme
 
     private void BuildCommonStyle()
     {
+        var commonStyle = new Style(selector => selector.Nesting());
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
         enabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextLabel);
         enabledStyle.Add(AbstractProgressBar.GrooveBrushProperty, ProgressBarTokenKey.RemainingColor);
-        Add(enabledStyle);
+        enabledStyle.Add(AbstractProgressBar.SuccessThresholdBrushProperty, SharedTokenKey.ColorSuccess);
+
+        commonStyle.Add(enabledStyle);
+        Add(commonStyle);
     }
 
     private void BuildStatusStyle()

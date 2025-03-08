@@ -1,6 +1,4 @@
-﻿using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
-using AtomUI.Theme.Data;
+﻿using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -40,48 +38,35 @@ internal class CardTabControlTheme : BaseTabControlTheme
         };
         cardTabControlContainer.RegisterInNameScope(scope);
         CreateTemplateParentBinding(cardTabControlContainer, TabsContainerPanel.TabStripPlacementProperty,
-            BaseTabStrip.TabStripPlacementProperty);
+            BaseTabControl.TabStripPlacementProperty);
 
         var tabScrollViewer = new TabControlScrollViewer
         {
             Name = CardTabStripScrollViewerPart
         };
+        tabScrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
             Avalonia.Controls.TabControl.TabStripPlacementProperty);
+        CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.IsMotionEnabledProperty,
+            TabControl.IsMotionEnabledProperty);
         tabScrollViewer.RegisterInNameScope(scope);
         var contentPanel = CreateTabStripContentPanel(scope);
         tabScrollViewer.Content    = contentPanel;
         tabScrollViewer.TabControl = baseTabControl;
-        
-        var addTabIcon = AntDesignIconPackage.PlusOutlined();
-
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.NormalFilledBrushProperty,
-            TabControlTokenKey.ItemColor);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.ActiveFilledBrushProperty,
-            TabControlTokenKey.ItemHoverColor);
-        TokenResourceBinder.CreateTokenBinding(addTabIcon, Icon.DisabledFilledBrushProperty,
-            SharedTokenKey.ColorTextDisabled);
 
         var addTabButton = new IconButton
         {
             Name            = AddTabButtonPart,
-            BorderThickness = new Thickness(1),
-            Icon            = addTabIcon
+            Icon            = AntDesignIconPackage.PlusOutlined()
         };
         DockPanel.SetDock(addTabButton, Dock.Right);
-        TokenResourceBinder.CreateTokenBinding(addTabButton, IconButton.IconHeightProperty,
-            SharedTokenKey.IconSize);
-        TokenResourceBinder.CreateTokenBinding(addTabButton, IconButton.IconWidthProperty,
-            SharedTokenKey.IconSize);
+        
         CreateTemplateParentBinding(addTabButton, TemplatedControl.BorderThicknessProperty,
             CardTabControl.CardBorderThicknessProperty);
         CreateTemplateParentBinding(addTabButton, TemplatedControl.CornerRadiusProperty,
             CardTabControl.CardBorderRadiusProperty);
         CreateTemplateParentBinding(addTabButton, Visual.IsVisibleProperty, CardTabControl.IsShowAddTabButtonProperty);
-
-        TokenResourceBinder.CreateTokenBinding(addTabButton, TemplatedControl.BorderBrushProperty,
-            SharedTokenKey.ColorBorderSecondary);
-
+        
         addTabButton.RegisterInNameScope(scope);
 
         cardTabControlContainer.TabScrollViewer = tabScrollViewer;
@@ -108,6 +93,17 @@ internal class CardTabControlTheme : BaseTabControlTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
+        {
+            var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
+            addTabButtonStyle.Add(IconButton.NormalIconColorProperty, TabControlTokenKey.ItemColor);
+            addTabButtonStyle.Add(IconButton.ActiveIconColorProperty, TabControlTokenKey.ItemHoverColor);
+            addTabButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+            addTabButtonStyle.Add(IconButton.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);
+            addTabButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
+            addTabButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
+            
+            commonStyle.Add(addTabButtonStyle);
+        }
 
         // 设置 items presenter 面板样式
         // 分为上、右、下、左

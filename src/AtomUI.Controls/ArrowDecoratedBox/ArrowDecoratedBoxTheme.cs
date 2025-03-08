@@ -50,7 +50,7 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
             
             var arrowIndicator = new ArrowIndicator()
             {
-                Name = ArrowIndicatorPart
+                Name = ArrowIndicatorPart,
             };
             arrowIndicator.RegisterInNameScope(scope);
             CreateTemplateParentBinding(arrowIndicator, ArrowIndicator.FilledColorProperty, ArrowDecoratedBox.BackgroundProperty);
@@ -69,7 +69,7 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
             var contentDecorator = new Border
             {
                 Name   = ContentDecoratorPart,
-                Margin = new Thickness(0)
+                Margin = new Thickness(0),
             };
             contentDecorator.RegisterInNameScope(scope);
 ;           CreateTemplateParentBinding(contentDecorator, Border.BackgroundSizingProperty, TemplatedControl.BackgroundSizingProperty);
@@ -87,7 +87,7 @@ internal class ArrowDecoratedBoxTheme : BaseControlTheme
     {
         var contentPresenter = new ContentPresenter
         {
-            Name = ContentPresenterPart
+            Name = ContentPresenterPart,
         };
 
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, ContentControl.ContentProperty);

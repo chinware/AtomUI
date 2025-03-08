@@ -67,7 +67,7 @@ internal class SegmentedItemTheme : BaseControlTheme
                 {
                     if (content is string text)
                     {
-                        return new SingleLineText()
+                        return new TextBlock()
                         {
                             Text = text,
                             VerticalAlignment = VerticalAlignment.Center,
@@ -96,11 +96,22 @@ internal class SegmentedItemTheme : BaseControlTheme
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
         enabledStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Normal);
+            Add(iconStyle);
+        }
 
         // 选中状态
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
         selectedStyle.Add(TemplatedControl.ForegroundProperty, SegmentedTokenKey.ItemSelectedColor);
-        selectedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        selectedStyle.Add(TemplatedControl.BackgroundProperty, SegmentedTokenKey.ItemSelectedBg);
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Selected);
+            selectedStyle.Add(iconStyle);
+        }
         enabledStyle.Add(selectedStyle);
 
         // 没有被选中的状态
@@ -113,12 +124,22 @@ internal class SegmentedItemTheme : BaseControlTheme
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
         hoverStyle.Add(TemplatedControl.BackgroundProperty, SegmentedTokenKey.ItemHoverBg);
         hoverStyle.Add(TemplatedControl.ForegroundProperty, SegmentedTokenKey.ItemHoverColor);
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Active);
+            hoverStyle.Add(iconStyle);
+        }
         notSelectedStyle.Add(hoverStyle);
 
         // Pressed 状态
         var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Pressed));
         pressedStyle.Add(TemplatedControl.BackgroundProperty, SegmentedTokenKey.ItemActiveBg);
         notSelectedStyle.Add(pressedStyle);
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Selected);
+            pressedStyle.Add(iconStyle);
+        }
 
         enabledStyle.Add(notSelectedStyle);
         commonStyle.Add(enabledStyle);
@@ -169,12 +190,20 @@ internal class SegmentedItemTheme : BaseControlTheme
         }
 
         Add(hasIconStyle);
-
-        var iconSelector = default(Selector).Nesting().Template().Name(IconContentPart).Child().OfType<Icon>();
+        
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SegmentedTokenKey.ItemColor);
+            iconStyle.Add(Icon.ActiveFilledBrushProperty, SegmentedTokenKey.ItemHoverColor);
+            iconStyle.Add(Icon.SelectedFilledBrushProperty, SegmentedTokenKey.ItemSelectedColor);
+            iconStyle.Add(Icon.DisabledFilledBrushProperty, SharedTokenKey.ColorTextDisabled);
+            Add(iconStyle);
+        }
+        
         var largeSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Large));
         {
-            var iconStyle = new Style(selector => iconSelector);
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeLG);
             iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeLG);
             largeSizeStyle.Add(iconStyle);
@@ -184,7 +213,7 @@ internal class SegmentedItemTheme : BaseControlTheme
         var middleSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Middle));
         {
-            var iconStyle = new Style(selector => iconSelector);
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSize);
             iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSize);
             middleSizeStyle.Add(iconStyle);
@@ -194,7 +223,7 @@ internal class SegmentedItemTheme : BaseControlTheme
         var smallSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(SegmentedItem.SizeTypeProperty, SizeType.Small));
         {
-            var iconStyle = new Style(selector => iconSelector);
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
             iconStyle.Add(Layoutable.WidthProperty, SharedTokenKey.IconSizeSM);
             iconStyle.Add(Layoutable.HeightProperty, SharedTokenKey.IconSizeSM);
             smallSizeStyle.Add(iconStyle);
@@ -206,6 +235,11 @@ internal class SegmentedItemTheme : BaseControlTheme
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Child().OfType<Icon>());
+            iconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);
+            disabledStyle.Add(iconStyle);
+        }
         Add(disabledStyle);
     }
 }

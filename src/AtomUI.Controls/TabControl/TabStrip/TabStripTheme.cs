@@ -1,6 +1,4 @@
-﻿using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
@@ -30,9 +28,12 @@ internal class TabStripTheme : BaseTabStripTheme
         {
             Name = TabsContainerPart
         };
+        tabScrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.TabStripPlacementProperty,
             BaseTabStrip.TabStripPlacementProperty);
-        var contentPanel = CreateTabStripContentPanel(scope);
+        CreateTemplateParentBinding(tabScrollViewer, BaseTabScrollViewer.IsMotionEnabledProperty,
+            BaseTabStrip.IsMotionEnabledProperty);
+        var contentPanel = CreateTabStripContentPanel(baseTabStrip, scope);
         tabScrollViewer.Content  = contentPanel;
         tabScrollViewer.TabStrip = baseTabStrip;
 
@@ -40,7 +41,7 @@ internal class TabStripTheme : BaseTabStripTheme
         container.Child = alignWrapper;
     }
 
-    private Panel CreateTabStripContentPanel(INameScope scope)
+    private Panel CreateTabStripContentPanel(BaseTabStrip baseTabStrip, INameScope scope)
     {
         var layout = new Panel();
         var itemsPresenter = new ItemsPresenter
@@ -53,8 +54,6 @@ internal class TabStripTheme : BaseTabStripTheme
             Name = SelectedItemIndicatorPart
         };
         border.RegisterInNameScope(scope);
-        TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            TabControlTokenKey.InkBarColor);
 
         layout.Children.Add(itemsPresenter);
         layout.Children.Add(border);
@@ -66,6 +65,12 @@ internal class TabStripTheme : BaseTabStripTheme
     {
         base.BuildStyles();
         var commonStyle = new Style(selector => selector.Nesting());
+
+        {
+            var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(SelectedItemIndicatorPart));
+            indicatorStyle.Add(Border.BackgroundProperty, TabControlTokenKey.InkBarColor);
+            commonStyle.Add(indicatorStyle);
+        }
 
         // 设置 items presenter 面板样式
         // 分为上、右、下、左

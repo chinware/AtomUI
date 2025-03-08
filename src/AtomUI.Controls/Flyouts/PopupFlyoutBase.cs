@@ -1,9 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -19,6 +16,7 @@ namespace AtomUI.Controls;
 public class FlyoutPresenterCreatedEventArgs : EventArgs
 {
     public Control Presenter { get; }
+
     public FlyoutPresenterCreatedEventArgs(Control presenter)
     {
         Presenter = presenter;
@@ -28,65 +26,63 @@ public class FlyoutPresenterCreatedEventArgs : EventArgs
 /// <summary>
 /// 最基本得弹窗 Flyout，在这里不处理那种带箭头得
 /// </summary>
-public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
+public abstract class PopupFlyoutBase : FlyoutBase, 
+                                        IPopupHostProvider
 {
     #region 公共属性定义
 
     /// <summary>
-   /// 距离 anchor 的边距，根据垂直和水平进行设置
-   /// 但是对某些组合无效，比如跟随鼠标的情况
-   /// 还有些 anchor 和 gravity 的组合也没有用
-   /// </summary>
-   public static readonly StyledProperty<double> MarginToAnchorProperty =
+    /// 距离 anchor 的边距，根据垂直和水平进行设置
+    /// 但是对某些组合无效，比如跟随鼠标的情况
+    /// 还有些 anchor 和 gravity 的组合也没有用
+    /// </summary>
+    public static readonly StyledProperty<double> MarginToAnchorProperty =
         Popup.MarginToAnchorProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementProperty" />
-   public static readonly StyledProperty<PlacementMode> PlacementProperty =
+    /// <inheritdoc cref="Popup.PlacementProperty" />
+    public static readonly StyledProperty<PlacementMode> PlacementProperty =
         Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.HorizontalOffsetProperty" />
-   public static readonly StyledProperty<double> HorizontalOffsetProperty =
+    /// <inheritdoc cref="Popup.HorizontalOffsetProperty" />
+    public static readonly StyledProperty<double> HorizontalOffsetProperty =
         Avalonia.Controls.Primitives.Popup.HorizontalOffsetProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.VerticalOffsetProperty" />
-   public static readonly StyledProperty<double> VerticalOffsetProperty =
+    /// <inheritdoc cref="Popup.VerticalOffsetProperty" />
+    public static readonly StyledProperty<double> VerticalOffsetProperty =
         Avalonia.Controls.Primitives.Popup.VerticalOffsetProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
-   public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
+    /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
+    public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
         Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
-   public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
+    /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
+    public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
         Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <summary>
-   /// Defines the <see cref="ShowMode" /> property
-   /// </summary>
-   public static readonly StyledProperty<FlyoutShowMode> ShowModeProperty =
+    /// <summary>
+    /// Defines the <see cref="ShowMode" /> property
+    /// </summary>
+    public static readonly StyledProperty<FlyoutShowMode> ShowModeProperty =
         AvaloniaProperty.Register<PopupFlyoutBase, FlyoutShowMode>(nameof(ShowMode));
 
-   /// <summary>
-   /// Defines the <see cref="OverlayInputPassThroughElement" /> property
-   /// </summary>
-   public static readonly StyledProperty<IInputElement?> OverlayInputPassThroughElementProperty =
+    /// <summary>
+    /// Defines the <see cref="OverlayInputPassThroughElement" /> property
+    /// </summary>
+    public static readonly StyledProperty<IInputElement?> OverlayInputPassThroughElementProperty =
         Avalonia.Controls.Primitives.Popup.OverlayInputPassThroughElementProperty.AddOwner<PopupFlyoutBase>();
 
-   /// <summary>
-   /// Defines the <see cref="PlacementConstraintAdjustment" /> property
-   /// </summary>
-   public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
+    /// <summary>
+    /// Defines the <see cref="PlacementConstraintAdjustment" /> property
+    /// </summary>
+    public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
-   
-   public static readonly StyledProperty<bool> IsMotionEnabledProperty
-       = AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsMotionEnabled));
 
     public double MarginToAnchor
     {
         get => GetValue(MarginToAnchorProperty);
         set => SetValue(MarginToAnchorProperty, value);
     }
-    
+
     /// <inheritdoc cref="Popup.Placement" />
     public PlacementMode Placement
     {
@@ -148,23 +144,26 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         set => SetValue(PlacementConstraintAdjustmentProperty, value);
     }
     
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
-        AvaloniaProperty.Register<Flyout, bool>(nameof(IsDetectMouseClickEnabled), true);
+        AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
+
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
     
     internal bool IsDetectMouseClickEnabled
     {
         get => GetValue(IsDetectMouseClickEnabledProperty);
         set => SetValue(IsDetectMouseClickEnabledProperty, value);
+    }
+    
+    internal bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion
@@ -191,12 +190,10 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     private PixelRect? _enlargePopupRectScreenPixelRect;
     private IDisposable? _transientDisposable;
     private Action<IPopupHost?>? _popupHostChangedHandler;
-    private static readonly EventInfo ClosingEventInfo;
 
     static PopupFlyoutBase()
     {
         Control.ContextFlyoutProperty.Changed.Subscribe(OnContextFlyoutPropertyChanged);
-        ClosingEventInfo = typeof(Popup).GetEvent("Closing", BindingFlags.NonPublic | BindingFlags.Instance)!;
     }
 
     public PopupFlyoutBase()
@@ -284,6 +281,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
                 return false;
             }
         }
+
         IsOpen       = false;
         Popup.IsOpen = false;
 
@@ -294,7 +292,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     protected void HandlePopupClosed()
     {
-        ((ISetLogicalParent)Popup).SetParent(null);
+        Popup.SetLogicalParent(null);
 
         // Ensure this isn't active
         _transientDisposable?.Dispose();
@@ -304,8 +302,8 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
         if (Target != null)
         {
-            Target.DetachedFromVisualTree -= PlacementTarget_DetachedFromVisualTree;
-            Target.KeyUp                  -= OnPlacementTargetOrPopupKeyUp;
+            Target.DetachedFromVisualTree -= HandlePlacementTargetDetachedFromVisualTree;
+            Target.KeyUp                  -= HandlePlacementTargetOrPopupKeyUp;
         }
 
         OnClosed();
@@ -346,14 +344,14 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
         if (Popup.Parent != null && Popup.Parent != placementTarget)
         {
-            ((ISetLogicalParent)Popup).SetParent(null);
+            Popup.SetLogicalParent(null);
         }
 
         if (Popup.Parent == null || Popup.PlacementTarget != placementTarget)
         {
             Popup.PlacementTarget = Target = placementTarget;
-            ((ISetLogicalParent)Popup).SetParent(placementTarget);
-            VisualAndLogicalUtils.SetTemplateParent(Popup, placementTarget.TemplatedParent);
+            Popup.SetLogicalParent(placementTarget);
+            Popup.SetTemplatedParent(placementTarget.TemplatedParent);
         }
 
         if (Popup.Child == null)
@@ -377,8 +375,8 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     {
         OnOpened();
 
-        placementTarget.DetachedFromVisualTree += PlacementTarget_DetachedFromVisualTree;
-        placementTarget.KeyUp                  += OnPlacementTargetOrPopupKeyUp;
+        placementTarget.DetachedFromVisualTree += HandlePlacementTargetDetachedFromVisualTree;
+        placementTarget.KeyUp                  += HandlePlacementTargetOrPopupKeyUp;
 
         if (ShowMode == FlyoutShowMode.Standard)
         {
@@ -400,7 +398,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         }
     }
 
-    private void PlacementTarget_DetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    private void HandlePlacementTargetDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         _ = HideCore(false);
     }
@@ -490,13 +488,9 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
         popup.Opened += OnPopupOpened;
         popup.Closed += OnPopupClosed;
-        // 通过反射设置
-        // popup.Closing += OnPopupClosing;
-        var handler               = new EventHandler<CancelEventArgs>(OnPopupClosing);
-        var closingEventAddMethod = ClosingEventInfo.GetAddMethod(true);
-        closingEventAddMethod?.Invoke(popup, new object?[] { handler });
+        popup.AddClosingEventHandler(OnPopupClosing);
 
-        popup.KeyUp += OnPlacementTargetOrPopupKeyUp;
+        popup.KeyUp += HandlePlacementTargetOrPopupKeyUp;
         NotifyPopupCreated(popup);
         return popup;
     }
@@ -524,7 +518,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     }
 
     // This method is handling both popup logical tree and target logical tree.
-    private void OnPlacementTargetOrPopupKeyUp(object? sender, KeyEventArgs e)
+    private void HandlePlacementTargetOrPopupKeyUp(object? sender, KeyEventArgs e)
     {
         if (!e.Handled
             && IsOpen
@@ -623,14 +617,5 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     internal void ClearUpPopupChild()
     {
         Popup.Child = null;
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == TargetProperty && Target != null)
-        {
-            TokenResourceBinder.CreateTokenBinding(this, IsMotionEnabledProperty, Target, SharedTokenKey.EnableMotion);
-        }
     }
 }

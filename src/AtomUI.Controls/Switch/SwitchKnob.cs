@@ -1,5 +1,7 @@
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -7,12 +9,15 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Switch;
 
-internal class SwitchKnob : Control
+internal class SwitchKnob : Control,
+                            ITokenResourceConsumer
 {
     #region 公共属性定义
     
@@ -59,10 +64,16 @@ internal class SwitchKnob : Control
     internal static readonly StyledProperty<double> KnobRenderWidthProperty
         = AvaloniaProperty.Register<SwitchKnob, double>(nameof(KnobRenderWidth));
     
-    internal static readonly DirectProperty<SwitchKnob, bool> IsMotionEnabledProperty
-        = AvaloniaProperty.RegisterDirect<SwitchKnob, bool>(nameof(IsMotionEnabled),
-            o => o.IsMotionEnabled,
-            (o, v) => o.IsMotionEnabled = v);
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SwitchKnob>();
+    
+    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
+        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration));
+
+    internal static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
+        = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(LoadingBgOpacity),
+            o => o.LoadingBgOpacity,
+            (o, v) => o.LoadingBgOpacity = v);
 
     internal int Rotation
     {
@@ -88,37 +99,32 @@ internal class SwitchKnob : Control
         set => SetValue(KnobRenderWidthProperty, value);
     }
     
-    private bool _isMotionEnabled;
-
     internal bool IsMotionEnabled
     {
-        get => _isMotionEnabled;
-        set => SetAndRaise(IsMotionEnabledProperty, ref _isMotionEnabled, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    #endregion
-    
-    private bool _initialized;
-    private bool _isLoading;
-    private CancellationTokenSource? _cancellationTokenSource;
-
-    private double _loadingBgOpacity;
-
-    private static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
-        = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(_loadingBgOpacity),
-            o => o._loadingBgOpacity,
-            (o, v) => o._loadingBgOpacity = v);
-
-    // TODO 这个属性可以考虑放出去
-    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
-        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration),
-            TimeSpan.FromMilliseconds(300));
-
     internal TimeSpan LoadingAnimationDuration
     {
         get => GetValue(LoadingAnimationDurationProperty);
         set => SetValue(LoadingAnimationDurationProperty, value);
     }
+    
+    private double _loadingBgOpacity;
+    internal double LoadingBgOpacity
+    {
+        get => _loadingBgOpacity;
+        set => SetAndRaise(LoadingBgOpacityTokenProperty, ref _loadingBgOpacity, value);
+    }
+    
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
+    #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
+    private bool _isLoading;
+    private CancellationTokenSource? _cancellationTokenSource;
     
     static SwitchKnob()
     {
@@ -151,18 +157,13 @@ internal class SwitchKnob : Control
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        if (!_initialized)
+        Effect ??= new DropShadowEffect
         {
-            Effect = new DropShadowEffect
-            {
-                OffsetX    = KnobBoxShadow.OffsetX,
-                OffsetY    = KnobBoxShadow.OffsetY,
-                Color      = KnobBoxShadow.Color,
-                BlurRadius = KnobBoxShadow.Blur
-            };
-            SetupTokenBindings();
-            _initialized = true;
-        }
+            OffsetX    = KnobBoxShadow.OffsetX,
+            OffsetY    = KnobBoxShadow.OffsetY,
+            Color      = KnobBoxShadow.Color,
+            BlurRadius = KnobBoxShadow.Blur
+        };
     }
 
     public void NotifyStartLoading()
@@ -174,7 +175,7 @@ internal class SwitchKnob : Control
 
         _isLoading = true;
         IsEnabled  = false;
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             StartLoadingAnimation();
         }
@@ -241,6 +242,19 @@ internal class SwitchKnob : Control
             KnobRenderWidth = KnobSize.Width;
         }
     }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        SetupTokenBindings();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -262,9 +276,10 @@ internal class SwitchKnob : Control
 
     private void SetupTokenBindings()
     {
-        TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
-            ToggleSwitchTokenKey.SwitchDisabledOpacity);
-        LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
+            ToggleSwitchTokenKey.SwitchDisabledOpacity));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
+            ToggleSwitchTokenKey.LoadingAnimationDuration));
     }
 
     public sealed override void Render(DrawingContext context)

@@ -11,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -21,7 +22,7 @@ public class LoadingIndicator : TemplatedControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<LoadingIndicator, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<LoadingIndicator>();
 
     public static readonly StyledProperty<string?> LoadingMsgProperty =
         AvaloniaProperty.Register<LoadingIndicator, string?>(nameof(LoadingMsg));
@@ -128,7 +129,7 @@ public class LoadingIndicator : TemplatedControl,
     #endregion
 
     private Animation? _animation;
-    private SingleLineText? _loadingText;
+    private TextBlock? _loadingText;
     private Canvas? _mainContainer;
     private RenderInfo? _renderInfo;
     private CancellationTokenSource? _cancellationTokenSource;
@@ -172,7 +173,27 @@ public class LoadingIndicator : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
+        if (this.IsAttachedToVisualTree())
+        {
+            if (e.Property == CustomIndicatorIconProperty)
+            {
+                var oldCustomIcon = e.GetOldValue<Icon?>();
+                if (oldCustomIcon is not null)
+                {
+                    _mainContainer?.Children.Remove(oldCustomIcon);
+                }
+
+                SetupCustomIndicator();
+            }
+        }
+      
+        if (e.Property == IndicatorAngleProperty)
+        {
+            if (CustomIndicatorIcon is not null)
+            {
+                HandleIndicatorAngleChanged();
+            }
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -184,33 +205,9 @@ public class LoadingIndicator : TemplatedControl,
     private void HandleTemplateApplied(INameScope scope)
     {
         _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
-        _loadingText   = scope.Find<SingleLineText>(LoadingIndicatorTheme.LoadingTextPart);
+        _loadingText   = scope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
 
         SetupCustomIndicator();
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == CustomIndicatorIconProperty)
-        {
-            if (VisualRoot is not null)
-            {
-                var oldCustomIcon = e.GetOldValue<Icon?>();
-                if (oldCustomIcon is not null)
-                {
-                    _mainContainer?.Children.Remove(oldCustomIcon);
-                }
-
-                SetupCustomIndicator();
-            }
-        }
-        else if (e.Property == IndicatorAngleProperty)
-        {
-            if (CustomIndicatorIcon is not null)
-            {
-                HandleIndicatorAngleChanged();
-            }
-        }
     }
 
     // 只在使用自定义的 Icon 的时候有效
@@ -228,7 +225,7 @@ public class LoadingIndicator : TemplatedControl,
     {
         if (CustomIndicatorIcon is not null)
         {
-            VisualAndLogicalUtils.SetTemplateParent(CustomIndicatorIcon, this);
+            CustomIndicatorIcon.SetTemplatedParent(this);
             _mainContainer?.Children.Insert(0, CustomIndicatorIcon);
         }
     }

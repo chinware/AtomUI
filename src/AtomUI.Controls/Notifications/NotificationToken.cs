@@ -38,7 +38,12 @@ internal class NotificationToken : AbstractControlDesignToken
     /// 提醒框关闭按钮尺寸
     /// </summary>
     public double NotificationCloseButtonSize { get; set; }
-
+    
+    /// <summary>
+    /// 提醒框关闭按钮内间距
+    /// </summary>
+    public Thickness NotificationCloseButtonPadding { get; set; }
+        
     /// <summary>
     /// 提醒框底部外边距
     /// </summary>
@@ -109,8 +114,9 @@ internal class NotificationToken : AbstractControlDesignToken
                 new() { Color = SharedToken.ColorPrimary, Offset      = 1 }
             }
         }.ToImmutable();
-        NotificationWidth      = 384;
-        HeaderMargin           = new Thickness(0, 0, 0, SharedToken.MarginXS);
-        NotificationIconMargin = new Thickness(0, 0, SharedToken.MarginSM, 0);
+        NotificationWidth              = 384;
+        HeaderMargin                   = new Thickness(0, 0, 0, SharedToken.MarginXS);
+        NotificationIconMargin         = new Thickness(0, 0, SharedToken.MarginSM, 0);
+        NotificationCloseButtonPadding = new Thickness(SharedToken.PaddingXXS);
     }
 }

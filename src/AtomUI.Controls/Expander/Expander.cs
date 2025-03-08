@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -14,6 +16,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -33,7 +36,8 @@ public enum ExpanderIconPosition
 
 public class Expander : AvaloniaExpander,
                         IAnimationAwareControl,
-                        IControlSharedTokenResourcesHost
+                        IControlSharedTokenResourcesHost,
+                        ITokenResourceConsumer
 {
     public const string ExpandedPC = ":expanded";
     public const string ExpandUpPC = ":up";
@@ -44,7 +48,7 @@ public class Expander : AvaloniaExpander,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<Collapse, SizeType>(nameof(SizeType), SizeType.Middle);
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Expander>();
 
     public static readonly StyledProperty<bool> IsShowExpandIconProperty =
         AvaloniaProperty.Register<Expander, bool>(nameof(IsShowExpandIcon), true);
@@ -71,10 +75,10 @@ public class Expander : AvaloniaExpander,
         AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Expander, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Expander, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Expander>();
     
     public SizeType SizeType
     {
@@ -188,8 +192,11 @@ public class Expander : AvaloniaExpander,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ExpanderToken.ID;
-
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     public Expander()
     {
@@ -206,21 +213,33 @@ public class Expander : AvaloniaExpander,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationSlow);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
-            BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this));
+            BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        SetupDefaultIcon();
         base.OnApplyTemplate(e);
+        this.RunThemeTokenBindingActions();
         _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(ExpanderTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
-        SetupIconButton();
         _tempAnimationDisabled = true;
         HandleExpandedChanged();
         _tempAnimationDisabled = false;
@@ -241,30 +260,25 @@ public class Expander : AvaloniaExpander,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ExpandIconProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            var oldExpandIcon = change.GetOldValue<Icon?>();
-            if (oldExpandIcon is not null)
+            if (change.Property == AddOnContentProperty)
             {
-                VisualAndLogicalUtils.SetTemplateParent(oldExpandIcon, null);
-            }
+                if (change.OldValue is Control oldControl)
+                {
+                    oldControl.SetTemplatedParent(null);
+                }
 
-            SetupIconButton();
-        }
-        else if (change.Property == AddOnContentProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                VisualAndLogicalUtils.SetTemplateParent(oldControl, null);
-            }
+                if (change.NewValue is Control newControl)
+                {
+                    newControl.SetTemplatedParent(this);
+                }
 
-            if (change.NewValue is Control newControl)
-            {
-                VisualAndLogicalUtils.SetTemplateParent(newControl, this);
+                SetupDefaultIcon();
             }
         }
 
-        if (VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsBorderlessProperty)
             {
@@ -272,7 +286,19 @@ public class Expander : AvaloniaExpander,
             }
         }
 
-        if (change.Property == IsExpandedProperty)
+        if (change.Property == ExpandIconProperty)
+        {
+            if (change.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
+            if (change.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
+            }
+        }
+        else if (change.Property == IsExpandedProperty)
         {
             HandleExpandedChanged();
         }
@@ -283,6 +309,29 @@ public class Expander : AvaloniaExpander,
         {
             SetupExpanderBorderThickness();
         }
+        else if (change.Property == AddOnContentProperty)
+        {
+            if (change.OldValue is Control oldControl)
+            {
+                oldControl.SetTemplatedParent(null);
+            }
+
+            if (change.NewValue is Control newControl)
+            {
+                newControl.SetTemplatedParent(this);
+            }
+        }
+    }
+
+    private void SetupDefaultIcon()
+    {
+        if (ExpandIcon is null)
+        {
+            ClearValue(ExpandIconProperty);
+            SetValue(ExpandIconProperty, AntDesignIconPackage.RightOutlined(), BindingPriority.Template);
+        }
+        Debug.Assert(ExpandIcon is not null);
+        ExpandIcon.SetTemplatedParent(this);
     }
 
     private void SetupExpanderBorderThickness()
@@ -302,19 +351,7 @@ public class Expander : AvaloniaExpander,
             HeaderBorderThickness = new Thickness(0, headerBorderThickness, 0, 0);
         }
     }
-
-    private void SetupIconButton()
-    {
-        if (ExpandIcon is null)
-        {
-            ExpandIcon = AntDesignIconPackage.RightOutlined();
-            TokenResourceBinder.CreateTokenBinding(ExpandIcon, Icon.DisabledFilledBrushProperty,
-                SharedTokenKey.ColorTextDisabled);
-        }
-
-        VisualAndLogicalUtils.SetTemplateParent(ExpandIcon, this);
-    }
-
+    
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);

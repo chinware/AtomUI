@@ -1,22 +1,16 @@
 ﻿using AtomUI.Theme.Styling;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
-internal class TextButtonTheme : BaseButtonTheme
+internal abstract class BaseTextButtonTheme : BaseButtonTheme
 {
-    public const string ID = "TextButton";
-
-    public TextButtonTheme()
-        : base(typeof(Button))
+    
+    public BaseTextButtonTheme(Type targetType) : base(targetType)
     {
-    }
-
-    public override string? ThemeResourceKey()
-    {
-        return ID;
     }
 
     protected override void BuildStyles()
@@ -63,6 +57,100 @@ internal class TextButtonTheme : BaseButtonTheme
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
             pressedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorErrorBgActive);
+            dangerStyle.Add(pressedStyle);
+        }
+        enabledStyle.Add(dangerStyle);
+
+        Add(enabledStyle);
+    }
+
+    private void BuildDisabledStyle()
+    {
+        var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
+        Add(disabledStyle);
+    }
+}
+
+[ControlThemeProvider]
+internal class TextButtonTheme : BaseTextButtonTheme
+{
+    public const string ID = "TextButton";
+
+    public TextButtonTheme()
+        : base(typeof(Button))
+    {
+    }
+
+    public override string? ThemeResourceKey()
+    {
+        return ID;
+    }
+
+    protected override void BuildStyles()
+    {
+        base.BuildStyles();
+        BuildEnabledStyle();
+        BuildDisabledStyle();
+    }
+
+    private void BuildEnabledStyle()
+    {
+        var enabledStyle = new Style(selector => selector.Nesting());
+        // 正常状态
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, Brushes.Transparent);
+            enabledStyle.Add(frameStyle);
+        }
+        enabledStyle.Add(TemplatedControl.ForegroundProperty, ButtonTokenKey.DefaultColor);
+
+        // 正常 hover
+        {
+            var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, ButtonTokenKey.TextHoverBg);
+                hoverStyle.Add(frameStyle);
+            }
+            enabledStyle.Add(hoverStyle);
+        }
+        // 正常按下
+        {
+            var pressedStyle = new Style(selector =>
+                selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgTextActive);
+                pressedStyle.Add(frameStyle);
+            }
+            enabledStyle.Add(pressedStyle);
+        }
+
+        // 危险按钮状态
+        var dangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
+        dangerStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorError);
+
+        // 危险状态 hover
+        {
+            var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorErrorBgHover);
+                hoverStyle.Add(frameStyle);
+            }
+            dangerStyle.Add(hoverStyle);
+        }
+
+        // 危险状态按下
+        {
+            var pressedStyle = new Style(selector =>
+                selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorErrorBgActive);
+                pressedStyle.Add(frameStyle);
+            }
             dangerStyle.Add(pressedStyle);
         }
         enabledStyle.Add(dangerStyle);

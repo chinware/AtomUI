@@ -1,10 +1,12 @@
-﻿using AtomUI.Theme;
+﻿using System.Reactive.Disposables;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -12,7 +14,8 @@ namespace AtomUI.Controls;
 using AvaloniaSeparator = Avalonia.Controls.Separator;
 
 public class MenuSeparator : AvaloniaSeparator,
-                             IControlSharedTokenResourcesHost
+                             IControlSharedTokenResourcesHost,
+                             ITokenResourceConsumer
 {
     #region 公共属性定义
     public static readonly StyledProperty<double> LineWidthProperty =
@@ -30,20 +33,15 @@ public class MenuSeparator : AvaloniaSeparator,
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
-
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    
     #endregion
+    
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     public MenuSeparator()
     {
         this.RegisterResources();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth,
-            BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this));
     }
 
     public override void Render(DrawingContext context)
@@ -51,5 +49,20 @@ public class MenuSeparator : AvaloniaSeparator,
         var linePen = new Pen(BorderBrush, LineWidth);
         var offsetY = Bounds.Height / 2.0;
         context.DrawLine(linePen, new Point(0, offsetY), new Point(Bounds.Right, offsetY));
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

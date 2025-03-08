@@ -1,5 +1,4 @@
-﻿using AtomUI.Data;
-using AtomUI.IconPkg;
+﻿using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -122,9 +121,8 @@ internal class InfoPickerInputTheme : BaseControlTheme
             IsEnableClearButton        = false,
             IsEnableRevealButton       = false,
         };
-
-        BindUtils.RelayBind(this, DataValidationErrors.ErrorsProperty, pickerTextBox,
-            DataValidationErrors.ErrorsProperty);
+        
+        CreateTemplateParentBinding(pickerTextBox, DataValidationErrors.ErrorsProperty, DataValidationErrors.ErrorsProperty);
         CreateTemplateParentBinding(pickerTextBox, TextBox.ForegroundProperty, InfoPickerInput.InputTextBrushProperty);
         CreateTemplateParentBinding(pickerTextBox, TextBox.SizeTypeProperty, InfoPickerInput.SizeTypeProperty);
         CreateTemplateParentBinding(pickerTextBox, TextBox.IsReadOnlyProperty,
@@ -143,6 +141,7 @@ internal class InfoPickerInputTheme : BaseControlTheme
 
         commonStyle.Add(InfoPickerInput.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(InfoPickerInput.VerticalAlignmentProperty, VerticalAlignment.Top);
+        commonStyle.Add(InfoPickerInput.MarginToAnchorProperty, SharedTokenKey.MarginXXS);
         
         BuildFontSizeStyle(commonStyle);
         

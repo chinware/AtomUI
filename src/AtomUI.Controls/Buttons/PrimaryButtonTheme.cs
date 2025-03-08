@@ -1,24 +1,15 @@
 ﻿using AtomUI.Theme.Styling;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Colors = Avalonia.Media.Colors;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
-internal class PrimaryButtonTheme : BaseButtonTheme
+internal abstract class BasePrimaryButtonTheme : BaseButtonTheme
 {
-    public const string ID = "PrimaryButton";
-
-    public PrimaryButtonTheme()
-        : base(typeof(Button))
+    public BasePrimaryButtonTheme(Type targetType) : base(targetType)
     {
-    }
-
-    public override string? ThemeResourceKey()
-    {
-        return ID;
     }
 
     protected override void BuildStyles()
@@ -34,12 +25,21 @@ internal class PrimaryButtonTheme : BaseButtonTheme
 
         // 正常状态
         enabledStyle.Add(TemplatedControl.ForegroundProperty, ButtonTokenKey.PrimaryColor);
-        enabledStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorPrimary);
+        
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorPrimary);
+            enabledStyle.Add(frameStyle);
+        }
 
         // 正常 hover
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorPrimaryHover);
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorPrimaryHover);
+                hoverStyle.Add(frameStyle);
+            }
             enabledStyle.Add(hoverStyle);
         }
 
@@ -47,18 +47,30 @@ internal class PrimaryButtonTheme : BaseButtonTheme
         {
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-            pressedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorPrimaryActive);
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorPrimaryActive);
+                pressedStyle.Add(frameStyle);
+            }
             enabledStyle.Add(pressedStyle);
         }
 
         // 危险按钮状态
         var dangerStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsDangerProperty, true));
-        dangerStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorError);
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorError);
+            dangerStyle.Add(frameStyle);
+        }
 
         // 危险状态 hover
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-            hoverStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorErrorHover);
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorErrorHover);
+                hoverStyle.Add(frameStyle);
+            }
             dangerStyle.Add(hoverStyle);
         }
 
@@ -66,7 +78,11 @@ internal class PrimaryButtonTheme : BaseButtonTheme
         {
             var pressedStyle = new Style(selector =>
                 selector.Nesting().Class(StdPseudoClass.PointerOver).Class(StdPseudoClass.Pressed));
-            pressedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorErrorActive);
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorErrorActive);
+                pressedStyle.Add(frameStyle);
+            }
             dangerStyle.Add(pressedStyle);
         }
         enabledStyle.Add(dangerStyle);
@@ -78,7 +94,11 @@ internal class PrimaryButtonTheme : BaseButtonTheme
     private void BuildEnabledGhostStyle()
     {
         var ghostStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsGhostProperty, true));
-        ghostStyle.Add(TemplatedControl.BackgroundProperty, Brushes.Transparent);
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, Brushes.Transparent);
+            ghostStyle.Add(frameStyle);
+        }
         // 正常状态
         ghostStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorPrimary);
         ghostStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorPrimary);
@@ -131,7 +151,27 @@ internal class PrimaryButtonTheme : BaseButtonTheme
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
         disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
         disabledStyle.Add(TemplatedControl.BorderBrushProperty, ButtonTokenKey.BorderColorDisabled);
-        disabledStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainerDisabled);
+            disabledStyle.Add(frameStyle);
+        }
         Add(disabledStyle);
+    }
+}
+
+[ControlThemeProvider]
+internal class PrimaryButtonTheme : BasePrimaryButtonTheme
+{
+    public const string ID = "PrimaryButton";
+
+    public PrimaryButtonTheme()
+        : base(typeof(Button))
+    {
+    }
+
+    public override string? ThemeResourceKey()
+    {
+        return ID;
     }
 }

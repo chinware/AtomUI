@@ -26,11 +26,11 @@ internal class BaseTabControlTheme : BaseControlTheme
     {
         return new FuncControlTemplate<BaseTabControl>((baseTabControl, scope) =>
         {
-            var Frame = new Border
+            var frame = new Border
             {
                 Name = FramePart
             };
-            Frame.RegisterInNameScope(scope);
+            frame.RegisterInNameScope(scope);
             var layoutContainer = new DockPanel
             {
                 Name = MainLayoutContainerPart
@@ -38,8 +38,8 @@ internal class BaseTabControlTheme : BaseControlTheme
 
             NotifyBuildTabStripTemplate(baseTabControl, scope, layoutContainer);
             NotifyBuildContentPresenter(baseTabControl, scope, layoutContainer);
-            Frame.Child = layoutContainer;
-            return Frame;
+            frame.Child = layoutContainer;
+            return frame;
         });
     }
 

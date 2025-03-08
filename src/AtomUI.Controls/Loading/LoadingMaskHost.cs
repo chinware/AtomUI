@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -12,7 +13,7 @@ public class LoadingMaskHost : Control
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        LoadingIndicator.SizeTypeProperty.AddOwner<LoadingMaskHost>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<LoadingMaskHost>();
 
     public static readonly StyledProperty<string?> LoadingMsgProperty =
         LoadingIndicator.LoadingMsgProperty.AddOwner<LoadingMaskHost>();
@@ -87,7 +88,6 @@ public class LoadingMaskHost : Control
     #endregion
 
     private LoadingMask? _loadingMask;
-    private bool _initialized;
     
     public void ShowLoading()
     {
@@ -130,22 +130,7 @@ public class LoadingMaskHost : Control
             ShowLoading();
         }
     }
-
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        if (!_initialized)
-        {
-            if (MaskTarget is not null)
-            {
-                ((ISetLogicalParent)MaskTarget).SetParent(this);
-                VisualChildren.Add(MaskTarget);
-            }
-
-            _initialized = true;
-        }
-    }
-
+    
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -157,7 +142,7 @@ public class LoadingMaskHost : Control
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (_initialized && VisualRoot is not null)
+        if (this.IsAttachedToVisualTree())
         {
             if (IsLoadingProperty == change.Property)
             {
@@ -169,6 +154,20 @@ public class LoadingMaskHost : Control
                 {
                     HideLoading();
                 }
+            }
+        }
+        else if (change.Property == MaskTargetProperty)
+        {
+            if (change.OldValue is Control oldMaskTarget)
+            {
+                LogicalChildren.Remove(oldMaskTarget);
+                VisualChildren.Remove(oldMaskTarget);
+            }
+
+            if (change.NewValue is Control newMaskTarget)
+            {
+                LogicalChildren.Add(newMaskTarget);
+                VisualChildren.Add(newMaskTarget);
             }
         }
     }

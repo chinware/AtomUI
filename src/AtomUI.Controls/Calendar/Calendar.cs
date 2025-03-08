@@ -5,6 +5,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -17,6 +18,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -227,7 +229,8 @@ public class CalendarModeChangedEventArgs : RoutedEventArgs
 [TemplatePart(CalendarTheme.RootPart, typeof(Panel))]
 public class Calendar : TemplatedControl,
                         IAnimationAwareControl,
-                        IControlSharedTokenResourcesHost
+                        IControlSharedTokenResourcesHost,
+                        ITokenResourceConsumer
 {
     
     #region 公共属性定义
@@ -271,10 +274,10 @@ public class Calendar : TemplatedControl,
             defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<Calendar, bool>(nameof(IsMotionEnabled));
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<Calendar, bool>(nameof(IsWaveAnimationEnabled));
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Calendar>();
 
     /// <summary>
     /// Gets or sets the day that is considered the beginning of the week.
@@ -599,6 +602,7 @@ public class Calendar : TemplatedControl,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CalendarToken.ID;
+    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
     
@@ -607,6 +611,7 @@ public class Calendar : TemplatedControl,
     internal const int RowsPerYear = 3;
     internal const int ColumnsPerYear = 4;
     private bool _displayDateIsChanging;
+    private CompositeDisposable? _tokenBindingsDisposable;
 
     private bool _isShiftPressed;
 
@@ -724,13 +729,13 @@ public class Calendar : TemplatedControl,
     {
         var day = (DayOfWeek)value;
 
-        return day == DayOfWeek.Sunday
-               || day == DayOfWeek.Monday
-               || day == DayOfWeek.Tuesday
-               || day == DayOfWeek.Wednesday
-               || day == DayOfWeek.Thursday
-               || day == DayOfWeek.Friday
-               || day == DayOfWeek.Saturday;
+        return day == DayOfWeek.Sunday || 
+               day == DayOfWeek.Monday ||
+               day == DayOfWeek.Tuesday ||
+               day == DayOfWeek.Wednesday ||
+               day == DayOfWeek.Thursday ||
+               day == DayOfWeek.Friday ||
+               day == DayOfWeek.Saturday;
     }
 
     /// <summary>
@@ -802,9 +807,9 @@ public class Calendar : TemplatedControl,
 
     private static bool IsValidDisplayMode(CalendarMode mode)
     {
-        return mode == CalendarMode.Month
-               || mode == CalendarMode.Year
-               || mode == CalendarMode.Decade;
+        return mode == CalendarMode.Month ||
+               mode == CalendarMode.Year ||
+               mode == CalendarMode.Decade;
     }
 
     private void OnDisplayModeChanged(CalendarModeChangedEventArgs args)
@@ -2243,13 +2248,24 @@ public class Calendar : TemplatedControl,
         }
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
+            new RenderScaleAwareThicknessConfigure(this)));
     }
-    
 }

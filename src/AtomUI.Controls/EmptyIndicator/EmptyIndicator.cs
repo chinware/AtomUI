@@ -1,13 +1,12 @@
 ﻿using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -17,8 +16,8 @@ public enum PresetEmptyImage
     Default
 }
 
-public partial class EmptyIndicator : TemplatedControl,
-                                      IControlSharedTokenResourcesHost
+public class EmptyIndicator : TemplatedControl,
+                              IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -32,10 +31,10 @@ public partial class EmptyIndicator : TemplatedControl,
         AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(ImageSource));
 
     public static readonly StyledProperty<string?> DescriptionProperty =
-        AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(Description));
+        AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(Description), "No data");
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        AvaloniaProperty.Register<EmptyIndicator, SizeType>(nameof(SizeType));
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<EmptyIndicator>();
 
     public static readonly StyledProperty<bool> IsShowDescriptionProperty =
         AvaloniaProperty.Register<EmptyIndicator, bool>(nameof(IsShowDescription), true);
@@ -77,43 +76,33 @@ public partial class EmptyIndicator : TemplatedControl,
     }
 
     #endregion
-    
+
     #region 内部属性定义
-    
-    internal static readonly StyledProperty<double> DescriptionMarginProperty =
-        AvaloniaProperty.Register<EmptyIndicator, double>(
-            nameof(DescriptionMargin));
-    
-    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillProperty =
+
+    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFill),
             o => o._colorFill,
             (o, v) => o._colorFill = v);
-    
-    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillTertiaryProperty =
+
+    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillTertiaryProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFillTertiary),
             o => o._colorFillTertiary,
             (o, v) => o._colorFillTertiary = v);
-    
-    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillQuaternaryProperty =
+
+    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillQuaternaryProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorFillQuaternary),
             o => o._colorFillQuaternary,
             (o, v) => o._colorFillQuaternary = v);
-    
-    private static readonly DirectProperty<EmptyIndicator, IBrush?> ColorBgContainerProperty =
+
+    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorBgContainerProperty =
         AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
             nameof(_colorBgContainer),
             o => o._colorBgContainer,
             (o, v) => o._colorBgContainer = v);
 
-    internal double DescriptionMargin
-    {
-        get => GetValue(DescriptionMarginProperty);
-        set => SetValue(DescriptionMarginProperty, value);
-    }
-    
     private IBrush? _colorFill;
 
     internal IBrush? ColorFill
@@ -121,34 +110,35 @@ public partial class EmptyIndicator : TemplatedControl,
         get => _colorFill;
         set => SetAndRaise(ColorFillProperty, ref _colorFill, value);
     }
-    
+
     private IBrush? _colorFillTertiary;
-    
+
     internal IBrush? ColorFillTertiary
     {
         get => _colorFillTertiary;
         set => SetAndRaise(ColorFillTertiaryProperty, ref _colorFillTertiary, value);
     }
-    
+
     private IBrush? _colorFillQuaternary;
-    
+
     internal IBrush? ColorFillQuaternary
     {
         get => _colorFillQuaternary;
         set => SetAndRaise(ColorFillQuaternaryProperty, ref _colorFillQuaternary, value);
     }
-    
+
     private IBrush? _colorBgContainer;
+
     internal IBrush? ColorBgContainer
     {
         get => _colorBgContainer;
         set => SetAndRaise(ColorBgContainerProperty, ref _colorBgContainer, value);
     }
-    
+
 
     string IControlSharedTokenResourcesHost.TokenId => EmptyIndicatorToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
-    
+
     #endregion
     
     private Avalonia.Svg.Svg? _svg;
@@ -196,21 +186,10 @@ public partial class EmptyIndicator : TemplatedControl,
         }
     }
 
-    private void SetupTokenBindings()
-    {
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillProperty, SharedTokenKey.ColorFill);
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillTertiaryProperty,
-            SharedTokenKey.ColorFillTertiary);
-        TokenResourceBinder.CreateTokenBinding(this, ColorFillQuaternaryProperty,
-            SharedTokenKey.ColorFillQuaternary);
-        TokenResourceBinder.CreateTokenBinding(this, ColorBgContainerProperty,
-            SharedTokenKey.ColorBgContainer);
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (VisualRoot != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == ColorFillProperty ||
                 change.Property == ColorFillTertiaryProperty ||
@@ -260,13 +239,7 @@ public partial class EmptyIndicator : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SetupTokenBindings();
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _svg                = scope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
+        _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment   = VerticalAlignment.Center;
         CheckImageSource();

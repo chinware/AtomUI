@@ -1,5 +1,4 @@
 ﻿using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -19,6 +18,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
     public const string ID = "TopLevelMenuItem";
 
     public const string PopupPart = "PART_Popup";
+    public const string PopupFramePart = "PART_PopupFrame";
     public const string HeaderPresenterPart = "PART_HeaderPresenter";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 
@@ -43,8 +43,7 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
                 VerticalAlignment   = VerticalAlignment.Center,
                 RecognizesAccessKey = true
             };
-
-            // TODO 后面需要评估一下，能直接绑定到对象，是否还需要这样通过模板绑定
+            
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 HeaderedSelectingItemsControl.HeaderProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -60,14 +59,14 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
             contentPresenter.RegisterInNameScope(scope);
             panel.Children.Add(contentPresenter);
 
-            var popup = CreateMenuPopup();
+            var popup = CreateMenuPopup(menuItem);
             popup.RegisterInNameScope(scope);
             panel.Children.Add(popup);
             return panel;
         });
     }
 
-    private Popup CreateMenuPopup()
+    private Popup CreateMenuPopup(MenuItem menuItem)
     {
         var popup = new Popup
         {
@@ -77,43 +76,27 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
             Placement                  = PlacementMode.BottomEdgeAlignedLeft
         };
 
-        var border = new Border();
-
-        TokenResourceBinder.CreateTokenBinding(border, Border.BackgroundProperty,
-            SharedTokenKey.ColorBgContainer);
-        TokenResourceBinder.CreateTokenBinding(border, Border.CornerRadiusProperty,
-            MenuTokenKey.MenuPopupBorderRadius);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinWidthProperty,
-            MenuTokenKey.MenuPopupMinWidth);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxWidthProperty,
-            MenuTokenKey.MenuPopupMaxWidth);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MinHeightProperty,
-            MenuTokenKey.MenuPopupMinHeight);
-        TokenResourceBinder.CreateTokenBinding(border, Layoutable.MaxHeightProperty,
-            MenuTokenKey.MenuPopupMaxHeight);
-        TokenResourceBinder.CreateTokenBinding(border, Decorator.PaddingProperty,
-            MenuTokenKey.MenuPopupContentPadding);
-
+        var border = new Border()
+        {
+            Name = PopupFramePart
+        };
+        
         var scrollViewer = new MenuScrollViewer();
         var itemsPresenter = new ItemsPresenter
         {
             Name = ItemsPresenterPart
         };
+        scrollViewer.IsScrollChainingEnabled = false;
         CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, ItemsControl.ItemsPanelProperty);
         Grid.SetIsSharedSizeScope(itemsPresenter, true);
         KeyboardNavigation.SetTabNavigation(itemsPresenter, KeyboardNavigationMode.Continue);
         scrollViewer.Content = itemsPresenter;
         border.Child         = scrollViewer;
         popup.Child          = border;
-
-        TokenResourceBinder.CreateTokenBinding(popup, Popup.MarginToAnchorProperty,
-            MenuTokenKey.TopLevelItemPopupMarginToAnchor);
-        TokenResourceBinder.CreateTokenBinding(popup, Popup.MaskShadowsProperty,
-            MenuTokenKey.MenuPopupBoxShadows);
-
+        
         CreateTemplateParentBinding(popup, Avalonia.Controls.Primitives.Popup.IsOpenProperty,
             Avalonia.Controls.MenuItem.IsSubMenuOpenProperty, BindingMode.TwoWay);
-
+        
         return popup;
     }
 
@@ -123,7 +106,27 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         BuildCommonStyle(topLevelStyle);
         BuildSizeTypeStyle(topLevelStyle);
         BuildDisabledStyle(topLevelStyle);
+        BuildPopupStyle(topLevelStyle);
         Add(topLevelStyle);
+    }
+
+    private void BuildPopupStyle(Style topLevelStyle)
+    {
+        var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
+        popupFrameStyle.Add(Border.BackgroundProperty, SharedTokenKey.ColorBgContainer);
+        popupFrameStyle.Add(Border.CornerRadiusProperty, MenuTokenKey.MenuPopupBorderRadius);
+        popupFrameStyle.Add(Layoutable.MinWidthProperty, MenuTokenKey.MenuPopupMinWidth);
+        popupFrameStyle.Add(Layoutable.MaxWidthProperty, MenuTokenKey.MenuPopupMaxWidth);
+        popupFrameStyle.Add(Layoutable.MinHeightProperty, MenuTokenKey.MenuPopupMinHeight);
+        popupFrameStyle.Add(Layoutable.MaxHeightProperty, MenuTokenKey.MenuPopupMaxHeight);
+        popupFrameStyle.Add(Decorator.PaddingProperty, MenuTokenKey.MenuPopupContentPadding);
+        
+        topLevelStyle.Add(popupFrameStyle);
+        
+        var popupStyle = new Style(selector => selector.Nesting().Template().Name(PopupPart));
+        popupStyle.Add(Popup.MarginToAnchorProperty, MenuTokenKey.TopLevelItemPopupMarginToAnchor);
+        popupStyle.Add(Popup.MaskShadowsProperty, MenuTokenKey.MenuPopupBoxShadows);
+        topLevelStyle.Add(popupStyle);
     }
 
     private void BuildCommonStyle(Style topLevelStyle)
