@@ -68,18 +68,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey CountBadgeCornerRadiusSM = new TokenResourceKey("Badge.CountBadgeCornerRadiusSM");
     }
 
-    public static class ButtonSpinnerTokenKey
-    {
-        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth");
-        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth");
-        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize");
-        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg");
-        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg");
-        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor");
-        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor");
-        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg");
-    }
-
     public static class ButtonTokenKey
     {
         public static readonly TokenResourceKey FontWeight = new TokenResourceKey("Button.FontWeight");
@@ -129,6 +117,18 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IconOnyPadding = new TokenResourceKey("Button.IconOnyPadding");
         public static readonly TokenResourceKey IconOnyPaddingLG = new TokenResourceKey("Button.IconOnyPaddingLG");
         public static readonly TokenResourceKey IconOnyPaddingSM = new TokenResourceKey("Button.IconOnyPaddingSM");
+    }
+
+    public static class ButtonSpinnerTokenKey
+    {
+        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth");
+        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth");
+        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize");
+        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg");
+        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg");
+        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor");
+        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor");
+        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg");
     }
 
     public static class CalendarTokenKey

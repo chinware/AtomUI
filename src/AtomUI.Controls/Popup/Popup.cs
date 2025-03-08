@@ -548,8 +548,16 @@ public class Popup : AvaloniaPopup,
         MotionInvoker.DispatchInMotionSceneLayer(motionActor, motion, null, () =>
         {
             _shadowLayer?.Open();
-            popupRoot.PlatformImpl.SetTopmost(true);
             popupRoot.Show();
+            if (OperatingSystem.IsMacOS())
+            {
+                popupRoot.Activate();
+            }
+            else
+            {
+                // 暂时这样，后面可能还需要针对 Linux 设置一下
+                popupRoot.PlatformImpl.SetTopmost(true);
+            }
             opened?.Invoke();
             _isNeedWaitFlipSync = false;
             _openAnimating      = false;

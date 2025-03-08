@@ -86,15 +86,11 @@ internal static class MotionInvoker
                     actor.IsVisible = true;
                 }, () =>
                 {
-                    completedAction?.Invoke();
-                    actor.IsVisible = false;
+                   completedAction?.Invoke();
+                   Dispatcher.UIThread.Post(() => actor.Opacity = 0d);
                 }, cancellationToken);
-                // 为了避免闪烁，给一个时间间隔
-                DispatcherTimer.RunOnce(() =>
-                {
-                    compositeDisposable.Dispose();
-                    compositeDisposable = null;
-                }, TimeSpan.FromMilliseconds(200));
+                compositeDisposable.Dispose();
+                compositeDisposable = null;
             });
         });
     }
@@ -127,14 +123,11 @@ internal static class MotionInvoker
                 await motion.RunAsync(actor, null, () =>
                 {
                     completedAction?.Invoke();
-                    actor.IsVisible = false;
+                    Dispatcher.UIThread.Post(() => actor.IsVisible = false);
                 }, cancellationToken);
                 // 为了避免闪烁，给一个时间间隔
-                DispatcherTimer.RunOnce(() =>
-                {
-                    compositeDisposable.Dispose();
-                    compositeDisposable = null;
-                }, TimeSpan.FromMilliseconds(200));
+                compositeDisposable.Dispose();
+                compositeDisposable = null;
             });
         });
     }
