@@ -216,20 +216,21 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
         popupHost.SetChild(Child);
         
         UpdateLayoutHostPositionAndSize(popupHost);
-        
-        popupHost.Show();
-    
-        if (targetPopupRoot != null)
+        popupHost.Topmost = false;
+        if (popupHost is WindowBase window)
         {
-            Dispatcher.UIThread.Post(() =>
+            window.ShowWithoutActive();
+        }
+    }
+
+    public void Hide()
+    {
+        if (_openState != null)
+        {
+            if (_openState.PopupHost is PopupRoot popupRoot)
             {
-                if (_target.Host is not null)
-                {
-                    _target.Host.Topmost = true;
-                }
-                // TODO POPUP 需要评估跨平台一致性
-                // targetPopupRoot.Activate();
-            });
+                popupRoot.Opacity = 0d;
+            }
         }
     }
 

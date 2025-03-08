@@ -6,10 +6,10 @@ namespace AtomUI.MotionScene;
 internal static class MotionInvoker
 {
     public static void Invoke(MotionActorControl actor,
-        AbstractMotion motion,
-        Action? aboutToStart = null,
-        Action? completedAction = null,
-        CancellationToken cancellationToken = default)
+                              AbstractMotion motion,
+                              Action? aboutToStart = null,
+                              Action? completedAction = null,
+                              CancellationToken cancellationToken = default)
     {
         Dispatcher.UIThread.Invoke(async () =>
         {
@@ -52,6 +52,89 @@ internal static class MotionInvoker
                     }
                 }, cancellationToken);
                 compositeDisposable.Dispose();
+            });
+        });
+    }
+
+    public static void DispatchInMotionSceneLayer(SceneMotionActorControl actor,
+                                                  AbstractMotion motion,
+                                                  Action? aboutToStart = null,
+                                                  Action? completedAction = null,
+                                                  CancellationToken cancellationToken = default)
+    {
+        var sceneLayer          = PrepareSceneLayer(motion, actor);
+        var compositeDisposable = new CompositeDisposable();
+        compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
+        {
+            sceneLayer.Hide();
+            sceneLayer.Dispose();
+        }));
+        sceneLayer.SetMotionActor(actor);
+        actor.NotifyMotionTargetAddedToScene();
+        sceneLayer.Topmost = true;
+        actor.IsVisible    = false;
+        sceneLayer.Show();
+        actor.NotifySceneShowed();
+        aboutToStart?.Invoke();
+        // 等待一个事件循环，让动画窗口置顶
+        Dispatcher.UIThread.Post(() =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await motion.RunAsync(actor, () =>
+                {
+                    actor.IsVisible = true;
+                }, () =>
+                {
+                    completedAction?.Invoke();
+                    actor.IsVisible = false;
+                }, cancellationToken);
+                // 为了避免闪烁，给一个时间间隔
+                DispatcherTimer.RunOnce(() =>
+                {
+                    compositeDisposable.Dispose();
+                    compositeDisposable = null;
+                }, TimeSpan.FromMilliseconds(200));
+            });
+        });
+    }
+    
+    public static void DispatchOutMotionSceneLayer(SceneMotionActorControl actor,
+                                                   AbstractMotion motion,
+                                                   Action? aboutToStart = null,
+                                                   Action? completedAction = null,
+                                                   CancellationToken cancellationToken = default)
+    {
+        var sceneLayer          = PrepareSceneLayer(motion, actor);
+        var compositeDisposable = new CompositeDisposable();
+        compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
+        {
+            sceneLayer.Hide();
+            sceneLayer.Dispose();
+        }));
+        sceneLayer.SetMotionActor(actor);
+        actor.NotifyMotionTargetAddedToScene();
+        sceneLayer.Topmost = true;
+        sceneLayer.Show();
+        actor.NotifySceneShowed();
+        aboutToStart?.Invoke();
+        // 等待一个事件循环，让动画窗口置顶
+        Dispatcher.UIThread.Post(() =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
+                await motion.RunAsync(actor, null, () =>
+                {
+                    completedAction?.Invoke();
+                    actor.IsVisible = false;
+                }, cancellationToken);
+                // 为了避免闪烁，给一个时间间隔
+                DispatcherTimer.RunOnce(() =>
+                {
+                    compositeDisposable.Dispose();
+                    compositeDisposable = null;
+                }, TimeSpan.FromMilliseconds(200));
             });
         });
     }

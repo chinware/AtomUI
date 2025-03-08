@@ -32,7 +32,6 @@ public class AbstractMotion : IMotion
         
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            actor.IsVisible = true;
             using var originRestore = new RenderTransformOriginRestore(actor);
             actor.RenderTransformOrigin = RenderTransformOrigin;
             actor.NotifyMotionPreStart();

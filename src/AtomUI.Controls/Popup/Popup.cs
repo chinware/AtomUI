@@ -545,21 +545,19 @@ public class Popup : AvaloniaPopup,
 
         motionActor.SceneParent = topLevel;
 
-        Dispatcher.UIThread.Post(() =>
+        MotionInvoker.DispatchInMotionSceneLayer(motionActor, motion, null, () =>
         {
-            MotionInvoker.InvokeInPopupLayer(motionActor, motion, null, () =>
+            _shadowLayer?.Open();
+            popupRoot.PlatformImpl.SetTopmost(true);
+            popupRoot.Show();
+            opened?.Invoke();
+            _isNeedWaitFlipSync = false;
+            _openAnimating      = false;
+            if (RequestCloseWhereAnimationCompleted)
             {
-                _shadowLayer?.Open();
-                popupRoot.Show();
-                opened?.Invoke();
-                _isNeedWaitFlipSync = false;
-                _openAnimating      = false;
-                if (RequestCloseWhereAnimationCompleted)
-                {
-                    RequestCloseWhereAnimationCompleted = false;
-                    Dispatcher.UIThread.InvokeAsync(() => { MotionAwareClose(); });
-                }
-            });
+                RequestCloseWhereAnimationCompleted = false;
+                Dispatcher.UIThread.InvokeAsync(() => { MotionAwareClose(); });
+            }
         });
     }
 
@@ -617,16 +615,16 @@ public class Popup : AvaloniaPopup,
             motionTarget.DesiredSize);
 
         motionActor.SceneParent = topLevel;
-        Dispatcher.UIThread.Post(() =>
+        MotionInvoker.DispatchOutMotionSceneLayer(motionActor, motion, () =>
         {
-            _shadowLayer?.Close();
-            MotionInvoker.InvokeInPopupLayer(motionActor, motion, () => { popupRoot.Hide(); }, () =>
-            {
-                _closeAnimating   = false;
-                _isNeedDetectFlip = true;
-                Close();
-                closed?.Invoke();
-            });
+            _shadowLayer?.Hide();
+            popupRoot.Opacity = 0d;
+        }, () =>
+        {
+            _closeAnimating   = false;
+            _isNeedDetectFlip = true;
+            Close();
+            closed?.Invoke();
         });
     }
 
