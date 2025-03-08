@@ -8,6 +8,8 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.AddOnDecoratedInnerBoxTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.AlertTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ArrowDecoratedBoxTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.AvatarGroupTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.AvatarTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Badge.CountBadgeAdornerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.Badge.DotBadgeAdornerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ButtonSpinnerInnerBoxTheme());

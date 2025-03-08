@@ -7,6 +7,7 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.AddOnDecoratedBoxToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.AlertToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ArrowDecoratedBoxToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.AvatarToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.BadgeToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ButtonSpinnerToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ButtonToken));
