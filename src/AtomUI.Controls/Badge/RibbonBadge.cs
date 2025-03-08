@@ -152,15 +152,6 @@ public class RibbonBadge : Control,
         }
     }
 
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        if (DecoratedTarget is null)
-        {
-            CreateBadgeAdorner();
-        }
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -247,6 +238,10 @@ public class RibbonBadge : Control,
     {
         base.OnAttachedToVisualTree(e);
         PrepareAdorner();
+        if (DecoratedTarget is null)
+        {
+            CreateBadgeAdorner();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

@@ -178,8 +178,7 @@ public class Collapse : SelectingItemsControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SetupEffectiveBorderThickness();
-        SetupSelectionMode();
+ 
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -373,5 +372,7 @@ public class Collapse : SelectingItemsControl,
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
+        SetupEffectiveBorderThickness();
+        SetupSelectionMode();
     }
 }

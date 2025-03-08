@@ -175,14 +175,18 @@ internal class CountBadgeAdorner : TemplatedControl
             _indicatorMotionActor.IsVisible = false;
             _needInitialHide                = false;
         }
-
-        BuildBoxShadow();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
         BuildCountText();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        BuildBoxShadow();
     }
 
     private void BuildBoxShadow()

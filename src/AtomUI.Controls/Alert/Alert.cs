@@ -163,7 +163,6 @@ public class Alert : TemplatedControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        SetupCloseButton();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -179,6 +178,7 @@ public class Alert : TemplatedControl,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+        SetupCloseButton();
     }
 
     private void SetupCloseButton()

@@ -147,21 +147,6 @@ public class CountBadge : Control,
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        if (!_isInitialized)
-        {
-            if (DecoratedTarget is null)
-            {
-                CreateBadgeAdorner();
-            }
-
-            SetupShowZero();
-            _isInitialized = true;
-        }
-    }
-
     private CountBadgeAdorner CreateBadgeAdorner()
     {
         if (_badgeAdorner is null)
@@ -224,6 +209,12 @@ public class CountBadge : Control,
         {
             PrepareAdorner();
         }
+        if (DecoratedTarget is null)
+        {
+            CreateBadgeAdorner();
+        }
+
+        SetupShowZero();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

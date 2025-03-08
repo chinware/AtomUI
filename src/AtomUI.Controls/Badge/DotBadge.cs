@@ -185,6 +185,19 @@ public class DotBadge : Control,
         }
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (DecoratedTarget is null)
+        {
+            CreateDotBadgeAdorner();
+        }
+        else
+        {
+            PrepareAdorner();
+        }
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -218,19 +231,6 @@ public class DotBadge : Control,
                 DecoratedTarget.SetLogicalParent(this);
                 VisualChildren.Add(DecoratedTarget);
             }
-        }
-    }
-
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        if (DecoratedTarget is null)
-        {
-            CreateDotBadgeAdorner();
-        }
-        else
-        {
-            PrepareAdorner();
         }
     }
 

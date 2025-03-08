@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Diagnostics;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -10,6 +11,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -230,12 +232,12 @@ public class CollapseItem : HeaderedContentControl,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        ExpandIcon ??= AntDesignIconPackage.RightOutlined();
-        ExpandIcon.SetTemplatedParent(this);
         base.OnApplyTemplate(e);
         _motionActor           = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
         _headerDecorator       = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
         _expandButton          = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
+        
+        // 必须放在这里，因为依赖 _motionActor 是否设置
         _tempAnimationDisabled = true;
         HandleSelectedChanged();
         _tempAnimationDisabled = false;
@@ -243,6 +245,22 @@ public class CollapseItem : HeaderedContentControl,
         {
             _expandButton.Click += (sender, args) => { IsSelected = !IsSelected; };
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupDefaultExpandIcon();
+    }
+
+    private void SetupDefaultExpandIcon()
+    {
+        if (ExpandIcon is null)
+        {
+            ClearValue(ExpandIconProperty);
+            SetValue(ExpandIconProperty, AntDesignIconPackage.RightOutlined(), BindingPriority.Template);
+        }
+        Debug.Assert(ExpandIcon != null);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -257,7 +275,8 @@ public class CollapseItem : HeaderedContentControl,
             }
         }
 
-        if (change.Property == AddOnContentProperty)
+        if (change.Property == AddOnContentProperty ||
+            change.Property == ExpandIconProperty)
         {
             if (change.OldValue is Control oldControl)
             {
@@ -267,6 +286,10 @@ public class CollapseItem : HeaderedContentControl,
             if (change.NewValue is Control newControl)
             {
                 newControl.SetTemplatedParent(this);
+            }
+            if (change.Property == ExpandIconProperty)
+            {
+                SetupDefaultExpandIcon();
             }
         }
     }

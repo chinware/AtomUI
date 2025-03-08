@@ -177,11 +177,6 @@ internal class CheckBoxIndicator : Control,
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    public override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
         SetupTransitions();
     }
 
