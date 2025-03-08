@@ -174,13 +174,7 @@ public class Collapse : SelectingItemsControl,
             }
         }
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
- 
-    }
-
+    
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         return new CollapseItem();

@@ -21,9 +21,9 @@ internal class RangeDatePickerFlyoutPresenter : FlyoutPresenter
     
     internal RangeDatePickerPresenter? DatePickerPresenter;
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnApplyTemplate(e);
+        base.OnAttachedToVisualTree(e);
         SetupDatePickerPresenter();
     }
 

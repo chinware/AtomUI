@@ -11,6 +11,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -507,20 +508,6 @@ public class RangeDatePicker : RangeInfoPickerInput,
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        if (RangeStartDefaultDate is not null && RangeStartSelectedDate is null)
-        {
-            RangeStartSelectedDate = RangeStartDefaultDate;
-        }
-        
-        if (RangeEndDefaultDate is not null && RangeEndSelectedDate is null)
-        {
-            RangeEndSelectedDate = RangeEndDefaultDate;
-        }
-    }
-
     protected override bool ShowClearButtonPredicate()
     {
         return RangeStartSelectedDate is not null || RangeEndSelectedDate is not null;
@@ -552,5 +539,19 @@ public class RangeDatePicker : RangeInfoPickerInput,
         }
 
         return new Size(width, height);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        if (RangeStartDefaultDate is not null && RangeStartSelectedDate is null)
+        {
+            RangeStartSelectedDate = RangeStartDefaultDate;
+        }
+        
+        if (RangeEndDefaultDate is not null && RangeEndSelectedDate is null)
+        {
+            RangeEndSelectedDate = RangeEndDefaultDate;
+        }
     }
 }

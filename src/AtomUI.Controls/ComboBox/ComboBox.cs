@@ -129,7 +129,6 @@ public class ComboBox : AvaloniaComboBox,
     }
 
     private IconButton? _openIndicatorButton;
-    private ComboBoxSpinnerInnerBox? _spinnerInnerBox;
 
     protected override Size ArrangeOverride(Size finalSize)
     {
@@ -149,13 +148,16 @@ public class ComboBox : AvaloniaComboBox,
         base.OnApplyTemplate(e);
         _popup               = e.NameScope.Find<Popup>(ComboBoxTheme.PopupPart);
         _openIndicatorButton = e.NameScope.Find<IconButton>(ComboBoxTheme.OpenIndicatorButtonPart);
-        _spinnerInnerBox     = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxTheme.SpinnerInnerBoxPart);
 
         if (_openIndicatorButton is not null)
         {
             _openIndicatorButton.Click += (sender, args) => { SetCurrentValue(IsDropDownOpenProperty, true); };
         }
+    }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         UpdatePseudoClasses();
     }
 
