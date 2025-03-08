@@ -7,6 +7,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -158,9 +159,9 @@ internal class DrawerInfoContainer : HeaderedContentControl
     internal event EventHandler? CloseRequested;
     private IconButton? _closeButton;
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         SetupTransitions();
     }
 
@@ -170,7 +171,7 @@ internal class DrawerInfoContainer : HeaderedContentControl
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<TransformOperationsTransition>(DrawerInfoContainer.RenderTransformProperty)
+                AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
             };
         }
         else
@@ -191,7 +192,7 @@ internal class DrawerInfoContainer : HeaderedContentControl
             HasExtra = Extra != null || ExtraTemplate != null;
         }
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsMotionEnabledProperty)
             {
