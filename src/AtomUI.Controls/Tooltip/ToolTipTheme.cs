@@ -2,6 +2,8 @@
 using AtomUI.Theme.Styling;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -26,7 +28,21 @@ internal class ToolTipTheme : BaseControlTheme
             {
                 Name = ToolTipContainerPart,
             };
-            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentProperty, ToolTip.ContentProperty);
+            CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentProperty, ToolTip.ContentProperty,
+                BindingMode.Default, new FuncValueConverter<object?, object?>(o =>
+                {
+                    if (o is string str)
+                    {
+                        return new TextBlock
+                        {
+                            Text = str,
+                            LineHeight = double.NaN,
+                            Height = double.NaN,
+                        };
+                    }
+
+                    return o;
+                }));
             CreateTemplateParentBinding(arrowDecoratedBox, ArrowDecoratedBox.ContentTemplateProperty,
                 ToolTip.ContentTemplateProperty);
 

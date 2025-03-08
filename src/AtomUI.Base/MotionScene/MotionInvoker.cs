@@ -55,7 +55,7 @@ internal static class MotionInvoker
                 {
                     compositeDisposable.Dispose();
                     compositeDisposable = null;
-                }, TimeSpan.FromMilliseconds(100));
+                }, TimeSpan.FromMilliseconds(500));
             });
         });
     }
@@ -97,7 +97,7 @@ internal static class MotionInvoker
                 {
                     compositeDisposable.Dispose();
                     compositeDisposable = null;
-                }, TimeSpan.FromMilliseconds(100));
+                }, TimeSpan.FromMilliseconds(500));
             });
         });
     }
