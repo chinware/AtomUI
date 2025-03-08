@@ -527,10 +527,12 @@ public class TreeViewItem : AvaloniaTreeItem,
         var motion = new ExpandMotion(Direction.Top,
             MotionDuration,
             new CubicEaseOut());
-        MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, null,
-            () =>
+        MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, () =>
             {
                 _itemsPresenterMotionActor.IsVisible = true;
+            },
+            () =>
+            {
                 _animating                           = false;
                 if (_switcherButton != null)
                 {

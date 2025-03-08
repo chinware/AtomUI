@@ -4,7 +4,10 @@ using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
+using Avalonia.Layout;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -12,7 +15,9 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class ToggleIconButtonTheme : BaseControlTheme
 {
-    public const string ContentPresenterPart = "PART_ContentPresenter";
+    public const string RootLayoutPart = "PART_RootLayout";
+    public const string CheckedIconPresenterPart = "PART_CheckedIconPresenter";
+    public const string UnCheckedIconPresenterPart = "PART_UnCheckedIconPresenter";
 
     public ToggleIconButtonTheme()
         : base(typeof(ToggleIconButton))
@@ -27,23 +32,52 @@ internal class ToggleIconButtonTheme : BaseControlTheme
     {
         return new FuncControlTemplate<ToggleIconButton>((button, scope) =>
         {
-            var contentPresenter = new ContentPresenter
+            var rootLayout = new Panel()
             {
-                Name = ContentPresenterPart
+                Name = RootLayoutPart
             };
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
-                ContentControl.ContentProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
-                ContentControl.ContentTemplateProperty);
-            return contentPresenter;
+            var checkedIconPresenter = new ContentPresenter
+            {
+                Name = CheckedIconPresenterPart
+            };
+
+            var uncheckedIconPresenter = new ContentPresenter()
+            {
+                Name = UnCheckedIconPresenterPart
+            };
+
+            rootLayout.Children.Add(checkedIconPresenter);
+            rootLayout.Children.Add(uncheckedIconPresenter);
+
+            CreateTemplateParentBinding(checkedIconPresenter, ContentPresenter.ContentProperty,
+                ToggleIconButton.CheckedIconProperty);
+            CreateTemplateParentBinding(checkedIconPresenter, ContentPresenter.IsVisibleProperty,
+                ToggleIconButton.IsCheckedProperty, BindingMode.Default,
+                new FuncValueConverter<bool?, bool>(input => input.HasValue && input.Value));
+
+            CreateTemplateParentBinding(uncheckedIconPresenter, ContentPresenter.ContentProperty,
+                ToggleIconButton.UnCheckedIconProperty);
+            CreateTemplateParentBinding(uncheckedIconPresenter, ContentPresenter.IsVisibleProperty,
+                ToggleIconButton.IsCheckedProperty, BindingMode.Default,
+                new FuncValueConverter<bool?, bool>(input => !input.HasValue || !input.Value));
+
+            return rootLayout;
         });
     }
 
     protected override void BuildStyles()
     {
+        {
+            var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
+            iconStyle.Add(Icon.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            iconStyle.Add(Icon.VerticalAlignmentProperty, VerticalAlignment.Center);
+            Add(iconStyle);
+        }
+        
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-        enabledStyle.Add(ToggleIconButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        enabledStyle.Add(ToggleIconButton.CursorProperty,
+            new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         {
             {
                 var iconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());

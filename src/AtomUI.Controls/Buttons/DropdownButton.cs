@@ -1,7 +1,6 @@
 ﻿using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -184,12 +183,6 @@ public class DropdownButton : Button
         ExtraContainerVisible = true;
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupFlyoutProperties();
-    }
-
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -199,6 +192,7 @@ public class DropdownButton : Button
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        SetupFlyoutProperties();
         _flyoutStateHelper.NotifyAttachedToVisualTree();
     }
 
@@ -212,7 +206,7 @@ public class DropdownButton : Button
             BindUtils.RelayBind(this, IsShowArrowProperty, DropdownFlyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, DropdownFlyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, DropdownFlyout);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, DropdownFlyout, MenuFlyout.IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, DropdownFlyout);
             
             DropdownFlyout.Opened += HandleFlyoutOpened;
             DropdownFlyout.Closed += HandleFlyoutClosed;

@@ -196,9 +196,9 @@ public class IconButton : AvaloniaButton,
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         SetupIcon();
     }
 

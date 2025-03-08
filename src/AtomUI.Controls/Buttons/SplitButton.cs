@@ -33,6 +33,7 @@ public class SplitButton : ContentControl,
                            ICommandSource, 
                            ISizeTypeAware,
                            IControlSharedTokenResourcesHost,
+                           IAnimationAwareControl,
                            ITokenResourceConsumer
 {
     #region 公共属性定义
@@ -98,10 +99,13 @@ public class SplitButton : ContentControl,
 
     public static readonly StyledProperty<bool> IsPrimaryButtonTypeProperty =
         AvaloniaProperty.Register<SplitButton, bool>(nameof(IsPrimaryButtonType));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
 
-    /// <summary>
-    /// Raised when the user presses the primary part of the <see cref="SplitButton" />.
-    /// </summary>
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
+        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<SplitButton>();
+    
     public event EventHandler<RoutedEventArgs>? Click
     {
         add => AddHandler(ClickEvent, value);
@@ -230,6 +234,18 @@ public class SplitButton : ContentControl,
         get => GetValue(IsPrimaryButtonTypeProperty);
         set => SetValue(IsPrimaryButtonTypeProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsWaveAnimationEnabled
+    {
+        get => GetValue(IsWaveAnimationEnabledProperty);
+        set => SetValue(IsWaveAnimationEnabledProperty, value);
+    }
 
     #endregion
 
@@ -248,6 +264,7 @@ public class SplitButton : ContentControl,
         set => SetAndRaise(EffectiveButtonTypeProperty, ref _effectiveButtonType, value);
     }
 
+    Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -279,14 +296,12 @@ public class SplitButton : ContentControl,
     {
         _flyoutStateHelper = new FlyoutStateHelper();
         this.RegisterResources();
+        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
     }
 
     internal virtual bool InternalIsChecked => false;
-
-    /// <inheritdoc />
     protected override bool IsEnabledCore => base.IsEnabledCore && _commandCanExecute;
-
-    /// <inheritdoc />
+    
     void ICommandSource.CanExecuteChanged(object sender, EventArgs e)
     {
         CanExecuteChanged(sender, e);
@@ -409,12 +424,21 @@ public class SplitButton : ContentControl,
         _flyoutStateHelper.NotifyAttachedToVisualTree();
         UpdatePseudoClasses();
         SetupEffectiveButtonType();
-        FlyoutButtonIcon ??= AntDesignIconPackage.EllipsisOutlined();
+
+        SetupDefaultFlyoutButtonIcon();
         SetupFlyoutProperties();
         RegisterFlyoutEvents(Flyout);
     }
 
-    /// <inheritdoc />
+    private void SetupDefaultFlyoutButtonIcon()
+    {
+        if (FlyoutButtonIcon == null)
+        {
+            ClearValue(FlyoutButtonIconProperty);
+            SetValue(FlyoutButtonIconProperty, AntDesignIconPackage.EllipsisOutlined(), BindingPriority.Template);
+        }
+    }
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -442,16 +466,16 @@ public class SplitButton : ContentControl,
             BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
             BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
+            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout);
         }
     }
 
-    /// <inheritdoc />
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
         
-
         // Control attached again, set Hotkey to create a hotkey manager for this control
         SetCurrentValue(HotKeyProperty, _hotkey);
 
@@ -468,8 +492,7 @@ public class SplitButton : ContentControl,
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
     }
-
-    /// <inheritdoc />
+    
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
@@ -484,8 +507,7 @@ public class SplitButton : ContentControl,
         }
         this.DisposeTokenBindings();
     }
-
-    /// <inheritdoc />
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == CommandProperty)
@@ -578,8 +600,7 @@ public class SplitButton : ContentControl,
             _secondaryButton.CornerRadius = secondaryButtonCornerRadius;
         }
     }
-
-    /// <inheritdoc />
+    
     protected override void OnKeyDown(KeyEventArgs e)
     {
         var key = e.Key;
@@ -592,8 +613,7 @@ public class SplitButton : ContentControl,
 
         base.OnKeyDown(e);
     }
-
-    /// <inheritdoc />
+    
     protected override void OnKeyUp(KeyEventArgs e)
     {
         var key = e.Key;

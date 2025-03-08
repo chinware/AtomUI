@@ -164,7 +164,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-
+    
         if (change.Property == LeftAddOnContentProperty || 
             change.Property == RightAddOnContentProperty)
         {
@@ -172,7 +172,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
             {
                 oldControl.SetTemplatedParent(null);
             }
-
+    
             if (change.NewValue is Control newControl)
             {
                 newControl.SetTemplatedParent(this);
@@ -203,7 +203,6 @@ public class AddOnDecoratedInnerBox : ContentControl,
         }
 
         SetupContentPresenterMargin();
-        BuildEffectiveInnerBoxPadding();
     }
 
     private void HandleLayoutSizeChanged(object? sender, SizeChangedEventArgs args)
@@ -232,5 +231,11 @@ public class AddOnDecoratedInnerBox : ContentControl,
         }
 
         ContentPresenterMargin = new Thickness(marginLeft, 0, marginRight, 0);
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        BuildEffectiveInnerBoxPadding();
     }
 }

@@ -16,49 +16,6 @@ internal static class MotionInvoker
             await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
         });
     }
-    
-    public static void InvokeInPopupLayer(SceneMotionActorControl actor,
-                                          AbstractMotion motion,
-                                          Action? aboutToStart = null,
-                                          Action? completedAction = null,
-                                          CancellationToken cancellationToken = default)
-    {
-        var sceneLayer          = PrepareSceneLayer(motion, actor);
-        var compositeDisposable = new CompositeDisposable();
-        compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
-        {
-            sceneLayer.Hide();
-            sceneLayer.Dispose();
-        }));
-        sceneLayer.SetMotionActor(actor);
-        actor.NotifyMotionTargetAddedToScene();
-        sceneLayer.Topmost = true;
-        sceneLayer.Show();
-        sceneLayer.Activate();
-        actor.NotifySceneShowed();
-        actor.IsVisible = false;
-
-        // 等待一个事件循环，让动画窗口置顶
-        Dispatcher.UIThread.Post(() =>
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                // 主要等待正常窗体显示出来再隐藏对话层，不然感觉会闪屏
-                await motion.RunAsync(actor, aboutToStart, () =>
-                {
-                    if (completedAction is not null)
-                    {
-                        completedAction();
-                    }
-                }, cancellationToken);
-                DispatcherTimer.RunOnce(() =>
-                {
-                    compositeDisposable.Dispose();
-                    compositeDisposable = null;
-                }, TimeSpan.FromMilliseconds(500));
-            });
-        });
-    }
 
     public static void DispatchInMotionSceneLayer(SceneMotionActorControl actor,
                                                   AbstractMotion motion,

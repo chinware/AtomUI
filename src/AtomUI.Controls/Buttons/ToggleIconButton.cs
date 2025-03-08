@@ -6,10 +6,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
-using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -115,27 +112,8 @@ public class ToggleIconButton : ToggleButton,
         this.RegisterResources();
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        if (CheckedIcon is not null)
-        {
-            ConfigureIcon(CheckedIcon);
-        }
-
-        if (UnCheckedIcon is not null)
-        {
-            ConfigureIcon(UnCheckedIcon);
-        }
-
-        ApplyIconToContent();
-    }
-
     protected virtual void ConfigureIcon(Icon icon)
     {
-        icon.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center, BindingPriority.Template);
-        icon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center, BindingPriority.Template);
-        icon.SetTemplatedParent(this);
         BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
         BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
         
@@ -151,58 +129,20 @@ public class ToggleIconButton : ToggleButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == IsCheckedProperty)
-            {
-                ApplyIconToContent();
-            }
-            else if (change.Property == IsPressedProperty ||
-                     change.Property == IsPointerOverProperty)
-            {
-                var icon = IsChecked.HasValue && IsChecked.Value ? CheckedIcon : UnCheckedIcon;
-                if (icon is not null)
-                {
-                    if (!PseudoClasses.Contains(StdPseudoClass.Disabled))
-                    {
-                        icon.IconMode = IconMode.Normal;
-                        if (PseudoClasses.Contains(StdPseudoClass.Pressed))
-                        {
-                            icon.IconMode = IconMode.Selected;
-                        }
-                        else if (PseudoClasses.Contains(StdPseudoClass.PointerOver))
-                        {
-                            icon.IconMode = IconMode.Active;
-                        }
-                    }
-                    else
-                    {
-                        icon.IconMode = IconMode.Disabled;
-                    }
-                }
-            }
-        }
 
         if (change.Property == CheckedIconProperty ||
             change.Property == UnCheckedIconProperty)
         {
+            if (change.OldValue is Icon oldIcon)
+            {
+                oldIcon.SetTemplatedParent(null);
+            }
+
             if (change.NewValue is Icon newIcon)
             {
+                newIcon.SetTemplatedParent(this);
                 ConfigureIcon(newIcon);
-                ApplyIconToContent();
             }
-        }
-    }
-
-    internal virtual void ApplyIconToContent()
-    {
-        if (IsChecked.HasValue && IsChecked.Value)
-        {
-            Content = CheckedIcon;
-        }
-        else
-        {
-            Content = UnCheckedIcon;
         }
     }
     
