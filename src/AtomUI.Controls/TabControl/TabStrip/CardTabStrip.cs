@@ -11,6 +11,7 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -119,8 +120,6 @@ public class CardTabStrip : BaseTabStrip
         {
             _addTabButton.Click += HandleAddButtonClicked;
         }
-
-        HandleSizeTypeChanged();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -136,12 +135,13 @@ public class CardTabStrip : BaseTabStrip
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+        HandleSizeTypeChanged();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == SizeTypeProperty)
             {

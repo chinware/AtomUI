@@ -104,8 +104,7 @@ public class TabStripItem : AvaloniaTabStripItem,
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
     
     #endregion
-
-    private StackPanel? _contentLayout;
+    
     private IconButton? _closeButton;
     private CompositeDisposable? _tokenBindingsDisposable;
     
@@ -123,10 +122,8 @@ public class TabStripItem : AvaloniaTabStripItem,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _contentLayout = e.NameScope.Find<StackPanel>(BaseTabStripItemTheme.ContentLayoutPart);
         _closeButton   = e.NameScope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
         
-        SetupTransitions();
         if (_closeButton is not null)
         {
             _closeButton.Click += HandleCloseRequest;
@@ -217,13 +214,19 @@ public class TabStripItem : AvaloniaTabStripItem,
         _tokenBindingsDisposable = new CompositeDisposable();
         SetupShapeThemeBindings();
         base.OnAttachedToLogicalTree(e);
-        SetupDefaultCloseIcon();
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupDefaultCloseIcon();
+        SetupTransitions();
     }
 
     private void SetupShapeThemeBindings()
