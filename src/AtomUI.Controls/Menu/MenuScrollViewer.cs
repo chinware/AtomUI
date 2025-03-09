@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Reactive.Disposables;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +6,6 @@ using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -16,8 +14,7 @@ using AvaloniaScrollViewer = ScrollViewer;
 [TemplatePart(MenuScrollViewerTheme.ScrollDownButtonPart, typeof(IconButton))]
 [TemplatePart(MenuScrollViewerTheme.ScrollUpButtonPart, typeof(IconButton))]
 [TemplatePart(MenuScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
-public class MenuScrollViewer : AvaloniaScrollViewer,
-                                ITokenResourceConsumer
+public class MenuScrollViewer : AvaloniaScrollViewer
 {
     private IconButton? _scrollUpButton;
     private IconButton? _scrollDownButton;
@@ -32,9 +29,6 @@ public class MenuScrollViewer : AvaloniaScrollViewer,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-    private CompositeDisposable? _tokenBindingsDisposable;
     
     #endregion
     
@@ -84,17 +78,5 @@ public class MenuScrollViewer : AvaloniaScrollViewer,
         {
             SetupScrollButtonVisibility();
         }
-    }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }

@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -85,6 +84,7 @@ public class MarqueeLabel : TextBlock,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        SetupTokenBindings();
         HandleStartupMarqueeAnimation();
     }
 
@@ -98,39 +98,6 @@ public class MarqueeLabel : TextBlock,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        HandlePropertyChangedForStyle(e);
-    }
-
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        // 为了强制
-        HorizontalAlignment = HorizontalAlignment.Stretch;
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size = base.MeasureOverride(availableSize);
-        HandleLayoutUpdated(size, availableSize);
-        return size;
-    }
-
-    private double CalculateDuration(double distance)
-    {
-        // 计算持续时间，确保至少有一毫秒的持续时间以避免除以零的错误
-        return 4 * Math.Max(1, distance / MoveSpeed * 1000);
-    }
-
-    private void SetupTokenBindings()
-    {
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace));
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed));
-    }
-
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
-    {
         if (this.IsAttachedToVisualTree())
         {
             if (e.Property == IsPointerOverProperty)
@@ -161,6 +128,34 @@ public class MarqueeLabel : TextBlock,
                 }
             }
         }
+    }
+
+    public sealed override void ApplyTemplate()
+    {
+        base.ApplyTemplate();
+        // 为了强制
+        HorizontalAlignment = HorizontalAlignment.Stretch;
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size = base.MeasureOverride(availableSize);
+        HandleLayoutUpdated(size, availableSize);
+        return size;
+    }
+
+    private double CalculateDuration(double distance)
+    {
+        // 计算持续时间，确保至少有一毫秒的持续时间以避免除以零的错误
+        return 4 * Math.Max(1, distance / MoveSpeed * 1000);
+    }
+
+    private void SetupTokenBindings()
+    {
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace));
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed));
     }
 
     private void HandleStartupMarqueeAnimation()
@@ -256,10 +251,5 @@ public class MarqueeLabel : TextBlock,
             TextLayout.Draw(context, origin + new Point(offset + _lastTextWidth + CycleSpace, 0));
         }
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        SetupTokenBindings();
-    }
+    
 }

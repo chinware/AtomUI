@@ -13,7 +13,6 @@ using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using AnimationUtils = AtomUI.Utils.AnimationUtils;
@@ -71,7 +70,7 @@ public class MenuItem : AvaloniaMenuItem,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        HorizontalAlignment = HorizontalAlignment.Stretch;
+      
         var scope = e.NameScope;
         if (IsTopLevel)
         {

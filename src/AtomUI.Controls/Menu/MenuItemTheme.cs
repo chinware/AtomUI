@@ -218,6 +218,7 @@ internal class MenuItemTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(TemplatedControl.ForegroundProperty, MenuTokenKey.ItemColor);
+        commonStyle.Add(TemplatedControl.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         commonStyle.Add(TemplatedControl.CursorProperty,
             new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         

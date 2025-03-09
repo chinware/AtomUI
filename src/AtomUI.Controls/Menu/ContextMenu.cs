@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel;
-using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -14,8 +12,7 @@ using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 
 public class ContextMenu : AvaloniaContextMenu,
                            IAnimationAwareControl,
-                           IControlSharedTokenResourcesHost,
-                           ITokenResourceConsumer
+                           IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -44,11 +41,8 @@ public class ContextMenu : AvaloniaContextMenu,
     Control IAnimationAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
-    
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     public ContextMenu()
     {
@@ -82,17 +76,5 @@ public class ContextMenu : AvaloniaContextMenu,
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
-    }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }
