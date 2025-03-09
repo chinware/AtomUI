@@ -189,7 +189,6 @@ public class Tag : TemplatedControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        SetupDefaultCloseIcon();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -206,19 +205,13 @@ public class Tag : TemplatedControl,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
+        SetupDefaultCloseIcon();
         SetupPresetColorMap();
         SetupStatusColorMap();
-        base.OnApplyTemplate(e);
-
         if (TagColor is not null)
         {
             SetupTagColorInfo(TagColor);
         }
-
         SetupBorderThicknessBinding();
     }
 
