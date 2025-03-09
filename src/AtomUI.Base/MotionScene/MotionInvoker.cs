@@ -89,12 +89,8 @@ internal static class MotionInvoker
                     completedAction?.Invoke();
                     Dispatcher.UIThread.Post(() => actor.IsVisible = false);
                 }, cancellationToken);
-                // 为了避免闪烁，给一个时间间隔
-                DispatcherTimer.RunOnce(() =>
-                {
-                    compositeDisposable.Dispose();
-                    compositeDisposable = null;
-                }, TimeSpan.FromMilliseconds(600));
+                compositeDisposable.Dispose();
+                compositeDisposable = null;
             });
         });
     }
