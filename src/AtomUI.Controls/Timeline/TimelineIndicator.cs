@@ -189,6 +189,17 @@ internal class TimelineIndicator : Control,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         this.AddTokenBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, LineHeightRatioProperty, SharedTokenKey.LineHeightRatio));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorDotBorderWidthProperty,
@@ -201,14 +212,7 @@ internal class TimelineIndicator : Control,
             TimelineTokenKey.IndicatorTailWidth));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorTailColorProperty,
             TimelineTokenKey.IndicatorTailColor));
-
         SetupIndicatorIcon();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

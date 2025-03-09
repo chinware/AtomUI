@@ -132,9 +132,9 @@ internal class TimelineItemPanel : Panel
         return finalSize;
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         SetupItemsHorizontalAlignment();
     }
 

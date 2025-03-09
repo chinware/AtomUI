@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -486,9 +487,14 @@ public class RangeTimePicker : RangeInfoPickerInput,
         return new Size(width, height);
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override bool ShowClearButtonPredicate()
     {
-        base.OnApplyTemplate(e);
+        return RangeStartSelectedTime is not null || RangeEndSelectedTime is not null;
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
         if (RangeStartDefaultTime is not null && RangeStartSelectedTime is null)
         {
             RangeStartSelectedTime = RangeStartDefaultTime;
@@ -499,10 +505,4 @@ public class RangeTimePicker : RangeInfoPickerInput,
             RangeEndSelectedTime = RangeEndDefaultTime;
         }
     }
-
-    protected override bool ShowClearButtonPredicate()
-    {
-        return RangeStartSelectedTime is not null || RangeEndSelectedTime is not null;
-    }
-
 }

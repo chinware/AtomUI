@@ -7,6 +7,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -283,11 +284,10 @@ public class TimePicker : InfoPickerInput,
             PreferredInputWidth = preferredInputWidth;
         }
     }
-    
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
         if (DefaultTime is not null && SelectedTime is null)
         {
             SelectedTime = DefaultTime;

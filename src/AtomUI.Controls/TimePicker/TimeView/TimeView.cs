@@ -178,14 +178,6 @@ internal class TimeView : TemplatedControl,
 
     private IDisposable? _pointerPositionDisposable;
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-        _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
-        SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
-    }
-
     private void DetectPointerPosition(RawInputEventArgs args)
     {
         if (args is RawPointerEventArgs pointerEventArgs)
@@ -233,6 +225,17 @@ internal class TimeView : TemplatedControl,
         return new Rect(pos, selector.Bounds.Size);
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+        _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
+        SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this)));
+    }
+    
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -243,9 +246,6 @@ internal class TimeView : TemplatedControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
-            BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this)));
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
