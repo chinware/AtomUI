@@ -473,8 +473,6 @@ public class ToggleSwitch : ToggleButton,
             Cursor = new Cursor(StandardCursorType.Hand);
         }
 
-        HorizontalAlignment = HorizontalAlignment.Left;
-
         var offControl = SetupContent(OffContent);
         var onControl  = SetupContent(OnContent);
 

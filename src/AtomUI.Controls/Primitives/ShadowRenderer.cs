@@ -55,9 +55,10 @@ internal class ShadowRenderer : Control
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        HorizontalAlignment = HorizontalAlignment.Stretch;
-        VerticalAlignment   = VerticalAlignment.Stretch;
-        IsHitTestVisible    = false;
+        if (_layout is not null)
+        {
+            return;
+        }
         CreateMaskContent();
         _layout = new Canvas();
         VisualChildren.Add(_layout);
@@ -65,6 +66,14 @@ internal class ShadowRenderer : Control
         _maskContent = CreateMaskContent();
         SetupContentSizeAndPos();
         _layout.Children.Add(_maskContent);
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        HorizontalAlignment = HorizontalAlignment.Stretch;
+        VerticalAlignment   = VerticalAlignment.Stretch;
+        IsHitTestVisible    = false;
     }
 
     private Border CreateMaskContent()

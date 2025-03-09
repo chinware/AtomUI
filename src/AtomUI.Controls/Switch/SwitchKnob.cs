@@ -153,19 +153,7 @@ internal class SwitchKnob : Control,
             Transitions = null;
         }
     }
-
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        Effect ??= new DropShadowEffect
-        {
-            OffsetX    = KnobBoxShadow.OffsetX,
-            OffsetY    = KnobBoxShadow.OffsetY,
-            Color      = KnobBoxShadow.Color,
-            BlurRadius = KnobBoxShadow.Blur
-        };
-    }
-
+    
     public void NotifyStartLoading()
     {
         if (_isLoading)
@@ -247,7 +235,7 @@ internal class SwitchKnob : Control,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        SetupTokenBindings();
+  
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -263,6 +251,17 @@ internal class SwitchKnob : Control,
         {
             StartLoadingAnimation();
         }
+        Effect ??= new DropShadowEffect
+        {
+            OffsetX    = KnobBoxShadow.OffsetX,
+            OffsetY    = KnobBoxShadow.OffsetY,
+            Color      = KnobBoxShadow.Color,
+            BlurRadius = KnobBoxShadow.Blur
+        };
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
+            ToggleSwitchTokenKey.SwitchDisabledOpacity));
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
+            ToggleSwitchTokenKey.LoadingAnimationDuration));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -272,14 +271,6 @@ internal class SwitchKnob : Control,
         {
             _cancellationTokenSource?.Cancel();
         }
-    }
-
-    private void SetupTokenBindings()
-    {
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
-            ToggleSwitchTokenKey.SwitchDisabledOpacity));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
-            ToggleSwitchTokenKey.LoadingAnimationDuration));
     }
 
     public sealed override void Render(DrawingContext context)

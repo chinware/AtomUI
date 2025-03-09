@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using System.Runtime.CompilerServices;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -12,7 +13,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -72,13 +72,16 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
 
     private void CreateShadowRenderer()
     {
+        if (Child is Canvas shadowLayout && _shadowRenderer != null)
+        {
+            shadowLayout.Children.Remove(_shadowRenderer);
+        }
         ShadowLayerHost?.SetChild(null);
-        _shadowRenderer ??= new ShadowRenderer();
+        _shadowRenderer = new ShadowRenderer();
         BindUtils.RelayBind(this, OpacityProperty, _shadowRenderer, OpacityProperty);
         var layout = new Canvas();
         layout.Children.Add(_shadowRenderer);
         Child = layout;
-        ConfigureShadowRenderer();
         ShadowLayerHost?.SetChild(Child);
     }
     
@@ -207,11 +210,7 @@ internal class PopupShadowLayer : AvaloniaObject, IShadowDecorator
             // 尝试手动
             CreateShadowRenderer();
         }
-        else
-        {
-            ConfigureShadowRenderer();
-        }
-        
+
         ((ILogical)popupHost).SetLogicalParent(_target);
         popupHost.SetChild(Child);
         

@@ -47,6 +47,7 @@ internal class ToggleSwitchTheme : BaseControlTheme
     {
         this.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextLightSolid);
         this.Add(ToggleSwitch.TrackPaddingProperty, ToggleSwitchTokenKey.TrackPadding);
+        this.Add(ToggleSwitch.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         BuildSizeTypeStyle();
         BuildCommonStyle();
 

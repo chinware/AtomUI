@@ -260,7 +260,6 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
-
         _shadowLayer = new PopupShadowLayer(this);
         BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer);
         BindUtils.RelayBind(this, OpacityProperty, _shadowLayer);
