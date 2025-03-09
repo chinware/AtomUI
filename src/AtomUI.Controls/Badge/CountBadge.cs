@@ -130,7 +130,6 @@ public class CountBadge : Control,
 
     private CountBadgeAdorner? _badgeAdorner;
     private AdornerLayer? _adornerLayer;
-    private bool _isInitialized;
 
     static CountBadge()
     {

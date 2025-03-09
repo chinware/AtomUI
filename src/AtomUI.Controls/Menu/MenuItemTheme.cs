@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg.AntDesign;
+﻿using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -23,7 +24,9 @@ internal class MenuItemTheme : BaseControlTheme
 {
     public const string ItemDecoratorPart = "PART_ItemDecorator";
     public const string MainContainerPart = "PART_MainContainer";
-    public const string TogglePresenterPart = "PART_TogglePresenter";
+    public const string ToggleItemsLayoutPart = "PART_ToggleItemsLayout";
+    public const string ToggleCheckboxPart = "PART_ToggleCheckboxPresenter";
+    public const string ToggleRadioPart = "PART_ToggleRadio";
     public const string ItemIconPresenterPart = "PART_ItemIconPresenter";
     public const string ItemTextPresenterPart = "PART_ItemTextPresenter";
     public const string InputGestureTextPart = "PART_InputGestureText";
@@ -55,7 +58,7 @@ internal class MenuItemTheme : BaseControlTheme
                 {
                     new ColumnDefinition(GridLength.Auto)
                     {
-                        SharedSizeGroup = "TogglePresenter"
+                        SharedSizeGroup = "ToggleItemsLayout"
                     },
                     new ColumnDefinition(GridLength.Auto)
                     {
@@ -74,19 +77,62 @@ internal class MenuItemTheme : BaseControlTheme
             };
             layout.RegisterInNameScope(scope);
 
-            var togglePresenter = new ContentControl
+            var toggleItemsLayout = new Panel()
             {
-                Name                = TogglePresenterPart,
+                Name = ToggleItemsLayoutPart,
+            };
+            toggleItemsLayout.Bind(Panel.IsVisibleProperty, new MultiBinding()
+            {
+                Bindings =
+                {
+                    new Binding("IsTopLevel")
+                    {
+                        RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+                    },
+                    new TemplateBinding(MenuItem.ToggleTypeProperty)
+                },
+                Converter = new FuncMultiValueConverter<object?, bool>(objects =>
+                {
+                    var items      = objects.ToList();
+                    if (items[0] is bool isTopLevel && items[1] is MenuItemToggleType toggleType)
+                    {
+                        return !isTopLevel && toggleType != MenuItemToggleType.None;
+                    }
+
+                    return false;
+                })
+            });
+            CreateTemplateParentBinding(toggleItemsLayout, Panel.IsEnabledProperty,
+                MenuItem.IsEnabledProperty);
+            
+            Grid.SetColumn(toggleItemsLayout, 0);
+            toggleItemsLayout.RegisterInNameScope(scope);
+            
+            var toggleCheckbox = new CheckBox()
+            {
+                Name = ToggleCheckboxPart,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment   = VerticalAlignment.Center,
-                IsVisible           = false
             };
-            CreateTemplateParentBinding(togglePresenter, InputElement.IsEnabledProperty,
-                InputElement.IsEnabledProperty);
+            CreateTemplateParentBinding(toggleCheckbox, CheckBox.IsCheckedProperty, MenuItem.IsCheckedProperty);
+            CreateTemplateParentBinding(toggleCheckbox, CheckBox.IsVisibleProperty,
+                MenuItem.ToggleTypeProperty, BindingMode.Default,
+                new FuncValueConverter<MenuItemToggleType, bool>(type => type == MenuItemToggleType.CheckBox));
+            toggleItemsLayout.Children.Add(toggleCheckbox);
 
-            Grid.SetColumn(togglePresenter, 0);
-            togglePresenter.RegisterInNameScope(scope);
-
+            var toggleRadio = new RadioButton()
+            {
+                Name                = ToggleRadioPart,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
+            };
+            CreateTemplateParentBinding(toggleCheckbox, RadioButton.IsCheckedProperty, MenuItem.IsCheckedProperty);
+            CreateTemplateParentBinding(toggleCheckbox, RadioButton.GroupNameProperty, MenuItem.GroupNameProperty);
+            CreateTemplateParentBinding(toggleRadio, ContentPresenter.IsVisibleProperty,
+                MenuItem.ToggleTypeProperty, BindingMode.Default,
+                new FuncValueConverter<MenuItemToggleType, bool>(type => type == MenuItemToggleType.Radio));
+            toggleItemsLayout.Children.Add(toggleRadio);
+            
             var iconPresenter = new ContentPresenter()
             {
                 Name                = ItemIconPresenterPart,
@@ -97,6 +143,8 @@ internal class MenuItemTheme : BaseControlTheme
             Grid.SetColumn(iconPresenter, 1);
             iconPresenter.RegisterInNameScope(scope);
             CreateTemplateParentBinding(iconPresenter, ContentPresenter.ContentProperty, MenuItem.IconProperty);
+            CreateTemplateParentBinding(iconPresenter, ContentPresenter.IsVisibleProperty, MenuItem.IconProperty,
+                BindingMode.Default, ObjectConverters.IsNotNull);
 
             var itemTextPresenter = new ContentPresenter
             {
@@ -158,7 +206,7 @@ internal class MenuItemTheme : BaseControlTheme
             var popup = CreateMenuPopup(menuItem);
             popup.RegisterInNameScope(scope);
 
-            layout.Children.Add(togglePresenter);
+            layout.Children.Add(toggleItemsLayout);
             layout.Children.Add(iconPresenter);
             layout.Children.Add(itemTextPresenter);
             layout.Children.Add(inputGestureText);
@@ -223,9 +271,9 @@ internal class MenuItemTheme : BaseControlTheme
             new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
         
         // 设置元素外间距
-        var togglePresenterStyle = new Style(selector => selector.Nesting().Template().Name(TogglePresenterPart));
-        togglePresenterStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
-        commonStyle.Add(togglePresenterStyle);
+        var toggleItemsLayoutStyle = new Style(selector => selector.Nesting().Template().Name(ToggleItemsLayoutPart));
+        toggleItemsLayoutStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
+        commonStyle.Add(toggleItemsLayoutStyle);
 
         var inputGestureTextStyle = new Style(selector => selector.Nesting().Template().Name(InputGestureTextPart));
         inputGestureTextStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
@@ -233,8 +281,6 @@ internal class MenuItemTheme : BaseControlTheme
 
         var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
         iconPresenterStyle.Add(Layoutable.MarginProperty, MenuTokenKey.ItemMargin);
-        iconPresenterStyle.Add(Layoutable.WidthProperty, MenuTokenKey.ItemIconSize);
-        iconPresenterStyle.Add(Layoutable.HeightProperty, MenuTokenKey.ItemIconSize);
         commonStyle.Add(iconPresenterStyle);
         
         var itemTextPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemTextPresenterPart));
@@ -300,19 +346,12 @@ internal class MenuItemTheme : BaseControlTheme
 
     private void BuildMenuIconStyle()
     {
-        {
-            var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
-            iconPresenterStyle.Add(Visual.IsVisibleProperty, false);
-            Add(iconPresenterStyle);
-        }
-
-        var hasIconStyle = new Style(selector => selector.Nesting().Class(":icon"));
-        {
-            var iconPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemIconPresenterPart));
-            iconPresenterStyle.Add(Visual.IsVisibleProperty, true);
-            hasIconStyle.Add(iconPresenterStyle);
-        }
-        Add(hasIconStyle);
+        var iconStyle = new Style(selector =>
+            selector.Nesting().Template().Name(ItemIconPresenterPart).Descendant().OfType<Icon>());
+        iconStyle.Add(Icon.WidthProperty, MenuTokenKey.ItemIconSize);
+        iconStyle.Add(Icon.HeightProperty, MenuTokenKey.ItemIconSize);
+        iconStyle.Add(Icon.NormalFilledBrushProperty, MenuTokenKey.ItemColor);
+        Add(iconStyle);
     }
 
     private void BuildPopupStyle()

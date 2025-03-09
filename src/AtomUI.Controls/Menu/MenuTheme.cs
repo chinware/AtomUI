@@ -20,7 +20,7 @@ internal class MenuTheme : BaseControlTheme
     {
     }
 
-    protected override IControlTemplate? BuildControlTemplate()
+    protected override IControlTemplate BuildControlTemplate()
     {
         return new FuncControlTemplate<Menu>((menu, scope) =>
         {

@@ -1,29 +1,18 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
-using AtomUI.Media;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
-using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
 [PseudoClasses(TopLevelPC)]
-public class MenuItem : AvaloniaMenuItem,
-                        ITokenResourceConsumer
+public class MenuItem : AvaloniaMenuItem
 {
     public const string TopLevelPC = ":toplevel";
 
@@ -51,13 +40,7 @@ public class MenuItem : AvaloniaMenuItem,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-
     #endregion
-
-    private CompositeDisposable? _tokenBindingsDisposable;
-    private ContentPresenter? _topLevelContentPresenter;
-    private ContentControl? _togglePresenter;
 
     internal static PlatformKeyGestureConverter KeyGestureConverter = new();
 
@@ -66,44 +49,7 @@ public class MenuItem : AvaloniaMenuItem,
         AffectsRender<MenuItem>(BackgroundProperty);
         AffectsMeasure<MenuItem>(IconProperty);
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-      
-        var scope = e.NameScope;
-        if (IsTopLevel)
-        {
-            _topLevelContentPresenter = scope.Find<ContentPresenter>(TopLevelMenuItemTheme.HeaderPresenterPart);
-        }
-        else
-        {
-            _togglePresenter = scope.Find<ContentControl>(MenuItemTheme.TogglePresenterPart);
-        }
-        HandleToggleTypeChanged();
-        SetupTransitions();
-        UpdatePseudoClasses();
-    }
-
-    private void SetupTransitions()
-    {
-        if (_topLevelContentPresenter is not null)
-        {
-            if (IsMotionEnabled)
-            {
-                _topLevelContentPresenter.Transitions ??= new Transitions
-                {
-                    AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-                    AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-                };
-            }
-            else
-            {
-                _topLevelContentPresenter.Transitions = null;
-            }
-        }
-    }
-
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -111,67 +57,19 @@ public class MenuItem : AvaloniaMenuItem,
         {
             UpdatePseudoClasses();
         }
-        else if (e.Property == ToggleTypeProperty)
-        {
-            HandleToggleTypeChanged();
-        }
 
-        if (this.IsAttachedToVisualTree())
+        if (e.Property == IconProperty)
         {
-            if (e.Property == IsMotionEnabledProperty)
+            if (e.OldValue is Icon oldIcon)
             {
-                SetupTransitions();
+                oldIcon.SetTemplatedParent(null);
             }
-        }
 
-        if (this.IsAttachedToLogicalTree())
-        {
-            if (e.Property == IconProperty)
+            if (e.NewValue is Icon newIcon)
             {
-                SetupIcon();
+                LogicalChildren.Remove(newIcon);
+                newIcon.SetTemplatedParent(this);
             }
-        }
-    }
-
-    private void SetupIcon()
-    {
-        if (Icon is Icon icon)
-        {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, MenuTokenKey.ItemIconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, MenuTokenKey.ItemIconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, IconPkg.Icon.NormalFilledBrushProperty,
-                MenuTokenKey.ItemColor));
-        }
-    }
-
-    private void HandleToggleTypeChanged()
-    {
-        if (IsTopLevel || _togglePresenter is null)
-        {
-            return;
-        }
-
-        if (ToggleType == MenuItemToggleType.None)
-        {
-            if (_togglePresenter.Presenter is not null)
-            {
-                _togglePresenter.Presenter.IsVisible = false;
-            }
-        }
-        else if (ToggleType == MenuItemToggleType.CheckBox)
-        {
-            var checkbox = new CheckBox();
-            BindUtils.RelayBind(this, IsCheckedProperty, checkbox, ToggleButton.IsCheckedProperty);
-            _togglePresenter.Content   = checkbox;
-            _togglePresenter.IsVisible = true;
-        }
-        else if (ToggleType == MenuItemToggleType.Radio)
-        {
-            var radioButton = new RadioButton();
-            BindUtils.RelayBind(this, IsCheckedProperty, radioButton, ToggleButton.IsCheckedProperty);
-            BindUtils.RelayBind(this, GroupNameProperty, radioButton, Avalonia.Controls.RadioButton.GroupNameProperty);
-            _togglePresenter.Content   = radioButton;
-            _togglePresenter.IsVisible = true;
         }
     }
 
@@ -191,16 +89,9 @@ public class MenuItem : AvaloniaMenuItem,
         base.PrepareContainerForItemOverride(container, item, index);
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        SetupIcon();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnAttachedToVisualTree(e);
+        UpdatePseudoClasses();
     }
 }

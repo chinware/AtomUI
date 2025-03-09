@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
@@ -35,7 +34,6 @@ public class MenuScrollViewer : AvaloniaScrollViewer
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _scrollUpButton   = e.NameScope.Find<IconButton>(MenuScrollViewerTheme.ScrollUpButtonPart);
         _scrollDownButton = e.NameScope.Find<IconButton>(MenuScrollViewerTheme.ScrollDownButtonPart);
 

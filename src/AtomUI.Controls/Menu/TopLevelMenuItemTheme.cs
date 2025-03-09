@@ -1,5 +1,8 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -107,9 +110,23 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         BuildSizeTypeStyle(topLevelStyle);
         BuildDisabledStyle(topLevelStyle);
         BuildPopupStyle(topLevelStyle);
+        BuildMotionStyle(topLevelStyle);
         Add(topLevelStyle);
     }
 
+    private void BuildMotionStyle(Style topLevelStyle)
+    {
+        var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(MenuItem.IsMotionEnabledProperty, true));
+        var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
+        headerPresenterStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
+        {
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty),
+            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)
+        }));
+        isMotionEnabledStyle.Add(headerPresenterStyle);
+        topLevelStyle.Add(isMotionEnabledStyle);
+    }
+    
     private void BuildPopupStyle(Style topLevelStyle)
     {
         var popupFrameStyle = new Style(selector => selector.Nesting().Template().Name(PopupFramePart));
