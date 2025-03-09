@@ -334,7 +334,13 @@ public abstract class AbstractProgressBar : RangeBase,
         base.OnApplyTemplate(e);
         NotifyTemplateApplied(e.NameScope);
         AfterUIStructureReady();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         SetupTransitions();
+        UpdatePseudoClasses();
     }
 
     protected abstract SizeType CalculateEffectiveSizeType(double size);
@@ -394,7 +400,6 @@ public abstract class AbstractProgressBar : RangeBase,
         // 创建完更新调用一次
         NotifyEffectSizeTypeChanged();
         UpdateProgress();
-        UpdatePseudoClasses();
     }
 
     private void SetupTransitions()

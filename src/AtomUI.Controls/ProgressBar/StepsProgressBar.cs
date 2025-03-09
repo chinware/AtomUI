@@ -382,7 +382,6 @@ public class StepsProgressBar : AbstractLineProgress
         }
 
         return base.ArrangeOverride(finalSize);
-        ;
     }
 
     private double GetChunkWidth()

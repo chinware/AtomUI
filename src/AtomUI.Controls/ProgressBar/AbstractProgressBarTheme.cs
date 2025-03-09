@@ -69,6 +69,8 @@ internal class AbstractProgressBarTheme : BaseControlTheme
         enabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextLabel);
         enabledStyle.Add(AbstractProgressBar.GrooveBrushProperty, ProgressBarTokenKey.RemainingColor);
         enabledStyle.Add(AbstractProgressBar.SuccessThresholdBrushProperty, SharedTokenKey.ColorSuccess);
+        enabledStyle.Add(AbstractProgressBar.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+        enabledStyle.Add(AbstractProgressBar.VerticalAlignmentProperty, VerticalAlignment.Top);
 
         commonStyle.Add(enabledStyle);
         Add(commonStyle);

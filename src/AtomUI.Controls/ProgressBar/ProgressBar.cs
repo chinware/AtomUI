@@ -258,7 +258,6 @@ public class ProgressBar : AbstractLineProgress
         CalculateSizeTypeThresholdValue();
         CalculateMinBarThickness();
         base.NotifySetupUI();
-        UpdatePseudoClasses();
     }
 
     protected override SizeType CalculateEffectiveSizeType(double size)
@@ -654,5 +653,11 @@ public class ProgressBar : AbstractLineProgress
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(PercentLabelInnerPC, PercentPosition.IsInner);
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        UpdatePseudoClasses();
     }
 }

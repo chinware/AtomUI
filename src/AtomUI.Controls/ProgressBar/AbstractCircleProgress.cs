@@ -75,8 +75,6 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
     static AbstractCircleProgress()
     {
-        HorizontalAlignmentProperty.OverrideDefaultValue<AbstractCircleProgress>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<AbstractCircleProgress>(VerticalAlignment.Top);
         AffectsMeasure<AbstractCircleProgress>(StepCountProperty,
             StepGapProperty);
     }

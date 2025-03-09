@@ -123,14 +123,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
         }
 
         _extraInfoSize = CalculateExtraInfoSize(FontSize);
-        SetupAlignment();
         NotifyOrientationChanged();
-    }
-
-    protected virtual void SetupAlignment()
-    {
-        HorizontalAlignment = HorizontalAlignment.Left;
-        VerticalAlignment   = VerticalAlignment.Top;
     }
 
     private void UpdatePseudoClasses()
@@ -142,10 +135,6 @@ public abstract class AbstractLineProgress : AbstractProgressBar
     protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.NotifyPropertyChanged(e);
-        if (e.Property == HeightProperty || e.Property == WidthProperty)
-        {
-            SetupAlignment();
-        }
 
         if (this.IsAttachedToVisualTree())
         {
