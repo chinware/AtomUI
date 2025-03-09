@@ -458,7 +458,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// </summary>
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
-    
+
     private bool _commandCanExecute = true;
     private bool _commandBindingError;
     private Popup? _popup;
@@ -467,7 +467,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private Border? _horizontalFrame;
     private MotionActorControl? _childItemsLayoutTransform;
     private Border? _headerFrame;
-    private bool _animating = false;
+    private bool _animating;
 
     static NavMenuItem()
     {
@@ -482,7 +482,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     public NavMenuItem()
     {
         AffectsRender<MenuItem>(BackgroundProperty);
-        UpdatePseudoClasses();
     }
 
     /// <summary>
@@ -561,7 +560,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             SetCurrentValue(HotKeyProperty, _hotkey);
         }
-        
+
         base.OnAttachedToLogicalTree(e);
 
         Level = CalculateDistanceFromLogicalParent<NavMenu>(this) - 1;
@@ -601,12 +600,12 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
 
-    /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-
+        SetupPseudoClasses();
         TryUpdateCanExecute();
+        SetupTransitions();
     }
 
     /// <summary>
@@ -623,20 +622,17 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
 
-    /// <inheritdoc/>
     protected override void OnKeyDown(KeyEventArgs e)
     {
         // Don't handle here: let event bubble up to menu.
     }
 
-    /// <inheritdoc/>
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);
         RaiseEvent(new RoutedEventArgs(PointerEnteredItemEvent));
     }
 
-    /// <inheritdoc/>
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
@@ -667,7 +663,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
 
-    /// <inheritdoc/>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -704,8 +699,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _childItemsLayoutTransform.SetCurrentValue(MotionActorControl.IsVisibleProperty, IsSubMenuOpen);
             }
         }
-
-        SetupTransitions();
     }
 
     private void SetupTransitions()
@@ -870,7 +863,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
         else if (change.Property == ParentProperty)
         {
-            UpdatePseudoClasses();
+            SetupPseudoClasses();
         }
         else if (change.Property == IsSelectedProperty)
         {
@@ -973,7 +966,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
 
-    private void UpdatePseudoClasses()
+    private void SetupPseudoClasses()
     {
         PseudoClasses.Set(TopLevelPC, IsTopLevel);
     }
