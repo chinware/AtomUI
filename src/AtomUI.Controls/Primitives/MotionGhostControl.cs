@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Diagnostics;
+using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
@@ -64,11 +65,17 @@ internal class MotionGhostControl : Control
     {
         base.OnAttachedToLogicalTree(e);
         IsHitTestVisible = false;
+    }
 
+    public sealed override void ApplyTemplate()
+    {
+        if (_layout != null)
+        {
+            return;
+        }
         _layout = new Canvas();
         LogicalChildren.Add(_layout);
         VisualChildren.Add(_layout);
-
         var shadowThickness = Shadows.Thickness();
         var offsetX         = shadowThickness.Left;
         var offsetY         = shadowThickness.Top;
@@ -82,13 +89,13 @@ internal class MotionGhostControl : Control
 
         var border = new Border
         {
-            Width      = MotionTargetSize.Width,
-            Height     = MotionTargetSize.Height,
+            Width  = MotionTargetSize.Width,
+            Height = MotionTargetSize.Height,
         };
 
         _layout.Children.Add(border);
         _layout.Children.Add(_motionTargetBitmapControl);
-
+        
         Canvas.SetLeft(_motionTargetBitmapControl, offsetX);
         Canvas.SetTop(_motionTargetBitmapControl, offsetY);
 

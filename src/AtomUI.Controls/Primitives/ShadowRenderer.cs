@@ -44,7 +44,6 @@ internal class ShadowRenderer : Control
     }
 
     protected Border? _maskContent;
-    protected bool _initialized;
     protected Canvas? _layout;
 
     static ShadowRenderer()
@@ -56,20 +55,16 @@ internal class ShadowRenderer : Control
     public sealed override void ApplyTemplate()
     {
         base.ApplyTemplate();
-        if (!_initialized)
-        {
-            HorizontalAlignment = HorizontalAlignment.Stretch;
-            VerticalAlignment   = VerticalAlignment.Stretch;
-            IsHitTestVisible    = false;
-            CreateMaskContent();
-            _layout = new Canvas();
-            VisualChildren.Add(_layout);
-            _layout.SetLogicalParent(this);
-            _maskContent = CreateMaskContent();
-            SetupContentSizeAndPos();
-            _layout.Children.Add(_maskContent);
-            _initialized = true;
-        }
+        HorizontalAlignment = HorizontalAlignment.Stretch;
+        VerticalAlignment   = VerticalAlignment.Stretch;
+        IsHitTestVisible    = false;
+        CreateMaskContent();
+        _layout = new Canvas();
+        VisualChildren.Add(_layout);
+        _layout.SetLogicalParent(this);
+        _maskContent = CreateMaskContent();
+        SetupContentSizeAndPos();
+        _layout.Children.Add(_maskContent);
     }
 
     private Border CreateMaskContent()

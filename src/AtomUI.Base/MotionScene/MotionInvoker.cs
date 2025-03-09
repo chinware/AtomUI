@@ -54,7 +54,7 @@ internal static class MotionInvoker
                 {
                     compositeDisposable.Dispose();
                     compositeDisposable = null;
-                }, TimeSpan.FromMilliseconds(500));
+                }, TimeSpan.FromMilliseconds(600));
             });
         });
     }
@@ -90,8 +90,11 @@ internal static class MotionInvoker
                     Dispatcher.UIThread.Post(() => actor.IsVisible = false);
                 }, cancellationToken);
                 // 为了避免闪烁，给一个时间间隔
-                compositeDisposable.Dispose();
-                compositeDisposable = null;
+                DispatcherTimer.RunOnce(() =>
+                {
+                    compositeDisposable.Dispose();
+                    compositeDisposable = null;
+                }, TimeSpan.FromMilliseconds(600));
             });
         });
     }
