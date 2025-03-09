@@ -143,11 +143,11 @@ public class Popup : AvaloniaPopup,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-        CreateShadowLayer();
         this.AddTokenBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationFast));
+        CreateShadowLayer();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

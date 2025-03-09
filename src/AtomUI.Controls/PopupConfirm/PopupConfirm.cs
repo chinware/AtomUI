@@ -148,6 +148,7 @@ public class PopupConfirm : FlyoutHost,
     public sealed override void ApplyTemplate()
     {
         Flyout ??= new PopupConfirmFlyout(this);
+        // TODO 这个是内存泄露，需要重新写
         LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText);
         LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText);
         base.ApplyTemplate();

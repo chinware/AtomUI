@@ -37,7 +37,7 @@ internal class PopupConfirmToken : AbstractControlDesignToken
     /// 主内容区域外边距
     /// </summary>
     public Thickness ContentContainerMargin { get; set; }
-    
+
     /// <summary>
     /// 按钮内容区域外边距
     /// </summary>
@@ -51,13 +51,12 @@ internal class PopupConfirmToken : AbstractControlDesignToken
     internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        PopupMinWidth  = 240;
-        PopupMinHeight = 80;
-        ButtonSpacing  = SharedToken.MarginXS;
-        IconMargin = new Thickness(SharedToken.MarginXS, SharedToken.MarginXS,
-            SharedToken.MarginXS, 0);
+        PopupMinWidth          = 240;
+        PopupMinHeight         = 80;
+        ButtonSpacing          = SharedToken.MarginXS;
+        IconMargin             = new Thickness(SharedToken.MarginXS, SharedToken.MarginXS / 2, SharedToken.MarginXS, 0);
         ContentContainerMargin = new Thickness(0, 0, 0, SharedToken.MarginXS);
-        TitleMargin            = new Thickness(0, SharedToken.MarginXS, 0, SharedToken.MarginXS);
-        ButtonContainerMargin = new Thickness(0, SharedToken.MarginXS, 0, 0);
+        TitleMargin            = new Thickness(0, 0, 0, SharedToken.MarginXS);
+        ButtonContainerMargin  = new Thickness(0, SharedToken.MarginXS, 0, 0);
     }
 }
