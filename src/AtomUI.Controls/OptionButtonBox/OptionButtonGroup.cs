@@ -167,12 +167,13 @@ public class OptionButtonGroup : SelectingItemsControl,
             BindUtils.RelayBind(this, SizeTypeProperty, optionButton, OptionButton.SizeTypeProperty);
             BindUtils.RelayBind(this, ButtonStyleProperty, optionButton, OptionButton.ButtonStyleProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, optionButton, OptionButton.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, optionButton, OptionButton.IsWaveAnimationEnabledProperty);
+            BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, optionButton,
+                OptionButton.IsWaveAnimationEnabledProperty);
 
             optionButton.IsCheckedChanged += HandleOptionButtonChecked;
         }
     }
-    
+
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
     {
         base.ContainerForItemPreparedOverride(container, item, index);
@@ -186,7 +187,7 @@ public class OptionButtonGroup : SelectingItemsControl,
             }
         }
     }
-    
+
     private void HandleOptionButtonChecked(object? sender, RoutedEventArgs args)
     {
         if (sender is OptionButton optionButton && optionButton.IsChecked.HasValue && optionButton.IsChecked.Value)

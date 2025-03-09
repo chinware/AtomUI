@@ -25,7 +25,6 @@ internal class OptionButtonTheme : BaseControlTheme
     {
         return new FuncControlTemplate<OptionButton>((button, scope) =>
         {
-            // TODO 暂时没有支持带 Icon，后面支持
             var stackPanel = new StackPanel
             {
                 Orientation         = Orientation.Horizontal,
@@ -40,7 +39,7 @@ internal class OptionButtonTheme : BaseControlTheme
             };
 
             stackPanel.Children.Add(label);
-            CreateTemplateParentBinding(label, TextBlock.TextProperty, OptionButton.TextProperty);
+            CreateTemplateParentBinding(label, TextBlock.TextProperty, OptionButton.ContentProperty);
             return stackPanel;
         });
     }

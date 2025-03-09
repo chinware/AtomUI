@@ -4,10 +4,10 @@ using AtomUI.Media;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -51,9 +51,6 @@ public class OptionButton : AvaloniaRadioButton,
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle));
 
-    public static readonly StyledProperty<string?> TextProperty
-        = AvaloniaProperty.Register<OptionButton, string?>(nameof(Text));
-
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -64,12 +61,6 @@ public class OptionButton : AvaloniaRadioButton,
     {
         get => GetValue(ButtonStyleProperty);
         set => SetValue(ButtonStyleProperty, value);
-    }
-
-    public string? Text
-    {
-        get => GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
     }
 
     #endregion
@@ -140,8 +131,14 @@ public class OptionButton : AvaloniaRadioButton,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        SetupTransitions();
         Debug.Assert(Parent is OptionButtonGroup, "OptionButton parent must be type of OptionButtonGroup");
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        HandleSizeTypeChanged();
+        SetupTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -165,24 +162,13 @@ public class OptionButton : AvaloniaRadioButton,
             }
         }
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (e.Property == IsMotionEnabledProperty)
             {
                 SetupTransitions();
             }
         }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        if (Text is null && Content is string content)
-        {
-            Text = content;
-        }
-
-        HandleSizeTypeChanged();
     }
 
     private void HandleSizeTypeChanged()
