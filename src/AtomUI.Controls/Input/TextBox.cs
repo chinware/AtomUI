@@ -113,12 +113,6 @@ public class TextBox : AvaloniaTextBox,
         this.RegisterResources();
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupEffectiveShowClearButton();
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -130,13 +124,11 @@ public class TextBox : AvaloniaTextBox,
         {
             SetupEffectiveShowClearButton();
         }
-
-        if (change.Property == StatusProperty)
+        else if (change.Property == StatusProperty)
         {
             UpdatePseudoClasses();
         }
-        
-        if (change.Property == InnerLeftContentProperty ||
+        else if (change.Property == InnerLeftContentProperty ||
             change.Property == InnerRightContentProperty)
         {
             if (change.OldValue is Control oldControl)
@@ -178,5 +170,11 @@ public class TextBox : AvaloniaTextBox,
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupEffectiveShowClearButton();
     }
 }

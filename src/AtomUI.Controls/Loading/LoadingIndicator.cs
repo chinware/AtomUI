@@ -7,11 +7,11 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -122,7 +122,7 @@ public class LoadingIndicator : TemplatedControl,
         get => _indicatorAngle;
         set => SetAndRaise(IndicatorAngleProperty, ref _indicatorAngle, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LoadingIndicatorToken.ID;
 
@@ -130,8 +130,8 @@ public class LoadingIndicator : TemplatedControl,
 
     private Animation? _animation;
     private TextBlock? _loadingText;
-    private Canvas? _mainContainer;
     private RenderInfo? _renderInfo;
+    private ContentPresenter? _customIndicatorIconPresenter;
     private CancellationTokenSource? _cancellationTokenSource;
 
     internal const double LARGE_INDICATOR_SIZE = 48;
@@ -154,7 +154,7 @@ public class LoadingIndicator : TemplatedControl,
     {
         this.RegisterResources();
     }
-    
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -173,60 +173,40 @@ public class LoadingIndicator : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (this.IsAttachedToVisualTree())
+        if (e.Property == CustomIndicatorIconProperty)
         {
-            if (e.Property == CustomIndicatorIconProperty)
+            if (e.OldValue is Icon oldIcon)
             {
-                var oldCustomIcon = e.GetOldValue<Icon?>();
-                if (oldCustomIcon is not null)
-                {
-                    _mainContainer?.Children.Remove(oldCustomIcon);
-                }
+                oldIcon.SetTemplatedParent(null);
+            }
 
-                SetupCustomIndicator();
+            if (e.NewValue is Icon newIcon)
+            {
+                newIcon.SetTemplatedParent(this);
             }
         }
-      
         if (e.Property == IndicatorAngleProperty)
         {
-            if (CustomIndicatorIcon is not null)
-            {
-                HandleIndicatorAngleChanged();
-            }
+            HandleIndicatorAngleChanged();
         }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        HandleTemplateApplied(e.NameScope);
-    }
-
-    private void HandleTemplateApplied(INameScope scope)
-    {
-        _mainContainer = scope.Find<Canvas>(LoadingIndicatorTheme.MainContainerPart);
-        _loadingText   = scope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
-
-        SetupCustomIndicator();
+        _loadingText = e.NameScope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
+        _customIndicatorIconPresenter =
+            e.NameScope.Find<ContentPresenter>(LoadingIndicatorTheme.CustomIndicatorIconPresenterPart);
     }
 
     // 只在使用自定义的 Icon 的时候有效
     private void HandleIndicatorAngleChanged()
     {
-        if (CustomIndicatorIcon is not null)
+        if (_customIndicatorIconPresenter is not null && _customIndicatorIconPresenter.IsVisible)
         {
             var builder = new TransformOperations.Builder(1);
             builder.AppendRotate(MathUtils.Deg2Rad(IndicatorAngle));
-            CustomIndicatorIcon.RenderTransform = builder.Build();
-        }
-    }
-
-    private void SetupCustomIndicator()
-    {
-        if (CustomIndicatorIcon is not null)
-        {
-            CustomIndicatorIcon.SetTemplatedParent(this);
-            _mainContainer?.Children.Insert(0, CustomIndicatorIcon);
+            _customIndicatorIconPresenter.RenderTransform = builder.Build();
         }
     }
 

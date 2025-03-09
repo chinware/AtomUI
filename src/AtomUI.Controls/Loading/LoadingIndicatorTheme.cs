@@ -3,8 +3,11 @@ using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -15,6 +18,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
 {
     public const string MainContainerPart = "PART_MainContainer";
     public const string LoadingTextPart = "PART_LoadingText";
+    public const string CustomIndicatorIconPresenterPart = "PART_CustomIndicatorIconPresenter";
 
     public LoadingIndicatorTheme()
         : base(typeof(LoadingIndicator))
@@ -25,6 +29,17 @@ internal class LoadingIndicatorTheme : BaseControlTheme
     {
         return new FuncControlTemplate<LoadingIndicator>((indicator, scope) =>
         {
+            var customIndicatorIconPresenter = new ContentPresenter()
+            {
+                Name = CustomIndicatorIconPresenterPart,
+            };
+            CreateTemplateParentBinding(customIndicatorIconPresenter, ContentPresenter.ContentProperty,
+                LoadingIndicator.CustomIndicatorIconProperty);
+            CreateTemplateParentBinding(customIndicatorIconPresenter, ContentPresenter.IsVisibleProperty,
+                LoadingIndicator.CustomIndicatorIconProperty,
+                BindingMode.Default,
+                ObjectConverters.IsNotNull);
+            customIndicatorIconPresenter.RegisterInNameScope(scope);
             var loadingText = new TextBlock()
             {
                 Name                = LoadingTextPart,
@@ -37,6 +52,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
             {
                 Name = MainContainerPart
             };
+            mainContainer.Children.Add(customIndicatorIconPresenter);
             mainContainer.Children.Add(loadingText);
             mainContainer.RegisterInNameScope(scope);
             return mainContainer;
@@ -49,7 +65,8 @@ internal class LoadingIndicatorTheme : BaseControlTheme
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Top);
         commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
-        commonStyle.Add(LoadingIndicator.MotionEasingCurveProperty, new SetterValueFactory<Easing>(() => new LinearEasing()));
+        commonStyle.Add(LoadingIndicator.MotionEasingCurveProperty,
+            new SetterValueFactory<Easing>(() => new LinearEasing()));
         commonStyle.Add(LoadingIndicator.MotionDurationProperty, LoadingIndicatorTokenKey.IndicatorDuration);
         commonStyle.Add(LoadingIndicator.DotBgBrushProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(LoadingIndicator.IndicatorTextMarginProperty, SharedTokenKey.MarginXXS);
@@ -63,7 +80,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
 
     private void BuildCustomIconStyle()
     {
-        var customIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
+        var customIconStyle = new Style(selector => selector.Nesting().Template().Name(CustomIndicatorIconPresenterPart).Descendant().OfType<Icon>());
         customIconStyle.Add(Icon.IconModeProperty, IconMode.Normal);
         customIconStyle.Add(Layoutable.VerticalAlignmentProperty, VerticalAlignment.Center);
         customIconStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
@@ -71,7 +88,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
 
         var largeSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Large));
-        var largeIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
+        var largeIconStyle = new Style(selector => selector.Nesting().Template().Name(CustomIndicatorIconPresenterPart).Descendant().OfType<Icon>());
         largeIconStyle.Add(Layoutable.WidthProperty, LoadingIndicator.LARGE_INDICATOR_SIZE);
         largeIconStyle.Add(Layoutable.HeightProperty, LoadingIndicator.LARGE_INDICATOR_SIZE);
         largeSizeStyle.Add(largeIconStyle);
@@ -79,7 +96,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
 
         var middleSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Middle));
-        var middleIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
+        var middleIconStyle = new Style(selector => selector.Nesting().Template().Name(CustomIndicatorIconPresenterPart).Descendant().OfType<Icon>());
         middleIconStyle.Add(Layoutable.WidthProperty, LoadingIndicator.MIDDLE_INDICATOR_SIZE);
         middleIconStyle.Add(Layoutable.HeightProperty, LoadingIndicator.MIDDLE_INDICATOR_SIZE);
         middleSizeStyle.Add(middleIconStyle);
@@ -87,7 +104,7 @@ internal class LoadingIndicatorTheme : BaseControlTheme
 
         var smallSizeStyle = new Style(selector =>
             selector.Nesting().PropertyEquals(LoadingIndicator.SizeTypeProperty, SizeType.Small));
-        var smallIconStyle = new Style(selector => selector.Nesting().Template().OfType<Icon>());
+        var smallIconStyle = new Style(selector => selector.Nesting().Template().Name(CustomIndicatorIconPresenterPart).Descendant().OfType<Icon>());
         smallIconStyle.Add(Layoutable.WidthProperty, LoadingIndicator.SMALL_INDICATOR_SIZE);
         smallIconStyle.Add(Layoutable.HeightProperty, LoadingIndicator.SMALL_INDICATOR_SIZE);
         smallSizeStyle.Add(smallIconStyle);

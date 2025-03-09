@@ -228,18 +228,19 @@ public class Expander : AvaloniaExpander,
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
+        SetupEffectiveBorderThickness();
+        SetupExpanderBorderThickness();
+        SetupDefaultIcon();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SetupDefaultIcon();
         base.OnApplyTemplate(e);
         this.RunThemeTokenBindingActions();
         _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderTheme.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(ExpanderTheme.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
-        SetupEffectiveBorderThickness();
-        SetupExpanderBorderThickness();
+
         _tempAnimationDisabled = true;
         HandleExpandedChanged();
         _tempAnimationDisabled = false;
@@ -276,16 +277,12 @@ public class Expander : AvaloniaExpander,
 
                 SetupDefaultIcon();
             }
-        }
-
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == IsBorderlessProperty)
+            else if (change.Property == IsBorderlessProperty)
             {
                 SetupEffectiveBorderThickness();
             }
         }
-
+        
         if (change.Property == ExpandIconProperty)
         {
             if (change.OldValue is Icon oldIcon)

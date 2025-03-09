@@ -70,4 +70,10 @@ public class ListBoxItem : AvaloniaListBoxItem
             }
         }
     }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupTransitions();
+    }
 }
