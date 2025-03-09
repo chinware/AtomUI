@@ -160,7 +160,6 @@ public class MessageCard : TemplatedControl,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        ClipToBounds = false;
     }
 
     /// <summary>
@@ -200,6 +199,11 @@ public class MessageCard : TemplatedControl,
             {
                 newIcon.SetTemplatedParent(this);
             }
+
+            if (Icon is null)
+            {
+                SetupMessageIcon();
+            }
         }
 
         if (e.Property == IsClosedProperty)
@@ -220,10 +224,15 @@ public class MessageCard : TemplatedControl,
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        base.OnAttachedToVisualTree(e);
         SetupPseudoClasses();
         SetupMessageIcon();
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
         base.OnApplyTemplate(e);
         _motionActor = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
         ApplyShowMotion();

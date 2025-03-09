@@ -102,7 +102,6 @@ public class WindowMessageManager : TemplatedControl,
         VerticalAlignmentProperty.OverrideDefaultValue<WindowMessageManager>(VerticalAlignment.Stretch);
     }
 
-    /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -116,7 +115,7 @@ public class WindowMessageManager : TemplatedControl,
     /// </summary>
     /// <param name="message">the content of the message</param>
     /// <param name="classes">style classes to apply</param>
-    public async void Show(IMessage message, string[]? classes = null)
+    public void Show(IMessage message, string[]? classes = null)
     {
         var expiration = message.Expiration;
         var onClose    = message.OnClose;
@@ -162,13 +161,9 @@ public class WindowMessageManager : TemplatedControl,
             return;
         }
 
-        await Task.Delay(expiration);
-        messageControl.Close();
+        DispatcherTimer.RunOnce(() => messageControl.Close(), expiration);
     }
-
-    /// <summary>
-    /// Installs the <see cref="WindowNotificationManager" /> within the <see cref="AdornerLayer" />
-    /// </summary>
+    
     private void InstallFromTopLevel(TopLevel topLevel)
     {
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;

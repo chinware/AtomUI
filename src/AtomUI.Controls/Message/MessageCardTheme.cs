@@ -137,8 +137,8 @@ internal class MessageCardTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-
         commonStyle.Add(MessageCard.OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
+        commonStyle.Add(MessageCard.ClipToBoundsProperty, false);
         commonStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
 
         var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
