@@ -8,9 +8,21 @@ using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
-internal class TabScrollContentPresenter : ScrollContentPresenter, ICustomHitTest
+internal class TabScrollContentPresenter : ScrollContentPresenter, 
+                                           ICustomHitTest
 {
-    internal Dock TabStripPlacement { get; set; } = Dock.Top;
+    internal static readonly DirectProperty<TabScrollContentPresenter, Dock> TabStripPlacementProperty =
+        AvaloniaProperty.RegisterDirect<TabScrollContentPresenter, Dock>(nameof(TabStripPlacement),
+            o => o.TabStripPlacement,
+            (o, v) => o.TabStripPlacement = v);
+    
+    private Dock _tabStripPlacement = Dock.Top;
+
+    internal Dock TabStripPlacement
+    {
+        get => _tabStripPlacement;
+        set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
+    }
 
     private static readonly MethodInfo SnapOffsetMethodInfo;
 

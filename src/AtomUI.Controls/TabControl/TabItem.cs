@@ -108,8 +108,6 @@ public class TabItem : AvaloniaTabItem,
         base.OnApplyTemplate(e);
         _closeButton   = e.NameScope.Find<IconButton>(BaseTabItemTheme.ItemCloseButtonPart);
 
-        SetupTransitions();
-
         if (_closeButton is not null)
         {
             _closeButton.Click += HandleCloseRequest;
@@ -188,7 +186,7 @@ public class TabItem : AvaloniaTabItem,
                 newIcon.SetTemplatedParent(this);
             }
 
-            if (change.Property == CloseIconProperty)
+            if (change.Property == CloseIconProperty && CloseIcon is null)
             {
                 SetupDefaultCloseIcon();
             }
@@ -200,13 +198,19 @@ public class TabItem : AvaloniaTabItem,
         _tokenBindingsDisposable = new CompositeDisposable();
         SetupShapeThemeBindings();
         base.OnAttachedToLogicalTree(e);
-        SetupDefaultCloseIcon();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupTransitions();
+        SetupDefaultCloseIcon();
     }
 
     private void SetupShapeThemeBindings()

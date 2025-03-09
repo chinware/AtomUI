@@ -92,25 +92,13 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
         AffectsMeasure<BaseTabScrollViewer>(TabStripPlacementProperty);
     }
 
-    public BaseTabScrollViewer()
-    {
-        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == TabStripPlacementProperty)
-        {
-            if (Presenter is TabScrollContentPresenter tabStripScrollContentPresenter)
-            {
-                tabStripScrollContentPresenter.TabStripPlacement = TabStripPlacement;
-            }
-        }
-        else if (change.Property == VerticalScrollBarVisibilityProperty ||
-                 change.Property == OffsetProperty ||
-                 change.Property == ExtentProperty ||
-                 change.Property == ViewportProperty)
+        if (change.Property == VerticalScrollBarVisibilityProperty ||
+            change.Property == OffsetProperty ||
+            change.Property == ExtentProperty ||
+            change.Property == ViewportProperty)
         {
             SetupIndicatorsVisibility();
         }

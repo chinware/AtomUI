@@ -11,6 +11,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -126,7 +127,6 @@ public class BaseTabControl : AvaloniaTabControl,
         base.OnApplyTemplate(e);
         _frame = e.NameScope.Find<Border>(BaseTabControlTheme.FramePart);
         _alignWrapper   = e.NameScope.Find<Panel>(BaseTabControlTheme.AlignWrapperPart);
-        HandlePlacementChanged();
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -142,10 +142,6 @@ public class BaseTabControl : AvaloniaTabControl,
     {
         base.OnAttachedToLogicalTree(e);
         _tokenBindingsDisposable = new CompositeDisposable();
-
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
-            TabControlTokenKey.TabAndContentGutter));
-        UpdatePseudoClasses();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -163,14 +159,22 @@ public class BaseTabControl : AvaloniaTabControl,
                 SharedTokenKey.BorderThickness, BindingPriority.Template,
                 new RenderScaleAwareThicknessConfigure(this)));
         }
+        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
+            TabControlTokenKey.TabAndContentGutter));
+        UpdatePseudoClasses();
+        HandlePlacementChanged();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == TabStripPlacementProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            HandlePlacementChanged();
+            if (change.Property == TabStripPlacementProperty)
+            {
+                UpdatePseudoClasses();
+                HandlePlacementChanged();
+            }
         }
     }
 
@@ -184,7 +188,6 @@ public class BaseTabControl : AvaloniaTabControl,
 
     private void HandlePlacementChanged()
     {
-        UpdatePseudoClasses();
         if (TabStripPlacement == Dock.Top)
         {
             TabStripMargin = new Thickness(0, 0, 0, _tabAndContentGutter);

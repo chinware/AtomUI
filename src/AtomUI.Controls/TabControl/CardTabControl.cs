@@ -11,6 +11,7 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -126,7 +127,7 @@ public class CardTabControl : BaseTabControl
     {
         base.OnPropertyChanged(change);
 
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == SizeTypeProperty)
             {
@@ -164,20 +165,15 @@ public class CardTabControl : BaseTabControl
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        SetupSizeTypeBinding();
-        this.AddTokenBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+        this.AddTokenBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
+        SetupSizeTypeBinding();
     }
 
     protected override Size ArrangeOverride(Size finalSize)

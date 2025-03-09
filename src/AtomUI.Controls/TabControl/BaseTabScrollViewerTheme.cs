@@ -89,6 +89,8 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
             Name = ScrollViewContentPart
         };
 
+        CreateTemplateParentBinding(scrollViewContent, TabScrollContentPresenter.TabStripPlacementProperty,
+            BaseTabScrollViewer.TabStripPlacementProperty);
         CreateTemplateParentBinding(scrollViewContent, Layoutable.MarginProperty,
             TemplatedControl.PaddingProperty);
         CreateTemplateParentBinding(scrollViewContent, ScrollContentPresenter.HorizontalSnapPointsAlignmentProperty,
@@ -117,6 +119,7 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
+        this.Add(BaseTabScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
         {
             var menuIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));

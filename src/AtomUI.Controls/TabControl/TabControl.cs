@@ -151,9 +151,9 @@ public class TabControl : BaseTabControl
         _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(BaseTabControlTheme.ItemsPresenterPart);
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectedIndicatorThicknessProperty,
             SharedTokenKey.LineWidthBold));
     }
