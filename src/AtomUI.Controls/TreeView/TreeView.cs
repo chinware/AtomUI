@@ -193,7 +193,6 @@ public class TreeView : AvaloniaTreeView,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        UpdatePseudoClasses();
         DefaultCheckedItems = new List<TreeViewItem>();
     }
 
@@ -326,6 +325,7 @@ public class TreeView : AvaloniaTreeView,
         }
 
         ApplyDefaultChecked();
+        UpdatePseudoClasses();
     }
 
     private void ApplyDefaultChecked()

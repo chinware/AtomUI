@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -132,17 +131,12 @@ internal class NodeSwitcherButton : ToggleButton
     {
         _borderRenderHelper = new BorderRenderHelper();
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        SetupTransitions();
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         SetupDefaultIcons();
+        SetupTransitions();
     }
 
     private void SetupTransitions()

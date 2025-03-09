@@ -375,12 +375,6 @@ public class TreeViewItem : AvaloniaTreeItem,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
         OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault<TreeView>();
         if (IsChecked.HasValue && IsChecked.Value)
         {
@@ -389,42 +383,25 @@ public class TreeViewItem : AvaloniaTreeItem,
         }
 
         SetupSwitcherButtonIconMode();
+        SetupCheckBoxEnabled();
+        SetupTransitions();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToLogicalTree())
-        {
-            if (change.Property == NodeHoverModeProperty)
-            {
-                CalculateEffectiveBgRect();
-            }
-            else if (change.Property == IsEnabledProperty ||
-                     change.Property == IsCheckableProperty)
-            {
-                SetupCheckBoxEnabled();
-            }
-            else if (change.Property == IsCheckedProperty)
-            {
-                // 我们处理某个节点的点击只有 true 或者 false
-                if (IsChecked.HasValue)
-                {
-                    if (IsChecked.Value)
-                    {
-                        OwnerTreeView?.CheckedSubTree(this);
-                    }
-                    else
-                    {
-                        OwnerTreeView?.UnCheckedSubTree(this);
-                    }
-                }
-            }
-            else if (change.Property == IsExpandedProperty)
-            {
-                HandleExpandedChanged();
-            }
-        }
 
         if (change.Property == IsShowIconProperty || change.Property == IconProperty)
         {
@@ -460,8 +437,35 @@ public class TreeViewItem : AvaloniaTreeItem,
             {
                 SetupTransitions();
             }
+            else if (change.Property == NodeHoverModeProperty)
+            {
+                CalculateEffectiveBgRect();
+            }
+            else if (change.Property == IsEnabledProperty ||
+                     change.Property == IsCheckableProperty)
+            {
+                SetupCheckBoxEnabled();
+            }
+            else if (change.Property == IsCheckedProperty)
+            {
+                // 我们处理某个节点的点击只有 true 或者 false
+                if (IsChecked.HasValue)
+                {
+                    if (IsChecked.Value)
+                    {
+                        OwnerTreeView?.CheckedSubTree(this);
+                    }
+                    else
+                    {
+                        OwnerTreeView?.UnCheckedSubTree(this);
+                    }
+                }
+            }
+            else if (change.Property == IsExpandedProperty)
+            {
+                HandleExpandedChanged();
+            }
         }
-        
     }
 
     private void SetupSwitcherButtonIconMode()
@@ -613,8 +617,6 @@ public class TreeViewItem : AvaloniaTreeItem,
         _tempAnimationDisabled = true;
         HandleExpandedChanged();
         _tempAnimationDisabled = false;
-        SetupCheckBoxEnabled();
-        SetupTransitions();
     }
 
     private void SetupTransitions()

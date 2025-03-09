@@ -20,8 +20,7 @@ public class ToolTip : ContentControl,
                        IControlSharedTokenResourcesHost,
                        IAnimationAwareControl,
                        IPopupHostProvider,
-                       IShadowMaskInfoProvider,
-                       ITokenResourceConsumer
+                       IShadowMaskInfoProvider
 {
     #region 公共属性定义
 
@@ -306,7 +305,6 @@ public class ToolTip : ContentControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ToolTipToken.ID;
     Control IAnimationAwareControl.PropertyBindTarget => this;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
 
@@ -319,7 +317,6 @@ public class ToolTip : ContentControl,
     private Action<IPopupHost?>? _popupHostChangedHandler;
     private CompositeDisposable? _subscriptions;
     private ArrowDecoratedBox? _arrowDecoratedBox;
-    private CompositeDisposable? _tokenBindingsDisposable;
 
     static ToolTip()
     {
@@ -581,7 +578,6 @@ public class ToolTip : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeTokenBindingActions();
         _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
     }
 
@@ -628,17 +624,5 @@ public class ToolTip : ContentControl,
         }
 
         return new Point(offsetX, offsetY);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }

@@ -23,7 +23,6 @@ internal class ToolTipTheme : BaseControlTheme
     {
         return new FuncControlTemplate<ToolTip>((tooltip, scope) =>
         {
-            ResetTokenResourceBindings(tooltip);
             var arrowDecoratedBox = new ArrowDecoratedBox
             {
                 Name = ToolTipContainerPart,
