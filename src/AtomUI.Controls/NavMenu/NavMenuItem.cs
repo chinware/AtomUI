@@ -603,7 +603,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupPseudoClasses();
+        UpdatePseudoClasses();
         TryUpdateCanExecute();
         SetupTransitions();
     }
@@ -863,7 +863,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
         else if (change.Property == ParentProperty)
         {
-            SetupPseudoClasses();
+            UpdatePseudoClasses();
         }
         else if (change.Property == IsSelectedProperty)
         {
@@ -966,7 +966,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
 
-    private void SetupPseudoClasses()
+    private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(TopLevelPC, IsTopLevel);
     }

@@ -157,8 +157,30 @@ internal class NotificationCardTheme : BaseControlTheme
             Name = ProgressBarPart
         };
         progressBar.RegisterInNameScope(scope);
-        CreateTemplateParentBinding(progressBar, Visual.IsVisibleProperty,
-            NotificationCard.EffectiveShowProgressProperty);
+        progressBar.Bind(Visual.IsVisibleProperty, new MultiBinding()
+        {
+            Bindings =
+            {
+                new TemplateBinding(NotificationCard.IsShowProgressProperty),
+                new TemplateBinding(NotificationCard.ExpirationProperty)
+            },
+            Converter = new FuncMultiValueConverter<object?, bool>(objects =>
+            {
+                var items      = objects.ToList();
+                if (items[0] is bool isShowProgress && items[1] is TimeSpan expiration)
+                {
+                    return isShowProgress && expiration > TimeSpan.Zero;
+                }
+                return false;
+            })
+        });
+        progressBar.Bind(NotificationProgressBar.ExpirationProperty, new Binding(NotificationCard.ExpirationProperty.Name)
+        {
+            Mode = BindingMode.OneTime,
+            RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)
+        });
+        CreateTemplateParentBinding(progressBar, NotificationProgressBar.CurrentExpirationProperty,
+            NotificationCard.ExpirationProperty);
         Grid.SetColumn(progressBar, 0);
         Grid.SetRow(progressBar, 1);
         Grid.SetColumnSpan(progressBar, 2);
@@ -176,8 +198,8 @@ internal class NotificationCardTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        
         commonStyle.Add(NotificationCard.OpenCloseMotionDurationProperty, SharedTokenKey.MotionDurationMid);
+        commonStyle.Add(NotificationCard.ClipToBoundsProperty, false);
         var progressBarStyle = new Style(selector => selector.Nesting().Template().Name(ProgressBarPart));
         progressBarStyle.Add(Layoutable.MarginProperty, NotificationTokenKey.NotificationProgressMargin);
         commonStyle.Add(progressBarStyle);

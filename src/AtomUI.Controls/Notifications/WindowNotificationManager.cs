@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -81,7 +80,6 @@ public class WindowNotificationManager : TemplatedControl,
     
     #endregion
     
-    
     #region 内部属性定义
 
     Control IAnimationAwareControl.PropertyBindTarget => this;
@@ -89,12 +87,6 @@ public class WindowNotificationManager : TemplatedControl,
     string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
 
     #endregion
-    
-    static WindowNotificationManager()
-    {
-        HorizontalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(HorizontalAlignment.Stretch);
-        VerticalAlignmentProperty.OverrideDefaultValue<WindowNotificationManager>(VerticalAlignment.Stretch);
-    }
 
     public WindowNotificationManager(TopLevel? host) : this()
     {
@@ -108,7 +100,6 @@ public class WindowNotificationManager : TemplatedControl,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        UpdatePseudoClasses(Position);
         _cardExpiredTimer      =  new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
         _cardExpiredTimer.Tick += HandleCardExpiredTimer;
         _cleanupTimer          =  new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
@@ -242,6 +233,12 @@ public class WindowNotificationManager : TemplatedControl,
         {
             UpdatePseudoClasses(change.GetNewValue<NotificationPosition>());
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        UpdatePseudoClasses(Position);
     }
 
     private void InstallFromTopLevel(TopLevel topLevel)

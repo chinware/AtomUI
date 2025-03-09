@@ -13,7 +13,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -60,6 +59,9 @@ public class NotificationCard : ContentControl,
     public static readonly StyledProperty<Icon?> IconProperty
         = AvaloniaProperty.Register<NotificationCard, Icon?>(nameof(Icon));
     
+    public static readonly StyledProperty<TimeSpan?> ExpirationProperty
+        = AvaloniaProperty.Register<NotificationCard, TimeSpan?>(nameof(Expiration));
+    
     public bool IsClosing
     {
         get => _isClosing;
@@ -95,6 +97,16 @@ public class NotificationCard : ContentControl,
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
+    
+    /// <summary>
+    /// Gets the expiration time of the notification after which it will automatically close.
+    /// If the value is null then the notification will remain open until the user closes it.
+    /// </summary>
+    public TimeSpan? Expiration
+    {
+        get => GetValue(ExpirationProperty);
+        set => SetValue(ExpirationProperty, value);
+    }
 
     public event EventHandler<RoutedEventArgs>? NotificationClosed
     {
@@ -118,11 +130,6 @@ public class NotificationCard : ContentControl,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<NotificationCard, bool> EffectiveShowProgressProperty =
-        AvaloniaProperty.RegisterDirect<NotificationCard, bool>(nameof(EffectiveShowProgress),
-            o => o.EffectiveShowProgress,
-            (o, v) => o.EffectiveShowProgress = v);
-
     internal static readonly DirectProperty<NotificationCard, NotificationPosition> PositionProperty =
         AvaloniaProperty.RegisterDirect<NotificationCard, NotificationPosition>(
             nameof(Position),
@@ -133,14 +140,6 @@ public class NotificationCard : ContentControl,
         AvaloniaProperty.RegisterDirect<NotificationCard, TimeSpan>(nameof(OpenCloseMotionDuration),
             o => o.OpenCloseMotionDuration,
             (o, v) => o.OpenCloseMotionDuration = v);
-
-    private bool _effectiveShowProgress;
-
-    internal bool EffectiveShowProgress
-    {
-        get => _effectiveShowProgress;
-        set => SetAndRaise(EffectiveShowProgressProperty, ref _effectiveShowProgress, value);
-    }
 
     private NotificationPosition _position;
 
@@ -163,15 +162,8 @@ public class NotificationCard : ContentControl,
     string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
 
     #endregion
-    
-    /// <summary>
-    /// Gets the expiration time of the notification after which it will automatically close.
-    /// If the value is null then the notification will remain open until the user closes it.
-    /// </summary>
-    public TimeSpan? Expiration { get; set; }
 
     private bool _isClosing;
-    private NotificationProgressBar? _progressBar;
     private readonly WindowNotificationManager _notificationManager;
     private IconButton? _closeButton;
     private MotionActorControl? _motionActor;
@@ -183,13 +175,9 @@ public class NotificationCard : ContentControl,
     {
         this.RegisterResources();
         this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
-        ClipToBounds         = false;
         _notificationManager = manager;
     }
-
-    /// <summary>
-    /// Closes the <see cref="NotificationCard" />.
-    /// </summary>
+    
     public void Close()
     {
         if (IsClosing)
@@ -200,41 +188,26 @@ public class NotificationCard : ContentControl,
         IsClosing = true;
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         SetupPositionPseudoClasses(Position);
         SetupNotificationTypePseudoClasses();
+        SetupDefaultNotificationIcon();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SetupNotificationDefaultIcon();
-        
         base.OnApplyTemplate(e);
-        
-        _progressBar = e.NameScope.Find<NotificationProgressBar>(NotificationCardTheme.ProgressBarPart);
+
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
         _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
-
-        if (_progressBar is not null)
-        {
-            if (Expiration is null)
-            {
-                _progressBar.IsVisible = false;
-            }
-            else
-            {
-                _progressBar.Expiration = Expiration.Value;
-            }
-        }
 
         if (_closeButton is not null)
         {
             _closeButton.Click += HandleCloseButtonClose;
         }
 
-        SetupEffectiveShowProgress();
         ApplyShowMotion();
     }
 
@@ -343,11 +316,6 @@ public class NotificationCard : ContentControl,
 
             RaiseEvent(new RoutedEventArgs(NotificationClosedEvent));
         }
-        else if (e.Property == IsShowProgressProperty ||
-                 e.Property == IsClosedProperty)
-        {
-            SetupEffectiveShowProgress();
-        }
         else if (e.Property == PositionProperty)
         {
             SetupPositionPseudoClasses(e.GetNewValue<NotificationPosition>());
@@ -371,25 +339,9 @@ public class NotificationCard : ContentControl,
                 newIcon.SetTemplatedParent(this);
             }
 
-            SetupNotificationDefaultIcon();
-        }
-    }
-
-    private void SetupEffectiveShowProgress()
-    {
-        if (!IsShowProgress)
-        {
-            EffectiveShowProgress = false;
-        }
-        else
-        {
-            if (Expiration is not null)
+            if (Icon is null)
             {
-                EffectiveShowProgress = true;
-            }
-            else
-            {
-                EffectiveShowProgress = false;
+                SetupDefaultNotificationIcon();
             }
         }
     }
@@ -416,7 +368,7 @@ public class NotificationCard : ContentControl,
         }
     }
 
-    private void SetupNotificationDefaultIcon()
+    private void SetupDefaultNotificationIcon()
     {
         if (Icon is null)
         {
@@ -455,10 +407,6 @@ public class NotificationCard : ContentControl,
         }
 
         Expiration -= cycleDuration;
-        if (_progressBar is not null)
-        {
-            _progressBar.CurrentExpiration = Expiration.Value;
-        }
 
         if (Expiration.Value.TotalMilliseconds < 0)
         {

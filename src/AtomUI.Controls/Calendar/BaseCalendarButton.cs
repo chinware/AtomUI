@@ -67,7 +67,7 @@ internal class BaseCalendarButton : AvaloniaButton
             if (_isCalendarButtonFocused != value)
             {
                 _isCalendarButtonFocused = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -84,7 +84,7 @@ internal class BaseCalendarButton : AvaloniaButton
             if (_isInactive != value)
             {
                 _isInactive = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -101,7 +101,7 @@ internal class BaseCalendarButton : AvaloniaButton
             if (_isSelected != value)
             {
                 _isSelected = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -113,7 +113,7 @@ internal class BaseCalendarButton : AvaloniaButton
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SetPseudoClasses();
+        UpdatePseudoClasses();
         SetupTransitions();
     }
 
@@ -136,7 +136,7 @@ internal class BaseCalendarButton : AvaloniaButton
     /// <summary>
     /// Sets PseudoClasses based on current state.
     /// </summary>
-    private void SetPseudoClasses()
+    private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Selected, IsSelected);
         PseudoClasses.Set(StdPseudoClass.InActive, IsInactive);

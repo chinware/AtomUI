@@ -73,7 +73,7 @@ internal sealed class CalendarButton : AvaloniaButton
             if (_isCalendarButtonFocused != value)
             {
                 _isCalendarButtonFocused = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -90,7 +90,7 @@ internal sealed class CalendarButton : AvaloniaButton
             if (_isInactive != value)
             {
                 _isInactive = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -107,7 +107,7 @@ internal sealed class CalendarButton : AvaloniaButton
             if (_isSelected != value)
             {
                 _isSelected = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -125,7 +125,7 @@ internal sealed class CalendarButton : AvaloniaButton
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SetPseudoClasses();
+        UpdatePseudoClasses();
     }
 
     private void SetupTransitions()
@@ -147,7 +147,7 @@ internal sealed class CalendarButton : AvaloniaButton
     /// <summary>
     /// Sets PseudoClasses based on current state.
     /// </summary>
-    private void SetPseudoClasses()
+    private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Selected, IsSelected);
         PseudoClasses.Set(StdPseudoClass.InActive, IsInactive);

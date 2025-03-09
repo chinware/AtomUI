@@ -88,7 +88,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
             if (_isCurrent != value)
             {
                 _isCurrent = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -105,7 +105,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
             if (_isBlackout != value)
             {
                 _isBlackout = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -123,7 +123,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
             if (_isToday != value)
             {
                 _isToday = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -140,7 +140,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
             if (_isInactive != value)
             {
                 _isInactive = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -157,7 +157,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
             if (_isSelected != value)
             {
                 _isSelected = value;
-                SetPseudoClasses();
+                UpdatePseudoClasses();
             }
         }
     }
@@ -186,13 +186,13 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         if (IsPointerOver)
         {
             _ignoringMouseOverState = true;
-            SetPseudoClasses();
+            UpdatePseudoClasses();
         }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SetPseudoClasses();
+        UpdatePseudoClasses();
     }
 
     private void SetupTransitions()
@@ -213,7 +213,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         }
     }
 
-    private void SetPseudoClasses()
+    private void UpdatePseudoClasses()
     {
         if (_ignoringMouseOverState)
         {

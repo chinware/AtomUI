@@ -31,6 +31,8 @@ internal class WindowNotificationManagerTheme : BaseControlTheme
 
     protected override void BuildStyles()
     {
+        this.Add(WindowNotificationManager.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+        this.Add(WindowNotificationManager.VerticalAlignmentProperty, VerticalAlignment.Stretch);
         var topLeftStyle = new Style(selector => selector.Nesting().Class(WindowNotificationManager.TopLeftPC));
         {
             var itemsStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPart));

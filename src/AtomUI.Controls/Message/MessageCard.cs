@@ -183,8 +183,8 @@ public class MessageCard : TemplatedControl,
         {
             if (e.Property == MessageTypeProperty)
             {
-                SetupMessageIcon();
-                SetupPseudoClasses();
+                SetupDefaultMessageIcon();
+                UpdatePseudoClasses();
             }
         }
 
@@ -202,7 +202,7 @@ public class MessageCard : TemplatedControl,
 
             if (Icon is null)
             {
-                SetupMessageIcon();
+                SetupDefaultMessageIcon();
             }
         }
 
@@ -227,8 +227,8 @@ public class MessageCard : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupPseudoClasses();
-        SetupMessageIcon();
+        UpdatePseudoClasses();
+        SetupDefaultMessageIcon();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -272,7 +272,7 @@ public class MessageCard : TemplatedControl,
         }
     }
 
-    private void SetupPseudoClasses()
+    private void UpdatePseudoClasses()
     {
         switch (MessageType)
         {
@@ -298,7 +298,7 @@ public class MessageCard : TemplatedControl,
         }
     }
 
-    private void SetupMessageIcon()
+    private void SetupDefaultMessageIcon()
     {
         Icon? icon = null;
         if (MessageType == MessageType.Information)
