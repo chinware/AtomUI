@@ -65,8 +65,8 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <AtomUINativeWindowsX64Artifact>$(OutputPath)$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
-        <AtomUINativeMacOSArtifact>$(OutputPath)$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
+        <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
+        <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -105,7 +105,7 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <Content Include="$(AtomUIPackageOutput)/$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)">
+        <Content Include="$(AtomUIPackageOutputWithoutFramework)/$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)</Link>
         </Content>

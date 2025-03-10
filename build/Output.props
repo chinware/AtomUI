@@ -3,7 +3,8 @@
         <PackageOutputPath>$(MSBuildThisFileDirectory)..\output\Nuget\</PackageOutputPath>
         <OutputPathWithoutFramework>$(MSBuildThisFileDirectory)..\output\bin\$(Configuration)\</OutputPathWithoutFramework>
         <OutputPath>$(OutputPathWithoutFramework)\$(TargetFramework)\</OutputPath>
-        <IntermediateOutputPathWithoutFramework>$(MSBuildThisFileDirectory)..\output\$(MSBuildProjectName)\obj\$(Configuration)\</IntermediateOutputPathWithoutFramework>
-        <IntermediateOutputPath>$(IntermediateOutputPathWithoutFramework)$(TargetFramework)\</IntermediateOutputPath>
+        <IntermediateOutputPathWithoutFramework>$(BaseIntermediateOutputPath)\</IntermediateOutputPathWithoutFramework>
+        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\output\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
     </PropertyGroup>
 </Project>
