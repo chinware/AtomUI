@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 using AtomUI.Utils;
@@ -17,13 +18,16 @@ internal static class PopupReflectionExtensions
 {
     #region 反射信息定义
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(Popup))]
     private static readonly Lazy<MethodInfo> SetPopupParentMethodInfo = new Lazy<MethodInfo>(() =>
         typeof(Popup).GetMethodInfoOrThrow("SetPopupParent",
             BindingFlags.Instance | BindingFlags.NonPublic));
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicEvents, typeof(Popup))]
     private static readonly Lazy<EventInfo> ClosingEventInfo = new Lazy<EventInfo>(() =>
         typeof(Popup).GetEventInfoOrThrow("Closing", BindingFlags.NonPublic | BindingFlags.Instance));
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields, typeof(Popup))]
     private static readonly Lazy<FieldInfo> IgnoreIsOpenChangedFieldInfo = new Lazy<FieldInfo>(() =>
         typeof(AvaloniaPopup).GetFieldInfoOrThrow("_ignoreIsOpenChanged",
             BindingFlags.Instance | BindingFlags.NonPublic));

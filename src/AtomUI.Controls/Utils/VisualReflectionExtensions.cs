@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
@@ -12,10 +13,12 @@ internal static class VisualReflectionExtensions
 {
     #region 反射信息定义
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(Visual))]
     private static readonly Lazy<MethodInfo> SetVisualParentMethodInfo = new Lazy<MethodInfo>(() =>
         typeof(Visual).GetMethodInfoOrThrow("SetVisualParent",
             BindingFlags.Instance | BindingFlags.NonPublic));
     
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(Visual))]
     private static readonly Lazy<PropertyInfo> VisualChildrenPropertyInfo = new Lazy<PropertyInfo>(() =>
         typeof(Visual).GetPropertyInfoOrThrow("VisualChildren",
             BindingFlags.Instance | BindingFlags.NonPublic));

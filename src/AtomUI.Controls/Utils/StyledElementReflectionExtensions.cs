@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
@@ -12,10 +13,12 @@ internal static class StyledElementReflectionExtensions
 {
     #region 反射信息定义
     
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(StyledElement))]
     private static readonly Lazy<PropertyInfo> LogicalChildrenPropertyInfo = new Lazy<PropertyInfo>(() =>
         typeof(StyledElement).GetPropertyInfoOrThrow("LogicalChildren",
             BindingFlags.Instance | BindingFlags.NonPublic));
     
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(StyledElement))]
     private static readonly Lazy<PropertyInfo> TemplatedParentPropertyInfo = new Lazy<PropertyInfo>(() =>
         typeof(StyledElement).GetPropertyInfoOrThrow("TemplatedParent",
             BindingFlags.Instance | BindingFlags.Public));

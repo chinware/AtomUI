@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 
@@ -9,6 +10,7 @@ using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 internal static class MenuReflectionExtensions
 {
     #region 反射信息定义
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields, typeof(AvaloniaContextMenu))]
     private static readonly Lazy<FieldInfo> PopupFieldInfo = new Lazy<FieldInfo>(() =>
         typeof(AvaloniaContextMenu).GetFieldInfoOrThrow("_popup",
             BindingFlags.Instance | BindingFlags.NonPublic));

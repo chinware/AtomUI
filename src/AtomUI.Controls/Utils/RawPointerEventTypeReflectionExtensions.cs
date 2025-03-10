@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia.Input;
@@ -8,6 +9,7 @@ namespace AtomUI.Controls.Utils;
 internal static class RawPointerEventTypeReflectionExtensions
 {
     #region 反射信息定义
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(RawPointerEventArgs))]
     private static readonly Lazy<PropertyInfo> InputHitTestResultPropertyInfo = new Lazy<PropertyInfo>(() => 
         typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("InputHitTestResult",
             BindingFlags.Instance | BindingFlags.NonPublic));

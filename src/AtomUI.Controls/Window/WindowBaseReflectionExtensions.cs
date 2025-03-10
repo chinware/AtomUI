@@ -1,7 +1,9 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Controls.Utils;
 using AtomUI.Reflection;
+using Avalonia;
 using Avalonia.Controls;
 
 namespace AtomUI.Controls;
@@ -9,22 +11,27 @@ namespace AtomUI.Controls;
 internal static class WindowBaseReflectionExtensions
 {
     #region 反射信息定义
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(WindowBase))]
     private static readonly Lazy<MethodInfo> FreezeVisibilityChangeHandlingMethodInfo = new Lazy<MethodInfo>(() => 
         typeof(WindowBase).GetMethodInfoOrThrow("FreezeVisibilityChangeHandling",
             BindingFlags.Instance | BindingFlags.NonPublic));
     
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(WindowBase))]
     private static readonly Lazy<MethodInfo> EnsureInitializedMethodInfo = new Lazy<MethodInfo>(() => 
         typeof(WindowBase).GetMethodInfoOrThrow("EnsureInitialized",
             BindingFlags.Instance | BindingFlags.NonPublic));
     
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields, typeof(WindowBase))]
     private static readonly Lazy<FieldInfo> HasExecutedInitialLayoutPassFieldInfo = new Lazy<FieldInfo>(() => 
         typeof(WindowBase).GetFieldInfoOrThrow("_hasExecutedInitialLayoutPass",
             BindingFlags.Instance | BindingFlags.NonPublic));
     
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(WindowBase))]
     private static readonly Lazy<MethodInfo> StartRenderingMethodInfo = new Lazy<MethodInfo>(() => 
         typeof(WindowBase).GetMethodInfoOrThrow("StartRendering",
             BindingFlags.Instance | BindingFlags.NonPublic));
     
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(WindowBase))]
     private static readonly Lazy<MethodInfo> OnOpenedMethodInfo = new Lazy<MethodInfo>(() => 
         typeof(WindowBase).GetMethodInfoOrThrow("OnOpened",
             BindingFlags.Instance | BindingFlags.NonPublic));

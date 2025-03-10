@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia.Controls;
@@ -9,6 +10,7 @@ namespace AtomUI.Controls.Utils;
 internal static class TopLevelReflectionExtensions
 {
     #region 反射信息定义
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(TopLevel))]
     private static readonly Lazy<PropertyInfo> LayoutManagerPropertyInfo = new Lazy<PropertyInfo>(() => 
         typeof(TopLevel).GetPropertyInfoOrThrow("LayoutManager",
             BindingFlags.Instance | BindingFlags.NonPublic));
