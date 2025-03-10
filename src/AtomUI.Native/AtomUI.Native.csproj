@@ -19,20 +19,21 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <AtomUINavtiveBuildPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), $(IntermediateOutputPath), 'AtomUINative'))</AtomUINavtiveBuildPath>
+        <AtomUINavtiveBuildPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), $(IntermediateOutputPathWithoutFramework), 'AtomUINative'))</AtomUINavtiveBuildPath>
         <AtomUINativeSrcPath>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../nativelibs'))</AtomUINativeSrcPath>
-        <AtomUITempInstallPrefix>$([System.IO.Path]::GetFullPath('$(OutputPath)'))</AtomUITempInstallPrefix>
-        <AtomUINativeAbsoluteDeployPath>$(OutputPath)$(AtomUINativeDeployPath)</AtomUINativeAbsoluteDeployPath>
+        <AtomUITempInstallPrefix>$([System.IO.Path]::GetFullPath('$(OutputPathWithoutFramework)'))</AtomUITempInstallPrefix>
+        <AtomUINativeAbsoluteDeployPath>$(OutputPathWithoutFramework)$(AtomUINativeDeployPath)</AtomUINativeAbsoluteDeployPath>
         <AtomUIBuildPwShScript>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../scripts/BuildAtomUINative.ps1'))</AtomUIBuildPwShScript>
         
-        <AtomUINativeWindowsX64Artifact>$(OutputPath)$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
-        <AtomUINativeMacOSArtifact>$(OutputPath)$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
+        <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
+        <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
+        <AtomUINativeCompiledMarker>$(AtomUINavtiveBuildPath)/.native_compiled</AtomUINativeCompiledMarker>
     </PropertyGroup>
 
     <ItemGroup>
         <AtomUINativeSources Include="$(AtomUINativeSrcPath)/include/**/*.*"/>
         <AtomUINativeSources Include="$(AtomUINativeSrcPath)/src/**/*.*"/>
-        <AtomUINativeArtifact Include="$(OutputPath)$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)"/>
+        <AtomUINativeArtifact Include="$(OutputPathWithoutFramework)$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)"/>
     </ItemGroup>
 
     <Choose>
@@ -48,8 +49,8 @@
         </Otherwise>
     </Choose>
 
-    <Target Name="BildAtomUINative"
-            BeforeTargets="Build"
+    <Target Name="BuildAtomUINative"
+            BeforeTargets="BeforeBuild"
             Inputs="@(AtomUINativeSources)"
             Outputs="@(AtomUINativeArtifact)">
         <PropertyGroup>
@@ -63,6 +64,10 @@
               ConsoleToMsBuild="true"
         />
         
+    </Target>
+
+    <Target Name="BuildAtomUINativeCacheFile" AfterTargets="Clean">
+        <Delete Files="@(AtomUINativeCompiledMarker)" />
     </Target>
 
 </Project>

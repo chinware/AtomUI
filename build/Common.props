@@ -2,9 +2,7 @@
     <PropertyGroup>
         <AtomUIDevelopTargetFramework>net9.0</AtomUIDevelopTargetFramework>
         <AtomUIProductionTargetFramework>net8.0</AtomUIProductionTargetFramework>
-        <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
-        <TargetFramework Condition="'$(Configuration)' == 'Debug'">$(AtomUIDevelopTargetFramework)</TargetFramework>
-        <TargetFramework Condition="'$(Configuration)' != 'Debug'">$(AtomUIProductionTargetFramework)</TargetFramework>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
         <OutputType>Library</OutputType>
         <TrimMode>copyused</TrimMode>
         <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
