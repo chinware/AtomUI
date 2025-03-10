@@ -3,7 +3,7 @@ using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia.Controls.Primitives.PopupPositioning;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Utils;
 
 internal static class ManagedPopupPositionerReflectionExtensions
 {

@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -23,15 +22,7 @@ internal class TabScrollContentPresenter : ScrollContentPresenter,
         get => _tabStripPlacement;
         set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
     }
-
-    private static readonly MethodInfo SnapOffsetMethodInfo;
-
-    static TabScrollContentPresenter()
-    {
-        SnapOffsetMethodInfo =
-            typeof(ScrollContentPresenter).GetMethod("SnapOffset", BindingFlags.Instance | BindingFlags.NonPublic)!;
-    }
-
+    
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
     {
         if (Extent.Height > Viewport.Height || Extent.Width > Viewport.Width)
@@ -62,8 +53,7 @@ internal class TabScrollContentPresenter : ScrollContentPresenter,
                 x =  Math.Max(x, 0);
                 x =  Math.Min(x, Extent.Width - Viewport.Width);
             }
-
-            var newOffset = (Vector)SnapOffsetMethodInfo.Invoke(this, new object?[] { new Vector(x, y), delta, true })!;
+            var newOffset = this.SnapOffset(new Vector(x, y), delta, true);
 
             var offsetChanged = newOffset != Offset;
             SetCurrentValue(OffsetProperty, newOffset);

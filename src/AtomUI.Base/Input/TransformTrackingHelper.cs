@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Threading;
@@ -8,18 +9,18 @@ namespace AtomUI.Input;
 
 internal class TransformTrackingHelper : IDisposable
 {
+    #region 反射信息定义
+
+    private static readonly Lazy<FieldInfo> AfterRenderFieldInfo = new Lazy<FieldInfo>(() =>
+        typeof(DispatcherPriority).GetFieldInfoOrThrow("AfterRender",
+            BindingFlags.Static | BindingFlags.NonPublic));
+
+    #endregion
+    
     private Visual? _visual;
     private bool _queuedForUpdate;
     private readonly EventHandler<AvaloniaPropertyChangedEventArgs> _propertyChangedHandler;
     private readonly List<Visual> _propertyChangedSubscriptions = new();
-    private static readonly FieldInfo AfterRenderFieldInfo;
-
-    static TransformTrackingHelper()
-    {
-        AfterRenderFieldInfo =
-            typeof(DispatcherPriority).GetFieldInfoOrThrow("AfterRender",
-                BindingFlags.Static | BindingFlags.NonPublic)!;
-    }
 
     public TransformTrackingHelper()
     {
@@ -115,8 +116,9 @@ internal class TransformTrackingHelper : IDisposable
         }
 
         _queuedForUpdate = true;
-        var priority = (DispatcherPriority)AfterRenderFieldInfo.GetValue(null)!;
-        Dispatcher.UIThread.Post(UpdateMatrix, priority);
+        var priority = AfterRenderFieldInfo.Value.GetValue(null) as DispatcherPriority?;
+        Debug.Assert(priority != null);
+        Dispatcher.UIThread.Post(UpdateMatrix, priority.Value);
     }
 
     private void PropertyChangedHandler(object? sender, AvaloniaPropertyChangedEventArgs e)

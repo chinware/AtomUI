@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using AtomUI.Native;
+﻿using AtomUI.Native;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -12,15 +12,15 @@ namespace AtomUI.MotionScene;
 internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
     private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
-    private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
+    // private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
     private readonly Canvas _layout;
     private SceneMotionActorControl? _motionActorControl;
 
     static SceneLayer()
     {
-        BackgroundProperty.OverrideDefaultValue(typeof(SceneLayer), Brushes.Transparent);
-        ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
-            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        BackgroundProperty.OverrideDefaultValue<SceneLayer>(Brushes.Transparent);
+        // ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
+        //     BindingFlags.Instance | BindingFlags.NonPublic)!;
     }
 
     public SceneLayer(TopLevel parent, IPopupImpl impl)
@@ -42,17 +42,13 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
         impl.SetWindowManagerAddShadowHint(false);
         if (PlatformImpl is not null)
         {
-            PlatformImpl.SetTransparencyLevelHint(new[]
-            {
-                WindowTransparencyLevel.Transparent
-            });
+            PlatformImpl.SetTransparencyLevelHint([WindowTransparencyLevel.Transparent]);
             PlatformImpl!.SetWindowManagerAddShadowHint(false);
         }
-        WindowUtils.SetWindowIgnoreMouseEvents(this, true);
+        this.SetWindowIgnoreMouseEvents(true);
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
         {
-            _managedPopupPositionerPopup =
-                ManagedPopupPositionerPopupInfo.GetValue(managedPopupPositioner) as IManagedPopupPositionerPopup;
+            _managedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
         }
 
         _layout = new Canvas();
