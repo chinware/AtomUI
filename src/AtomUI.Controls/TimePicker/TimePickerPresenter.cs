@@ -100,7 +100,7 @@ internal class TimePickerPresenter : PickerPresenterBase,
     }
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TimePickerPresenter>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TimePickerPresenter>();
     
     internal bool IsMotionEnabled
     {

@@ -81,7 +81,7 @@ public enum ArrowPosition
 
 public class ArrowDecoratedBox : ContentControl,
                                  IArrowAwareShadowMaskInfoProvider,
-                                 IAnimationAwareControl,
+                                 IMotionAwareControl,
                                  IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -94,10 +94,7 @@ public class ArrowDecoratedBox : ContentControl,
             nameof(ArrowPosition));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ArrowDecoratedBox>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ArrowDecoratedBox>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ArrowDecoratedBox>();
 
     /// <summary>
     /// 是否显示指示箭头
@@ -121,12 +118,6 @@ public class ArrowDecoratedBox : ContentControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
-    }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -156,7 +147,7 @@ public class ArrowDecoratedBox : ContentControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     public Rect ArrowIndicatorBounds { get; private set; }
 
@@ -180,7 +171,7 @@ public class ArrowDecoratedBox : ContentControl,
     public ArrowDecoratedBox()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsMotionEnabledProperty);
+        this.BindMotionProperties();
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)

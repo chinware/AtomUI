@@ -6,7 +6,7 @@ using Avalonia.Controls;
 namespace AtomUI.Controls;
 
 public class LineEdit : TextBox,
-                        IAnimationAwareControl
+                        IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -17,10 +17,7 @@ public class LineEdit : TextBox,
         AvaloniaProperty.Register<LineEdit, object?>(nameof(RightAddOn));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<LineEdit>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<LineEdit>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<LineEdit>();
 
     public object? LeftAddOn
     {
@@ -40,23 +37,17 @@ public class LineEdit : TextBox,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
 
     public LineEdit()
     {
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

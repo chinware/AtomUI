@@ -9,7 +9,7 @@ namespace AtomUI.Controls;
 using AvaloniaButtonSpinner = Avalonia.Controls.ButtonSpinner;
 
 public class ButtonSpinner : AvaloniaButtonSpinner,
-                             IAnimationAwareControl,
+                             IMotionAwareControl,
                              IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -36,10 +36,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
         AddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ButtonSpinner>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ButtonSpinner>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ButtonSpinner>();
 
     public object? LeftAddOn
     {
@@ -88,20 +85,14 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
+    
     #endregion
 
     #region 内部属性定义
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonSpinnerToken.ID;
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -111,7 +102,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     public ButtonSpinner()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

@@ -45,7 +45,7 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
             (o, v) => o.MenuEdgeThickness = v);
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabScrollViewer>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabScrollViewer>();
 
     private Dock _tabStripPlacement;
 

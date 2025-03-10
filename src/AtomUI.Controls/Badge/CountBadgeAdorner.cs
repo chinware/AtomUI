@@ -99,7 +99,7 @@ internal class CountBadgeAdorner : TemplatedControl
             nameof(BadgeShadowSize));
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CountBadgeAdorner>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CountBadgeAdorner>();
 
     private bool _isAdornerMode;
 

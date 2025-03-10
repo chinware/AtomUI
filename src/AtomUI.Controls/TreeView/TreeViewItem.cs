@@ -196,7 +196,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         = AvaloniaProperty.Register<TreeViewItem, CornerRadius>(nameof(EffectiveNodeCornerRadius));
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeViewItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeViewItem>();
     
     internal static readonly DirectProperty<TreeViewItem, TimeSpan> MotionDurationProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, TimeSpan>(nameof(MotionDuration),

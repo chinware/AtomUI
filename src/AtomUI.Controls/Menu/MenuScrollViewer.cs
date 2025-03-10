@@ -21,7 +21,7 @@ public class MenuScrollViewer : AvaloniaScrollViewer
     #region 内部属性定义
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuScrollViewer>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuScrollViewer>();
 
     internal bool IsMotionEnabled
     {

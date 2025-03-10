@@ -10,16 +10,16 @@ using AvaloniaCheckBox = Avalonia.Controls.CheckBox;
 
 public class CheckBox : AvaloniaCheckBox,
                         ICustomHitTest,
-                        IAnimationAwareControl,
+                        IWaveSpiritAwareControl,
                         IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBox>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBox>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<CheckBox>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<CheckBox>();
     
     public bool IsMotionEnabled
     {
@@ -27,17 +27,17 @@ public class CheckBox : AvaloniaCheckBox,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
+    public bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     #endregion
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CheckBoxToken.ID;
 
@@ -46,7 +46,7 @@ public class CheckBox : AvaloniaCheckBox,
     public CheckBox()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindWaveSpiritProperties();
     }
 
     public bool HitTest(Point point)

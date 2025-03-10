@@ -32,7 +32,7 @@ public enum CollapseExpandIconPosition
 
 [TemplatePart(CollapseTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Collapse : SelectingItemsControl,
-                        IAnimationAwareControl,
+                        IMotionAwareControl,
                         IControlSharedTokenResourcesHost,
                         ITokenResourceConsumer
 {
@@ -57,10 +57,7 @@ public class Collapse : SelectingItemsControl,
         AvaloniaProperty.Register<Collapse, CollapseExpandIconPosition>(nameof(ExpandIconPosition));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Collapse>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Collapse>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Collapse>();
 
     public SizeType SizeType
     {
@@ -104,12 +101,6 @@ public class Collapse : SelectingItemsControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
@@ -133,7 +124,7 @@ public class Collapse : SelectingItemsControl,
             Orientation = Orientation.Vertical
         });
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CollapseToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -153,7 +144,7 @@ public class Collapse : SelectingItemsControl,
     {
         SelectionChanged += HandleSelectionChanged;
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)

@@ -16,7 +16,7 @@ namespace AtomUI.IconPkg;
 
 public class Icon : Control,
                     ICustomHitTest,
-                    IAnimationAwareControl
+                    IMotionAwareControl
 {
     public const string DisabledPC = ":disabled";
     public const string PressedPC = ":pressed";
@@ -68,10 +68,7 @@ public class Icon : Control,
         AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Icon>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
 
     public IconInfo? IconInfo
     {
@@ -150,12 +147,6 @@ public class Icon : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #region 内部属性定义
 
     internal static readonly StyledProperty<double> AngleAnimationRotateProperty =
@@ -183,7 +174,7 @@ public class Icon : Control,
 
     #endregion
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     private Animation? _animation;
     private CancellationTokenSource? _animationCancellationTokenSource;
@@ -207,7 +198,7 @@ public class Icon : Control,
         RenderTransform       = new RotateTransform();
         _sourceGeometriesData = new List<Geometry>();
         _transforms           = new List<Matrix>();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     public override void ApplyTemplate()

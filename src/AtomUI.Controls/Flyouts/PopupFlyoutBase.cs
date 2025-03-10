@@ -152,7 +152,7 @@ public abstract class PopupFlyoutBase : FlyoutBase,
         AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
     
     internal bool IsDetectMouseClickEnabled
     {

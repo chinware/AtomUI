@@ -23,7 +23,7 @@ internal sealed class CalendarButton : AvaloniaButton
     internal const string BtnFocusedPC = ":btnfocused";
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarButton>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarButton>();
 
     internal bool IsMotionEnabled
     {

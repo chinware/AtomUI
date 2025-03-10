@@ -88,7 +88,7 @@ public record SliderMark(string Label, double Value)
 [TemplatePart(SliderTheme.TrackPart, typeof(SliderTrack))]
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal, StdPseudoClass.Pressed)]
 public class Slider : RangeBase,
-                      IAnimationAwareControl,
+                      IMotionAwareControl,
                       IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -133,10 +133,10 @@ public class Slider : RangeBase,
         SliderTrack.IncludedProperty.AddOwner<Slider>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Slider>();
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Slider>();
 
     /// <summary>
     /// Gets or sets the orientation of a <see cref="Slider" />.
@@ -225,7 +225,7 @@ public class Slider : RangeBase,
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SliderToken.ID;
 
@@ -273,7 +273,7 @@ public class Slider : RangeBase,
     public Slider()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         UpdatePseudoClasses(Orientation);
     }
 

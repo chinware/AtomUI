@@ -30,7 +30,7 @@ public class OptionCheckedChangedEventArgs : RoutedEventArgs
 
 public class OptionButtonGroup : SelectingItemsControl,
                                  ISizeTypeAware,
-                                 IAnimationAwareControl,
+                                 IWaveSpiritAwareControl,
                                  IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -42,10 +42,10 @@ public class OptionButtonGroup : SelectingItemsControl,
         AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButtonGroup>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButtonGroup>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<OptionButtonGroup>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButtonGroup>();
 
     public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
         RoutedEvent.Register<OptionButtonGroup, OptionCheckedChangedEventArgs>(
@@ -70,10 +70,10 @@ public class OptionButtonGroup : SelectingItemsControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
+    public bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     public event EventHandler<OptionCheckedChangedEventArgs>? OptionCheckedChanged
@@ -114,7 +114,7 @@ public class OptionButtonGroup : SelectingItemsControl,
             Orientation = Orientation.Horizontal
         });
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => OptionButtonToken.ID;
 
@@ -137,7 +137,7 @@ public class OptionButtonGroup : SelectingItemsControl,
     public OptionButtonGroup()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindWaveSpiritProperties();
         if (this is IChildIndexProvider childIndexProvider)
         {
             childIndexProvider.ChildIndexChanged += (sender, args) => { UpdateOptionButtonsPosition(); };
@@ -167,8 +167,8 @@ public class OptionButtonGroup : SelectingItemsControl,
             BindUtils.RelayBind(this, SizeTypeProperty, optionButton, OptionButton.SizeTypeProperty);
             BindUtils.RelayBind(this, ButtonStyleProperty, optionButton, OptionButton.ButtonStyleProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, optionButton, OptionButton.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, optionButton,
-                OptionButton.IsWaveAnimationEnabledProperty);
+            BindUtils.RelayBind(this, IsWaveSpiritEnabledProperty, optionButton,
+                OptionButton.IsWaveSpiritEnabledProperty);
 
             optionButton.IsCheckedChanged += HandleOptionButtonChecked;
         }

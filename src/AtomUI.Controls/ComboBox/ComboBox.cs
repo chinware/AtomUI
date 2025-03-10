@@ -11,7 +11,7 @@ namespace AtomUI.Controls;
 using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
 public class ComboBox : AvaloniaComboBox,
-                        IAnimationAwareControl,
+                        IMotionAwareControl,
                         IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -41,10 +41,7 @@ public class ComboBox : AvaloniaComboBox,
         TextBox.IsEnableClearButtonProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ComboBox>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
 
     public object? LeftAddOn
     {
@@ -100,17 +97,11 @@ public class ComboBox : AvaloniaComboBox,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ComboBoxToken.ID;
 
@@ -125,7 +116,7 @@ public class ComboBox : AvaloniaComboBox,
     public ComboBox()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     private IconButton? _openIndicatorButton;

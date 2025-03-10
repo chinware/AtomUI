@@ -18,7 +18,7 @@ namespace AtomUI.Controls;
 
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC, LoadingPC)]
 public class MessageCard : TemplatedControl,
-                           IAnimationAwareControl,
+                           IMotionAwareControl,
                            IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
@@ -62,10 +62,7 @@ public class MessageCard : TemplatedControl,
         AvaloniaProperty.Register<MessageCard, string>(nameof(Message));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageCard>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<MessageCard>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageCard>();
 
     /// <summary>
     /// Determines if the notification is already closing.
@@ -121,12 +118,6 @@ public class MessageCard : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
@@ -144,7 +135,7 @@ public class MessageCard : TemplatedControl,
         set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MessageToken.ID;
 
@@ -159,7 +150,7 @@ public class MessageCard : TemplatedControl,
     public MessageCard()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     /// <summary>

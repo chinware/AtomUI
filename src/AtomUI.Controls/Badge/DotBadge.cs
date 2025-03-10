@@ -24,7 +24,7 @@ public enum DotBadgeStatus
 
 public class DotBadge : Control,
                         IControlSharedTokenResourcesHost,
-                        IAnimationAwareControl
+                        IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -50,10 +50,7 @@ public class DotBadge : Control,
         AvaloniaProperty.Register<DotBadge, bool>(nameof(BadgeIsVisible));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadge>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<DotBadge>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadge>();
 
     public string? DotColor
     {
@@ -98,19 +95,13 @@ public class DotBadge : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
     
     #region 内部属性定义
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => BadgeToken.ID;
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -128,7 +119,7 @@ public class DotBadge : Control,
     public DotBadge()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     private DotBadgeAdorner CreateDotBadgeAdorner()

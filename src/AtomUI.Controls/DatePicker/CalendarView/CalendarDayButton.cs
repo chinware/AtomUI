@@ -33,7 +33,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
     internal const string DayfocusedPC = ":dayfocused";
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarDayButton>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarDayButton>();
 
     internal bool IsMotionEnabled
     {

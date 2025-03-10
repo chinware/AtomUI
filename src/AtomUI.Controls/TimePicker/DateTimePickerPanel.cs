@@ -109,7 +109,7 @@ internal class DateTimePickerPanel : Panel,
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DateTimePickerPanel>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DateTimePickerPanel>();
 
     internal bool IsMotionEnabled
     {

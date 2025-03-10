@@ -11,16 +11,13 @@ namespace AtomUI.Controls;
 using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
 
 public class ContextMenu : AvaloniaContextMenu,
-                           IAnimationAwareControl,
+                           IMotionAwareControl,
                            IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ContextMenu>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
 
     public bool IsMotionEnabled
     {
@@ -28,17 +25,11 @@ public class ContextMenu : AvaloniaContextMenu,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
 
@@ -47,7 +38,7 @@ public class ContextMenu : AvaloniaContextMenu,
     public ContextMenu()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         // 我们在这里有一次初始化的机会
         var popup = new Popup
         {

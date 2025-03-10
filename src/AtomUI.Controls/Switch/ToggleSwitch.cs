@@ -21,8 +21,7 @@ namespace AtomUI.Controls;
 public class ToggleSwitch : ToggleButton,
                             ISizeTypeAware,
                             ICustomHitTest,
-                            IWaveAdornerInfoProvider,
-                            IAnimationAwareControl,
+                            IWaveSpiritAwareControl,
                             IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -57,12 +56,12 @@ public class ToggleSwitch : ToggleButton,
     /// </summary>
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<ToggleSwitch, bool>(nameof(IsLoading));
-    
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleSwitch>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ToggleSwitch>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleSwitch>();
+
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<ToggleSwitch>();
 
     /// <summary>
     /// Gets or Sets the Content that is displayed when in the On State.
@@ -102,17 +101,17 @@ public class ToggleSwitch : ToggleButton,
         get => GetValue(GrooveBackgroundProperty);
         set => SetValue(GrooveBackgroundProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
+    public bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     #endregion
@@ -146,16 +145,16 @@ public class ToggleSwitch : ToggleButton,
 
     internal static readonly StyledProperty<Rect> KnobMovingRectProperty
         = AvaloniaProperty.Register<ToggleSwitch, Rect>(nameof(KnobMovingRect));
-    
+
     internal static readonly StyledProperty<Point> OnContentOffsetProperty
         = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OnContentOffset));
 
     internal static readonly StyledProperty<Point> OffContentOffsetProperty
         = AvaloniaProperty.Register<ToggleSwitch, Point>(nameof(OffContentOffset));
-    
+
     internal static readonly StyledProperty<double> SwitchOpacityProperty
         = AvaloniaProperty.Register<ToggleSwitch, double>(nameof(SwitchOpacity), 1d);
-    
+
     internal double InnerMaxMargin
     {
         get => GetValue(InnerMaxMarginProperty);
@@ -203,13 +202,13 @@ public class ToggleSwitch : ToggleButton,
         get => GetValue(KnobSizeProperty);
         set => SetValue(KnobSizeProperty, value);
     }
-    
+
     internal Rect KnobMovingRect
     {
         get => GetValue(KnobMovingRectProperty);
         set => SetValue(KnobMovingRectProperty, value);
     }
-    
+
     internal Point OnContentOffset
     {
         get => GetValue(OnContentOffsetProperty);
@@ -228,10 +227,10 @@ public class ToggleSwitch : ToggleButton,
         set => SetValue(SwitchOpacityProperty, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ToggleSwitchToken.ID;
-    
+
     #endregion
 
     private const double STRETCH_FACTOR = 1.3d;
@@ -256,7 +255,7 @@ public class ToggleSwitch : ToggleButton,
     {
         LayoutUpdated += HandleLayoutUpdated;
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindWaveSpiritProperties();
     }
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
@@ -306,6 +305,7 @@ public class ToggleSwitch : ToggleButton,
         {
             _switchKnob.Measure(KnobRect.Size);
         }
+
         return targetSize;
     }
 
@@ -322,7 +322,7 @@ public class ToggleSwitch : ToggleButton,
                 _switchKnob.Arrange(KnobMovingRect);
             }
         }
-        
+
         AdjustExtraInfoOffset();
         return finalSize;
     }
@@ -361,6 +361,7 @@ public class ToggleSwitch : ToggleButton,
         {
             _switchKnob.KnobSize = new Size(handleSize, KnobSize.Height);
         }
+
         KnobRect       = handleRect;
         KnobMovingRect = KnobRect;
     }
@@ -368,7 +369,7 @@ public class ToggleSwitch : ToggleButton,
     private void AdjustOffsetOnReleased()
     {
         CalculateElementsOffset(Bounds.Size);
-        
+
         if (_switchKnob is not null)
         {
             _switchKnob.KnobSize = KnobSize;
@@ -380,10 +381,11 @@ public class ToggleSwitch : ToggleButton,
         if (!IsLoading)
         {
             base.OnPointerPressed(e);
-            if (!MathUtils.AreClose(KnobMovingRect.X,  KnobRect.X))
+            if (!MathUtils.AreClose(KnobMovingRect.X, KnobRect.X))
             {
                 return;
             }
+
             _isCheckedChanged = false;
             AdjustOffsetOnPressed();
         }
@@ -407,28 +409,28 @@ public class ToggleSwitch : ToggleButton,
             HandleLoadingState(IsLoading);
         }
         else if ((e.Property == IsPointerOverProperty && !IsLoading) ||
-            e.Property == IsCheckedProperty ||
-            e.Property == IsEnabledProperty)
+                 e.Property == IsCheckedProperty ||
+                 e.Property == IsEnabledProperty)
         {
-            if (e.Property == IsCheckedProperty && IsWaveAnimationEnabled)
+            if (e.Property == IsCheckedProperty && IsMotionEnabled)
             {
                 CalculateElementsOffset(Bounds.Size);
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
             }
-        } 
+        }
         else if (e.Property == KnobSizeProperty)
         {
             if (_switchKnob is not null)
             {
                 _switchKnob.KnobSize = KnobSize;
             }
-        } 
-        
+        }
+
         if (e.Property == IsCheckedProperty)
         {
             _isCheckedChanged = true;
         }
-        
+
         if (this.IsAttachedToVisualTree())
         {
             if (e.Property == OffContentProperty || e.Property == OnContentProperty)
@@ -534,7 +536,7 @@ public class ToggleSwitch : ToggleButton,
         {
             var label = new TextBlock()
             {
-                Text = offStr,
+                Text              = offStr,
                 VerticalAlignment = VerticalAlignment.Center,
             };
             result = label;
@@ -545,7 +547,7 @@ public class ToggleSwitch : ToggleButton,
 
     private void CalculateElementsOffset(Size controlSize)
     {
-        var isChecked  = IsChecked.HasValue && IsChecked.Value;
+        var isChecked = IsChecked.HasValue && IsChecked.Value;
         KnobRect       = HandleRect(isChecked, controlSize);
         KnobMovingRect = KnobRect;
 

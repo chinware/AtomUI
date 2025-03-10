@@ -20,7 +20,7 @@ public enum CountBadgeSize
 
 public class CountBadge : Control,
                           IControlSharedTokenResourcesHost,
-                          IAnimationAwareControl
+                          IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -52,10 +52,7 @@ public class CountBadge : Control,
         AvaloniaProperty.Register<CountBadge, bool>(nameof(BadgeIsVisible), true);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CountBadge>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<CountBadge>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CountBadge>();
 
     public string? BadgeColor
     {
@@ -112,19 +109,13 @@ public class CountBadge : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => BadgeToken.ID;
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -143,7 +134,7 @@ public class CountBadge : Control,
     public CountBadge()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     private CountBadgeAdorner CreateBadgeAdorner()

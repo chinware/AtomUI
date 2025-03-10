@@ -64,7 +64,7 @@ public class TabItem : AvaloniaTabItem,
         AvaloniaProperty.Register<TabItem, TabSharp>(nameof(Shape));
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabItem>();
 
     public SizeType SizeType
     {

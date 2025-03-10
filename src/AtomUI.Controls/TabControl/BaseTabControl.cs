@@ -18,7 +18,7 @@ namespace AtomUI.Controls;
 using AvaloniaTabControl = Avalonia.Controls.TabControl;
 
 public class BaseTabControl : AvaloniaTabControl,
-                              IAnimationAwareControl,
+                              IMotionAwareControl,
                               IControlSharedTokenResourcesHost,
                               ITokenResourceConsumer
 {
@@ -39,10 +39,7 @@ public class BaseTabControl : AvaloniaTabControl,
         AvaloniaProperty.Register<BaseTabControl, bool>(nameof(TabAlignmentCenter));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabControl>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<BaseTabControl>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabControl>();
 
     public SizeType SizeType
     {
@@ -60,12 +57,6 @@ public class BaseTabControl : AvaloniaTabControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
-    }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -98,7 +89,7 @@ public class BaseTabControl : AvaloniaTabControl,
         set => SetAndRaise(TabStripMarginProperty, ref _tabStripMargin, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
     
@@ -119,7 +110,7 @@ public class BaseTabControl : AvaloniaTabControl,
     public BaseTabControl()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

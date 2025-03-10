@@ -22,7 +22,7 @@ public enum FlyoutTriggerType
 }
 
 public class FlyoutHost : Control,
-                          IAnimationAwareControl,
+                          IMotionAwareControl,
                           ITokenResourceConsumer
 {
     #region 公共属性定义
@@ -64,10 +64,7 @@ public class FlyoutHost : Control,
         Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<FlyoutHost>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<FlyoutHost>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
     /// 距离 anchor 的边距，根据垂直和水平进行设置
@@ -159,17 +156,11 @@ public class FlyoutHost : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
     #endregion
@@ -185,7 +176,7 @@ public class FlyoutHost : Control,
     public FlyoutHost()
     {
         _flyoutStateHelper = new FlyoutStateHelper();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

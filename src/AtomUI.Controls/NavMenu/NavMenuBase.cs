@@ -13,7 +13,7 @@ namespace AtomUI.Controls;
 public abstract class NavMenuBase : SelectingItemsControl, 
                                     IFocusScope, 
                                     INavMenu,
-                                    IAnimationAwareControl,
+                                    IMotionAwareControl,
                                     IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -24,10 +24,7 @@ public abstract class NavMenuBase : SelectingItemsControl,
             o => o.IsOpen);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuBase>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<NavMenuBase>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuBase>();
 
     private bool _isOpen;
     
@@ -42,13 +39,7 @@ public abstract class NavMenuBase : SelectingItemsControl,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
+    
     #endregion
 
     #region 公共事件定义
@@ -87,7 +78,7 @@ public abstract class NavMenuBase : SelectingItemsControl,
     
     #region 内部属性定义
     
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => NavMenuToken.ID;
 
@@ -118,7 +109,7 @@ public abstract class NavMenuBase : SelectingItemsControl,
     public NavMenuBase()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     /// <summary>

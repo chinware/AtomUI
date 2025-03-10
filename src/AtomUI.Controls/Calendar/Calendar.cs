@@ -228,7 +228,7 @@ public class CalendarModeChangedEventArgs : RoutedEventArgs
 [TemplatePart(CalendarTheme.CalendarItemPart, typeof(CalendarItem))]
 [TemplatePart(CalendarTheme.RootPart, typeof(Panel))]
 public class Calendar : TemplatedControl,
-                        IAnimationAwareControl,
+                        IMotionAwareControl,
                         IControlSharedTokenResourcesHost,
                         ITokenResourceConsumer
 {
@@ -274,10 +274,7 @@ public class Calendar : TemplatedControl,
             defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Calendar>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
 
     /// <summary>
     /// Gets or sets the day that is considered the beginning of the week.
@@ -491,12 +488,6 @@ public class Calendar : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
@@ -599,7 +590,7 @@ public class Calendar : TemplatedControl,
     }
 
     internal DateTime DisplayDateInternal { get; set; }
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CalendarToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -642,7 +633,7 @@ public class Calendar : TemplatedControl,
     public Calendar()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         SetCurrentValue(DisplayDateProperty, DateTime.Today);
         UpdateDisplayDate(this, DisplayDate, DateTime.MinValue);
         BlackoutDates = new CalendarBlackoutDatesCollection(this);

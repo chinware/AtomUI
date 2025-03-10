@@ -13,7 +13,7 @@ namespace AtomUI.Controls;
 
 public class MenuFlyoutPresenter : MenuBase,
                                    IShadowMaskInfoProvider,
-                                   IAnimationAwareControl,
+                                   IMotionAwareControl,
                                    IControlSharedTokenResourcesHost,
                                    ITokenResourceConsumer
 {
@@ -31,10 +31,7 @@ public class MenuFlyoutPresenter : MenuBase,
             RoutingStrategies.Bubble);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuFlyoutPresenter>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<MenuFlyoutPresenter>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuFlyoutPresenter>();
 
     /// <summary>
     /// 是否显示指示箭头
@@ -60,12 +57,6 @@ public class MenuFlyoutPresenter : MenuBase,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     public event EventHandler<FlyoutMenuItemClickedEventArgs>? MenuItemClicked
     {
         add => AddHandler(MenuItemClickedEvent, value);
@@ -78,7 +69,7 @@ public class MenuFlyoutPresenter : MenuBase,
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -92,14 +83,14 @@ public class MenuFlyoutPresenter : MenuBase,
         : base(new DefaultMenuInteractionHandler(true))
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     public MenuFlyoutPresenter(IMenuInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     public override void Close()

@@ -26,7 +26,7 @@ public enum TreeItemHoverMode
 
 [PseudoClasses(StdPseudoClass.Draggable)]
 public class TreeView : AvaloniaTreeView,
-                        IAnimationAwareControl,
+                        IMotionAwareControl,
                         IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -53,10 +53,7 @@ public class TreeView : AvaloniaTreeView,
         = AvaloniaProperty.Register<TreeView, bool>(nameof(IsSwitcherRotation), true);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeView>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<TreeView>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeView>();
 
     public bool IsDraggable
     {
@@ -105,12 +102,7 @@ public class TreeView : AvaloniaTreeView,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
+    
     public bool IsDefaultExpandAll { get; set; } = false;
 
     #endregion
@@ -169,7 +161,7 @@ public class TreeView : AvaloniaTreeView,
         set => SetAndRaise(DragIndicatorBrushProperty, ref _dragIndicatorBrush, value);
     }
     
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TreeViewToken.ID;
     
@@ -192,7 +184,7 @@ public class TreeView : AvaloniaTreeView,
     public TreeView()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         DefaultCheckedItems = new List<TreeViewItem>();
     }
 

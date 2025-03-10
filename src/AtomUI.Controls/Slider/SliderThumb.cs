@@ -44,7 +44,7 @@ public class SliderThumb : TemplatedControl
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderThumb>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderThumb>();
     
     internal bool IsMotionEnabled
     {

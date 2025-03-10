@@ -16,7 +16,7 @@ namespace AtomUI.Controls;
 [PseudoClasses(TopLeftPC, TopRightPC, BottomLeftPC, BottomRightPC, TopCenterPC, BottomCenterPC)]
 public class WindowNotificationManager : TemplatedControl, 
                                          INotificationManager,
-                                         IAnimationAwareControl,
+                                         IMotionAwareControl,
                                          IControlSharedTokenResourcesHost
 {
     public const string TopLeftPC = ":topleft";
@@ -37,10 +37,7 @@ public class WindowNotificationManager : TemplatedControl,
             nameof(Position), NotificationPosition.TopRight);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowNotificationManager>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<WindowNotificationManager>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowNotificationManager>();
 
     public static readonly StyledProperty<int> MaxItemsProperty =
         AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
@@ -71,18 +68,12 @@ public class WindowNotificationManager : TemplatedControl,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
     
     #endregion
     
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
 
@@ -99,7 +90,7 @@ public class WindowNotificationManager : TemplatedControl,
     public WindowNotificationManager()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         _cardExpiredTimer      =  new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
         _cardExpiredTimer.Tick += HandleCardExpiredTimer;
         _cleanupTimer          =  new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };

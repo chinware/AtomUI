@@ -6,38 +6,33 @@ using Avalonia.Controls;
 
 namespace AtomUI.Controls;
 
-public interface IAnimationAwareControl
+public interface IMotionAwareControl
 {
     bool IsMotionEnabled { get; }
-    bool IsWaveAnimationEnabled { get; }
     Control PropertyBindTarget { get; }
 }
 
-public abstract class AnimationAwareControlProperty : AvaloniaObject
+public abstract class MotionAwareControlProperty : AvaloniaObject
 {
     public const string IsMotionEnabledPropertyName = "IsMotionEnabled";
-    public const string IsWaveAnimationEnabledPropertyName = "IsWaveAnimationEnabled";
     public const string TokenResourceBindingDisposablePropertyName = "TokenResourceBindingDisposable";
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<AnimationAwareControlProperty, bool>(IsMotionEnabledPropertyName);
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AvaloniaProperty.Register<AnimationAwareControlProperty, bool>(IsWaveAnimationEnabledPropertyName);
+        = AvaloniaProperty.Register<MotionAwareControlProperty, bool>(IsMotionEnabledPropertyName);
 
     internal static readonly AttachedProperty<CompositeDisposable?> TokenResourceBindingDisposablesProperty =
-        AvaloniaProperty.RegisterAttached<AnimationAwareControlProperty, Control, CompositeDisposable?>(
+        AvaloniaProperty.RegisterAttached<MotionAwareControlProperty, Control, CompositeDisposable?>(
             TokenResourceBindingDisposablePropertyName);
     
     internal static CompositeDisposable? GetTokenResourceBindingDisposables(StyledElement element)
     {
-        Debug.Assert(element is IAnimationAwareControl);
+        Debug.Assert(element is IMotionAwareControl);
         return element.GetValue(TokenResourceBindingDisposablesProperty);
     }
 
     internal static void SetTokenResourceBindingDisposables(StyledElement element, CompositeDisposable? compositeDisposable)
     {
-        Debug.Assert(element is IAnimationAwareControl);
+        Debug.Assert(element is IMotionAwareControl);
         element.SetValue(TokenResourceBindingDisposablesProperty, compositeDisposable);
     }
     

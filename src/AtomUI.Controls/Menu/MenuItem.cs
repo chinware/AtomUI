@@ -32,7 +32,7 @@ public class MenuItem : AvaloniaMenuItem
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuItem>();
 
     internal bool IsMotionEnabled
     {

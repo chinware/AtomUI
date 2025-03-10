@@ -110,7 +110,7 @@ public class CollapseItem : HeaderedContentControl,
             (o, v) => o.MotionDuration = v);
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CollapseItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CollapseItem>();
 
     internal SizeType SizeType
     {

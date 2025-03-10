@@ -3,7 +3,7 @@
     <Algorithms>DefaultAlgorithm</Algorithms>
     <SharedTokens>
         <Token Name="EnableMotion" Value="true"/>
-        <Token Name="EnableWaveAnimation" Value="true"/>
+        <Token Name="EnableWaveSpirit" Value="true"/>
     </SharedTokens>
     <ControlTokens>
     </ControlTokens>

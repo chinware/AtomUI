@@ -35,7 +35,7 @@ public enum ExpanderIconPosition
 }
 
 public class Expander : AvaloniaExpander,
-                        IAnimationAwareControl,
+                        IMotionAwareControl,
                         IControlSharedTokenResourcesHost,
                         ITokenResourceConsumer
 {
@@ -75,10 +75,7 @@ public class Expander : AvaloniaExpander,
         AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Expander>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
     
     public SizeType SizeType
     {
@@ -139,13 +136,7 @@ public class Expander : AvaloniaExpander,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
+    
     #endregion
 
     #region 内部属性定义
@@ -189,7 +180,7 @@ public class Expander : AvaloniaExpander,
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
     
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ExpanderToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -201,7 +192,7 @@ public class Expander : AvaloniaExpander,
     public Expander()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     private MotionActorControl? _motionActor;

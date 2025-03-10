@@ -92,7 +92,7 @@ internal class NodeSwitcherButton : ToggleButton
             (o, v) => o.IconMode = v);
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NodeSwitcherButton>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NodeSwitcherButton>();
 
     internal bool IsLeafIconVisible
     {

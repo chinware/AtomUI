@@ -116,7 +116,7 @@ internal class TimeView : TemplatedControl,
         AvaloniaProperty.Register<TimeView, bool>(nameof(IsPointerInSelector), false);
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TimeView>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TimeView>();
 
     private double _spacerWidth;
 

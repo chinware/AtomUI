@@ -173,5 +173,5 @@ public partial class DesignToken
     ///
     /// 按钮，单选按钮等点击后的波浪动画效果
     /// </summary>
-    public bool EnableWaveAnimation { get; set; } = true;
+    public bool EnableWaveSpirit { get; set; } = true;
 }

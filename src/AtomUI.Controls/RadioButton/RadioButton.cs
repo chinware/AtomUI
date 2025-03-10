@@ -10,16 +10,16 @@ using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 
 public class RadioButton : AvaloniaRadioButton,
                            ICustomHitTest,
-                           IAnimationAwareControl,
+                           IWaveSpiritAwareControl,
                            IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<RadioButton>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<RadioButton>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<RadioButton>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<RadioButton>();
     
     public bool IsMotionEnabled
     {
@@ -27,17 +27,17 @@ public class RadioButton : AvaloniaRadioButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
+    public bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     #endregion
     
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => RadioButtonToken.ID;
 
@@ -46,7 +46,7 @@ public class RadioButton : AvaloniaRadioButton,
     public RadioButton()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindWaveSpiritProperties();
     }
     
     public bool HitTest(Point point)

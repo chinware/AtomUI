@@ -42,7 +42,7 @@ public enum ButtonShape
 public class Button : AvaloniaButton,
                       ISizeTypeAware,
                       IWaveAdornerInfoProvider,
-                      IAnimationAwareControl,
+                      IWaveSpiritAwareControl,
                       IControlSharedTokenResourcesHost,
                       ITokenResourceConsumer
 {
@@ -79,10 +79,10 @@ public class Button : AvaloniaButton,
         = AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Button>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Button>();
 
     public ButtonType ButtonType
     {
@@ -144,10 +144,10 @@ public class Button : AvaloniaButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
+    public bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     #endregion
@@ -298,7 +298,7 @@ public class Button : AvaloniaButton,
         set => SetAndRaise(ExtraContainerVisibleProperty, ref _extraContainerVisible, value);
     }
     
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -328,7 +328,7 @@ public class Button : AvaloniaButton,
     public Button()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindWaveSpiritProperties();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -430,7 +430,7 @@ public class Button : AvaloniaButton,
         if (e.Property == IsPressedProperty)
         {
             if (!IsLoading &&
-                IsWaveAnimationEnabled &&
+                IsWaveSpiritEnabled &&
                 (e.OldValue as bool? == true) &&
                 (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default))
             {
@@ -505,7 +505,7 @@ public class Button : AvaloniaButton,
                 SetupControlThemeBindings();
             }
             else if (e.Property == IsMotionEnabledProperty ||
-                     e.Property == IsWaveAnimationEnabledProperty)
+                     e.Property == IsWaveSpiritEnabledProperty)
             {
                 SetupTransitions();
             }

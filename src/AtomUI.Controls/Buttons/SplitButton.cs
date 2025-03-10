@@ -33,7 +33,7 @@ public class SplitButton : ContentControl,
                            ICommandSource, 
                            ISizeTypeAware,
                            IControlSharedTokenResourcesHost,
-                           IAnimationAwareControl,
+                           IWaveSpiritAwareControl,
                            ITokenResourceConsumer
 {
     #region 公共属性定义
@@ -101,10 +101,10 @@ public class SplitButton : ContentControl,
         AvaloniaProperty.Register<SplitButton, bool>(nameof(IsPrimaryButtonType));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<SplitButton>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<SplitButton>();
     
     public event EventHandler<RoutedEventArgs>? Click
     {
@@ -241,10 +241,10 @@ public class SplitButton : ContentControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
+    public bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     #endregion
@@ -264,7 +264,7 @@ public class SplitButton : ContentControl,
         set => SetAndRaise(EffectiveButtonTypeProperty, ref _effectiveButtonType, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -296,7 +296,7 @@ public class SplitButton : ContentControl,
     {
         _flyoutStateHelper = new FlyoutStateHelper();
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindWaveSpiritProperties();
     }
 
     internal virtual bool InternalIsChecked => false;

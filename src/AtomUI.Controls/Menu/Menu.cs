@@ -13,7 +13,7 @@ using AvaloniaMenu = Avalonia.Controls.Menu;
 
 public class Menu : AvaloniaMenu,
                     ISizeTypeAware,
-                    IAnimationAwareControl,
+                    IMotionAwareControl,
                     IControlSharedTokenResourcesHost,
                     ITokenResourceConsumer
 {
@@ -23,10 +23,7 @@ public class Menu : AvaloniaMenu,
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Menu>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Menu>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Menu>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Menu>();
 
     public SizeType SizeType
     {
@@ -40,17 +37,11 @@ public class Menu : AvaloniaMenu,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -62,7 +53,7 @@ public class Menu : AvaloniaMenu,
     public Menu()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

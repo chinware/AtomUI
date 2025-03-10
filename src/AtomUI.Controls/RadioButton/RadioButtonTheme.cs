@@ -54,7 +54,7 @@ internal class RadioButtonTheme : BaseControlTheme
             CreateTemplateParentBinding(indicator, RadioIndicator.IsMotionEnabledProperty,
                 RadioButton.IsMotionEnabledProperty);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsWaveAnimationEnabledProperty,
-                RadioButton.IsWaveAnimationEnabledProperty);
+                RadioButton.IsWaveSpiritEnabledProperty);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsEnabledProperty, RadioButton.IsEnabledProperty);
             CreateTemplateParentBinding(indicator, RadioIndicator.IsCheckedProperty, RadioButton.IsCheckedProperty);
             layout.Children.Add(indicator);

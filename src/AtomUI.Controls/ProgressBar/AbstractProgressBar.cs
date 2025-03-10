@@ -28,7 +28,7 @@ public enum ProgressStatus
 [PseudoClasses(IndeterminatePC)]
 public abstract class AbstractProgressBar : RangeBase,
                                             ISizeTypeAware,
-                                            IAnimationAwareControl,
+                                            IMotionAwareControl,
                                             IControlSharedTokenResourcesHost
 {
     protected const double LARGE_STROKE_THICKNESS = 8;
@@ -92,10 +92,7 @@ public abstract class AbstractProgressBar : RangeBase,
         AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractProgressBar>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<AbstractProgressBar>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractProgressBar>();
 
     /// <summary>
     /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
@@ -194,12 +191,6 @@ public abstract class AbstractProgressBar : RangeBase,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
@@ -266,7 +257,7 @@ public abstract class AbstractProgressBar : RangeBase,
         set => SetValue(IsCompletedProperty, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ProgressBarToken.ID;
 
@@ -297,7 +288,7 @@ public abstract class AbstractProgressBar : RangeBase,
     public AbstractProgressBar()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         _effectiveSizeType = SizeType;
     }
 

@@ -272,7 +272,7 @@ internal class Calendar : TemplatedControl
     #region 内部属性定义
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
     
     internal bool IsMotionEnabled
     {

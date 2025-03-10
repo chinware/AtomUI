@@ -66,7 +66,7 @@ internal class DrawerContainer : ContentControl
             (o, v) => o.DialogSize = v);
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerContainer>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerContainer>();
 
     internal static readonly DirectProperty<DrawerContainer, bool> CloseWhenClickOnMaskProperty
         = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(CloseWhenClickOnMask),

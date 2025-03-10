@@ -93,7 +93,7 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
                             TabItem    = tabItem,
                             IsClosable = tabItem.IsClosable
                         };
-                        BindUtils.RelayBind(TabControl, AnimationAwareControlProperty.IsMotionEnabledProperty, menuItem, AnimationAwareControlProperty.IsMotionEnabledProperty);
+                        BindUtils.RelayBind(TabControl, MotionAwareControlProperty.IsMotionEnabledProperty, menuItem, MotionAwareControlProperty.IsMotionEnabledProperty);
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
                         _menuFlyout.Items.Add(menuItem);

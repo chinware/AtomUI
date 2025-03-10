@@ -15,7 +15,7 @@ namespace AtomUI.Controls.Internal;
 
 [PseudoClasses(FlyoutOpenPC)]
 public abstract class InfoPickerInput : TemplatedControl,
-                                        IAnimationAwareControl,
+                                        IMotionAwareControl,
                                         IControlSharedTokenResourcesHost
 {
     internal const string FlyoutOpenPC = ":flyout-open";
@@ -70,10 +70,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         AvaloniaProperty.Register<InfoPickerInput, IBrush?>(nameof(InputTextBrush));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<InfoPickerInput>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<InfoPickerInput>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<InfoPickerInput>();
 
     public object? LeftAddOn
     {
@@ -170,13 +167,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
+    
     #endregion
 
     #region 内部属性定义
@@ -205,7 +196,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => InfoPickerInputToken.ID;
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -229,7 +220,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     public InfoPickerInput()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         _flyoutStateHelper = new FlyoutStateHelper
         {
             TriggerType = FlyoutTriggerType.Click

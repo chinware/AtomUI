@@ -15,7 +15,7 @@ namespace AtomUI.Controls;
 [TemplatePart(WindowNotificationManagerTheme.ItemsPart, typeof(Panel))]
 public class WindowMessageManager : TemplatedControl,
                                     IMessageManager,
-                                    IAnimationAwareControl,
+                                    IMotionAwareControl,
                                     IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -28,10 +28,7 @@ public class WindowMessageManager : TemplatedControl,
             nameof(Position), NotificationPosition.TopRight);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowMessageManager>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<WindowMessageManager>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowMessageManager>();
 
     /// <summary>
     /// Defines which corner of the screen notifications can be displayed in.
@@ -64,17 +61,11 @@ public class WindowMessageManager : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MessageToken.ID;
 
@@ -89,7 +80,7 @@ public class WindowMessageManager : TemplatedControl,
     public WindowMessageManager(TopLevel? host)
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         if (host is not null)
         {
             InstallFromTopLevel(host);
@@ -128,7 +119,6 @@ public class WindowMessageManager : TemplatedControl,
             MessageType = message.Type
         };
         BindUtils.RelayBind(this, IsMotionEnabledProperty, messageControl, MessageCard.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, IsWaveAnimationEnabledProperty, messageControl, MessageCard.IsWaveAnimationEnabledProperty);
 
         // Add style classes if any
         if (classes != null)

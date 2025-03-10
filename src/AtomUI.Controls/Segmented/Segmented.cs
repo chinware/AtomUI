@@ -17,7 +17,7 @@ namespace AtomUI.Controls;
 
 [TemplatePart(SegmentedTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Segmented : SelectingItemsControl,
-                         IAnimationAwareControl,
+                         IMotionAwareControl,
                          IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -29,10 +29,7 @@ public class Segmented : SelectingItemsControl,
         AvaloniaProperty.Register<Segmented, bool>(nameof(IsExpanding));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Segmented>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Segmented>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Segmented>();
 
     public SizeType SizeType
     {
@@ -50,12 +47,6 @@ public class Segmented : SelectingItemsControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
-    }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -110,7 +101,7 @@ public class Segmented : SelectingItemsControl,
         set => SetValue(SelectedThumbPosProperty, value);
     }
     
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SegmentedToken.ID;
 
@@ -127,7 +118,7 @@ public class Segmented : SelectingItemsControl,
     public Segmented()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         SelectionChanged += HandleSelectionChanged;
         SelectionMode    =  SelectionMode.Single;
     }

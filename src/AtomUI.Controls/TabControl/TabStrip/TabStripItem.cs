@@ -87,7 +87,7 @@ public class TabStripItem : AvaloniaTabStripItem,
         AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabStripItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabStripItem>();
 
     public TabSharp Shape
     {

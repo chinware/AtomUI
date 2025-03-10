@@ -117,10 +117,10 @@ internal class CheckBoxIndicator : Control,
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBoxIndicator>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBoxIndicator>();
 
-    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<CheckBoxIndicator>();
+    internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<CheckBoxIndicator>();
 
     internal bool IsMotionEnabled
     {
@@ -128,10 +128,10 @@ internal class CheckBoxIndicator : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    internal bool IsWaveAnimationEnabled
+    internal bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
     
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -216,7 +216,7 @@ internal class CheckBoxIndicator : Control,
             UpdatePseudoClasses();
             SetupIndicatorCheckedMarkEffectSize();
             if (e.Property == IsCheckedProperty &&
-                IsWaveAnimationEnabled &&
+                IsWaveSpiritEnabled &&
                 !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))
             {

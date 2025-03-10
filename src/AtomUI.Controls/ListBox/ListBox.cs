@@ -14,7 +14,7 @@ namespace AtomUI.Controls;
 using AvaloniaListBox = Avalonia.Controls.ListBox;
 
 public class ListBox : AvaloniaListBox,
-                       IAnimationAwareControl,
+                       IMotionAwareControl,
                        IControlSharedTokenResourcesHost,
                        ITokenResourceConsumer
 {
@@ -27,10 +27,7 @@ public class ListBox : AvaloniaListBox,
         AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ListBox>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
 
     public SizeType SizeType
     {
@@ -49,17 +46,12 @@ public class ListBox : AvaloniaListBox,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
+    
     #endregion
     
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ListBoxToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -71,7 +63,7 @@ public class ListBox : AvaloniaListBox,
     public ListBox()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)

@@ -70,7 +70,7 @@ internal class CalendarItem : TemplatedControl,
             (o, v) => o.IsMonthViewMode = v);
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();
 
     private bool _isMonthViewMode = true;
 

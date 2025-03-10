@@ -14,7 +14,7 @@ internal class HeadTextButton : AvaloniaButton
 {
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<HeadTextButton>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<HeadTextButton>();
 
     internal bool IsMotionEnabled
     {

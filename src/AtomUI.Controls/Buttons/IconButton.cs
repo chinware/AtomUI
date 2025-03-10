@@ -16,7 +16,7 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 public class IconButton : AvaloniaButton,
                           ICustomHitTest,
-                          IAnimationAwareControl,
+                          IMotionAwareControl,
                           IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -56,10 +56,7 @@ public class IconButton : AvaloniaButton,
         = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconButton>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<IconButton>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconButton>();
 
     public Icon? Icon
     {
@@ -102,12 +99,6 @@ public class IconButton : AvaloniaButton,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
     
     public IBrush? NormalIconColor
     {
@@ -137,7 +128,7 @@ public class IconButton : AvaloniaButton,
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
 
@@ -151,7 +142,7 @@ public class IconButton : AvaloniaButton,
     public IconButton()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

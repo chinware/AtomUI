@@ -11,7 +11,7 @@ namespace AtomUI.Controls;
 
 [TemplatePart(AddOnDecoratedInnerBoxTheme.ContentPresenterPart, typeof(ContentPresenter), IsRequired = true)]
 public class AddOnDecoratedInnerBox : ContentControl,
-                                      IAnimationAwareControl
+                                      IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -34,10 +34,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
         AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsClearButtonVisible));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedInnerBox>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<AddOnDecoratedInnerBox>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedInnerBox>();
 
     public SizeType SizeType
     {
@@ -79,12 +76,6 @@ public class AddOnDecoratedInnerBox : ContentControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
-    }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
 
     #endregion
@@ -139,7 +130,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
         set => SetAndRaise(ContentPresenterMarginProperty, ref _contentPresenterMargin, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -149,7 +140,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
 
     public AddOnDecoratedInnerBox()
     {
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     protected virtual void NotifyClearButtonClicked()

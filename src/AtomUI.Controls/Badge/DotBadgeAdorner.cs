@@ -83,7 +83,7 @@ internal class DotBadgeAdorner : TemplatedControl
             nameof(MotionDuration));
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadgeAdorner>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadgeAdorner>();
     
     internal TimeSpan MotionDuration
     {

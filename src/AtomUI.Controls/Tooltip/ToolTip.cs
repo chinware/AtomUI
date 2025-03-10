@@ -18,7 +18,7 @@ namespace AtomUI.Controls;
 [PseudoClasses(StdPseudoClass.Open)]
 public class ToolTip : ContentControl,
                        IControlSharedTokenResourcesHost,
-                       IAnimationAwareControl,
+                       IWaveSpiritAwareControl,
                        IPopupHostProvider,
                        IShadowMaskInfoProvider
 {
@@ -78,10 +78,10 @@ public class ToolTip : ContentControl,
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomHide");
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToolTip>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToolTip>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<ToolTip>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<ToolTip>();
 
     public bool IsMotionEnabled
     {
@@ -89,10 +89,10 @@ public class ToolTip : ContentControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
+    public bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     #endregion
@@ -304,7 +304,7 @@ public class ToolTip : ContentControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ToolTipToken.ID;
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
 
@@ -325,7 +325,7 @@ public class ToolTip : ContentControl,
 
     public ToolTip()
     {
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     public CornerRadius GetMaskCornerRadius()

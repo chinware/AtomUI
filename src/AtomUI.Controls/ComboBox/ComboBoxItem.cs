@@ -18,7 +18,7 @@ public class ComboBoxItem : AvaloniaComboBoxItem
     }
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBoxItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBoxItem>();
 
     internal bool IsMotionEnabled
     {

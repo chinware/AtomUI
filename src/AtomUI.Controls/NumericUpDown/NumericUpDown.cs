@@ -8,7 +8,7 @@ namespace AtomUI.Controls;
 using AvaloniaNumericUpDown = Avalonia.Controls.NumericUpDown;
 
 public class NumericUpDown : AvaloniaNumericUpDown,
-                             IAnimationAwareControl,
+                             IMotionAwareControl,
                              IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -32,10 +32,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         TextBox.IsEnableClearButtonProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NumericUpDown>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<NumericUpDown>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NumericUpDown>();
 
     public object? LeftAddOn
     {
@@ -78,18 +75,12 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
+    
     #endregion
     
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => NumericUpDownToken.ID;
     
@@ -98,6 +89,6 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     public NumericUpDown()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 }

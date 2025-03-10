@@ -25,7 +25,7 @@ namespace AtomUI.Controls;
 using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
 public class Popup : AvaloniaPopup,
-                     IAnimationAwareControl,
+                     IWaveSpiritAwareControl,
                      ITokenResourceConsumer
 {
     #region 公共属性定义
@@ -47,10 +47,10 @@ public class Popup : AvaloniaPopup,
             (o, v) => o.IsFlipped = v);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Popup>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<Popup>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Popup>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Popup>();
 
     public BoxShadows MaskShadows
     {
@@ -84,10 +84,10 @@ public class Popup : AvaloniaPopup,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
+    public bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     #endregion
@@ -103,7 +103,7 @@ public class Popup : AvaloniaPopup,
         set => SetValue(IsDetectMouseClickEnabledProperty, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
 
@@ -134,7 +134,7 @@ public class Popup : AvaloniaPopup,
 
     public Popup()
     {
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindWaveSpiritProperties();
         Closed += HandleClosed;
         Opened += HandleOpened;
     }

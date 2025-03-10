@@ -232,7 +232,7 @@ public class SliderTrack : Control,
         RoutedEvent.Register<SliderTrack, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderTrack>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderTrack>();
 
     internal double SliderTrackSize
     {

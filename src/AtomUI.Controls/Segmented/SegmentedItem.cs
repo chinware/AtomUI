@@ -49,7 +49,7 @@ public class SegmentedItem : ContentControl,
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SegmentedItem>();
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<SegmentedItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SegmentedItem>();
     
     internal SizeType SizeType
     {

@@ -18,7 +18,7 @@ using AvaloniaTabStrip = Avalonia.Controls.Primitives.TabStrip;
 
 public abstract class BaseTabStrip : AvaloniaTabStrip, 
                                      ISizeTypeAware,
-                                     IAnimationAwareControl,
+                                     IMotionAwareControl,
                                      IControlSharedTokenResourcesHost,
                                      ITokenResourceConsumer
 {
@@ -42,10 +42,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(TabAlignmentCenter));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabStrip>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<BaseTabStrip>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabStrip>();
     
     public SizeType SizeType
     {
@@ -71,16 +68,10 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
     
     #region 内部属性定义
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -99,7 +90,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     public BaseTabStrip()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

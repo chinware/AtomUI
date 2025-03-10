@@ -15,7 +15,7 @@ public class ListBoxItem : AvaloniaListBoxItem
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBoxItem>();
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBoxItem>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBoxItem>();
 
     internal static readonly DirectProperty<ListBoxItem, bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(DisabledItemHoverEffect),

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -75,10 +76,10 @@ public class OptionButton : AvaloniaRadioButton,
             OptionButtonPositionTrait.OnlyOne);
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButton>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButton>();
 
-    internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<OptionButton>();
+    internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
+        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButton>();
 
     internal bool IsMotionEnabled
     {
@@ -86,10 +87,10 @@ public class OptionButton : AvaloniaRadioButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    internal bool IsWaveAnimationEnabled
+    internal bool IsWaveSpiritEnabled
     {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
     private OptionButtonPositionTrait _groupPositionTrait = OptionButtonPositionTrait.OnlyOne;
@@ -148,7 +149,7 @@ public class OptionButton : AvaloniaRadioButton,
             e.Property == IsPressedProperty ||
             e.Property == IsCheckedProperty)
         {
-            if (e.Property == IsPressedProperty && e.OldValue as bool? == true && IsWaveAnimationEnabled)
+            if (e.Property == IsPressedProperty && e.OldValue as bool? == true && IsWaveSpiritEnabled)
             {
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
             }

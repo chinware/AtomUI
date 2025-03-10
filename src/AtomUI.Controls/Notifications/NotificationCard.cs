@@ -19,7 +19,7 @@ namespace AtomUI.Controls;
 
 [PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC)]
 public class NotificationCard : ContentControl,
-                                IAnimationAwareControl,
+                                IMotionAwareControl,
                                 IControlSharedTokenResourcesHost
 {
     public const string ErrorPC = ":error";
@@ -45,10 +45,7 @@ public class NotificationCard : ContentControl,
         AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<NotificationCard>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<NotificationCard>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NotificationCard>();
     
     public static readonly RoutedEvent<RoutedEventArgs> NotificationClosedEvent =
         RoutedEvent.Register<NotificationCard, RoutedEventArgs>(nameof(NotificationClosed), RoutingStrategies.Bubble);
@@ -119,13 +116,7 @@ public class NotificationCard : ContentControl,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
+    
     #endregion
 
     #region 内部属性定义
@@ -157,7 +148,7 @@ public class NotificationCard : ContentControl,
         set => SetAndRaise(OpenCloseMotionDurationProperty, ref _openCloseMotionDuration, value);
     }
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => NotificationToken.ID;
 
@@ -174,7 +165,7 @@ public class NotificationCard : ContentControl,
     public NotificationCard(WindowNotificationManager manager)
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
         _notificationManager = manager;
     }
     

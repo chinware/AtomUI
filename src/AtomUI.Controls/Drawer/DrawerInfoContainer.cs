@@ -66,7 +66,7 @@ internal class DrawerInfoContainer : HeaderedContentControl
             (o, v) => o.HasExtra = v);
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerInfoContainer>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerInfoContainer>();
 
     private DrawerPlacement _placement = DrawerPlacement.Right;
 

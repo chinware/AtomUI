@@ -17,7 +17,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 public class Drawer : Control,
-                      IAnimationAwareControl,
+                      IMotionAwareControl,
                       IControlSharedTokenResourcesHost,
                       ITokenResourceConsumer
 {
@@ -72,11 +72,8 @@ public class Drawer : Control,
         AvaloniaProperty.Register<Drawer, double>(nameof(PushOffsetPercent));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AnimationAwareControlProperty.IsMotionEnabledProperty.AddOwner<Drawer>();
-
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = AnimationAwareControlProperty.IsWaveAnimationEnabledProperty.AddOwner<Drawer>();
-
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Drawer>();
+    
     [Content]
     [DependsOn(nameof(ContentTemplate))]
     public object? Content
@@ -183,12 +180,6 @@ public class Drawer : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool IsWaveAnimationEnabled
-    {
-        get => GetValue(IsWaveAnimationEnabledProperty);
-        set => SetValue(IsWaveAnimationEnabledProperty, value);
-    }
-
     #endregion
 
     #region 公共事件定义
@@ -200,7 +191,7 @@ public class Drawer : Control,
 
     #region 内部属性定义
 
-    Control IAnimationAwareControl.PropertyBindTarget => this;
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => DrawerToken.ID;
     CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
@@ -218,7 +209,7 @@ public class Drawer : Control,
     public Drawer()
     {
         this.RegisterResources();
-        this.BindAnimationProperties(IsMotionEnabledProperty, IsWaveAnimationEnabledProperty);
+        this.BindMotionProperties();
     }
 
     public static Drawer? GetDrawer(Visual element)
@@ -242,8 +233,6 @@ public class Drawer : Control,
             BindUtils.RelayBind(parentDrawer, OpenOnProperty, this, OpenOnProperty, BindingMode.Default,
                 BindingPriority.Template);
             BindUtils.RelayBind(parentDrawer, IsMotionEnabledProperty, this, IsMotionEnabledProperty,
-                BindingMode.Default, BindingPriority.Template);
-            BindUtils.RelayBind(parentDrawer, IsWaveAnimationEnabledProperty, this, IsWaveAnimationEnabledProperty,
                 BindingMode.Default, BindingPriority.Template);
         }
         else
