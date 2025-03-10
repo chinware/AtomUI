@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Controls;
+﻿namespace AtomUI;
 
 public static class StdPseudoClass
 {

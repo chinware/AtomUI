@@ -18,11 +18,6 @@ public class Icon : Control,
                     ICustomHitTest,
                     IMotionAwareControl
 {
-    public const string DisabledPC = ":disabled";
-    public const string PressedPC = ":pressed";
-    public const string SelectedPC = ":selected";
-    public const string PointerOverPC = ":pointerover";
-    
     public static readonly StyledProperty<IconInfo?> IconInfoProperty =
         AvaloniaProperty.Register<Icon, IconInfo?>(nameof(IconInfo));
 
