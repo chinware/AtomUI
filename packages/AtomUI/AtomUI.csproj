@@ -69,18 +69,18 @@
     <Target Name="IncludeReferencedProjectInPackage" BeforeTargets="GenerateNuspec"
             Condition=" '$(Configuration)' == 'Release' ">
         <ItemGroup>
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.Base.dll" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.Base.pdb" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.Controls.dll" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.Controls.pdb" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.IconPkg.dll" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.IconPkg.pdb" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.IconPkg.AntDesign.dll" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.IconPkg.AntDesign.pdb" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.Theme.dll" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.Theme.pdb" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.Native.dll" PackagePath="lib\$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)\AtomUI.Native.pdb" PackagePath="lib\$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Base.dll" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Base.pdb" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.dll" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.pdb" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.dll" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.pdb" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.AntDesign.dll" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.AntDesign.pdb" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.dll" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.pdb" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.dll" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.pdb" PackagePath="lib/$(TargetFramework)" />
         </ItemGroup>
     </Target>
 
