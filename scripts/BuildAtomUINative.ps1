@@ -29,8 +29,8 @@ try {
         return
     }
 } catch [System.IO.IOException] {
-    if (Test-Path $path) {
-        Write-Host "目录已被其他进程创建: $path"
+    if (Test-Path $buildMarker) {
+        Write-Host "目录已被其他进程创建: $buildMarker"
     } else {
         Write-Host "创建失败: $_，跳过编译"
     }

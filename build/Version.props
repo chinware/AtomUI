@@ -4,6 +4,7 @@
         <AvaloniaVersion>11.2.5</AvaloniaVersion>
         <AtomUIVersion>0.0.2</AtomUIVersion>
         <IsNightlyBuild Condition="'$(IsNightlyBuild)' == ''">false</IsNightlyBuild>
+        <BuildTimestamp Condition="'$(BuildTimestamp)' == ''">$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</BuildTimestamp>
         <CanAppendBuildInfo>false</CanAppendBuildInfo>
     </PropertyGroup>
     
@@ -13,7 +14,11 @@
 
     <PropertyGroup Condition="'$(IsNightlyBuild)' == 'true'">
         <OriginVersion>$(AtomUIVersion)</OriginVersion>
-        <AtomUIVersion>$(AtomUIVersion)-build.$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</AtomUIVersion>
+        <AtomUIVersion>$(AtomUIVersion)-build.$(BuildTimestamp)</AtomUIVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Version>$(AtomUIVersion)</Version>
     </PropertyGroup>
     
     <Target Name="CheckNightlyVersion" BeforeTargets="Build">

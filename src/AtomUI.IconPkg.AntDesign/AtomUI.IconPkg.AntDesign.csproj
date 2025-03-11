@@ -15,7 +15,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="../AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj" 
+                          OutputItemType="Analyzer" 
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all"/>
         <ProjectReference Include="../AtomUI.IconPkg/AtomUI.IconPkg.csproj" />
     </ItemGroup>
 
