@@ -3,6 +3,7 @@
     <Import Project="$(MSBuildThisFileDirectory)../../build/AtomUINativePackageInfo.props"/>
 
     <PropertyGroup>
+        <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>AtomUI</RootNamespace>
@@ -25,9 +26,9 @@
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Base/AtomUI.Base.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Generator/AtomUI.Generator.csproj">
-            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
-        </ProjectReference>
+<!--        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Generator/AtomUI.Generator.csproj">-->
+<!--            <IncludeAssets>$(IncludeAssets)</IncludeAssets>-->
+<!--        </ProjectReference>-->
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Controls/AtomUI.Controls.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
@@ -37,9 +38,9 @@
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj">
-            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
-        </ProjectReference>
+<!--        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj">-->
+<!--            <IncludeAssets>$(IncludeAssets)</IncludeAssets>-->
+<!--        </ProjectReference>-->
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Native/AtomUI.Native.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
@@ -57,16 +58,16 @@
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Base.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Controls.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.dll"/>
-        <Reference Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.Generator.dll"/>
-        <Reference Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.IconPkg.Generator.dll"/>
+<!--        <Reference Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.Generator.dll"/>-->
+<!--        <Reference Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.IconPkg.Generator.dll"/>-->
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Theme.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Native.dll"/>
     </ItemGroup>
 
     <PropertyGroup>
-        <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
-        <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
+        <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
+        <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)/$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -76,10 +77,10 @@
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Controls.pdb"/>
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.dll"/>
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.pdb"/>
-        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.Generator.dll"/>
-        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.Generator.pdb"/>
-        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.IconPkg.Generator.dll"/>
-        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.IconPkg.Generator.pdb"/>
+<!--        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.Generator.dll"/>-->
+<!--        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.Generator.pdb"/>-->
+<!--        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.IconPkg.Generator.dll"/>-->
+<!--        <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutputWithoutFramework)/AtomUI.IconPkg.Generator.pdb"/>-->
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.dll"/>
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.pdb"/>
         <Content Pack="true" Visible="false" PackagePath="lib/$(TargetFramework)" Include="$(AtomUIPackageOutput)/AtomUI.Theme.dll"/>

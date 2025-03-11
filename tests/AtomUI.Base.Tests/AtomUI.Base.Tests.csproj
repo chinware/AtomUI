@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
+    </PropertyGroup>
     <ItemGroup>
 
         <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj"/>

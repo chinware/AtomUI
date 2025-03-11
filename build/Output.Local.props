@@ -1,5 +1,0 @@
-<Project>
-    <PropertyGroup>
-        <OutputPath>$(ProjectDir)bin\$(Configuration)\</OutputPath>
-    </PropertyGroup>
-</Project>

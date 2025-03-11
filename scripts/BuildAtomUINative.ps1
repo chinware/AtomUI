@@ -20,7 +20,7 @@ $buildMarker = Join-Path -Path $buildDir -ChildPath ".native_compiled"
 
 if (-not (Test-Path -Path $buildMarker -PathType Leaf)) {
     # 如果文件不存在，则创建（自动创建父目录）
-    New-Item -Path $buildMarker -ItemType File -Force | Out-Null
+    New-Item -Path $buildMarker -ItemType File -Force
 } else {
     return
 }

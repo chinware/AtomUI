@@ -1,5 +1,5 @@
 <Project>
     <PropertyGroup>
-        <OutputPath>$(MSBuildThisFileDirectory)..\output\App\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+        <OutputPath>$(MSBuildThisFileDirectory)..\output\App\$(Configuration)\$(MSBuildProjectName)</OutputPath>
     </PropertyGroup>
 </Project>

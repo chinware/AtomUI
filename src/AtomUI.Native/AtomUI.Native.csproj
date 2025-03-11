@@ -1,13 +1,11 @@
-﻿<Project>
-    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk"/>
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(MSBuildThisFileDirectory)../../build/AtomUINativePackageInfo.props"/>
     <PropertyGroup>
+        <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
-    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk"/>
 
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
@@ -22,18 +20,18 @@
         <AtomUINavtiveBuildPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), $(IntermediateOutputPathWithoutFramework), 'AtomUINative'))</AtomUINavtiveBuildPath>
         <AtomUINativeSrcPath>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../nativelibs'))</AtomUINativeSrcPath>
         <AtomUITempInstallPrefix>$([System.IO.Path]::GetFullPath('$(OutputPathWithoutFramework)'))</AtomUITempInstallPrefix>
-        <AtomUINativeAbsoluteDeployPath>$(OutputPathWithoutFramework)$(AtomUINativeDeployPath)</AtomUINativeAbsoluteDeployPath>
+        <AtomUINativeAbsoluteDeployPath>$(OutputPathWithoutFramework)/$(AtomUINativeDeployPath)</AtomUINativeAbsoluteDeployPath>
         <AtomUIBuildPwShScript>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../scripts/BuildAtomUINative.ps1'))</AtomUIBuildPwShScript>
         
-        <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
-        <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
+        <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
+        <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)/$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
         <AtomUINativeCompiledMarker>$(AtomUINavtiveBuildPath)/.native_compiled</AtomUINativeCompiledMarker>
     </PropertyGroup>
 
     <ItemGroup>
         <AtomUINativeSources Include="$(AtomUINativeSrcPath)/include/**/*.*"/>
         <AtomUINativeSources Include="$(AtomUINativeSrcPath)/src/**/*.*"/>
-        <AtomUINativeArtifact Include="$(OutputPathWithoutFramework)$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)"/>
+        <AtomUINativeArtifact Include="$(OutputPathWithoutFramework)/$(AtomUINativeDeployPath)/$(AtomUINativeArtifactName)"/>
     </ItemGroup>
 
     <Choose>
@@ -48,14 +46,14 @@
             </PropertyGroup>
         </Otherwise>
     </Choose>
-
     <Target Name="BuildAtomUINative"
-            BeforeTargets="BeforeBuild"
+            BeforeTargets="Build"
             Inputs="@(AtomUINativeSources)"
             Outputs="@(AtomUINativeArtifact)">
         <PropertyGroup>
             <CPUCount>$([System.Environment]::ProcessorCount)</CPUCount>
         </PropertyGroup>
+   
         <MakeDir Directories="$(AtomUINavtiveBuildPath)" Condition="!Exists('$(AtomUINavtiveBuildPath)')"/>
         <MakeDir Directories="$(AtomUITempInstallPrefix)" Condition="!Exists('$(AtomUITempInstallPrefix)')"/>
         <MakeDir Directories="$(AtomUINativeAbsoluteDeployPath)" Condition="!Exists('$(AtomUINativeAbsoluteDeployPath)')"/>
