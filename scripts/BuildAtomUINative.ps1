@@ -17,12 +17,21 @@ if ($IsWindows) {
 }
 
 $buildMarker = Join-Path -Path $buildDir -ChildPath ".native_compiled"
+$lockFile = Join-Path -Path $buildDir -ChildPath ".lock"
+try {
+    # 创建锁文件（原子操作）
+    $lock = [System.IO.File]::Open($lockFile, [System.IO.FileMode]::CreateNew, [System.IO.FileAccess]::Write, [System.IO.FileShare]::None)
 
-if (-not (Test-Path -Path $buildMarker -PathType Leaf)) {
-    # 如果文件不存在，则创建（自动创建父目录）
-    New-Item -Path $buildMarker -ItemType File -Force | Out-Null
-} else {
-    return
+    if (-not (Test-Path -Path $buildMarker -PathType Leaf)) {
+        # 如果文件不存在，则创建（自动创建父目录）
+        New-Item -Path $buildMarker -ItemType File -Force | Out-Null
+    } else {
+        return
+    }
+} finally {
+    # 释放锁文件
+    if ($lock) { $lock.Close() }
+    Remove-Item $lockFile -ErrorAction SilentlyContinue
 }
 
 if ($IsWindows) {
