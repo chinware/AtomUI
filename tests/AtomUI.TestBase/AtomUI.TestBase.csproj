@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\AtomUI.Theme\AtomUI.Theme.csproj"/>
+        <ProjectReference Include="../../src/AtomUI.Theme/AtomUI.Theme.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -4,12 +4,11 @@
         <AtomUIProductionTargetFramework>net8.0</AtomUIProductionTargetFramework>
         <OutputType>Library</OutputType>
         <TrimMode>copyused</TrimMode>
+        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
         <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
 
         <!-- 'bin/ref/' https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/compiler-options/output#producereferenceassembly -->
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-        <!-- 'net6.0' https://learn.microsoft.com/zh-cn/dotnet/core/project-sdk/msbuild-props#appendtargetframeworktooutputpath -->
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <!-- 'win-x64' https://learn.microsoft.com/zh-cn/dotnet/core/project-sdk/msbuild-props#appendruntimeidentifiertooutputpath -->
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 
@@ -25,21 +24,23 @@
         <!-- enable private APIs -->
         <AvaloniaAccessUnstablePrivateApis>true</AvaloniaAccessUnstablePrivateApis>
         <!-- Mind to specify the exact Avalonia version needed for your package to work -->
-        <Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>true</Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>
+        <Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>
+            true
+        </Avalonia_I_Want_To_Use_Private_Apis_In_Nuget_Package_And_Promise_To_Pin_The_Exact_Avalonia_Version_In_Package_Dependency>
 
     </PropertyGroup>
 
     <Choose>
         <When Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-            <PropertyGroup >
+            <PropertyGroup>
                 <DefineConstants>$(DefineConstants);PLATFORM_WINDOWS</DefineConstants>
             </PropertyGroup>
         </When>
         <When Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-            <PropertyGroup >
+            <PropertyGroup>
                 <DefineConstants>$(DefineConstants);PLATFORM_MACOS</DefineConstants>
             </PropertyGroup>
         </When>
     </Choose>
-    
+
 </Project>

@@ -20,9 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AtomUI.IconPkg.AntDesign\AtomUI.IconPkg.AntDesign.csproj" />
-        <ProjectReference Include="..\AtomUI.Theme\AtomUI.Theme.csproj"/>
-        <ProjectReference Include="..\AtomUI.Generator\AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="../AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj" />
+        <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj"/>
+        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
 </Project>

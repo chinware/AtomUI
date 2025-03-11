@@ -57,7 +57,7 @@
         <MakeDir Directories="$(AtomUINavtiveBuildPath)" Condition="!Exists('$(AtomUINavtiveBuildPath)')"/>
         <MakeDir Directories="$(AtomUITempInstallPrefix)" Condition="!Exists('$(AtomUITempInstallPrefix)')"/>
         <MakeDir Directories="$(AtomUINativeAbsoluteDeployPath)" Condition="!Exists('$(AtomUINativeAbsoluteDeployPath)')"/>
-        <Exec Command='pwsh -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("\"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(CMakeBuildType)" -libName "$(AtomUINativeArtifactName)"'
+        <Exec Command='pwsh -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("/"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(CMakeBuildType)" -libName "$(AtomUINativeArtifactName)"'
               WorkingDirectory="$(AtomUINavtiveBuildPath)"
               ConsoleToMsBuild="true"
         />

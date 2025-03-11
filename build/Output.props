@@ -1,10 +1,10 @@
 <Project>
     <PropertyGroup>
-        <PackageOutputPath>$(MSBuildThisFileDirectory)..\output\Nuget\$(Configuration)\$(TargetFramework)</PackageOutputPath>
-        <OutputPathWithoutFramework>$(MSBuildThisFileDirectory)..\output\bin\$(Configuration)</OutputPathWithoutFramework>
-        <OutputPath>$(OutputPathWithoutFramework)\$(TargetFramework)</OutputPath>
-        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\output\$(MSBuildProjectName)\obj</BaseIntermediateOutputPath>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)../output/Nuget/$(Configuration)</PackageOutputPath>
+        <OutputPathWithoutFramework>$(MSBuildThisFileDirectory)../output/bin/$(Configuration)</OutputPathWithoutFramework>
+        <OutputPath>$(OutputPathWithoutFramework)</OutputPath>
+        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../output/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
         <IntermediateOutputPathWithoutFramework>$(BaseIntermediateOutputPath)</IntermediateOutputPathWithoutFramework>
-        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(TargetFramework)</IntermediateOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)/$(Configuration)</IntermediateOutputPath>
     </PropertyGroup>
 </Project>
