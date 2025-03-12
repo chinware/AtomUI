@@ -52,10 +52,13 @@ stages:
                      $osxNativeLibDir = "$(SourceDir)/output/Bin/Release/runtimes/osx/native"
                      New-Item -ItemType Directory -Force -Path $osxNativeLibDir
                      Copy-Item -Path $(Pipeline.Workspace)/lib/libAtomUINative.dylib -Destination $osxNativeLibDir
-                     dotnet build --property:Configuration=${{ parameters.BuildConfiguration }} --property:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/AtomUI.sln
+                     dotnet build -v diag --property:Configuration=${{ parameters.BuildConfiguration }} --property:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
                   displayName: "Build AtomUI projects"
                -  pwsh: |
-                     dotnet pack --no-build --output $(Build.ArtifactStagingDirectory) --configuration=${{ parameters.BuildConfiguration }} /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
+                     $buildTimestamp = Get-Date -Format 'yyyyMMddHHmm'
+                     dotnet pack --no-build --output $(Build.ArtifactStagingDirectory) --configuration=${{ parameters.BuildConfiguration }} /p:BuildTimestamp=$buildTimestamp /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
+                     dotnet pack --no-build --output $(Build.ArtifactStagingDirectory) --configuration=${{ parameters.BuildConfiguration }} /p:BuildTimestamp=$buildTimestamp /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj
+                     dotnet pack --no-build --output $(Build.ArtifactStagingDirectory) --configuration=${{ parameters.BuildConfiguration }} /p:BuildTimestamp=$buildTimestamp /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/AtomUI.Generator/AtomUI.Generator.csproj
                   displayName: "Pack AtomUI Umbrella project"
                -  task: DotNetCoreCLI@2
                   displayName: "Publish AtomUI project"
