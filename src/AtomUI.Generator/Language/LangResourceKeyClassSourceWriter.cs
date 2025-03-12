@@ -116,7 +116,9 @@ public class LangResourceKeyClassSourceWriter
 
         var classSyntax       = BuildClassSyntax(className);
         var resourceKeyFields = new List<MemberDeclarationSyntax>();
-        foreach (var key in keys)
+        // 排序，不然生成结果不稳定
+        var sortedKeys = keys.ToList().OrderBy(key => key);
+        foreach (var key in sortedKeys)
         {
             resourceKeyFields.Add(BuildResourceKeyFieldSyntax(catalog, key, $"{languageId}.{key}"));
         }

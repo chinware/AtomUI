@@ -14,7 +14,7 @@ public class ControlThemeRegisterClassSourceWriter
     public ControlThemeRegisterClassSourceWriter(SourceProductionContext context, ImmutableArray<string> classes)
     {
         _context    = context;
-        _classes    = classes;
+        _classes    = classes.OrderBy(name => name).ToImmutableArray();
         _usingInfos = new List<string>();
         SetupUsingInfos();
     }

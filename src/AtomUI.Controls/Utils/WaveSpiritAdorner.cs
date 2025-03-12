@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -132,7 +133,7 @@ internal class WaveSpiritAdorner : Control, IDisposable
         }
 
         borderRadius ??= sharedToken.BorderRadius;
-        
+
         TimeSpan? motionDurationSlow = null;
         {
             if (_targetControl.TryGetResource(SharedTokenKey.MotionDurationSlow, themeVariant, out var value))
@@ -144,7 +145,7 @@ internal class WaveSpiritAdorner : Control, IDisposable
             }
         }
         motionDurationSlow ??= sharedToken.MotionDurationSlow;
-        
+
         double? waveStartOpacity = null;
         {
             if (_targetControl.TryGetResource(SharedTokenKey.WaveStartOpacity, themeVariant, out var value))
@@ -168,7 +169,7 @@ internal class WaveSpiritAdorner : Control, IDisposable
             }
         }
         waveAnimationRange ??= sharedToken.WaveAnimationRange;
-        
+
         if (waveType == WaveType.CircleWave)
         {
             _wavePainter = new CircleWavePainter();
@@ -183,7 +184,7 @@ internal class WaveSpiritAdorner : Control, IDisposable
             roundWavePainter.CornerRadius = borderRadius.Value;
             _wavePainter                  = roundWavePainter;
         }
-        
+
         _wavePainter.SizeEasingCurve       = new CubicEaseOut();
         _wavePainter.OpacityEasingCurve    = new CubicEaseOut();
         _wavePainter.OriginOpacity         = Math.Clamp(waveStartOpacity.Value, 0.0, 1.0);
@@ -226,8 +227,9 @@ internal class WaveSpiritAdorner : Control, IDisposable
     private void AdjustWaveAdorner()
     {
         // 必须要成功
-        var waveGeometryProvider = (_targetControl as IWaveAdornerInfoProvider)!;
-        var waveGeometry         = waveGeometryProvider.WaveGeometry();
+        var waveGeometryProvider = _targetControl as IWaveAdornerInfoProvider;
+        Debug.Assert(waveGeometryProvider != null);
+        var waveGeometry = waveGeometryProvider.WaveGeometry();
         // 设置 painter
         if (_wavePainter is RoundRectWavePainter roundRectWavePainter)
         {

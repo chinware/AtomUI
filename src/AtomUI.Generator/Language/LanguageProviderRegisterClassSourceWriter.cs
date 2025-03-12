@@ -13,7 +13,7 @@ public class LanguageProviderRegisterClassSourceWriter
     public LanguageProviderRegisterClassSourceWriter(SourceProductionContext context, List<LanguageInfo> classes)
     {
         _context       = context;
-        _languageInfos = classes;
+        _languageInfos = classes.OrderBy(info => info.Namespace).ThenBy(info => info.ClassName).ToList();
         _usingInfos    = new List<string>();
         SetupUsingInfos();
     }
@@ -57,6 +57,7 @@ public class LanguageProviderRegisterClassSourceWriter
     private MethodDeclarationSyntax GenerateControlThemeCreateMethod()
     {
         List<ExpressionStatementSyntax> objectCreateStmts = new();
+        
         foreach (var languageInfo in _languageInfos)
         {
             var registerExprStmt = SyntaxFactory.ParseExpression(

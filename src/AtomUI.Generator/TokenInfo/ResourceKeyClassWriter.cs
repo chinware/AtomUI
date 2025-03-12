@@ -90,7 +90,8 @@ public class ResourceKeyClassWriter
     private void AddDesignResourceKeyField(ref ClassDeclarationSyntax classSyntax)
     {
         var resourceKeyFields = new List<MemberDeclarationSyntax>();
-        foreach (var tokenName in _tokenInfo.Tokens)
+        var tokenNames = _tokenInfo.Tokens.ToList().OrderBy(token => token.Name);
+        foreach (var tokenName in tokenNames)
         {
             resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName));
         }
@@ -106,7 +107,8 @@ public class ResourceKeyClassWriter
 
         var controlClassSyntax = BuildClassSyntax(className);
         var resourceKeyFields  = new List<MemberDeclarationSyntax>();
-        foreach (var tokenName in controlTokenInfo.Tokens)
+        var tokenNames = controlTokenInfo.Tokens.ToList().OrderBy(token => token.Name);
+        foreach (var tokenName in tokenNames)
         {
             resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{tokenId}.{tokenName.Name}"));
         }

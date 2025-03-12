@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    
+
     <Import Project="$(MSBuildThisFileDirectory)../../build/AtomUINativePackageInfo.props"/>
 
     <PropertyGroup>
@@ -69,37 +69,37 @@
     <Target Name="IncludeReferencedProjectInPackage" BeforeTargets="GenerateNuspec"
             Condition=" '$(Configuration)' == 'Release' ">
         <ItemGroup>
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Base.dll" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Base.pdb" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.dll" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.pdb" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.dll" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.pdb" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.AntDesign.dll" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.AntDesign.pdb" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.dll" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.pdb" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.dll" PackagePath="lib/$(TargetFramework)" />
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.pdb" PackagePath="lib/$(TargetFramework)" />
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Base.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Base.pdb" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.pdb" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.pdb" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.AntDesign.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.AntDesign.pdb" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.pdb" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.pdb" PackagePath="lib/$(TargetFramework)"/>
         </ItemGroup>
     </Target>
 
-    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">        
-        <Content Include="$(AtomUINativeMacOSArtifact)" 
+    <ItemGroup>
+        <Content Include="$(AtomUINativeMacOSArtifact)"
                  Condition="$([System.IO.File]::Exists('$(AtomUINativeMacOSArtifact)'))">
-            <Link>$(AtomUINativeMacOSArtifactName)</Link>
+            <Link>$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</Link>
             <PackagePath>$(AtomUINativeMacOSDeployPath)</PackagePath>
             <Pack>true</Pack>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="$(AtomUINativeWindowsX64Artifact)"
                  Condition="$([System.IO.File]::Exists('$(AtomUINativeWindowsX64Artifact)'))">
-            <Link>$(AtomUINativeWindowsArtifactName)</Link>
+            <Link>$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</Link>
             <PackagePath>$(AtomUINativeWindowsX64DeployPath)</PackagePath>
             <Pack>true</Pack>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        
+
     </ItemGroup>
-    
+
 </Project>

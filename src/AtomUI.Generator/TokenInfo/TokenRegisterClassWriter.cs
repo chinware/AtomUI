@@ -13,7 +13,7 @@ public class TokenRegisterClassWriter
     public TokenRegisterClassWriter(SourceProductionContext context, IEnumerable<string> classes)
     {
         _context    = context;
-        _classes    = classes;
+        _classes    = classes.OrderBy(className => className).ToList();
         _usingInfos = new List<string>();
         SetupUsingInfos();
     }

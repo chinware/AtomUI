@@ -21,6 +21,7 @@ namespace AtomUI.Controls;
 public class ToggleSwitch : ToggleButton,
                             ISizeTypeAware,
                             ICustomHitTest,
+                            IWaveAdornerInfoProvider,
                             IWaveSpiritAwareControl,
                             IControlSharedTokenResourcesHost
 {
