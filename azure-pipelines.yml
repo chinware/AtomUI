@@ -52,7 +52,7 @@ stages:
                      $osxNativeLibDir = "$(SourceDir)/output/Bin/Release/runtimes/osx/native"
                      New-Item -ItemType Directory -Force -Path $osxNativeLibDir
                      Copy-Item -Path $(Pipeline.Workspace)/lib/libAtomUINative.dylib -Destination $osxNativeLibDir
-                     dotnet build --configuration ${{ parameters.BuildConfiguration }} --property:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
+                     dotnet build --verbosity normal --configuration ${{ parameters.BuildConfiguration }} /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
                   displayName: "Build AtomUI projects"
                -  pwsh: |
                      $buildTimestamp = Get-Date -Format 'yyyyMMddHHmm'
