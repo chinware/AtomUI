@@ -6,6 +6,7 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
         <IncludeBuildOutput>false</IncludeBuildOutput>
+        <IncludeInPublish>false</IncludeInPublish>
     </PropertyGroup>
 
     <ItemGroup>
