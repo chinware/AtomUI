@@ -10,7 +10,9 @@
 target("AtomUINative", function()
     set_kind("shared")
 
+    add_defines("ATOMUI_LIBRARY")
     add_files("Global.cpp")
+    add_files("bridge/WindowUtils.cpp")
     add_files("WindowUtils.cpp")
 
     set_prefixdir("$(arch)")
