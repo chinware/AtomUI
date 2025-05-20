@@ -16,4 +16,5 @@ namespace atomui
     {
         return std::string{ATOMUI_VERSION_LONG};
     }
+    
 }
