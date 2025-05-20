@@ -8,7 +8,7 @@
 -- Created by chinboy on 2025/05/19.
 target("AtomUINative", function()
     set_kind("shared")
-
+    add_deps("generated_headers")
     add_files("Global.cpp")
     add_files("WindowUtils.cpp")
     

@@ -10,7 +10,7 @@
 add_rules("mode.debug", "mode.release")
 set_xmakever("2.9.9")
 
-set_project("AtomUINativeLibs")
+set_project("AtomUINative")
 set_version("0.0.1", {build = "%Y%m%d%H%M"})
 
 set_warnings("all", "error")
@@ -28,11 +28,10 @@ ATOMUI_INCLUDE_DIR = path.join(ATOMUI_SOURCE_DIR, "include/atomui")
 -- add option definitions
 includes("xmake/options.lua")
 includes("xmake/meta_info.lua")
+includes("xmake/toolchains/atomui")
 
 add_includedirs("include", {public = true})
 add_includedirs("$(buildir)/include", {public = true})
-
-set_configdir("$(buildir)/include/atomui")
 
 if has_config("build_unittests") then includes("tests/unittests") end
 

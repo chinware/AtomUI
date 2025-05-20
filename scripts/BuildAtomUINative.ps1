@@ -6,7 +6,7 @@ param (
     [string]$sourceDir,
     [string]$installPrefix,
     [string]$deployDir,
-    [string]$buildType = "Debug",
+    [string]$buildType = "debug",
     [string]$libName
 )
 
