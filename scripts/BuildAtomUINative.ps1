@@ -41,6 +41,8 @@ try {
     Remove-Item $lockFile -ErrorAction SilentlyContinue
 }
 
+$env:XMAKE_COLORTERM = 'nocolor'
+
 if ($IsWindows) {
     $possiblePaths = @(
         "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe",
@@ -61,9 +63,13 @@ if ($IsWindows) {
     cmake --install $buildDir --config $buildType
     Copy-Item -Path $installPrefix/bin/$libName -Destination $deployDir
 } else {
-    cmake -B $buildDir -S $sourceDir -DCMAKE_INSTALL_PREFIX="$installPrefix" -DCMAKE_OSX_ARCHITECTURES:STRING="x86_64;arm64" -DCMAKE_BUILD_TYPE="$buildType" -G $cmakeGenerator
-    $cpuCount = [Environment]::ProcessorCount
-    ninja -j $cpuCount -C $buildDir
-    ninja install
-    Copy-Item -Path $installPrefix/lib/$libName -Destination $deployDir
+    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a arm64 -m release --toolchain=atomui --sdk=/opt/homebrew/opt/llvm@19
+    xmake build
+    xmake install --installdir=$installPrefix
+    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a x86_64 -m release --toolchain=atomui --sdk=/opt/homebrew/opt/llvm@19
+    xmake build
+    xmake install --installdir=$installPrefix
+    Write-Output "generate universal binary"
+    lipo -create $installPrefix/arm64/lib/$libName $installPrefix/x86_64/lib/$libName -output $deployDir/$libName
+    Write-Output "generate success, saved to ${deployDir}"
 }
