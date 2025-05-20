@@ -6,11 +6,14 @@
 -- See https://qinware.com/LICENSE.txt for license information
 --
 -- Created by chinboy on 2025/05/19.
+
 target("AtomUINative", function()
     set_kind("shared")
-    add_deps("generated_headers")
+
     add_files("Global.cpp")
     add_files("WindowUtils.cpp")
+
+    set_prefixdir("$(arch)")
     
     if is_os("macosx") then
         add_frameworks("Foundation", "AppKit")

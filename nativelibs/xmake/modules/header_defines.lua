@@ -6,19 +6,20 @@
 -- See https://qinware.com/LICENSE.txt for license information
 --
 -- Created by chinboy on 2025/05/19.
-ATOMUI_PACKAGE_NAME = "atomui"
-ATOMUI_PACKAGE_CASED_NAME = "AtomUI"
-ATOMUI_PACKAGE_STRING = ATOMUI_PACKAGE_NAME .. " " .. ATOMUI_PACKAGE_CASED_NAME
-ATOMUI_PACKAGE_BUGREPORT = "https://qinware.com/bugs/"
-ATOMUI_DISPLAY_NAME = ATOMUI_PACKAGE_CASED_NAME
-ATOMUI_COPYRIGHT_YEAR = "2025"
-ATOMUI_COMPANY_NAME = "Qinware"
-ATOMUI_COPYRIGHT = "Copyright Qinware Technologies Ltd. (c) 2018-2025"
 
-target("generated_headers", function()
-    set_kind("headeronly")
+function main()
     set_configdir("$(buildir)/include/atomui")
     add_configfiles(path.join(ATOMUI_INCLUDE_DIR, "Config.h.in"))
+
+    ATOMUI_PACKAGE_NAME = "atomui"
+    ATOMUI_PACKAGE_CASED_NAME = "AtomUI"
+    ATOMUI_PACKAGE_STRING = ATOMUI_PACKAGE_NAME .. " " .. ATOMUI_PACKAGE_CASED_NAME
+    ATOMUI_PACKAGE_BUGREPORT = "https://qinware.com/bugs/"
+    ATOMUI_DISPLAY_NAME = ATOMUI_PACKAGE_CASED_NAME
+    ATOMUI_COPYRIGHT_YEAR = "2025"
+    ATOMUI_COMPANY_NAME = "Qinware"
+    ATOMUI_COPYRIGHT = "Copyright Qinware Technologies Ltd. (c) 2018-2025"
+
     set_configvar("ATOMUI_PACKAGE_NAME", ATOMUI_PACKAGE_NAME)
     set_configvar("ATOMUI_PACKAGE_CASED_NAME", ATOMUI_PACKAGE_CASED_NAME)
     set_configvar("ATOMUI_PACKAGE_STRING", ATOMUI_PACKAGE_STRING)
@@ -27,5 +28,4 @@ target("generated_headers", function()
     set_configvar("ATOMUI_COPYRIGHT_YEAR", ATOMUI_COPYRIGHT_YEAR)
     set_configvar("ATOMUI_COMPANY_NAME", ATOMUI_COMPANY_NAME)
     set_configvar("ATOMUI_COPYRIGHT", ATOMUI_COPYRIGHT)
-end)
-
+end

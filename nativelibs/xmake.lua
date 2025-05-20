@@ -27,11 +27,32 @@ ATOMUI_INCLUDE_DIR = path.join(ATOMUI_SOURCE_DIR, "include/atomui")
 
 -- add option definitions
 includes("xmake/options.lua")
-includes("xmake/meta_info.lua")
 includes("xmake/toolchains/atomui")
 
 add_includedirs("include", {public = true})
 add_includedirs("$(buildir)/include", {public = true})
+
+-- global config header generator
+set_configdir("$(buildir)/include/atomui")
+add_configfiles(path.join(ATOMUI_INCLUDE_DIR, "Config.h.in"))
+
+ATOMUI_PACKAGE_NAME = "atomui"
+ATOMUI_PACKAGE_CASED_NAME = "AtomUI"
+ATOMUI_PACKAGE_STRING = ATOMUI_PACKAGE_NAME .. " " .. ATOMUI_PACKAGE_CASED_NAME
+ATOMUI_PACKAGE_BUGREPORT = "https://qinware.com/bugs/"
+ATOMUI_DISPLAY_NAME = ATOMUI_PACKAGE_CASED_NAME
+ATOMUI_COPYRIGHT_YEAR = "2025"
+ATOMUI_COMPANY_NAME = "Qinware"
+ATOMUI_COPYRIGHT = "Copyright Qinware Technologies Ltd. (c) 2018-2025"
+
+set_configvar("ATOMUI_PACKAGE_NAME", ATOMUI_PACKAGE_NAME)
+set_configvar("ATOMUI_PACKAGE_CASED_NAME", ATOMUI_PACKAGE_CASED_NAME)
+set_configvar("ATOMUI_PACKAGE_STRING", ATOMUI_PACKAGE_STRING)
+set_configvar("ATOMUI_PACKAGE_BUGREPORT", ATOMUI_PACKAGE_BUGREPORT)
+set_configvar("ATOMUI_DISPLAY_NAME", ATOMUI_DISPLAY_NAME)
+set_configvar("ATOMUI_COPYRIGHT_YEAR", ATOMUI_COPYRIGHT_YEAR)
+set_configvar("ATOMUI_COMPANY_NAME", ATOMUI_COMPANY_NAME)
+set_configvar("ATOMUI_COPYRIGHT", ATOMUI_COPYRIGHT)
 
 if has_config("build_unittests") then includes("tests/unittests") end
 
@@ -41,5 +62,5 @@ includes("include/atomui")
 includes("src")
 
 before_build(function()
-    import("handle_on_config")()
+    import("handle_info_summary")()
 end)
