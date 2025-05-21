@@ -1,0 +1,32 @@
+{
+    "tasks": [
+        {
+            "label": "xmake config debug",
+            "type": "shell",
+            "command": "xmake",
+            "args": [
+                "f", 
+                "-m", "debug",
+                "--toolchain=llvm",
+                "--sdk=/opt/homebrew/opt/llvm@19"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "xmake build debug",
+            "type": "shell",
+            "command": "xmake",
+            "args": ["build"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": "$gcc",
+            "dependsOn":["xmake config debug"]
+        }
+    ],
+    "version": "2.0.0"
+}
