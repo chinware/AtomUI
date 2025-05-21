@@ -2,6 +2,7 @@
 using AtomUI.Input;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
@@ -28,7 +29,7 @@ public record struct SliderRangeValue
     {
         // 这里只负责解析到 double
         const string exceptionMessage = "Parse value expression for SliderRangeValue failed";
-        using (var tokenizer = new StringTokenizer(expr, CultureInfo.InvariantCulture, exceptionMessage))
+        using (var tokenizer = new SpanStringTokenizer(expr, CultureInfo.InvariantCulture, exceptionMessage))
         {
             try
             {

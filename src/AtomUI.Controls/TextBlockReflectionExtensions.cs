@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
-using Avalonia.Controls.Presenters;
 
 namespace AtomUI.Controls;
 
@@ -18,12 +17,12 @@ internal static class TextBlockReflectionExtensions
             BindingFlags.Instance | BindingFlags.NonPublic));
     
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AvaloniaTextBlock))]
-    private static readonly Lazy<PropertyInfo> HasComplexContentPropertyInfo = new Lazy<PropertyInfo>(() => 
-        typeof(AvaloniaTextBlock).GetPropertyInfoOrThrow("HasComplexContent",
-            BindingFlags.Instance | BindingFlags.NonPublic));
-    #endregion
-
-    public static Size GetMaxSizeFromConstraint(this AvaloniaTextBlock textBlock)
+                                                                                     private static readonly Lazy<PropertyInfo> HasComplexContentPropertyInfo = new Lazy<PropertyInfo>(() => 
+                                                                                         typeof(AvaloniaTextBlock).GetPropertyInfoOrThrow("HasComplexContent",
+                                                                                             BindingFlags.Instance | BindingFlags.NonPublic));
+                                                                                     #endregion
+                                                                                 
+                                                                                     public static Size GetMaxSizeFromConstraint(this AvaloniaTextBlock textBlock)
     {
         var size = GetMaxSizeFromConstraintMethodInfo.Value.Invoke(textBlock, []) as Size?;
         Debug.Assert(size != null);
