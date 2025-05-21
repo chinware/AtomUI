@@ -19,6 +19,9 @@ target("AtomUINative", function()
     
     if is_os("macosx") then
         add_frameworks("Foundation", "AppKit")
-        add_files("macos/WindowUtils.mm") 
+        add_files("macos/WindowUtils.mm")
+    elseif is_os("windows") then
+        set_prefixname("")
+        add_files("windows/WindowsUtils.cpp")
     end
 end)

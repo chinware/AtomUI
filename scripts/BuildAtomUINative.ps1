@@ -10,18 +10,11 @@ param (
     [string]$libName
 )
 
-$cmakeGenerator = "Ninja"
-
-if ($IsWindows) {
-    $cmakeGenerator = "Visual Studio 17 2022"
-}
-
 $buildMarker = Join-Path -Path $buildDir -ChildPath ".native_compiled"
 $lockFile = Join-Path -Path $buildDir -ChildPath ".lock"
 try {
     # 创建锁文件（原子操作）
     $lock = [System.IO.File]::Open($lockFile, [System.IO.FileMode]::CreateNew, [System.IO.FileAccess]::Write, [System.IO.FileShare]::None)
-
     if (-not (Test-Path -Path $buildMarker -PathType Leaf)) {
         # 如果文件不存在，则创建（自动创建父目录）
         New-Item -Path $buildMarker -ItemType File -Force | Out-Null
@@ -42,31 +35,18 @@ try {
 }
 
 $env:XMAKE_COLORTERM = 'nocolor'
+$buildType = $buildType.ToLower()
 
 if ($IsWindows) {
-    $possiblePaths = @(
-        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe",
-        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe",
-        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
-        "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe",
-        "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe",
-        "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
-    )
-
-    $msbuildExecutale = $possiblePaths | Where-Object { Test-Path $_ }
-    if (![string]::IsNullOrEmpty($msbuildExecutale)) {
-        $msbuildPath = Split-Path (Get-Item $msbuildExecutale).FullName -Parent
-        $env:PATH += ";$msbuildPath"
-    }
-    cmake -B $buildDir -S $sourceDir -DCMAKE_INSTALL_PREFIX="$installPrefix" -DCMAKE_BUILD_TYPE="$buildType" -G $cmakeGenerator
-    msbuild $buildDir/atomui.sln /p:Configuration=$buildType
-    cmake --install $buildDir --config $buildType
-    Copy-Item -Path $installPrefix/bin/$libName -Destination $deployDir
+     xmake config --project=$sourceDir --buildir=$buildDir -p msys -a x86_64 -m $buildType
+     xmake build
+     xmake install --installdir=$installPrefix
+     Copy-Item -Path $installPrefix/x86_64/lib/$libName -Destination $deployDir
 } else {
-    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a arm64 -m release --toolchain=atomui --sdk=/opt/homebrew/opt/llvm@19
+    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a arm64 -m $buildType --toolchain=atomui --sdk=/opt/homebrew/opt/llvm@19
     xmake build
     xmake install --installdir=$installPrefix
-    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a x86_64 -m release --toolchain=atomui --sdk=/opt/homebrew/opt/llvm@19
+    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a x86_64 -m $buildType --toolchain=atomui --sdk=/opt/homebrew/opt/llvm@19
     xmake build
     xmake install --installdir=$installPrefix
     Write-Output "generate universal binary"
