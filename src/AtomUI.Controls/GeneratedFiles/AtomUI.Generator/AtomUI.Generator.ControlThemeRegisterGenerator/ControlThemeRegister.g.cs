@@ -74,6 +74,9 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.NumericUpDownTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.OptionButtonGroupTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.OptionButtonTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PaginationNavItemTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PaginationNavTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PaginationTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PickerClearUpButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PopupConfirmContainerTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PrimaryButtonTheme());

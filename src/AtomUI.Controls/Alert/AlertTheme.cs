@@ -172,7 +172,7 @@ internal class AlertTheme : BaseControlTheme
         return descriptionLabel;
     }
     
-     protected override void BuildStyles()
+    protected override void BuildStyles()
     {
         BuildAlertTypeStyle();
         BuildMessageLabelStyle();

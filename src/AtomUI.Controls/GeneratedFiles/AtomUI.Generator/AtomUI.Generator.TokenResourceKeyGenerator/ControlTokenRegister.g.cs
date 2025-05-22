@@ -32,6 +32,7 @@
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.NotificationToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.NumericUpDownToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.OptionButtonToken));
+            ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.PaginationToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.PopupConfirmToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.ProgressBarToken));
             ThemeManager.Current.RegisterControlTokenType(typeof(AtomUI.Controls.RadioButtonToken));

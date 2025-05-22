@@ -4,6 +4,7 @@
         <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        <RootNamespace>AtomUI.Controls</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

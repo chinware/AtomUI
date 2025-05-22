@@ -29,14 +29,14 @@ internal class SegmentedTheme : BaseControlTheme
                 Name         = FramePart,
                 ClipToBounds = true
             };
-            // TODO 需要观察是否会有内存泄漏
             var itemsPresenter = new ItemsPresenter
             {
                 Name = ItemsPresenterPart,
                 ItemsPanel = new FuncTemplate<Panel?>(() =>
                 {
                     var panel = new SegmentedStackPanel();
-                    BindUtils.RelayBind(segmented, Segmented.IsExpandingProperty, panel, SegmentedStackPanel.IsExpandingProperty);
+                    BindUtils.RelayBind(segmented, Segmented.IsExpandingProperty, panel,
+                        SegmentedStackPanel.IsExpandingProperty);
                     return panel;
                 })
             };

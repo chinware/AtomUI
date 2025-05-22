@@ -504,6 +504,24 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("OptionButton.PaddingSM");
     }
 
+    public static class PaginationTokenKey
+    {
+        public static readonly TokenResourceKey InputOutlineOffset = new TokenResourceKey("Pagination.InputOutlineOffset");
+        public static readonly TokenResourceKey ItemActiveBg = new TokenResourceKey("Pagination.ItemActiveBg");
+        public static readonly TokenResourceKey ItemActiveBgDisabled = new TokenResourceKey("Pagination.ItemActiveBgDisabled");
+        public static readonly TokenResourceKey ItemActiveColorDisabled = new TokenResourceKey("Pagination.ItemActiveColorDisabled");
+        public static readonly TokenResourceKey ItemBg = new TokenResourceKey("Pagination.ItemBg");
+        public static readonly TokenResourceKey ItemInputBg = new TokenResourceKey("Pagination.ItemInputBg");
+        public static readonly TokenResourceKey ItemLinkBg = new TokenResourceKey("Pagination.ItemLinkBg");
+        public static readonly TokenResourceKey ItemSize = new TokenResourceKey("Pagination.ItemSize");
+        public static readonly TokenResourceKey ItemSizeSM = new TokenResourceKey("Pagination.ItemSizeSM");
+        public static readonly TokenResourceKey MiniOptionsSizeChangerTop = new TokenResourceKey("Pagination.MiniOptionsSizeChangerTop");
+        public static readonly TokenResourceKey PaginationItemPaddingInline = new TokenResourceKey("Pagination.PaginationItemPaddingInline");
+        public static readonly TokenResourceKey PaginationMiniOptionsMarginInline = new TokenResourceKey("Pagination.PaginationMiniOptionsMarginInline");
+        public static readonly TokenResourceKey PaginationMiniQuickJumperInputWidth = new TokenResourceKey("Pagination.PaginationMiniQuickJumperInputWidth");
+        public static readonly TokenResourceKey PaginationSlashMarginInline = new TokenResourceKey("Pagination.PaginationSlashMarginInline");
+    }
+
     public static class PopupConfirmTokenKey
     {
         public static readonly TokenResourceKey ButtonContainerMargin = new TokenResourceKey("PopupConfirm.ButtonContainerMargin");

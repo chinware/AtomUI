@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
+using AtomUI.Utils;
 using Avalonia.Media;
-using Avalonia.Utilities;
 
 namespace AtomUI.IconPkg;
 
@@ -60,44 +60,42 @@ public record struct ColorInfo
     public static ColorInfo Parse(string expr)
     {
         const string exceptionMessage = "Invalid ColorInfo.";
-        using (var tokenizer = new StringTokenizer(expr, CultureInfo.InvariantCulture, exceptionMessage))
+        using var    tokenizer        = new SpanStringTokenizer(expr, CultureInfo.InvariantCulture);
+        try
         {
-            try
+            var colorInfo = new ColorInfo();
+            if (tokenizer.TryReadString(out var color1Str))
             {
-                var colorInfo = new ColorInfo();
-                if (tokenizer.TryReadString(out var color1Str))
+                colorInfo.NormalColor = Color.Parse(color1Str);
+                if (tokenizer.TryReadString(out var color2Str))
                 {
-                    colorInfo.NormalColor = Color.Parse(color1Str);
-                    if (tokenizer.TryReadString(out var color2Str))
+                    colorInfo.ActiveColor = Color.Parse(color2Str);
+                    if (tokenizer.TryReadString(out var color3Str))
                     {
-                        colorInfo.ActiveColor = Color.Parse(color2Str);
-                        if (tokenizer.TryReadString(out var color3Str))
+                        colorInfo.SelectedColor = Color.Parse(color3Str);
+                        if (tokenizer.TryReadString(out var color4Str))
                         {
-                            colorInfo.SelectedColor = Color.Parse(color3Str);
-                            if (tokenizer.TryReadString(out var color4Str))
-                            {
-                                colorInfo.DisabledColor = Color.Parse(color4Str);
-                            }
+                            colorInfo.DisabledColor = Color.Parse(color4Str);
                         }
                     }
                 }
-                else
-                {
-                    // 至少要一个
-                    throw new FormatException(exceptionMessage);
-                }
-
-                return colorInfo;
             }
-            catch (Exception e)
+            else
             {
-                if (e is not FormatException)
-                {
-                    throw new FormatException(exceptionMessage, e);
-                }
-
-                throw;
+                // 至少要一个
+                throw new FormatException(exceptionMessage);
             }
+
+            return colorInfo;
+        }
+        catch (Exception e)
+        {
+            if (e is not FormatException)
+            {
+                throw new FormatException(exceptionMessage, e);
+            }
+
+            throw;
         }
     }
 }
@@ -110,7 +108,7 @@ public record struct TwoToneColorInfo
     public static TwoToneColorInfo Parse(string expr)
     {
         const string exceptionMessage = "Invalid TwoToneColorInfo.";
-        using (var tokenizer = new StringTokenizer(expr, CultureInfo.InvariantCulture, exceptionMessage))
+        using (var tokenizer = new SpanStringTokenizer(expr, CultureInfo.InvariantCulture))
         {
             if (tokenizer.TryReadString(out var color1Str))
             {
