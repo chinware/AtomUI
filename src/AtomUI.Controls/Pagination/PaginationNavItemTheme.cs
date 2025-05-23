@@ -1,6 +1,3 @@
-using AtomUI.Controls.Utils;
-using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
@@ -11,7 +8,11 @@ using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
+using HorizontalAlignment = Avalonia.Layout.HorizontalAlignment;
+using Selectors = Avalonia.Styling.Selectors;
+using VerticalAlignment = Avalonia.Layout.VerticalAlignment;
 
 namespace AtomUI.Controls;
 
@@ -41,8 +42,10 @@ internal class PaginationNavItemTheme : BaseControlTheme
             };
             rootLayout.Children.Add(mainFrame);
             CreateTemplateParentBinding(mainFrame, Border.BackgroundProperty, TemplatedControl.BackgroundProperty);
+            CreateTemplateParentBinding(mainFrame, Border.BorderBrushProperty, TemplatedControl.BorderBrushProperty);
             CreateTemplateParentBinding(mainFrame, Border.CornerRadiusProperty, TemplatedControl.CornerRadiusProperty);
             CreateTemplateParentBinding(mainFrame, Decorator.PaddingProperty, TemplatedControl.PaddingProperty);
+            CreateTemplateParentBinding(mainFrame, Border.BorderThicknessProperty, TemplatedControl.BorderThicknessProperty);
             
             var contentPresenter = new ContentPresenter
             {
@@ -79,10 +82,13 @@ internal class PaginationNavItemTheme : BaseControlTheme
         commonStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         commonStyle.Add(TemplatedControl.FontSizeProperty, SharedTokenKey.FontSize);
         commonStyle.Add(TemplatedControl.PaddingProperty, PaginationTokenKey.PaginationItemPaddingInline);
+        commonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorTransparent);
         
         var enabledStyle =
             new Style(selector => selector.Nesting().PropertyEquals(InputElement.IsEnabledProperty, true));
-        enabledStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        var handleStyle = new Style(selector => selector.Nesting().Not(selector.Nesting().PropertyEquals(PaginationNavItem.PaginationItemTypeProperty, PaginationItemType.Ellipses)));
+        handleStyle.Add(InputElement.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
+        enabledStyle.Add(handleStyle);
         BuildPageIndicatorEnabledStyle(enabledStyle);
         BuildPreviousAndNextItemEnabledStyle(enabledStyle);
         commonStyle.Add(enabledStyle);
@@ -97,11 +103,22 @@ internal class PaginationNavItemTheme : BaseControlTheme
             selector.Nesting().PropertyEquals(PaginationNavItem.PaginationItemTypeProperty,
                 PaginationItemType.PageIndicator));
         var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+        selectedStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorPrimary);
+        selectedStyle.Add(TemplatedControl.BackgroundProperty, PaginationTokenKey.ItemActiveBg);
+        selectedStyle.Add(TemplatedControl.FontWeightProperty, FontWeight.Bold);
+        selectedStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorPrimary);
+
+        {
+            var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+            hoverStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorPrimaryHover);
+            hoverStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorPrimaryHover);
+            selectedStyle.Add(hoverStyle);
+        }
         
         indicatorStyle.Add(selectedStyle);
         var notSelectedStyle =
             new Style(selector => selector.Nesting().Not(x => x.Nesting().Class(StdPseudoClass.Selected)));
-        notSelectedStyle.Add(TemplatedControl.BackgroundProperty, SharedTokenKey.ColorTransparent);
+        notSelectedStyle.Add(TemplatedControl.BackgroundProperty, PaginationTokenKey.ItemBg);
         notSelectedStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorText);
         {
             var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));

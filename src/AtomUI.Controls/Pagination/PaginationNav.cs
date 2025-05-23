@@ -32,6 +32,8 @@ internal class PaginationNav : SelectingItemsControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
+    public event EventHandler<PageNavRequestArgs>? PageNavigateRequest;
+    
     #endregion
 
     #region 内部属性
@@ -49,7 +51,7 @@ internal class PaginationNav : SelectingItemsControl,
 
     public PaginationNav()
     {
-        for (var i = 0; i < 11; i++)
+        for (var i = 0; i < Pagination.MaxNavItemCount; i++)
         {
             Items.Add(new PaginationNavItem());
         }
@@ -74,6 +76,13 @@ internal class PaginationNav : SelectingItemsControl,
         {
             BindUtils.RelayBind(this, SizeTypeProperty, navItem, PaginationNavItem.SizeTypeProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, navItem, PaginationNavItem.IsMotionEnabledProperty);
+            navItem.Click += (sender, args) =>
+            {
+                if (sender is PaginationNavItem navItemSender)
+                {
+                    PageNavigateRequest?.Invoke(this, new PageNavRequestArgs(navItemSender, IndexFromContainer(navItemSender), navItemSender.PageNumber));
+                }
+            };
         }
     }
     

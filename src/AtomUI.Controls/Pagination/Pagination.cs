@@ -6,7 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -24,6 +24,8 @@ public class Pagination : TemplatedControl,
 {
     public const int DefaultPageSize = 10;
     public const int DefaultCurrentPage = 1;
+    internal const int MaxNavItemCount = 11;
+    
     #region 公共属性定义
     
     public static readonly StyledProperty<PaginationAlign> AlignProperty =
@@ -146,8 +148,8 @@ public class Pagination : TemplatedControl,
     private PaginationNav? _paginationNav;
     private PaginationNavItem? _previousPageItem;
     private PaginationNavItem? _nextPageItem;
-    private PaginationNavItem? _leftEllipsesItem;
-    private PaginationNavItem? _rightEllipsesItem;
+    private int _nextPushItemIndex = 1;
+    private int _selectedNavItemIndex = -1;
 
     static Pagination()
     {
@@ -165,40 +167,176 @@ public class Pagination : TemplatedControl,
         base.OnApplyTemplate(e);
         _paginationNav  = e.NameScope.Find<PaginationNav>(PaginationTheme.NavPart);
         Debug.Assert(_paginationNav is not null);
+
+        _paginationNav.ContainerPrepared   += HandleContainerPrepared;
+        _paginationNav.PageNavigateRequest += HandlePageNavRequest;
+    }
+
+    private void HandleContainerPrepared(object? sender, ContainerPreparedEventArgs args)
+    {
+        Debug.Assert(_paginationNav is not null);
         var count = _paginationNav.ItemCount;
-        _paginationNav.ContainerPrepared += (sender, args) =>
+        if (args.Container is PaginationNavItem navItem)
         {
-            if (args.Container is PaginationNavItem navItem)
+            if (0 == args.Index)
             {
-                if (0 == args.Index)
-                {
-                    navItem.PaginationItemType = PaginationItemType.Previous;
-                    _previousPageItem          = navItem;
-                    _previousPageItem.Content = AntDesignIconPackage.LeftOutlined();
-                } 
-                else if (2 == args.Index)
-                {
-                    navItem.PaginationItemType = PaginationItemType.Ellipses;
-                    _leftEllipsesItem          = navItem;
-                    _leftEllipsesItem.Content  = AntDesignIconPackage.EllipsisOutlined();
-                }
-                else if (count - 1 == args.Index)
-                {
-                    navItem.PaginationItemType = PaginationItemType.Next;
-                    _nextPageItem              = navItem;
-                    _nextPageItem.Content      = AntDesignIconPackage.RightOutlined();
-                }
-                else if (count - 3 == args.Index)
-                {
-                    navItem.PaginationItemType = PaginationItemType.Ellipses;
-                    _rightEllipsesItem         = navItem;
-                    _rightEllipsesItem.Content = AntDesignIconPackage.EllipsisOutlined();
-                }
-                else
-                {
-                    navItem.PaginationItemType = PaginationItemType.PageIndicator;
-                }
+                navItem.PaginationItemType = PaginationItemType.Previous;
+                _previousPageItem          = navItem;
+                _previousPageItem.Content  = AntDesignIconPackage.LeftOutlined();
             }
-        };
+            else if (count - 1 == args.Index)
+            {
+                navItem.PaginationItemType = PaginationItemType.Next;
+                _nextPageItem              = navItem;
+                _nextPageItem.Content      = AntDesignIconPackage.RightOutlined();
+            }
+            else
+            {
+                navItem.PaginationItemType = PaginationItemType.PageIndicator;
+            }
+        }
+        if (_paginationNav.GetRealizedContainers().Count() == count)
+        {
+            HandlePageConditionChanged();
+        }
+    }
+
+    private void HandlePageConditionChanged()
+    {
+        var total       = Math.Max(0, Total);
+        var pageSize    = PageSize <= 0 ? DefaultPageSize : PageSize;
+        var pageCount   = (int)Math.Ceiling(total / (double)pageSize);
+        var currentPage = Math.Max(1, Math.Min(CurrentPage, pageCount));
+        Debug.Assert(_paginationNav != null);
+        Debug.Assert(_previousPageItem != null);
+        Debug.Assert(_nextPageItem != null);
+        var count = _paginationNav.ItemCount;
+        // 清空状态 clear state
+        _paginationNav.SelectedIndex = -1;
+        _selectedNavItemIndex        = -1;
+        for (int i = 1; i < count - 1; i++)
+        {
+            var container = _paginationNav.ContainerFromIndex(i);
+            if (container is PaginationNavItem navItem)
+            {
+                navItem.PaginationItemType = PaginationItemType.PageIndicator;
+                navItem.IsVisible          = false;
+                navItem.Content            = null;
+            }
+        }
+        
+        _previousPageItem.IsEnabled  = currentPage > 1;
+        _previousPageItem.PageNumber = Math.Max(1, CurrentPage - 1);
+        _nextPageItem.IsEnabled      = currentPage < pageCount;
+        _nextPageItem.PageNumber     = Math.Min(pageCount, CurrentPage + 1);
+        _nextPushItemIndex           = 1;
+
+        SetupLeftButtonRange(currentPage, pageCount);
+        SetupNextIndicatorNavItem(currentPage, true);
+        SetupRightButtonRange(currentPage, pageCount);
+        _paginationNav.SelectedIndex = _selectedNavItemIndex;
+    }
+
+    private void HandlePageNavRequest(object? sender, PageNavRequestArgs args)
+    {
+        if (args.PageNumber != CurrentPage)
+        {
+            CurrentPage = args.PageNumber;
+        }
+    }
+
+    private void SetupLeftButtonRange(int currentPage, int pageCount)
+    {
+        if (currentPage < 5) {
+            for (var i = 1; i < currentPage; i++)
+            {
+                SetupNextIndicatorNavItem(i, false);
+            }
+        } else {
+            var leftDelta = Math.Max(2, 4 - (pageCount - currentPage));
+            var i         = currentPage - leftDelta;
+            if (i > 1)
+            {
+                SetupNextIndicatorNavItem(1, false);
+                SetupEllipsisNavItem();
+            }
+            for (; i < currentPage; i++)
+            {
+                SetupNextIndicatorNavItem(i, false);
+            }
+        }
+    }
+
+    private void SetupRightButtonRange(int currentPage, int pageCount)
+    {
+        if (pageCount - currentPage < 4)
+        {
+            for (var i = currentPage + 1; i <= pageCount; i++)
+            {
+                SetupNextIndicatorNavItem(i, false);
+            }
+        }
+        else
+        {
+            var rightDelta = Math.Max(2, 5 - currentPage);
+            var i          = currentPage + 1;
+            for (; i <= currentPage + rightDelta; i++)
+            {
+                SetupNextIndicatorNavItem(i, false);
+            }
+
+            if (i < pageCount)
+            {
+                SetupEllipsisNavItem();
+                SetupNextIndicatorNavItem(pageCount, false);
+            }
+        }
+    }
+
+    private void SetupNextIndicatorNavItem(int pageIndex, bool isActive)
+    {
+        if (_nextPushItemIndex == 0 || _nextPushItemIndex == MaxNavItemCount)
+        {
+            throw new ArgumentException("Invalid next push item index");
+        }
+        Debug.Assert(_paginationNav != null);
+        var navItem = _paginationNav.ContainerFromIndex(_nextPushItemIndex++) as PaginationNavItem;
+
+        if (isActive)
+        {
+            _selectedNavItemIndex = _nextPushItemIndex - 1;
+        }
+        Debug.Assert(navItem != null);
+        navItem.PageNumber = pageIndex;
+        navItem.Content    = $"{pageIndex}";
+        navItem.IsVisible  = true;
+    }
+
+    private void SetupEllipsisNavItem()
+    {
+        if (_nextPushItemIndex == 0 || _nextPushItemIndex == MaxNavItemCount)
+        {
+            throw new ArgumentException("Invalid next push item index");
+        }
+        Debug.Assert(_paginationNav != null);
+        var navItem = _paginationNav.ContainerFromIndex(_nextPushItemIndex++) as PaginationNavItem;
+        Debug.Assert(navItem != null);
+        navItem.Content            = AntDesignIconPackage.EllipsisOutlined();
+        navItem.PaginationItemType = PaginationItemType.Ellipses;
+        navItem.IsVisible          = true;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == TotalProperty ||
+                change.Property == PageSizeProperty ||
+                change.Property == CurrentPageProperty)
+            {
+                HandlePageConditionChanged();
+            }
+        }
     }
 }

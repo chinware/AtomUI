@@ -19,7 +19,7 @@
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)../resources/logo.png" Visible="False" Pack="True" PackagePath="/"/>
         <None Include="$(MSBuildThisFileDirectory)../LICENSE" Visible="False" Pack="True" PackagePath="/"/>
-        <None Include="$(MSBuildThisFileDirectory)..\README.nuget.md" Visible="False" Pack="True" PackagePath="\"/>
+        <None Include="$(MSBuildThisFileDirectory)../README.nuget.md" Visible="False" Pack="True" PackagePath="/"/>
     </ItemGroup>
 
 </Project>
