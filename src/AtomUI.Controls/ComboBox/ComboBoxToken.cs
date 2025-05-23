@@ -108,7 +108,7 @@ internal class ComboBoxToken : ButtonSpinnerToken
 
         ItemDisabledColor = colorTextDisabled;
 
-        ItemPadding = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingXS);
+        ItemPadding = new Thickness(SharedToken.PaddingSM, 0);
         ItemMargin  = new Thickness(0, 0.5);
     }
 }

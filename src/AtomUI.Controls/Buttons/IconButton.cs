@@ -143,6 +143,28 @@ public class IconButton : AvaloniaButton,
     {
         this.RegisterResources();
         this.BindMotionProperties();
+        Classes.CollectionChanged += (sender, args) =>
+        {
+            if (Icon is not null)
+            {
+                if (Classes.Contains(StdPseudoClass.Disabled))
+                {
+                    Icon.IconMode = IconMode.Disabled;
+                }
+                else if (Classes.Contains(StdPseudoClass.Selected))
+                {
+                    Icon.IconMode = IconMode.Selected;
+                }
+                else if (Classes.Contains(StdPseudoClass.Pressed))
+                {
+                    Icon.IconMode = IconMode.Active;
+                }
+                else
+                {
+                    Icon.IconMode = IconMode.Normal;
+                }
+            }
+        };
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

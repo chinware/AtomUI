@@ -29,4 +29,8 @@
                           PrivateAssets="all"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Select\" />
+    </ItemGroup>
+
 </Project>

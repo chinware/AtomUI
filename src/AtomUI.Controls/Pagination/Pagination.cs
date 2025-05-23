@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -115,7 +116,7 @@ public class Pagination : TemplatedControl,
     private bool _showSizeChanger;
     public bool ShowSizeChanger
     {
-        get => _hideOnSinglePage;
+        get => _showSizeChanger;
         set => SetAndRaise(ShowSizeChangerProperty, ref _showSizeChanger, value);
     }
     
@@ -141,16 +142,16 @@ public class Pagination : TemplatedControl,
     
     #region 内部属性定义
     
-    public static readonly DirectProperty<Pagination, DropdownButton?> SizeChangerDropdownProperty =
-        AvaloniaProperty.RegisterDirect<Pagination, DropdownButton?>(nameof(SizeChangerDropdown),
-            o => o.SizeChangerDropdown,
-            (o, v) => o.SizeChangerDropdown = v);
+    public static readonly DirectProperty<Pagination, ComboBox?> SizeChangerProperty =
+        AvaloniaProperty.RegisterDirect<Pagination, ComboBox?>(nameof(SizeChanger),
+            o => o.SizeChanger,
+            (o, v) => o.SizeChanger = v);
     
-    private DropdownButton? _sizeChangerDropdown;
-    public DropdownButton? SizeChangerDropdown
+    private ComboBox? _sizeChanger;
+    public ComboBox? SizeChanger
     {
-        get => _sizeChangerDropdown;
-        set => SetAndRaise(SizeChangerDropdownProperty, ref _sizeChangerDropdown, value);
+        get => _sizeChanger;
+        set => SetAndRaise(SizeChangerProperty, ref _sizeChanger, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -220,6 +221,7 @@ public class Pagination : TemplatedControl,
         var pageSize    = PageSize <= 0 ? DefaultPageSize : PageSize;
         var pageCount   = (int)Math.Ceiling(total / (double)pageSize);
         var currentPage = Math.Max(1, Math.Min(CurrentPage, pageCount));
+        _currentPage = currentPage;
         Debug.Assert(_paginationNav != null);
         Debug.Assert(_previousPageItem != null);
         Debug.Assert(_nextPageItem != null);
@@ -360,11 +362,25 @@ public class Pagination : TemplatedControl,
 
     private void SetupSizeChanger()
     {
-        if (_sizeChangerDropdown == null)
+        if (SizeChanger == null)
         {
-            _sizeChangerDropdown = new DropdownButton();
-            var menuFlyout = new MenuFlyout();
-            _sizeChangerDropdown.Flyout = menuFlyout;
+            var sizeChanger = new ComboBox();
+            BindUtils.RelayBind(this, SizeTypeProperty, sizeChanger, ComboBox.SizeTypeProperty);
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = "10 / page", PageSize = 10});
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = "20 / page", PageSize = 20 });
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = "50 / page", PageSize = 50 });
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = "100 / page", PageSize = 100 });
+            sizeChanger.SelectedIndex    =  0;
+            SizeChanger                  =  sizeChanger;
+            SizeChanger.SelectionChanged += HandlePageSizeChanged;
+        }
+    }
+
+    private void HandlePageSizeChanged(object? sender, SelectionChangedEventArgs? args)
+    {
+        if (args?.AddedItems.Count >= 1 && args.AddedItems[0] is PageSizeComboBoxItem comboBoxItem)
+        {
+            PageSize = Math.Max(comboBoxItem.PageSize, 1);
         }
     }
 }

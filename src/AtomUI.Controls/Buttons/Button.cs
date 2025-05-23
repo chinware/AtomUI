@@ -494,8 +494,8 @@ public class Button : AvaloniaButton,
                 SetupIconBrush();
             }
             else if (e.Property == IsDangerProperty ||
-                  e.Property == IsGhostProperty ||
-                  e.Property == ButtonTypeProperty)
+                     e.Property == IsGhostProperty ||
+                     e.Property == ButtonTypeProperty)
             {
                 SetupShadows();
                 SetupIconBrush();

@@ -1,5 +1,6 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -176,7 +177,12 @@ internal class PaginationNavItemTheme : BaseControlTheme
     private void BuildDisabledStyle()
     {
         var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        disabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
+        disabledStyle.Add(TemplatedControl.ForegroundProperty, PaginationTokenKey.ItemActiveColorDisabled);
+        
+        var selectedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Selected));
+        selectedStyle.Add(TemplatedControl.BorderThicknessProperty, new Thickness(0));
+        selectedStyle.Add(TemplatedControl.BackgroundProperty, PaginationTokenKey.ItemActiveBgDisabled);
+        disabledStyle.Add(selectedStyle);
         Add(disabledStyle);
     }
 }

@@ -43,7 +43,7 @@ internal class PaginationTheme : BaseControlTheme
                 Name        = ShowSizeChangerPresenterPart
             };
             CreateTemplateParentBinding(showSizeChangerPresenter, ContentPresenter.IsVisibleProperty, Pagination.ShowSizeChangerProperty);
-            CreateTemplateParentBinding(showSizeChangerPresenter, ContentPresenter.ContentProperty, Pagination.SizeChangerDropdownProperty);
+            CreateTemplateParentBinding(showSizeChangerPresenter, ContentPresenter.ContentProperty, Pagination.SizeChangerProperty);
             rootLayout.Children.Add(showSizeChangerPresenter);
             return rootLayout;
         });

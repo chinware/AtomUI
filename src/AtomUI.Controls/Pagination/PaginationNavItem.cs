@@ -48,7 +48,7 @@ internal class PaginationNavItem : ContentControl,
         AvaloniaProperty.RegisterDirect<PaginationNavItem, bool>(nameof(IsPressed), b => b.IsPressed);
     
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
-        RoutedEvent.Register<Button, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
+        RoutedEvent.Register<PaginationNavItem, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
 
     public bool IsSelected
     {
@@ -106,6 +106,20 @@ internal class PaginationNavItem : ContentControl,
     public PaginationNavItem()
     {
         _tokenBindingsDisposable = new CompositeDisposable();
+        Classes.CollectionChanged += (sender, args) =>
+        {
+            if (Content is Icon icon)
+            {
+                if (Classes.Contains(StdPseudoClass.Disabled))
+                {
+                    icon.IconMode = IconMode.Disabled;
+                }
+                else
+                {
+                    icon.IconMode = IconMode.Normal;
+                }
+            }
+        };
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -150,13 +164,7 @@ internal class PaginationNavItem : ContentControl,
                     SetupIconStatus(newIcon);
                 }
             }
-            else if (change.Property == IsEnabledProperty)
-            {
-                if (Content is Icon icon)
-                {
-                    SetupIconStatus(icon);
-                }
-            }
+
             else if (change.Property == SizeTypeProperty)
             {
                 if (Content is Icon icon)
@@ -170,6 +178,13 @@ internal class PaginationNavItem : ContentControl,
         {
             UpdatePseudoClasses();
         }
+        else if (change.Property == IsEnabledProperty)
+        {
+            if (Content is Icon icon)
+            {
+                SetupIconStatus(icon);
+            }
+        }
     }
 
     private void SetupIconFillColors(Icon icon)
@@ -180,7 +195,7 @@ internal class PaginationNavItem : ContentControl,
 
     private void SetupIconStatus(Icon icon)
     {
-        if (IsEnabled)
+        if (IsEnabled && !Classes.Contains(StdPseudoClass.Disabled))
         {
             icon.IconMode = IconMode.Normal;
         }
