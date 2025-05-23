@@ -140,6 +140,19 @@ public class Pagination : TemplatedControl,
     #endregion
     
     #region 内部属性定义
+    
+    public static readonly DirectProperty<Pagination, DropdownButton?> SizeChangerDropdownProperty =
+        AvaloniaProperty.RegisterDirect<Pagination, DropdownButton?>(nameof(SizeChangerDropdown),
+            o => o.SizeChangerDropdown,
+            (o, v) => o.SizeChangerDropdown = v);
+    
+    private DropdownButton? _sizeChangerDropdown;
+    public DropdownButton? SizeChangerDropdown
+    {
+        get => _sizeChangerDropdown;
+        set => SetAndRaise(SizeChangerDropdownProperty, ref _sizeChangerDropdown, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => PaginationToken.ID;
@@ -337,6 +350,21 @@ public class Pagination : TemplatedControl,
             {
                 HandlePageConditionChanged();
             }
+        }
+
+        if (change.Property == ShowSizeChangerProperty)
+        {
+            SetupSizeChanger();
+        }
+    }
+
+    private void SetupSizeChanger()
+    {
+        if (_sizeChangerDropdown == null)
+        {
+            _sizeChangerDropdown = new DropdownButton();
+            var menuFlyout = new MenuFlyout();
+            _sizeChangerDropdown.Flyout = menuFlyout;
         }
     }
 }
