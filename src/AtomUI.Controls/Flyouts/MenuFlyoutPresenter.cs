@@ -15,7 +15,7 @@ public class MenuFlyoutPresenter : MenuBase,
                                    IShadowMaskInfoProvider,
                                    IMotionAwareControl,
                                    IControlSharedTokenResourcesHost,
-                                   ITokenResourceConsumer
+                                   IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -72,11 +72,11 @@ public class MenuFlyoutPresenter : MenuBase,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private ArrowDecoratedBox? _arrowDecoratedBox;
 
     public MenuFlyoutPresenter()
@@ -188,7 +188,7 @@ public class MenuFlyoutPresenter : MenuBase,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

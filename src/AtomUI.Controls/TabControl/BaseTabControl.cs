@@ -20,7 +20,7 @@ using AvaloniaTabControl = Avalonia.Controls.TabControl;
 public class BaseTabControl : AvaloniaTabControl,
                               IMotionAwareControl,
                               IControlSharedTokenResourcesHost,
-                              ITokenResourceConsumer
+                              IResourceBindingManager
 {
     public const string TopPC = ":top";
     public const string RightPC = ":right";
@@ -99,8 +99,8 @@ public class BaseTabControl : AvaloniaTabControl,
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
-    private CompositeDisposable? _tokenBindingsDisposable;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     static BaseTabControl()
     {
@@ -132,7 +132,7 @@ public class BaseTabControl : AvaloniaTabControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -146,11 +146,11 @@ public class BaseTabControl : AvaloniaTabControl,
         base.OnAttachedToVisualTree(e);
         if (_frame is not null)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
                 SharedTokenKey.BorderThickness, BindingPriority.Template,
                 new RenderScaleAwareThicknessConfigure(this)));
         }
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
             TabControlTokenKey.TabAndContentGutter));
         UpdatePseudoClasses();
         HandlePlacementChanged();

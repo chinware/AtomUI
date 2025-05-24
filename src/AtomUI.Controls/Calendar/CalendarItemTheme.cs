@@ -170,7 +170,7 @@ internal class CalendarItemTheme : BaseControlTheme
         // 这个必须这样设置
         RegisterTokenResourceBindings(calendarItem, () =>
         {
-            calendarItem.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(dayTitleRowDef, RowDefinition.HeightProperty,
+            calendarItem.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(dayTitleRowDef, RowDefinition.HeightProperty,
                 CalendarTokenKey.DayTitleHeight));
         });
 

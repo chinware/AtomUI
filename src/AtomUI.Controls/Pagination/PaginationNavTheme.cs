@@ -29,18 +29,9 @@ internal class PaginationNavTheme : BaseControlTheme
                 Name         = FramePart,
                 ClipToBounds = true
             };
-            var itemsPresenter = new ItemsPresenter
+            var itemsPresenter = new NavItemsPresenter
             {
-                Name = ItemsPresenterPart,
-                ItemsPanel = new FuncTemplate<Panel?>(() =>
-                {
-                    var panel = new StackPanel()
-                    {
-                        Orientation = Orientation.Horizontal
-                    };
-                    paginationNav.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(panel, StackPanel.SpacingProperty, SharedTokenKey.MarginXS));
-                    return panel;
-                })
+                Name = ItemsPresenterPart
             };
             itemsPresenter.RegisterInNameScope(scope);
             frame.Child = itemsPresenter;

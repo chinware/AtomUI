@@ -27,7 +27,7 @@ using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
 public class Popup : AvaloniaPopup,
                      IWaveSpiritAwareControl,
-                     ITokenResourceConsumer
+                     IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -106,11 +106,11 @@ public class Popup : AvaloniaPopup,
 
     Control IMotionAwareControl.PropertyBindTarget => this;
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private PopupShadowLayer? _shadowLayer;
     private IDisposable? _selfLightDismissDisposable;
     private IManagedPopupPositionerPopup? _managedPopupPositioner;
@@ -143,10 +143,10 @@ public class Popup : AvaloniaPopup,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
+        _resourceBindingsDisposable = new CompositeDisposable();
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationFast));
         CreateShadowLayer();
     }

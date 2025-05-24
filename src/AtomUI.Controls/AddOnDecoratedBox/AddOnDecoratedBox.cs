@@ -35,7 +35,7 @@ public enum AddOnDecoratedStatus
 [TemplatePart(AddOnDecoratedBoxTheme.InnerBoxContentPart, typeof(ContentPresenter), IsRequired = true)]
 public class AddOnDecoratedBox : ContentControl,
                                  IControlSharedTokenResourcesHost,
-                                 ITokenResourceConsumer
+                                 IResourceBindingManager
 {
     public const string ErrorPC = ":error";
     public const string WarningPC = ":warning";
@@ -160,13 +160,13 @@ public class AddOnDecoratedBox : ContentControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AddOnDecoratedBoxToken.ID;
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
     protected Control? _leftAddOnPresenter;
     protected Control? _rightAddOnPresenter;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static AddOnDecoratedBox()
     {
@@ -261,7 +261,7 @@ public class AddOnDecoratedBox : ContentControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
@@ -270,7 +270,7 @@ public class AddOnDecoratedBox : ContentControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

@@ -15,7 +15,7 @@ public class Menu : AvaloniaMenu,
                     ISizeTypeAware,
                     IMotionAwareControl,
                     IControlSharedTokenResourcesHost,
-                    ITokenResourceConsumer
+                    IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -44,11 +44,11 @@ public class Menu : AvaloniaMenu,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     public Menu()
     {
@@ -70,8 +70,8 @@ public class Menu : AvaloniaMenu,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
+        _resourceBindingsDisposable = new CompositeDisposable();
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, TopLevelMenuItemTheme.ID));
     }
 

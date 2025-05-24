@@ -150,17 +150,17 @@ public class CardTabControl : BaseTabControl
     {
         if (SizeType == SizeType.Large)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
                 SharedTokenKey.BorderRadiusLG));
         }
         else if (SizeType == SizeType.Middle)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
                 SharedTokenKey.BorderRadius));
         }
         else
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
                 SharedTokenKey.BorderRadiusSM));
         }
     }
@@ -168,10 +168,10 @@ public class CardTabControl : BaseTabControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-        this.AddTokenBindingDisposable(
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
         SetupSizeTypeBinding();
     }

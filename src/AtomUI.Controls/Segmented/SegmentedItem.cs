@@ -19,7 +19,7 @@ namespace AtomUI.Controls;
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
 public class SegmentedItem : ContentControl,
                              ISelectable,
-                             ITokenResourceConsumer
+                             IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -63,11 +63,11 @@ public class SegmentedItem : ContentControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     
     static SegmentedItem()
     {
@@ -80,7 +80,7 @@ public class SegmentedItem : ContentControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
         Debug.Assert(Parent is Segmented, "SegmentedItem's Parent must be Segmented Control.");
     }
 

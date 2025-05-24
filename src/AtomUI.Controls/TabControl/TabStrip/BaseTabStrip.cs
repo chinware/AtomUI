@@ -20,7 +20,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
                                      ISizeTypeAware,
                                      IMotionAwareControl,
                                      IControlSharedTokenResourcesHost,
-                                     ITokenResourceConsumer
+                                     IResourceBindingManager
 {
     public const string TopPC = ":top";
     public const string RightPC = ":right";
@@ -74,12 +74,12 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     
     #endregion
 
     private Border? _frame;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static BaseTabStrip()
     {
@@ -103,7 +103,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     {
         if (_frame is not null)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
                 SharedTokenKey.BorderThickness, BindingPriority.Template,
                 new RenderScaleAwareThicknessConfigure(this)));
         }
@@ -123,7 +123,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

@@ -18,6 +18,16 @@ namespace AtomUI.Controls.Localization
     }
 }
 
+namespace AtomUI.Controls.PaginationLang
+{
+    public static class PaginationLangResourceKey
+    {
+        public static readonly LanguageResourceKey JumpToText = new LanguageResourceKey("Pagination.JumpToText", "AtomUI.Lang");
+        public static readonly LanguageResourceKey PageText = new LanguageResourceKey("Pagination.PageText", "AtomUI.Lang");
+        public static readonly LanguageResourceKey TotalInfoFormat = new LanguageResourceKey("Pagination.TotalInfoFormat", "AtomUI.Lang");
+    }
+}
+
 namespace AtomUI.Controls.PopupConfirmLang
 {
     public static class PopupConfirmLangResourceKey

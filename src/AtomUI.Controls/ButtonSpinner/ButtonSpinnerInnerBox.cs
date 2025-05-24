@@ -17,7 +17,7 @@ namespace AtomUI.Controls;
 [TemplatePart(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
 internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, 
                                        ICustomHitTest,
-                                       ITokenResourceConsumer
+                                       IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -99,11 +99,11 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
         set => SetAndRaise(SpinnerHandleWidthTokenProperty, ref _spinnerHandleWidthToken, value);
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
     
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private ContentPresenter? _handleContentPresenter;
 
     protected override void BuildEffectiveInnerBoxPadding()
@@ -136,7 +136,7 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
     }
@@ -144,7 +144,7 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

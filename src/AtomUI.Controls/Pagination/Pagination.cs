@@ -1,12 +1,16 @@
 using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Controls.PaginationLang;
 using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
+using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -21,7 +25,8 @@ public enum PaginationAlign
 public class Pagination : TemplatedControl,
                           ISizeTypeAware,
                           IMotionAwareControl,
-                          IControlSharedTokenResourcesHost
+                          IControlSharedTokenResourcesHost,
+                          IResourceBindingManager
 {
     public const int DefaultPageSize = 10;
     public const int DefaultCurrentPage = 1;
@@ -62,16 +67,21 @@ public class Pagination : TemplatedControl,
             o => o.ShowSizeChanger,
             (o, v) => o.ShowSizeChanger = v);
     
+    public static readonly DirectProperty<Pagination, bool> ShowQuickJumperProperty =
+        AvaloniaProperty.RegisterDirect<Pagination, bool>(nameof(ShowQuickJumper),
+            o => o.ShowQuickJumper,
+            (o, v) => o.ShowQuickJumper = v);
+    
     public static readonly DirectProperty<Pagination, bool> ShowTotalInfoProperty =
         AvaloniaProperty.RegisterDirect<Pagination, bool>(nameof(ShowTotalInfo),
             o => o.ShowTotalInfo,
             (o, v) => o.ShowTotalInfo = v);
     
-    public static readonly StyledProperty<IDataTemplate?> TotalInfoTemplateProperty =
-        AvaloniaProperty.Register<Button, IDataTemplate?>(nameof(TotalInfoTemplate));
+    public static readonly StyledProperty<string?> TotalInfoTemplateProperty =
+        AvaloniaProperty.Register<Pagination, string?>(nameof(TotalInfoTemplate));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBox>();
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<Pagination>();
     
     public SizeType SizeType
     {
@@ -120,6 +130,13 @@ public class Pagination : TemplatedControl,
         set => SetAndRaise(ShowSizeChangerProperty, ref _showSizeChanger, value);
     }
     
+    private bool _showQuickJumper;
+    public bool ShowQuickJumper
+    {
+        get => _showQuickJumper;
+        set => SetAndRaise(ShowQuickJumperProperty, ref _showQuickJumper, value);
+    }
+    
     private bool _showTotalInfo;
     public bool ShowTotalInfo
     {
@@ -127,7 +144,7 @@ public class Pagination : TemplatedControl,
         set => SetAndRaise(ShowTotalInfoProperty, ref _showTotalInfo, value);
     }
     
-    public IDataTemplate? TotalInfoTemplate
+    public string? TotalInfoTemplate
     {
         get => GetValue(TotalInfoTemplateProperty);
         set => SetValue(TotalInfoTemplateProperty, value);
@@ -142,21 +159,59 @@ public class Pagination : TemplatedControl,
     
     #region 内部属性定义
     
-    public static readonly DirectProperty<Pagination, ComboBox?> SizeChangerProperty =
+    internal static readonly DirectProperty<Pagination, ComboBox?> SizeChangerProperty =
         AvaloniaProperty.RegisterDirect<Pagination, ComboBox?>(nameof(SizeChanger),
             o => o.SizeChanger,
             (o, v) => o.SizeChanger = v);
     
+    internal static readonly DirectProperty<Pagination, QuickJumperBar?> QuickJumperBarProperty =
+        AvaloniaProperty.RegisterDirect<Pagination, QuickJumperBar?>(nameof(QuickJumperBar),
+            o => o.QuickJumperBar,
+            (o, v) => o.QuickJumperBar = v);
+    
+    internal static readonly DirectProperty<Pagination, string?> PageTextProperty =
+        AvaloniaProperty.RegisterDirect<Pagination,  string?>(nameof(PageText),
+            o => o.PageText,
+            (o, v) => o.PageText = v);
+    
+    internal static readonly DirectProperty<Pagination, string?> TotalInfoTextProperty =
+        AvaloniaProperty.RegisterDirect<Pagination,  string?>(nameof(TotalInfoText),
+            o => o.TotalInfoText,
+            (o, v) => o.TotalInfoText = v);
+    
     private ComboBox? _sizeChanger;
-    public ComboBox? SizeChanger
+    internal ComboBox? SizeChanger
     {
         get => _sizeChanger;
         set => SetAndRaise(SizeChangerProperty, ref _sizeChanger, value);
     }
     
+    private QuickJumperBar? _quickJumperBar;
+    internal QuickJumperBar? QuickJumperBar
+    {
+        get => _quickJumperBar;
+        set => SetAndRaise(QuickJumperBarProperty, ref _quickJumperBar, value);
+    }
+    
+    private string? _pageText;
+    public string? PageText
+    {
+        get => _pageText;
+        set => SetAndRaise(PageTextProperty, ref _pageText, value);
+    }
+    
+    private string? _totalInfoText;
+    public string? TotalInfoText
+    {
+        get => _totalInfoText;
+        set => SetAndRaise(TotalInfoTextProperty, ref _totalInfoText, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => PaginationToken.ID;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     #endregion
 
     private PaginationNav? _paginationNav;
@@ -181,9 +236,19 @@ public class Pagination : TemplatedControl,
         base.OnApplyTemplate(e);
         _paginationNav  = e.NameScope.Find<PaginationNav>(PaginationTheme.NavPart);
         Debug.Assert(_paginationNav is not null);
-
+        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, PageTextProperty, PaginationLangResourceKey.PageText));
+        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, TotalInfoTemplateProperty, PaginationLangResourceKey.TotalInfoFormat));
         _paginationNav.ContainerPrepared   += HandleContainerPrepared;
         _paginationNav.PageNavigateRequest += HandlePageNavRequest;
+        if (ShowQuickJumper)
+        {
+            SetupQuickJumper();
+        }
+
+        if (ShowSizeChanger)
+        {
+            SetupSizeChanger();
+        }
     }
 
     private void HandleContainerPrepared(object? sender, ContainerPreparedEventArgs args)
@@ -250,6 +315,7 @@ public class Pagination : TemplatedControl,
         SetupNextIndicatorNavItem(currentPage, true);
         SetupRightButtonRange(currentPage, pageCount);
         _paginationNav.SelectedIndex = _selectedNavItemIndex;
+        SetupTotalInfoText();
     }
 
     private void HandlePageNavRequest(object? sender, PageNavRequestArgs args)
@@ -352,11 +418,24 @@ public class Pagination : TemplatedControl,
             {
                 HandlePageConditionChanged();
             }
+            else if (change.Property == ShowSizeChangerProperty)
+            {
+                SetupSizeChanger();
+            } 
+            else if (change.Property == ShowQuickJumperProperty)
+            {
+                SetupQuickJumper();
+            }
         }
+    }
 
-        if (change.Property == ShowSizeChangerProperty)
+    private void SetupTotalInfoText()
+    {
+        if (ShowTotalInfo && TotalInfoTemplate != null)
         {
-            SetupSizeChanger();
+            TotalInfoText = TotalInfoTemplate.Replace("${Total}", $"{Total}")
+                                             .Replace("${RangeStart}", $"{(CurrentPage - 1) * PageSize}")
+                                             .Replace("${RangeEnd}", $"{Math.Min(CurrentPage * PageSize, Total)}");
         }
     }
 
@@ -365,14 +444,31 @@ public class Pagination : TemplatedControl,
         if (SizeChanger == null)
         {
             var sizeChanger = new ComboBox();
+            sizeChanger.VerticalAlignment = VerticalAlignment.Center;
             BindUtils.RelayBind(this, SizeTypeProperty, sizeChanger, ComboBox.SizeTypeProperty);
-            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = "10 / page", PageSize = 10});
-            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = "20 / page", PageSize = 20 });
-            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = "50 / page", PageSize = 50 });
-            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = "100 / page", PageSize = 100 });
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"10 / {PageText}", PageSize  = 10});
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"20 / {PageText}", PageSize  = 20 });
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"50 / {PageText}", PageSize  = 50 });
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"100 / {PageText}", PageSize = 100 });
             sizeChanger.SelectedIndex    =  0;
             SizeChanger                  =  sizeChanger;
             SizeChanger.SelectionChanged += HandlePageSizeChanged;
+        }
+    }
+
+    private void SetupQuickJumper()
+    {
+        if (QuickJumperBar == null)
+        {
+            QuickJumperBar = new QuickJumperBar();
+            QuickJumperBar.JumpRequest += (sender, args) =>
+            {
+                var total     = Math.Max(0, Total);
+                var pageSize  = PageSize <= 0 ? DefaultPageSize : PageSize;
+                var pageCount = (int)Math.Ceiling(total / (double)pageSize);
+                CurrentPage = Math.Max(1, Math.Min(pageCount, args.PageNumber));
+            };
+            BindUtils.RelayBind(this, SizeTypeProperty, QuickJumperBar, QuickJumperBar.SizeTypeProperty);
         }
     }
 
@@ -382,5 +478,17 @@ public class Pagination : TemplatedControl,
         {
             PageSize = Math.Max(comboBoxItem.PageSize, 1);
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
     }
 }

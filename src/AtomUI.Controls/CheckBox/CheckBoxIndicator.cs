@@ -18,7 +18,7 @@ namespace AtomUI.Controls;
 
 internal class CheckBoxIndicator : Control, 
                                    IWaveAdornerInfoProvider,
-                                   ITokenResourceConsumer
+                                   IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -134,12 +134,12 @@ internal class CheckBoxIndicator : Control,
         set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static CheckBoxIndicator()
     {
@@ -162,7 +162,7 @@ internal class CheckBoxIndicator : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -174,7 +174,7 @@ internal class CheckBoxIndicator : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
         SetupTransitions();

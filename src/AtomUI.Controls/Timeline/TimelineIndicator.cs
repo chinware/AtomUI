@@ -13,7 +13,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 internal class TimelineIndicator : Control,
-                                   ITokenResourceConsumer
+                                   IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -169,11 +169,11 @@ internal class TimelineIndicator : Control,
         set => SetAndRaise(NextIsPendingProperty, ref _nextIsPending, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static TimelineIndicator()
     {
@@ -188,7 +188,7 @@ internal class TimelineIndicator : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -200,17 +200,17 @@ internal class TimelineIndicator : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, LineHeightRatioProperty, SharedTokenKey.LineHeightRatio));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorDotBorderWidthProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorDotBorderWidthProperty,
             TimelineTokenKey.IndicatorDotBorderWidth));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorDotSizeProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorDotSizeProperty,
             TimelineTokenKey.IndicatorDotSize));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DefaultIndicatorColorProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DefaultIndicatorColorProperty,
             SharedTokenKey.ColorPrimary));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorTailWidthProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorTailWidthProperty,
             TimelineTokenKey.IndicatorTailWidth));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorTailColorProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorTailColorProperty,
             TimelineTokenKey.IndicatorTailColor));
         SetupIndicatorIcon();
     }
@@ -272,9 +272,9 @@ internal class TimelineIndicator : Control,
         if (IndicatorIcon != null)
         {
             IndicatorIcon.SetLogicalParent(this);
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(IndicatorIcon, Icon.WidthProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(IndicatorIcon, Icon.WidthProperty,
                 TimelineTokenKey.IndicatorWidth));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(IndicatorIcon, Icon.HeightProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(IndicatorIcon, Icon.HeightProperty,
                 TimelineTokenKey.IndicatorWidth));
             VisualChildren.Add(IndicatorIcon);
             LogicalChildren.Add(IndicatorIcon);

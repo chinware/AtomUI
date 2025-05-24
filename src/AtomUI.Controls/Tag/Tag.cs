@@ -45,7 +45,7 @@ internal struct TagStatusCalcColor
 
 public class Tag : TemplatedControl,
                    IControlSharedTokenResourcesHost,
-                   ITokenResourceConsumer
+                   IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -160,11 +160,11 @@ public class Tag : TemplatedControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TagToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
 
@@ -188,7 +188,7 @@ public class Tag : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -200,7 +200,7 @@ public class Tag : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
             RenderScaleAwareBorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
@@ -358,7 +358,7 @@ public class Tag : TemplatedControl,
             Bordered    = false;
             IsColorSet = true;
             Background  = new SolidColorBrush(color);
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty,
                 SharedTokenKey.ColorTextLightSolid));
         }
     }

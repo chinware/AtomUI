@@ -27,7 +27,7 @@ namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal)]
 public class SliderTrack : Control,
-                           ITokenResourceConsumer
+                           IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -288,7 +288,7 @@ public class SliderTrack : Control,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
@@ -308,7 +308,7 @@ public class SliderTrack : Control,
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private VectorEventArgs? _deferredThumbDrag;
     private Vector _lastDrag;
     private RenderContextData? _renderContextData;
@@ -455,16 +455,16 @@ public class SliderTrack : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
+        _resourceBindingsDisposable = new CompositeDisposable();
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, SliderTrackSizeProperty, SliderTokenKey.SliderTrackSize));
-        this.AddTokenBindingDisposable(
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, SliderMarkSizeProperty, SliderTokenKey.MarkSize));
-        this.AddTokenBindingDisposable(
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, SliderRailSizeProperty, SliderTokenKey.RailSize));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBackgroundBrushProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBackgroundBrushProperty,
             SharedTokenKey.ColorBgElevated));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBorderThicknessProperty,
             SliderTokenKey.ThumbCircleBorderThickness));
     }
     
@@ -478,12 +478,12 @@ public class SliderTrack : Control,
     {
         if (IsEnabled)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, MarkLabelBrushProperty, SharedTokenKey.ColorText));
         }
         else
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkLabelBrushProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkLabelBrushProperty,
                 SharedTokenKey.ColorTextDisabled));
         }
     }

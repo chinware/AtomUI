@@ -1,16 +1,21 @@
 using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
+using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
 internal class PaginationNav : SelectingItemsControl,
                                ISizeTypeAware,
-                               ITokenResourceConsumer
+                               IResourceBindingManager
 {
     #region 公共属性
     
@@ -38,11 +43,12 @@ internal class PaginationNav : SelectingItemsControl,
 
     #region 内部属性
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
      
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
+    private NavItemsPresenter? _itemsPresenter;
 
     static PaginationNav()
     {
@@ -85,16 +91,115 @@ internal class PaginationNav : SelectingItemsControl,
             };
         }
     }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        _tokenBindingsDisposable = new CompositeDisposable();
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _itemsPresenter = e.NameScope.Find<NavItemsPresenter>(PaginationNavTheme.ItemsPresenterPart);
+        SetupItemPresenterSpacing();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == PaginationNavItem.SizeTypeProperty)
+        {
+            SetupItemPresenterSpacing();
+        }
+    }
+
+    private void SetupItemPresenterSpacing()
+    {
+        if (_itemsPresenter != null)
+        {
+            if (SizeType == SizeType.Large || SizeType == SizeType.Middle)
+            {
+                _itemsPresenter.IsEnabledSpacing = true;
+            }
+            else
+            {
+                _itemsPresenter.IsEnabledSpacing = false;
+            }
+        }
+    }
+}
+
+internal class NavItemsPresenter : ItemsPresenter,
+                                   IResourceBindingManager
+{
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
+    
+    internal static readonly DirectProperty<NavItemsPresenter, bool> IsEnabledSpacingProperty =
+        AvaloniaProperty.RegisterDirect<NavItemsPresenter, bool>(nameof(IsEnabledSpacing),
+            o => o.IsEnabledSpacing,
+            (o, v) => o.IsEnabledSpacing = v);
+    
+    private bool _isEnabledSpacing = true;
+    public bool IsEnabledSpacing
+    {
+        get => _isEnabledSpacing;
+        set => SetAndRaise(IsEnabledSpacingProperty, ref _isEnabledSpacing, value);
     }
     
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    public NavItemsPresenter()
     {
-        base.OnDetachedFromLogicalTree(e);
+        ItemsPanel = new FuncTemplate<Panel?>(() =>
+        {
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            if (IsEnabledSpacing)
+            {
+                this.AddResourceBindingDisposable(
+                    TokenResourceBinder.CreateTokenBinding(panel, StackPanel.SpacingProperty, SharedTokenKey.MarginXS));
+            }
+            return panel;
+        });
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsEnabledSpacingProperty)
+        {
+            if (Panel is StackPanel stackPanel)
+            {
+                if (IsEnabledSpacing)
+                {
+                    this.AddResourceBindingDisposable(
+                        TokenResourceBinder.CreateTokenBinding(stackPanel, StackPanel.SpacingProperty, SharedTokenKey.MarginXS));
+                }
+                else
+                {
+                    stackPanel.SetValue(StackPanel.SpacingProperty, 0, BindingPriority.Template);
+                }
+            }
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
         this.DisposeTokenBindings();
     }
 }

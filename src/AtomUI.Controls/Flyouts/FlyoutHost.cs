@@ -23,7 +23,7 @@ public enum FlyoutTriggerType
 
 public class FlyoutHost : Control,
                           IMotionAwareControl,
-                          ITokenResourceConsumer
+                          IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -161,11 +161,11 @@ public class FlyoutHost : Control,
     #region 内部属性定义
 
     Control IMotionAwareControl.PropertyBindTarget => this;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private readonly FlyoutStateHelper _flyoutStateHelper;
     
     static FlyoutHost()
@@ -182,7 +182,7 @@ public class FlyoutHost : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -203,7 +203,7 @@ public class FlyoutHost : Control,
         BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
         SetupFlyoutProperties();
         _flyoutStateHelper.NotifyAttachedToVisualTree();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

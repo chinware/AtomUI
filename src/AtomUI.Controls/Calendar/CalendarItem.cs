@@ -30,7 +30,7 @@ namespace AtomUI.Controls;
 [TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
 [PseudoClasses(CalendarDisabledPC)]
 internal class CalendarItem : TemplatedControl,
-                              ITokenResourceConsumer
+                              IResourceBindingManager
 {
     internal const string CalendarDisabledPC = ":calendardisabled";
 
@@ -220,10 +220,10 @@ internal class CalendarItem : TemplatedControl,
         }
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     #endregion
     
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     protected DateTime _currentMonth;
 
@@ -261,9 +261,9 @@ internal class CalendarItem : TemplatedControl,
                 var cell = DayTitleTemplate?.Build();
                 if (cell is TextBlock textBlockCell)
                 {
-                    this.AddThemeTokenBindingAction(() =>
+                    this.AddThemeResourceBindingAction(() =>
                     {
-                        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlockCell,
+                        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlockCell,
                             TextBlock.HeightProperty, DatePickerTokenKey.DayTitleHeight));
                     });
                 }
@@ -405,7 +405,7 @@ internal class CalendarItem : TemplatedControl,
                 YearView.IsVisible  = false;
             }
         }
-        this.RunThemeTokenBindingActions();
+        this.RunThemeResourceBindingActions();
     }
 
     protected void SetDayTitles()
@@ -1343,7 +1343,7 @@ internal class CalendarItem : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

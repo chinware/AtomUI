@@ -44,7 +44,7 @@ public class Button : AvaloniaButton,
                       IWaveAdornerInfoProvider,
                       IWaveSpiritAwareControl,
                       IControlSharedTokenResourcesHost,
-                      ITokenResourceConsumer
+                      IResourceBindingManager
 {
     public const string IconOnlyPC = ":icononly";
     public const string LoadingPC = ":loading";
@@ -301,11 +301,11 @@ public class Button : AvaloniaButton,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
     
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private Border? _frame;
 
     static Button()
@@ -357,7 +357,7 @@ public class Button : AvaloniaButton,
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
         SetupControlThemeBindings();
         base.OnAttachedToLogicalTree(e);
       
@@ -522,22 +522,22 @@ public class Button : AvaloniaButton,
     {
         if (ButtonType == ButtonType.Default)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Primary)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Text)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Link)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID));
         }
     }
@@ -589,7 +589,7 @@ public class Button : AvaloniaButton,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
@@ -704,13 +704,13 @@ public class Button : AvaloniaButton,
             }
         }
         
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconNormalColorProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconNormalColorProperty,
             normalFilledBrushKey));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconHoverColorProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconHoverColorProperty,
             activeFilledBrushKey));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconPressedColorProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconPressedColorProperty,
             selectedFilledBrushKey));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
             IconDisabledColorProperty,
             disabledFilledBrushKey));
         

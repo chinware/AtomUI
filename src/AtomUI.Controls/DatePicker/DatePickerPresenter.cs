@@ -25,7 +25,7 @@ public class ChoosingStatusEventArgs : EventArgs
 }
 
 internal class DatePickerPresenter : PickerPresenterBase,
-                                     ITokenResourceConsumer
+                                     IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -109,7 +109,7 @@ internal class DatePickerPresenter : PickerPresenterBase,
         set => SetValue(TempSelectedTimeProperty, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
@@ -132,12 +132,12 @@ internal class DatePickerPresenter : PickerPresenterBase,
     protected Button? _confirmButton;
     protected PickerCalendar? _calendarView;
     protected TimeView? _timeView;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -149,17 +149,17 @@ internal class DatePickerPresenter : PickerPresenterBase,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
-        this.AddTokenBindingDisposable(PickerCalendar.IsPointerInMonthViewProperty.Changed.Subscribe(args =>
+        this.AddResourceBindingDisposable(PickerCalendar.IsPointerInMonthViewProperty.Changed.Subscribe(args =>
         {
             if (_calendarView is not null)
             {
                 EmitChoosingStatueChanged(args.GetNewValue<bool>());
             }
         }));
-        this.AddTokenBindingDisposable(TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
+        this.AddResourceBindingDisposable(TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
         {
             if (_timeView is not null)
             {

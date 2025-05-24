@@ -38,7 +38,7 @@ public abstract class MotionAwareControlProperty : AvaloniaObject
     
     internal static void AddTokenResourceBindingDisposable(StyledElement element, IDisposable disposable)
     {
-        Debug.Assert(element is ITokenResourceConsumer);
+        Debug.Assert(element is IResourceBindingManager);
         var compositeDisposable = element.GetValue(TokenResourceBindingDisposablesProperty);
         if (compositeDisposable == null)
         {

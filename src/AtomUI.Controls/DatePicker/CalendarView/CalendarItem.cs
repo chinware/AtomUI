@@ -27,7 +27,7 @@ namespace AtomUI.Controls.CalendarView;
 [TemplatePart(CalendarItemTheme.NextMonthButtonPart, typeof(IconButton))]
 [TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
 internal class CalendarItem : TemplatedControl,
-                              ITokenResourceConsumer
+                              IResourceBindingManager
 {
     internal const string CalendarDisabledPC = ":calendardisabled";
 
@@ -206,11 +206,11 @@ internal class CalendarItem : TemplatedControl,
         }
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     protected DateTime _currentMonth;
     protected UniformGrid? _headerLayout;
     protected bool _isMouseLeftButtonDownYearView;
@@ -1149,7 +1149,7 @@ internal class CalendarItem : TemplatedControl,
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SetCalendarDayButtons();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom))));
     }
@@ -1218,7 +1218,7 @@ internal class CalendarItem : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

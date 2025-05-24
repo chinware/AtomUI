@@ -9,6 +9,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -30,7 +31,7 @@ internal enum PaginationItemType
 internal class PaginationNavItem : ContentControl,
                                    ISelectable,
                                    ICustomHitTest,
-                                   ITokenResourceConsumer
+                                   IResourceBindingManager
 {
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<PaginationNavItem>();
@@ -87,9 +88,9 @@ internal class PaginationNavItem : ContentControl,
         private set => SetAndRaise(IsPressedProperty, ref _isPressed, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     internal int PageNumber { get; set; } = -1;
     
@@ -105,7 +106,7 @@ internal class PaginationNavItem : ContentControl,
 
     public PaginationNavItem()
     {
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
         Classes.CollectionChanged += (sender, args) =>
         {
             if (Content is Icon icon)
@@ -138,7 +139,7 @@ internal class PaginationNavItem : ContentControl,
             SetupIconSizeType(icon);
             SetupIconStatus(icon);
         }
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
@@ -189,8 +190,8 @@ internal class PaginationNavItem : ContentControl,
 
     private void SetupIconFillColors(Icon icon)
     {
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty, SharedTokenKey.ColorText));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.DisabledFilledBrushProperty, SharedTokenKey.ColorTextDisabled));
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty, SharedTokenKey.ColorText));
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.DisabledFilledBrushProperty, SharedTokenKey.ColorTextDisabled));
     }
 
     private void SetupIconStatus(Icon icon)
@@ -209,18 +210,18 @@ internal class PaginationNavItem : ContentControl,
     {
         if (SizeType == SizeType.Large)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeLG));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeLG));
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeLG));
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeLG));
         }
         else if (SizeType == SizeType.Middle)
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSize));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSize));
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSize));
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSize));
         }
         else
         {
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeSM));
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeSM));
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeSM));
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeSM));
         }
     }
     

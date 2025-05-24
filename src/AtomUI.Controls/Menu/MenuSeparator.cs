@@ -15,7 +15,7 @@ using AvaloniaSeparator = Avalonia.Controls.Separator;
 
 public class MenuSeparator : AvaloniaSeparator,
                              IControlSharedTokenResourcesHost,
-                             ITokenResourceConsumer
+                             IResourceBindingManager
 {
     #region 公共属性定义
     public static readonly StyledProperty<double> LineWidthProperty =
@@ -33,11 +33,11 @@ public class MenuSeparator : AvaloniaSeparator,
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     
     #endregion
     
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     public MenuSeparator()
     {
@@ -54,7 +54,7 @@ public class MenuSeparator : AvaloniaSeparator,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -66,7 +66,7 @@ public class MenuSeparator : AvaloniaSeparator,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LineWidthProperty, SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this)));
     }

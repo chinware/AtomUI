@@ -19,7 +19,7 @@ namespace AtomUI.Controls;
 public class Drawer : Control,
                       IMotionAwareControl,
                       IControlSharedTokenResourcesHost,
-                      ITokenResourceConsumer
+                      IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -194,12 +194,12 @@ public class Drawer : Control,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => DrawerToken.ID;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
     private DrawerContainer? _container;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static Drawer()
     {
@@ -226,7 +226,7 @@ public class Drawer : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
         var parentDrawer = FindParentDrawer();
         if (parentDrawer != null)
         {
@@ -258,7 +258,7 @@ public class Drawer : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty,
             DrawerTokenKey.PushOffsetPercent));
         SetupDialogSizeTypeBindings();
     }
@@ -267,17 +267,17 @@ public class Drawer : Control,
     {
         if (SizeType == SizeType.Large)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.LargeSize));
         }
         else if (SizeType == SizeType.Middle)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.MiddleSize));
         }
         else
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.SmallSize));
         }
     }

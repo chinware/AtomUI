@@ -15,7 +15,7 @@ using Avalonia.LogicalTree;
 namespace AtomUI.Controls;
 
 internal class TimePickerPresenter : PickerPresenterBase,
-                                     ITokenResourceConsumer
+                                     IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -108,7 +108,7 @@ internal class TimePickerPresenter : PickerPresenterBase,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     
     #endregion
 
@@ -126,7 +126,7 @@ internal class TimePickerPresenter : PickerPresenterBase,
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private IDisposable? _choosingStateDisposable;
     private Button? _nowButton;
     private Button? _confirmButton;
@@ -287,7 +287,7 @@ internal class TimePickerPresenter : PickerPresenterBase,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
         if (_timeView is not null)
@@ -309,7 +309,7 @@ internal class TimePickerPresenter : PickerPresenterBase,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

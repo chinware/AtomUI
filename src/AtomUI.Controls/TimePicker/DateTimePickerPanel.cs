@@ -64,7 +64,7 @@ internal class CellDbClickedEventArgs : EventArgs
 
 internal class DateTimePickerPanel : Panel,
                                      ILogicalScrollable,
-                                     ITokenResourceConsumer
+                                     IResourceBindingManager
 {
     #region 公共属性定义
     
@@ -117,7 +117,7 @@ internal class DateTimePickerPanel : Panel,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     #endregion
 
     #region 内部事件定义
@@ -127,7 +127,7 @@ internal class DateTimePickerPanel : Panel,
 
     #endregion
     
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     //Backing fields for properties
     private int _minimumValue = 1;
     private int _maximumValue = 2;
@@ -583,7 +583,7 @@ internal class DateTimePickerPanel : Panel,
                 }
             };
 
-            this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
+            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
                 TimePickerTokenKey.ItemPadding, BindingPriority.LocalValue));
             children.Add(item);
         }
@@ -773,7 +773,7 @@ internal class DateTimePickerPanel : Panel,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
         
     }
 

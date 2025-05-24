@@ -23,7 +23,7 @@ namespace AtomUI.Controls;
 [TemplatePart(BaseTabScrollViewerTheme.ScrollMenuIndicatorPart, typeof(IconButton))]
 [TemplatePart(BaseTabScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
 internal abstract class BaseTabScrollViewer : ScrollViewer,
-                                              ITokenResourceConsumer
+                                              IResourceBindingManager
 {
     private const int EdgeIndicatorZIndex = 1000;
 
@@ -77,7 +77,7 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
@@ -85,7 +85,7 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
     private protected Border? _startEdgeIndicator;
     private protected Border? _endEdgeIndicator;
     private protected MenuFlyout? _menuFlyout;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static BaseTabScrollViewer()
     {
@@ -212,10 +212,10 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty,
+        _resourceBindingsDisposable = new CompositeDisposable();
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty,
             SharedTokenKey.ColorFillSecondary));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty,
             TabControlTokenKey.MenuEdgeThickness));
     }
 

@@ -515,10 +515,11 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ItemLinkBg = new TokenResourceKey("Pagination.ItemLinkBg");
         public static readonly TokenResourceKey ItemSize = new TokenResourceKey("Pagination.ItemSize");
         public static readonly TokenResourceKey ItemSizeSM = new TokenResourceKey("Pagination.ItemSizeSM");
-        public static readonly TokenResourceKey MiniOptionsSizeChangerTop = new TokenResourceKey("Pagination.MiniOptionsSizeChangerTop");
         public static readonly TokenResourceKey PaginationItemPaddingInline = new TokenResourceKey("Pagination.PaginationItemPaddingInline");
-        public static readonly TokenResourceKey PaginationMiniOptionsMarginInline = new TokenResourceKey("Pagination.PaginationMiniOptionsMarginInline");
+        public static readonly TokenResourceKey PaginationLayoutMiniSpacing = new TokenResourceKey("Pagination.PaginationLayoutMiniSpacing");
+        public static readonly TokenResourceKey PaginationLayoutSpacing = new TokenResourceKey("Pagination.PaginationLayoutSpacing");
         public static readonly TokenResourceKey PaginationMiniQuickJumperInputWidth = new TokenResourceKey("Pagination.PaginationMiniQuickJumperInputWidth");
+        public static readonly TokenResourceKey PaginationQuickJumperInputWidth = new TokenResourceKey("Pagination.PaginationQuickJumperInputWidth");
         public static readonly TokenResourceKey PaginationSlashMarginInline = new TokenResourceKey("Pagination.PaginationSlashMarginInline");
     }
 

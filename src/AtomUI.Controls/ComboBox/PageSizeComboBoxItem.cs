@@ -6,17 +6,17 @@ using Avalonia.LogicalTree;
 namespace AtomUI.Controls;
 
 internal class PageSizeComboBoxItem : ComboBoxItem,
-                                      ITokenResourceConsumer
+                                      IResourceBindingManager
 {
     public int PageSize { get; set; }
     
-    private CompositeDisposable? _tokenBindingsDisposable;
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
+        _resourceBindingsDisposable = new CompositeDisposable();
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, typeof(ComboBoxItem)));
         base.OnAttachedToLogicalTree(e);
     }

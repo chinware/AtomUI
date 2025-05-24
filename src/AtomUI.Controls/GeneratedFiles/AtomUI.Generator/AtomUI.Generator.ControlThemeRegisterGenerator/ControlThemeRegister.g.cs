@@ -82,6 +82,7 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PrimaryButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.PrimaryDropdownButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.ProgressBarTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.QuickJumperBarTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RadioButtonTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.RangeDatePickerTheme());

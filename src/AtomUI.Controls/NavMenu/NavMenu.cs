@@ -31,7 +31,7 @@ public class NavMenuItemClickEventArgs : RoutedEventArgs
 
 [PseudoClasses(InlineModePC, HorizontalModePC, VerticalModePC)]
 public class NavMenu : NavMenuBase,
-                       ITokenResourceConsumer
+                       IResourceBindingManager
 {
     public const string InlineModePC = ":inline-mode";
     public const string HorizontalModePC = ":horizontal-mode";
@@ -121,9 +121,9 @@ public class NavMenu : NavMenuBase,
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
     }
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     public NavMenu()
     {
@@ -192,12 +192,12 @@ public class NavMenu : NavMenuBase,
     {
         if (Mode == NavMenuMode.Horizontal)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, HorizontalNavMenuTheme.ID));
         }
         else
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, VerticalNavMenuTheme.ID));
         }
     }
@@ -249,7 +249,7 @@ public class NavMenu : NavMenuBase,
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
         SetupControlTheme();
         SetupItemContainerTheme();
         base.OnAttachedToLogicalTree(e);
@@ -266,7 +266,7 @@ public class NavMenu : NavMenuBase,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
             SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this)));
@@ -319,7 +319,7 @@ public class NavMenu : NavMenuBase,
                 resourceKey = TopLevelHorizontalNavMenuItemTheme.ID;
             }
 
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, resourceKey));
         }
     }

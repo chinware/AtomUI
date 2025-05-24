@@ -499,9 +499,9 @@ public class SelectableTextBlock : TextBlock
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectionBrushProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectionBrushProperty,
             SharedTokenKey.SelectionBackground));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectionForegroundBrushProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectionForegroundBrushProperty,
             SharedTokenKey.SelectionForeground));
     }
 }

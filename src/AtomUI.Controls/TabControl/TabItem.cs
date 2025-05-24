@@ -22,7 +22,7 @@ using AvaloniaTabItem = Avalonia.Controls.TabItem;
 
 public class TabItem : AvaloniaTabItem,
                        ICustomHitTest,
-                       ITokenResourceConsumer
+                       IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -84,12 +84,12 @@ public class TabItem : AvaloniaTabItem,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
     private IconButton? _closeButton;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     
 
     private void SetupDefaultCloseIcon()
@@ -195,7 +195,7 @@ public class TabItem : AvaloniaTabItem,
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
         SetupShapeThemeBindings();
         base.OnAttachedToLogicalTree(e);
     }
@@ -217,12 +217,12 @@ public class TabItem : AvaloniaTabItem,
     {
         if (Shape == TabSharp.Line)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabItemTheme.ID));
         }
         else
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, CardTabItemTheme.ID));
         }
     }

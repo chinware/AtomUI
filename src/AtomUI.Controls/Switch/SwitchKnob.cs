@@ -17,7 +17,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls.Switch;
 
 internal class SwitchKnob : Control,
-                            ITokenResourceConsumer
+                            IResourceBindingManager
 {
     #region 公共属性定义
     
@@ -118,11 +118,11 @@ internal class SwitchKnob : Control,
         set => SetAndRaise(LoadingBgOpacityTokenProperty, ref _loadingBgOpacity, value);
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     
     #endregion
     
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private bool _isLoading;
     private CancellationTokenSource? _cancellationTokenSource;
     
@@ -234,7 +234,7 @@ internal class SwitchKnob : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
   
     }
 
@@ -258,9 +258,9 @@ internal class SwitchKnob : Control,
             Color      = KnobBoxShadow.Color,
             BlurRadius = KnobBoxShadow.Blur
         };
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityTokenProperty,
             ToggleSwitchTokenKey.SwitchDisabledOpacity));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
             ToggleSwitchTokenKey.LoadingAnimationDuration));
     }
 

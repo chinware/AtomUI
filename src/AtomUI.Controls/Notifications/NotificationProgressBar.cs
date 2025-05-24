@@ -11,7 +11,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 internal class NotificationProgressBar : Control,
-                                         ITokenResourceConsumer
+                                         IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -55,11 +55,11 @@ internal class NotificationProgressBar : Control,
 
     #region 内部属性定义
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static NotificationProgressBar()
     {
@@ -77,7 +77,7 @@ internal class NotificationProgressBar : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -89,9 +89,9 @@ internal class NotificationProgressBar : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
             NotificationTokenKey.NotificationProgressHeight));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
             NotificationTokenKey.NotificationProgressBg));
     }
 

@@ -24,7 +24,7 @@ namespace AtomUI.Controls;
 using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
 public class TreeViewItem : AvaloniaTreeItem,
-                            ITokenResourceConsumer
+                            IResourceBindingManager
 {
     public const string TreeNodeHoverPC = ":treenode-hover";
 
@@ -339,11 +339,11 @@ public class TreeViewItem : AvaloniaTreeItem,
     
     internal TreeView? OwnerTreeView { get; set; }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;private bool _tempAnimationDisabled = false;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;private bool _tempAnimationDisabled = false;
     
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
     private bool _animating;
     private ContentPresenter? _headerPresenter;
     private MotionActorControl? _itemsPresenterMotionActor;
@@ -371,7 +371,7 @@ public class TreeViewItem : AvaloniaTreeItem,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
@@ -390,7 +390,7 @@ public class TreeViewItem : AvaloniaTreeItem,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

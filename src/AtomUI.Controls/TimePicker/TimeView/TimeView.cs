@@ -34,7 +34,7 @@ internal class TimeSelectedEventArgs : EventArgs
 [TemplatePart(TimeViewTheme.PickerSelectorContainerPart, typeof(Grid), IsRequired = true)]
 [TemplatePart(TimeViewTheme.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
 internal class TimeView : TemplatedControl,
-                          ITokenResourceConsumer
+                          IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -146,7 +146,7 @@ internal class TimeView : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
 
@@ -158,7 +158,7 @@ internal class TimeView : TemplatedControl,
 
     #endregion
 
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static TimeView()
     {
@@ -231,7 +231,7 @@ internal class TimeView : TemplatedControl,
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this)));
     }
@@ -245,7 +245,7 @@ internal class TimeView : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

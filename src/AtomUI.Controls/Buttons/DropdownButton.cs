@@ -150,22 +150,22 @@ public class DropdownButton : Button
     {
         if (ButtonType == ButtonType.Default)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultDropdownButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Primary)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryDropdownButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Text)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextDropdownButtonTheme.ID));
         }
         else if (ButtonType == ButtonType.Link)
         {
-            this.AddTokenBindingDisposable(
+            this.AddResourceBindingDisposable(
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkDropdownButtonTheme.ID));
         }
     }

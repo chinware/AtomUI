@@ -7,48 +7,48 @@ using Avalonia.LogicalTree;
 
 namespace AtomUI.Theme;
 
-public interface ITokenResourceConsumer
+public interface IResourceBindingManager
 {
-    CompositeDisposable? TokenBindingsDisposable { get; }
+    CompositeDisposable? ResourceBindingsDisposable { get; }
 }
 
 public static class StyledElementTokenBindingsExtensions
 {
-    public static void AddTokenBindingDisposable(this StyledElement control, IDisposable tokenBindingsDisposable)
+    public static void AddResourceBindingDisposable(this StyledElement control, IDisposable tokenBindingsDisposable)
     {
-        var consumer = control as ITokenResourceConsumer;
-        Debug.Assert(consumer != null, $"{control.GetType()} is not ITokenResourceConsumer");
-        Debug.Assert(consumer.TokenBindingsDisposable != null,
-            $"The TokenBindingsDisposable of ITokenResourceConsumer {control.GetType()} is null.");
-        consumer.TokenBindingsDisposable.Add(tokenBindingsDisposable);
-    }
+        var consumer = control as IResourceBindingManager;
+        Debug.Assert(consumer != null, $"{control.GetType()} is not IResourceBindingManager");
+        Debug.Assert(consumer.ResourceBindingsDisposable != null,
+            $"The ResourceBindingsDisposable of IResourceBindingManager {control.GetType()} is null.");
+        consumer.ResourceBindingsDisposable.Add(tokenBindingsDisposable);
+    } 
 
-    public static void RunThemeTokenBindingActions(this TemplatedControl control)
+    public static void RunThemeResourceBindingActions(this TemplatedControl control)
     {
-        var consumer = control as ITokenResourceConsumer;
-        Debug.Assert(consumer != null, $"{control.GetType()} is not ITokenResourceConsumer");
+        var consumer = control as IResourceBindingManager;
+        Debug.Assert(consumer != null, $"{control.GetType()} is not IResourceBindingManager");
         if (((ILogical)control).IsAttachedToLogicalTree)
         {
-            RunThemeTokenBindingActionsCore(control);
+            RunThemeResourceBindingActionsCore(control);
         }
-        control.AttachedToLogicalTree -= HandleTokenResourceConsumerAttachedToLogicalTree;
-        control.AttachedToLogicalTree += HandleTokenResourceConsumerAttachedToLogicalTree;
+        control.AttachedToLogicalTree -= HandleResourceConsumerAttachedToLogicalTree;
+        control.AttachedToLogicalTree += HandleResourceConsumerAttachedToLogicalTree;
     }
 
-    public static void AddThemeTokenBindingAction(this TemplatedControl control, Action action)
+    public static void AddThemeResourceBindingAction(this TemplatedControl control, Action action)
     {
         TokenResourceConsumerProperty.AddBindingAction(control, action);
     }
 
-    internal static void HandleTokenResourceConsumerAttachedToLogicalTree(object? sender, LogicalTreeAttachmentEventArgs args)
+    internal static void HandleResourceConsumerAttachedToLogicalTree(object? sender, LogicalTreeAttachmentEventArgs args)
     {
         if (sender is TemplatedControl templatedControl)
         {
-            RunThemeTokenBindingActionsCore(templatedControl);
+            RunThemeResourceBindingActionsCore(templatedControl);
         }
     }
 
-    private static void RunThemeTokenBindingActionsCore(TemplatedControl control)
+    private static void RunThemeResourceBindingActionsCore(TemplatedControl control)
     {
         var actions = TokenResourceConsumerProperty.GetBindingActions(control);
         if (actions != null)
@@ -62,9 +62,9 @@ public static class StyledElementTokenBindingsExtensions
 
     public static void DisposeTokenBindings(this StyledElement control)
     {
-        var consumer = control as ITokenResourceConsumer;
-        Debug.Assert(consumer != null, $"{control.GetType()} is not ITokenResourceConsumer");
-        consumer.TokenBindingsDisposable?.Dispose();
+        var consumer = control as IResourceBindingManager;
+        Debug.Assert(consumer != null, $"{control.GetType()} is not IResourceBindingManager");
+        consumer.ResourceBindingsDisposable?.Dispose();
     }
 }
 
@@ -78,19 +78,19 @@ internal abstract class TokenResourceConsumerProperty : AvaloniaObject
     
     public static List<Action>? GetBindingActions(TemplatedControl element)
     {
-        Debug.Assert(element is ITokenResourceConsumer);
+        Debug.Assert(element is IResourceBindingManager);
         return element.GetValue(ThemeTokenResourceBindingActionsProperty);
     }
 
     public static void SetBindingActions(TemplatedControl element, List<Action>? actions)
     {
-        Debug.Assert(element is ITokenResourceConsumer);
+        Debug.Assert(element is IResourceBindingManager);
         element.SetValue(ThemeTokenResourceBindingActionsProperty, actions);
     }
     
     public static void AddBindingAction(TemplatedControl element, Action action)
     {
-        Debug.Assert(element is ITokenResourceConsumer);
+        Debug.Assert(element is IResourceBindingManager);
         var actions = element.GetValue(ThemeTokenResourceBindingActionsProperty);
         if (actions == null)
         {

@@ -3,6 +3,8 @@ using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -13,7 +15,9 @@ internal class PaginationTheme : BaseControlTheme
 {
     public const string RootLayoutPart = "PART_RootLayout";
     public const string NavPart = "PART_Nav";
-    public const string ShowSizeChangerPresenterPart = "PART_ShowSizeChangerPresenter";
+    public const string SizeChangerPresenterPart = "PART_SizeChangerPresenter";
+    public const string QuickJumperBarPresenterPart = "PART_QuickJumperBarPresenter";
+    public const string TotalInfoPresenterPart = "PART_TotalInfoPresenter";
     
     public PaginationTheme()
         : base(typeof(Pagination))
@@ -29,6 +33,29 @@ internal class PaginationTheme : BaseControlTheme
                 Name        = RootLayoutPart,
                 Orientation = Orientation.Horizontal
             };
+            var showTotalPresenter = new ContentPresenter()
+            {
+                Name = TotalInfoPresenterPart
+            };
+            CreateTemplateParentBinding(showTotalPresenter, ContentPresenter.IsVisibleProperty, Pagination.ShowTotalInfoProperty);
+            CreateTemplateParentBinding(showTotalPresenter, ContentPresenter.ContentProperty,
+                Pagination.TotalInfoTextProperty,
+                BindingMode.Default,
+                new FuncValueConverter<object?, object?>(
+                    o =>
+                    {
+                        if (o is string str)
+                        {
+                            return new TextBlock()
+                            {
+                                Text              = str,
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                        }
+                        return o;
+                    }));
+            rootLayout.Children.Add(showTotalPresenter);
+            
             var nav = new PaginationNav
             {
                 Name = NavPart
@@ -40,11 +67,20 @@ internal class PaginationTheme : BaseControlTheme
 
             var showSizeChangerPresenter = new ContentPresenter()
             {
-                Name        = ShowSizeChangerPresenterPart
+                Name        = SizeChangerPresenterPart
             };
             CreateTemplateParentBinding(showSizeChangerPresenter, ContentPresenter.IsVisibleProperty, Pagination.ShowSizeChangerProperty);
             CreateTemplateParentBinding(showSizeChangerPresenter, ContentPresenter.ContentProperty, Pagination.SizeChangerProperty);
             rootLayout.Children.Add(showSizeChangerPresenter);
+            
+            var quickJumperBarPresenter = new ContentPresenter()
+            {
+                Name        = QuickJumperBarPresenterPart
+            };
+            CreateTemplateParentBinding(quickJumperBarPresenter, ContentPresenter.IsVisibleProperty, Pagination.ShowQuickJumperProperty);
+            CreateTemplateParentBinding(quickJumperBarPresenter, ContentPresenter.ContentProperty, Pagination.QuickJumperBarProperty);
+            rootLayout.Children.Add(quickJumperBarPresenter);
+            
             return rootLayout;
         });
         return controlTemplate;
@@ -68,6 +104,9 @@ internal class PaginationTheme : BaseControlTheme
             alignStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
             commonStyle.Add(alignStyle);
         }
+        var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
+        layoutStyle.Add(StackPanel.SpacingProperty, PaginationTokenKey.PaginationLayoutSpacing);
+        commonStyle.Add(layoutStyle);
         Add(commonStyle);
     }
 }

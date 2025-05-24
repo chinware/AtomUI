@@ -26,7 +26,7 @@ namespace AtomUI.Controls;
     BlackoutPC,
     DayfocusedPC)]
 internal class BaseCalendarDayButton : AvaloniaButton,
-                                       ITokenResourceConsumer
+                                       IResourceBindingManager
 {
     internal const string TodayPC = ":today";
     internal const string BlackoutPC = ":blackout";
@@ -41,8 +41,8 @@ internal class BaseCalendarDayButton : AvaloniaButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     /// <summary>
     /// Default content for the CalendarDayButton.
@@ -294,7 +294,7 @@ internal class BaseCalendarDayButton : AvaloniaButton,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -306,7 +306,7 @@ internal class BaseCalendarDayButton : AvaloniaButton,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
     }

@@ -10,7 +10,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 internal class DotBadgeIndicator : Control,
-                                   ITokenResourceConsumer
+                                   IResourceBindingManager
 {
     internal static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
         AvaloniaProperty.Register<DotBadgeIndicator, IBrush?>(
@@ -42,10 +42,10 @@ internal class DotBadgeIndicator : Control,
         set => SetValue(BadgeShadowSizeProperty, value);
     }
 
-    CompositeDisposable? ITokenResourceConsumer.TokenBindingsDisposable => _tokenBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     private BoxShadows _boxShadows;
-    private CompositeDisposable? _tokenBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     static DotBadgeIndicator()
     {
@@ -61,10 +61,10 @@ internal class DotBadgeIndicator : Control,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _tokenBindingsDisposable = new CompositeDisposable();
-        this.AddTokenBindingDisposable(
+        _resourceBindingsDisposable = new CompositeDisposable();
+        this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize));
-        this.AddTokenBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty,
             BadgeTokenKey.BadgeShadowColor));
     }
 

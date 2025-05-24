@@ -58,22 +58,28 @@ internal class PaginationToken : AbstractControlDesignToken
     public Color ItemInputBg { get; set; }
     
     /// <summary>
-    /// 每页展示数量选择器 top
-    /// Top of Pagination size changer
-    /// </summary>
-    public double MiniOptionsSizeChangerTop { get; set; }
-    
-    /// <summary>
     /// 输入框轮廓偏移量
     /// Outline offset of input
     /// </summary>
     public Thickness InputOutlineOffset { get; set; }
     
     /// <summary>
-    /// 迷你选项横向外边距
-    /// Horizontal margin of mini options
+    /// 分页布局间距
+    /// Horizontal layout spacing
     /// </summary>
-    public Thickness PaginationMiniOptionsMarginInline { get; set; }
+    public double PaginationLayoutSpacing { get; set; }
+    
+    /// <summary>
+    /// 分页布局迷你间距
+    /// Horizontal layout mini spacing
+    /// </summary>
+    public double PaginationLayoutMiniSpacing { get; set; }
+    
+    /// <summary>
+    /// 快速跳转输入框宽度
+    /// Width of quick jumper input
+    /// </summary>
+    public double PaginationQuickJumperInputWidth { get; set; }
     
     /// <summary>
     /// 迷你快速跳转输入框宽度
@@ -109,10 +115,12 @@ internal class PaginationToken : AbstractControlDesignToken
         ItemActiveColorDisabled   = SharedToken.ColorTextDisabled;
         ItemActiveBgDisabled      = SharedToken.ControlItemBgActiveDisabled;
         ItemInputBg               = SharedToken.ColorBgContainer;
-        MiniOptionsSizeChangerTop = 0;
 
         InputOutlineOffset                  = new Thickness(0);
-        PaginationMiniOptionsMarginInline   = new Thickness(SharedToken.MarginXXS / 2);
+        PaginationLayoutSpacing             = SharedToken.MarginXS;
+        PaginationLayoutMiniSpacing         = SharedToken.MarginXXS / 2;
+        
+        PaginationQuickJumperInputWidth     = SharedToken.ControlHeightLG * 1.25;
         PaginationMiniQuickJumperInputWidth = SharedToken.ControlHeightLG * 1.1;
         PaginationItemPaddingInline         = new Thickness(SharedToken.MarginXXS * 1.5);
         PaginationSlashMarginInline         = new Thickness(SharedToken.MarginXXS, 0);
