@@ -104,9 +104,36 @@ internal class PaginationTheme : BaseControlTheme
             alignStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
             commonStyle.Add(alignStyle);
         }
-        var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
-        layoutStyle.Add(StackPanel.SpacingProperty, PaginationTokenKey.PaginationLayoutSpacing);
-        commonStyle.Add(layoutStyle);
+        
+        
+        var largeSizeStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(PaginationNavItem.SizeTypeProperty, SizeType.Large));
+        {
+            var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
+            layoutStyle.Add(StackPanel.SpacingProperty, PaginationTokenKey.PaginationLayoutSpacing);
+            largeSizeStyle.Add(layoutStyle);
+        }
+        
+        commonStyle.Add(largeSizeStyle);
+
+        var middleSizeStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(PaginationNavItem.SizeTypeProperty, SizeType.Middle));
+        {
+            var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
+            layoutStyle.Add(StackPanel.SpacingProperty, PaginationTokenKey.PaginationLayoutSpacing);
+            middleSizeStyle.Add(layoutStyle);
+        }
+        commonStyle.Add(middleSizeStyle);
+
+        var smallSizeStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(PaginationNavItem.SizeTypeProperty, SizeType.Small));
+        {
+            var layoutStyle = new Style(selector => selector.Nesting().Template().Name(RootLayoutPart));
+            layoutStyle.Add(StackPanel.SpacingProperty, PaginationTokenKey.PaginationLayoutMiniSpacing);
+            smallSizeStyle.Add(layoutStyle);
+        }
+        commonStyle.Add(smallSizeStyle);
+        
         Add(commonStyle);
     }
 }

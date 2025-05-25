@@ -23,41 +23,12 @@ public enum PaginationAlign
     End
 }
 
-public class Pagination : TemplatedControl,
-                          ISizeTypeAware,
-                          IMotionAwareControl,
-                          IControlSharedTokenResourcesHost,
-                          IResourceBindingManager
+public class Pagination : AbstractPagination,
+                          IControlSharedTokenResourcesHost
 {
-    public const int DefaultPageSize = 10;
-    public const int DefaultCurrentPage = 1;
     internal const int MaxNavItemCount = 11;
     
     #region 公共属性定义
-    
-    public static readonly StyledProperty<PaginationAlign> AlignProperty =
-        AvaloniaProperty.Register<Button, PaginationAlign>(nameof(PaginationAlign));
-    
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Pagination>();
-    
-    public static readonly DirectProperty<Pagination, int> CurrentPageProperty =
-        AvaloniaProperty.RegisterDirect<Pagination, int>(nameof(CurrentPage),
-            o => o.CurrentPage,
-            (o, v) => o.CurrentPage = v,
-            unsetValue: DefaultCurrentPage);
-    
-    public static readonly DirectProperty<Pagination, int> PageSizeProperty =
-        AvaloniaProperty.RegisterDirect<Pagination, int>(nameof(PageSize),
-            o => o.PageSize,
-            (o, v) => o.PageSize = v,
-            unsetValue: DefaultPageSize,
-            enableDataValidation:true);
-    
-    public static readonly DirectProperty<Pagination, long> TotalProperty =
-        AvaloniaProperty.RegisterDirect<Pagination, long>(nameof(Total),
-            o => o.Total,
-            (o, v) => o.Total = v);
     
     public static readonly DirectProperty<Pagination, bool> HideOnSinglePageProperty =
         AvaloniaProperty.RegisterDirect<Pagination, bool>(nameof(HideOnSinglePage),
@@ -81,49 +52,6 @@ public class Pagination : TemplatedControl,
     
     public static readonly StyledProperty<string?> TotalInfoTemplateProperty =
         AvaloniaProperty.Register<Pagination, string?>(nameof(TotalInfoTemplate));
-    
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<Pagination>();
-    
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public PaginationAlign Align
-    {
-        get => GetValue(AlignProperty);
-        set => SetValue(AlignProperty, value);
-    }
-    
-    private int _currentPage = DefaultCurrentPage;
-    public int CurrentPage
-    {
-        get => _currentPage;
-        set => SetAndRaise(CurrentPageProperty, ref _currentPage, value);
-    }
-    
-    private int _pageSize = DefaultPageSize;
-    public int PageSize
-    {
-        get => _pageSize;
-        set
-        {
-            if (!new[] { 10, 20, 50, 100 }.Contains(value))
-            {
-                throw new ArgumentException("PageSize only allow: 10, 20, 50, 100");
-            }
-            SetAndRaise(PageSizeProperty, ref _pageSize, value);
-        }
-    }
-    
-    private long _total;
-    public long Total
-    {
-        get => _total;
-        set => SetAndRaise(TotalProperty, ref _total, value);
-    }
     
     private bool _hideOnSinglePage;
     public bool HideOnSinglePage
@@ -159,15 +87,6 @@ public class Pagination : TemplatedControl,
         set => SetValue(TotalInfoTemplateProperty, value);
     }
     
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-    #endregion
-
-    #region 公共事件定义
-    public event EventHandler<PageChangedArgs>? CurrentPageChanged;
     #endregion
     
     #region 内部属性定义
@@ -220,11 +139,8 @@ public class Pagination : TemplatedControl,
         set => SetAndRaise(TotalInfoTextProperty, ref _totalInfoText, value);
     }
     
-    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => PaginationToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
-    private CompositeDisposable? _resourceBindingsDisposable;
     #endregion
 
     private PaginationNav? _paginationNav;
@@ -233,15 +149,9 @@ public class Pagination : TemplatedControl,
     private int _nextPushItemIndex = 1;
     private int _selectedNavItemIndex = -1;
 
-    static Pagination()
-    {
-        AffectsMeasure<Button>(SizeTypeProperty);
-    }
-
     public Pagination()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -257,7 +167,6 @@ public class Pagination : TemplatedControl,
         {
             SetupQuickJumper();
         }
-
         if (ShowSizeChanger)
         {
             SetupSizeChanger();
@@ -292,14 +201,9 @@ public class Pagination : TemplatedControl,
             HandlePageConditionChanged();
         }
     }
-
-    private void HandlePageConditionChanged()
+    
+    protected override void NotifyPageConditionChanged(int currentPage, int pageCount, int pageSize, long total)
     {
-        var total       = Math.Max(0, Total);
-        var pageSize    = PageSize <= 0 ? DefaultPageSize : PageSize;
-        var pageCount   = (int)Math.Ceiling(total / (double)pageSize);
-        var currentPage = Math.Max(1, Math.Min(CurrentPage, pageCount));
-        _currentPage = currentPage;
         Debug.Assert(_paginationNav != null);
         Debug.Assert(_previousPageItem != null);
         Debug.Assert(_nextPageItem != null);
@@ -329,7 +233,7 @@ public class Pagination : TemplatedControl,
         SetupRightButtonRange(currentPage, pageCount);
         _paginationNav.SelectedIndex = _selectedNavItemIndex;
         SetupTotalInfoText();
-        CurrentPageChanged?.Invoke(this, new PageChangedArgs(CurrentPage, pageCount, pageSize));
+        EmitCurrentPageChanged(CurrentPage, pageCount, pageSize);
     }
 
     private void HandlePageNavRequest(object? sender, PageNavRequestArgs args)
@@ -426,13 +330,7 @@ public class Pagination : TemplatedControl,
         base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == TotalProperty ||
-                change.Property == PageSizeProperty ||
-                change.Property == CurrentPageProperty)
-            {
-                HandlePageConditionChanged();
-            }
-            else if (change.Property == ShowSizeChangerProperty)
+            if (change.Property == ShowSizeChangerProperty)
             {
                 SetupSizeChanger();
             } 
@@ -516,17 +414,5 @@ public class Pagination : TemplatedControl,
         {
             PageSize = Math.Max(comboBoxItem.PageSize, 1);
         }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
     }
 }

@@ -93,12 +93,6 @@ internal class PaginationToken : AbstractControlDesignToken
     /// </summary>
     public Thickness PaginationItemPaddingInline { get; set; }
     
-    /// <summary>
-    /// 斜杠横向外边距
-    /// Horizontal margin of slash
-    /// </summary>
-    public Thickness PaginationSlashMarginInline { get; set; }
-    
     public PaginationToken()
         : base(ID)
     {
@@ -123,6 +117,5 @@ internal class PaginationToken : AbstractControlDesignToken
         PaginationQuickJumperInputWidth     = SharedToken.ControlHeightLG * 1.25;
         PaginationMiniQuickJumperInputWidth = SharedToken.ControlHeightLG * 1.1;
         PaginationItemPaddingInline         = new Thickness(SharedToken.MarginXXS * 1.5);
-        PaginationSlashMarginInline         = new Thickness(SharedToken.MarginXXS, 0);
     }
 }

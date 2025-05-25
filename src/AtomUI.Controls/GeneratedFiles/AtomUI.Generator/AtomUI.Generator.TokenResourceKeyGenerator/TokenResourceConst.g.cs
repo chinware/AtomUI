@@ -520,7 +520,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey PaginationLayoutSpacing = new TokenResourceKey("Pagination.PaginationLayoutSpacing");
         public static readonly TokenResourceKey PaginationMiniQuickJumperInputWidth = new TokenResourceKey("Pagination.PaginationMiniQuickJumperInputWidth");
         public static readonly TokenResourceKey PaginationQuickJumperInputWidth = new TokenResourceKey("Pagination.PaginationQuickJumperInputWidth");
-        public static readonly TokenResourceKey PaginationSlashMarginInline = new TokenResourceKey("Pagination.PaginationSlashMarginInline");
     }
 
     public static class PopupConfirmTokenKey

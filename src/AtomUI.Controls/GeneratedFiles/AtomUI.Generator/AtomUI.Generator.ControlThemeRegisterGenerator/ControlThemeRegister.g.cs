@@ -95,6 +95,7 @@
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SegmentedItemTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SegmentedTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SeparatorTheme());
+            ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SimplePaginationTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SliderTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SliderThumbTheme());
             ThemeManager.Current.RegisterControlTheme(new AtomUI.Controls.SplitButtonTheme());
