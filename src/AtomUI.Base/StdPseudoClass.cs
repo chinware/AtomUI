@@ -12,6 +12,7 @@ public static class StdPseudoClass
    public const string Selected = ":selected";
    public const string Indeterminate = ":indeterminate";
    public const string Dragging = ":dragging";
+   public const string DragIndicator = ":drag-indicator";
    public const string Empty = ":empty";
    public const string FlyoutOpen = ":flyout-open";
    public const string Expanded = ":expanded";
@@ -22,4 +23,8 @@ public static class StdPseudoClass
    public const string Error = ":error";
    public const string Warning = ":warning";
    public const string Draggable = ":draggable";
+   public const string Current = ":current";
+   public const string Edited = ":edited";
+   public const string Editing = ":editing";
+   public const string Invalid = ":invalid";
 }

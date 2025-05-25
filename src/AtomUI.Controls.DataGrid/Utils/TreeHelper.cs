@@ -1,4 +1,3 @@
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -33,7 +32,7 @@ internal static class TreeHelper
                 {
                     if (child is Control childElement)
                     {
-                        parent = UIStructureUtils.GetVisualParent(childElement);
+                        parent = childElement.GetVisualParent();
                     }
                 }
 

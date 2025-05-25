@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Generator", "src\Ato
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.IconPkg.Generator", "src\AtomUI.IconPkg.Generator\AtomUI.IconPkg.Generator.csproj", "{734F7B41-8A7E-446B-8ECE-1B4E6AB703A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Controls.DataGrid", "src\AtomUI.Controls.DataGrid\AtomUI.Controls.DataGrid.csproj", "{69CDBE53-CA36-4029-8F79-C41C8F392DC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{734F7B41-8A7E-446B-8ECE-1B4E6AB703A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{734F7B41-8A7E-446B-8ECE-1B4E6AB703A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{734F7B41-8A7E-446B-8ECE-1B4E6AB703A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69CDBE53-CA36-4029-8F79-C41C8F392DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69CDBE53-CA36-4029-8F79-C41C8F392DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69CDBE53-CA36-4029-8F79-C41C8F392DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69CDBE53-CA36-4029-8F79-C41C8F392DC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
