@@ -9,6 +9,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
@@ -50,7 +51,8 @@ public class Pagination : TemplatedControl,
         AvaloniaProperty.RegisterDirect<Pagination, int>(nameof(PageSize),
             o => o.PageSize,
             (o, v) => o.PageSize = v,
-            unsetValue: DefaultPageSize);
+            unsetValue: DefaultPageSize,
+            enableDataValidation:true);
     
     public static readonly DirectProperty<Pagination, long> TotalProperty =
         AvaloniaProperty.RegisterDirect<Pagination, long>(nameof(Total),
@@ -106,7 +108,14 @@ public class Pagination : TemplatedControl,
     public int PageSize
     {
         get => _pageSize;
-        set => SetAndRaise(PageSizeProperty, ref _pageSize, value);
+        set
+        {
+            if (!new[] { 10, 20, 50, 100 }.Contains(value))
+            {
+                throw new ArgumentException("PageSize only allow: 10, 20, 50, 100");
+            }
+            SetAndRaise(PageSizeProperty, ref _pageSize, value);
+        }
     }
     
     private long _total;
@@ -155,6 +164,10 @@ public class Pagination : TemplatedControl,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    #endregion
+
+    #region 公共事件定义
+    public event EventHandler<PageChangedArgs>? CurrentPageChanged;
     #endregion
     
     #region 内部属性定义
@@ -316,6 +329,7 @@ public class Pagination : TemplatedControl,
         SetupRightButtonRange(currentPage, pageCount);
         _paginationNav.SelectedIndex = _selectedNavItemIndex;
         SetupTotalInfoText();
+        CurrentPageChanged?.Invoke(this, new PageChangedArgs(CurrentPage, pageCount, pageSize));
     }
 
     private void HandlePageNavRequest(object? sender, PageNavRequestArgs args)
@@ -427,6 +441,29 @@ public class Pagination : TemplatedControl,
                 SetupQuickJumper();
             }
         }
+
+        if (change.Property == PageSizeProperty)
+        {
+            SetupSizeChangerSelected();
+        }
+    }
+
+    private void SetupSizeChangerSelected()
+    {
+        if (SizeChanger != null)
+        {
+            for (int i = 0; i < SizeChanger.Items.Count; i++)
+            {
+                if (SizeChanger.Items.GetAt(i) is PageSizeComboBoxItem pageSizeItem)
+                {
+                    if (pageSizeItem.PageSize == PageSize)
+                    {
+                        SizeChanger.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private void SetupTotalInfoText()
@@ -453,6 +490,7 @@ public class Pagination : TemplatedControl,
             sizeChanger.SelectedIndex    =  0;
             SizeChanger                  =  sizeChanger;
             SizeChanger.SelectionChanged += HandlePageSizeChanged;
+            SetupSizeChangerSelected();
         }
     }
 
