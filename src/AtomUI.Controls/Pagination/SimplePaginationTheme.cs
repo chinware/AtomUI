@@ -88,6 +88,22 @@ internal class SimplePaginationTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         
+        {
+            var alignStyle = new Style(selector => selector.Nesting().PropertyEquals(SimplePagination.AlignProperty, PaginationAlign.Start));
+            alignStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            commonStyle.Add(alignStyle);
+        }
+        {
+            var alignStyle = new Style(selector => selector.Nesting().PropertyEquals(SimplePagination.AlignProperty, PaginationAlign.Center));
+            alignStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            commonStyle.Add(alignStyle);
+        }
+        {
+            var alignStyle = new Style(selector => selector.Nesting().PropertyEquals(SimplePagination.AlignProperty, PaginationAlign.End));
+            alignStyle.Add(Layoutable.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+            commonStyle.Add(alignStyle);
+        }
+        
         var largeSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(PaginationNavItem.SizeTypeProperty, SizeType.Large));
         {

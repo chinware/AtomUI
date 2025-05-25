@@ -105,7 +105,6 @@ internal class PaginationTheme : BaseControlTheme
             commonStyle.Add(alignStyle);
         }
         
-        
         var largeSizeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(PaginationNavItem.SizeTypeProperty, SizeType.Large));
         {
