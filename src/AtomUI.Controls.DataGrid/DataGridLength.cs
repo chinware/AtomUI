@@ -13,7 +13,7 @@ public enum DataGridLengthUnitType
 }
 
 /// <summary>
-/// Represents the lengths of elements within the <see cref="T:Avalonia.Controls.DataGrid" /> control.
+/// Represents the lengths of elements within the <see cref="T:AtomUI.Controls.DataGrid" /> control.
 /// </summary>
 [TypeConverter(typeof(DataGridError.DataGridLengthConverter))]
 public struct DataGridLength : IEquatable<DataGridLength>
@@ -37,7 +37,7 @@ public struct DataGridLength : IEquatable<DataGridLength>
     internal const double DefaultValue = 1.0;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridLength" /> class. 
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridLength" /> class. 
     /// </summary>
     /// <param name="value"></param>
     public DataGridLength(double value)
@@ -136,10 +136,10 @@ public struct DataGridLength : IEquatable<DataGridLength>
     }
 
     /// <summary>
-    /// Gets a <see cref="T:Avalonia.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.
+    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:Avalonia.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.
+    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.
     /// </returns>
     public static DataGridLength Auto => _auto;
 
@@ -182,31 +182,31 @@ public struct DataGridLength : IEquatable<DataGridLength>
     public bool IsStar => _unitType == DataGridLengthUnitType.Star;
 
     /// <summary>
-    /// Gets a <see cref="T:Avalonia.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.
+    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:Avalonia.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.
+    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.
     /// </returns>
     public static DataGridLength SizeToCells => _sizeToCells;
 
     /// <summary>
-    /// Gets a <see cref="T:Avalonia.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.
+    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:Avalonia.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.
+    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.
     /// </returns>
     public static DataGridLength SizeToHeader => _sizeToHeader;
 
     /// <summary>
-    /// Gets the <see cref="T:Avalonia.Controls.DataGridLengthUnitType" /> that represents the current sizing mode.
+    /// Gets the <see cref="T:AtomUI.Controls.DataGridLengthUnitType" /> that represents the current sizing mode.
     /// </summary>
     public DataGridLengthUnitType UnitType => _unitType;
 
     /// <summary>
-    /// Gets the absolute value of the <see cref="T:Avalonia.Controls.DataGridLength" /> in pixels.
+    /// Gets the absolute value of the <see cref="T:AtomUI.Controls.DataGridLength" /> in pixels.
     /// </summary>
     /// <returns>
-    /// The absolute value of the <see cref="T:Avalonia.Controls.DataGridLength" /> in pixels.
+    /// The absolute value of the <see cref="T:AtomUI.Controls.DataGridLength" /> in pixels.
     /// </returns>
     public double Value => _unitValue;
 

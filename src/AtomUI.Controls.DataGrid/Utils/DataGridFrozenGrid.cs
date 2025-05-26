@@ -4,7 +4,7 @@ using Avalonia.Controls;
 namespace AtomUI.Controls.Utils;
 
 /// <summary>
-/// Represents a non-scrollable grid that contains <see cref="T:Avalonia.Controls.DataGrid" /> row headers.
+/// Represents a non-scrollable grid that contains <see cref="T:AtomUI.Controls.DataGrid" /> row headers.
 /// </summary>
 public class DataGridFrozenGrid : Grid
 {

@@ -146,7 +146,7 @@ public class DataGridRow : TemplatedControl
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridRow" /> class.
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridRow" /> class.
     /// </summary>
     public DataGridRow()
     {
@@ -417,10 +417,10 @@ public class DataGridRow : TemplatedControl
     }
 
     /// <summary>
-    /// Arranges the content of the <see cref="T:Avalonia.Controls.DataGridRow" />.
+    /// Arranges the content of the <see cref="T:AtomUI.Controls.DataGridRow" />.
     /// </summary>
     /// <returns>
-    /// The actual size used by the <see cref="T:Avalonia.Controls.DataGridRow" />.
+    /// The actual size used by the <see cref="T:AtomUI.Controls.DataGridRow" />.
     /// </returns>
     /// <param name="finalSize">
     /// The final area within the parent that this element should use to arrange itself and its children.
@@ -474,7 +474,7 @@ public class DataGridRow : TemplatedControl
     }
 
     /// <summary>
-    /// Measures the children of a <see cref="T:Avalonia.Controls.DataGridRow" /> to
+    /// Measures the children of a <see cref="T:AtomUI.Controls.DataGridRow" /> to
     /// prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.
     /// </summary>
     /// <param name="availableSize">

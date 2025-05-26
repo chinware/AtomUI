@@ -18,7 +18,7 @@ using Avalonia.Utilities;
 namespace AtomUI.Controls;
 
 /// <summary>
-/// Represents an individual <see cref="T:Avalonia.Controls.DataGrid" /> column header.
+/// Represents an individual <see cref="T:AtomUI.Controls.DataGrid" /> column header.
 /// </summary>
 [PseudoClasses(StdPseudoClass.DragIndicator, StdPseudoClass.Pressed, SortAscendingPC, SortDescendingPC)]
 public class DataGridColumnHeader : ContentControl

@@ -48,7 +48,7 @@ public abstract class DataGridColumn : AvaloniaObject
     public event EventHandler<PointerReleasedEventArgs>? HeaderPointerReleased;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridColumn" /> class.
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridColumn" /> class.
     /// </summary>
     protected internal DataGridColumn(DataGrid owningGrid)
     {
@@ -59,7 +59,7 @@ public abstract class DataGridColumn : AvaloniaObject
     }
 
     /// <summary>
-    /// Gets the <see cref="T:Avalonia.Controls.DataGrid"/> control that contains this column.
+    /// Gets the <see cref="T:AtomUI.Controls.DataGrid"/> control that contains this column.
     /// </summary>
     protected internal DataGrid? OwningGrid { get; internal set; }
 
@@ -224,7 +224,7 @@ public abstract class DataGridColumn : AvaloniaObject
     /// dragging the column header.
     /// </summary>
     /// <returns>
-    /// true if the user can drag the column header to a new position; otherwise, false. The default is the current <see cref="P:Avalonia.Controls.DataGrid.CanUserReorderColumns" /> property value.
+    /// true if the user can drag the column header to a new position; otherwise, false. The default is the current <see cref="P:AtomUI.Controls.DataGrid.CanUserReorderColumns" /> property value.
     /// </returns>
     public bool CanUserReorder
     {
@@ -238,7 +238,7 @@ public abstract class DataGridColumn : AvaloniaObject
     /// Gets or sets a value that indicates whether the user can adjust the column width using the mouse.
     /// </summary>
     /// <returns>
-    /// true if the user can resize the column; false if the user cannot resize the column. The default is the current <see cref="P:Avalonia.Controls.DataGrid.CanUserResizeColumns" /> property value.
+    /// true if the user can resize the column; false if the user cannot resize the column. The default is the current <see cref="P:AtomUI.Controls.DataGrid.CanUserResizeColumns" /> property value.
     /// </returns>
     public bool CanUserResize
     {
@@ -257,7 +257,7 @@ public abstract class DataGridColumn : AvaloniaObject
     /// Gets or sets a value that indicates whether the user can sort the column by clicking the column header.
     /// </summary>
     /// <returns>
-    /// true if the user can sort the column; false if the user cannot sort the column. The default is the current <see cref="P:Avalonia.Controls.DataGrid.CanUserSortColumns" /> property value.
+    /// true if the user can sort the column; false if the user cannot sort the column. The default is the current <see cref="P:AtomUI.Controls.DataGrid.CanUserSortColumns" /> property value.
     /// </returns>
     public bool CanUserSort
     {
@@ -291,20 +291,20 @@ public abstract class DataGridColumn : AvaloniaObject
     }
 
     /// <summary>
-    /// Gets or sets the display position of the column relative to the other columns in the <see cref="T:Avalonia.Controls.DataGrid" />.
+    /// Gets or sets the display position of the column relative to the other columns in the <see cref="T:AtomUI.Controls.DataGrid" />.
     /// </summary>
     /// <returns>
-    /// The zero-based position of the column as it is displayed in the associated <see cref="T:Avalonia.Controls.DataGrid" />. The default is the index of the corresponding <see cref="P:System.Collections.ObjectModel.Collection`1.Item(System.Int32)" /> in the <see cref="P:Avalonia.Controls.DataGrid.Columns" /> collection.
+    /// The zero-based position of the column as it is displayed in the associated <see cref="T:AtomUI.Controls.DataGrid" />. The default is the index of the corresponding <see cref="P:System.Collections.ObjectModel.Collection`1.Item(System.Int32)" /> in the <see cref="P:AtomUI.Controls.DataGrid.Columns" /> collection.
     /// </returns>
     /// <exception cref="T:System.ArgumentOutOfRangeException">
     /// When setting this property, the specified value is less than -1 or equal to <see cref="F:System.Int32.MaxValue" />.
     ///
     /// -or-
     ///
-    /// When setting this property on a column in a <see cref="T:Avalonia.Controls.DataGrid" />, the specified value is less than zero or greater than or equal to the number of columns in the <see cref="T:Avalonia.Controls.DataGrid" />.
+    /// When setting this property on a column in a <see cref="T:AtomUI.Controls.DataGrid" />, the specified value is less than zero or greater than or equal to the number of columns in the <see cref="T:AtomUI.Controls.DataGrid" />.
     /// </exception>
     /// <exception cref="T:System.InvalidOperationException">
-    /// When setting this property, the <see cref="T:Avalonia.Controls.DataGrid" /> is already making <see cref="P:Avalonia.Controls.DataGridColumn.DisplayIndex" /> adjustments. For example, this exception is thrown when you attempt to set <see cref="P:Avalonia.Controls.DataGridColumn.DisplayIndex" /> in a <see cref="E:Avalonia.Controls.DataGrid.ColumnDisplayIndexChanged" /> event handler.
+    /// When setting this property, the <see cref="T:AtomUI.Controls.DataGrid" /> is already making <see cref="P:AtomUI.Controls.DataGridColumn.DisplayIndex" /> adjustments. For example, this exception is thrown when you attempt to set <see cref="P:AtomUI.Controls.DataGridColumn.DisplayIndex" /> in a <see cref="E:AtomUI.Controls.DataGrid.ColumnDisplayIndexChanged" /> event handler.
     ///
     /// -or-
     ///
@@ -668,7 +668,7 @@ public abstract class DataGridColumn : AvaloniaObject
     }
 
     /// <summary>
-    /// When overridden in a derived class, gets an editing element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// When overridden in a derived class, gets an editing element that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </summary>
     /// <param name="cell">
     /// The cell that will contain the generated element.
@@ -678,13 +678,13 @@ public abstract class DataGridColumn : AvaloniaObject
     /// </param>
     /// <param name="binding">When the method returns, contains the applied binding.</param>
     /// <returns>
-    /// A new editing element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// A new editing element that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </returns>
     protected abstract Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? binding);
 
     /// <summary>
     /// When overridden in a derived class, gets a read-only element that is bound to the column's
-    /// <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </summary>
     /// <param name="cell">
     /// The cell that will contain the generated element.
@@ -693,7 +693,7 @@ public abstract class DataGridColumn : AvaloniaObject
     /// The data item represented by the row that contains the intended cell.
     /// </param>
     /// <returns>
-    /// A new, read-only element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// A new, read-only element that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </returns>
     protected abstract Control? GenerateElement(DataGridCell cell, object dataItem);
 

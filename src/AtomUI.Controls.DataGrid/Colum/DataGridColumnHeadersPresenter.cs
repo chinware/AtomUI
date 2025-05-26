@@ -10,7 +10,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 /// <summary>
-/// Used within the template of a <see cref="T:Avalonia.Controls.DataGrid" /> to specify the 
+/// Used within the template of a <see cref="T:AtomUI.Controls.DataGrid" /> to specify the 
 /// location in the control's visual tree where the column headers are to be added.
 /// </summary>
 public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider

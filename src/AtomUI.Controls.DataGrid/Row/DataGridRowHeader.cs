@@ -11,7 +11,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 /// <summary>
-/// Represents an individual <see cref="T:Avalonia.Controls.DataGrid" /> row header. 
+/// Represents an individual <see cref="T:AtomUI.Controls.DataGrid" /> row header. 
 /// </summary>
 [TemplatePart(ElementRootNamePC, typeof(Control))]
 [PseudoClasses(StdPseudoClass.Invalid, StdPseudoClass.Selected, StdPseudoClass.Editing, StdPseudoClass.Current)]

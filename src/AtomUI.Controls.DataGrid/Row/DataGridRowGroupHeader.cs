@@ -64,7 +64,7 @@ public class DataGridRowGroupHeader : TemplatedControl
         AvaloniaProperty.Register<DataGridRowGroupHeader, string?>(nameof(PropertyName));
 
     /// <summary>
-    /// Gets or sets the name of the property that this <see cref="T:Avalonia.Controls.DataGrid" /> row is bound to.
+    /// Gets or sets the name of the property that this <see cref="T:AtomUI.Controls.DataGrid" /> row is bound to.
     /// </summary>
     public string? PropertyName
     {

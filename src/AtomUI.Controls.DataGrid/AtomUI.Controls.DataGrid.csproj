@@ -19,5 +19,9 @@
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Automation\" />
+    </ItemGroup>
 
 </Project>

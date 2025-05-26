@@ -11,7 +11,7 @@ using Avalonia.Styling;
 namespace AtomUI.Controls;
 
 /// <summary>
-/// Represents a <see cref="T:Avalonia.Controls.DataGrid" /> column that hosts textual content in its cells.
+/// Represents a <see cref="T:AtomUI.Controls.DataGrid" /> column that hosts textual content in its cells.
 /// </summary>
 public class DataGridTextColumn : DataGridBoundColumn
 {
@@ -19,7 +19,7 @@ public class DataGridTextColumn : DataGridBoundColumn
     private readonly Lazy<ControlTheme?> _cellTextBlockTheme;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridTextColumn" /> class.
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridTextColumn" /> class.
     /// </summary>
     public DataGridTextColumn(DataGrid ownerGrid)
         : base(ownerGrid)
@@ -152,11 +152,11 @@ public class DataGridTextColumn : DataGridBoundColumn
     }
 
     /// <summary>
-    /// Gets a <see cref="T:Avalonia.Controls.TextBox" /> control that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// Gets a <see cref="T:Avalonia.Controls.TextBox" /> control that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </summary>
     /// <param name="cell">The cell that will contain the generated element.</param>
     /// <param name="dataItem">The data item represented by the row that contains the intended cell.</param>
-    /// <returns>A new <see cref="T:Avalonia.Controls.TextBox" /> control that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
+    /// <returns>A new <see cref="T:Avalonia.Controls.TextBox" /> control that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
     protected override Control GenerateEditingElementDirect(DataGridCell cell, object? dataItem)
     {
         var textBox = new TextBox
@@ -174,11 +174,11 @@ public class DataGridTextColumn : DataGridBoundColumn
     }
 
     /// <summary>
-    /// Gets a read-only <see cref="T:Avalonia.Controls.TextBlock" /> element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// Gets a read-only <see cref="T:Avalonia.Controls.TextBlock" /> element that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </summary>
     /// <param name="cell">The cell that will contain the generated element.</param>
     /// <param name="dataItem">The data item represented by the row that contains the intended cell.</param>
-    /// <returns>A new, read-only <see cref="T:Avalonia.Controls.TextBlock" /> element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
+    /// <returns>A new, read-only <see cref="T:Avalonia.Controls.TextBlock" /> element that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
     protected override Control GenerateElement(DataGridCell cell, object dataItem)
     {
         var textBlockElement = new TextBlock

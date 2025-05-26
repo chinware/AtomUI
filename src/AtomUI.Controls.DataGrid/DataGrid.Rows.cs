@@ -3142,7 +3142,7 @@ public partial class DataGrid
     }
 
     /// <summary>
-    /// Raises the <see cref="E:Avalonia.Controls.DataGrid.RowDetailsVisibilityChanged" /> event.
+    /// Raises the <see cref="E:AtomUI.Controls.DataGrid.RowDetailsVisibilityChanged" /> event.
     /// </summary>
     /// <param name="e">The event data.</param>
     protected internal virtual void OnRowDetailsVisibilityChanged(DataGridRowDetailsEventArgs e)
