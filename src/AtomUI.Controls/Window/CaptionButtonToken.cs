@@ -38,7 +38,7 @@ internal class CaptionButtonToken : AbstractControlDesignToken
     {
     }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         CloseHoverBackgroundColor   = SharedToken.ColorErrorTextActive;

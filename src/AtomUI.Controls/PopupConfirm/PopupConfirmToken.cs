@@ -48,7 +48,7 @@ internal class PopupConfirmToken : AbstractControlDesignToken
     /// </summary>
     public Thickness TitleMargin { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         PopupMinWidth          = 240;

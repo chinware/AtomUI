@@ -70,7 +70,7 @@ internal class BadgeToken : AbstractControlDesignToken
     
     #endregion
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var lineWidth = SharedToken.LineWidth;

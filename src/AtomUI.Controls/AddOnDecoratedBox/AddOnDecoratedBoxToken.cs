@@ -94,7 +94,7 @@ internal class AddOnDecoratedBoxToken : AbstractControlDesignToken
     /// </summary>
     public Thickness RightInnerAddOnMargin { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var fontSize     = SharedToken.FontSize;

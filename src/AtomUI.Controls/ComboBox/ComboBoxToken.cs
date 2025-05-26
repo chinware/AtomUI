@@ -84,7 +84,7 @@ internal class ComboBoxToken : ButtonSpinnerToken
     /// </summary>
     public double PopupMarginToAnchor { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         OpenIndicatorWidth  = SharedToken.IconSizeSM * 2.5;

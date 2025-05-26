@@ -51,7 +51,7 @@ internal class ScrollBarToken : AbstractControlDesignToken
     {
     }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         ThumbBg            = SharedToken.ColorBorderSecondary;

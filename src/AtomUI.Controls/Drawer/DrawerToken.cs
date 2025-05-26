@@ -80,7 +80,7 @@ internal class DrawerToken : AbstractControlDesignToken
     /// </summary>
     public double PushOffsetPercent { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
 

@@ -142,7 +142,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         foreach (var dataGridColumn in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             var columnHeader = dataGridColumn.HeaderCell;
-            Debug.Assert(columnHeader?.OwningColumn == dataGridColumn);
+            Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
 
             if (dataGridColumn.IsFrozen)
             {

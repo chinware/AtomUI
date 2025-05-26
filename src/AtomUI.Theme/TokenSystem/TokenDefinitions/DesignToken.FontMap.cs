@@ -69,17 +69,17 @@ public partial class DesignToken
     /// <summary>
     /// Round of fontSize * lineHeight
     /// </summary>
-    internal double FontHeight { get; set; }
+    public double FontHeight { get; set; }
 
     /// <summary>
     /// Round of fontSizeSM * lineHeightSM
     /// </summary>
-    internal double FontHeightSM { get; set; }
+    public double FontHeightSM { get; set; }
 
     /// <summary>
     /// Round of fontSizeLG * lineHeightLG
     /// </summary>
-    internal double FontHeightLG { get; set; }
+    public double FontHeightLG { get; set; }
 
     /// <summary>
     /// 一级标题行高

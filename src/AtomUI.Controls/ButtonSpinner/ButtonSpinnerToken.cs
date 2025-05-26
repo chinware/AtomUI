@@ -59,7 +59,7 @@ internal class ButtonSpinnerToken : LineEditToken
     /// </summary>
     public Color FilledHandleBg { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         ControlWidth   = 90;

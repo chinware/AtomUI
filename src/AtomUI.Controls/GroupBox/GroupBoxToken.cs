@@ -48,7 +48,7 @@ internal class GroupBoxToken : AbstractControlDesignToken
     /// </summary>
     public Thickness HeaderContentPadding { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         TextPaddingInline        = 1.0;

@@ -74,7 +74,7 @@ internal class SegmentedToken : AbstractControlDesignToken
     public Thickness SegmentedItemPaddingSM { get; set; }
     public Thickness SegmentedItemContentMargin { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         TrackPadding      = new Thickness(SharedToken.LineWidthBold);

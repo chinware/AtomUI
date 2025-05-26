@@ -27,7 +27,7 @@ public class SeparatorToken : AbstractControlDesignToken
     /// </summary>
     public double VerticalMarginInline { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         TextPaddingInline        = 1.0;

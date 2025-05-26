@@ -103,7 +103,7 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     
     public TimeSpan LoadingAnimationDuration { get; set; }
 
-    internal override void CalculateFromAlias()
+    protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var fontSize      = SharedToken.FontSize;
