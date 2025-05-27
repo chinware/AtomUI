@@ -3,7 +3,7 @@ using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Theme;
+namespace AtomUI.Controls;
 
 [ControlDesignToken]
 internal class DataGridToken : AbstractControlDesignToken
