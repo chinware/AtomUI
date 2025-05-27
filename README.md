@@ -1,6 +1,4 @@
-<p align="center">
-    <img src="./resources/images/readme/ATOMUI.png" />
-</p>
+<img src="./resources/images/readme/AtomUIOSS.png"/>
 <br/>
 <div align="center">
 
@@ -32,8 +30,6 @@
 [github-license-link]: https://github.com/chinware/AtomUI/blob/master/LICENSE
 
 Documentation Language: [English](README.md) | [简体中文](README.zh-CN.md)
-
-<img src="./resources/images/readme/ChineseNewYear.jpg"/>
 
 #### Introduce
 
