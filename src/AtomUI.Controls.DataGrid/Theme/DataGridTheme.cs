@@ -1,6 +1,12 @@
-namespace AtomUI.Controls.Theme;
+using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 
-internal class DataGridTheme
+namespace AtomUI.Controls;
+
+[ControlThemeProvider]
+internal class DataGridTheme : BaseControlTheme
 {
-    
+    public DataGridTheme() : base(typeof(DataGrid))
+    {
+    }
 }

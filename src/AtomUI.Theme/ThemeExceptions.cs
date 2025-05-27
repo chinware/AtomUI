@@ -51,3 +51,16 @@ public class LanguageMetaInfoParseException : SystemException
     {
     }
 }
+
+public class ThemeResourceRegisterException : SystemException
+{
+    public ThemeResourceRegisterException(string? message)
+        : base(message)
+    {
+    }
+
+    public ThemeResourceRegisterException(string? message, Exception? innerException)
+        : base(message, innerException)
+    {
+    }
+}

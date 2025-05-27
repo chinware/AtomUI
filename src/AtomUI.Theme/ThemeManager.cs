@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Styling;
@@ -11,7 +10,7 @@ namespace AtomUI.Theme;
 /// <summary>
 /// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
 /// </summary>
-internal class ThemeManager : Styles, IThemeManager
+public class ThemeManager : Styles, IThemeManager
 {
     public const string THEME_DIR = "Themes";
     public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
@@ -28,7 +27,7 @@ internal class ThemeManager : Styles, IThemeManager
 
     public ITheme? ActivatedTheme => _activatedTheme;
     public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
-    public static ThemeManager Current { get; }
+    public static ThemeManager Current { get; internal set; } = null!;
     public string DefaultThemeId { get; set; }
 
     internal List<Type> ControlTokenTypes { get; set; }
@@ -50,24 +49,25 @@ internal class ThemeManager : Styles, IThemeManager
         }
     }
 
-    public event EventHandler<ThemeOperateEventArgs>? ThemeCreatedEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoadEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeLoadedEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeLoadFailedEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToUnloadEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeUnloadedEvent;
-    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToChangeEvent;
-    public event EventHandler<ThemeChangedEventArgs>? ThemeChangedEvent;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeCreated;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoad;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeLoaded;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeLoadFailed;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToUnload;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeUnloaded;
+    public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToChange;
+    public event EventHandler<ThemeChangedEventArgs>? ThemeChanged;
 
-    static ThemeManager()
+    public event EventHandler? Initialized;
+    
+    internal ThemeManager()
     {
-        Current = new ThemeManager();
-    }
+        Initialized += (sender, args) =>
+        {
 
-    protected ThemeManager()
-    {
-        _themePool       = new Dictionary<string, Theme>();
-        _customThemeDirs = new List<string>();
+        };
+        _themePool       =  new Dictionary<string, Theme>();
+        _customThemeDirs =  new List<string>();
         var appName = Application.Current?.Name ?? "AtomUIApplication";
         _builtInThemeDirs = new List<string>
         {
@@ -114,17 +114,17 @@ internal class ThemeManager : Styles, IThemeManager
         }
 
         theme.NotifyAboutToLoad();
-        ThemeAboutToLoadEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
+        ThemeAboutToLoad?.Invoke(this, new ThemeOperateEventArgs(theme));
         try
         {
             theme.Load();
             theme.NotifyLoaded();
-            ThemeLoadedEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
+            ThemeLoaded?.Invoke(this, new ThemeOperateEventArgs(theme));
             return theme;
         }
         catch (Exception)
         {
-            ThemeLoadFailedEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
+            ThemeLoadFailed?.Invoke(this, new ThemeOperateEventArgs(theme));
             throw;
         }
     }
@@ -149,10 +149,10 @@ internal class ThemeManager : Styles, IThemeManager
 
         var theme = _themePool[id];
         theme.NotifyAboutToUnload();
-        ThemeAboutToUnloadEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
+        ThemeAboutToUnload?.Invoke(this, new ThemeOperateEventArgs(theme));
         // TODO 进行卸载操作，暂时没有实现
         theme.NotifyUnloaded();
-        ThemeUnloadedEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
+        ThemeUnloaded?.Invoke(this, new ThemeOperateEventArgs(theme));
     }
 
     public void SetActiveTheme(string id)
@@ -171,7 +171,7 @@ internal class ThemeManager : Styles, IThemeManager
 
         var theme = _themePool[id];
         theme.NotifyAboutToActive();
-        ThemeAboutToChangeEvent?.Invoke(this, new ThemeOperateEventArgs(oldTheme));
+        ThemeAboutToChange?.Invoke(this, new ThemeOperateEventArgs(oldTheme));
         _activatedTheme = theme;
 
         var themeVariant  = _activatedTheme.ThemeVariant;
@@ -184,7 +184,24 @@ internal class ThemeManager : Styles, IThemeManager
             oldTheme.NotifyDeActivated();
         }
 
-        ThemeChangedEvent?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
+        ThemeChanged?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
+    }
+    
+    public void RegisterControlTheme(BaseControlTheme controlTheme)
+    {
+        controlTheme.Build();
+        var resourceKey = controlTheme.ThemeResourceKey();
+        _controlThemeResources?.Add(resourceKey, controlTheme);
+    }
+
+    public void RegisterLanguageProvider(ILanguageProvider languageProvider)
+    {
+        _languageProviders?.Add(languageProvider);
+    }
+
+    public void RegisterControlTokenType(Type tokenType)
+    {
+        ControlTokenTypes.Add(tokenType);
     }
 
     public void ScanThemes()
@@ -259,7 +276,7 @@ internal class ThemeManager : Styles, IThemeManager
             }
 
             var theme = new Theme(themeId, filePath);
-            ThemeCreatedEvent?.Invoke(this, new ThemeOperateEventArgs(theme));
+            ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
             themes.Add(themeId, theme);
             theme.NotifyRegistered();
         }
@@ -300,22 +317,9 @@ internal class ThemeManager : Styles, IThemeManager
         }
     }
 
-    public void RegisterControlTheme(BaseControlTheme controlTheme)
+    internal void NotifyInitialized()
     {
-        controlTheme.Build();
-        object? resourceKey = controlTheme.ThemeResourceKey();
-        resourceKey ??= controlTheme.TargetType!;
-        _controlThemeResources?.Add(resourceKey, controlTheme);
-    }
-
-    public void RegisterLanguageProvider(ILanguageProvider languageProvider)
-    {
-        _languageProviders?.Add(languageProvider);
-    }
-
-    public void RegisterControlTokenType(Type tokenType)
-    {
-        ControlTokenTypes.Add(tokenType);
+        Initialized?.Invoke(this, EventArgs.Empty);
     }
 }
 

@@ -82,7 +82,7 @@ internal class TextButtonTheme : BaseTextButtonTheme
     {
     }
 
-    public override string? ThemeResourceKey()
+    public override object ThemeResourceKey()
     {
         return ID;
     }

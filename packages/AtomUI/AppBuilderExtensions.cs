@@ -1,33 +1,26 @@
-﻿using System.Globalization;
-using AtomUI.Controls;
-using AtomUI.Utils;
-using Avalonia;
+﻿using Avalonia;
 
 namespace AtomUI.Theme;
 
 public static class AtomUIExtensions
 {
-    public static AppBuilder ConfigureAtomUI(this AppBuilder builder)
+    public static ThemeManagerBuilder CreateThemeManagerBuilder(this AppBuilder builder)
     {
-        builder.AfterSetup(builder =>
-        {
-            var themeManager = ThemeManager.Current;
-            themeManager.ConfigureAtomUIControls();
-            themeManager.Configure();
-        });
-        return builder;
+        return new ThemeManagerBuilder(builder);
     }
-    
-    public static AppBuilder UseAtomUI(this AppBuilder builder)
+
+    public static AppBuilder UseAtomUI(this AppBuilder builder, ThemeManagerBuilder themeManagerBuilder)
     {
         builder.AfterSetup(builder =>
         {
-            var themeManager = ThemeManager.Current;
-            themeManager.CultureInfo = new CultureInfo(LanguageCode.en_US);
-            themeManager.LoadTheme(ThemeManager.DEFAULT_THEME_ID);
-            themeManager.SetActiveTheme(ThemeManager.DEFAULT_THEME_ID);
+            var themeManager = themeManagerBuilder.Build();
+            themeManager.Configure();
+            ThemeManager.Current     = themeManager;
+            themeManager.CultureInfo = themeManagerBuilder.CultureInfo;
+            themeManager.LoadTheme(themeManagerBuilder.ThemeId);
+            themeManager.SetActiveTheme(themeManagerBuilder.ThemeId);
             builder.Instance!.Styles.Add(themeManager);
-            themeManager.ThemeInitialized();
+            themeManager.NotifyInitialized();
         });
         return builder;
     }

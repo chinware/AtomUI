@@ -170,7 +170,7 @@ internal class PrimaryButtonTheme : BasePrimaryButtonTheme
     {
     }
 
-    public override string? ThemeResourceKey()
+    public override object ThemeResourceKey()
     {
         return ID;
     }

@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Diagnostics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -36,9 +37,10 @@ public abstract class BaseControlTheme : ControlTheme
         }
     }
 
-    public virtual string? ThemeResourceKey()
+    public virtual object ThemeResourceKey()
     {
-        return default;
+        Debug.Assert(TargetType is not null);
+        return TargetType;
     }
 
     protected virtual IControlTemplate? BuildControlTemplate()

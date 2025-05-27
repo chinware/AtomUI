@@ -65,11 +65,13 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                     }
 
                     return info.ControlName;
-                });
+                }).ToList();
                 if (tokenClassNames.Any())
                 {
-                    var classWriter = new TokenRegisterClassWriter(context, tokenClassNames);
-                    classWriter.Write();
+                    {
+                        var classWriter = new ControlTokenTypePoolClassWriter(context, tokenClassNames);
+                        classWriter.Write();
+                    }
                 }
             }
         });

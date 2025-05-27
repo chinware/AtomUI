@@ -1,0 +1,78 @@
+﻿using AtomUI.Theme.TokenSystem;
+
+namespace AtomUI.Theme.Styling
+{
+    public static class DataGridTokenKey
+    {
+        public static readonly TokenResourceKey BodySortBg = new TokenResourceKey("DataGrid.BodySortBg");
+        public static readonly TokenResourceKey BorderColor = new TokenResourceKey("DataGrid.BorderColor");
+        public static readonly TokenResourceKey CellFontSize = new TokenResourceKey("DataGrid.CellFontSize");
+        public static readonly TokenResourceKey CellFontSizeMD = new TokenResourceKey("DataGrid.CellFontSizeMD");
+        public static readonly TokenResourceKey CellFontSizeSM = new TokenResourceKey("DataGrid.CellFontSizeSM");
+        public static readonly TokenResourceKey CellPadding = new TokenResourceKey("DataGrid.CellPadding");
+        public static readonly TokenResourceKey CellPaddingMD = new TokenResourceKey("DataGrid.CellPaddingMD");
+        public static readonly TokenResourceKey CellPaddingSM = new TokenResourceKey("DataGrid.CellPaddingSM");
+        public static readonly TokenResourceKey ExpandIconBg = new TokenResourceKey("DataGrid.ExpandIconBg");
+        public static readonly TokenResourceKey ExpandIconHalfInner = new TokenResourceKey("DataGrid.ExpandIconHalfInner");
+        public static readonly TokenResourceKey ExpandIconMargin = new TokenResourceKey("DataGrid.ExpandIconMargin");
+        public static readonly TokenResourceKey ExpandIconScale = new TokenResourceKey("DataGrid.ExpandIconScale");
+        public static readonly TokenResourceKey ExpandIconSize = new TokenResourceKey("DataGrid.ExpandIconSize");
+        public static readonly TokenResourceKey FilterDropdownBg = new TokenResourceKey("DataGrid.FilterDropdownBg");
+        public static readonly TokenResourceKey FilterDropdownMenuBg = new TokenResourceKey("DataGrid.FilterDropdownMenuBg");
+        public static readonly TokenResourceKey FixedHeaderSortActiveBg = new TokenResourceKey("DataGrid.FixedHeaderSortActiveBg");
+        public static readonly TokenResourceKey FooterBg = new TokenResourceKey("DataGrid.FooterBg");
+        public static readonly TokenResourceKey FooterColor = new TokenResourceKey("DataGrid.FooterColor");
+        public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("DataGrid.HeaderBg");
+        public static readonly TokenResourceKey HeaderBorderRadius = new TokenResourceKey("DataGrid.HeaderBorderRadius");
+        public static readonly TokenResourceKey HeaderColor = new TokenResourceKey("DataGrid.HeaderColor");
+        public static readonly TokenResourceKey HeaderFilterHoverBg = new TokenResourceKey("DataGrid.HeaderFilterHoverBg");
+        public static readonly TokenResourceKey HeaderIconColor = new TokenResourceKey("DataGrid.HeaderIconColor");
+        public static readonly TokenResourceKey HeaderIconHoverColor = new TokenResourceKey("DataGrid.HeaderIconHoverColor");
+        public static readonly TokenResourceKey HeaderSortActiveBg = new TokenResourceKey("DataGrid.HeaderSortActiveBg");
+        public static readonly TokenResourceKey HeaderSortHoverBg = new TokenResourceKey("DataGrid.HeaderSortHoverBg");
+        public static readonly TokenResourceKey HeaderSplitColor = new TokenResourceKey("DataGrid.HeaderSplitColor");
+        public static readonly TokenResourceKey RowExpandedBg = new TokenResourceKey("DataGrid.RowExpandedBg");
+        public static readonly TokenResourceKey RowHoverBg = new TokenResourceKey("DataGrid.RowHoverBg");
+        public static readonly TokenResourceKey RowSelectedBg = new TokenResourceKey("DataGrid.RowSelectedBg");
+        public static readonly TokenResourceKey RowSelectedHoverBg = new TokenResourceKey("DataGrid.RowSelectedHoverBg");
+        public static readonly TokenResourceKey SelectionColumnWidth = new TokenResourceKey("DataGrid.SelectionColumnWidth");
+        public static readonly TokenResourceKey StickyScrollBarBg = new TokenResourceKey("DataGrid.StickyScrollBarBg");
+        public static readonly TokenResourceKey StickyScrollBarBorderRadius = new TokenResourceKey("DataGrid.StickyScrollBarBorderRadius");
+        public static readonly TokenResourceKey TableBg = new TokenResourceKey("DataGrid.TableBg");
+        public static readonly TokenResourceKey TableBodySortBg = new TokenResourceKey("DataGrid.TableBodySortBg");
+        public static readonly TokenResourceKey TableBorderColor = new TokenResourceKey("DataGrid.TableBorderColor");
+        public static readonly TokenResourceKey TableExpandColumnWidth = new TokenResourceKey("DataGrid.TableExpandColumnWidth");
+        public static readonly TokenResourceKey TableExpandedRowBg = new TokenResourceKey("DataGrid.TableExpandedRowBg");
+        public static readonly TokenResourceKey TableExpandIconBg = new TokenResourceKey("DataGrid.TableExpandIconBg");
+        public static readonly TokenResourceKey TableFilterDropdownBg = new TokenResourceKey("DataGrid.TableFilterDropdownBg");
+        public static readonly TokenResourceKey TableFilterDropdownHeight = new TokenResourceKey("DataGrid.TableFilterDropdownHeight");
+        public static readonly TokenResourceKey TableFilterDropdownSearchWidth = new TokenResourceKey("DataGrid.TableFilterDropdownSearchWidth");
+        public static readonly TokenResourceKey TableFilterDropdownWidth = new TokenResourceKey("DataGrid.TableFilterDropdownWidth");
+        public static readonly TokenResourceKey TableFixedHeaderSortActiveBg = new TokenResourceKey("DataGrid.TableFixedHeaderSortActiveBg");
+        public static readonly TokenResourceKey TableFontSize = new TokenResourceKey("DataGrid.TableFontSize");
+        public static readonly TokenResourceKey TableFontSizeMiddle = new TokenResourceKey("DataGrid.TableFontSizeMiddle");
+        public static readonly TokenResourceKey TableFontSizeSmall = new TokenResourceKey("DataGrid.TableFontSizeSmall");
+        public static readonly TokenResourceKey TableFooterBg = new TokenResourceKey("DataGrid.TableFooterBg");
+        public static readonly TokenResourceKey TableFooterTextColor = new TokenResourceKey("DataGrid.TableFooterTextColor");
+        public static readonly TokenResourceKey TableHeaderBg = new TokenResourceKey("DataGrid.TableHeaderBg");
+        public static readonly TokenResourceKey TableHeaderCellSplitColor = new TokenResourceKey("DataGrid.TableHeaderCellSplitColor");
+        public static readonly TokenResourceKey TableHeaderFilterActiveBg = new TokenResourceKey("DataGrid.TableHeaderFilterActiveBg");
+        public static readonly TokenResourceKey TableHeaderSortBg = new TokenResourceKey("DataGrid.TableHeaderSortBg");
+        public static readonly TokenResourceKey TableHeaderSortHoverBg = new TokenResourceKey("DataGrid.TableHeaderSortHoverBg");
+        public static readonly TokenResourceKey TableHeaderTextColor = new TokenResourceKey("DataGrid.TableHeaderTextColor");
+        public static readonly TokenResourceKey TablePadding = new TokenResourceKey("DataGrid.TablePadding");
+        public static readonly TokenResourceKey TablePaddingMiddle = new TokenResourceKey("DataGrid.TablePaddingMiddle");
+        public static readonly TokenResourceKey TablePaddingSmall = new TokenResourceKey("DataGrid.TablePaddingSmall");
+        public static readonly TokenResourceKey TableRadius = new TokenResourceKey("DataGrid.TableRadius");
+        public static readonly TokenResourceKey TableRowHoverBg = new TokenResourceKey("DataGrid.TableRowHoverBg");
+        public static readonly TokenResourceKey TableScrollBg = new TokenResourceKey("DataGrid.TableScrollBg");
+        public static readonly TokenResourceKey TableScrollThumbBg = new TokenResourceKey("DataGrid.TableScrollThumbBg");
+        public static readonly TokenResourceKey TableScrollThumbBgHover = new TokenResourceKey("DataGrid.TableScrollThumbBgHover");
+        public static readonly TokenResourceKey TableScrollThumbSize = new TokenResourceKey("DataGrid.TableScrollThumbSize");
+        public static readonly TokenResourceKey TableSelectedRowBg = new TokenResourceKey("DataGrid.TableSelectedRowBg");
+        public static readonly TokenResourceKey TableSelectedRowHoverBg = new TokenResourceKey("DataGrid.TableSelectedRowHoverBg");
+        public static readonly TokenResourceKey TableSelectionColumnWidth = new TokenResourceKey("DataGrid.TableSelectionColumnWidth");
+        public static readonly TokenResourceKey ZIndexTableFixed = new TokenResourceKey("DataGrid.ZIndexTableFixed");
+        public static readonly TokenResourceKey ZIndexTableSticky = new TokenResourceKey("DataGrid.ZIndexTableSticky");
+    }
+}
