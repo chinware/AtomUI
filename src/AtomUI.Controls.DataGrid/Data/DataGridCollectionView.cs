@@ -1884,12 +1884,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     /// <param name="item">Item we want to move the currency to</param>
     /// <returns>Whether the operation was successful</returns>
-    public bool MoveCurrentTo(object item)
+    public bool MoveCurrentTo(object? item)
     {
         VerifyRefreshNotDeferred();
 
         // if already on item, don't do anything
-        if (Object.Equals(CurrentItem, item))
+        if (Equals(CurrentItem, item))
         {
             // also check that we're not fooled by a false null currentItem
             if (item != null || IsCurrentInView)
@@ -1942,10 +1942,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             return MoveCurrentToPosition(index);
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     /// <summary>
