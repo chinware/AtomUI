@@ -5,7 +5,7 @@
 
 using System.Diagnostics;
 using System.Globalization;
-using AtomUI.Controls.XDataGrid.Utils;
+using AtomUI.Controls.Utils;
 using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Data;

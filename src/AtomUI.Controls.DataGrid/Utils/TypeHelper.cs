@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 
-namespace AtomUI.Controls.XDataGrid.Utils;
+namespace AtomUI.Controls.Utils;
 
 internal static class TypeHelper
 {

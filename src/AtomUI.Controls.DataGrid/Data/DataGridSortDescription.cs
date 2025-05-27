@@ -6,7 +6,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
-using AtomUI.Controls.XDataGrid.Utils;
+using AtomUI.Controls.Utils;
 using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
