@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 namespace AtomUI.Controls.XDataGrid.Data;
 
 internal interface IDataGridEditableCollectionView
@@ -22,7 +27,7 @@ internal interface IDataGridEditableCollectionView
 
     /// <summary>Gets the item that is being added during the current add transaction.</summary>
     /// <returns>The item that is being added if <see cref="P:System.ComponentModel.IEditableCollectionView.IsAddingNew" /> is true; otherwise, null.</returns>
-    object CurrentAddItem { get; }
+    object? CurrentAddItem { get; }
 
     /// <summary>Gets a value that indicates whether an item can be removed from the collection.</summary>
     /// <returns>true if an item can be removed from the collection; otherwise, false.</returns>
@@ -56,5 +61,5 @@ internal interface IDataGridEditableCollectionView
 
     /// <summary>Gets the item in the collection that is being edited.</summary>
     /// <returns>The item that is being edited if <see cref="P:System.ComponentModel.IEditableCollectionView.IsEditingItem" /> is true; otherwise, null.</returns>
-    object CurrentEditItem { get; }
+    object? CurrentEditItem { get; }
 }

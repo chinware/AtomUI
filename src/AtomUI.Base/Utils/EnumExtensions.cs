@@ -5,7 +5,7 @@ namespace AtomUI.Utils;
 /// <summary>
 /// Provides extension methods for enums.
 /// </summary>
-internal static class EnumExtensions
+public static class EnumExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe bool HasAllFlags<T>(this T value, T flags) where T : unmanaged, Enum

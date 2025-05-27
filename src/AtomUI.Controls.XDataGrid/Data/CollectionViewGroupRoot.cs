@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -88,8 +93,8 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
     /// </summary>
     internal bool IsDataInGroupOrder
     {
-        get { return _isDataInGroupOrder; }
-        set { _isDataInGroupOrder = value; }
+        get => _isDataInGroupOrder;
+        set => _isDataInGroupOrder = value;
     }
 
     /// <summary>
@@ -540,7 +545,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
         /// <param name="level">The level of grouping</param>
         /// <param name="culture">Culture used for sorting</param>
         /// <returns>We do not return a value here</returns>
-        public override object? GroupKeyFromItem(object item, int level, CultureInfo culture)
+        public override object? GroupKeyFromItem(object item, int level, CultureInfo? culture)
         {
             Debug.Assert(true, "We have to implement this abstract method, but it should never be called");
             return null;

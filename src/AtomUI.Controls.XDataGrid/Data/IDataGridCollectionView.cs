@@ -27,7 +27,7 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     
     /// <summary>Gets or sets a callback that is used to determine whether an item is appropriate for inclusion in the view. </summary>
     /// <returns>A method that is used to determine whether an item is appropriate for inclusion in the view.</returns>
-    Func<object, bool> Filter { get; set; }
+    Func<object, bool>? Filter { get; set; }
     
     /// <summary>Gets a value that indicates whether this view supports filtering by way of the <see cref="P:System.ComponentModel.ICollectionView.Filter" /> property.</summary>
     /// <returns>true if this view supports filtering; otherwise, false.</returns>
@@ -35,7 +35,7 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     
     /// <summary>Gets a collection of <see cref="T:System.ComponentModel.SortDescription" /> instances that describe how the items in the collection are sorted in the view.</summary>
     /// <returns>A collection of values that describe how the items in the collection are sorted in the view.</returns>
-    DataGridSortDescriptionCollection SortDescriptions { get; }
+    DataGridSortDescriptionCollection? SortDescriptions { get; }
     
     /// <summary>Gets a value that indicates whether this view supports sorting by way of the <see cref="P:System.ComponentModel.ICollectionView.SortDescriptions" /> property.</summary>
     /// <returns>true if this view supports sorting; otherwise, false.</returns>
@@ -55,7 +55,7 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     
     /// <summary>Gets the top-level groups.</summary>
     /// <returns>A read-only collection of the top-level groups or null if there are no groups.</returns>
-    IAvaloniaReadOnlyList<object> Groups { get; }
+    IAvaloniaReadOnlyList<object>? Groups { get; }
     
     /// <summary>Gets a value that indicates whether the view is empty.</summary>
     /// <returns>true if the view is empty; otherwise, false.</returns>
@@ -70,7 +70,7 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     
     /// <summary>Gets the current item in the view.</summary>
     /// <returns>The current item in the view or null if there is no current item.</returns>
-    object CurrentItem { get; }
+    object? CurrentItem { get; }
 
     /// <summary>Gets the ordinal position of the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> in the view.</summary>
     /// <returns>The ordinal position of the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> in the view.</returns>

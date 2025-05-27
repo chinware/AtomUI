@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -296,7 +301,7 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
     /// </summary>
     /// <param name="item">Item we are looking for</param>
     /// <returns>Number of items under that leaf</returns>
-    internal int LeafIndexOf(object item)
+    internal int LeafIndexOf(object? item)
     {
         int leaves = 0; // number of leaves we've passed over so far
         for (int k = 0, n = Items.Count; k < n; ++k)
@@ -316,14 +321,11 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
             else
             {
                 // current item is a leaf - compare it directly
-                if (Object.Equals(item, Items[k]))
+                if (Equals(item, Items[k]))
                 {
                     return leaves;
                 }
-                else
-                {
-                    leaves += 1;
-                }
+                leaves += 1;
             }
         }
 
