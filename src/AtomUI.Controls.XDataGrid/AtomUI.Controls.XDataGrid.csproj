@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup>
+    <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <RootNamespace>AtomUI.Controls.XDataGrid</RootNamespace>
+</PropertyGroup>
+
+<ItemGroup>
+    <InternalsVisibleTo Include="AtomUI"/>
+</ItemGroup>
+
+<ItemGroup>
+    <ProjectReference Include="../AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj" />
+    <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj"/>
+</ItemGroup>
+
+<ItemGroup>
+    <PackageReference Include="Avalonia"/>
+</ItemGroup>
+
+<ItemGroup>
+  <Folder Include="EventArgs\" />
+</ItemGroup>
+
+</Project>
