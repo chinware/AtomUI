@@ -429,9 +429,13 @@ internal static class TypeHelper
         return (FindGenericType(typeof(IEnumerable<>), enumerableType) != null);
     }
 
-    internal static bool IsNullableType(this Type type)
+    internal static bool IsNullableType(this Type? type)
     {
-        return (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>)));
+        if (type == null)
+        {
+            return false;
+        }
+        return type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>));
     }
 
     internal static bool IsNullableEnum(this Type type)

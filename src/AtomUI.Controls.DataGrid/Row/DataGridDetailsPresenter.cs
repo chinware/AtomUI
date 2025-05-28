@@ -18,8 +18,8 @@ public sealed class DataGridDetailsPresenter : Panel
     /// </returns>
     public double ContentHeight
     {
-        get { return GetValue(ContentHeightProperty); }
-        set { SetValue(ContentHeightProperty, value); }
+        get => GetValue(ContentHeightProperty);
+        set => SetValue(ContentHeightProperty, value);
     }
 
     internal DataGridRow? OwningRow
