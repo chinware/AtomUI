@@ -9,26 +9,19 @@ namespace AtomUI.Controls;
 
 internal class DataGridCellCoordinates
 {
+    public int ColumnIndex { get; set; }
+
+    public int Slot { get; set; }
+    
     public DataGridCellCoordinates(int columnIndex, int slot)
     {
         ColumnIndex = columnIndex;
         Slot        = slot;
     }
 
-    public DataGridCellCoordinates(DataGridCellCoordinates dataGridCellCoordinates) : this(dataGridCellCoordinates.ColumnIndex, dataGridCellCoordinates.Slot)
+    public DataGridCellCoordinates(DataGridCellCoordinates dataGridCellCoordinates) 
+        : this(dataGridCellCoordinates.ColumnIndex, dataGridCellCoordinates.Slot)
     {
-    }
-
-    public int ColumnIndex
-    {
-        get;
-        set;
-    }
-
-    public int Slot
-    {
-        get;
-        set;
     }
 
     public override bool Equals(object? o)

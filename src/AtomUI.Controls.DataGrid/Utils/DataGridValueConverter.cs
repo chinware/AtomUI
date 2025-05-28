@@ -1,13 +1,7 @@
-// (c) Copyright Microsoft Corporation.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
-// All other rights reserved.
-
 using System.Globalization;
-using AtomUI.Controls.Utils;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Utils;
 
 internal class DataGridValueConverter : IValueConverter
 {

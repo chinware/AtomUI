@@ -31,8 +31,8 @@ public enum DataGridClipboardCopyMode
 public struct DataGridClipboardCellContent
 {
     private DataGridColumn _column;
-    private object _content;
-    private object _item;
+    private object? _content;
+    private object? _item;
 
     /// <summary>
     /// Creates a new DataGridClipboardCellValue structure containing information about a DataGrid cell.
@@ -40,7 +40,7 @@ public struct DataGridClipboardCellContent
     /// <param name="item">DataGrid row item containing the cell.</param>
     /// <param name="column">DataGridColumn containing the cell.</param>
     /// <param name="content">DataGrid cell value.</param>
-    public DataGridClipboardCellContent(object item, DataGridColumn column, object content)
+    public DataGridClipboardCellContent(object? item, DataGridColumn column, object? content)
     {
         _item    = item;
         _column  = column;
@@ -55,12 +55,12 @@ public struct DataGridClipboardCellContent
     /// <summary>
     /// Cell content.
     /// </summary>
-    public object Content => _content;
+    public object? Content => _content;
 
     /// <summary>
     /// DataGrid row item containing the cell.
     /// </summary>
-    public object Item => _item;
+    public object? Item => _item;
 
     /// <summary>
     /// Field-by-field comparison to avoid reflection-based ValueType.Equals.
@@ -82,7 +82,11 @@ public struct DataGridClipboardCellContent
     /// <returns>Hash value.</returns>
     public override int GetHashCode()
     {
-        return ((_column.GetHashCode() ^ _content.GetHashCode()) ^ _item.GetHashCode());
+        var hash = new HashCode();
+        hash.Add(_column);
+        hash.Add(_content);
+        hash.Add(_item);
+        return hash.ToHashCode();
     }
 
     /// <summary>
@@ -121,14 +125,14 @@ public class DataGridRowClipboardEventArgs : EventArgs
 
     private List<DataGridClipboardCellContent>? _clipboardRowContent;
     private bool _isColumnHeadersRow;
-    private object _item;
+    private object? _item;
 
     /// <summary>
     /// Creates a DataGridRowClipboardEventArgs object and initializes the properties.
     /// </summary>
     /// <param name="item">The row's associated data item.</param>
     /// <param name="isColumnHeadersRow">Whether or not this EventArgs is for the column headers.</param>
-    internal DataGridRowClipboardEventArgs(object item, bool isColumnHeadersRow)
+    internal DataGridRowClipboardEventArgs(object? item, bool isColumnHeadersRow)
     {
         _isColumnHeadersRow = isColumnHeadersRow;
         _item               = item;
@@ -157,6 +161,6 @@ public class DataGridRowClipboardEventArgs : EventArgs
     /// <summary>
     /// DataGrid row item used for preparing the ClipboardRowContent.
     /// </summary>
-    public object Item => _item;
+    public object? Item => _item;
 
 }
