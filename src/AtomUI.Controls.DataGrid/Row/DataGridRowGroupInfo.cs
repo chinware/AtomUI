@@ -5,7 +5,7 @@ namespace AtomUI.Controls;
 internal class DataGridRowGroupInfo
 {
     public DataGridRowGroupInfo(
-        DataGridCollectionViewGroup collectionViewGroup,
+        DataGridCollectionViewGroup? collectionViewGroup,
         bool isVisible,
         int level,
         int slot,
@@ -18,7 +18,7 @@ internal class DataGridRowGroupInfo
         LastSubItemSlot     = lastSubItemSlot;
     }
 
-    public DataGridCollectionViewGroup CollectionViewGroup
+    public DataGridCollectionViewGroup? CollectionViewGroup
     {
         get;
         private set;

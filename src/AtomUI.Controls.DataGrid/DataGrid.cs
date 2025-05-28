@@ -1129,7 +1129,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the BeginningEdit event.
     /// </summary>
-    protected virtual void OnBeginningEdit(DataGridBeginningEditEventArgs e)
+    protected virtual void NotifyBeginningEdit(DataGridBeginningEditEventArgs e)
     {
         BeginningEdit?.Invoke(this, e);
     }
@@ -1137,7 +1137,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the CellEditEnded event.
     /// </summary>
-    protected virtual void OnCellEditEnded(DataGridCellEditEndedEventArgs e)
+    protected virtual void NotifyCellEditEnded(DataGridCellEditEndedEventArgs e)
     {
         CellEditEnded?.Invoke(this, e);
     }
@@ -1145,7 +1145,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the CellEditEnding event.
     /// </summary>
-    protected virtual void OnCellEditEnding(DataGridCellEditEndingEventArgs e)
+    protected virtual void NotifyCellEditEnding(DataGridCellEditEndingEventArgs e)
     {
         CellEditEnding?.Invoke(this, e);
     }
@@ -1153,7 +1153,7 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Raises the CellPointerPressed event.
     /// </summary>
-    internal virtual void OnCellPointerPressed(DataGridCellPointerPressedEventArgs e)
+    internal virtual void NotifyCellPointerPressed(DataGridCellPointerPressedEventArgs e)
     {
         CellPointerPressed?.Invoke(this, e);
     }
@@ -2262,7 +2262,7 @@ public partial class DataGrid : TemplatedControl
         // Raise the BeginningEdit event
         DataGridCell dataGridCell = dataGridRow.Cells[CurrentColumnIndex];
         DataGridBeginningEditEventArgs e = new DataGridBeginningEditEventArgs(CurrentColumn, dataGridRow, editingEventArgs);
-        OnBeginningEdit(e);
+        NotifyBeginningEdit(e);
         if (e.Cancel
             || currentRowIndex != CurrentSlot
             || currentColumnIndex != CurrentColumnIndex
@@ -2951,7 +2951,7 @@ public partial class DataGrid : TemplatedControl
         {
             Debug.Assert(CurrentColumn != null);
             DataGridCellEditEndingEventArgs e = new DataGridCellEditEndingEventArgs(CurrentColumn, editingRow, editingElement, editAction);
-            OnCellEditEnding(e);
+            NotifyCellEditEnding(e);
             if (e.Cancel)
             {
                 // CellEditEnding has been cancelled
@@ -3066,7 +3066,7 @@ public partial class DataGrid : TemplatedControl
         // We're done, so raise the CellEditEnded event
         if (raiseEvents)
         {
-            OnCellEditEnded(new DataGridCellEditEndedEventArgs(CurrentColumn, editingRow, editAction));
+            NotifyCellEditEnded(new DataGridCellEditEndedEventArgs(CurrentColumn, editingRow, editAction));
         }
 
         // There's a chance that somebody reopened this cell for edit within the CellEditEnded handler,
