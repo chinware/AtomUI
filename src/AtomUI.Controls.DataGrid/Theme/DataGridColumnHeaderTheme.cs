@@ -6,7 +6,8 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class DataGridColumnHeaderTheme : BaseControlTheme
 {
-    public DataGridColumnHeaderTheme() : base(typeof(DataGridColumnHeader))
+    public DataGridColumnHeaderTheme()
+        : base(typeof(DataGridColumnHeader))
     {
     }
 }

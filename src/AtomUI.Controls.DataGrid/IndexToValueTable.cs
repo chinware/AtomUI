@@ -133,7 +133,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
     /// <returns>true if the given index is contained in the table with the given value</returns>
     public bool ContainsIndexAndValue(int index, T value)
     {
-        int lowerRangeIndex = this.FindRangeIndex(index);
+        int lowerRangeIndex = FindRangeIndex(index);
         return ((IsCorrectRangeIndex(lowerRangeIndex, index)) && (_list[lowerRangeIndex].ContainsValue(value)));
     }
 
@@ -253,7 +253,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
             return 0;
         }
         int count = 0;
-        int index = this.FindRangeIndex(lowerBound);
+        int index = FindRangeIndex(lowerBound);
         if (IsCorrectRangeIndex(index, lowerBound))
         {
             count += _list[index].UpperBound - lowerBound + 1;
