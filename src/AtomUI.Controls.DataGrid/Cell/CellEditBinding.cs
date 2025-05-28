@@ -2,7 +2,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.Reactive;
 using Avalonia.Data;
 
-namespace AtomUI.Controls.Cell;
+namespace AtomUI.Controls;
 
 internal class CellEditBinding : ICellEditBinding
 {

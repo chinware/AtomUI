@@ -28,8 +28,8 @@ public class DataGridRowGroupHeader : TemplatedControl
     public static readonly StyledProperty<string> ItemCountFormatProperty =
         AvaloniaProperty.Register<DataGridRowGroupHeader, string>(nameof(ItemCountFormat));
     
-    public static readonly StyledProperty<string> PropertyNameProperty =
-        AvaloniaProperty.Register<DataGridRowGroupHeader, string>(nameof(PropertyName));
+    public static readonly StyledProperty<string?> PropertyNameProperty =
+        AvaloniaProperty.Register<DataGridRowGroupHeader, string?>(nameof(PropertyName));
     
     public static readonly StyledProperty<bool> IsPropertyNameVisibleProperty =
         AvaloniaProperty.Register<DataGridRowGroupHeader, bool>(nameof(IsPropertyNameVisible));
@@ -61,7 +61,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     /// <summary>
     /// Gets or sets the name of the property that this <see cref="T:Avalonia.Controls.DataGrid" /> row is bound to.
     /// </summary>
-    public string PropertyName
+    public string? PropertyName
     {
         get => GetValue(PropertyNameProperty);
         set => SetValue(PropertyNameProperty, value);
@@ -97,6 +97,7 @@ public class DataGridRowGroupHeader : TemplatedControl
         get
         {
             Debug.Assert(OwningGrid != null);
+            Debug.Assert(RowGroupInfo != null);
             return (RowGroupInfo.Slot == OwningGrid.CurrentSlot);
         }
     }
@@ -151,7 +152,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     {
         if (OwningGrid != null)
         {
-            OwningGrid.OnSublevelIndentUpdated(this, (double)e.NewValue);
+            OwningGrid.OnSublevelIndentUpdated(this, (double)(e.NewValue ?? 0));
         }
     }
     
@@ -198,6 +199,7 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     internal void ApplyHeaderStatus()
     {
+        Debug.Assert(OwningGrid != null);
         if (_headerElement != null && OwningGrid.AreRowHeadersVisible)
         {
             _headerElement.UpdatePseudoClasses();
@@ -278,10 +280,12 @@ public class DataGridRowGroupHeader : TemplatedControl
         {
             return;
         }
+        Debug.Assert(RowGroupInfo != null);
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             if (OwningGrid.IsDoubleClickRecordsClickOnCall(this) && !e.Handled)
             {
+           
                 ToggleExpandCollapse(!RowGroupInfo.IsVisible, true);
                 e.Handled = true;
             }
@@ -397,6 +401,8 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     internal void ToggleExpandCollapse(bool isVisible, bool setCurrent)
     {
+        Debug.Assert(RowGroupInfo != null);
+        Debug.Assert(RowGroupInfo.CollectionViewGroup != null);
         if (RowGroupInfo.CollectionViewGroup.ItemCount != 0)
         {
             if (OwningGrid == null)
@@ -426,7 +432,7 @@ public class DataGridRowGroupHeader : TemplatedControl
             }
             else
             {
-                txt = string.Format("{0}:", PropertyName);
+                txt = $"{PropertyName}:";
             }
             _propertyNameElement.Text = txt;
         }
@@ -435,11 +441,11 @@ public class DataGridRowGroupHeader : TemplatedControl
             string formatString;
             if (RowGroupInfo.CollectionViewGroup.ItemCount == 1)
             {
-                formatString = (ItemCountFormat == null ? "({0} Item)" : ItemCountFormat);
+                formatString = (string.IsNullOrEmpty(ItemCountFormat) ? "({0} Item)" : ItemCountFormat);
             }
             else
             {
-                formatString = (ItemCountFormat == null ? "({0} Items)" : ItemCountFormat);
+                formatString = (string.IsNullOrEmpty(ItemCountFormat) ? "({0} Items)" : ItemCountFormat);
             }
             _itemCountElement.Text = string.Format(formatString, RowGroupInfo.CollectionViewGroup.ItemCount);
         }

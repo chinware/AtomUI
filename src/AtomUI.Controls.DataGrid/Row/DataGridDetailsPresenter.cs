@@ -1,5 +1,5 @@
+using System.Diagnostics;
 using Avalonia;
-using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Media;
 
@@ -22,12 +22,9 @@ public sealed class DataGridDetailsPresenter : Panel
         set => SetValue(ContentHeightProperty, value);
     }
 
-    internal DataGridRow? OwningRow
-    {
-        get;
-        set;
-    }
-    // private DataGrid? OwningGrid => OwningRow?.OwningGrid;
+    internal DataGridRow? OwningRow { get; set; }
+    
+    private DataGrid? OwningGrid => OwningRow?.OwningGrid;
 
     public DataGridDetailsPresenter()
     {
@@ -50,46 +47,47 @@ public sealed class DataGridDetailsPresenter : Panel
     /// </param>
     protected override Size ArrangeOverride(Size finalSize)
     {
-        // if (OwningGrid == null)
-        // {
-        //     return base.ArrangeOverride(finalSize);
-        // }
-        // double rowGroupSpacerWidth = OwningGrid.ColumnsInternal.RowGroupSpacerColumn.Width.Value;
-        // double leftEdge            = rowGroupSpacerWidth;
-        // double xClip               = OwningGrid.AreRowGroupHeadersFrozen ? rowGroupSpacerWidth : 0;
-        // double width;
-        // if (OwningGrid.AreRowDetailsFrozen)
-        // {
-        //     leftEdge += OwningGrid.HorizontalOffset;
-        //     width    =  OwningGrid.CellsWidth;
-        // }
-        // else
-        // {
-        //     xClip += OwningGrid.HorizontalOffset;
-        //     width =  Math.Max(OwningGrid.CellsWidth, OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth);
-        // }
-        // // Details should not extend through the indented area
-        // width -= rowGroupSpacerWidth;
-        // double height = Math.Max(0, double.IsNaN(ContentHeight) ? 0 : ContentHeight);
-        //
-        // foreach (Control child in Children)
-        // {
-        //     child.Arrange(new Rect(leftEdge, 0, width, height));
-        // }
-        //
-        // if (OwningGrid.AreRowDetailsFrozen)
-        // {
-        //     // Frozen Details should not be clipped, similar to frozen cells
-        //     Clip = null;
-        // }
-        // else
-        // {
-        //     // Clip so Details doesn't obstruct elements to the left (the RowHeader by default) as we scroll to the right
-        //     Clip = new RectangleGeometry
-        //     {
-        //         Rect = new Rect(xClip, 0, Math.Max(0, width - xClip + rowGroupSpacerWidth), height)
-        //     };
-        // }
+        if (OwningGrid == null)
+        {
+            return base.ArrangeOverride(finalSize);
+        }
+        Debug.Assert(OwningGrid.ColumnsInternal.RowGroupSpacerColumn != null);
+        double rowGroupSpacerWidth = OwningGrid.ColumnsInternal.RowGroupSpacerColumn.Width.Value;
+        double leftEdge            = rowGroupSpacerWidth;
+        double xClip               = OwningGrid.AreRowGroupHeadersFrozen ? rowGroupSpacerWidth : 0;
+        double width;
+        if (OwningGrid.AreRowDetailsFrozen)
+        {
+            leftEdge += OwningGrid.HorizontalOffset;
+            width    =  OwningGrid.CellsWidth;
+        }
+        else
+        {
+            xClip += OwningGrid.HorizontalOffset;
+            width =  Math.Max(OwningGrid.CellsWidth, OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth);
+        }
+        // Details should not extend through the indented area
+        width -= rowGroupSpacerWidth;
+        double height = Math.Max(0, double.IsNaN(ContentHeight) ? 0 : ContentHeight);
+        
+        foreach (Control child in Children)
+        {
+            child.Arrange(new Rect(leftEdge, 0, width, height));
+        }
+        
+        if (OwningGrid.AreRowDetailsFrozen)
+        {
+            // Frozen Details should not be clipped, similar to frozen cells
+            Clip = null;
+        }
+        else
+        {
+            // Clip so Details doesn't obstruct elements to the left (the RowHeader by default) as we scroll to the right
+            Clip = new RectangleGeometry
+            {
+                Rect = new Rect(xClip, 0, Math.Max(0, width - xClip + rowGroupSpacerWidth), height)
+            };
+        }
 
         return finalSize;
     }
@@ -106,25 +104,25 @@ public sealed class DataGridDetailsPresenter : Panel
     /// </returns>
     protected override Size MeasureOverride(Size availableSize)
     {
-        return default;
-        // if (OwningGrid == null || Children.Count == 0)
-        // {
-        //     return default;
-        // }
+        if (OwningGrid == null || Children.Count == 0)
+        {
+            return default;
+        }
+        Debug.Assert(OwningGrid.ColumnsInternal.RowGroupSpacerColumn != null);
 
-        // double desiredWidth = OwningGrid.AreRowDetailsFrozen ?
-        //     OwningGrid.CellsWidth :
-        //     Math.Max(OwningGrid.CellsWidth, OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth);
-        //
-        // desiredWidth -= OwningGrid.ColumnsInternal.RowGroupSpacerColumn.Width.Value;
-        //
-        // foreach (Control child in Children)
-        // {
-        //     child.Measure(new Size(desiredWidth, double.PositiveInfinity));
-        // }
-        //
-        // double desiredHeight = Math.Max(0, double.IsNaN(ContentHeight) ? 0 : ContentHeight);
-        //
-        // return new Size(desiredWidth, desiredHeight);
+        double desiredWidth = OwningGrid.AreRowDetailsFrozen ?
+            OwningGrid.CellsWidth :
+            Math.Max(OwningGrid.CellsWidth, OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth);
+        
+        desiredWidth -= OwningGrid.ColumnsInternal.RowGroupSpacerColumn.Width.Value;
+        
+        foreach (Control child in Children)
+        {
+            child.Measure(new Size(desiredWidth, double.PositiveInfinity));
+        }
+        
+        double desiredHeight = Math.Max(0, double.IsNaN(ContentHeight) ? 0 : ContentHeight);
+        
+        return new Size(desiredWidth, desiredHeight);
     }
 }

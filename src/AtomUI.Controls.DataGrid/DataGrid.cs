@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using AtomUI.Controls.Cell;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
 using AtomUI.Utils;
@@ -1945,6 +1944,7 @@ public partial class DataGrid : TemplatedControl
         _noCurrentCellChangeCount++;
         try
         {
+            Debug.Assert(ColumnsInternal.RowGroupSpacerColumn != null);
             if (ColumnsInternal.RowGroupSpacerColumn.IsRepresented &&
                 columnIndex == ColumnsInternal.RowGroupSpacerColumn.Index)
             {
@@ -1993,7 +1993,7 @@ public partial class DataGrid : TemplatedControl
             // The DataGrid's CurrentItem is already up-to-date, so we don't need to do anything
             return;
         }
-
+        Debug.Assert(ColumnsInternal.RowGroupSpacerColumn != null);
         int columnIndex = CurrentColumnIndex;
         if (columnIndex == -1)
         {
@@ -2124,7 +2124,7 @@ public partial class DataGrid : TemplatedControl
         }
     }
 
-    internal void OnRowDetailsChanged()
+    internal void NotifyRowDetailsChanged()
     {
         if (!_scrollingByHeight)
         {

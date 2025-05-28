@@ -132,6 +132,45 @@ public partial class DataGrid
         }
     }
     
+    internal int? MouseOverRowIndex
+    {
+        get => _mouseOverRowIndex;
+        set
+        {
+            if (_mouseOverRowIndex != value)
+            {
+                DataGridRow? oldMouseOverRow = null;
+                if (_mouseOverRowIndex.HasValue)
+                {
+                    int oldSlot = SlotFromRowIndex(_mouseOverRowIndex.Value);
+                    if (IsSlotVisible(oldSlot))
+                    {
+                        oldMouseOverRow = DisplayData.GetDisplayedElement(oldSlot) as DataGridRow;
+                    }
+                }
+
+                _mouseOverRowIndex = value;
+
+                // State for the old row needs to be applied after setting the new value
+                if (oldMouseOverRow != null)
+                {
+                    oldMouseOverRow.ApplyState();
+                }
+
+                if (_mouseOverRowIndex.HasValue)
+                {
+                    int newSlot = SlotFromRowIndex(_mouseOverRowIndex.Value);
+                    if (IsSlotVisible(newSlot))
+                    {
+                        DataGridRow? newMouseOverRow = DisplayData.GetDisplayedElement(newSlot) as DataGridRow;
+                        Debug.Assert(newMouseOverRow != null);
+                        newMouseOverRow.ApplyState();
+                    }
+                }
+            }
+        }
+    }
+    
     internal ScrollBar? VerticalScrollBar => _vScrollBar;
     
     #endregion
@@ -146,7 +185,7 @@ public partial class DataGrid
     /// </remarks>
     private const int DefaultColumnDisplayOrder = 10000;
 
-    private const double HorizontalGridLinesThickness = 1;
+    internal const double HorizontalGridLinesThickness = 1;
     private const double MinimumRowHeaderWidth = 4;
     private const double MinimumColumnHeaderHeight = 4;
     internal const double MaximumStarColumnWidth = 10000;

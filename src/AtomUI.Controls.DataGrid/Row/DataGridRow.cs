@@ -3,10 +3,13 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using AtomUI.Controls.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -162,7 +165,7 @@ public partial class DataGridRow : TemplatedControl
 
         // If the DataGrid was scrolled horizontally after our last Arrange, we need to make sure
         // the Cells and Details are Arranged again
-        if (_lastHorizontalOffset != OwningGrid.HorizontalOffset)
+        if (!MathUtils.AreClose(_lastHorizontalOffset, OwningGrid.HorizontalOffset))
         {
             _lastHorizontalOffset = OwningGrid.HorizontalOffset;
             InvalidateHorizontalArrange();
@@ -240,7 +243,7 @@ public partial class DataGridRow : TemplatedControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        RootElement = e.NameScope.Find<Panel>(DATAGRIDROW_elementRoot);
+        RootElement = e.NameScope.Find<Panel>(DataGridRowTheme.FramePart);
         if (RootElement != null)
         {
             ApplyState();
@@ -254,7 +257,7 @@ public partial class DataGridRow : TemplatedControl
             updateVerticalScrollBar = true;
         }
 
-        _cellsElement = e.NameScope.Find<DataGridCellsPresenter>(DATAGRIDROW_elementCells);
+        _cellsElement = e.NameScope.Find<DataGridCellsPresenter>(DataGridRowTheme.CellsPresenterPart);
         if (_cellsElement != null)
         {
             _cellsElement.OwningRow = this;
@@ -269,7 +272,7 @@ public partial class DataGridRow : TemplatedControl
             }
         }
 
-        _detailsElement = e.NameScope.Find<DataGridDetailsPresenter>(DATAGRIDROW_elementDetails);
+        _detailsElement = e.NameScope.Find<DataGridDetailsPresenter>(DataGridRowTheme.DetailsPresenterPart);
         if (_detailsElement != null && OwningGrid != null)
         {
             _detailsElement.OwningRow = this;
@@ -281,10 +284,10 @@ public partial class DataGridRow : TemplatedControl
             }
         }
 
-        _bottomGridLine = e.NameScope.Find<Rectangle>(DATAGRIDROW_elementBottomGridLine);
+        _bottomGridLine = e.NameScope.Find<Rectangle>(DataGridRowTheme.BottomGridLinePart);
         EnsureGridLines();
 
-        _headerElement = e.NameScope.Find<DataGridRowHeader>(DATAGRIDROW_elementRowHeader);
+        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowTheme.RowHeaderPart);
         if (_headerElement != null)
         {
             _headerElement.Owner = this;
@@ -326,7 +329,11 @@ public partial class DataGridRow : TemplatedControl
                 {
                     if (columns[ci] is DataGridTemplateColumn column)
                     {
-                        column.RefreshCellContent((Control)this.Cells[column.Index].Content, nameof(DataGridTemplateColumn.CellTemplate));
+                        var content = (Control?)Cells[column.Index].Content;
+                        if (content != null)
+                        {
+                            column.RefreshCellContent(content, nameof(DataGridTemplateColumn.CellTemplate));
+                        }
                     }
                 }
             }

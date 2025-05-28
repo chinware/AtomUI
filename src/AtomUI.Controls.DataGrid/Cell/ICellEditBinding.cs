@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.Cell;
+namespace AtomUI.Controls;
 
 public interface ICellEditBinding
 {

@@ -72,6 +72,8 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
     /// </param>
     protected override Size ArrangeOverride(Size finalSize)
     {
+        Debug.Assert(OwningGrid is not null);
+        Debug.Assert(OwningGrid.ColumnsInternal.FillerColumn is not null);
         if (finalSize.Height == 0 || OwningGrid == null)
         {
             return base.ArrangeOverride(finalSize);
@@ -79,6 +81,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
 
         if (OwningGrid.RowsPresenterAvailableSize.HasValue)
         {
+            // TODO 需要审查，是否可以删除
             var availableHeight = OwningGrid.RowsPresenterAvailableSize.Value.Height;
         }
 
@@ -211,7 +214,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             }
             else if (element is DataGridRowGroupHeader groupHeader)
             {
-                Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1} Visibility: {2}", groupHeader.RowGroupInfo.Slot, groupHeader.RowGroupInfo.CollectionViewGroup.Key, groupHeader.IsVisible));
+                Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1} Visibility: {2}", groupHeader.RowGroupInfo?.Slot, groupHeader?.RowGroupInfo?.CollectionViewGroup?.Key, groupHeader?.IsVisible));
             }
         }
     }

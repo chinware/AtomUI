@@ -69,7 +69,7 @@ public class DataGridRowHeader : ContentControl
             {
                 return OwningRow.Slot;
             }
-            if (OwningRowGroupHeader != null)
+            if (OwningRowGroupHeader != null && OwningRowGroupHeader.RowGroupInfo != null)
             {
                 return OwningRowGroupHeader.RowGroupInfo.Slot;
             }
@@ -150,7 +150,7 @@ public class DataGridRowHeader : ContentControl
                     PseudoClasses.Set(StdPseudoClass.Current, OwningRow.Slot == OwningGrid.CurrentSlot);
                 }
             }
-            else if (OwningRowGroupHeader != null && OwningGrid != null)
+            else if (OwningRowGroupHeader != null && OwningGrid != null && OwningRowGroupHeader.RowGroupInfo != null)
             {
                 PseudoClasses.Set(StdPseudoClass.Current, OwningRowGroupHeader.RowGroupInfo.Slot == OwningGrid.CurrentSlot);
             }

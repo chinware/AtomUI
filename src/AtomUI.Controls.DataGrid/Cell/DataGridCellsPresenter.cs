@@ -11,7 +11,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls.Cell;
+namespace AtomUI.Controls;
 
 public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
 {

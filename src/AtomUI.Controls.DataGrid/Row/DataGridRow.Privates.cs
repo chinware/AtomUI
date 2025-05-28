@@ -3,15 +3,18 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using System.Diagnostics;
-using System.Drawing;
-using System.Reactive.Disposables;
-using AtomUI.Controls.Cell;
-using Avalonia;
-using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Utilities;
+using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Utils;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -29,7 +32,7 @@ public partial class DataGridRow
     
     // Returns the actual template that should be sued for Details: either explicity set on this row
     // or inherited from the DataGrid
-    private IDataTemplate ActualDetailsTemplate
+    private IDataTemplate? ActualDetailsTemplate
     {
         get
         {
@@ -55,6 +58,7 @@ public partial class DataGridRow
     {
         get
         {
+            Debug.Assert(OwningGrid != null);
             if (_fillerCell == null)
             {
                 _fillerCell = new DataGridCell
@@ -105,11 +109,7 @@ public partial class DataGridRow
         }
     }
     
-    internal bool IsRecycled
-    {
-        get;
-        private set;
-    }
+    internal bool IsRecycled { get; private set; }
 
     internal bool IsRecyclable
     {
@@ -125,12 +125,10 @@ public partial class DataGridRow
 
     internal int? MouseOverColumnIndex
     {
-        get
-        {
-            return _mouseOverColumnIndex;
-        }
+        get => _mouseOverColumnIndex;
         set
         {
+            Debug.Assert(OwningGrid != null);
             if (_mouseOverColumnIndex != value)
             {
                 DataGridCell? oldMouseOverCell = null;
@@ -157,11 +155,7 @@ public partial class DataGridRow
         }
     }
 
-    internal Panel? RootElement
-    {
-        get;
-        private set;
-    }
+    internal Panel? RootElement { get; private set; }
     
     // Height that the row will eventually end up at after a possible details animation has completed
     internal double TargetHeight
@@ -179,17 +173,6 @@ public partial class DataGridRow
                 return DesiredSize.Height + _detailsDesiredHeight - _detailsElement.ContentHeight;
             }
             return DesiredSize.Height;
-        }
-    }
-    
-    // Returns the actual template that should be sued for Details: either explicity set on this row
-    // or inherited from the DataGrid
-    private IDataTemplate ActualDetailsTemplate
-    {
-        get
-        {
-            Debug.Assert(OwningGrid != null);
-            return DetailsTemplate ?? OwningGrid.RowDetailsTemplate;
         }
     }
 
@@ -264,7 +247,7 @@ public partial class DataGridRow
 
         if (!_areHandlersSuspended && OwningGrid != null)
         {
-            IDataTemplate actualDetailsTemplate(IDataTemplate? template) => (template ?? OwningGrid.RowDetailsTemplate);
+            IDataTemplate? actualDetailsTemplate(IDataTemplate? template) => (template ?? OwningGrid.RowDetailsTemplate);
 
             // We don't always want to apply the new Template because they might have set the same one
             // we inherited from the DataGrid
@@ -277,9 +260,10 @@ public partial class DataGridRow
     
     internal void ApplyDetailsTemplate(bool initializeDetailsPreferredHeight)
     {
+        Debug.Assert(OwningGrid != null);
         if (_detailsElement != null && AreDetailsVisible)
         {
-            IDataTemplate oldDetailsTemplate = _appliedDetailsTemplate;
+            IDataTemplate? oldDetailsTemplate = _appliedDetailsTemplate;
             if (ActualDetailsTemplate != null && ActualDetailsTemplate != _appliedDetailsTemplate)
             {
                 if (_detailsContent != null)
@@ -288,7 +272,7 @@ public partial class DataGridRow
                     _detailsContentSizeSubscription = null;
                     if (_detailsLoaded)
                     {
-                        OwningGrid.OnUnloadingRowDetails(this, _detailsContent);
+                        OwningGrid.NotifyUnloadingRowDetails(this, _detailsContent);
                         _detailsLoaded = false;
                     }
                 }
@@ -299,14 +283,14 @@ public partial class DataGridRow
 
                 if (_detailsContent != null)
                 {
-                    if (_detailsContent is Layout.Layoutable layoutableContent)
+                    if (_detailsContent is Layoutable layoutableContent)
                     {
                         layoutableContent.LayoutUpdated += HandleLayoutUpdated;
 
                         _detailsContentSizeSubscription = new CompositeDisposable(2)
                         {
                             Disposable.Create(() => layoutableContent.LayoutUpdated -= HandleLayoutUpdated),
-                            _detailsContent.GetObservable(MarginProperty).Subscribe(HandleMarginChanged)
+                            _detailsContent.GetObservable(MarginProperty).Subscribe(NotifyMarginChanged)
                         };
 
 
@@ -315,7 +299,7 @@ public partial class DataGridRow
                     {
                         _detailsContentSizeSubscription =
                             _detailsContent.GetObservable(MarginProperty)
-                                           .Subscribe(HandleMarginChanged);
+                                           .Subscribe(NotifyMarginChanged);
 
                     }
 
@@ -327,7 +311,7 @@ public partial class DataGridRow
             {
                 _detailsLoaded              = true;
                 _detailsContent.DataContext = DataContext;
-                OwningGrid.OnLoadingRowDetails(this, _detailsContent);
+                OwningGrid.NotifyLoadingRowDetails(this, _detailsContent);
             }
             if (initializeDetailsPreferredHeight && double.IsNaN(_detailsDesiredHeight) &&
                 _appliedDetailsTemplate != null && _detailsElement.Children.Count > 0)
@@ -356,8 +340,8 @@ public partial class DataGridRow
                 throw DataGridError.DataGridRow.InvalidRowIndexCannotCompleteOperation();
             }
 
-            var newValue = (bool)e.NewValue;
-            OwningGrid.OnRowDetailsVisibilityPropertyChanged(Index, newValue);
+            var newValue = (bool)(e.NewValue ?? false);
+            OwningGrid.NotifyRowDetailsVisibilityPropertyChanged(Index, newValue);
             SetDetailsVisibilityInternal(newValue, raiseNotification: true, animate: true);
         }
     }
@@ -385,6 +369,7 @@ public partial class DataGridRow
 
     internal void ApplyHeaderStatus()
     {
+        Debug.Assert(OwningGrid != null);
         if (_headerElement != null && OwningGrid.AreRowHeadersVisible)
         {
             _headerElement.UpdatePseudoClasses();
@@ -467,7 +452,7 @@ public partial class DataGridRow
         }
     }
 
-    internal void EnsureHeaderStyleAndVisibility(Styling.Style previousStyle)
+    internal void EnsureHeaderStyleAndVisibility(Style? previousStyle)
     {
         if (_headerElement != null && OwningGrid != null)
         {
@@ -505,43 +490,16 @@ public partial class DataGridRow
         _bottomGridLine = null;
     }
 
-    private void HandleCellAdded(object sender, DataGridCellEventArgs e)
-    {
-        _cellsElement?.Children.Add(e.Cell);
-    }
-
-    private void HandleCellRemoved(object sender, DataGridCellEventArgs e)
-    {
-        _cellsElement?.Children.Remove(e.Cell);
-    }
-
-    private void HandlePointerPressed(PointerPressedEventArgs e)
-    {
-        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-        {
-            return;
-        }
-
-        if (OwningGrid != null)
-        {
-            OwningGrid.IsDoubleClickRecordsClickOnCall(this);
-        }
-    }
-
-    private void HandleRowDetailsChanged()
-    {
-        OwningGrid?.OnRowDetailsChanged();
-    }
-
     private void UnloadDetailsTemplate(bool recycle)
     {
+        Debug.Assert(OwningGrid != null);
         if (_detailsElement != null)
         {
             if (_detailsContent != null)
             {
                 if (_detailsLoaded)
                 {
-                    OwningGrid.OnUnloadingRowDetails(this, _detailsContent);
+                    OwningGrid.NotifyUnloadingRowDetails(this, _detailsContent);
                 }
                 _detailsContent.DataContext = null;
                 if (!recycle)
@@ -612,17 +570,18 @@ public partial class DataGridRow
     double? _previousDetailsHeight = null;
 
     //TODO Animation
-    private void HandleHeightChanged(double newValue)
+    private void NotifyHeightChanged(double newValue)
     {
         if (_previousDetailsHeight.HasValue)
         {
             var oldValue = _previousDetailsHeight.Value;
             _previousDetailsHeight = newValue;
-            if (newValue != oldValue && newValue != _detailsDesiredHeight)
+            if (!MathUtils.AreClose(newValue, oldValue) && !MathUtils.AreClose(newValue, _detailsDesiredHeight))
             {
 
                 if (AreDetailsVisible && _appliedDetailsTemplate != null)
                 {
+                    Debug.Assert(_detailsElement != null);
                     // Update the new desired height for RowDetails
                     _detailsDesiredHeight = newValue;
 
@@ -630,7 +589,7 @@ public partial class DataGridRow
 
                     // Calling this when details are not visible invalidates during layout when we have no work
                     // to do.  In certain scenarios, this could cause a layout cycle
-                    OnRowDetailsChanged();
+                    NotifyRowDetailsChanged();
                 }
             }
         }
@@ -639,26 +598,34 @@ public partial class DataGridRow
             _previousDetailsHeight = newValue;
         }
     }
-
-    private void HandleSizeChanged(Rect newValue)
+    
+    private void NotifyRowDetailsChanged()
     {
-        HandleHeightChanged(newValue.Height);
+        OwningGrid?.NotifyRowDetailsChanged();
     }
     
-    private void HandleMarginChanged(Thickness newValue)
+    private void NotifySizeChanged(Rect newValue)
+    {
+        NotifyHeightChanged(newValue.Height);
+    }
+    
+    private void NotifyMarginChanged(Thickness newValue)
     {
         if (_detailsContent != null)
-            HandleSizeChanged(_detailsContent.Bounds.Inflate(newValue));
+        {
+            NotifySizeChanged(_detailsContent.Bounds.Inflate(newValue));
+        }
+        
     }
     
-    private void HandleLayoutUpdated(object sender, EventArgs e)
+    private void HandleLayoutUpdated(object? sender, EventArgs e)
     {
         if (_detailsContent != null)
         {
             var margin = _detailsContent.Margin;
             var height = _detailsContent.DesiredSize.Height + margin.Top + margin.Bottom;
 
-            HandleHeightChanged(height);
+            NotifyHeightChanged(height);
         }
     }
 
@@ -707,80 +674,26 @@ public partial class DataGridRow
                 _detailsElement.ContentHeight = 0;
             }
 
-            OnRowDetailsChanged();
+            NotifyRowDetailsChanged();
 
             if (raiseNotification)
             {
+                Debug.Assert(_detailsContent != null);
                 OwningGrid.OnRowDetailsVisibilityChanged(new DataGridRowDetailsEventArgs(this, _detailsContent));
             }
         }
     }
-
-    internal void ApplyDetailsTemplate(bool initializeDetailsPreferredHeight)
+    
+    private void SetValueNoCallback<T>(AvaloniaProperty<T> property, T value, BindingPriority priority = BindingPriority.LocalValue)
     {
-        if (_detailsElement != null && AreDetailsVisible)
+        _areHandlersSuspended = true;
+        try
         {
-            IDataTemplate oldDetailsTemplate = _appliedDetailsTemplate;
-            if (ActualDetailsTemplate != null && ActualDetailsTemplate != _appliedDetailsTemplate)
-            {
-                if (_detailsContent != null)
-                {
-                    _detailsContentSizeSubscription?.Dispose();
-                    _detailsContentSizeSubscription = null;
-                    if (_detailsLoaded)
-                    {
-                        OwningGrid.OnUnloadingRowDetails(this, _detailsContent);
-                        _detailsLoaded = false;
-                    }
-                }
-                _detailsElement.Children.Clear();
-
-                _detailsContent         = ActualDetailsTemplate.Build(DataContext);
-                _appliedDetailsTemplate = ActualDetailsTemplate;
-
-                if (_detailsContent != null)
-                {
-                    if (_detailsContent is Layout.Layoutable layoutableContent)
-                    {
-                        layoutableContent.LayoutUpdated += HandleLayoutUpdated;
-
-                        _detailsContentSizeSubscription = new CompositeDisposable(2)
-                        {
-                            Disposable.Create(() => layoutableContent.LayoutUpdated -= HandleLayoutUpdated),
-                            _detailsContent.GetObservable(MarginProperty).Subscribe(HandleMarginChanged)
-                        };
-
-
-                    }
-                    else
-                    {
-                        _detailsContentSizeSubscription =
-                            _detailsContent.GetObservable(MarginProperty)
-                                           .Subscribe(HandleMarginChanged);
-
-                    }
-
-                    _detailsElement.Children.Add(_detailsContent);
-                }
-            }
-
-            if (_detailsContent != null && !_detailsLoaded)
-            {
-                _detailsLoaded              = true;
-                _detailsContent.DataContext = DataContext;
-                OwningGrid.OnLoadingRowDetails(this, _detailsContent);
-            }
-            if (initializeDetailsPreferredHeight && double.IsNaN(_detailsDesiredHeight) &&
-                _appliedDetailsTemplate != null && _detailsElement.Children.Count > 0)
-            {
-                EnsureDetailsDesiredHeight();
-            }
-            else if (oldDetailsTemplate == null)
-            {
-                _detailsDesiredHeight = double.NaN;
-                EnsureDetailsDesiredHeight();
-                _detailsElement.ContentHeight = _detailsDesiredHeight;
-            }
+            SetValue(property, value, priority);
+        }
+        finally
+        {
+            _areHandlersSuspended = false;
         }
     }
 }
