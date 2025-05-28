@@ -21,7 +21,7 @@ public class DataGridAutoGeneratingColumnEventArgs : CancelEventArgs
     /// <param name="column">
     /// The generated column.
     /// </param>
-    public DataGridAutoGeneratingColumnEventArgs(string propertyName, Type propertyType, DataGridColumn column)
+    public DataGridAutoGeneratingColumnEventArgs(string propertyName, Type propertyType, DataGridColumn? column)
     {
         Column       = column;
         PropertyName = propertyName;
@@ -31,7 +31,7 @@ public class DataGridAutoGeneratingColumnEventArgs : CancelEventArgs
     /// <summary>
     /// Gets the generated column.
     /// </summary>
-    public DataGridColumn Column
+    public DataGridColumn? Column
     {
         get;
         set;

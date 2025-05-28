@@ -52,16 +52,15 @@ internal class DataGridSelectedItemsCollection : IList
     {
         get
         {
-            // if (index < 0 || index >= _selectedSlotsTable.IndexCount)
-            // {
-            //     throw DataGridError.DataGrid.ValueMustBeBetween("index", "Index", 0, true,
-            //         _selectedSlotsTable.IndexCount, false);
-            // }
-            //
-            // int slot = _selectedSlotsTable.GetNthIndex(index);
-            // Debug.Assert(slot > -1);
-            // return OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
-            return null;
+            if (index < 0 || index >= _selectedSlotsTable.IndexCount)
+            {
+                throw DataGridError.DataGrid.ValueMustBeBetween("index", "Index", 0, true,
+                    _selectedSlotsTable.IndexCount, false);
+            }
+            
+            int slot = _selectedSlotsTable.GetNthIndex(index);
+            Debug.Assert(slot > -1);
+            return OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
         }
 
         set => throw new NotSupportedException();
@@ -69,79 +68,76 @@ internal class DataGridSelectedItemsCollection : IList
 
     public int Add(object? dataItem)
     {
-        // if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
-        // {
-        //     throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
-        // }
-        //
-        // int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
-        // if (itemIndex == -1)
-        // {
-        //     throw DataGridError.DataGrid.ItemIsNotContainedInTheItemsSource("dataItem");
-        // }
-        //
-        // Debug.Assert(itemIndex >= 0);
-        //
-        // int slot = OwningGrid.SlotFromRowIndex(itemIndex);
-        // if (_selectedSlotsTable.RangeCount == 0)
-        // {
-        //     OwningGrid.SelectedItem = dataItem;
-        // }
-        // else
-        // {
-        //     OwningGrid.SetRowSelection(slot, true /*isSelected*/, false /*setAnchorSlot*/);
-        // }
+        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
+        {
+            throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
+        }
+        
+        int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
+        if (itemIndex == -1)
+        {
+            throw DataGridError.DataGrid.ItemIsNotContainedInTheItemsSource("dataItem");
+        }
+        
+        Debug.Assert(itemIndex >= 0);
+        
+        int slot = OwningGrid.SlotFromRowIndex(itemIndex);
+        if (_selectedSlotsTable.RangeCount == 0)
+        {
+            OwningGrid.SelectedItem = dataItem;
+        }
+        else
+        {
+            OwningGrid.SetRowSelection(slot, true /*isSelected*/, false /*setAnchorSlot*/);
+        }
 
-        // return _selectedSlotsTable.IndexOf(slot);
-        return -1;
+        return _selectedSlotsTable.IndexOf(slot);
     }
 
     public void Clear()
     {
-        // if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
-        // {
-        //     throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
-        // }
-        //
-        // if (_selectedSlotsTable.RangeCount > 0)
-        // {
-        //     // Clearing the selection does not reset the potential current cell.
-        //     if (!OwningGrid.CommitEdit(DataGridEditingUnit.Row, true /*exitEditing*/))
-        //     {
-        //         // Edited value couldn't be committed or aborted
-        //         return;
-        //     }
-        //
-        //     OwningGrid.ClearRowSelection(true /*resetAnchorSlot*/);
-        // }
+        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
+        {
+            throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
+        }
+        
+        if (_selectedSlotsTable.RangeCount > 0)
+        {
+            // Clearing the selection does not reset the potential current cell.
+            if (!OwningGrid.CommitEdit(DataGridEditingUnit.Row, true /*exitEditing*/))
+            {
+                // Edited value couldn't be committed or aborted
+                return;
+            }
+        
+            OwningGrid.ClearRowSelection(true /*resetAnchorSlot*/);
+        }
     }
 
     public bool Contains(object? dataItem)
     {
-        // int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
-        // if (itemIndex == -1)
-        // {
-        //     return false;
-        // }
-        //
-        // Debug.Assert(itemIndex >= 0);
-        //
-        // return ContainsSlot(OwningGrid.SlotFromRowIndex(itemIndex));
-        return false;
+        int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
+        if (itemIndex == -1)
+        {
+            return false;
+        }
+        
+        Debug.Assert(itemIndex >= 0);
+        
+        return ContainsSlot(OwningGrid.SlotFromRowIndex(itemIndex));
     }
 
     public int IndexOf(object? dataItem)
     {
-        // int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
-        // if (itemIndex == -1)
-        // {
-        //     return -1;
-        // }
-        //
-        // Debug.Assert(itemIndex >= 0);
-        // int slot = OwningGrid.SlotFromRowIndex(itemIndex);
-        // return _selectedSlotsTable.IndexOf(slot);
-        return -1;
+        int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
+        if (itemIndex == -1)
+        {
+            return -1;
+        }
+        
+        Debug.Assert(itemIndex >= 0);
+        int slot = OwningGrid.SlotFromRowIndex(itemIndex);
+        return _selectedSlotsTable.IndexOf(slot);
     }
 
     public void Insert(int index, object? dataItem)
@@ -151,54 +147,54 @@ internal class DataGridSelectedItemsCollection : IList
 
     public void Remove(object? dataItem)
     {
-        // if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
-        // {
-        //     throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
-        // }
-        //
-        // int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
-        // if (itemIndex == -1)
-        // {
-        //     return;
-        // }
-        //
-        // Debug.Assert(itemIndex >= 0);
-        //
-        // if (itemIndex == OwningGrid.CurrentSlot &&
-        //     !OwningGrid.CommitEdit(DataGridEditingUnit.Row, true /*exitEditing*/))
-        // {
-        //     // Edited value couldn't be committed or aborted
-        //     return;
-        // }
-        //
-        // OwningGrid.SetRowSelection(OwningGrid.SlotFromRowIndex(itemIndex), false /*isSelected*/,
-        //     false /*setAnchorSlot*/);
+        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
+        {
+            throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
+        }
+        
+        int itemIndex = OwningGrid.DataConnection.IndexOf(dataItem);
+        if (itemIndex == -1)
+        {
+            return;
+        }
+        
+        Debug.Assert(itemIndex >= 0);
+        
+        if (itemIndex == OwningGrid.CurrentSlot &&
+            !OwningGrid.CommitEdit(DataGridEditingUnit.Row, true /*exitEditing*/))
+        {
+            // Edited value couldn't be committed or aborted
+            return;
+        }
+        
+        OwningGrid.SetRowSelection(OwningGrid.SlotFromRowIndex(itemIndex), false /*isSelected*/,
+            false /*setAnchorSlot*/);
     }
 
     public void RemoveAt(int index)
     {
-        // if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
-        // {
-        //     throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
-        // }
-        //
-        // if (index < 0 || index >= _selectedSlotsTable.IndexCount)
-        // {
-        //     throw DataGridError.DataGrid.ValueMustBeBetween("index", "Index", 0, true, _selectedSlotsTable.IndexCount,
-        //         false);
-        // }
-        //
-        // int rowIndex = _selectedSlotsTable.GetNthIndex(index);
-        // Debug.Assert(rowIndex > -1);
-        //
-        // if (rowIndex == OwningGrid.CurrentSlot &&
-        //     !OwningGrid.CommitEdit(DataGridEditingUnit.Row, true /*exitEditing*/))
-        // {
-        //     // Edited value couldn't be committed or aborted
-        //     return;
-        // }
-        //
-        // OwningGrid.SetRowSelection(rowIndex, false /*isSelected*/, false /*setAnchorSlot*/);
+        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
+        {
+            throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
+        }
+        
+        if (index < 0 || index >= _selectedSlotsTable.IndexCount)
+        {
+            throw DataGridError.DataGrid.ValueMustBeBetween("index", "Index", 0, true, _selectedSlotsTable.IndexCount,
+                false);
+        }
+        
+        int rowIndex = _selectedSlotsTable.GetNthIndex(index);
+        Debug.Assert(rowIndex > -1);
+        
+        if (rowIndex == OwningGrid.CurrentSlot &&
+            !OwningGrid.CommitEdit(DataGridEditingUnit.Row, true /*exitEditing*/))
+        {
+            // Edited value couldn't be committed or aborted
+            return;
+        }
+        
+        OwningGrid.SetRowSelection(rowIndex, false /*isSelected*/, false /*setAnchorSlot*/);
     }
 
     public void CopyTo(System.Array array, int index)
@@ -208,17 +204,16 @@ internal class DataGridSelectedItemsCollection : IList
 
     public IEnumerator GetEnumerator()
     {
-        // Debug.Assert(OwningGrid != null);
-        // Debug.Assert(OwningGrid.DataConnection != null);
-        // Debug.Assert(_selectedSlotsTable != null);
-        //
-        // foreach (int slot in _selectedSlotsTable.GetIndexes())
-        // {
-        //     int rowIndex = OwningGrid.RowIndexFromSlot(slot);
-        //     Debug.Assert(rowIndex > -1);
-        //     yield return OwningGrid.DataConnection.GetDataItem(rowIndex);
-        // }
-        return default!;
+        Debug.Assert(OwningGrid != null);
+        Debug.Assert(OwningGrid.DataConnection != null);
+        Debug.Assert(_selectedSlotsTable != null);
+        
+        foreach (int slot in _selectedSlotsTable.GetIndexes())
+        {
+            int rowIndex = OwningGrid.RowIndexFromSlot(slot);
+            Debug.Assert(rowIndex > -1);
+            yield return OwningGrid.DataConnection.GetDataItem(rowIndex);
+        }
     }
 
     internal void ClearRows()
@@ -234,33 +229,36 @@ internal class DataGridSelectedItemsCollection : IList
 
     internal bool ContainsAll(int startSlot, int endSlot)
     {
-        // int itemSlot = OwningGrid.RowGroupHeadersTable.GetNextGap(startSlot - 1);
-        // while (itemSlot <= endSlot)
-        // {
-        //     // Skip over the RowGroupHeaderSlots
-        //     int nextRowGroupHeaderSlot = OwningGrid.RowGroupHeadersTable.GetNextIndex(itemSlot);
-        //     int lastItemSlot = nextRowGroupHeaderSlot == -1 ? endSlot : Math.Min(endSlot, nextRowGroupHeaderSlot - 1);
-        //     if (!_selectedSlotsTable.ContainsAll(itemSlot, lastItemSlot))
-        //     {
-        //         return false;
-        //     }
-        //
-        //     itemSlot = OwningGrid.RowGroupHeadersTable.GetNextGap(lastItemSlot);
-        // }
+        int itemSlot = OwningGrid.RowGroupHeadersTable.GetNextGap(startSlot - 1);
+        while (itemSlot <= endSlot)
+        {
+            // Skip over the RowGroupHeaderSlots
+            int nextRowGroupHeaderSlot = OwningGrid.RowGroupHeadersTable.GetNextIndex(itemSlot);
+            int lastItemSlot = nextRowGroupHeaderSlot == -1 ? endSlot : Math.Min(endSlot, nextRowGroupHeaderSlot - 1);
+            if (!_selectedSlotsTable.ContainsAll(itemSlot, lastItemSlot))
+            {
+                return false;
+            }
+        
+            itemSlot = OwningGrid.RowGroupHeadersTable.GetNextGap(lastItemSlot);
+        }
 
         return true;
     }
 
     // Called when an item is deleted from the ItemsSource as opposed to just being unselected
-    internal void Delete(int slot, object item)
+    internal void Delete(int slot, object? item)
     {
-        // if (_oldSelectedSlotsTable.Contains(slot))
-        // {
-        //     OwningGrid.SelectionHasChanged = true;
-        // }
-        //
-        // DeleteSlot(slot);
-        // _selectedItemsCache.Remove(item);
+        if (_oldSelectedSlotsTable.Contains(slot))
+        {
+            OwningGrid.SelectionHasChanged = true;
+        }
+        
+        DeleteSlot(slot);
+        if (item != null)
+        {
+            _selectedItemsCache.Remove(item);
+        }
     }
 
     internal void DeleteSlot(int slot)
@@ -287,178 +285,185 @@ internal class DataGridSelectedItemsCollection : IList
 
     internal SelectionChangedEventArgs GetSelectionChangedEventArgs()
     {
-        // List<object> addedSelectedItems   = new List<object>();
-        // List<object> removedSelectedItems = new List<object>();
-        //
-        // // Compare the old selected indexes with the current selection to determine which items
-        // // have been added and removed since the last time this method was called
-        // foreach (int newSlot in _selectedSlotsTable.GetIndexes())
-        // {
-        //     object newItem = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(newSlot));
-        //     if (_oldSelectedSlotsTable.Contains(newSlot))
-        //     {
-        //         _oldSelectedSlotsTable.RemoveValue(newSlot);
-        //         _oldSelectedItemsCache.Remove(newItem);
-        //     }
-        //     else
-        //     {
-        //         addedSelectedItems.Add(newItem);
-        //     }
-        // }
-        //
-        // foreach (object oldItem in _oldSelectedItemsCache)
-        // {
-        //     removedSelectedItems.Add(oldItem);
-        // }
-        //
-        // // The current selection becomes the old selection
-        // _oldSelectedSlotsTable = _selectedSlotsTable.Copy();
-        // _oldSelectedItemsCache = new List<object>(_selectedItemsCache);
-        //
-        // return
-        //     new SelectionChangedEventArgs(DataGrid.SelectionChangedEvent, removedSelectedItems, addedSelectedItems)
-        //     {
-        //         Source = OwningGrid
-        //     };
-        return default!;
+        List<object> addedSelectedItems   = new List<object>();
+        List<object> removedSelectedItems = new List<object>();
+        
+        // Compare the old selected indexes with the current selection to determine which items
+        // have been added and removed since the last time this method was called
+        foreach (int newSlot in _selectedSlotsTable.GetIndexes())
+        {
+            object? newItem = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(newSlot));
+            Debug.Assert(newItem != null);
+            if (_oldSelectedSlotsTable.Contains(newSlot))
+            {
+                _oldSelectedSlotsTable.RemoveValue(newSlot);
+                _oldSelectedItemsCache.Remove(newItem);
+            }
+            else
+            {
+                addedSelectedItems.Add(newItem);
+            }
+        }
+        
+        foreach (object oldItem in _oldSelectedItemsCache)
+        {
+            removedSelectedItems.Add(oldItem);
+        }
+        
+        // The current selection becomes the old selection
+        _oldSelectedSlotsTable = _selectedSlotsTable.Copy();
+        _oldSelectedItemsCache = new List<object>(_selectedItemsCache);
+        
+        return
+            new SelectionChangedEventArgs(DataGrid.SelectionChangedEvent, removedSelectedItems, addedSelectedItems)
+            {
+                Source = OwningGrid
+            };
     }
 
     internal void InsertIndex(int slot)
     {
-        // _selectedSlotsTable.InsertIndex(slot);
-        // _oldSelectedSlotsTable.InsertIndex(slot);
-        //
-        // // It's possible that we're inserting an item that was just removed.  If that's the case,
-        // // and the re-inserted item used to be selected, we want to update the _oldSelectedSlotsTable
-        // // to include the item's new index within the collection.
-        // int rowIndex = OwningGrid.RowIndexFromSlot(slot);
-        // if (rowIndex != -1)
-        // {
-        //     object insertedItem = OwningGrid.DataConnection.GetDataItem(rowIndex);
-        //     if (insertedItem != null && _oldSelectedItemsCache.Contains(insertedItem))
-        //     {
-        //         _oldSelectedSlotsTable.AddValue(slot, true);
-        //     }
-        // }
+        _selectedSlotsTable.InsertIndex(slot);
+        _oldSelectedSlotsTable.InsertIndex(slot);
+        
+        // It's possible that we're inserting an item that was just removed.  If that's the case,
+        // and the re-inserted item used to be selected, we want to update the _oldSelectedSlotsTable
+        // to include the item's new index within the collection.
+        int rowIndex = OwningGrid.RowIndexFromSlot(slot);
+        if (rowIndex != -1)
+        {
+            object? insertedItem = OwningGrid.DataConnection.GetDataItem(rowIndex);
+            if (insertedItem != null && _oldSelectedItemsCache.Contains(insertedItem))
+            {
+                _oldSelectedSlotsTable.AddValue(slot, true);
+            }
+        }
     }
 
     internal void SelectSlot(int slot, bool select)
     {
-        // if (OwningGrid.RowGroupHeadersTable.Contains(slot))
-        // {
-        //     return;
-        // }
-        //
-        // if (select)
-        // {
-        //     if (!_selectedSlotsTable.Contains(slot))
-        //     {
-        //         _selectedItemsCache.Add(OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot)));
-        //     }
-        //
-        //     _selectedSlotsTable.AddValue(slot, true);
-        // }
-        // else
-        // {
-        //     if (_selectedSlotsTable.Contains(slot))
-        //     {
-        //         _selectedItemsCache.Remove(OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot)));
-        //     }
-        //
-        //     _selectedSlotsTable.RemoveValue(slot);
-        // }
+        if (OwningGrid.RowGroupHeadersTable.Contains(slot))
+        {
+            return;
+        }
+        
+        if (select)
+        {
+            if (!_selectedSlotsTable.Contains(slot))
+            {
+                var item = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+                Debug.Assert(item != null);
+                _selectedItemsCache.Add(item);
+            }
+        
+            _selectedSlotsTable.AddValue(slot, true);
+        }
+        else
+        {
+            if (_selectedSlotsTable.Contains(slot))
+            {
+                var item = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+                Debug.Assert(item != null);
+                _selectedItemsCache.Remove(item);
+            }
+        
+            _selectedSlotsTable.RemoveValue(slot);
+        }
     }
 
     internal void SelectSlots(int startSlot, int endSlot, bool select)
     {
-        // int itemSlot    = OwningGrid.RowGroupHeadersTable.GetNextGap(startSlot - 1);
-        // int endItemSlot = OwningGrid.RowGroupHeadersTable.GetPreviousGap(endSlot + 1);
-        // if (select)
-        // {
-        //     while (itemSlot <= endItemSlot)
-        //     {
-        //         // Add the newly selected item slots by skipping over the RowGroupHeaderSlots
-        //         int nextRowGroupHeaderSlot = OwningGrid.RowGroupHeadersTable.GetNextIndex(itemSlot);
-        //         int lastItemSlot = nextRowGroupHeaderSlot == -1
-        //             ? endItemSlot
-        //             : Math.Min(endItemSlot, nextRowGroupHeaderSlot - 1);
-        //         for (int slot = itemSlot; slot <= lastItemSlot; slot++)
-        //         {
-        //             if (!_selectedSlotsTable.Contains(slot))
-        //             {
-        //                 _selectedItemsCache.Add(
-        //                     OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot)));
-        //             }
-        //         }
-        //
-        //         _selectedSlotsTable.AddValues(itemSlot, lastItemSlot - itemSlot + 1, true);
-        //         itemSlot = OwningGrid.RowGroupHeadersTable.GetNextGap(lastItemSlot);
-        //     }
-        // }
-        // else
-        // {
-        //     while (itemSlot <= endItemSlot)
-        //     {
-        //         // Remove the unselected item slots by skipping over the RowGroupHeaderSlots
-        //         int nextRowGroupHeaderSlot = OwningGrid.RowGroupHeadersTable.GetNextIndex(itemSlot);
-        //         int lastItemSlot = nextRowGroupHeaderSlot == -1
-        //             ? endItemSlot
-        //             : Math.Min(endItemSlot, nextRowGroupHeaderSlot - 1);
-        //         for (int slot = itemSlot; slot <= lastItemSlot; slot++)
-        //         {
-        //             if (_selectedSlotsTable.Contains(slot))
-        //             {
-        //                 _selectedItemsCache.Remove(
-        //                     OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot)));
-        //             }
-        //         }
-        //
-        //         _selectedSlotsTable.RemoveValues(itemSlot, lastItemSlot - itemSlot + 1);
-        //         itemSlot = OwningGrid.RowGroupHeadersTable.GetNextGap(lastItemSlot);
-        //     }
-        // }
+        int itemSlot    = OwningGrid.RowGroupHeadersTable.GetNextGap(startSlot - 1);
+        int endItemSlot = OwningGrid.RowGroupHeadersTable.GetPreviousGap(endSlot + 1);
+        if (select)
+        {
+            while (itemSlot <= endItemSlot)
+            {
+                // Add the newly selected item slots by skipping over the RowGroupHeaderSlots
+                int nextRowGroupHeaderSlot = OwningGrid.RowGroupHeadersTable.GetNextIndex(itemSlot);
+                int lastItemSlot = nextRowGroupHeaderSlot == -1
+                    ? endItemSlot
+                    : Math.Min(endItemSlot, nextRowGroupHeaderSlot - 1);
+                for (int slot = itemSlot; slot <= lastItemSlot; slot++)
+                {
+                    if (!_selectedSlotsTable.Contains(slot))
+                    {
+                        var item =
+                            OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+                        Debug.Assert(item != null);
+                        _selectedItemsCache.Add(item);
+                    }
+                }
+        
+                _selectedSlotsTable.AddValues(itemSlot, lastItemSlot - itemSlot + 1, true);
+                itemSlot = OwningGrid.RowGroupHeadersTable.GetNextGap(lastItemSlot);
+            }
+        }
+        else
+        {
+            while (itemSlot <= endItemSlot)
+            {
+                // Remove the unselected item slots by skipping over the RowGroupHeaderSlots
+                int nextRowGroupHeaderSlot = OwningGrid.RowGroupHeadersTable.GetNextIndex(itemSlot);
+                int lastItemSlot = nextRowGroupHeaderSlot == -1
+                    ? endItemSlot
+                    : Math.Min(endItemSlot, nextRowGroupHeaderSlot - 1);
+                for (int slot = itemSlot; slot <= lastItemSlot; slot++)
+                {
+                    if (_selectedSlotsTable.Contains(slot))
+                    {
+                        var item = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(slot));
+                        Debug.Assert(item != null);
+                        _selectedItemsCache.Remove(item);
+                    }
+                }
+        
+                _selectedSlotsTable.RemoveValues(itemSlot, lastItemSlot - itemSlot + 1);
+                itemSlot = OwningGrid.RowGroupHeadersTable.GetNextGap(lastItemSlot);
+            }
+        }
     }
 
     internal void UpdateIndexes()
     {
-        // _oldSelectedSlotsTable.Clear();
-        // _selectedSlotsTable.Clear();
-        //
-        // if (OwningGrid.DataConnection.DataSource == null)
-        // {
-        //     if (SelectedItemsCache.Count > 0)
-        //     {
-        //         OwningGrid.SelectionHasChanged = true;
-        //         SelectedItemsCache.Clear();
-        //     }
-        // }
-        // else
-        // {
-        //     List<object> tempSelectedItemsCache = new List<object>();
-        //     foreach (object item in _selectedItemsCache)
-        //     {
-        //         int index = OwningGrid.DataConnection.IndexOf(item);
-        //         if (index != -1)
-        //         {
-        //             tempSelectedItemsCache.Add(item);
-        //             _selectedSlotsTable.AddValue(OwningGrid.SlotFromRowIndex(index), true);
-        //         }
-        //     }
-        //
-        //     foreach (object item in _oldSelectedItemsCache)
-        //     {
-        //         int index = OwningGrid.DataConnection.IndexOf(item);
-        //         if (index == -1)
-        //         {
-        //             OwningGrid.SelectionHasChanged = true;
-        //         }
-        //         else
-        //         {
-        //             _oldSelectedSlotsTable.AddValue(OwningGrid.SlotFromRowIndex(index), true);
-        //         }
-        //     }
-        //
-        //     _selectedItemsCache = tempSelectedItemsCache;
-        // }
+        _oldSelectedSlotsTable.Clear();
+        _selectedSlotsTable.Clear();
+        
+        if (OwningGrid.DataConnection.DataSource == null)
+        {
+            if (SelectedItemsCache.Count > 0)
+            {
+                OwningGrid.SelectionHasChanged = true;
+                SelectedItemsCache.Clear();
+            }
+        }
+        else
+        {
+            List<object> tempSelectedItemsCache = new List<object>();
+            foreach (object item in _selectedItemsCache)
+            {
+                int index = OwningGrid.DataConnection.IndexOf(item);
+                if (index != -1)
+                {
+                    tempSelectedItemsCache.Add(item);
+                    _selectedSlotsTable.AddValue(OwningGrid.SlotFromRowIndex(index), true);
+                }
+            }
+        
+            foreach (object item in _oldSelectedItemsCache)
+            {
+                int index = OwningGrid.DataConnection.IndexOf(item);
+                if (index == -1)
+                {
+                    OwningGrid.SelectionHasChanged = true;
+                }
+                else
+                {
+                    _oldSelectedSlotsTable.AddValue(OwningGrid.SlotFromRowIndex(index), true);
+                }
+            }
+        
+            _selectedItemsCache = tempSelectedItemsCache;
+        }
     }
 }
