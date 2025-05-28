@@ -319,6 +319,7 @@ public partial class DataGrid
     /// <param name="e">The event arguments.</param>
     private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
+
     }
 
     #endregion
