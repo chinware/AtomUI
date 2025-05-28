@@ -306,6 +306,50 @@ internal class DataGridDataConnection
         }
     }
     
+    // Assumes index >= 0, returns null if index >= Count
+    public object? GetDataItem(int index)
+    {
+        Debug.Assert(index >= 0);
+
+        if (DataSource is DataGridCollectionView collectionView)
+        {
+            return (index < collectionView.Count) ? collectionView.GetItemAt(index) : null;
+        }
+
+        IList? list = List;
+        if (list != null)
+        {
+            return (index < list.Count) ? list[index] : null;
+        }
+
+        IEnumerable? enumerable = DataSource;
+        if (enumerable != null)
+        {
+            IEnumerator enumerator = enumerable.GetEnumerator();
+            try
+            {
+                int i = -1;
+                while (enumerator.MoveNext() && i < index)
+                {
+                    i++;
+                    if (i == index)
+                    {
+                        return enumerator.Current;
+                    }
+                }
+            }
+            finally
+            {
+                if (enumerator is IDisposable disposable)
+                {
+                    disposable.Dispose();    
+                }
+            }
+            
+        }
+        return null;
+    }
+    
     public bool GetPropertyIsReadOnly(string propertyName)
     {
         if (DataType != null)
@@ -605,5 +649,5 @@ internal class DataGridDataConnection
         //
         // _owner.UpdatePseudoClasses();
     }
-
+    
 }
