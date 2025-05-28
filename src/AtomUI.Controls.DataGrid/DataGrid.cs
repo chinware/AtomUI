@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -560,4 +561,160 @@ public partial class DataGrid : TemplatedControl
                 value <= MaxHeadersThickness);
     }
     #endregion
+
+    #region 公共事件定义
+    
+    public static readonly RoutedEvent<SelectionChangedEventArgs> SelectionChangedEvent =
+        RoutedEvent.Register<DataGrid, SelectionChangedEventArgs>(nameof(SelectionChanged), RoutingStrategies.Bubble);
+
+    /// <summary>
+    /// Occurs one time for each public, non-static property in the bound data type when the
+    /// <see cref="P:Avalonia.Controls.DataGrid.ItemsSource" /> property is changed and the
+    /// <see cref="P:Avalonia.Controls.DataGrid.AutoGenerateColumns" /> property is true.
+    /// </summary>
+    public event EventHandler<DataGridAutoGeneratingColumnEventArgs>? AutoGeneratingColumn;
+
+    /// <summary>
+    /// Occurs before a cell or row enters editing mode.
+    /// </summary>
+    public event EventHandler<DataGridBeginningEditEventArgs>? BeginningEdit;
+
+    /// <summary>
+    /// Occurs after cell editing has ended.
+    /// </summary>
+    public event EventHandler<DataGridCellEditEndedEventArgs>? CellEditEnded;
+
+    /// <summary>
+    /// Occurs immediately before cell editing has ended.
+    /// </summary>
+    public event EventHandler<DataGridCellEditEndingEventArgs>? CellEditEnding;
+
+    /// <summary>
+    /// Occurs when cell is mouse-pressed.
+    /// </summary>
+    public event EventHandler<DataGridCellPointerPressedEventArgs>? CellPointerPressed;
+
+    /// <summary>
+    /// Occurs when the <see cref="P:Avalonia.Controls.DataGridColumn.DisplayIndex" />
+    /// property of a column changes.
+    /// </summary>
+    public event EventHandler<DataGridColumnEventArgs>? ColumnDisplayIndexChanged;
+
+    /// <summary>
+    /// Raised when column reordering ends, to allow subscribers to clean up.
+    /// </summary>
+    public event EventHandler<DataGridColumnEventArgs>? ColumnReordered;
+
+    /// <summary>
+    /// Raised when starting a column reordering action.  Subscribers to this event can
+    /// set tooltip and caret UIElements, constrain tooltip position, indicate that
+    /// a preview should be shown, or cancel reordering.
+    /// </summary>
+    public event EventHandler<DataGridColumnReorderingEventArgs>? ColumnReordering;
+
+    /// <summary>
+    /// Occurs when a different cell becomes the current cell.
+    /// </summary>
+    public event EventHandler<EventArgs>? CurrentCellChanged;
+
+    /// <summary>
+    /// Occurs after a <see cref="T:Avalonia.Controls.DataGridRow" />
+    /// is instantiated, so that you can customize it before it is used.
+    /// </summary>
+    public event EventHandler<DataGridRowEventArgs>? LoadingRow;
+
+    /// <summary>
+    /// Occurs when a cell in a <see cref="T:Avalonia.Controls.DataGridTemplateColumn" /> enters editing mode.
+    ///
+    /// </summary>
+    public event EventHandler<DataGridPreparingCellForEditEventArgs>? PreparingCellForEdit;
+
+    /// <summary>
+    /// Occurs when the row has been successfully committed or cancelled.
+    /// </summary>
+    public event EventHandler<DataGridRowEditEndedEventArgs>? RowEditEnded;
+
+    /// <summary>
+    /// Occurs immediately before the row has been successfully committed or cancelled.
+    /// </summary>
+    public event EventHandler<DataGridRowEditEndingEventArgs>? RowEditEnding;
+
+    /// <summary>
+    /// Occurs when the <see cref="P:Avalonia.Controls.DataGrid.SelectedItem" /> or
+    /// <see cref="P:Avalonia.Controls.DataGrid.SelectedItems" /> property value changes.
+    /// </summary>
+    public event EventHandler<SelectionChangedEventArgs>? SelectionChanged
+    {
+        add => AddHandler(SelectionChangedEvent, value);
+        remove => RemoveHandler(SelectionChangedEvent, value);
+    }
+    
+    /// <summary>
+    /// Occurs when the <see cref="DataGridColumn"/> sorting request is triggered.
+    /// </summary>
+    public event EventHandler<DataGridColumnEventArgs>? Sorting;
+
+    /// <summary>
+    /// Occurs when a <see cref="T:Avalonia.Controls.DataGridRow" />
+    /// object becomes available for reuse.
+    /// </summary>
+    public event EventHandler<DataGridRowEventArgs>? UnloadingRow;
+
+    /// <summary>
+    /// Occurs when a new row details template is applied to a row, so that you can customize
+    /// the details section before it is used.
+    /// </summary>
+    public event EventHandler<DataGridRowDetailsEventArgs>? LoadingRowDetails;
+
+    /// <summary>
+    /// Occurs when the <see cref="P:Avalonia.Controls.DataGrid.RowDetailsVisibilityMode" />
+    /// property value changes.
+    /// </summary>
+    public event EventHandler<DataGridRowDetailsEventArgs>? RowDetailsVisibilityChanged;
+
+    /// <summary>
+    /// Occurs when a row details element becomes available for reuse.
+    /// </summary>
+    public event EventHandler<DataGridRowDetailsEventArgs>? UnloadingRowDetails;
+
+    #endregion
+
+    public DataGrid()
+    {
+        KeyDown += HandleKeyDown;
+        KeyUp   += HandleKeyUp;
+
+        //TODO: Check if override works
+        GotFocus  += HandleGotFocus;
+        LostFocus += HandleLostFocus;
+        
+        _loadedRows       = new List<DataGridRow>();
+        _lostFocusActions = new Queue<Action>();
+        _selectedItems    = new DataGridSelectedItemsCollection(this);
+
+        RowGroupHeadersTable     = new IndexToValueTable<DataGridRowGroupInfo>();
+        _bindingValidationErrors = new List<Exception>();
+        DisplayData              = new DataGridDisplayData(this);
+        
+        ColumnsInternal                   =  CreateColumnsInstance();
+        ColumnsInternal.CollectionChanged += HandleColumnsInternalCollectionChanged;
+
+        RowHeightEstimate        = DefaultRowHeight;
+        RowDetailsHeightEstimate = 0;
+        _rowHeaderDesiredWidth   = 0;
+
+        DataConnection       = new DataGridDataConnection(this);
+        _showDetailsTable    = new IndexToValueTable<bool>();
+        _collapsedSlotsTable = new IndexToValueTable<bool>();
+
+        AnchorSlot             = -1;
+        _lastEstimatedRow      = -1;
+        _editingColumnIndex    = -1;
+        _mouseOverRowIndex     = null;
+        CurrentCellCoordinates = new DataGridCellCoordinates(-1, -1);
+
+        RowGroupHeaderHeightEstimate = DefaultRowHeight;
+
+        UpdatePseudoClasses();
+    }
 }

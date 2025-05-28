@@ -3,11 +3,11 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using Avalonia;
-
 namespace AtomUI.Controls;
 
-public abstract class DataGridColumn : AvaloniaObject
+internal class DataGridDisplayData
 {
-    
+    public DataGridDisplayData(DataGrid owner)
+    {
+    }
 }

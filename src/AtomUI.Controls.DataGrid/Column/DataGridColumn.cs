@@ -1,0 +1,567 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
+using System.ComponentModel;
+using AtomUI.Controls.Cell;
+using AtomUI.Controls.Data;
+using AtomUI.Controls.Utils;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Styling;
+using Avalonia.VisualTree;
+
+namespace AtomUI.Controls;
+
+public abstract partial class DataGridColumn : AvaloniaObject
+{
+    #region 常量定义
+
+    internal const int MaximumWidth = 65536;
+    private const bool DefaultIsReadOnly = false;
+
+    #endregion
+    #region 公共属性定义
+
+    public static readonly StyledProperty<DataGridLength> WidthProperty = AvaloniaProperty
+        .Register<DataGridColumn, DataGridLength>(nameof(Width)
+            , coerce: CoerceWidth
+        );
+    
+    /// <summary>
+    /// Defines the <see cref="IsVisible"/> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> IsVisibleProperty =
+        Control.IsVisibleProperty.AddOwner<DataGridColumn>();
+    
+    /// <summary>
+    ///    Backing field for CellTheme property.
+    /// </summary>
+    public static readonly DirectProperty<DataGridColumn, ControlTheme?> CellThemeProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumn, ControlTheme?>(
+            nameof(CellTheme),
+            o => o.CellTheme,
+            (o, v) => o.CellTheme = v);
+    
+    /// <summary>
+    ///    Backing field for Header property
+    /// </summary>
+    public static readonly DirectProperty<DataGridColumn, object?> HeaderProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumn, object?>(
+            nameof(Header),
+            o => o.Header,
+            (o, v) => o.Header = v);
+    
+    /// <summary>
+    ///    Backing field for Header property
+    /// </summary>
+    public static readonly DirectProperty<DataGridColumn, IDataTemplate?> HeaderTemplateProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumn, IDataTemplate?>(
+            nameof(HeaderTemplate),
+            o => o.HeaderTemplate,
+            (o, v) => o.HeaderTemplate = v);
+    
+    /// <summary>
+    /// Determines whether or not this column is visible.
+    /// </summary>
+    public bool IsVisible
+    {
+        get => GetValue(IsVisibleProperty);
+        set => SetValue(IsVisibleProperty, value);
+    }
+    
+    public DataGridLength Width
+    {
+        get => GetValue(WidthProperty);
+        set => SetValue(WidthProperty, value);
+    }
+    
+    /// <summary>
+    ///    Gets or sets the <see cref="DataGridColumnHeader"/> cell theme.
+    /// </summary>
+    public ControlTheme? CellTheme
+    {
+        get => _cellTheme;
+        set => SetAndRaise(CellThemeProperty, ref _cellTheme, value);
+    }
+    
+    /// <summary>
+    ///    Gets or sets the <see cref="DataGridColumnHeader"/> content
+    /// </summary>
+    public object? Header
+    {
+        get => _header;
+        set => SetAndRaise(HeaderProperty, ref _header, value);
+    }
+    
+    /// <summary>
+    ///  Gets or sets an <see cref="IDataTemplate"/> for the <see cref="Header"/>
+    /// </summary>
+    public IDataTemplate? HeaderTemplate
+    {
+        get => _headerTemplate;
+        set => SetAndRaise(HeaderTemplateProperty, ref _headerTemplate, value);
+    }
+
+    /// <summary>
+    /// Actual visible width after Width, MinWidth, and MaxWidth setting at the Column level and DataGrid level
+    /// have been taken into account
+    /// </summary>
+    public double ActualWidth
+    {
+        get
+        {
+            if (OwningGrid == null || double.IsNaN(Width.DisplayValue))
+            {
+                return ActualMinWidth;
+            }
+            return Width.DisplayValue;
+        }
+    }
+    
+    /// <summary>
+    /// Gets or sets a value that indicates whether the user can change the column display position by
+    /// dragging the column header.
+    /// </summary>
+    /// <returns>
+    /// true if the user can drag the column header to a new position; otherwise, false. The default is the current <see cref="P:Avalonia.Controls.DataGrid.CanUserReorderColumns" /> property value.
+    /// </returns>
+    public bool CanUserReorder
+    {
+        get => CanUserReorderInternal ??
+               OwningGrid?.CanUserReorderColumns ??
+               DataGrid.DefaultCanUserResizeColumns;
+        set =>  CanUserReorderInternal = value;
+    }
+    
+    /// <summary>
+    /// Gets or sets a value that indicates whether the user can adjust the column width using the mouse.
+    /// </summary>
+    /// <returns>
+    /// true if the user can resize the column; false if the user cannot resize the column. The default is the current <see cref="P:Avalonia.Controls.DataGrid.CanUserResizeColumns" /> property value.
+    /// </returns>
+    public bool CanUserResize
+    {
+        get => CanUserResizeInternal ??
+               OwningGrid?.CanUserResizeColumns ??
+               DataGrid.DefaultCanUserResizeColumns;
+        set
+        {
+            // CanUserResizeInternal = value;
+            // OwningGrid?.OnColumnCanUserResizeChanged(this);
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value that indicates whether the user can sort the column by clicking the column header.
+    /// </summary>
+    /// <returns>
+    /// true if the user can sort the column; false if the user cannot sort the column. The default is the current <see cref="P:Avalonia.Controls.DataGrid.CanUserSortColumns" /> property value.
+    /// </returns>
+    public bool CanUserSort
+    {
+        get
+        {
+            // if (CanUserSortInternal.HasValue)
+            // {
+            //     return CanUserSortInternal.Value;
+            // }
+            // if (OwningGrid != null)
+            // {
+            //     string propertyPath = GetSortPropertyName();
+            //     Type   propertyType = OwningGrid.DataConnection.DataType.GetNestedPropertyType(propertyPath);
+            //
+            //     // if the type is nullable, then we will compare the non-nullable type
+            //     if (TypeHelper.IsNullableType(propertyType))
+            //     {
+            //         propertyType = TypeHelper.GetNonNullableType(propertyType);
+            //     }
+            //
+            //     // return whether or not the property type can be compared
+            //     return typeof(IComparable).IsAssignableFrom(propertyType) ? true : false;
+            // }
+            return DataGrid.DefaultCanUserSortColumns;
+        }
+        set
+        {
+            CanUserSortInternal = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the display position of the column relative to the other columns in the <see cref="T:Avalonia.Controls.DataGrid" />.
+    /// </summary>
+    /// <returns>
+    /// The zero-based position of the column as it is displayed in the associated <see cref="T:Avalonia.Controls.DataGrid" />. The default is the index of the corresponding <see cref="P:System.Collections.ObjectModel.Collection`1.Item(System.Int32)" /> in the <see cref="P:Avalonia.Controls.DataGrid.Columns" /> collection.
+    /// </returns>
+    /// <exception cref="T:System.ArgumentOutOfRangeException">
+    /// When setting this property, the specified value is less than -1 or equal to <see cref="F:System.Int32.MaxValue" />.
+    ///
+    /// -or-
+    ///
+    /// When setting this property on a column in a <see cref="T:Avalonia.Controls.DataGrid" />, the specified value is less than zero or greater than or equal to the number of columns in the <see cref="T:Avalonia.Controls.DataGrid" />.
+    /// </exception>
+    /// <exception cref="T:System.InvalidOperationException">
+    /// When setting this property, the <see cref="T:Avalonia.Controls.DataGrid" /> is already making <see cref="P:Avalonia.Controls.DataGridColumn.DisplayIndex" /> adjustments. For example, this exception is thrown when you attempt to set <see cref="P:Avalonia.Controls.DataGridColumn.DisplayIndex" /> in a <see cref="E:Avalonia.Controls.DataGrid.ColumnDisplayIndexChanged" /> event handler.
+    ///
+    /// -or-
+    ///
+    /// When setting this property, the specified value would result in a frozen column being displayed in the range of unfrozen columns, or an unfrozen column being displayed in the range of frozen columns.
+    /// </exception>
+    public int DisplayIndex
+    {
+        get
+        {
+            // if (OwningGrid != null && OwningGrid.ColumnsInternal.RowGroupSpacerColumn.IsRepresented)
+            // {
+            //     return _displayIndexWithFiller - 1;
+            // }
+            return _displayIndexWithFiller;
+        }
+        set
+        {
+            // if (value == Int32.MaxValue)
+            // {
+            //     throw DataGridError.DataGrid.ValueMustBeLessThan(nameof(value), nameof(DisplayIndex), Int32.MaxValue);
+            // }
+            // if (OwningGrid != null)
+            // {
+            //     if (OwningGrid.ColumnsInternal.RowGroupSpacerColumn.IsRepresented)
+            //     {
+            //         value++;
+            //     }
+            //     if (_displayIndexWithFiller != value)
+            //     {
+            //         if (value < 0 || value >= OwningGrid.ColumnsItemsInternal.Count)
+            //         {
+            //             throw DataGridError.DataGrid.ValueMustBeBetween(nameof(value), nameof(DisplayIndex), 0, true, OwningGrid.Columns.Count, false);
+            //         }
+            //         // Will throw an error if a visible frozen column is placed inside a non-frozen area or vice-versa.
+            //         OwningGrid.OnColumnDisplayIndexChanging(this, value);
+            //         _displayIndexWithFiller = value;
+            //         try
+            //         {
+            //             OwningGrid.InDisplayIndexAdjustments = true;
+            //             OwningGrid.OnColumnDisplayIndexChanged(this);
+            //             OwningGrid.OnColumnDisplayIndexChanged_PostNotification();
+            //         }
+            //         finally
+            //         {
+            //             OwningGrid.InDisplayIndexAdjustments = false;
+            //         }
+            //     }
+            // }
+            // else
+            // {
+            //     if (value < -1)
+            //     {
+            //         throw DataGridError.DataGrid.ValueMustBeGreaterThanOrEqualTo(nameof(value), nameof(DisplayIndex), -1);
+            //     }
+            //     _displayIndexWithFiller = value;
+            // }
+        }
+    }
+
+    public Classes CellStyleClasses => _cellStyleClasses ??= new();
+    
+    /// <summary>
+    /// The binding that will be used to get or set cell content for the clipboard.
+    /// </summary>
+    public virtual IBinding ClipboardContentBinding
+    {
+        get
+        {
+            return _clipboardContentBinding;
+        }
+        set
+        {
+            _clipboardContentBinding = value;
+        }
+    }
+    
+    /// <summary>
+    /// Holds the name of the member to use for sorting, if not using the default.
+    /// </summary>
+    public string? SortMemberPath
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Gets or sets an object associated with this column.
+    /// </summary>
+    public object? Tag
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Holds a Comparer to use for sorting, if not using the default.
+    /// </summary>
+    public System.Collections.IComparer? CustomSortComparer
+    {
+        get;
+        set;
+    }
+    
+    #endregion
+
+    #region 公共事件定义
+
+    /// <summary>
+    /// Occurs when the pointer is pressed over the column's header
+    /// </summary>
+    public event EventHandler<PointerPressedEventArgs>? HeaderPointerPressed;
+    /// <summary>
+    /// Occurs when the pointer is released over the column's header
+    /// </summary>
+    public event EventHandler<PointerReleasedEventArgs>? HeaderPointerReleased;
+
+    #endregion
+    
+    #region 继承属性定义
+    protected internal DataGrid? OwningGrid
+    {
+        get;
+        internal set;
+    }
+    #endregion
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridColumn" /> class.
+    /// </summary>
+    // protected internal DataGridColumn()
+    // {
+    //     _displayIndexWithFiller         = -1;
+    //     IsInitialDesiredWidthDetermined = false;
+    //     InheritsWidth                   = true;
+    // }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        // if (change.Property == IsVisibleProperty)
+        // {
+        //     OwningGrid?.OnColumnVisibleStateChanging(this);
+        //     var isVisible = change.GetNewValue<bool>();
+        //
+        //     if (_headerCell != null)
+        //     {
+        //         _headerCell.IsVisible = isVisible;
+        //     }
+        //
+        //     OwningGrid?.OnColumnVisibleStateChanged(this);
+        //     NotifyPropertyChanged(change.Property.Name);
+        // }
+        // else if (change.Property == WidthProperty)
+        // {
+        //     if (!_settingWidthInternally)
+        //     {
+        //         InheritsWidth = false;
+        //     }
+        //     if (_setWidthInternalNoCallback == false)
+        //     {
+        //         var grid  = OwningGrid;
+        //         var width = (change as AvaloniaPropertyChangedEventArgs<DataGridLength>).NewValue.Value;
+        //         if (grid != null)
+        //         {
+        //             var oldWidth = (change as AvaloniaPropertyChangedEventArgs<DataGridLength>).OldValue.Value;
+        //             if (width.IsStar != oldWidth.IsStar)
+        //             {
+        //                 SetWidthInternalNoCallback(width);
+        //                 IsInitialDesiredWidthDetermined = false;
+        //                 grid.OnColumnWidthChanged(this);
+        //             }
+        //             else
+        //             {
+        //                 Resize(oldWidth, width, false);
+        //             }
+        //         }
+        //         else
+        //         {
+        //             SetWidthInternalNoCallback(width);
+        //         }
+        //     }
+        // }
+    }
+    
+    public Control? GetCellContent(DataGridRow dataGridRow)
+    {
+        // dataGridRow = dataGridRow ?? throw new ArgumentNullException(nameof(dataGridRow));
+        // if (OwningGrid == null)
+        // {
+        //     throw DataGridError.DataGrid.NoOwningGrid(GetType());
+        // }
+        // if (dataGridRow.OwningGrid == OwningGrid)
+        // {
+        //     DataGridCell dataGridCell = dataGridRow.Cells[Index];
+        //     if (dataGridCell != null)
+        //     {
+        //         return dataGridCell.Content as Control;
+        //     }
+        // }
+        return null;
+    }
+
+    public Control? GetCellContent(object dataItem)
+    {
+        // dataItem = dataItem ?? throw new ArgumentNullException(nameof(dataItem));
+        // if (OwningGrid == null)
+        // {
+        //     throw DataGridError.DataGrid.NoOwningGrid(GetType());
+        // }
+        // DataGridRow dataGridRow = OwningGrid.GetRowFromItem(dataItem);
+        // if (dataGridRow == null)
+        // {
+        //     return null;
+        // }
+        // return GetCellContent(dataGridRow);
+        return null;
+    }
+
+    /// <summary>
+    /// Returns the column which contains the given element
+    /// </summary>
+    /// <param name="element">element contained in a column</param>
+    /// <returns>Column that contains the element, or null if not found
+    /// </returns>
+    public static DataGridColumn? GetColumnContainingElement(Control element)
+    {
+        // Walk up the tree to find the DataGridCell or DataGridColumnHeader that contains the element
+        Visual parent = element;
+        // while (parent != null)
+        // {
+        //     if (parent is DataGridCell cell)
+        //     {
+        //         return cell.OwningColumn;
+        //     }
+        //     if (parent is DataGridColumnHeader columnHeader)
+        //     {
+        //         return columnHeader.OwningColumn;
+        //     }
+        //     parent = parent.GetVisualParent();
+        // }
+        return null;
+    }
+
+    /// <summary>
+    /// Clears the current sort direction
+    /// </summary>
+    public void ClearSort()
+    {
+        //InvokeProcessSort is already validating if sorting is possible
+        //_headerCell?.InvokeProcessSort(KeyboardHelper.GetPlatformCtrlOrCmdKeyModifier(OwningGrid));
+    }
+
+    /// <summary>
+    /// Switches the current state of sort direction
+    /// </summary>
+    public void Sort()
+    {
+        //InvokeProcessSort is already validating if sorting is possible
+        //_headerCell?.InvokeProcessSort(Input.KeyModifiers.None);
+    }
+
+    /// <summary>
+    /// Changes the sort direction of this column
+    /// </summary>
+    /// <param name="direction">New sort direction</param>
+    public void Sort(ListSortDirection direction)
+    {
+        //InvokeProcessSort is already validating if sorting is possible
+        //_headerCell?.InvokeProcessSort(Input.KeyModifiers.None, direction);
+    }
+
+    /// <summary>
+    /// When overridden in a derived class, causes the column cell being edited to revert to the unedited value.
+    /// </summary>
+    /// <param name="editingElement">
+    /// The element that the column displays for a cell in editing mode.
+    /// </param>
+    /// <param name="uneditedValue">
+    /// The previous, unedited value in the cell being edited.
+    /// </param>
+    protected virtual void CancelCellEdit(Control editingElement, object uneditedValue)
+    { }
+
+    /// <summary>
+    /// When overridden in a derived class, gets an editing element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// </summary>
+    /// <param name="cell">
+    /// The cell that will contain the generated element.
+    /// </param>
+    /// <param name="dataItem">
+    /// The data item represented by the row that contains the intended cell.
+    /// </param>
+    /// <param name="binding">When the method returns, contains the applied binding.</param>
+    /// <returns>
+    /// A new editing element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// </returns>
+    protected abstract Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? binding);
+
+    /// <summary>
+    /// When overridden in a derived class, gets a read-only element that is bound to the column's
+    /// <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// </summary>
+    /// <param name="cell">
+    /// The cell that will contain the generated element.
+    /// </param>
+    /// <param name="dataItem">
+    /// The data item represented by the row that contains the intended cell.
+    /// </param>
+    /// <returns>
+    /// A new, read-only element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// </returns>
+    protected abstract Control? GenerateElement(DataGridCell cell, object dataItem);
+
+    /// <summary>
+    /// Called by a specific column type when one of its properties changed,
+    /// and its current cells need to be updated.
+    /// </summary>
+    /// <param name="propertyName">Indicates which property changed and caused this call</param>
+    protected void NotifyPropertyChanged(string propertyName)
+    {
+        //OwningGrid?.RefreshColumnElements(this, propertyName);
+    }
+
+    /// <summary>
+    /// When overridden in a derived class, called when a cell in the column enters editing mode.
+    /// </summary>
+    /// <param name="editingElement">
+    /// The element that the column displays for a cell in editing mode.
+    /// </param>
+    /// <param name="editingEventArgs">
+    /// Information about the user gesture that is causing a cell to enter editing mode.
+    /// </param>
+    /// <returns>
+    /// The unedited value.
+    /// </returns>
+    protected abstract object? PrepareCellForEdit(Control editingElement, RoutedEventArgs editingEventArgs);
+
+    /// <summary>
+    /// Called by the DataGrid control when a column asked for its
+    /// elements to be refreshed, typically because one of its properties changed.
+    /// </summary>
+    /// <param name="element">Indicates the element that needs to be refreshed</param>
+    /// <param name="propertyName">Indicates which property changed and caused this call</param>
+    protected internal virtual void RefreshCellContent(Control element, string propertyName)
+    { }
+
+    /// <summary>
+    /// When overridden in a derived class, called when a cell in the column exits editing mode.
+    /// </summary>
+    protected virtual void EndCellEdit()
+    { }
+
+
+}
