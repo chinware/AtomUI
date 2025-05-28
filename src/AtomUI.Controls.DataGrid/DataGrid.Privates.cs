@@ -313,6 +313,14 @@ public partial class DataGrid
         // }
     }
 
+    /// <summary>
+    /// ItemsSourceProperty property changed handler.
+    /// </summary>
+    /// <param name="e">The event arguments.</param>
+    private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+    }
+
     #endregion
     
     internal void UpdatePseudoClasses()

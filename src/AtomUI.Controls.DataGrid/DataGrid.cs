@@ -676,8 +676,21 @@ public partial class DataGrid : TemplatedControl
     /// Occurs when a row details element becomes available for reuse.
     /// </summary>
     public event EventHandler<DataGridRowDetailsEventArgs>? UnloadingRowDetails;
+    
+    public event EventHandler<ScrollEventArgs>? HorizontalScroll;
+    public event EventHandler<ScrollEventArgs>? VerticalScroll;
 
     #endregion
+
+    static DataGrid()
+    {
+        AffectsMeasure<DataGrid>(
+            ColumnHeaderHeightProperty,
+            HorizontalScrollBarVisibilityProperty,
+            VerticalScrollBarVisibilityProperty);
+        
+        ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
+    }
 
     public DataGrid()
     {
