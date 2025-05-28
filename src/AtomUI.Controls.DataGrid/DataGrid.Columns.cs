@@ -228,10 +228,7 @@ public partial class DataGrid
             {
                 return true;
             }
-            else
-            {
-                return DataConnection.GetPropertyIsReadOnly(path) || isReadOnly;
-            }
+            return DataConnection.GetPropertyIsReadOnly(path) || isReadOnly;
         }
 
         return isReadOnly;
@@ -270,7 +267,7 @@ public partial class DataGrid
         return amount;
     }
 
-    internal void OnClearingColumns()
+    internal void NotifyClearingColumns()
     {
         // Rows need to be cleared first. There cannot be rows without also having columns.
         ClearRows(false);
@@ -289,7 +286,7 @@ public partial class DataGrid
     /// Invalidates the widths of all columns because the resizing behavior of an individual column has changed.
     /// </summary>
     /// <param name="column">Column with CanUserResize property that has changed.</param>
-    internal void OnColumnCanUserResizeChanged(DataGridColumn column)
+    internal void NotifyColumnCanUserResizeChanged(DataGridColumn column)
     {
         if (column.IsVisible)
         {
@@ -297,7 +294,7 @@ public partial class DataGrid
         }
     }
 
-    internal void OnColumnCollectionChanged_PostNotification(bool columnsGrew)
+    internal void NotifyColumnCollectionChangedPostNotification(bool columnsGrew)
     {
         if (columnsGrew &&
             CurrentColumnIndex == -1)
@@ -312,7 +309,7 @@ public partial class DataGrid
         }
     }
 
-    internal void OnColumnCollectionChanged_PreNotification(bool columnsGrew)
+    internal void NotifyColumnCollectionChangedPreNotification(bool columnsGrew)
     {
         // dataGridColumn==null means the collection was refreshed.
 
