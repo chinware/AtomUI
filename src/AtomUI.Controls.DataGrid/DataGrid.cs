@@ -848,14 +848,14 @@ public partial class DataGrid : TemplatedControl
         GotFocus  += HandleGotFocus;
         LostFocus += HandleLostFocus;
         
-        _loadedRows       = new List<DataGridRow>();
-        _lostFocusActions = new Queue<Action>();
-        _selectedItems    = new DataGridSelectedItemsCollection(this);
-
+        CurrentCellCoordinates   = new DataGridCellCoordinates(-1, -1);
+        _loadedRows              = new List<DataGridRow>();
+        _lostFocusActions        = new Queue<Action>();
+        _selectedItems           = new DataGridSelectedItemsCollection(this);
         RowGroupHeadersTable     = new IndexToValueTable<DataGridRowGroupInfo>();
         _bindingValidationErrors = new List<Exception>();
-        DisplayData              = new DataGridDisplayData(this);
-        
+
+        DisplayData                       =  new DataGridDisplayData(this);
         ColumnsInternal                   =  CreateColumnsInstance();
         ColumnsInternal.CollectionChanged += HandleColumnsInternalCollectionChanged;
 
@@ -871,7 +871,6 @@ public partial class DataGrid : TemplatedControl
         _lastEstimatedRow      = -1;
         _editingColumnIndex    = -1;
         _mouseOverRowIndex     = null;
-        CurrentCellCoordinates = new DataGridCellCoordinates(-1, -1);
 
         RowGroupHeaderHeightEstimate = DefaultRowHeight;
         RowGroupSublevelIndents      = [];

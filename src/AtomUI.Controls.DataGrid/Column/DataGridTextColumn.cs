@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls.Utils;
@@ -114,8 +119,7 @@ public class DataGridTextColumn : DataGridBoundColumn
     /// <summary>
     /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridTextColumn" /> class.
     /// </summary>
-    public DataGridTextColumn(DataGrid ownerGrid)
-        : base(ownerGrid)
+    public DataGridTextColumn()
     {
         BindingTarget = TextBox.TextProperty;
 

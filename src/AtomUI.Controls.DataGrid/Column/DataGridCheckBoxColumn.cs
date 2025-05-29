@@ -22,8 +22,7 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
     /// <summary>
     /// Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridCheckBoxColumn" /> class. 
     /// </summary>
-    public DataGridCheckBoxColumn(DataGrid ownerGrid)
-        : base(ownerGrid)
+    public DataGridCheckBoxColumn()
     {
         BindingTarget = CheckBox.IsCheckedProperty;
     }

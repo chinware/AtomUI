@@ -412,12 +412,11 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <summary>
     /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridColumn" /> class.
     /// </summary>
-    protected internal DataGridColumn(DataGrid owningGrid)
+    protected internal DataGridColumn()
     {
         _displayIndexWithFiller         = -1;
         IsInitialDesiredWidthDetermined = false;
         InheritsWidth                   = true;
-        OwningGrid                      = owningGrid;
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

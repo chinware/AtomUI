@@ -72,13 +72,11 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
     /// </param>
     protected override Size ArrangeOverride(Size finalSize)
     {
-        Debug.Assert(OwningGrid is not null);
-        Debug.Assert(OwningGrid.ColumnsInternal.FillerColumn is not null);
         if (finalSize.Height == 0 || OwningGrid == null)
         {
             return base.ArrangeOverride(finalSize);
         }
-
+        Debug.Assert(OwningGrid.ColumnsInternal.FillerColumn is not null);
         if (OwningGrid.RowsPresenterAvailableSize.HasValue)
         {
             // TODO 需要审查，是否可以删除

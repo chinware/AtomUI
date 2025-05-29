@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Diagnostics;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -124,11 +129,6 @@ public abstract class DataGridBoundColumn : DataGridColumn
     protected abstract Control GenerateEditingElementDirect(DataGridCell cell, object dataItem); 
 
     protected AvaloniaProperty? BindingTarget { get; set; }
-    
-    public DataGridBoundColumn(DataGrid ownerGrid)
-        : base(ownerGrid)
-    {
-    }
 
     internal void SetHeaderFromBinding()
     {

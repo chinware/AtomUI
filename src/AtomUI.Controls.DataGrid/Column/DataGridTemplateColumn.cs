@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
@@ -69,11 +74,7 @@ public class DataGridTemplateColumn : DataGridColumn
     #endregion
     
     private bool _forceGenerateCellFromTemplate;
-        
-    public DataGridTemplateColumn(DataGrid ownerGrid)
-        : base(ownerGrid)
-    {}
-        
+    
     protected override void EndCellEdit()
     {
         //the next call to generate element should not resuse the current content as we need to exit edit mode

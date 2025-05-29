@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
@@ -14,11 +19,11 @@ internal class DataGridFillerColumn : DataGridColumn
     internal bool IsRepresented { get; set; } 
     
     public DataGridFillerColumn(DataGrid owningGrid)
-        : base(owningGrid)
     {
         IsReadOnly = true;
         MinWidth   = 0;
         MaxWidth   = int.MaxValue;
+        OwningGrid = owningGrid;
     }
 
     internal override DataGridColumnHeader CreateHeader()

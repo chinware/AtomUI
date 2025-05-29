@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -1212,8 +1217,12 @@ public partial class DataGrid
             {
                 CancelEdit(DataGridEditingUnit.Row, false);
             }
-            Debug.Assert(DataConnection.DataSource != null);
-            DataConnection.UnWireEvents(DataConnection.DataSource);
+
+            if (DataConnection.DataSource != null)
+            {
+                DataConnection.UnWireEvents(DataConnection.DataSource);
+            }
+
             DataConnection.ClearDataProperties();
             ClearRowGroupHeadersTable();
 

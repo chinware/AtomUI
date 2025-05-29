@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
@@ -1711,16 +1716,16 @@ public partial class DataGrid
         Debug.Assert(type != null);
         if (type == typeof(bool))
         {
-            return new DataGridCheckBoxColumn(ownerGrid);
+            return new DataGridCheckBoxColumn();
         }
         if (type == typeof(bool?))
         {
-            return new DataGridCheckBoxColumn(ownerGrid)
+            return new DataGridCheckBoxColumn()
             {
                 IsThreeState = true
             };
         }
-        return new DataGridTextColumn(ownerGrid);
+        return new DataGridTextColumn();
     }
 
     private void AutoGenerateColumnsPrivate()

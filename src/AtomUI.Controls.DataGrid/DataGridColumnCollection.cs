@@ -1,3 +1,8 @@
+// (c) Copyright Microsoft Corporation.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
+
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -53,9 +58,11 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
     
     public DataGridColumnCollection(DataGrid owningGrid)
     {
-        _owningGrid = owningGrid;
-        DisplayIndexMap = new List<int>();
-        ItemsInternal = new List<DataGridColumn>();
+        _owningGrid          = owningGrid;
+        DisplayIndexMap      = new List<int>();
+        ItemsInternal        = new List<DataGridColumn>();
+        FillerColumn         = new DataGridFillerColumn(owningGrid);
+        RowGroupSpacerColumn = new DataGridFillerColumn(owningGrid);
     }
     
     internal DataGridColumn? GetFirstColumn(bool? isVisible, bool? isFrozen, bool? isReadOnly)
