@@ -29,7 +29,7 @@ internal class DataGridCellTheme : BaseControlTheme
 
     protected override IControlTemplate BuildControlTemplate()
     {
-        return new FuncControlTemplate<DataGrid>((dataGridCell, scope) =>
+        return new FuncControlTemplate<DataGridCell>((dataGridCell, scope) =>
         {
             var frame = new Border
             {

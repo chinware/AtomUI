@@ -9,7 +9,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridRowHeaderTheme.FramePart, typeof(Control))]
+[TemplatePart(DataGridRowHeaderTheme.RootLayoutPart, typeof(Control))]
 [PseudoClasses(StdPseudoClass.Invalid, StdPseudoClass.Selected, StdPseudoClass.Editing, StdPseudoClass.Current)]
 public class DataGridRowHeader : ContentControl
 {
@@ -98,7 +98,7 @@ public class DataGridRowHeader : ContentControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _rootElement = e.NameScope.Find<Control>(DataGridRowHeaderTheme.FramePart);
+        _rootElement = e.NameScope.Find<Control>(DataGridRowHeaderTheme.RootLayoutPart);
         if (_rootElement != null)
         {
             UpdatePseudoClasses();

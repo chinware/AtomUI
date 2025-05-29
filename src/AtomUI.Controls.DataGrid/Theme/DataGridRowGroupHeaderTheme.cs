@@ -15,4 +15,6 @@ internal class DataGridRowGroupHeaderTheme : BaseControlTheme
         : base(typeof(DataGridRowGroupHeader))
     {
     }
+    
+    
 }
