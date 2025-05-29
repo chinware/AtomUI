@@ -13,11 +13,106 @@ namespace AtomUI.Controls;
 
 public class DataGridTextColumn : DataGridBoundColumn
 {
+    #region 公共属性定义
+
+    /// <summary>
+    /// Identifies the FontFamily dependency property.
+    /// </summary>
+    public static readonly AttachedProperty<FontFamily> FontFamilyProperty =
+        TextElement.FontFamilyProperty.AddOwner<DataGridTextColumn>();
+    
+    /// <summary>
+    /// Identifies the FontSize dependency property.
+    /// </summary>
+    public static readonly AttachedProperty<double> FontSizeProperty =
+        TextElement.FontSizeProperty.AddOwner<DataGridTextColumn>();
+    
+    /// <summary>
+    /// Identifies the FontStyle dependency property.
+    /// </summary>
+    public static readonly AttachedProperty<FontStyle> FontStyleProperty =
+        TextElement.FontStyleProperty.AddOwner<DataGridTextColumn>();
+    
+    /// <summary>
+    /// Identifies the FontWeight dependency property.
+    /// </summary>
+    public static readonly AttachedProperty<FontWeight> FontWeightProperty =
+        TextElement.FontWeightProperty.AddOwner<DataGridTextColumn>();
+    
+    /// <summary>
+    /// Identifies the FontStretch dependency property.
+    /// </summary>
+    public static readonly AttachedProperty<FontStretch> FontStretchProperty =
+        TextElement.FontStretchProperty.AddOwner<DataGridTextColumn>();
+    
+    /// <summary>
+    /// Identifies the Foreground dependency property.
+    /// </summary>
+    public static readonly AttachedProperty<IBrush?> ForegroundProperty =
+        TextElement.ForegroundProperty.AddOwner<DataGridTextColumn>();
+    
+    /// <summary>
+    /// Gets or sets the font name.
+    /// </summary>
+    public FontFamily FontFamily
+    {
+        get => GetValue(FontFamilyProperty);
+        set => SetValue(FontFamilyProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the font size.
+    /// </summary>
+    // Use DefaultValue here so undo in the Designer will set this to NaN
+    [DefaultValue(double.NaN)]
+    public double FontSize
+    {
+        get => GetValue(FontSizeProperty);
+        set => SetValue(FontSizeProperty, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets the font style.
+    /// </summary>
+    public FontStyle FontStyle
+    {
+        get => GetValue(FontStyleProperty);
+        set => SetValue(FontStyleProperty, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets the font weight or thickness.
+    /// </summary>
+    public FontWeight FontWeight
+    {
+        get => GetValue(FontWeightProperty);
+        set => SetValue(FontWeightProperty, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets the font weight or thickness.
+    /// </summary>
+    public FontStretch FontStretch
+    {
+        get => GetValue(FontStretchProperty);
+        set => SetValue(FontStretchProperty, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets a brush that describes the foreground of the column cells.
+    /// </summary>
+    public IBrush? Foreground
+    {
+        get => GetValue(ForegroundProperty);
+        set => SetValue(ForegroundProperty, value);
+    }
+    #endregion
+    
     private readonly Lazy<ControlTheme?> _cellTextBoxTheme;
     private readonly Lazy<ControlTheme?> _cellTextBlockTheme;
         
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridTextColumn" /> class.
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridTextColumn" /> class.
     /// </summary>
     public DataGridTextColumn(DataGrid ownerGrid)
         : base(ownerGrid)
@@ -35,99 +130,7 @@ public class DataGridTextColumn : DataGridBoundColumn
             return OwningGrid.TryFindResource("DataGridCellTextBlockTheme", out var theme) ? (ControlTheme?)theme : null;
         });
     }
-
-    /// <summary>
-    /// Identifies the FontFamily dependency property.
-    /// </summary>
-    public static readonly AttachedProperty<FontFamily> FontFamilyProperty =
-        TextElement.FontFamilyProperty.AddOwner<DataGridTextColumn>();
-
-    /// <summary>
-    /// Gets or sets the font name.
-    /// </summary>
-    public FontFamily FontFamily
-    {
-        get => GetValue(FontFamilyProperty);
-        set => SetValue(FontFamilyProperty, value);
-    }
-
-    /// <summary>
-    /// Identifies the FontSize dependency property.
-    /// </summary>
-    public static readonly AttachedProperty<double> FontSizeProperty =
-        TextElement.FontSizeProperty.AddOwner<DataGridTextColumn>();
-
-    /// <summary>
-    /// Gets or sets the font size.
-    /// </summary>
-    // Use DefaultValue here so undo in the Designer will set this to NaN
-    [DefaultValue(double.NaN)]
-    public double FontSize
-    {
-        get => GetValue(FontSizeProperty);
-        set => SetValue(FontSizeProperty, value);
-    }
-
-    /// <summary>
-    /// Identifies the FontStyle dependency property.
-    /// </summary>
-    public static readonly AttachedProperty<FontStyle> FontStyleProperty =
-        TextElement.FontStyleProperty.AddOwner<DataGridTextColumn>();
-
-    /// <summary>
-    /// Gets or sets the font style.
-    /// </summary>
-    public FontStyle FontStyle
-    {
-        get => GetValue(FontStyleProperty);
-        set => SetValue(FontStyleProperty, value);
-    }
-
-    /// <summary>
-    /// Identifies the FontWeight dependency property.
-    /// </summary>
-    public static readonly AttachedProperty<FontWeight> FontWeightProperty =
-        TextElement.FontWeightProperty.AddOwner<DataGridTextColumn>();
-
-    /// <summary>
-    /// Gets or sets the font weight or thickness.
-    /// </summary>
-    public FontWeight FontWeight
-    {
-        get => GetValue(FontWeightProperty);
-        set => SetValue(FontWeightProperty, value);
-    }
-
-    /// <summary>
-    /// Identifies the FontStretch dependency property.
-    /// </summary>
-    public static readonly AttachedProperty<FontStretch> FontStretchProperty =
-        TextElement.FontStretchProperty.AddOwner<DataGridTextColumn>();
-
-    /// <summary>
-    /// Gets or sets the font weight or thickness.
-    /// </summary>
-    public FontStretch FontStretch
-    {
-        get => GetValue(FontStretchProperty);
-        set => SetValue(FontStretchProperty, value);
-    }
-
-    /// <summary>
-    /// Identifies the Foreground dependency property.
-    /// </summary>
-    public static readonly AttachedProperty<IBrush?> ForegroundProperty =
-        TextElement.ForegroundProperty.AddOwner<DataGridTextColumn>();
-
-    /// <summary>
-    /// Gets or sets a brush that describes the foreground of the column cells.
-    /// </summary>
-    public IBrush? Foreground
-    {
-        get => GetValue(ForegroundProperty);
-        set => SetValue(ForegroundProperty, value);
-    }
-
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -157,11 +160,11 @@ public class DataGridTextColumn : DataGridBoundColumn
     }
 
     /// <summary>
-    /// Gets a <see cref="T:Avalonia.Controls.TextBox" /> control that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// Gets a <see cref="T:AtomUI.Controls.TextBox" /> control that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </summary>
     /// <param name="cell">The cell that will contain the generated element.</param>
     /// <param name="dataItem">The data item represented by the row that contains the intended cell.</param>
-    /// <returns>A new <see cref="T:Avalonia.Controls.TextBox" /> control that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
+    /// <returns>A new <see cref="T:AtomUI.Controls.TextBox" /> control that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
     protected override Control GenerateEditingElementDirect(DataGridCell cell, object dataItem)
     {
         var textBox = new TextBox
@@ -179,11 +182,11 @@ public class DataGridTextColumn : DataGridBoundColumn
     }
         
     /// <summary>
-    /// Gets a read-only <see cref="T:Avalonia.Controls.TextBlock" /> element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
+    /// Gets a read-only <see cref="T:AtomUI.Controls.TextBlock" /> element that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </summary>
     /// <param name="cell">The cell that will contain the generated element.</param>
     /// <param name="dataItem">The data item represented by the row that contains the intended cell.</param>
-    /// <returns>A new, read-only <see cref="T:Avalonia.Controls.TextBlock" /> element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
+    /// <returns>A new, read-only <see cref="T:AtomUI.Controls.TextBlock" /> element that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
     protected override Control GenerateElement(DataGridCell cell, object dataItem)
     {
         var textBlockElement = new TextBlock

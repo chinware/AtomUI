@@ -11,7 +11,7 @@ namespace AtomUI.Controls;
 public class DataGridColumnReorderingEventArgs : CancelEventArgs
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridColumnReorderingEventArgs" /> class.
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridColumnReorderingEventArgs" /> class.
     /// </summary>
     /// <param name="dataGridColumn"></param>
     public DataGridColumnReorderingEventArgs(DataGridColumn dataGridColumn)

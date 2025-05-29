@@ -46,10 +46,10 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
     }
     
     /// <summary>
-    /// Arranges the content of the <see cref="T:Avalonia.Controls.Primitives.DataGridCellsPresenter" />.
+    /// Arranges the content of the <see cref="T:AtomUI.Controls.DataGridCellsPresenter" />.
     /// </summary>
     /// <returns>
-    /// The actual size used by the <see cref="T:Avalonia.Controls.Primitives.DataGridCellsPresenter" />.
+    /// The actual size used by the <see cref="T:AtomUI.Controls.DataGridCellsPresenter" />.
     /// </returns>
     /// <param name="finalSize">
     /// The final area within the parent that this element should use to arrange itself and its children.
@@ -75,9 +75,9 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         double frozenLeftEdge    = 0;
         double scrollingLeftEdge = -OwningGrid.HorizontalOffset;
 
-        double cellLeftEdge;
         foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
+            double       cellLeftEdge;
             DataGridCell cell = OwningRow.Cells[column.Index];
             Debug.Assert(cell.OwningColumn == column);
             Debug.Assert(column.IsVisible);
@@ -183,14 +183,14 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
     }
 
     /// <summary>
-    /// Measures the children of a <see cref="T:Avalonia.Controls.Primitives.DataGridCellsPresenter" /> to 
+    /// Measures the children of a <see cref="T:AtomUI.Controls.DataGridCellsPresenter" /> to 
     /// prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.
     /// </summary>
     /// <param name="availableSize">
     /// The available size that this element can give to child elements. Indicates an upper limit that child elements should not exceed.
     /// </param>
     /// <returns>
-    /// The size that the <see cref="T:Avalonia.Controls.Primitives.DataGridCellsPresenter" /> determines it needs during layout, based on its calculations of child object allocated sizes.
+    /// The size that the <see cref="T:AtomUI.Controls.DataGridCellsPresenter" /> determines it needs during layout, based on its calculations of child object allocated sizes.
     /// </returns>
     protected override Size MeasureOverride(Size availableSize)
     {

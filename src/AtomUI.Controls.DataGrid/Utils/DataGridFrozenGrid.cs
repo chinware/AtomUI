@@ -17,7 +17,7 @@ public class DataGridFrozenGrid : Grid
     /// Gets a value that indicates whether the grid is frozen.
     /// </summary>
     /// <param name="element">
-    /// The object to get the <see cref="P:Avalonia.Controls.Primitives.DataGridFrozenGrid.IsFrozen" /> value from.
+    /// The object to get the <see cref="P:AtomUI.Controls.Primitives.DataGridFrozenGrid.IsFrozen" /> value from.
     /// </param>
     /// <returns>true if the grid is frozen; otherwise, false. The default is true.</returns>
     public static bool GetIsFrozen(Control element)
@@ -28,7 +28,7 @@ public class DataGridFrozenGrid : Grid
     /// <summary>
     /// Sets a value that indicates whether the grid is frozen.
     /// </summary>
-    /// <param name="element">The object to set the <see cref="P:Avalonia.Controls.Primitives.DataGridFrozenGrid.IsFrozen" /> value on.</param>
+    /// <param name="element">The object to set the <see cref="P:AtomUI.Controls.Primitives.DataGridFrozenGrid.IsFrozen" /> value on.</param>
     /// <param name="value">true if <paramref name="element" /> is frozen; otherwise, false.</param>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="element" /> is null.</exception>
     public static void SetIsFrozen(Control element, bool value)

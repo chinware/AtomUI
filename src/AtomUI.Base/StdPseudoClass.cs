@@ -27,4 +27,6 @@ public static class StdPseudoClass
    public const string Edited = ":edited";
    public const string Editing = ":editing";
    public const string Invalid = ":invalid";
+   public const string SortAscending = ":sort-ascending";
+   public const string SortDescending = ":sort-descending";
 }

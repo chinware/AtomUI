@@ -10,7 +10,7 @@ namespace AtomUI.Controls;
 public class DataGridColumnEventArgs : HandledEventArgs
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridColumnEventArgs" /> class.
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridColumnEventArgs" /> class.
     /// </summary>
     /// <param name="column">The column that the event occurs for.</param>
     public DataGridColumnEventArgs(DataGridColumn column)

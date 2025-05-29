@@ -10,7 +10,7 @@ namespace AtomUI.Controls;
 public class DataGridAutoGeneratingColumnEventArgs : CancelEventArgs
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridAutoGeneratingColumnEventArgs" /> class.
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridAutoGeneratingColumnEventArgs" /> class.
     /// </summary>
     /// <param name="propertyName">
     /// The name of the property bound to the generated column.

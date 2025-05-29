@@ -81,7 +81,7 @@ public class DataGridRowHeader : ContentControl
     
     
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.Primitives.DataGridRowHeader" /> class. 
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridRowHeader" /> class. 
     /// </summary>
     public DataGridRowHeader()
     {
@@ -106,13 +106,13 @@ public class DataGridRowHeader : ContentControl
     } 
 
     /// <summary>
-    /// Measures the children of a <see cref="T:Avalonia.Controls.Primitives.DataGridRowHeader" /> to prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.
+    /// Measures the children of a <see cref="T:AtomUI.Controls.DataGridRowHeader" /> to prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.
     /// </summary>
     /// <param name="availableSize">
     /// The available size that this element can give to child elements. Indicates an upper limit that child elements should not exceed.
     /// </param>
     /// <returns>
-    /// The size that the <see cref="T:Avalonia.Controls.Primitives.DataGridRowHeader" /> determines it needs during layout, based on its calculations of child object allocated sizes.
+    /// The size that the <see cref="T:AtomUI.Controls.DataGridRowHeader" /> determines it needs during layout, based on its calculations of child object allocated sizes.
     /// </returns>
     protected override Size MeasureOverride(Size availableSize)
     {

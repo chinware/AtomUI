@@ -5,6 +5,14 @@ namespace AtomUI.Controls;
 
 internal class DataGridFillerColumn : DataGridColumn
 {
+    internal double FillerWidth { get; set; }
+
+    // True if there is room for the filler column; otherwise, false
+    internal bool IsActive => FillerWidth > 0;
+
+    // True if the FillerColumn's header cell is contained in the visual tree
+    internal bool IsRepresented { get; set; } 
+    
     public DataGridFillerColumn(DataGrid owningGrid)
         : base(owningGrid)
     {
@@ -12,22 +20,6 @@ internal class DataGridFillerColumn : DataGridColumn
         MinWidth   = 0;
         MaxWidth   = int.MaxValue;
     }
-
-    internal double FillerWidth
-    {
-        get;
-        set;
-    }
-
-    // True if there is room for the filler column; otherwise, false
-    internal bool IsActive => FillerWidth > 0;
-
-    // True if the FillerColumn's header cell is contained in the visual tree
-    internal bool IsRepresented
-    {
-        get;
-        set;
-    } 
 
     internal override DataGridColumnHeader CreateHeader()
     { 

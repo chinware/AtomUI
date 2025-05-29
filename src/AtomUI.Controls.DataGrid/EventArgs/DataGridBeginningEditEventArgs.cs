@@ -12,7 +12,7 @@ public class DataGridBeginningEditEventArgs: CancelEventArgs
 {
     /// <summary>
     /// Initializes a new instance of the 
-    /// <see cref="T:Avalonia.Controls.DataGridBeginningEditEventArgs" /> class.
+    /// <see cref="T:AtomUI.Controls.DataGridBeginningEditEventArgs" /> class.
     /// </summary>
     /// <param name="column">
     /// The column that contains the cell to be edited.

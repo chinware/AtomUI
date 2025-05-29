@@ -5,6 +5,7 @@ using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
@@ -15,9 +16,10 @@ using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
 
+[PseudoClasses(StdPseudoClass.DragIndicator, StdPseudoClass.Pressed, StdPseudoClass.SortAscending, StdPseudoClass.SortDescending)]
 public class DataGridColumnHeader : ContentControl
 {
-    private enum DragMode
+    internal enum DragMode
     {
         None = 0,
         MouseDown = 1,
@@ -26,90 +28,39 @@ public class DataGridColumnHeader : ContentControl
         Reorder = 4
     }
 
-    private const int ResizeRegionWidth = 5;
-    private const int ColumnsDragThreshold = 5;
+    #region 公共属性定义
 
-    private bool _areHandlersSuspended;
-    private static DragMode _dragMode;
-    private static Point? _lastMousePositionHeaders;
-    private static Cursor? _originalCursor;
-    private static double _originalHorizontalOffset;
-    private static double _originalWidth;
-    private bool _desiredSeparatorVisibility = true;
-    private static Point? _dragStart;
-    private static DataGridColumn? _dragColumn;
-    private static double _frozenColumnsWidth;
-    private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
-
-    public static readonly StyledProperty<IBrush> SeparatorBrushProperty =
-        AvaloniaProperty.Register<DataGridColumnHeader, IBrush>(nameof(SeparatorBrush));
-
-    public IBrush SeparatorBrush
-    {
-        get => GetValue(SeparatorBrushProperty);
-        set => SetValue(SeparatorBrushProperty, value);
-    }
-
+    public static readonly StyledProperty<IBrush?> SeparatorBrushProperty =
+        AvaloniaProperty.Register<DataGridColumnHeader, IBrush?>(nameof(SeparatorBrush));
+    
     public static readonly StyledProperty<bool> AreSeparatorsVisibleProperty =
         AvaloniaProperty.Register<DataGridColumnHeader, bool>(
             nameof(AreSeparatorsVisible),
             defaultValue: true);
-
+    
+    public IBrush? SeparatorBrush
+    {
+        get => GetValue(SeparatorBrushProperty);
+        set => SetValue(SeparatorBrushProperty, value);
+    }
+    
     public bool AreSeparatorsVisible
     {
         get => GetValue(AreSeparatorsVisibleProperty);
         set => SetValue(AreSeparatorsVisibleProperty, value);
     }
-    
+
+    #endregion
+
+    #region 公共事件定义
+
     public event EventHandler<KeyModifiers>? LeftClick;
 
-    static DataGridColumnHeader()
-    {
-        AreSeparatorsVisibleProperty.Changed.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandleAreSeparatorsVisibleChanged(e));
-        PressedMixin.Attach<DataGridColumnHeader>();
-        IsTabStopProperty.OverrideDefaultValue<DataGridColumnHeader>(false);
-        AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridColumnHeader>(IsOffscreenBehavior.FromClip);
-    }
+    #endregion
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.Primitives.DataGridColumnHeader" /> class.
-    /// </summary>
-    //TODO Implement
-    public DataGridColumnHeader()
-    {
-        PointerPressed  += HandlePointerPressed;
-        PointerReleased += HandlePointerReleased;
-        PointerMoved    += HandlePointerMoved;
-        PointerEntered  += HandlePointerEntered;
-        PointerExited   += HandlePointerExited;
-    }
+    #region 内部属性定义
 
-    // protected override AutomationPeer OnCreateAutomationPeer()
-    // {
-    //     return new DataGridColumnHeaderAutomationPeer(this);
-    // }
-
-    private void HandleAreSeparatorsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (!_areHandlersSuspended)
-        {
-            _desiredSeparatorVisibility = (bool)(e.NewValue ?? false);
-            if (OwningGrid != null)
-            {
-                UpdateSeparatorVisibility(OwningGrid.ColumnsInternal.LastVisibleColumn);
-            }
-            else
-            {
-                UpdateSeparatorVisibility(null);
-            }
-        }
-    }
-
-    internal DataGridColumn? OwningColumn
-    {
-        get;
-        set;
-    }
+    internal DataGridColumn? OwningColumn { get; set; }
     
     internal DataGrid? OwningGrid => OwningColumn?.OwningGrid;
 
@@ -125,57 +76,51 @@ public class DataGridColumnHeader : ContentControl
         }
     }
 
-    internal ListSortDirection? CurrentSortingState
+    internal ListSortDirection? CurrentSortingState { get; private set; }
+
+    private bool IsMouseOver { get; set; }
+
+    private bool IsPressed { get; set; }
+    
+    #endregion
+
+    private const int ResizeRegionWidth = 5;
+    private const int ColumnsDragThreshold = 5;
+
+    private bool _areHandlersSuspended;
+    private static DragMode _dragMode;
+    private static Point? _lastMousePositionHeaders;
+    private static Cursor? _originalCursor;
+    private static double _originalHorizontalOffset;
+    private static double _originalWidth;
+    private bool _desiredSeparatorVisibility = true;
+    private static Point? _dragStart;
+    private static DataGridColumn? _dragColumn;
+    private static double _frozenColumnsWidth;
+    private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
+    
+    static DataGridColumnHeader()
     {
-        get;
-        private set;
+        AreSeparatorsVisibleProperty.Changed.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandleAreSeparatorsVisibleChanged(e));
+        PressedMixin.Attach<DataGridColumnHeader>();
+        IsTabStopProperty.OverrideDefaultValue<DataGridColumnHeader>(false);
+        AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridColumnHeader>(IsOffscreenBehavior.FromClip);
+    }
+    
+    public DataGridColumnHeader()
+    {
+        PointerPressed  += HandlePointerPressed;
+        PointerReleased += HandlePointerReleased;
+        PointerMoved    += HandlePointerMoved;
+        PointerEntered  += HandlePointerEntered;
+        PointerExited   += HandlePointerExited;
     }
 
-    private bool IsMouseOver
-    {
-        get;
-        set;
-    }
-
-    private bool IsPressed
-    {
-        get;
-        set;
-    }
-
-    private void SetValueNoCallback<T>(AvaloniaProperty<T> property, T value, BindingPriority priority = BindingPriority.LocalValue)
-    {
-        _areHandlersSuspended = true;
-        try
-        {
-            SetValue(property, value, priority);
-        }
-        finally
-        {
-            _areHandlersSuspended = false;
-        }
-    }
-
-    internal void UpdatePseudoClasses()
-    {
-        CurrentSortingState = null;
-        if (OwningGrid != null
-            && OwningGrid.DataConnection != null
-            && OwningGrid.DataConnection.AllowSort)
-        {
-            var sort = OwningColumn?.GetSortDescription();
-            if (sort != null)
-            {
-                CurrentSortingState = sort.Direction;
-            }
-        }
-
-        PseudoClasses.Set(":sortascending",
-            CurrentSortingState == ListSortDirection.Ascending);
-        PseudoClasses.Set(":sortdescending",
-            CurrentSortingState == ListSortDirection.Descending);
-    }
-
+    // protected override AutomationPeer OnCreateAutomationPeer()
+    // {
+    //     return new DataGridColumnHeaderAutomationPeer(this);
+    // }
+    
     internal void UpdateSeparatorVisibility(DataGridColumn? lastVisibleColumn)
     {
         bool newVisibility = _desiredSeparatorVisibility;
@@ -197,10 +142,8 @@ public class DataGridColumnHeader : ContentControl
             SetValueNoCallback(AreSeparatorsVisibleProperty, newVisibility);
         }
     }
-
-
-
-    internal void OnMouseLeftButtonUp_Click(KeyModifiers keyModifiers, ref bool handled)
+    
+    internal void HandleMouseLeftButtonUpClick(KeyModifiers keyModifiers, ref bool handled)
     {
         LeftClick?.Invoke(this, keyModifiers);
 
@@ -209,7 +152,26 @@ public class DataGridColumnHeader : ContentControl
         handled = true;
     }
 
-    internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
+    internal void UpdatePseudoClasses()
+    {
+        CurrentSortingState = null;
+        if (OwningGrid != null
+            && OwningGrid.DataConnection.AllowSort)
+        {
+            var sort = OwningColumn?.GetSortDescription();
+            if (sort != null)
+            {
+                CurrentSortingState = sort.Direction;
+            }
+        }
+
+        PseudoClasses.Set(StdPseudoClass.SortAscending,
+            CurrentSortingState == ListSortDirection.Ascending);
+        PseudoClasses.Set(StdPseudoClass.SortDescending,
+            CurrentSortingState == ListSortDirection.Descending);
+    }
+    
+      internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
     {
         Debug.Assert(OwningGrid != null);
         if (OwningGrid.WaitForLostFocus(() => InvokeProcessSort(keyModifiers, forcedDirection)))
@@ -320,48 +282,8 @@ public class DataGridColumnHeader : ContentControl
             }
         }
     }
-
-    private bool CanReorderColumn(DataGridColumn column)
-    {
-        Debug.Assert(OwningGrid != null);
-        return OwningGrid.CanUserReorderColumns
-               && !(column is DataGridFillerColumn)
-               && (column.CanUserReorderInternal.HasValue && column.CanUserReorderInternal.Value || !column.CanUserReorderInternal.HasValue);
-    }
-
-    /// <summary>
-    /// Determines whether a column can be resized by dragging the border of its header.  If star sizing
-    /// is being used, there are special conditions that can prevent a column from being resized:
-    /// 1. The column is the last visible column.
-    /// 2. All columns are constrained by either their maximum or minimum values.
-    /// </summary>
-    /// <param name="column">Column to check.</param>
-    /// <returns>Whether or not the column can be resized by dragging its header.</returns>
-    private static bool CanResizeColumn(DataGridColumn column)
-    {
-        if (column.OwningGrid != null && column.OwningGrid.ColumnsInternal != null && column.OwningGrid.UsesStarSizing &&
-            (column.OwningGrid.ColumnsInternal.LastVisibleColumn == column || !MathUtilities.AreClose(column.OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth, column.OwningGrid.CellsWidth)))
-        {
-            return false;
-        }
-        return column.ActualCanUserResize;
-    }
-
-    private static bool TrySetResizeColumn(DataGridColumn column)
-    {
-        // If datagrid.CanUserResizeColumns == false, then the column can still override it
-        if (CanResizeColumn(column))
-        {
-            _dragColumn = column;
-
-            _dragMode = DragMode.Resize;
-
-            return true;
-        }
-        return false;
-    }
-
-    //TODO DragDrop
+    
+     //TODO DragDrop
 
     internal void OnMouseLeftButtonDown(ref bool handled, PointerEventArgs args, Point mousePosition)
     {
@@ -414,7 +336,7 @@ public class DataGridColumnHeader : ContentControl
         {
             if (_dragMode == DragMode.MouseDown)
             {
-                OnMouseLeftButtonUp_Click(args.KeyModifiers, ref handled);
+                HandleMouseLeftButtonUpClick(args.KeyModifiers, ref handled);
             }
             else if (_dragMode == DragMode.Reorder)
             {
@@ -452,11 +374,78 @@ public class DataGridColumnHeader : ContentControl
 
         Debug.Assert(OwningGrid.Parent is InputElement);
 
-        OnMouseMove_Resize(ref handled, mousePositionHeaders);
-
+        HandleMouseMoveResize(ref handled, mousePositionHeaders);
         HandleMouseMoveReorder(ref handled, mousePosition, mousePositionHeaders);
-
         SetDragCursor(mousePosition);
+    }
+    
+    private void HandleAreSeparatorsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            _desiredSeparatorVisibility = (bool)(e.NewValue ?? false);
+            if (OwningGrid != null)
+            {
+                UpdateSeparatorVisibility(OwningGrid.ColumnsInternal.LastVisibleColumn);
+            }
+            else
+            {
+                UpdateSeparatorVisibility(null);
+            }
+        }
+    }
+    
+    private void SetValueNoCallback<T>(AvaloniaProperty<T> property, T value, BindingPriority priority = BindingPriority.LocalValue)
+    {
+        _areHandlersSuspended = true;
+        try
+        {
+            SetValue(property, value, priority);
+        }
+        finally
+        {
+            _areHandlersSuspended = false;
+        }
+    }
+
+    private bool CanReorderColumn(DataGridColumn column)
+    {
+        Debug.Assert(OwningGrid != null);
+        return OwningGrid.CanUserReorderColumns
+               && !(column is DataGridFillerColumn)
+               && (column.CanUserReorderInternal.HasValue && column.CanUserReorderInternal.Value || !column.CanUserReorderInternal.HasValue);
+    }
+
+    /// <summary>
+    /// Determines whether a column can be resized by dragging the border of its header.  If star sizing
+    /// is being used, there are special conditions that can prevent a column from being resized:
+    /// 1. The column is the last visible column.
+    /// 2. All columns are constrained by either their maximum or minimum values.
+    /// </summary>
+    /// <param name="column">Column to check.</param>
+    /// <returns>Whether or not the column can be resized by dragging its header.</returns>
+    private static bool CanResizeColumn(DataGridColumn column)
+    {
+        if (column.OwningGrid != null && column.OwningGrid.UsesStarSizing &&
+            (column.OwningGrid.ColumnsInternal.LastVisibleColumn == column || !MathUtilities.AreClose(column.OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth, column.OwningGrid.CellsWidth)))
+        {
+            return false;
+        }
+        return column.ActualCanUserResize;
+    }
+
+    private static bool TrySetResizeColumn(DataGridColumn column)
+    {
+        // If datagrid.CanUserResizeColumns == false, then the column can still override it
+        if (CanResizeColumn(column))
+        {
+            _dragColumn = column;
+
+            _dragMode = DragMode.Resize;
+
+            return true;
+        }
+        return false;
     }
 
     private void HandlePointerEntered(object? sender, PointerEventArgs e)
@@ -688,7 +677,7 @@ public class DataGridColumnHeader : ContentControl
             dragIndicator.SetValue(ThemeProperty, columnHeaderTheme, BindingPriority.Template);
         }
 
-        dragIndicator.PseudoClasses.Add(":dragIndicator");
+        dragIndicator.PseudoClasses.Add(StdPseudoClass.DragIndicator);
 
         Control? dropLocationIndicator = OwningGrid.DropLocationIndicatorTemplate?.Build();
 
@@ -727,8 +716,6 @@ public class DataGridColumnHeader : ContentControl
             dragIndicator.Width = Bounds.Width;
         }
     }
-
-#nullable enable
 
     private object? GetDragIndicatorContent(object? content, IDataTemplate? dataTemplate)
     {
@@ -822,7 +809,7 @@ public class DataGridColumnHeader : ContentControl
         }
     }
 
-    private void OnMouseMove_Resize(ref bool handled, Point mousePositionHeaders)
+    private void HandleMouseMoveResize(ref bool handled, Point mousePositionHeaders)
     {
         if (handled)
         {
@@ -832,7 +819,6 @@ public class DataGridColumnHeader : ContentControl
         if (_dragMode == DragMode.Resize && _dragColumn != null && _dragStart.HasValue)
         {
             // resize column
-
             double mouseDelta   = mousePositionHeaders.X - _dragStart.Value.X;
             double desiredWidth = _originalWidth + mouseDelta;
 
@@ -855,7 +841,6 @@ public class DataGridColumnHeader : ContentControl
         }
 
         // set mouse if we can resize column
-
         double         distanceFromLeft  = mousePosition.X;
         double         distanceFromRight = Bounds.Width - distanceFromLeft;
         DataGridColumn? currentColumn     = OwningColumn;

@@ -59,7 +59,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     }
     
     /// <summary>
-    /// Gets or sets the name of the property that this <see cref="T:Avalonia.Controls.DataGrid" /> row is bound to.
+    /// Gets or sets the name of the property that this <see cref="T:AtomUI.Controls.DataGrid" /> row is bound to.
     /// </summary>
     public string? PropertyName
     {
@@ -78,7 +78,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     
     /// <summary>
     /// Gets or sets a value that indicates the amount that the
-    /// children of the <see cref="T:Avalonia.Controls.RowGroupHeader" /> are indented.
+    /// children of the <see cref="T:AtomUI.Controls.RowGroupHeader" /> are indented.
     /// </summary>
     public double SublevelIndent
     {
@@ -161,7 +161,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     /// </summary>
     public DataGridRowGroupHeader()
     {
-        AddHandler(InputElement.PointerPressedEvent, (s, e) => HandlePointerPressed(e), handledEventsToo: true);
+        AddHandler(PointerPressedEvent, (s, e) => HandlePointerPressed(e), handledEventsToo: true);
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -176,7 +176,7 @@ public class DataGridRowGroupHeader : TemplatedControl
             _expanderButtonSubscription =
                 _expanderButton.GetObservable(ToggleButton.IsCheckedProperty)
                                .Skip(1)
-                               .Subscribe(v => OnExpanderButtonIsCheckedChanged(v));
+                               .Subscribe(v => HandleExpanderButtonIsCheckedChanged(v));
         }
 
         _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowTheme.RowHeaderPart);
@@ -345,7 +345,7 @@ public class DataGridRowGroupHeader : TemplatedControl
         }
     }
 
-    private void OnExpanderButtonIsCheckedChanged(bool? value)
+    private void HandleExpanderButtonIsCheckedChanged(bool? value)
     {
         if(!_areIsCheckedHandlersSuspended)
         {

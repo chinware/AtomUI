@@ -14,7 +14,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 /// <summary>
-/// Used within the template of a <see cref="T:Avalonia.Controls.DataGrid" /> to specify the
+/// Used within the template of a <see cref="T:AtomUI.Controls.DataGrid" /> to specify the
 /// location in the control's visual tree where the rows are to be added.
 /// </summary>
 public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
@@ -62,10 +62,10 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
     }
 
     /// <summary>
-    /// Arranges the content of the <see cref="T:Avalonia.Controls.Primitives.DataGridRowsPresenter" />.
+    /// Arranges the content of the <see cref="T:AtomUI.Controls.DataGridRowsPresenter" />.
     /// </summary>
     /// <returns>
-    /// The actual size used by the <see cref="T:Avalonia.Controls.Primitives.DataGridRowsPresenter" />.
+    /// The actual size used by the <see cref="T:AtomUI.Controls.DataGridRowsPresenter" />.
     /// </returns>
     /// <param name="finalSize">
     /// The final area within the parent that this element should use to arrange itself and its children.
@@ -122,14 +122,14 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
     }
 
     /// <summary>
-    /// Measures the children of a <see cref="T:Avalonia.Controls.Primitives.DataGridRowsPresenter" /> to 
+    /// Measures the children of a <see cref="T:AtomUI.Controls.DataGridRowsPresenter" /> to 
     /// prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.
     /// </summary>
     /// <param name="availableSize">
     /// The available size that this element can give to child elements. Indicates an upper limit that child elements should not exceed.
     /// </param>
     /// <returns>
-    /// The size that the <see cref="T:Avalonia.Controls.Primitives.DataGridRowsPresenter" /> determines it needs during layout, based on its calculations of child object allocated sizes.
+    /// The size that the <see cref="T:AtomUI.Controls.DataGridRowsPresenter" /> determines it needs during layout, based on its calculations of child object allocated sizes.
     /// </returns>
     protected override Size MeasureOverride(Size availableSize)
     {

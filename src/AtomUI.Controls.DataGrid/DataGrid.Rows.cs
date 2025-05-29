@@ -125,8 +125,7 @@ public partial class DataGrid
     }
     
     #endregion
-
-
+    
     // Cumulated height of all known rows, including the gridlines and details section.
     // This property returns an approximation of the actual total row heights and also
     // updates the RowHeightEstimate

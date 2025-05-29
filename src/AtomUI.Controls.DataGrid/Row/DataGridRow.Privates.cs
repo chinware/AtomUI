@@ -247,11 +247,11 @@ public partial class DataGridRow
 
         if (!_areHandlersSuspended && OwningGrid != null)
         {
-            IDataTemplate? actualDetailsTemplate(IDataTemplate? template) => (template ?? OwningGrid.RowDetailsTemplate);
+            IDataTemplate? ActualDetailsTemplate(IDataTemplate? template) => (template ?? OwningGrid.RowDetailsTemplate);
 
             // We don't always want to apply the new Template because they might have set the same one
             // we inherited from the DataGrid
-            if (actualDetailsTemplate(newValue) != actualDetailsTemplate(oldValue))
+            if (ActualDetailsTemplate(newValue) != ActualDetailsTemplate(oldValue))
             {
                 ApplyDetailsTemplate(initializeDetailsPreferredHeight: false);
             }
@@ -382,8 +382,8 @@ public partial class DataGridRow
         {
             var isSelected = Slot != -1 && OwningGrid.GetRowSelection(Slot);
             IsSelected = isSelected;
-            PseudoClasses.Set(":editing", IsEditing);
-            PseudoClasses.Set(":invalid", !IsValid);
+            PseudoClasses.Set(StdPseudoClass.Editing, IsEditing);
+            PseudoClasses.Set(StdPseudoClass.Invalid, !IsValid);
             ApplyHeaderStatus();
         }
     }

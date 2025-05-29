@@ -21,11 +21,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
     /// <summary>
     /// Tracks which column is currently being dragged.
     /// </summary>
-    internal DataGridColumn? DragColumn
-    {
-        get;
-        set;
-    }
+    internal DataGridColumn? DragColumn { get; set; }
 
     /// <summary>
     /// The current drag indicator control.  This value is null if no column is being dragged.
@@ -89,17 +85,9 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
     /// The distance, in pixels, that the drop location indicator should be positioned away from the left edge
     /// of the ColumnsHeaderPresenter.
     /// </summary>
-    internal double DropLocationIndicatorOffset
-    {
-        get;
-        set;
-    }
+    internal double DropLocationIndicatorOffset { get; set; }
 
-    internal DataGrid? OwningGrid
-    {
-        get;
-        set;
-    }
+    internal DataGrid? OwningGrid { get; set; }
 
     event EventHandler<ChildIndexChangedEventArgs>? IChildIndexProvider.ChildIndexChanged
     {
@@ -126,10 +114,10 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
     // }
 
     /// <summary>
-    /// Arranges the content of the <see cref="T:Avalonia.Controls.Primitives.DataGridColumnHeadersPresenter" />.
+    /// Arranges the content of the <see cref="T:AtomUI.Controls.DataGridColumnHeadersPresenter" />.
     /// </summary>
     /// <returns>
-    /// The actual size used by the <see cref="T:Avalonia.Controls.Primitives.DataGridColumnHeadersPresenter" />.
+    /// The actual size used by the <see cref="T:AtomUI.Controls.DataGridColumnHeadersPresenter" />.
     /// </returns>
     /// <param name="finalSize">
     /// The final area within the parent that this element should use to arrange itself and its children.
@@ -290,14 +278,14 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
     }
 
     /// <summary>
-    /// Measures the children of a <see cref="T:Avalonia.Controls.Primitives.DataGridColumnHeadersPresenter" /> to 
+    /// Measures the children of a <see cref="T:AtomUI.Controls.DataGridColumnHeadersPresenter" /> to 
     /// prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.
     /// </summary>
     /// <param name="availableSize">
     /// The available size that this element can give to child elements. Indicates an upper limit that child elements should not exceed.
     /// </param>
     /// <returns>
-    /// The size that the <see cref="T:Avalonia.Controls.Primitives.DataGridColumnHeadersPresenter" /> determines it needs during layout, based on its calculations of child object allocated sizes.
+    /// The size that the <see cref="T:AtomUI.Controls.DataGridColumnHeadersPresenter" /> determines it needs during layout, based on its calculations of child object allocated sizes.
     /// </returns>
     protected override Size MeasureOverride(Size availableSize)
     {

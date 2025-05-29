@@ -8,7 +8,7 @@ namespace AtomUI.Controls;
 public class DataGridRowEventArgs : EventArgs
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridRowEventArgs" /> class.
+    /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridRowEventArgs" /> class.
     /// </summary>
     /// <param name="dataGridRow">The row that the event occurs for.</param>
     public DataGridRowEventArgs(DataGridRow dataGridRow)

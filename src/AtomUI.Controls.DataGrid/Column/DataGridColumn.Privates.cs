@@ -22,6 +22,7 @@ public abstract partial class DataGridColumn
     internal bool? CanUserReorderInternal { get; set; }
     internal bool? CanUserResizeInternal { get; set; }
     internal bool? CanUserSortInternal { get; set; }
+    
     internal bool ActualCanUserResize
     {
         get
@@ -153,7 +154,7 @@ public abstract partial class DataGridColumn
         double desiredValue = width.DesiredValue;
         if (double.IsNaN(desiredValue))
         {
-            if (width.IsStar && target.OwningGrid != null && target.OwningGrid.ColumnsInternal != null)
+            if (width.IsStar && target.OwningGrid != null)
             {
                 double totalStarValues           = 0;
                 double totalStarDesiredValues    = 0;
@@ -427,13 +428,12 @@ public abstract partial class DataGridColumn
     //TODO Binding
     internal Control? GenerateEditingElementInternal(DataGridCell cell, object dataItem)
     {
-        // if (_editingElement == null)
-        // {
-        //     _editingElement = GenerateEditingElement(cell, dataItem, out var _editBinding);
-        // }
-        //
-        // return _editingElement;
-        return null;
+        if (_editingElement == null)
+        {
+            _editingElement = GenerateEditingElement(cell, dataItem, out _editBinding);
+        }
+        
+        return _editingElement;
     }
 
     /// <summary>
@@ -442,7 +442,7 @@ public abstract partial class DataGridColumn
     //TODO Binding
     internal void RemoveEditingElement()
     {
-        // _editingElement = null;
+        _editingElement = null;
     }
         
     /// <summary>

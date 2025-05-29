@@ -179,15 +179,11 @@ public class DataGridCell : ContentControl
             return;
         }
 
-        PseudoClasses.Set(":selected", OwningRow.IsSelected);
-
-        PseudoClasses.Set(":current", IsCurrent);
-
-        PseudoClasses.Set(":edited", IsEdited);
-
-        PseudoClasses.Set(":invalid", !IsValid);
-            
-        PseudoClasses.Set(":focus", OwningGrid.IsFocused && IsCurrent);
+        PseudoClasses.Set(StdPseudoClass.Selected, OwningRow.IsSelected);
+        PseudoClasses.Set(StdPseudoClass.Current, IsCurrent);
+        PseudoClasses.Set(StdPseudoClass.Edited, IsEdited);
+        PseudoClasses.Set(StdPseudoClass.Invalid, !IsValid);
+        PseudoClasses.Set(StdPseudoClass.Focus, OwningGrid.IsFocused && IsCurrent);
     }
 
     // Makes sure the right gridline has the proper stroke and visibility. If lastVisibleColumn is specified, the 
