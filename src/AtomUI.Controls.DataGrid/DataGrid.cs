@@ -5,10 +5,8 @@
 
 using System.Collections;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
-using AtomUI.Controls.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -22,7 +20,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Utilities;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
