@@ -1916,6 +1916,11 @@ public partial class DataGrid
         InvalidateRowsMeasure(true);
         InvalidateMeasure();
     }
+    
+    private void HandleCanUserResizeColumnsChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        EnsureHorizontalLayout();
+    }
 
     private void EnsureRowHeaderWidth()
     {
@@ -2043,6 +2048,11 @@ public partial class DataGrid
     private void HandleIsEnabledChanged(AvaloniaPropertyChangedEventArgs e)
     {
     }
+    
+    private void HandleFrozenColumnCountChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        ProcessFrozenColumnCount();
+    }
 
     private void HandleEditingElementInitialized(object? sender, EventArgs e)
     {
@@ -2052,7 +2062,165 @@ public partial class DataGrid
             PreparingCellForEditPrivate(element);
         }
     }
+    
+    private void HandleColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var value = (DataGridLength)(e.NewValue ?? DataGridLength.Auto);
 
+        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+        {
+            if (column.InheritsWidth)
+            {
+                column.SetWidthInternalNoCallback(value);
+            }
+        }
+
+        EnsureHorizontalLayout();
+    }
+    
+    private void HandleGridLinesVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        foreach (DataGridRow row in GetAllRows())
+        {
+            row.EnsureGridLines();
+            row.InvalidateHorizontalArrange();
+        }
+    }
+    
+    private void HandleHeadersVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        // TODO 需要审查
+        var oldValue = (DataGridHeadersVisibility)(e.OldValue ?? DataGridHeadersVisibility.None);
+        var newValue = (DataGridHeadersVisibility)(e.NewValue ?? DataGridHeadersVisibility.None);
+        bool hasFlags(DataGridHeadersVisibility value, DataGridHeadersVisibility flags) => ((value & flags) == flags);
+
+        bool newValueCols = hasFlags(newValue, DataGridHeadersVisibility.Column);
+        bool newValueRows = hasFlags(newValue, DataGridHeadersVisibility.Row);
+        bool oldValueCols = hasFlags(oldValue, DataGridHeadersVisibility.Column);
+        bool oldValueRows = hasFlags(oldValue, DataGridHeadersVisibility.Row);
+
+        // Columns
+        if (newValueCols != oldValueCols)
+        {
+            if (_columnHeadersPresenter != null)
+            {
+                EnsureColumnHeadersVisibility();
+                if (!newValueCols)
+                {
+                    _columnHeadersPresenter.Measure(default);
+                }
+                else
+                {
+                    EnsureVerticalGridLines();
+                }
+                InvalidateMeasure();
+            }
+        }
+
+        // Rows
+        if (newValueRows != oldValueRows)
+        {
+            if (_rowsPresenter != null)
+            {
+                foreach (Control element in _rowsPresenter.Children)
+                {
+                    if (element is DataGridRow row)
+                    {
+                        row.EnsureHeaderStyleAndVisibility(null);
+                        if (newValueRows)
+                        {
+                            row.ApplyState();
+                            row.EnsureHeaderVisibility();
+                        }
+                    }
+                    else if (element is DataGridRowGroupHeader rowGroupHeader)
+                    {
+                        rowGroupHeader.EnsureHeaderVisibility();
+                    }
+                }
+                InvalidateRowHeightEstimate();
+                InvalidateRowsMeasure(invalidateIndividualElements: true);
+            }
+        }
+
+        if (_topLeftCornerHeader != null)
+        {
+            _topLeftCornerHeader.IsVisible = newValueRows && newValueCols;
+            if (_topLeftCornerHeader.IsVisible)
+            {
+                _topLeftCornerHeader.Measure(default);
+            }
+        }
+
+    }
+    
+    private void HandleHorizontalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended && _rowsPresenter != null)
+        {
+            foreach (DataGridRow row in GetAllRows())
+            {
+                row.EnsureGridLines();
+            }
+        }
+    }
+    
+    private void HandleIsReadOnlyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            var value = (bool)(e.NewValue ?? false);
+            if (value && !CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
+            {
+                CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
+            }
+        }
+    }
+
+    private void HandleMaxColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            var oldValue = (double)(e.OldValue ?? 0);
+            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+            {
+                HandleColumnMaxWidthChanged(column, Math.Min(column.MaxWidth, oldValue));
+            }
+        }
+    }
+    
+    private void HandleMinColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            double oldValue = (double)(e.OldValue ?? 0);
+            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+            {
+                HandleColumnMinWidthChanged(column, Math.Max(column.MinWidth, oldValue));
+            }
+        }
+    }
+    
+    private void HandleRowHeightChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            InvalidateRowHeightEstimate();
+            // Re-measure all the rows due to the Height change
+            InvalidateRowsMeasure(invalidateIndividualElements: true);
+            // DataGrid needs to update the layout information and the ScrollBars
+            InvalidateMeasure();
+        }
+    }
+    
+    private void HandleRowHeaderWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            EnsureRowHeaderWidth();
+        }
+    }
+    
     //TODO Validation
     //TODO Binding
     //TODO TabStop
@@ -4091,6 +4259,178 @@ public partial class DataGrid
         }
 
         return false;
+    }
+    
+    private void HandleSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            ClearRowSelection(resetAnchorSlot: true);
+        }
+    }
+    
+    private void HandleVerticalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (_rowsPresenter != null)
+        {
+            foreach (DataGridRow row in GetAllRows())
+            {
+                row.EnsureGridLines();
+            }
+        }
+    }
+    
+    private void HandleSelectedIndexChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            int index = (int)(e.NewValue ?? 0);
+
+            // GetDataItem returns null if index is >= Count, we do not check newValue
+            // against Count here to avoid enumerating through an Enumerable twice
+            // Setting SelectedItem coerces the finally value of the SelectedIndex
+            object? newSelectedItem = (index < 0) ? null : DataConnection.GetDataItem(index);
+            SelectedItem = newSelectedItem;
+            if (SelectedItem != newSelectedItem)
+            {
+                SetValueNoCallback(SelectedIndexProperty, (int)(e.OldValue ?? 0));
+            }
+        }
+    }
+    
+    private void HandleSelectedItemChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (!_areHandlersSuspended)
+        {
+            int rowIndex = (e.NewValue == null) ? -1 : DataConnection.IndexOf(e.NewValue);
+            if (rowIndex == -1)
+            {
+                // If the Item is null or it's not found, clear the Selection
+                if (!CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
+                {
+                    // Edited value couldn't be committed or aborted
+                    SetValueNoCallback(SelectedItemProperty, e.OldValue);
+                    return;
+                }
+
+                // Clear all row selections
+                ClearRowSelection(resetAnchorSlot: true);
+
+                if (DataConnection.CollectionView != null)
+                {
+                    DataConnection.CollectionView.MoveCurrentTo(null);
+                }
+            }
+            else
+            {
+                int slot = SlotFromRowIndex(rowIndex);
+                if (slot != CurrentSlot)
+                {
+                    if (!CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
+                    {
+                        // Edited value couldn't be committed or aborted
+                        SetValueNoCallback(SelectedItemProperty, e.OldValue);
+                        return;
+                    }
+                    if (slot >= SlotCount || slot < -1)
+                    {
+                        if (DataConnection.CollectionView != null)
+                        {
+                            DataConnection.CollectionView.MoveCurrentToPosition(rowIndex);
+                        }
+                    }
+                }
+
+                int oldSelectedIndex = SelectedIndex;
+                SetValueNoCallback(SelectedIndexProperty, rowIndex);
+                try
+                {
+                    _noSelectionChangeCount++;
+                    int columnIndex = CurrentColumnIndex;
+
+                    if (columnIndex == -1)
+                    {
+                        columnIndex = FirstDisplayedNonFillerColumnIndex;
+                    }
+                    if (IsSlotOutOfSelectionBounds(slot))
+                    {
+                        ClearRowSelection(slotException: slot, setAnchorSlot: true);
+                        return;
+                    }
+
+                    UpdateSelectionAndCurrency(columnIndex, slot, DataGridSelectionAction.SelectCurrent, scrollIntoView: false);
+                }
+                finally
+                {
+                    NoSelectionChangeCount--;
+                }
+
+                if (!_successfullyUpdatedSelection)
+                {
+                    SetValueNoCallback(SelectedIndexProperty, oldSelectedIndex);
+                    SetValueNoCallback(SelectedItemProperty, e.OldValue);
+                }
+            }
+        }
+    }
+    
+    private void HandleAreRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var value = (bool)(e.NewValue ?? false);
+        ProcessFrozenColumnCount();
+
+        // Update elements in the RowGroupHeader that were previously frozen
+        if (value)
+        {
+            if (_rowsPresenter != null)
+            {
+                foreach (Control element in _rowsPresenter.Children)
+                {
+                    if (element is DataGridRowGroupHeader groupHeader)
+                    {
+                        groupHeader.ClearFrozenStates();
+                    }
+                }
+            }
+        }
+    }
+    
+    private void HandleRowDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+
+        // Update the RowDetails templates if necessary
+        if (_rowsPresenter != null)
+        {
+            foreach (DataGridRow row in GetAllRows())
+            {
+                if (GetRowDetailsVisibility(row.Index))
+                {
+                    // DetailsPreferredHeight is initialized when the DetailsElement's size changes.
+                    row.ApplyDetailsTemplate(initializeDetailsPreferredHeight: false);
+                }
+            }
+        }
+
+        UpdateRowDetailsHeightEstimate();
+        InvalidateMeasure();
+    }
+    
+    private void HandleRowDetailsVisibilityModeChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        UpdateRowDetailsVisibilityMode((DataGridRowDetailsVisibilityMode)(e.NewValue ?? DataGridRowDetailsVisibilityMode.Collapsed));
+    }
+
+    private void HandleAutoGenerateColumnsChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var value = (bool)(e.NewValue ?? false);
+        if (value)
+        {
+            InitializeElements(recycleRows: false);
+        }
+        else
+        {
+            RemoveAutoGeneratedColumns();
+        }
     }
 
     private async void CopyToClipboard(string text)

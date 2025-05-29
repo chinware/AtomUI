@@ -356,7 +356,7 @@ public abstract partial class DataGridColumn
         SetWidthInternalNoCallback(newWidth);
         if (newWidth != oldWidth)
         {
-            OwningGrid.OnColumnWidthChanged(this);
+            OwningGrid.HandleColumnWidthChanged(this);
         }
     }
 

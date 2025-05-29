@@ -815,6 +815,28 @@ public partial class DataGrid : TemplatedControl
             VerticalScrollBarVisibilityProperty);
         
         ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
+        CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleCanUserResizeColumnsChanged(e));
+        ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleColumnWidthChanged(e));
+        FrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleFrozenColumnCountChanged(e));
+        GridLinesVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleGridLinesVisibilityChanged(e));
+        HeadersVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleHeadersVisibilityChanged(e));
+        HorizontalGridLinesBrushProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleHorizontalGridLinesBrushChanged(e));
+        IsReadOnlyProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleIsReadOnlyChanged(e));
+        MaxColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleMaxColumnWidthChanged(e));
+        MinColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleMinColumnWidthChanged(e));
+        RowHeightProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeightChanged(e));
+        RowHeaderWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeaderWidthChanged(e));
+        SelectionModeProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectionModeChanged(e));
+        VerticalGridLinesBrushProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleVerticalGridLinesBrushChanged(e));
+        SelectedIndexProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedIndexChanged(e));
+        SelectedItemProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedItemChanged(e));
+        IsEnabledProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleIsEnabledChanged(e));
+        AreRowGroupHeadersFrozenProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleAreRowGroupHeadersFrozenChanged(e));
+        RowDetailsTemplateProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowDetailsTemplateChanged(e));
+        RowDetailsVisibilityModeProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowDetailsVisibilityModeChanged(e));
+        AutoGenerateColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleAutoGenerateColumnsChanged(e));
+
+        FocusableProperty.OverrideDefaultValue<DataGrid>(true);
     }
 
     public DataGrid()

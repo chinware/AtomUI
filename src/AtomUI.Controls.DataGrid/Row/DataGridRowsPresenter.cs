@@ -85,7 +85,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             var availableHeight = OwningGrid.RowsPresenterAvailableSize.Value.Height;
         }
 
-        OwningGrid.OnFillerColumnWidthNeeded(finalSize.Width);
+        OwningGrid.HandleFillerColumnWidthNeeded(finalSize.Width);
 
         double rowDesiredWidth = OwningGrid.RowHeadersDesiredWidth + OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth + OwningGrid.ColumnsInternal.FillerColumn.FillerWidth;
         double topEdge = -OwningGrid.NegVerticalOffset;

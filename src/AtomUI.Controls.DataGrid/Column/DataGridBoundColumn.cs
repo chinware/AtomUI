@@ -59,7 +59,7 @@ public abstract class DataGridBoundColumn : DataGridColumn
                     // Apply the new Binding to existing rows in the DataGrid
                     if (OwningGrid != null)
                     {
-                        OwningGrid.OnColumnBindingChanged(this);
+                        OwningGrid.HandleColumnBindingChanged(this);
                     }
                 } 
 

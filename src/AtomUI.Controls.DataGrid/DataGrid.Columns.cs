@@ -169,7 +169,7 @@ public partial class DataGrid
             else
             {
                 column.SetWidthInternalNoCallback(new DataGridLength(column.Width.Value, column.Width.UnitType, desiredWidth, desiredWidth));
-                OnColumnWidthChanged(column);
+                HandleColumnWidthChanged(column);
             }
         }
     }
@@ -267,7 +267,7 @@ public partial class DataGrid
         return amount;
     }
 
-    internal void NotifyClearingColumns()
+    internal void HandleClearingColumns()
     {
         // Rows need to be cleared first. There cannot be rows without also having columns.
         ClearRows(false);
@@ -286,7 +286,7 @@ public partial class DataGrid
     /// Invalidates the widths of all columns because the resizing behavior of an individual column has changed.
     /// </summary>
     /// <param name="column">Column with CanUserResize property that has changed.</param>
-    internal void NotifyColumnCanUserResizeChanged(DataGridColumn column)
+    internal void HandleColumnCanUserResizeChanged(DataGridColumn column)
     {
         if (column.IsVisible)
         {
@@ -294,7 +294,7 @@ public partial class DataGrid
         }
     }
 
-    internal void NotifyColumnCollectionChangedPostNotification(bool columnsGrew)
+    internal void HandleColumnCollectionChangedPostNotification(bool columnsGrew)
     {
         if (columnsGrew &&
             CurrentColumnIndex == -1)
@@ -309,7 +309,7 @@ public partial class DataGrid
         }
     }
 
-    internal void NotifyColumnCollectionChangedPreNotification(bool columnsGrew)
+    internal void HandleColumnCollectionChangedPreNotification(bool columnsGrew)
     {
         // dataGridColumn==null means the collection was refreshed.
 
@@ -323,7 +323,7 @@ public partial class DataGrid
         }
     }
 
-    internal void NotifyColumnDisplayIndexChanged(DataGridColumn dataGridColumn)
+    internal void HandleColumnDisplayIndexChanged(DataGridColumn dataGridColumn)
     {
         Debug.Assert(dataGridColumn != null);
         DataGridColumnEventArgs e = new DataGridColumnEventArgs(dataGridColumn);
@@ -335,7 +335,7 @@ public partial class DataGrid
         }
     }
 
-    internal void NotifyColumnDisplayIndexChangedPostNotification()
+    internal void HandleColumnDisplayIndexChangedPostNotification()
     {
         // Notifications for adjusted display indexes.
         FlushDisplayIndexChanged(true /*raiseEvent*/);
@@ -348,7 +348,7 @@ public partial class DataGrid
         EnsureHorizontalLayout();
     }
 
-    internal void OnColumnDisplayIndexChanging(DataGridColumn targetColumn, int newDisplayIndex)
+    internal void HandleColumnDisplayIndexChanging(DataGridColumn targetColumn, int newDisplayIndex)
     {
         Debug.Assert(targetColumn != null);
         Debug.Assert(newDisplayIndex != targetColumn.DisplayIndexWithFiller);
@@ -412,7 +412,7 @@ public partial class DataGrid
         // Note that displayIndex of moved column is updated by caller.
     }
 
-    internal void OnColumnBindingChanged(DataGridBoundColumn column)
+    internal void HandleColumnBindingChanged(DataGridBoundColumn column)
     {
         // Update Binding in Displayed rows by regenerating the affected elements
         if (_rowsPresenter != null)
@@ -429,7 +429,7 @@ public partial class DataGrid
     /// </summary>
     /// <param name="column">The column to adjust.</param>
     /// <param name="oldValue">The old ActualMaxWidth of the column.</param>
-    internal void OnColumnMaxWidthChanged(DataGridColumn column, double oldValue)
+    internal void HandleColumnMaxWidthChanged(DataGridColumn column, double oldValue)
     {
         Debug.Assert(column != null);
 
@@ -452,7 +452,7 @@ public partial class DataGrid
                     new (column.Width.Value, column.Width.UnitType, column.Width.DesiredValue, column.Width.DesiredValue),
                     false);
             }
-            OnColumnWidthChanged(column);
+            HandleColumnWidthChanged(column);
         }
     }
 
@@ -461,7 +461,7 @@ public partial class DataGrid
     /// </summary>
     /// <param name="column">The column to adjust.</param>
     /// <param name="oldValue">The old ActualMinWidth of the column.</param>
-    internal void OnColumnMinWidthChanged(DataGridColumn column, double oldValue)
+    internal void HandleColumnMinWidthChanged(DataGridColumn column, double oldValue)
     {
         Debug.Assert(column != null);
 
@@ -484,11 +484,11 @@ public partial class DataGrid
                     new(column.Width.Value, column.Width.UnitType, column.Width.DesiredValue, column.Width.DesiredValue),
                     false);
             }
-            OnColumnWidthChanged(column);
+            HandleColumnWidthChanged(column);
         }
     }
 
-    internal void OnColumnReadOnlyStateChanging(DataGridColumn dataGridColumn, bool isReadOnly)
+    internal void HandleColumnReadOnlyStateChanging(DataGridColumn dataGridColumn, bool isReadOnly)
     {
         Debug.Assert(dataGridColumn != null);
         if (isReadOnly && CurrentColumnIndex == dataGridColumn.Index)
@@ -501,7 +501,7 @@ public partial class DataGrid
         }
     }
 
-    internal void OnColumnVisibleStateChanged(DataGridColumn updatedColumn)
+    internal void HandleColumnVisibleStateChanged(DataGridColumn updatedColumn)
     {
         Debug.Assert(updatedColumn != null);
 
@@ -535,7 +535,7 @@ public partial class DataGrid
         }
     }
 
-    internal void OnColumnVisibleStateChanging(DataGridColumn targetColumn)
+    internal void HandleColumnVisibleStateChanging(DataGridColumn targetColumn)
     {
         Debug.Assert(targetColumn != null);
 
@@ -559,7 +559,7 @@ public partial class DataGrid
         }
     }
 
-    internal void OnColumnWidthChanged(DataGridColumn updatedColumn)
+    internal void HandleColumnWidthChanged(DataGridColumn updatedColumn)
     {
         Debug.Assert(updatedColumn != null);
         if (updatedColumn.IsVisible)
@@ -568,7 +568,7 @@ public partial class DataGrid
         }
     }
 
-    internal void OnFillerColumnWidthNeeded(double finalWidth)
+    internal void HandleFillerColumnWidthNeeded(double finalWidth)
     {
         DataGridFillerColumn? fillerColumn      = ColumnsInternal.FillerColumn;
         double               totalColumnsWidth = ColumnsInternal.VisibleEdgedColumnsWidth + ActualRowHeaderWidth;
@@ -638,7 +638,7 @@ public partial class DataGrid
         }
     }
 
-    internal DataGridCellCoordinates NotifyInsertingColumn(int columnIndexInserted, DataGridColumn insertColumn)
+    internal DataGridCellCoordinates HandleInsertingColumn(int columnIndexInserted, DataGridColumn insertColumn)
     {
         DataGridCellCoordinates newCurrentCellCoordinates;
         Debug.Assert(insertColumn != null);
@@ -663,7 +663,7 @@ public partial class DataGrid
         return newCurrentCellCoordinates;
     }
 
-    internal void NotifyRemovedColumnPostNotification(DataGridCellCoordinates newCurrentCellCoordinates)
+    internal void HandleRemovedColumnPostNotification(DataGridCellCoordinates newCurrentCellCoordinates)
     {
         // Update current cell if needed
         if (newCurrentCellCoordinates.ColumnIndex != -1)
@@ -673,7 +673,7 @@ public partial class DataGrid
         }
     }
 
-    internal void NotifyRemovedColumnPreNotification(DataGridColumn removedColumn)
+    internal void HandleRemovedColumnPreNotification(DataGridColumn removedColumn)
     {
         Debug.Assert(removedColumn.Index >= 0);
         Debug.Assert(removedColumn.OwningGrid == null);
@@ -1399,7 +1399,7 @@ public partial class DataGrid
                 if (raiseEvent)
                 {
                     Debug.Assert(column != ColumnsInternal.RowGroupSpacerColumn);
-                    NotifyColumnDisplayIndexChanged(column);
+                    HandleColumnDisplayIndexChanged(column);
                 }
             }
         }

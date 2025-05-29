@@ -143,7 +143,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
                 _maxWidth = value;
                 if (OwningGrid != null)
                 {
-                    OwningGrid.OnColumnMaxWidthChanged(this, oldValue);
+                    OwningGrid.HandleColumnMaxWidthChanged(this, oldValue);
                 }
             }
         }
@@ -176,7 +176,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
                 _minWidth = value;
                 if (OwningGrid != null)
                 {
-                    OwningGrid.OnColumnMinWidthChanged(this, oldValue);
+                    OwningGrid.HandleColumnMinWidthChanged(this, oldValue);
                 }
             }
         }
@@ -211,7 +211,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
         set
         {
             CanUserResizeInternal = value;
-            OwningGrid?.NotifyColumnCanUserResizeChanged(this);
+            OwningGrid?.HandleColumnCanUserResizeChanged(this);
         }
     }
 
@@ -299,13 +299,13 @@ public abstract partial class DataGridColumn : AvaloniaObject
                         throw DataGridError.DataGrid.ValueMustBeBetween(nameof(value), nameof(DisplayIndex), 0, true, OwningGrid.Columns.Count, false);
                     }
                     // Will throw an error if a visible frozen column is placed inside a non-frozen area or vice-versa.
-                    OwningGrid.OnColumnDisplayIndexChanging(this, value);
+                    OwningGrid.HandleColumnDisplayIndexChanging(this, value);
                     _displayIndexWithFiller = value;
                     try
                     {
                         OwningGrid.InDisplayIndexAdjustments = true;
-                        OwningGrid.NotifyColumnDisplayIndexChanged(this);
-                        OwningGrid.NotifyColumnDisplayIndexChangedPostNotification();
+                        OwningGrid.HandleColumnDisplayIndexChanged(this);
+                        OwningGrid.HandleColumnDisplayIndexChangedPostNotification();
                     }
                     finally
                     {
@@ -368,7 +368,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
         {
             if (value != _isReadOnly)
             {
-                OwningGrid?.OnColumnReadOnlyStateChanging(this, value);
+                OwningGrid?.HandleColumnReadOnlyStateChanging(this, value);
                 _isReadOnly = value;
             }
         }
@@ -426,7 +426,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
 
         if (change.Property == IsVisibleProperty)
         {
-            OwningGrid?.OnColumnVisibleStateChanging(this);
+            OwningGrid?.HandleColumnVisibleStateChanging(this);
             var isVisible = change.GetNewValue<bool>();
         
             if (_headerCell != null)
@@ -434,7 +434,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
                 _headerCell.IsVisible = isVisible;
             }
         
-            OwningGrid?.OnColumnVisibleStateChanged(this);
+            OwningGrid?.HandleColumnVisibleStateChanged(this);
             NotifyPropertyChanged(change.Property.Name);
         }
         else if (change.Property == WidthProperty)
@@ -456,7 +456,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
                         {
                             SetWidthInternalNoCallback(width);
                             IsInitialDesiredWidthDetermined = false;
-                            grid.OnColumnWidthChanged(this);
+                            grid.HandleColumnWidthChanged(this);
                         }
                         else
                         {

@@ -144,7 +144,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
         if (!loading)
         {
             int globalIndex = LeafIndexFromItem(item, index);
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, globalIndex));
         }
     }
@@ -157,7 +157,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
     /// into account before calling this method to forward CollectionChanged events.
     /// </remarks>
     /// <param name="args">The NotifyCollectionChangedEventArgs to be passed to the EventHandler</param>
-    public void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
+    public void HandleCollectionChanged(NotifyCollectionChangedEventArgs args)
     {
         Debug.Assert(args != null, "Arguments passed in should not be null");
         CollectionChanged?.Invoke(this, args);
@@ -211,7 +211,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
 
         if (!loading)
         {
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, globalIndex));
         }
     }
@@ -304,7 +304,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
                 {
                     int localIndex = group.Insert(item, item, ActiveComparer);
                     int index      = group.LeafIndexFromItem(item, localIndex);
-                    OnCollectionChanged(
+                    HandleCollectionChanged(
                         new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
                 }
             }
@@ -411,7 +411,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
         int leafIndex = group.Remove(item, true);
         if (leafIndex >= 0)
         {
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, leafIndex));
             return false;
         }

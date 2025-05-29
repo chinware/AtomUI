@@ -191,7 +191,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         }
 
         // Arrange filler
-        OwningGrid.OnFillerColumnWidthNeeded(finalSize.Width);
+        OwningGrid.HandleFillerColumnWidthNeeded(finalSize.Width);
         DataGridFillerColumn? fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
         Debug.Assert(fillerColumn != null);
         if (fillerColumn.FillerWidth > 0)

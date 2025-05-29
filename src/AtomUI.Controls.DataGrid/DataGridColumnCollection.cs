@@ -364,14 +364,14 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
             dataGridColumn.RemoveEditingElement();
 
             // continue with the base remove
-            _owningGrid.NotifyRemovedColumnPreNotification(dataGridColumn);
-            _owningGrid.NotifyColumnCollectionChangedPreNotification(false /*columnsGrew*/);
+            _owningGrid.HandleRemovedColumnPreNotification(dataGridColumn);
+            _owningGrid.HandleColumnCollectionChangedPreNotification(false /*columnsGrew*/);
             if (!isSpacer)
             {
                 base.RemoveItem(columnIndex);
             }
-            _owningGrid.NotifyRemovedColumnPostNotification(newCurrentCellCoordinates);
-            _owningGrid.NotifyColumnCollectionChangedPostNotification(false /*columnsGrew*/);
+            _owningGrid.HandleRemovedColumnPostNotification(newCurrentCellCoordinates);
+            _owningGrid.HandleColumnCollectionChangedPostNotification(false /*columnsGrew*/);
         }
         finally
         {
