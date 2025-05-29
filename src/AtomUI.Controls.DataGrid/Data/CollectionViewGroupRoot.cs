@@ -26,7 +26,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
     /// <summary>
     /// Private accessor for the top level GroupDescription
     /// </summary>
-    private static DataGridGroupDescription? topLevelGroupDescription;
+    private static DataGridGroupDescription? _topLevelGroupDescription;
 
     /// <summary>
     /// Private accessor for an ObservableCollection containing group descriptions
@@ -122,9 +122,9 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
     /// </summary>
     internal void Initialize()
     {
-        if (topLevelGroupDescription == null)
+        if (_topLevelGroupDescription == null)
         {
-            topLevelGroupDescription = new TopLevelGroupDescription();
+            _topLevelGroupDescription = new TopLevelGroupDescription();
         }
 
         InitializeGroup(this, 0, null);

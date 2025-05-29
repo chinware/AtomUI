@@ -24,7 +24,7 @@ internal class DataGridDataConnection
     private object? _itemToSelectOnCurrentChanged;
     private DataGrid _owner;
     private bool _scrollForCurrentChanged;
-    private DataGridSelectionAction? _selectionActionForCurrentChanged;
+    private DataGridSelectionAction _selectionActionForCurrentChanged;
     
     public DataGridDataConnection(DataGrid owner)
     {
@@ -512,142 +512,145 @@ internal class DataGridDataConnection
 
     private void HandleCurrentChanged(object? sender, EventArgs e)
     {
-        // if (_expectingCurrentChanged)
-        // {
-        //     // Committing Edit could cause our item to move to a group that no longer exists.  In
-        //     // this case, we need to update the item.
-        //     if (_itemToSelectOnCurrentChanged is DataGridCollectionViewGroup collectionViewGroup)
-        //     {
-        //         DataGridRowGroupInfo groupInfo = _owner.RowGroupInfoFromCollectionViewGroup(collectionViewGroup);
-        //         if (groupInfo == null)
-        //         {
-        //             // Move to the next slot if the target slot isn't visible                        
-        //             if (!_owner.IsSlotVisible(_backupSlotForCurrentChanged))
-        //             {
-        //                 _backupSlotForCurrentChanged = _owner.GetNextVisibleSlot(_backupSlotForCurrentChanged);
-        //             }
-        //             // Move to the next best slot if we've moved past all the slots.  This could happen if multiple
-        //             // groups were removed.
-        //             if (_backupSlotForCurrentChanged >= _owner.SlotCount)
-        //             {
-        //                 _backupSlotForCurrentChanged = _owner.GetPreviousVisibleSlot(_owner.SlotCount);
-        //             }
-        //             // Update the itemToSelect
-        //             int newCurrentPosition = -1;
-        //             _itemToSelectOnCurrentChanged = _owner.ItemFromSlot(_backupSlotForCurrentChanged, ref newCurrentPosition);
-        //         }
-        //     }
-        //
-        //     _owner.ProcessSelectionAndCurrency(
-        //         _columnForCurrentChanged,
-        //         _itemToSelectOnCurrentChanged,
-        //         _backupSlotForCurrentChanged,
-        //         _selectionActionForCurrentChanged,
-        //         _scrollForCurrentChanged);
-        // }
-        // else if (CollectionView != null)
-        // {
-        //     _owner.UpdateStateOnCurrentChanged(CollectionView.CurrentItem, CollectionView.CurrentPosition);
-        // }
+        if (_expectingCurrentChanged)
+        {
+            // Committing Edit could cause our item to move to a group that no longer exists.  In
+            // this case, we need to update the item.
+            if (_itemToSelectOnCurrentChanged is DataGridCollectionViewGroup collectionViewGroup)
+            {
+                DataGridRowGroupInfo? groupInfo = _owner.RowGroupInfoFromCollectionViewGroup(collectionViewGroup);
+                if (groupInfo == null)
+                {
+                    // Move to the next slot if the target slot isn't visible                        
+                    if (!_owner.IsSlotVisible(_backupSlotForCurrentChanged))
+                    {
+                        _backupSlotForCurrentChanged = _owner.GetNextVisibleSlot(_backupSlotForCurrentChanged);
+                    }
+                    // Move to the next best slot if we've moved past all the slots.  This could happen if multiple
+                    // groups were removed.
+                    if (_backupSlotForCurrentChanged >= _owner.SlotCount)
+                    {
+                        _backupSlotForCurrentChanged = _owner.GetPreviousVisibleSlot(_owner.SlotCount);
+                    }
+                    // Update the itemToSelect
+                    int newCurrentPosition = -1;
+                    _itemToSelectOnCurrentChanged = _owner.ItemFromSlot(_backupSlotForCurrentChanged, ref newCurrentPosition);
+                }
+            }
+            Debug.Assert(_itemToSelectOnCurrentChanged != null);
+            _owner.ProcessSelectionAndCurrency(
+                _columnForCurrentChanged,
+                _itemToSelectOnCurrentChanged,
+                _backupSlotForCurrentChanged,
+                _selectionActionForCurrentChanged,
+                _scrollForCurrentChanged);
+        }
+        else if (CollectionView != null)
+        {
+            _owner.UpdateStateOnCurrentChanged(CollectionView.CurrentItem, CollectionView.CurrentPosition);
+        }
     }
 
     private void HandleCurrentChanging(object? sender, DataGridCurrentChangingEventArgs e)
     {
-        // if (_owner.NoCurrentCellChangeCount == 0 &&
-        //     !_expectingCurrentChanged &&
-        //     !CommittingEdit &&
-        //     !_owner.CommitEdit())
-        // {
-        //     // If CommitEdit failed, then the user has most likely input invalid data.
-        //     // We should cancel the current change if we can, otherwise we have to abort the edit.
-        //     if (e.IsCancelable)
-        //     {
-        //         e.Cancel = true;
-        //     }
-        //     else
-        //     {
-        //         _owner.CancelEdit(DataGridEditingUnit.Row, false);
-        //     }
-        // }
+        if (_owner.NoCurrentCellChangeCount == 0 &&
+            !_expectingCurrentChanged &&
+            !CommittingEdit &&
+            !_owner.CommitEdit())
+        {
+            // If CommitEdit failed, then the user has most likely input invalid data.
+            // We should cancel the current change if we can, otherwise we have to abort the edit.
+            if (e.IsCancelable)
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                _owner.CancelEdit(DataGridEditingUnit.Row, false);
+            }
+        }
     }
 
     private void HandleSortDescriptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        // if (_owner.ColumnsItemsInternal.Count == 0)
-        // {
-        //     return;
-        // }
-        //
-        // // refresh sort description
-        // foreach (DataGridColumn column in _owner.ColumnsItemsInternal)
-        // {
-        //     column.HeaderCell.UpdatePseudoClasses();
-        // }
+        if (_owner.ColumnsItemsInternal.Count == 0)
+        {
+            return;
+        }
+        
+        // refresh sort description
+        foreach (DataGridColumn column in _owner.ColumnsItemsInternal)
+        {
+            column.HeaderCell.UpdatePseudoClasses();
+        }
     }
 
     private void HandleDataSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        // if (_owner.LoadingOrUnloadingRow)
-        // {
-        //     throw DataGridError.DataGrid.CannotChangeItemsWhenLoadingRows();
-        // }
-        // switch (e.Action)
-        // {
-        //     case NotifyCollectionChangedAction.Add:
-        //         Debug.Assert(e.NewItems != null, "Unexpected NotifyCollectionChangedAction.Add notification");
-        //         if (ShouldAutoGenerateColumns)
-        //         {
-        //             // The columns are also affected (not just rows) in this case so we need to reset everything
-        //             _owner.InitializeElements(false /*recycleRows*/);
-        //         }
-        //         else if (!IsGrouping)
-        //         {
-        //             // If we're grouping then we handle this through the CollectionViewGroup notifications
-        //             // According to WPF, Add is a single item operation
-        //             Debug.Assert(e.NewItems.Count == 1);
-        //             _owner.InsertRowAt(e.NewStartingIndex);
-        //         }
-        //         break;
-        //     case NotifyCollectionChangedAction.Remove:
-        //         IList removedItems = e.OldItems;
-        //         if (removedItems == null || e.OldStartingIndex < 0)
-        //         {
-        //             Debug.Assert(false, "Unexpected NotifyCollectionChangedAction.Remove notification");
-        //             return;
-        //         }
-        //         if (!IsGrouping)
-        //         {
-        //             // If we're grouping then we handle this through the CollectionViewGroup notifications
-        //             // According to WPF, Remove is a single item operation
-        //             foreach (object item in e.OldItems)
-        //             {
-        //                 Debug.Assert(item != null);
-        //                 _owner.RemoveRowAt(e.OldStartingIndex, item);
-        //             }
-        //         }
-        //         break;
-        //     case NotifyCollectionChangedAction.Replace:
-        //         throw new NotSupportedException(); // 
-        //
-        //     case NotifyCollectionChangedAction.Reset:
-        //         // Did the data type change during the reset?  If not, we can recycle
-        //         // the existing rows instead of having to clear them all.  We still need to clear our cached
-        //         // values for DataType and DataProperties, though, because the collection has been reset.
-        //         Type previousDataType = _dataType;
-        //         _dataType = null;
-        //         if (previousDataType != DataType)
-        //         {
-        //             ClearDataProperties();
-        //             _owner.InitializeElements(false /*recycleRows*/);
-        //         }
-        //         else
-        //         {
-        //             _owner.InitializeElements(!ShouldAutoGenerateColumns /*recycleRows*/);
-        //         }
-        //         break;
-        // }
-        //
-        // _owner.UpdatePseudoClasses();
+        if (_owner.LoadingOrUnloadingRow)
+        {
+            throw DataGridError.DataGrid.CannotChangeItemsWhenLoadingRows();
+        }
+        switch (e.Action)
+        {
+            case NotifyCollectionChangedAction.Add:
+                Debug.Assert(e.NewItems != null, "Unexpected NotifyCollectionChangedAction.Add notification");
+                if (ShouldAutoGenerateColumns)
+                {
+                    // The columns are also affected (not just rows) in this case so we need to reset everything
+                    _owner.InitializeElements(false /*recycleRows*/);
+                }
+                else if (!IsGrouping)
+                {
+                    // If we're grouping then we handle this through the CollectionViewGroup notifications
+                    // According to WPF, Add is a single item operation
+                    Debug.Assert(e.NewItems.Count == 1);
+                    _owner.InsertRowAt(e.NewStartingIndex);
+                }
+                break;
+            case NotifyCollectionChangedAction.Remove:
+                IList? removedItems = e.OldItems;
+                if (removedItems == null || e.OldStartingIndex < 0)
+                {
+                    Debug.Assert(false, "Unexpected NotifyCollectionChangedAction.Remove notification");
+                    return;
+                }
+                if (!IsGrouping)
+                {
+                    // If we're grouping then we handle this through the CollectionViewGroup notifications
+                    // According to WPF, Remove is a single item operation
+                    if (e.OldItems != null)
+                    {
+                        foreach (object item in e.OldItems)
+                        {
+                            Debug.Assert(item != null);
+                            _owner.RemoveRowAt(e.OldStartingIndex, item);
+                        }
+                    }
+                }
+                break;
+            case NotifyCollectionChangedAction.Replace:
+                throw new NotSupportedException(); // 
+        
+            case NotifyCollectionChangedAction.Reset:
+                // Did the data type change during the reset?  If not, we can recycle
+                // the existing rows instead of having to clear them all.  We still need to clear our cached
+                // values for DataType and DataProperties, though, because the collection has been reset.
+                Type? previousDataType = _dataType;
+                _dataType = null;
+                if (previousDataType != DataType)
+                {
+                    ClearDataProperties();
+                    _owner.InitializeElements(false /*recycleRows*/);
+                }
+                else
+                {
+                    _owner.InitializeElements(!ShouldAutoGenerateColumns /*recycleRows*/);
+                }
+                break;
+        }
+        
+        _owner.UpdatePseudoClasses();
     }
     
 }

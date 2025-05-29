@@ -22,7 +22,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// Since there's nothing in the un-cancelable event args that is mutable,
     /// just create one instance to be used universally.
     /// </summary>
-    private static readonly DataGridCurrentChangingEventArgs uncancelableCurrentChangingEventArgs =
+    private static readonly DataGridCurrentChangingEventArgs UnCancelableCurrentChangingEventArgs =
         new DataGridCurrentChangingEventArgs(false);
 
     /// <summary>
@@ -181,8 +181,8 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         _temporaryGroup                            =  new CollectionViewGroupRoot(this, isDataInGroupOrder);
         _group                                     =  new CollectionViewGroupRoot(this, false);
-        _group.GroupDescriptionChanged             += OnGroupDescriptionChanged;
-        _group.GroupDescriptions.CollectionChanged += OnGroupByChanged;
+        _group.GroupDescriptionChanged             += HandleGroupDescriptionChanged;
+        _group.GroupDescriptions.CollectionChanged += HandleGroupByChanged;
 
         CopySourceToInternalList();
         _trackingEnumerator = source.GetEnumerator();
@@ -434,7 +434,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             if (_culture != value)
             {
                 _culture = value;
-                OnPropertyChanged(nameof(Culture));
+                NotifyPropertyChanged(nameof(Culture));
             }
         }
     }
@@ -454,8 +454,8 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 Debug.Assert(value == null || _newItem == null,
                     "Old and new _newItem values are unexpectedly non null");
                 _newItem = value;
-                OnPropertyChanged(nameof(IsAddingNew));
-                OnPropertyChanged(nameof(CurrentAddItem));
+                NotifyPropertyChanged(nameof(IsAddingNew));
+                NotifyPropertyChanged(nameof(CurrentAddItem));
             }
         }
     }
@@ -476,11 +476,11 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                     "Old and new _editItem values are unexpectedly non null");
                 bool oldCanCancelEdit = CanCancelEdit;
                 _editItem = value;
-                OnPropertyChanged(nameof(IsEditingItem));
-                OnPropertyChanged(nameof(CurrentEditItem));
+                NotifyPropertyChanged(nameof(IsEditingItem));
+                NotifyPropertyChanged(nameof(CurrentEditItem));
                 if (oldCanCancelEdit != CanCancelEdit)
                 {
-                    OnPropertyChanged(nameof(CanCancelEdit));
+                    NotifyPropertyChanged(nameof(CanCancelEdit));
                 }
             }
         }
@@ -556,7 +556,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             {
                 _filter = value;
                 RefreshOrDefer();
-                OnPropertyChanged(nameof(Filter));
+                NotifyPropertyChanged(nameof(Filter));
             }
         }
     }
@@ -656,7 +656,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             if (CheckFlag(CollectionViewFlags.IsPageChanging) != value)
             {
                 SetFlag(CollectionViewFlags.IsPageChanging, value);
-                OnPropertyChanged(nameof(IsPageChanging));
+                NotifyPropertyChanged(nameof(IsPageChanging));
             }
         }
     }
@@ -707,12 +707,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 return;
             }
 
-            // to see whether or not to fire an OnPropertyChanged
+            // to see whether or not to fire an NotifyPropertyChanged
             int oldCount = Count;
 
             if (_pageSize != value)
             {
-                // Remember current currency values for upcoming OnPropertyChanged notifications
+                // Remember current currency values for upcoming NotifyPropertyChanged notifications
                 object? oldCurrentItem          = CurrentItem;
                 int    oldCurrentPosition      = CurrentPosition;
                 bool   oldIsCurrentAfterLast   = IsCurrentAfterLast;
@@ -750,7 +750,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 }
 
                 _pageSize = value;
-                OnPropertyChanged(nameof(PageSize));
+                NotifyPropertyChanged(nameof(PageSize));
 
                 if (_pageSize == 0)
                 {
@@ -793,7 +793,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 // if the count has changed
                 if (Count != oldCount)
                 {
-                    OnPropertyChanged(nameof(Count));
+                    NotifyPropertyChanged(nameof(Count));
                 }
 
                 // reset currency values
@@ -1114,7 +1114,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         // add the new item to the internal list
         _internalList.Insert(ConvertToInternalIndex(addIndex), newItem);
-        OnPropertyChanged(nameof(ItemCount));
+        NotifyPropertyChanged(nameof(ItemCount));
 
         object? oldCurrentItem          = CurrentItem;
         int    oldCurrentPosition      = CurrentPosition;
@@ -1261,7 +1261,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 }
             }
 
-            OnPropertyChanged(nameof(ItemCount));
+            NotifyPropertyChanged(nameof(ItemCount));
 
             object? oldCurrentItem          = CurrentItem;
             int    oldCurrentPosition      = CurrentPosition;
@@ -1974,16 +1974,16 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
             if (IsCurrentAfterLast != oldIsCurrentAfterLast)
             {
-                OnPropertyChanged(nameof(IsCurrentAfterLast));
+                NotifyPropertyChanged(nameof(IsCurrentAfterLast));
             }
 
             if (IsCurrentBeforeFirst != oldIsCurrentBeforeFirst)
             {
-                OnPropertyChanged(nameof(IsCurrentBeforeFirst));
+                NotifyPropertyChanged(nameof(IsCurrentBeforeFirst));
             }
 
-            OnPropertyChanged(nameof(CurrentPosition));
-            OnPropertyChanged(nameof(CurrentItem));
+            NotifyPropertyChanged(nameof(CurrentPosition));
+            NotifyPropertyChanged(nameof(CurrentItem));
         }
 
         return IsCurrentInView;
@@ -2099,7 +2099,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         // Check if there is a current edited or new item so changes can be committed first.
         if (CurrentAddItem != null || CurrentEditItem != null)
         {
-            // Remember current currency values for upcoming OnPropertyChanged notifications
+            // Remember current currency values for upcoming NotifyPropertyChanged notifications
             object? oldCurrentItem          = CurrentItem;
             int    oldCurrentPosition      = CurrentPosition;
             bool   oldIsCurrentAfterLast   = IsCurrentAfterLast;
@@ -2138,7 +2138,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
             // Finally raise a CurrentChanging notification for the upcoming currency change
             // that will occur in CompletePageMove(pageIndex).
-            OnCurrentChanging();
+            HandleCurrentChanging();
         }
 
         IsPageChanging = true;
@@ -2356,7 +2356,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             // want to unnecessarily fire events
             if (newItemIndex >= 0 && (newItemIndex != CurrentPosition || !IsCurrentInSync))
             {
-                OnCurrentChanging();
+                HandleCurrentChanging();
                 SetCurrent(newCurrentItem, newItemIndex);
             }
 
@@ -2368,7 +2368,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             if (CurrentItem != null || CurrentPosition != -1)
             {
                 // fire current changing notification
-                OnCurrentChanging();
+                HandleCurrentChanging();
             }
 
             // added first item; set current at BeforeFirst
@@ -2377,7 +2377,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         else if (index <= CurrentPosition)
         {
             // fire current changing notification
-            OnCurrentChanging();
+            HandleCurrentChanging();
 
             // adjust current index if insertion is earlier
             int newPosition = CurrentPosition + 1;
@@ -2401,7 +2401,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         if (newCurrentItem != null && IndexOf(newCurrentItem) >= 0)
         {
-            OnCurrentChanging();
+            HandleCurrentChanging();
             SetCurrent(newCurrentItem, IndexOf(newCurrentItem));
             return;
         }
@@ -2409,7 +2409,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         if (index <= CurrentPosition)
         {
             // fire current changing notification
-            OnCurrentChanging();
+            HandleCurrentChanging();
 
             // adjust current index if insertion is earlier
             int newPosition = CurrentPosition + 1;
@@ -2437,7 +2437,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         if (index < CurrentPosition)
         {
             // fire current changing notification
-            OnCurrentChanging();
+            HandleCurrentChanging();
 
             SetCurrent(CurrentItem, CurrentPosition - 1);
         }
@@ -2446,7 +2446,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         if (CurrentPosition >= Count)
         {
             // fire current changing notification
-            OnCurrentChanging();
+            HandleCurrentChanging();
 
             SetCurrentToPosition(Count - 1);
         }
@@ -2455,7 +2455,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         if (!IsCurrentInSync)
         {
             // fire current changing notification
-            OnCurrentChanging();
+            HandleCurrentChanging();
 
             SetCurrentToPosition(CurrentPosition);
         }
@@ -2481,7 +2481,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         Debug.Assert(_pageIndex != pageIndex, "Unexpected _pageIndex == pageIndex");
 
-        // to see whether or not to fire an OnPropertyChanged
+        // to see whether or not to fire an NotifyPropertyChanged
         int    oldCount                = Count;
         object? oldCurrentItem          = CurrentItem;
         int    oldCurrentPosition      = CurrentPosition;
@@ -2507,13 +2507,13 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         }
 
         IsPageChanging = false;
-        OnPropertyChanged(nameof(PageIndex));
+        NotifyPropertyChanged(nameof(PageIndex));
         RaisePageChanged();
 
         // if the count has changed
         if (Count != oldCount)
         {
-            OnPropertyChanged(nameof(Count));
+            NotifyPropertyChanged(nameof(Count));
         }
 
         OnCollectionChanged(
@@ -2776,7 +2776,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     private bool OkToChangeCurrent()
     {
         DataGridCurrentChangingEventArgs args = new DataGridCurrentChangingEventArgs();
-        OnCurrentChanging(args);
+        HandleCurrentChanging(args);
         return !args.Cancel;
     }
 
@@ -2816,14 +2816,14 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         // replaced within the collection.
         if (args.Action != NotifyCollectionChangedAction.Replace)
         {
-            OnPropertyChanged(nameof(Count));
+            NotifyPropertyChanged(nameof(Count));
         }
 
         bool listIsEmpty = IsEmpty;
         if (listIsEmpty != CheckFlag(CollectionViewFlags.CachedIsEmpty))
         {
             SetFlag(CollectionViewFlags.CachedIsEmpty, listIsEmpty);
-            OnPropertyChanged(nameof(IsEmpty));
+            NotifyPropertyChanged(nameof(IsEmpty));
         }
     }
 
@@ -2849,9 +2849,9 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <exception cref="InvalidOperationException">
     /// This CurrentChanging event cannot be canceled.
     /// </exception>
-    private void OnCurrentChanging()
+    private void HandleCurrentChanging()
     {
-        OnCurrentChanging(uncancelableCurrentChangingEventArgs);
+        HandleCurrentChanging(UnCancelableCurrentChangingEventArgs);
     }
 
     /// <summary>
@@ -2865,7 +2865,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <exception cref="InvalidOperationException">
     ///     This CurrentChanging event cannot be canceled.
     /// </exception>
-    private void OnCurrentChanging(DataGridCurrentChangingEventArgs args)
+    private void HandleCurrentChanging(DataGridCurrentChangingEventArgs args)
     {
         if (args == null)
         {
@@ -2890,7 +2890,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     /// <param name="sender">CollectionViewGroup whose GroupBy has changed</param>
     /// <param name="e">Arguments for the NotifyCollectionChanged event</param>
-    private void OnGroupByChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleGroupByChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (IsAddingNew || IsEditingItem)
         {
@@ -2906,7 +2906,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <param name="sender">CollectionViewGroup whose GroupDescription has changed</param>
     /// <param name="e">Arguments for the GroupDescriptionChanged event</param>
     //TODO Paging
-    private void OnGroupDescriptionChanged(object? sender, EventArgs e)
+    private void HandleGroupDescriptionChanged(object? sender, EventArgs e)
     {
         if (IsAddingNew || IsEditingItem)
         {
@@ -2936,7 +2936,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// Raises a PropertyChanged event.
     /// </summary>
     /// <param name="e">PropertyChangedEventArgs for this change</param>
-    private void OnPropertyChanged(PropertyChangedEventArgs e)
+    private void NotifyPropertyChanged(PropertyChangedEventArgs e)
     {
         PropertyChanged?.Invoke(this, e);
     }
@@ -2945,9 +2945,9 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// Helper to raise a PropertyChanged event.
     /// </summary>
     /// <param name="propertyName">Property name for the property that changed</param>
-    private void OnPropertyChanged(string propertyName)
+    private void NotifyPropertyChanged(string propertyName)
     {
-        OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        NotifyPropertyChanged(new PropertyChangedEventArgs(propertyName));
     }
 
     /// <summary>
@@ -3338,7 +3338,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         if (args.Action != NotifyCollectionChangedAction.Replace)
         {
-            OnPropertyChanged(nameof(ItemCount));
+            NotifyPropertyChanged(nameof(ItemCount));
         }
     }
 
@@ -3504,22 +3504,22 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         if (CurrentItem != oldCurrentItem)
         {
-            OnPropertyChanged(nameof(CurrentItem));
+            NotifyPropertyChanged(nameof(CurrentItem));
         }
 
         if (CurrentPosition != oldCurrentPosition)
         {
-            OnPropertyChanged(nameof(CurrentPosition));
+            NotifyPropertyChanged(nameof(CurrentPosition));
         }
 
         if (IsCurrentAfterLast != oldIsCurrentAfterLast)
         {
-            OnPropertyChanged(nameof(IsCurrentAfterLast));
+            NotifyPropertyChanged(nameof(IsCurrentAfterLast));
         }
 
         if (IsCurrentBeforeFirst != oldIsCurrentBeforeFirst)
         {
-            OnPropertyChanged(nameof(IsCurrentBeforeFirst));
+            NotifyPropertyChanged(nameof(IsCurrentBeforeFirst));
         }
     }
 
@@ -3589,7 +3589,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         _isGrouping = false;
 
         // force currency off the collection (gives user a chance to save dirty information)
-        OnCurrentChanging();
+        HandleCurrentChanging();
 
         // if there's no sort/filter/paging/grouping, just use the collection's array
         if (UsesLocalArray)
@@ -3840,7 +3840,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             }
         }
 
-        OnPropertyChanged("SortDescriptions");
+        NotifyPropertyChanged("SortDescriptions");
     }
 
     /// <summary>
@@ -3995,7 +3995,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         /// <summary>
         /// Private reference to the CollectionView that created this DeferHelper
         /// </summary>
-        private DataGridCollectionView? collectionView;
+        private DataGridCollectionView? _collectionView;
 
         /// <summary>
         /// Initializes a new instance of the DeferHelper class
@@ -4003,7 +4003,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         /// <param name="collectionView">CollectionView that created this DeferHelper</param>
         public DeferHelper(DataGridCollectionView? collectionView)
         {
-            this.collectionView = collectionView;
+            _collectionView = collectionView;
         }
 
         /// <summary>
@@ -4011,10 +4011,10 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         /// </summary>
         public void Dispose()
         {
-            if (collectionView != null)
+            if (_collectionView != null)
             {
-                collectionView.EndDefer();
-                collectionView = null;
+                _collectionView.EndDefer();
+                _collectionView = null;
             }
 
             GC.SuppressFinalize(this);
