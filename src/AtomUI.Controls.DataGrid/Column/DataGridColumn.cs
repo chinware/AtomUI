@@ -4,8 +4,6 @@
 // All other rights reserved.
 
 using System.ComponentModel;
-using AtomUI.Controls.Cell;
-using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,8 +11,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
@@ -28,6 +24,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     private const bool DefaultIsReadOnly = false;
 
     #endregion
+    
     #region 公共属性定义
 
     public static readonly StyledProperty<DataGridLength> WidthProperty = AvaloniaProperty
@@ -126,6 +123,70 @@ public abstract partial class DataGridColumn : AvaloniaObject
         }
     }
     
+    public double MaxWidth
+    {
+        get
+        {
+            return _maxWidth ?? double.PositiveInfinity;
+        }
+        set
+        {
+            if (value < 0)
+            {
+                throw DataGridError.DataGrid.ValueMustBeGreaterThanOrEqualTo("value", "MaxWidth", 0);
+            }
+            if (value < ActualMinWidth)
+            {
+                throw DataGridError.DataGrid.ValueMustBeGreaterThanOrEqualTo("value", "MaxWidth", "MinWidth");
+            }
+            if (!_maxWidth.HasValue || _maxWidth.Value != value)
+            {
+                double oldValue = ActualMaxWidth;
+                _maxWidth = value;
+                if (OwningGrid != null && OwningGrid.ColumnsInternal != null)
+                {
+                    OwningGrid.OnColumnMaxWidthChanged(this, oldValue);
+                }
+            }
+        }
+    }
+
+    public double MinWidth
+    {
+        get
+        {
+            return _minWidth ?? 0;
+        }
+        set
+        {
+            if (double.IsNaN(value))
+            {
+                throw DataGridError.DataGrid.ValueCannotBeSetToNAN("MinWidth");
+            }
+            if (value < 0)
+            {
+                throw DataGridError.DataGrid.ValueMustBeGreaterThanOrEqualTo("value", "MinWidth", 0);
+            }
+            if (double.IsPositiveInfinity(value))
+            {
+                throw DataGridError.DataGrid.ValueCannotBeSetToInfinity("MinWidth");
+            }
+            if (value > ActualMaxWidth)
+            {
+                throw DataGridError.DataGrid.ValueMustBeLessThanOrEqualTo("value", "MinWidth", "MaxWidth");
+            }
+            if (!_minWidth.HasValue || _minWidth.Value != value)
+            {
+                double oldValue = ActualMinWidth;
+                _minWidth = value;
+                if (OwningGrid != null && OwningGrid.ColumnsInternal != null)
+                {
+                    OwningGrid.OnColumnMinWidthChanged(this, oldValue);
+                }
+            }
+        }
+    }
+    
     /// <summary>
     /// Gets or sets a value that indicates whether the user can change the column display position by
     /// dragging the column header.
@@ -169,30 +230,27 @@ public abstract partial class DataGridColumn : AvaloniaObject
     {
         get
         {
-            // if (CanUserSortInternal.HasValue)
-            // {
-            //     return CanUserSortInternal.Value;
-            // }
-            // if (OwningGrid != null)
-            // {
-            //     string propertyPath = GetSortPropertyName();
-            //     Type   propertyType = OwningGrid.DataConnection.DataType.GetNestedPropertyType(propertyPath);
-            //
-            //     // if the type is nullable, then we will compare the non-nullable type
-            //     if (TypeHelper.IsNullableType(propertyType))
-            //     {
-            //         propertyType = TypeHelper.GetNonNullableType(propertyType);
-            //     }
-            //
-            //     // return whether or not the property type can be compared
-            //     return typeof(IComparable).IsAssignableFrom(propertyType) ? true : false;
-            // }
+            if (CanUserSortInternal.HasValue)
+            {
+                return CanUserSortInternal.Value;
+            }
+            if (OwningGrid != null)
+            {
+                string? propertyPath = GetSortPropertyName();
+                Type?  propertyType = OwningGrid.DataConnection.DataType.GetNestedPropertyType(propertyPath);
+            
+                // if the type is nullable, then we will compare the non-nullable type
+                if (propertyType != null && propertyType.IsNullableType())
+                {
+                    propertyType = TypeHelper.GetNonNullableType(propertyType);
+                }
+            
+                // return whether or not the property type can be compared
+                return typeof(IComparable).IsAssignableFrom(propertyType) ? true : false;
+            }
             return DataGrid.DefaultCanUserSortColumns;
         }
-        set
-        {
-            CanUserSortInternal = value;
-        }
+        set => CanUserSortInternal = value;
     }
 
     /// <summary>
@@ -219,53 +277,55 @@ public abstract partial class DataGridColumn : AvaloniaObject
     {
         get
         {
-            // if (OwningGrid != null && OwningGrid.ColumnsInternal.RowGroupSpacerColumn.IsRepresented)
-            // {
-            //     return _displayIndexWithFiller - 1;
-            // }
+            if (OwningGrid != null && 
+                OwningGrid.ColumnsInternal.RowGroupSpacerColumn != null && 
+                OwningGrid.ColumnsInternal.RowGroupSpacerColumn.IsRepresented)
+            {
+                return _displayIndexWithFiller - 1;
+            }
             return _displayIndexWithFiller;
         }
         set
         {
-            // if (value == Int32.MaxValue)
-            // {
-            //     throw DataGridError.DataGrid.ValueMustBeLessThan(nameof(value), nameof(DisplayIndex), Int32.MaxValue);
-            // }
-            // if (OwningGrid != null)
-            // {
-            //     if (OwningGrid.ColumnsInternal.RowGroupSpacerColumn.IsRepresented)
-            //     {
-            //         value++;
-            //     }
-            //     if (_displayIndexWithFiller != value)
-            //     {
-            //         if (value < 0 || value >= OwningGrid.ColumnsItemsInternal.Count)
-            //         {
-            //             throw DataGridError.DataGrid.ValueMustBeBetween(nameof(value), nameof(DisplayIndex), 0, true, OwningGrid.Columns.Count, false);
-            //         }
-            //         // Will throw an error if a visible frozen column is placed inside a non-frozen area or vice-versa.
-            //         OwningGrid.OnColumnDisplayIndexChanging(this, value);
-            //         _displayIndexWithFiller = value;
-            //         try
-            //         {
-            //             OwningGrid.InDisplayIndexAdjustments = true;
-            //             OwningGrid.OnColumnDisplayIndexChanged(this);
-            //             OwningGrid.OnColumnDisplayIndexChanged_PostNotification();
-            //         }
-            //         finally
-            //         {
-            //             OwningGrid.InDisplayIndexAdjustments = false;
-            //         }
-            //     }
-            // }
-            // else
-            // {
-            //     if (value < -1)
-            //     {
-            //         throw DataGridError.DataGrid.ValueMustBeGreaterThanOrEqualTo(nameof(value), nameof(DisplayIndex), -1);
-            //     }
-            //     _displayIndexWithFiller = value;
-            // }
+            if (value == Int32.MaxValue)
+            {
+                throw DataGridError.DataGrid.ValueMustBeLessThan(nameof(value), nameof(DisplayIndex), Int32.MaxValue);
+            }
+            if (OwningGrid != null)
+            {
+                if (OwningGrid.ColumnsInternal.RowGroupSpacerColumn != null && OwningGrid.ColumnsInternal.RowGroupSpacerColumn.IsRepresented)
+                {
+                    value++;
+                }
+                if (_displayIndexWithFiller != value)
+                {
+                    if (value < 0 || value >= OwningGrid.ColumnsItemsInternal.Count)
+                    {
+                        throw DataGridError.DataGrid.ValueMustBeBetween(nameof(value), nameof(DisplayIndex), 0, true, OwningGrid.Columns.Count, false);
+                    }
+                    // Will throw an error if a visible frozen column is placed inside a non-frozen area or vice-versa.
+                    OwningGrid.OnColumnDisplayIndexChanging(this, value);
+                    _displayIndexWithFiller = value;
+                    try
+                    {
+                        OwningGrid.InDisplayIndexAdjustments = true;
+                        OwningGrid.NotifyColumnDisplayIndexChanged(this);
+                        OwningGrid.NotifyColumnDisplayIndexChangedPostNotification();
+                    }
+                    finally
+                    {
+                        OwningGrid.InDisplayIndexAdjustments = false;
+                    }
+                }
+            }
+            else
+            {
+                if (value < -1)
+                {
+                    throw DataGridError.DataGrid.ValueMustBeGreaterThanOrEqualTo(nameof(value), nameof(DisplayIndex), -1);
+                }
+                _displayIndexWithFiller = value;
+            }
         }
     }
 
@@ -274,43 +334,61 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <summary>
     /// The binding that will be used to get or set cell content for the clipboard.
     /// </summary>
-    public virtual IBinding ClipboardContentBinding
+    public virtual IBinding? ClipboardContentBinding
     {
-        get
-        {
-            return _clipboardContentBinding;
-        }
-        set
-        {
-            _clipboardContentBinding = value;
-        }
+        get => _clipboardContentBinding;
+        set => _clipboardContentBinding = value;
     }
     
     /// <summary>
     /// Holds the name of the member to use for sorting, if not using the default.
     /// </summary>
-    public string? SortMemberPath
-    {
-        get;
-        set;
-    }
+    public string? SortMemberPath { get; set; }
 
     /// <summary>
     /// Gets or sets an object associated with this column.
     /// </summary>
-    public object? Tag
-    {
-        get;
-        set;
-    }
+    public object? Tag { get; set; }
 
     /// <summary>
     /// Holds a Comparer to use for sorting, if not using the default.
     /// </summary>
-    public System.Collections.IComparer? CustomSortComparer
+    public System.Collections.IComparer? CustomSortComparer { get; set; }
+    
+    public virtual bool IsReadOnly
+    {
+        get
+        {
+            if (OwningGrid == null)
+            {
+                return _isReadOnly ?? DefaultIsReadOnly;
+            }
+            if (_isReadOnly != null)
+            {
+                return _isReadOnly.Value || OwningGrid.IsReadOnly;
+            }
+            return OwningGrid.GetColumnReadOnlyState(this, DefaultIsReadOnly);
+        }
+        set
+        {
+            if (value != _isReadOnly)
+            {
+                OwningGrid?.OnColumnReadOnlyStateChanging(this, value);
+                _isReadOnly = value;
+            }
+        }
+    }
+    
+    public bool IsAutoGenerated
     {
         get;
-        set;
+        internal set;
+    }
+    
+    public bool IsFrozen
+    {
+        get;
+        internal set;
     }
     
     #endregion
@@ -339,94 +417,95 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <summary>
     /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridColumn" /> class.
     /// </summary>
-    // protected internal DataGridColumn()
-    // {
-    //     _displayIndexWithFiller         = -1;
-    //     IsInitialDesiredWidthDetermined = false;
-    //     InheritsWidth                   = true;
-    // }
+    protected internal DataGridColumn(DataGrid owningGrid)
+    {
+        _displayIndexWithFiller         = -1;
+        IsInitialDesiredWidthDetermined = false;
+        InheritsWidth                   = true;
+        OwningGrid                      = owningGrid;
+    }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        // if (change.Property == IsVisibleProperty)
-        // {
-        //     OwningGrid?.OnColumnVisibleStateChanging(this);
-        //     var isVisible = change.GetNewValue<bool>();
-        //
-        //     if (_headerCell != null)
-        //     {
-        //         _headerCell.IsVisible = isVisible;
-        //     }
-        //
-        //     OwningGrid?.OnColumnVisibleStateChanged(this);
-        //     NotifyPropertyChanged(change.Property.Name);
-        // }
-        // else if (change.Property == WidthProperty)
-        // {
-        //     if (!_settingWidthInternally)
-        //     {
-        //         InheritsWidth = false;
-        //     }
-        //     if (_setWidthInternalNoCallback == false)
-        //     {
-        //         var grid  = OwningGrid;
-        //         var width = (change as AvaloniaPropertyChangedEventArgs<DataGridLength>).NewValue.Value;
-        //         if (grid != null)
-        //         {
-        //             var oldWidth = (change as AvaloniaPropertyChangedEventArgs<DataGridLength>).OldValue.Value;
-        //             if (width.IsStar != oldWidth.IsStar)
-        //             {
-        //                 SetWidthInternalNoCallback(width);
-        //                 IsInitialDesiredWidthDetermined = false;
-        //                 grid.OnColumnWidthChanged(this);
-        //             }
-        //             else
-        //             {
-        //                 Resize(oldWidth, width, false);
-        //             }
-        //         }
-        //         else
-        //         {
-        //             SetWidthInternalNoCallback(width);
-        //         }
-        //     }
-        // }
+        if (change.Property == IsVisibleProperty)
+        {
+            OwningGrid?.OnColumnVisibleStateChanging(this);
+            var isVisible = change.GetNewValue<bool>();
+        
+            if (_headerCell != null)
+            {
+                _headerCell.IsVisible = isVisible;
+            }
+        
+            OwningGrid?.OnColumnVisibleStateChanged(this);
+            NotifyPropertyChanged(change.Property.Name);
+        }
+        else if (change.Property == WidthProperty)
+        {
+            if (!_settingWidthInternally)
+            {
+                InheritsWidth = false;
+            }
+            if (_setWidthInternalNoCallback == false)
+            {
+                var grid  = OwningGrid;
+                if (change is AvaloniaPropertyChangedEventArgs<DataGridLength> dataGridLengthChange)
+                {
+                    var width = dataGridLengthChange.NewValue.Value;
+                    if (grid != null)
+                    {
+                        var oldWidth = dataGridLengthChange.OldValue.Value;
+                        if (width.IsStar != oldWidth.IsStar)
+                        {
+                            SetWidthInternalNoCallback(width);
+                            IsInitialDesiredWidthDetermined = false;
+                            grid.OnColumnWidthChanged(this);
+                        }
+                        else
+                        {
+                            Resize(oldWidth, width, false);
+                        }
+                    }
+                    else
+                    {
+                        SetWidthInternalNoCallback(width);
+                    }
+                }
+                
+            }
+        }
     }
     
     public Control? GetCellContent(DataGridRow dataGridRow)
     {
-        // dataGridRow = dataGridRow ?? throw new ArgumentNullException(nameof(dataGridRow));
-        // if (OwningGrid == null)
-        // {
-        //     throw DataGridError.DataGrid.NoOwningGrid(GetType());
-        // }
-        // if (dataGridRow.OwningGrid == OwningGrid)
-        // {
-        //     DataGridCell dataGridCell = dataGridRow.Cells[Index];
-        //     if (dataGridCell != null)
-        //     {
-        //         return dataGridCell.Content as Control;
-        //     }
-        // }
+        dataGridRow = dataGridRow ?? throw new ArgumentNullException(nameof(dataGridRow));
+        if (OwningGrid == null)
+        {
+            throw DataGridError.DataGrid.NoOwningGrid(GetType());
+        }
+        if (dataGridRow.OwningGrid == OwningGrid)
+        {
+            DataGridCell dataGridCell = dataGridRow.Cells[Index];
+            return dataGridCell.Content as Control;
+        }
         return null;
     }
 
     public Control? GetCellContent(object dataItem)
     {
-        // dataItem = dataItem ?? throw new ArgumentNullException(nameof(dataItem));
-        // if (OwningGrid == null)
-        // {
-        //     throw DataGridError.DataGrid.NoOwningGrid(GetType());
-        // }
-        // DataGridRow dataGridRow = OwningGrid.GetRowFromItem(dataItem);
-        // if (dataGridRow == null)
-        // {
-        //     return null;
-        // }
-        // return GetCellContent(dataGridRow);
-        return null;
+        dataItem = dataItem ?? throw new ArgumentNullException(nameof(dataItem));
+        if (OwningGrid == null)
+        {
+            throw DataGridError.DataGrid.NoOwningGrid(GetType());
+        }
+        DataGridRow? dataGridRow = OwningGrid.GetRowFromItem(dataItem);
+        if (dataGridRow == null)
+        {
+            return null;
+        }
+        return GetCellContent(dataGridRow);
     }
 
     /// <summary>
@@ -438,19 +517,19 @@ public abstract partial class DataGridColumn : AvaloniaObject
     public static DataGridColumn? GetColumnContainingElement(Control element)
     {
         // Walk up the tree to find the DataGridCell or DataGridColumnHeader that contains the element
-        Visual parent = element;
-        // while (parent != null)
-        // {
-        //     if (parent is DataGridCell cell)
-        //     {
-        //         return cell.OwningColumn;
-        //     }
-        //     if (parent is DataGridColumnHeader columnHeader)
-        //     {
-        //         return columnHeader.OwningColumn;
-        //     }
-        //     parent = parent.GetVisualParent();
-        // }
+        Visual? parent = element;
+        while (parent != null)
+        {
+            if (parent is DataGridCell cell)
+            {
+                return cell.OwningColumn;
+            }
+            if (parent is DataGridColumnHeader columnHeader)
+            {
+                return columnHeader.OwningColumn;
+            }
+            parent = parent.GetVisualParent();
+        }
         return null;
     }
 
@@ -460,7 +539,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     public void ClearSort()
     {
         //InvokeProcessSort is already validating if sorting is possible
-        //_headerCell?.InvokeProcessSort(KeyboardHelper.GetPlatformCtrlOrCmdKeyModifier(OwningGrid));
+        _headerCell?.InvokeProcessSort(KeyboardHelper.GetPlatformCtrlOrCmdKeyModifier(OwningGrid));
     }
 
     /// <summary>
@@ -469,7 +548,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     public void Sort()
     {
         //InvokeProcessSort is already validating if sorting is possible
-        //_headerCell?.InvokeProcessSort(Input.KeyModifiers.None);
+        _headerCell?.InvokeProcessSort(KeyModifiers.None);
     }
 
     /// <summary>
@@ -479,7 +558,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     public void Sort(ListSortDirection direction)
     {
         //InvokeProcessSort is already validating if sorting is possible
-        //_headerCell?.InvokeProcessSort(Input.KeyModifiers.None, direction);
+        _headerCell?.InvokeProcessSort(KeyModifiers.None, direction);
     }
 
     /// <summary>
@@ -562,6 +641,4 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// </summary>
     protected virtual void EndCellEdit()
     { }
-
-
 }

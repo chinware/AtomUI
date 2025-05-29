@@ -4,7 +4,6 @@
 // All other rights reserved.
 
 using System.Diagnostics;
-using AtomUI.Controls.Cell;
 using AtomUI.Controls.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -52,25 +51,15 @@ public abstract partial class DataGridColumn
         }
     }
     
-    internal bool DisplayIndexHasChanged
-    {
-        get;
-        set;
-    }
+    internal bool DisplayIndexHasChanged { get; set; }
 
     internal int DisplayIndexWithFiller
     {
-        get { return _displayIndexWithFiller; }
-        set { _displayIndexWithFiller = value; }
+        get => _displayIndexWithFiller;
+        set => _displayIndexWithFiller = value;
     }
 
-    internal bool HasHeaderCell
-    {
-        get
-        {
-            return _headerCell != null;
-        }
-    }
+    internal bool HasHeaderCell => _headerCell != null;
 
     internal DataGridColumnHeader HeaderCell
     {
@@ -87,33 +76,18 @@ public abstract partial class DataGridColumn
     /// <summary>
     /// Tracks whether or not this column inherits its Width value from the DataGrid.
     /// </summary>
-    internal bool InheritsWidth
-    {
-        get;
-        private set;
-    }
+    internal bool InheritsWidth { get; private set; }
 
     /// <summary>
     /// When a column is initially added, we won't know its initial desired value
     /// until all rows have been measured.  We use this variable to track whether or
     /// not the column has been fully measured.
     /// </summary>
-    internal bool IsInitialDesiredWidthDetermined
-    {
-        get;
-        set;
-    }
+    internal bool IsInitialDesiredWidthDetermined { get; set; }
 
-    internal double LayoutRoundedWidth
-    {
-        get;
-        private set;
-    }
+    internal double LayoutRoundedWidth { get; private set; }
 
-    internal ICellEditBinding CellEditBinding
-    {
-        get => _editBinding;
-    }
+    internal ICellEditBinding? CellEditBinding => _editBinding;
 
     private bool? _isReadOnly;
     private double? _maxWidth;
@@ -124,32 +98,32 @@ public abstract partial class DataGridColumn
     private IDataTemplate? _headerTemplate;
     private DataGridColumnHeader? _headerCell;
     private Control? _editingElement;
-    private ICellEditBinding _editBinding = default!;
-    private IBinding _clipboardContentBinding = default!;
+    private ICellEditBinding? _editBinding;
+    private IBinding? _clipboardContentBinding;
     private ControlTheme? _cellTheme;
     private Classes? _cellStyleClasses;
     private bool _setWidthInternalNoCallback;
     
-    // /// <summary>
-    // /// Gets the value of a cell according to the specified binding.
-    // /// </summary>
-    // /// <param name="item">The item associated with a cell.</param>
-    // /// <param name="binding">The binding to get the value of.</param>
-    // /// <returns>The resultant cell value.</returns>
-    // internal object GetCellValue(object item, IBinding binding)
-    // {
-    //     Debug.Assert(OwningGrid != null);
-    //
-    //     object content = null;
-    //     if (binding != null)
-    //     {
-    //         OwningGrid.ClipboardContentControl.DataContext = item;
-    //         var sub = OwningGrid.ClipboardContentControl.Bind(ContentControl.ContentProperty, binding);
-    //         content = OwningGrid.ClipboardContentControl.GetValue(ContentControl.ContentProperty);
-    //         sub.Dispose();
-    //     }
-    //     return content;
-    // }
+    /// <summary>
+    /// Gets the value of a cell according to the specified binding.
+    /// </summary>
+    /// <param name="item">The item associated with a cell.</param>
+    /// <param name="binding">The binding to get the value of.</param>
+    /// <returns>The resultant cell value.</returns>
+    internal object? GetCellValue(object item, IBinding? binding)
+    {
+        Debug.Assert(OwningGrid != null);
+    
+        object? content = null;
+        if (binding != null)
+        {
+            OwningGrid.ClipboardContentControl.DataContext = item;
+            var sub = OwningGrid.ClipboardContentControl.Bind(ContentControl.ContentProperty, binding);
+            content = OwningGrid.ClipboardContentControl.GetValue(ContentControl.ContentProperty);
+            sub.Dispose();
+        }
+        return content;
+    }
 
      /// <summary>
     /// Coerces a DataGridLength to a valid value.  If any value components are double.NaN, this method
@@ -162,70 +136,69 @@ public abstract partial class DataGridColumn
     /// <returns>The resultant (coerced) DataGridLength.</returns>
     private static DataGridLength CoerceWidth(AvaloniaObject source, DataGridLength width)
     {
-        // var target = (DataGridColumn)source;
-        //
-        // if (target._setWidthInternalNoCallback)
-        // {
-        //     return width;
-        // }
-        //
-        // if (!target.IsSet(WidthProperty))
-        // {
-        //
-        //     return target.OwningGrid?.ColumnWidth ??
-        //            DataGridLength.Auto;
-        // }
-        //
-        // double desiredValue = width.DesiredValue;
-        // if (double.IsNaN(desiredValue))
-        // {
-        //     if (width.IsStar && target.OwningGrid != null && target.OwningGrid.ColumnsInternal != null)
-        //     {
-        //         double totalStarValues           = 0;
-        //         double totalStarDesiredValues    = 0;
-        //         double totalNonStarDisplayWidths = 0;
-        //         foreach (DataGridColumn column in target.OwningGrid.ColumnsInternal.GetDisplayedColumns(c => c.IsVisible && c != target && !double.IsNaN(c.Width.DesiredValue)))
-        //         {
-        //             if (column.Width.IsStar)
-        //             {
-        //                 totalStarValues        += column.Width.Value;
-        //                 totalStarDesiredValues += column.Width.DesiredValue;
-        //             }
-        //             else
-        //             {
-        //                 totalNonStarDisplayWidths += column.ActualWidth;
-        //             }
-        //         }
-        //         if (totalStarValues == 0)
-        //         {
-        //             // Compute the new star column's desired value based on the available space if there are no other visible star columns
-        //             desiredValue = Math.Max(target.ActualMinWidth, target.OwningGrid.CellsWidth - totalNonStarDisplayWidths);
-        //         }
-        //         else
-        //         {
-        //             // Otherwise, compute its desired value based on those of other visible star columns
-        //             desiredValue = totalStarDesiredValues * width.Value / totalStarValues;
-        //         }
-        //     }
-        //     else if (width.IsAbsolute)
-        //     {
-        //         desiredValue = width.Value;
-        //     }
-        //     else
-        //     {
-        //         desiredValue = target.ActualMinWidth;
-        //     }
-        // }
-        //
-        // double displayValue = width.DisplayValue;
-        // if (double.IsNaN(displayValue))
-        // {
-        //     displayValue = desiredValue;
-        // }
-        // displayValue = Math.Max(target.ActualMinWidth, Math.Min(target.ActualMaxWidth, displayValue));
+        var target = (DataGridColumn)source;
+        
+        if (target._setWidthInternalNoCallback)
+        {
+            return width;
+        }
+        
+        if (!target.IsSet(WidthProperty))
+        {
+        
+            return target.OwningGrid?.ColumnWidth ??
+                   DataGridLength.Auto;
+        }
+        
+        double desiredValue = width.DesiredValue;
+        if (double.IsNaN(desiredValue))
+        {
+            if (width.IsStar && target.OwningGrid != null && target.OwningGrid.ColumnsInternal != null)
+            {
+                double totalStarValues           = 0;
+                double totalStarDesiredValues    = 0;
+                double totalNonStarDisplayWidths = 0;
+                foreach (DataGridColumn column in target.OwningGrid.ColumnsInternal.GetDisplayedColumns(c => c.IsVisible && c != target && !double.IsNaN(c.Width.DesiredValue)))
+                {
+                    if (column.Width.IsStar)
+                    {
+                        totalStarValues        += column.Width.Value;
+                        totalStarDesiredValues += column.Width.DesiredValue;
+                    }
+                    else
+                    {
+                        totalNonStarDisplayWidths += column.ActualWidth;
+                    }
+                }
+                if (totalStarValues == 0)
+                {
+                    // Compute the new star column's desired value based on the available space if there are no other visible star columns
+                    desiredValue = Math.Max(target.ActualMinWidth, target.OwningGrid.CellsWidth - totalNonStarDisplayWidths);
+                }
+                else
+                {
+                    // Otherwise, compute its desired value based on those of other visible star columns
+                    desiredValue = totalStarDesiredValues * width.Value / totalStarValues;
+                }
+            }
+            else if (width.IsAbsolute)
+            {
+                desiredValue = width.Value;
+            }
+            else
+            {
+                desiredValue = target.ActualMinWidth;
+            }
+        }
+        
+        double displayValue = width.DisplayValue;
+        if (double.IsNaN(displayValue))
+        {
+            displayValue = desiredValue;
+        }
+        displayValue = Math.Max(target.ActualMinWidth, Math.Min(target.ActualMaxWidth, displayValue));
 
-        // return new DataGridLength(width.Value, width.UnitType, desiredValue, displayValue);
-        return default!;
+        return new DataGridLength(width.Value, width.UnitType, desiredValue, displayValue);
     }
      
     internal void CancelCellEditInternal(Control editingElement, object uneditedValue)
@@ -238,7 +211,7 @@ public abstract partial class DataGridColumn
         EndCellEdit();
     }
     
-        /// <summary>
+    /// <summary>
     /// If the DataGrid is using layout rounding, the pixel snapping will force all widths to
     /// whole numbers. Since the column widths aren't visual elements, they don't go through the normal
     /// rounding process, so we need to do it ourselves.  If we don't, then we'll end up with some
@@ -261,21 +234,21 @@ public abstract partial class DataGridColumn
 
     internal virtual DataGridColumnHeader CreateHeader()
     {
-        // var result = new DataGridColumnHeader
-        // {
-        //     OwningColumn = this
-        // };
-        // result[!ContentControl.ContentProperty]         = this[!HeaderProperty];
-        // result[!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty];
-        // if (OwningGrid.ColumnHeaderTheme is { } columnTheme)
-        // {
-        //     result.SetValue(StyledElement.ThemeProperty, columnTheme, BindingPriority.Template);
-        // }
-        //
-        // result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
-        // result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
-        // return result;
-        return default!;
+        var result = new DataGridColumnHeader
+        {
+            OwningColumn = this
+        };
+        result[!ContentControl.ContentProperty]         = this[!HeaderProperty];
+        result[!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty];
+        Debug.Assert(OwningGrid != null);
+        if (OwningGrid.ColumnHeaderTheme is { } columnTheme)
+        {
+            result.SetValue(StyledElement.ThemeProperty, columnTheme, BindingPriority.Template);
+        }
+        
+        result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
+        result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
+        return result;
     }
 
     /// <summary>
@@ -312,77 +285,78 @@ public abstract partial class DataGridColumn
     //  double value, DataGridLengthUnitType unitType, double desiredValue, double displayValue
     internal void Resize(DataGridLength oldWidth, DataGridLength newWidth, bool userInitiated)
     {
-        // double newValue = newWidth.Value;
-        // double newDesiredValue = newWidth.DesiredValue;
-        // double newDisplayValue = Math.Max(ActualMinWidth, Math.Min(ActualMaxWidth, newWidth.DisplayValue));
-        // DataGridLengthUnitType newUnitType = newWidth.UnitType;
-        //
-        // int    starColumnsCount  = 0;
-        // double totalDisplayWidth = 0;
-        // foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
-        // {
-        //     column.EnsureWidth();
-        //     totalDisplayWidth += column.ActualWidth;
-        //     starColumnsCount  += (column != this && column.Width.IsStar) ? 1 : 0;
-        // }
-        // bool hasInfiniteAvailableWidth = !OwningGrid.RowsPresenterAvailableSize.HasValue || double.IsPositiveInfinity(OwningGrid.RowsPresenterAvailableSize.Value.Width);
-        //
-        // // If we're using star sizing, we can only resize the column as much as the columns to the
-        // // right will allow (i.e. until they hit their max or min widths).
-        // if (!hasInfiniteAvailableWidth && (starColumnsCount > 0 || (newUnitType == DataGridLengthUnitType.Star && newWidth.IsStar && userInitiated)))
-        // {
-        //     double limitedDisplayValue = oldWidth.DisplayValue;
-        //     double availableIncrease   = Math.Max(0, OwningGrid.CellsWidth - totalDisplayWidth);
-        //     double desiredChange       = newDisplayValue - oldWidth.DisplayValue;
-        //     if (desiredChange > availableIncrease)
-        //     {
-        //         // The desired change is greater than the amount of available space,
-        //         // so we need to decrease the widths of columns to the right to make room.
-        //         desiredChange -= availableIncrease;
-        //         double actualChange = desiredChange + OwningGrid.DecreaseColumnWidths(DisplayIndex + 1, -desiredChange, userInitiated);
-        //         limitedDisplayValue += availableIncrease + actualChange;
-        //     }
-        //     else if (desiredChange > 0)
-        //     {
-        //         // The desired change is positive but less than the amount of available space,
-        //         // so there's no need to decrease the widths of columns to the right.
-        //         limitedDisplayValue += desiredChange;
-        //     }
-        //     else
-        //     {
-        //         // The desired change is negative, so we need to increase the widths of columns to the right.
-        //         limitedDisplayValue += desiredChange + OwningGrid.IncreaseColumnWidths(DisplayIndex + 1, -desiredChange, userInitiated);
-        //     }
-        //     if (ActualCanUserResize || (oldWidth.IsStar && !userInitiated))
-        //     {
-        //         newDisplayValue = limitedDisplayValue;
-        //     }
-        // }
-        //
-        // if (userInitiated)
-        // {
-        //     newDesiredValue = newDisplayValue;
-        //     if (!Width.IsStar)
-        //     {
-        //         InheritsWidth = false;
-        //         newValue      = newDisplayValue;
-        //         newUnitType   = DataGridLengthUnitType.Pixel;
-        //     }
-        //     else if (starColumnsCount > 0 && !hasInfiniteAvailableWidth)
-        //     {
-        //         // Recalculate star weight of this column based on the new desired value
-        //         InheritsWidth = false;
-        //         newValue      = Width.Value * newDisplayValue / ActualWidth;
-        //     }
-        // }
-        //
-        // newDisplayValue = Math.Min(double.MaxValue, newValue);
-        // newWidth        = new DataGridLength(newDisplayValue, newUnitType, newDesiredValue, newDisplayValue);
-        // SetWidthInternalNoCallback(newWidth);
-        // if (newWidth != oldWidth)
-        // {
-        //     OwningGrid.OnColumnWidthChanged(this);
-        // }
+        Debug.Assert(OwningGrid != null);
+        double newValue = newWidth.Value;
+        double newDesiredValue = newWidth.DesiredValue;
+        double newDisplayValue = Math.Max(ActualMinWidth, Math.Min(ActualMaxWidth, newWidth.DisplayValue));
+        DataGridLengthUnitType newUnitType = newWidth.UnitType;
+        
+        int    starColumnsCount  = 0;
+        double totalDisplayWidth = 0;
+        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        {
+            column.EnsureWidth();
+            totalDisplayWidth += column.ActualWidth;
+            starColumnsCount  += (column != this && column.Width.IsStar) ? 1 : 0;
+        }
+        bool hasInfiniteAvailableWidth = !OwningGrid.RowsPresenterAvailableSize.HasValue || double.IsPositiveInfinity(OwningGrid.RowsPresenterAvailableSize.Value.Width);
+        
+        // If we're using star sizing, we can only resize the column as much as the columns to the
+        // right will allow (i.e. until they hit their max or min widths).
+        if (!hasInfiniteAvailableWidth && (starColumnsCount > 0 || (newUnitType == DataGridLengthUnitType.Star && newWidth.IsStar && userInitiated)))
+        {
+            double limitedDisplayValue = oldWidth.DisplayValue;
+            double availableIncrease   = Math.Max(0, OwningGrid.CellsWidth - totalDisplayWidth);
+            double desiredChange       = newDisplayValue - oldWidth.DisplayValue;
+            if (desiredChange > availableIncrease)
+            {
+                // The desired change is greater than the amount of available space,
+                // so we need to decrease the widths of columns to the right to make room.
+                desiredChange -= availableIncrease;
+                double actualChange = desiredChange + OwningGrid.DecreaseColumnWidths(DisplayIndex + 1, -desiredChange, userInitiated);
+                limitedDisplayValue += availableIncrease + actualChange;
+            }
+            else if (desiredChange > 0)
+            {
+                // The desired change is positive but less than the amount of available space,
+                // so there's no need to decrease the widths of columns to the right.
+                limitedDisplayValue += desiredChange;
+            }
+            else
+            {
+                // The desired change is negative, so we need to increase the widths of columns to the right.
+                limitedDisplayValue += desiredChange + OwningGrid.IncreaseColumnWidths(DisplayIndex + 1, -desiredChange, userInitiated);
+            }
+            if (ActualCanUserResize || (oldWidth.IsStar && !userInitiated))
+            {
+                newDisplayValue = limitedDisplayValue;
+            }
+        }
+        
+        if (userInitiated)
+        {
+            newDesiredValue = newDisplayValue;
+            if (!Width.IsStar)
+            {
+                InheritsWidth = false;
+                newValue      = newDisplayValue;
+                newUnitType   = DataGridLengthUnitType.Pixel;
+            }
+            else if (starColumnsCount > 0 && !hasInfiniteAvailableWidth)
+            {
+                // Recalculate star weight of this column based on the new desired value
+                InheritsWidth = false;
+                newValue      = Width.Value * newDisplayValue / ActualWidth;
+            }
+        }
+        
+        newDisplayValue = Math.Min(double.MaxValue, newValue);
+        newWidth        = new DataGridLength(newDisplayValue, newUnitType, newDesiredValue, newDisplayValue);
+        SetWidthInternalNoCallback(newWidth);
+        if (newWidth != oldWidth)
+        {
+            OwningGrid.OnColumnWidthChanged(this);
+        }
     }
 
     /// <summary>
@@ -477,46 +451,42 @@ public abstract partial class DataGridColumn
     /// </summary>
     internal DataGridSortDescription? GetSortDescription()
     {
-        // if (OwningGrid != null
-        //     && OwningGrid.DataConnection != null
-        //     && OwningGrid.DataConnection.SortDescriptions != null)
-        // {
-        //     if (CustomSortComparer != null)
-        //     {
-        //         return
-        //             OwningGrid.DataConnection.SortDescriptions
-        //                       .OfType<DataGridComparerSortDescription>()
-        //                       .FirstOrDefault(s => s.SourceComparer == CustomSortComparer);
-        //     }
-        //
-        //     string propertyName = GetSortPropertyName();
-        //
-        //     return OwningGrid.DataConnection.SortDescriptions.FirstOrDefault(s => s.HasPropertyPath && s.PropertyPath == propertyName);
-        // }
-
+        if (OwningGrid != null && OwningGrid.DataConnection.SortDescriptions != null)
+        {
+            if (CustomSortComparer != null)
+            {
+                return
+                    OwningGrid.DataConnection.SortDescriptions
+                              .OfType<DataGridComparerSortDescription>()
+                              .FirstOrDefault(s => s.SourceComparer == CustomSortComparer);
+            }
+        
+            string? propertyName = GetSortPropertyName();
+        
+            return OwningGrid.DataConnection.SortDescriptions.FirstOrDefault(s => s.HasPropertyPath && s.PropertyPath == propertyName);
+        }
         return null;
     }
 
-    internal string GetSortPropertyName()
+    internal string? GetSortPropertyName()
     {
-        // string result = SortMemberPath;
-        //
-        // if (String.IsNullOrEmpty(result))
-        // {
-        //     if (this is DataGridBoundColumn boundColumn)
-        //     {
-        //         if (boundColumn.Binding is Binding binding)
-        //         {
-        //             result = binding.Path;
-        //         }
-        //         else if (boundColumn.Binding is CompiledBindingExtension compiledBinding)
-        //         {
-        //             result = compiledBinding.Path.ToString();
-        //         }
-        //     }
-        // }
-        //
-        // return result;
-        return string.Empty;
+        string? result = SortMemberPath;
+        
+        if (string.IsNullOrEmpty(result))
+        {
+            if (this is DataGridBoundColumn boundColumn)
+            {
+                if (boundColumn.Binding is Binding binding)
+                {
+                    result = binding.Path;
+                }
+                else if (boundColumn.Binding is CompiledBindingExtension compiledBinding)
+                {
+                    result = compiledBinding.Path.ToString();
+                }
+            }
+        }
+        
+        return result;
     }
 }

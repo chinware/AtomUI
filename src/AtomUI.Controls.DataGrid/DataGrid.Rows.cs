@@ -99,7 +99,9 @@ public partial class DataGrid
         get
         {
             int count = FrozenColumnCount;
-            if (ColumnsInternal.RowGroupSpacerColumn.IsRepresented && (AreRowGroupHeadersFrozen || count > 0))
+            if (ColumnsInternal.RowGroupSpacerColumn != null && 
+                ColumnsInternal.RowGroupSpacerColumn.IsRepresented && 
+                (AreRowGroupHeadersFrozen || count > 0))
             {
                 // Either the RowGroupHeaders are frozen by default or the user set a frozen column count.  In both cases, we need to freeze
                 // one more column than the what the public value says
@@ -2694,6 +2696,7 @@ public partial class DataGrid
         bool spacerColumnChanged = ColumnsInternal.EnsureRowGrouping(!RowGroupHeadersTable.IsEmpty);
         if (spacerColumnChanged)
         {
+            Debug.Assert(ColumnsInternal.RowGroupSpacerColumn != null);
             if (ColumnsInternal.RowGroupSpacerColumn.IsRepresented && CurrentColumnIndex == 0)
             {
                 CurrentColumn = ColumnsInternal.FirstVisibleNonFillerColumn;
@@ -2705,6 +2708,7 @@ public partial class DataGrid
 
     private void EnsureRowGroupSpacerColumnWidth(int groupLevelCount)
     {
+        Debug.Assert(ColumnsInternal.RowGroupSpacerColumn != null);
         if (groupLevelCount == 0)
         {
             ColumnsInternal.RowGroupSpacerColumn.Width = new DataGridLength(0);

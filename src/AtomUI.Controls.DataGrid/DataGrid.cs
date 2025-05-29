@@ -4915,6 +4915,7 @@ public partial class DataGrid : TemplatedControl
             for (int index = 0; index < SelectedItems.Count; index++)
             {
                 var                        item     = SelectedItems[index];
+                Debug.Assert(item != null);
                 DataGridRowClipboardEventArgs itemArgs = new DataGridRowClipboardEventArgs(item, false);
                 foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
                 {

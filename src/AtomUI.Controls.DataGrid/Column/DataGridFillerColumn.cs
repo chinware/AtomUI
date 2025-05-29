@@ -1,4 +1,3 @@
-using AtomUI.Controls.Cell;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
@@ -7,11 +6,11 @@ namespace AtomUI.Controls;
 internal class DataGridFillerColumn : DataGridColumn
 {
     public DataGridFillerColumn(DataGrid owningGrid)
+        : base(owningGrid)
     {
-        // IsReadOnly = true;
-        // OwningGrid = owningGrid;
-        // MinWidth   = 0;
-        // MaxWidth   = int.MaxValue;
+        IsReadOnly = true;
+        MinWidth   = 0;
+        MaxWidth   = int.MaxValue;
     }
 
     internal double FillerWidth
@@ -21,13 +20,7 @@ internal class DataGridFillerColumn : DataGridColumn
     }
 
     // True if there is room for the filler column; otherwise, false
-    internal bool IsActive
-    {
-        get
-        {
-            return FillerWidth > 0;
-        }
-    }
+    internal bool IsActive => FillerWidth > 0;
 
     // True if the FillerColumn's header cell is contained in the visual tree
     internal bool IsRepresented
@@ -37,14 +30,10 @@ internal class DataGridFillerColumn : DataGridColumn
     } 
 
     internal override DataGridColumnHeader CreateHeader()
-    {
-        return default!;
-        // DataGridColumnHeader headerCell = base.CreateHeader();
-        // if (headerCell != null)
-        // {
-        //     headerCell.IsEnabled = false;
-        // }
-        // return headerCell;
+    { 
+        DataGridColumnHeader headerCell = base.CreateHeader();
+        headerCell.IsEnabled = false;
+        return headerCell;
     }
 
     protected override Control? GenerateElement(DataGridCell cell, object dataItem)
