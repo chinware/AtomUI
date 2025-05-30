@@ -18,6 +18,12 @@ namespace AtomUI.Controls;
 
 public abstract partial class DataGridColumn
 {
+    #region 常量定义
+
+    internal const int MaximumWidth = 65536;
+    internal const bool DefaultIsReadOnly = false;
+
+    #endregion
     internal int Index { get; set; }
     internal bool? CanUserReorderInternal { get; set; }
     internal bool? CanUserResizeInternal { get; set; }

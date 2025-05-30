@@ -1,6 +1,7 @@
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Shapes;
@@ -14,9 +15,10 @@ namespace AtomUI.Controls;
 [ControlThemeProvider]
 internal class DataGridColumnHeaderTheme : BaseControlTheme
 {
-    public const string HeaderFramePart = "PART_HeaderFrame";
+    public const string FramePart = "PART_Frame";
     public const string HeaderRootLayoutPart = "PART_HeaderRootLayout";
     public const string VerticalSeparatorPart = "PART_VerticalSeparator";
+    public const string ContentDecoratorPart = "PART_ContentDecorator";
     public const string ContentPresenterPart = "PART_ContentPresenter";
     public const string SortIconPresenterPart = "PART_SortIconPresenter";
     public const string FocusVisualPart = "PART_FocusVisual";
@@ -39,18 +41,14 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         {
             var headerFrame = new Border()
             {
-                Name = HeaderFramePart
+                Name = FramePart
             };
             CreateTemplateParentBinding(headerFrame, Border.BackgroundProperty, DataGridColumnHeader.BackgroundProperty);
+            CreateTemplateParentBinding(headerFrame, Border.PaddingProperty, DataGridColumnHeader.PaddingProperty);
 
-            var headerRootLayout = new Grid
+            var headerRootLayout = new Panel()
             {
-                Name = HeaderRootLayoutPart,
-                ColumnDefinitions =
-                [
-                    new ColumnDefinition(GridLength.Star),
-                    new ColumnDefinition(GridLength.Auto),
-                ]
+                Name = HeaderRootLayoutPart
             };
 
             BuildContentPresenter(headerRootLayout);
@@ -58,10 +56,9 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
             var verticalSeparator = new Rectangle()
             {
                 Name              = VerticalSeparatorPart,
-                Width             = 1,
-                VerticalAlignment = VerticalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right,
             };
-            Grid.SetColumn(verticalSeparator, 1);
             headerRootLayout.Children.Add(verticalSeparator);
 
             BuildFocusVisual(headerRootLayout);
@@ -71,9 +68,13 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         });
     }
 
-    private void BuildContentPresenter(Grid rootLayout)
+    private void BuildContentPresenter(Panel rootLayout)
     {
-        var gridLayout = new Grid()
+        var decorator = new Decorator
+        {
+            Name = ContentDecoratorPart
+        };
+        var gridLayout = new Grid
         {
             ColumnDefinitions =
             [
@@ -99,12 +100,11 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         };
         Grid.SetColumn(iconPresenter, 1);
         gridLayout.Children.Add(iconPresenter);
-        
-        Grid.SetColumn(gridLayout, 0);
-        rootLayout.Children.Add(gridLayout);
+        decorator.Child = gridLayout;
+        rootLayout.Children.Add(decorator);
     }
 
-    private void BuildFocusVisual(Grid rootLayout)
+    private void BuildFocusVisual(Panel rootLayout)
     {
         var focusVisualLayout = new Panel()
         {
@@ -134,8 +134,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         };
         focusVisualLayout.Children.Add(primaryFocusVisual);
         focusVisualLayout.Children.Add(secondaryFocusVisual);
-
-        Grid.SetColumn(focusVisualLayout, 0);
+        
         rootLayout.Children.Add(focusVisualLayout);
     }
 
@@ -147,6 +146,54 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         commonStyle.Add(DataGridColumnHeader.FontWeightProperty, SharedTokenKey.FontWeightStrong);
         commonStyle.Add(DataGridColumnHeader.HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(DataGridColumnHeader.VerticalContentAlignmentProperty, VerticalAlignment.Center);
+        BuildSizeTypeStyle(commonStyle);
+        BuildVerticalSeparatorStyle(commonStyle);
         Add(commonStyle);
+    }
+
+    private void BuildVerticalSeparatorStyle(Style commonStyle)
+    {
+        var scopeStyle     = new Style(selector => Selectors.Or(
+            selector.Nesting().PropertyEquals(DataGridColumnHeader.IsFirstVisibleProperty, true),
+            selector.Nesting().PropertyEquals(DataGridColumnHeader.IsMiddleVisibleProperty, true)));
+        var separatorStyle = new Style(selector => selector.Nesting().Template().Name(VerticalSeparatorPart));
+        separatorStyle.Add(Rectangle.FillProperty, DataGridTokenKey.HeaderSplitColor);
+        separatorStyle.Add(Rectangle.WidthProperty, 1d);
+        separatorStyle.Add(Rectangle.HeightProperty, SharedTokenKey.FontHeight);
+        scopeStyle.Add(separatorStyle);
+        commonStyle.Add(scopeStyle);
+    }
+
+    private void BuildSizeTypeStyle(Style commonStyle)
+    {
+        var largeStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Large));
+        {
+            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
+            contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePadding);
+            largeStyle.Add(contentDecoratorStyle);
+        }
+        largeStyle.Add(DataGridColumnHeader.FontSizeProperty, DataGridTokenKey.TableFontSize);
+        commonStyle.Add(largeStyle);
+        
+        var middleStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Middle));
+        {
+            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
+            contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePaddingMiddle);
+            middleStyle.Add(contentDecoratorStyle);
+        }
+        middleStyle.Add(DataGridColumnHeader.FontSizeProperty, DataGridTokenKey.TableFontSizeMiddle);
+        commonStyle.Add(middleStyle);
+        
+        var smallStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Small));
+        {
+            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
+            contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePaddingSmall);
+            smallStyle.Add(contentDecoratorStyle);
+        }
+        smallStyle.Add(DataGridColumnHeader.FontSizeProperty, DataGridTokenKey.TableFontSizeSmall);
+        commonStyle.Add(smallStyle);
     }
 }

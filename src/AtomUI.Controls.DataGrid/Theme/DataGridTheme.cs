@@ -27,6 +27,7 @@ internal class DataGridTheme : BaseControlTheme
     public const string BottomRightCornerPart = "PART_BottomRightCorner";
     public const string ColumnHeadersAndRowsSeparatorPart = "PART_ColumnHeadersAndRowsSeparator";
     public const string FramePart = "PART_Frame";
+    public const string ColumnHeadersPresenterFramePart = "PART_ColumnHeadersPresenterFrame";
     public const string RootLayoutPart = "PART_RootLayout";
     public const string DisabledVisualElementPart = "PART_DisabledVisualElement";
     
@@ -69,30 +70,7 @@ internal class DataGridTheme : BaseControlTheme
             Grid.SetColumn(topLeftCornerHeader, 0);
             rootLayout.Children.Add(topLeftCornerHeader);
 
-            var columnHeadersPresenter = new DataGridColumnHeadersPresenter()
-            {
-                Name = ColumnHeadersPresenterPart,
-            };
-
-            columnHeadersPresenter.RegisterInNameScope(scope);
-            Grid.SetRow(columnHeadersPresenter, 0);
-            Grid.SetColumn(columnHeadersPresenter, 1);
-            Grid.SetColumnSpan(columnHeadersPresenter, 2);
-            rootLayout.Children.Add(columnHeadersPresenter);
-
-            var columnHeadersAndRowsSeparator = new Rectangle()
-            {
-                Name = ColumnHeadersAndRowsSeparatorPart,
-                VerticalAlignment = VerticalAlignment.Bottom,
-            };
-            
-            CreateTemplateParentBinding(columnHeadersAndRowsSeparator, Rectangle.HeightProperty, DataGrid.BorderThicknessProperty,
-                BindingMode.Default, new FuncValueConverter<Thickness, double>(thickness => thickness.Left));
-            
-            Grid.SetRow(columnHeadersAndRowsSeparator, 0);
-            Grid.SetColumn(columnHeadersAndRowsSeparator, 0);
-            Grid.SetColumnSpan(columnHeadersAndRowsSeparator, 3);
-            rootLayout.Children.Add(columnHeadersAndRowsSeparator);
+            BuildHeader(rootLayout, scope);
 
             var rowsPresenter = new DataGridRowsPresenter()
             {
@@ -154,6 +132,41 @@ internal class DataGridTheme : BaseControlTheme
         });
     }
 
+    private void BuildHeader(Grid rootLayout, INameScope scope)
+    {
+        var headerFrame = new Border
+        {
+            Name         = ColumnHeadersPresenterFramePart,
+            ClipToBounds = true
+        };
+        CreateTemplateParentBinding(headerFrame, Border.CornerRadiusProperty, DataGrid.CornerRadiusProperty, BindingMode.Default,
+            new FuncValueConverter<CornerRadius, CornerRadius>(cornerRadius => new CornerRadius(cornerRadius.TopLeft, cornerRadius.TopRight, 0, 0)));
+        var columnHeadersPresenter = new DataGridColumnHeadersPresenter()
+        {
+            Name = ColumnHeadersPresenterPart,
+        };
+        headerFrame.Child = columnHeadersPresenter;
+        columnHeadersPresenter.RegisterInNameScope(scope);
+        Grid.SetRow(headerFrame, 0);
+        Grid.SetColumn(headerFrame, 1);
+        Grid.SetColumnSpan(headerFrame, 2);
+        rootLayout.Children.Add(headerFrame);
+        
+        var columnHeadersAndRowsSeparator = new Rectangle()
+        {
+            Name              = ColumnHeadersAndRowsSeparatorPart,
+            VerticalAlignment = VerticalAlignment.Bottom,
+        };
+            
+        CreateTemplateParentBinding(columnHeadersAndRowsSeparator, Rectangle.HeightProperty, DataGrid.BorderThicknessProperty,
+            BindingMode.Default, new FuncValueConverter<Thickness, double>(thickness => thickness.Left));
+            
+        Grid.SetRow(columnHeadersAndRowsSeparator, 0);
+        Grid.SetColumn(columnHeadersAndRowsSeparator, 0);
+        Grid.SetColumnSpan(columnHeadersAndRowsSeparator, 3);
+        rootLayout.Children.Add(columnHeadersAndRowsSeparator);
+    }
+
     private void BuildHorizontalScrollbar(Grid rootLayout, INameScope scope)
     {
         var horizontalScrollbarLayout = new Grid()
@@ -193,6 +206,7 @@ internal class DataGridTheme : BaseControlTheme
         commonStyle.Add(DataGrid.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
         commonStyle.Add(DataGrid.SelectionModeProperty, DataGridSelectionMode.Extended);
         commonStyle.Add(DataGrid.FocusAdornerProperty, null);
+        commonStyle.Add(DataGrid.CornerRadiusProperty, DataGridTokenKey.TableRadius);
         commonStyle.Add(DataGrid.HorizontalGridLinesBrushProperty, DataGridTokenKey.TableBorderColor);
         commonStyle.Add(DataGrid.VerticalGridLinesBrushProperty, DataGridTokenKey.TableBorderColor);
 

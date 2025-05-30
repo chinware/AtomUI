@@ -14,8 +14,11 @@ namespace AtomUI.Controls.Data;
 public abstract class DataGridSortDescription
 {
     public virtual string? PropertyPath => null;
+    
     public virtual ListSortDirection Direction => ListSortDirection.Ascending;
+    
     public bool HasPropertyPath => !string.IsNullOrEmpty(PropertyPath);
+    
     public abstract IComparer<object> Comparer { get; }
 
     public virtual IOrderedEnumerable<object> OrderBy(IEnumerable<object> seq)

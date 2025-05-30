@@ -68,6 +68,57 @@ public class DataGridColumnHeader : ContentControl
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridColumnHeader>();
     
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> IsFirstVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(IsFirstVisible),
+            o => o.IsFirstVisible,
+            (o, v) => o.IsFirstVisible = v);
+    
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> IsLastVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(IsLastVisible),
+            o => o.IsLastVisible,
+            (o, v) => o.IsLastVisible = v);
+    
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> IsMiddleVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(IsMiddleVisible),
+            o => o.IsMiddleVisible,
+            (o, v) => o.IsMiddleVisible = v);
+    
+    private bool _isFirstVisible = false;
+    internal bool IsFirstVisible
+    {
+        get => _isFirstVisible;
+        set
+        {
+            SetAndRaise(IsFirstVisibleProperty, ref _isFirstVisible, value);
+            PseudoClasses.Set(DataGridPseudoClass.FirstColumnHeader, value);
+        }
+    }
+    
+    private bool _isLastVisible = false;
+    internal bool IsLastVisible
+    {
+        get => _isLastVisible;
+        set
+        {
+            SetAndRaise(IsLastVisibleProperty, ref _isLastVisible, value);
+            PseudoClasses.Set(DataGridPseudoClass.LastColumnHeader, value);
+        }
+    }
+    
+    private bool _isMiddleVisible = false;
+    internal bool IsMiddleVisible
+    {
+        get => _isMiddleVisible;
+        set
+        {
+            SetAndRaise(IsLastVisibleProperty, ref _isMiddleVisible, value);
+            PseudoClasses.Set(DataGridPseudoClass.MiddleColumnHeader, value);
+        }
+    }
+    
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);

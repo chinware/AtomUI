@@ -1308,7 +1308,26 @@ public partial class DataGrid
 
     internal void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !ColumnsInternal.GetVisibleColumns().Any());
+        var visibleColumns = ColumnsInternal.GetVisibleColumns().ToList();
+        for (var i = 0; i < visibleColumns.Count; i++)
+        {
+            var column = visibleColumns[i];
+            if (i == 0)
+            {
+                column.HeaderCell.IsFirstVisible = true;
+            } 
+            else if (i == visibleColumns.Count - 1)
+            {
+                column.HeaderCell.IsLastVisible = true;
+            }
+            else
+            {
+                column.HeaderCell.IsFirstVisible = false;
+                column.HeaderCell.IsLastVisible  = false;
+                column.HeaderCell.IsMiddleVisible = true;
+            }
+        }
+        PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !visibleColumns.Any());
         PseudoClasses.Set(DataGridPseudoClass.EmptyRows, !DataConnection.Any());
     }
 
