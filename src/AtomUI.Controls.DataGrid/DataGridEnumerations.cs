@@ -74,6 +74,15 @@ public enum DataGridHeadersVisibility
     None = 0x00
 }
 
+[Flags]
+public enum DataGridSupportedDirections
+{
+    None = 0x00,
+    Ascending = 0x01,
+    Descending = 0x02,
+    All = Ascending | Descending
+}
+
 public enum DataGridRowDetailsVisibilityMode
 {
     Collapsed = 2, // Show no details.  Developer is in charge of toggling visibility.

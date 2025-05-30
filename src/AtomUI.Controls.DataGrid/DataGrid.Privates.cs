@@ -1295,13 +1295,12 @@ public partial class DataGrid
             {
                 SelectedItem = DataConnection.CollectionView.CurrentItem;
             }
-
+            
             // Treat this like the DataGrid has never been measured because all calculations at
             // this point are invalid until the next layout cycle.  For instance, the ItemsSource
             // can be set when the DataGrid is not part of the visual tree
             _measured = false;
             InvalidateMeasure();
-
             UpdatePseudoClasses();
         }
     }
@@ -1326,6 +1325,8 @@ public partial class DataGrid
                 column.HeaderCell.IsLastVisible  = false;
                 column.HeaderCell.IsMiddleVisible = true;
             }
+
+            column.HeaderCell.CanUserSort = column.CanUserSort;
         }
         PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !visibleColumns.Any());
         PseudoClasses.Set(DataGridPseudoClass.EmptyRows, !DataConnection.Any());

@@ -184,8 +184,10 @@ public abstract class DataGridSortDescription
         private object? GetValue(object? o)
         {
             if (o == null)
+            {
                 return null;
-
+            }
+            
             if (HasPropertyPath)
             {
                 return InvokePath(o, _propertyPath, _propertyType!);
@@ -331,9 +333,12 @@ public class DataGridComparerSortDescription : DataGridSortDescription
         int result = _innerComparer.Compare(x, y);
 
         if (Direction == ListSortDirection.Descending)
+        {
             return -result;
-        else
-            return result;
+        }
+
+        return result;
+            
     }
     public override DataGridSortDescription SwitchSortDirection()
     {

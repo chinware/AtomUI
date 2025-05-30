@@ -1,11 +1,11 @@
-using AtomUI.IconPkg;
+using System.ComponentModel;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -20,7 +20,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
     public const string VerticalSeparatorPart = "PART_VerticalSeparator";
     public const string ContentDecoratorPart = "PART_ContentDecorator";
     public const string ContentPresenterPart = "PART_ContentPresenter";
-    public const string SortIconPresenterPart = "PART_SortIconPresenter";
+    public const string SortIndicatorPart = "PART_SortIndicator";
     public const string FocusVisualPart = "PART_FocusVisual";
     public const string FocusVisualPrimaryPart = "PART_FocusVisualPrimary";
     public const string FocusVisualSecondaryPart = "PART_FocusVisualSecondary";
@@ -29,7 +29,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         : base(typeof(DataGridColumnHeader))
     {
     }
-    
+
     protected DataGridColumnHeaderTheme(Type targetType)
         : base(targetType)
     {
@@ -39,11 +39,12 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
     {
         return new FuncControlTemplate<DataGridColumnHeader>((columnHeader, scope) =>
         {
-            var headerFrame = new Border()
+            var headerFrame = new Border
             {
                 Name = FramePart
             };
-            CreateTemplateParentBinding(headerFrame, Border.BackgroundProperty, DataGridColumnHeader.BackgroundProperty);
+            CreateTemplateParentBinding(headerFrame, Border.BackgroundProperty,
+                DataGridColumnHeader.BackgroundProperty);
             CreateTemplateParentBinding(headerFrame, Border.PaddingProperty, DataGridColumnHeader.PaddingProperty);
 
             var headerRootLayout = new Panel()
@@ -55,10 +56,12 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
 
             var verticalSeparator = new Rectangle()
             {
-                Name              = VerticalSeparatorPart,
-                VerticalAlignment = VerticalAlignment.Center,
+                Name                = VerticalSeparatorPart,
+                Width               = 1d,
+                VerticalAlignment   = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Right,
             };
+            CreateTemplateParentBinding(verticalSeparator, Rectangle.IsVisibleProperty, DataGridColumnHeader.AreSeparatorsVisibleProperty);
             headerRootLayout.Children.Add(verticalSeparator);
 
             BuildFocusVisual(headerRootLayout);
@@ -82,24 +85,29 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
                 new ColumnDefinition(GridLength.Auto),
             ]
         };
-        CreateTemplateParentBinding(gridLayout, Grid.HorizontalAlignmentProperty, DataGridColumnHeader.HorizontalAlignmentProperty);
-        CreateTemplateParentBinding(gridLayout, Grid.VerticalAlignmentProperty, DataGridColumnHeader.VerticalAlignmentProperty);
+        CreateTemplateParentBinding(gridLayout, Grid.HorizontalAlignmentProperty,
+            DataGridColumnHeader.HorizontalAlignmentProperty);
+        CreateTemplateParentBinding(gridLayout, Grid.VerticalAlignmentProperty,
+            DataGridColumnHeader.VerticalAlignmentProperty);
         var contentPresenter = new ContentPresenter()
         {
             Name = ContentPresenterPart,
         };
-        CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, DataGridColumnHeader.ContentProperty);
-        CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, DataGridColumnHeader.ContentTemplateProperty);
+        CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
+            DataGridColumnHeader.ContentProperty);
+        CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
+            DataGridColumnHeader.ContentTemplateProperty);
         Grid.SetColumn(contentPresenter, 0);
         gridLayout.Children.Add(contentPresenter);
 
-        var iconPresenter = new IconPresenter()
+        var sortIndicator = new DataGridSortIndicator()
         {
-            Name                = SortIconPresenterPart,
-            IsVisible           = false
+            Name                 = SortIndicatorPart,
+            VerticalAlignment    = VerticalAlignment.Center
         };
-        Grid.SetColumn(iconPresenter, 1);
-        gridLayout.Children.Add(iconPresenter);
+        CreateTemplateParentBinding(sortIndicator, DataGridSortIndicator.IsVisibleProperty, DataGridColumnHeader.CanUserSortProperty);
+        Grid.SetColumn(sortIndicator, 1);
+        gridLayout.Children.Add(sortIndicator);
         decorator.Child = gridLayout;
         rootLayout.Children.Add(decorator);
     }
@@ -108,8 +116,8 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
     {
         var focusVisualLayout = new Panel()
         {
-            Name      = FocusVisualPart,
-            IsVisible = false,
+            Name             = FocusVisualPart,
+            IsVisible        = false,
             IsHitTestVisible = false,
         };
 
@@ -134,7 +142,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         };
         focusVisualLayout.Children.Add(primaryFocusVisual);
         focusVisualLayout.Children.Add(secondaryFocusVisual);
-        
+
         rootLayout.Children.Add(focusVisualLayout);
     }
 
@@ -146,22 +154,53 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         commonStyle.Add(DataGridColumnHeader.FontWeightProperty, SharedTokenKey.FontWeightStrong);
         commonStyle.Add(DataGridColumnHeader.HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(DataGridColumnHeader.VerticalContentAlignmentProperty, VerticalAlignment.Center);
+        
         BuildSizeTypeStyle(commonStyle);
         BuildVerticalSeparatorStyle(commonStyle);
+        BuildIndicatorStyle(commonStyle);
         Add(commonStyle);
+    }
+
+    private void BuildIndicatorStyle(Style commonStyle)
+    {
+        {
+            var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
+            sortIndicatorStyle.Add(DataGridSortIndicator.MarginProperty, DataGridTokenKey.SortIndicatorMargin);
+            commonStyle.Add(sortIndicatorStyle);
+        }
+        
+        var ascendingStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.SortAscending));
+        {
+            var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
+            sortIndicatorStyle.Add(DataGridSortIndicator.CurrentSortDirectionProperty, ListSortDirection.Ascending);
+            ascendingStyle.Add(sortIndicatorStyle);
+        }
+        commonStyle.Add(ascendingStyle);
+        
+        var descendingStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.SortDescending));
+        {
+            var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
+            sortIndicatorStyle.Add(DataGridSortIndicator.CurrentSortDirectionProperty, ListSortDirection.Descending);
+            descendingStyle.Add(sortIndicatorStyle);
+        }
+        commonStyle.Add(descendingStyle);
+        
+        var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+        {
+            var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
+            sortIndicatorStyle.Add(DataGridSortIndicator.IsHoverModeProperty, true);
+            hoverStyle.Add(sortIndicatorStyle);
+        }
+        commonStyle.Add(hoverStyle);
+     
     }
 
     private void BuildVerticalSeparatorStyle(Style commonStyle)
     {
-        var scopeStyle     = new Style(selector => Selectors.Or(
-            selector.Nesting().PropertyEquals(DataGridColumnHeader.IsFirstVisibleProperty, true),
-            selector.Nesting().PropertyEquals(DataGridColumnHeader.IsMiddleVisibleProperty, true)));
         var separatorStyle = new Style(selector => selector.Nesting().Template().Name(VerticalSeparatorPart));
         separatorStyle.Add(Rectangle.FillProperty, DataGridTokenKey.HeaderSplitColor);
-        separatorStyle.Add(Rectangle.WidthProperty, 1d);
         separatorStyle.Add(Rectangle.HeightProperty, SharedTokenKey.FontHeight);
-        scopeStyle.Add(separatorStyle);
-        commonStyle.Add(scopeStyle);
+        commonStyle.Add(separatorStyle);
     }
 
     private void BuildSizeTypeStyle(Style commonStyle)
@@ -175,7 +214,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         }
         largeStyle.Add(DataGridColumnHeader.FontSizeProperty, DataGridTokenKey.TableFontSize);
         commonStyle.Add(largeStyle);
-        
+
         var middleStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Middle));
         {
@@ -185,7 +224,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         }
         middleStyle.Add(DataGridColumnHeader.FontSizeProperty, DataGridTokenKey.TableFontSizeMiddle);
         commonStyle.Add(middleStyle);
-        
+
         var smallStyle =
             new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Small));
         {

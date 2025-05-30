@@ -19,8 +19,7 @@ namespace AtomUI.Controls;
 public abstract partial class DataGridColumn
 {
     #region 常量定义
-
-    internal const int MaximumWidth = 65536;
+    
     internal const bool DefaultIsReadOnly = false;
 
     #endregion
@@ -461,8 +460,7 @@ public abstract partial class DataGridColumn
                               .FirstOrDefault(s => s.SourceComparer == CustomSortComparer);
             }
         
-            string? propertyName = GetSortPropertyName();
-        
+            var propertyName = GetSortPropertyName();
             return OwningGrid.DataConnection.SortDescriptions.FirstOrDefault(s => s.HasPropertyPath && s.PropertyPath == propertyName);
         }
         return null;

@@ -189,8 +189,10 @@ internal class DataGridToken : AbstractControlDesignToken
     internal double ExpandIconHalfInner { get; set; }
     internal double ExpandIconSize { get; set; }
     internal double ExpandIconScale { get; set; }
+    internal double SortIconSize { get; set; }
     internal Color HeaderIconColor { get; set; }
     internal Color HeaderIconHoverColor { get; set; }
+    internal Thickness SortIndicatorMargin { get; set; }
 
     #endregion
 
@@ -217,7 +219,6 @@ internal class DataGridToken : AbstractControlDesignToken
     public Color TableRowHoverBg { get; set; }
     public Color TableSelectedRowBg { get; set; }
     public Color TableSelectedRowHoverBg { get; set; }
-    
     public double TableFontSizeMiddle { get; set; }
     public double TableFontSizeSmall { get; set; }
     public double TableSelectionColumnWidth { get; set; }
@@ -226,7 +227,6 @@ internal class DataGridToken : AbstractControlDesignToken
     public Color TableExpandedRowBg { get; set; }
     public double TableFilterDropdownWidth { get; set; }
     public double TableFilterDropdownSearchWidth { get; set; }
-    
     public int ZIndexTableFixed { get; set; }
     public int ZIndexTableSticky { get; set; }
     
@@ -297,6 +297,8 @@ internal class DataGridToken : AbstractControlDesignToken
         ExpandIconHalfInner = expandIconHalfInner;
         ExpandIconSize      = expandIconSize;
         ExpandIconScale     = SharedToken.ControlInteractiveSize / expandIconSize;
+        SortIconSize        = SharedToken.FontHeight / 2.5;
+        SortIndicatorMargin = new Thickness(SharedToken.MarginXS, 0, 0, 0);
         
         // 别名控件初始化
         TableFontSize = CellFontSize;

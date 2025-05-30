@@ -31,7 +31,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
         Control.IsVisibleProperty.AddOwner<DataGridColumn>();
     
     /// <summary>
-    ///    Backing field for CellTheme property.
+    /// Backing field for CellTheme property.
     /// </summary>
     public static readonly DirectProperty<DataGridColumn, ControlTheme?> CellThemeProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumn, ControlTheme?>(
@@ -40,7 +40,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
             (o, v) => o.CellTheme = v);
     
     /// <summary>
-    ///    Backing field for Header property
+    /// Backing field for Header property
     /// </summary>
     public static readonly DirectProperty<DataGridColumn, object?> HeaderProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumn, object?>(
@@ -49,13 +49,16 @@ public abstract partial class DataGridColumn : AvaloniaObject
             (o, v) => o.Header = v);
     
     /// <summary>
-    ///    Backing field for Header property
+    /// Backing field for Header property
     /// </summary>
     public static readonly DirectProperty<DataGridColumn, IDataTemplate?> HeaderTemplateProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumn, IDataTemplate?>(
             nameof(HeaderTemplate),
             o => o.HeaderTemplate,
             (o, v) => o.HeaderTemplate = v);
+    
+    public static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
+        AvaloniaProperty.Register<DataGridColumn, DataGridSupportedDirections>(nameof(SupportedDirections), DataGridSupportedDirections.All);
     
     /// <summary>
     /// Determines whether or not this column is visible.
@@ -73,7 +76,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     }
     
     /// <summary>
-    ///    Gets or sets the <see cref="DataGridColumnHeader"/> cell theme.
+    /// Gets or sets the <see cref="DataGridColumnHeader"/> cell theme.
     /// </summary>
     public ControlTheme? CellTheme
     {
@@ -82,7 +85,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     }
     
     /// <summary>
-    ///    Gets or sets the <see cref="DataGridColumnHeader"/> content
+    /// Gets or sets the <see cref="DataGridColumnHeader"/> content
     /// </summary>
     public object? Header
     {
@@ -91,12 +94,18 @@ public abstract partial class DataGridColumn : AvaloniaObject
     }
     
     /// <summary>
-    ///  Gets or sets an <see cref="IDataTemplate"/> for the <see cref="Header"/>
+    /// Gets or sets an <see cref="IDataTemplate"/> for the <see cref="Header"/>
     /// </summary>
     public IDataTemplate? HeaderTemplate
     {
         get => _headerTemplate;
         set => SetAndRaise(HeaderTemplateProperty, ref _headerTemplate, value);
+    }
+    
+    public DataGridSupportedDirections SupportedDirections
+    {
+        get => GetValue(SupportedDirectionsProperty);
+        set => SetValue(SupportedDirectionsProperty, value);
     }
 
     /// <summary>
@@ -216,11 +225,12 @@ public abstract partial class DataGridColumn : AvaloniaObject
     {
         get
         {
+            var canUserSort = false;
             if (CanUserSortInternal.HasValue)
             {
-                return CanUserSortInternal.Value;
-            }
-            if (OwningGrid != null)
+                canUserSort = CanUserSortInternal.Value;
+            } 
+            else if (OwningGrid != null)
             {
                 string? propertyPath = GetSortPropertyName();
                 Type?  propertyType = OwningGrid.DataConnection.DataType.GetNestedPropertyType(propertyPath);
@@ -232,11 +242,27 @@ public abstract partial class DataGridColumn : AvaloniaObject
                 }
             
                 // return whether or not the property type can be compared
-                return typeof(IComparable).IsAssignableFrom(propertyType) ? true : false;
+                canUserSort = typeof(IComparable).IsAssignableFrom(propertyType);
             }
-            return DataGrid.DefaultCanUserSortColumns;
+            else
+            {
+                canUserSort = DataGrid.DefaultCanUserSortColumns;
+            }
+
+            if (HasHeaderCell)
+            {
+                HeaderCell.CanUserSort = canUserSort;
+            }
+            return canUserSort;
         }
-        set => CanUserSortInternal = value;
+        set
+        {
+            CanUserSortInternal = value;
+            if (HasHeaderCell)
+            {
+                HeaderCell.CanUserSort = value;
+            }
+        }
     }
 
     /// <summary>

@@ -36,6 +36,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RowSelectedBg = new TokenResourceKey("DataGrid.RowSelectedBg");
         public static readonly TokenResourceKey RowSelectedHoverBg = new TokenResourceKey("DataGrid.RowSelectedHoverBg");
         public static readonly TokenResourceKey SelectionColumnWidth = new TokenResourceKey("DataGrid.SelectionColumnWidth");
+        public static readonly TokenResourceKey SortIconSize = new TokenResourceKey("DataGrid.SortIconSize");
+        public static readonly TokenResourceKey SortIndicatorMargin = new TokenResourceKey("DataGrid.SortIndicatorMargin");
         public static readonly TokenResourceKey StickyScrollBarBg = new TokenResourceKey("DataGrid.StickyScrollBarBg");
         public static readonly TokenResourceKey StickyScrollBarBorderRadius = new TokenResourceKey("DataGrid.StickyScrollBarBorderRadius");
         public static readonly TokenResourceKey TableBg = new TokenResourceKey("DataGrid.TableBg");

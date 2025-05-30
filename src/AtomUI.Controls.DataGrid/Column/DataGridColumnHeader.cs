@@ -86,6 +86,12 @@ public class DataGridColumnHeader : ContentControl
             o => o.IsMiddleVisible,
             (o, v) => o.IsMiddleVisible = v);
     
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> CanUserSortProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(CanUserSort),
+            o => o.CanUserSort,
+            (o, v) => o.CanUserSort = v);
+    
     private bool _isFirstVisible = false;
     internal bool IsFirstVisible
     {
@@ -123,6 +129,13 @@ public class DataGridColumnHeader : ContentControl
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+    
+    private bool _canUserSort = false;
+    internal bool CanUserSort
+    {
+        get => _canUserSort;
+        set => SetAndRaise(CanUserSortProperty, ref _canUserSort, value);
     }
 
     internal DataGridColumn? OwningColumn { get; set; }
@@ -166,6 +179,7 @@ public class DataGridColumnHeader : ContentControl
     
     static DataGridColumnHeader()
     {
+        AffectsMeasure<DataGridColumnHeader>(CanUserSortProperty);
         AreSeparatorsVisibleProperty.Changed.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandleAreSeparatorsVisibleChanged(e));
         PressedMixin.Attach<DataGridColumnHeader>();
         IsTabStopProperty.OverrideDefaultValue<DataGridColumnHeader>(false);
@@ -200,7 +214,6 @@ public class DataGridColumnHeader : ContentControl
         {
             newVisibility = false;
         }
-
         // Update the public property if it has changed
         if (AreSeparatorsVisible != newVisibility)
         {
@@ -211,7 +224,6 @@ public class DataGridColumnHeader : ContentControl
     internal void HandleMouseLeftButtonUpClick(KeyModifiers keyModifiers, ref bool handled)
     {
         LeftClick?.Invoke(this, keyModifiers);
-
         // completed a click without dragging, so we're sorting
         InvokeProcessSort(keyModifiers);
         handled = true;
@@ -220,8 +232,7 @@ public class DataGridColumnHeader : ContentControl
     internal void UpdatePseudoClasses()
     {
         CurrentSortingState = null;
-        if (OwningGrid != null
-            && OwningGrid.DataConnection.AllowSort)
+        if (OwningGrid != null && OwningGrid.DataConnection.AllowSort)
         {
             var sort = OwningColumn?.GetSortDescription();
             if (sort != null)
@@ -229,12 +240,11 @@ public class DataGridColumnHeader : ContentControl
                 CurrentSortingState = sort.Direction;
             }
         }
-
         PseudoClasses.Set(StdPseudoClass.SortAscending, CurrentSortingState == ListSortDirection.Ascending);
         PseudoClasses.Set(StdPseudoClass.SortDescending, CurrentSortingState == ListSortDirection.Descending);
     }
     
-      internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
+    internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
     {
         Debug.Assert(OwningGrid != null);
         if (OwningGrid.WaitForLostFocus(() => InvokeProcessSort(keyModifiers, forcedDirection)))
@@ -261,6 +271,7 @@ public class DataGridColumnHeader : ContentControl
             OwningGrid.CanUserSortColumns &&
             OwningColumn.CanUserSort)
         {
+            
             var ea = new DataGridColumnEventArgs(OwningColumn);
             OwningGrid.HandleColumnSorting(ea);
 
@@ -271,7 +282,7 @@ public class DataGridColumnHeader : ContentControl
                 // - the column's data type is comparable
 
                 DataGrid                owningGrid = OwningGrid;
-                DataGridSortDescription newSort;
+                DataGridSortDescription? newSort;
 
                 KeyboardHelper.GetMetaKeyState(this, keyModifiers, out bool ctrl, out bool shift);
 
@@ -286,7 +297,6 @@ public class DataGridColumnHeader : ContentControl
                     {
                         owningGrid.DataConnection.SortDescriptions.Clear();
                     }
-
                     // if ctrl is held down, we only clear the sort directions
                     if (!ctrl)
                     {
@@ -319,8 +329,6 @@ public class DataGridColumnHeader : ContentControl
                             newSort = forcedDirection != null ?
                                 DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer, forcedDirection.Value) :
                                 DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer);
-
-
                             owningGrid.DataConnection.SortDescriptions.Add(newSort);
                         }
                         else
@@ -337,7 +345,6 @@ public class DataGridColumnHeader : ContentControl
                             {
                                 newSort = newSort.SwitchSortDirection();
                             }
-
                             owningGrid.DataConnection.SortDescriptions.Add(newSort);
                         }
                     }
@@ -346,7 +353,7 @@ public class DataGridColumnHeader : ContentControl
         }
     }
     
-     //TODO DragDrop
+    //TODO DragDrop
 
     internal void HandleMouseLeftButtonDown(ref bool handled, PointerEventArgs args, Point mousePosition)
     {
@@ -358,8 +365,8 @@ public class DataGridColumnHeader : ContentControl
             _frozenColumnsWidth       = OwningGrid.ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth();
             _lastMousePositionHeaders = this.Translate(OwningGrid.ColumnHeaders, mousePosition);
 
-            double         distanceFromLeft  = mousePosition.X;
-            double         distanceFromRight = Bounds.Width - distanceFromLeft;
+            double          distanceFromLeft  = mousePosition.X;
+            double          distanceFromRight = Bounds.Width - distanceFromLeft;
             DataGridColumn? currentColumn     = OwningColumn;
             DataGridColumn? previousColumn    = null;
             if (!(OwningColumn is DataGridFillerColumn))
@@ -899,8 +906,8 @@ public class DataGridColumnHeader : ContentControl
         }
 
         // set mouse if we can resize column
-        double         distanceFromLeft  = mousePosition.X;
-        double         distanceFromRight = Bounds.Width - distanceFromLeft;
+        double          distanceFromLeft  = mousePosition.X;
+        double          distanceFromRight = Bounds.Width - distanceFromLeft;
         DataGridColumn? currentColumn     = OwningColumn;
         DataGridColumn? previousColumn    = null;
 
@@ -924,4 +931,5 @@ public class DataGridColumnHeader : ContentControl
             Cursor = _originalCursor;
         }
     }
+    
 }
