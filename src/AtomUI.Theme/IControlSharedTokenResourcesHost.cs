@@ -2,7 +2,7 @@ using Avalonia.Controls;
 
 namespace AtomUI.Theme;
 
-internal interface IControlSharedTokenResourcesHost
+public interface IControlSharedTokenResourcesHost
 {
     Control HostControl { get; }
     string TokenId { get; }

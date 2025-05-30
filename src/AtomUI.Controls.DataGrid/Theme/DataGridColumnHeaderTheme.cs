@@ -1,3 +1,4 @@
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
@@ -6,6 +7,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -39,6 +41,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
             {
                 Name = HeaderFramePart
             };
+            CreateTemplateParentBinding(headerFrame, Border.BackgroundProperty, DataGridColumnHeader.BackgroundProperty);
 
             var headerRootLayout = new Grid
             {
@@ -70,7 +73,6 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
 
     private void BuildContentPresenter(Grid rootLayout)
     {
-        var contentPresenterLayout = new Panel();
         var gridLayout = new Grid()
         {
             ColumnDefinitions =
@@ -79,7 +81,8 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
                 new ColumnDefinition(GridLength.Auto),
             ]
         };
-
+        CreateTemplateParentBinding(gridLayout, Grid.HorizontalAlignmentProperty, DataGridColumnHeader.HorizontalAlignmentProperty);
+        CreateTemplateParentBinding(gridLayout, Grid.VerticalAlignmentProperty, DataGridColumnHeader.VerticalAlignmentProperty);
         var contentPresenter = new ContentPresenter()
         {
             Name = ContentPresenterPart,
@@ -89,27 +92,24 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         Grid.SetColumn(contentPresenter, 0);
         gridLayout.Children.Add(contentPresenter);
 
-        var iconPresenter = new ContentPresenter()
+        var iconPresenter = new IconPresenter()
         {
             Name                = SortIconPresenterPart,
-            IsVisible           = false,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment   = VerticalAlignment.Center,
+            IsVisible           = false
         };
         Grid.SetColumn(iconPresenter, 1);
         gridLayout.Children.Add(iconPresenter);
-
-        contentPresenterLayout.Children.Add(gridLayout);
-        Grid.SetColumn(rootLayout, 0);
-        rootLayout.Children.Add(contentPresenterLayout);
+        
+        Grid.SetColumn(gridLayout, 0);
+        rootLayout.Children.Add(gridLayout);
     }
 
     private void BuildFocusVisual(Grid rootLayout)
     {
-        var focusVisualLayout = new Grid()
+        var focusVisualLayout = new Panel()
         {
-            IsVisible        = false,
-            Name             = FocusVisualPart,
+            Name      = FocusVisualPart,
+            IsVisible = false,
             IsHitTestVisible = false,
         };
 
@@ -137,5 +137,16 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
 
         Grid.SetColumn(focusVisualLayout, 0);
         rootLayout.Children.Add(focusVisualLayout);
+    }
+
+    protected override void BuildStyles()
+    {
+        var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(DataGridColumnHeader.ForegroundProperty, DataGridTokenKey.TableHeaderTextColor);
+        commonStyle.Add(DataGridColumnHeader.BackgroundProperty, DataGridTokenKey.TableHeaderBg);
+        commonStyle.Add(DataGridColumnHeader.FontWeightProperty, SharedTokenKey.FontWeightStrong);
+        commonStyle.Add(DataGridColumnHeader.HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
+        commonStyle.Add(DataGridColumnHeader.VerticalContentAlignmentProperty, VerticalAlignment.Center);
+        Add(commonStyle);
     }
 }

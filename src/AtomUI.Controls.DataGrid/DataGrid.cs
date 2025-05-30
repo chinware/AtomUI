@@ -6,7 +6,12 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -32,10 +37,17 @@ namespace AtomUI.Controls;
 [TemplatePart(DataGridTheme.TopRightCornerPart,              typeof(ContentControl))]
 [TemplatePart(DataGridTheme.VerticalScrollbarPart,           typeof(ScrollBar))]
 [PseudoClasses(StdPseudoClass.Invalid, DataGridPseudoClass.EmptyRows, DataGridPseudoClass.EmptyColumns)]
-public partial class DataGrid : TemplatedControl
+public partial class DataGrid : TemplatedControl,
+                                ISizeTypeAware,
+                                IMotionAwareControl,
+                                IControlSharedTokenResourcesHost,
+                                IResourceBindingManager
 {
     #region 公共属性定义
 
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGrid>();
+    
     /// <summary>
     /// Identifies the CanUserReorderColumns dependency property.
     /// </summary>
@@ -107,6 +119,9 @@ public partial class DataGrid : TemplatedControl
     public static readonly StyledProperty<IBrush?> HorizontalGridLinesBrushProperty =
         AvaloniaProperty.Register<DataGrid, IBrush?>(nameof(HorizontalGridLinesBrush));
     
+    public static readonly StyledProperty<IBrush?> VerticalGridLinesBrushProperty =
+        AvaloniaProperty.Register<DataGrid, IBrush?>(nameof(VerticalGridLinesBrush));
+    
     public static readonly StyledProperty<ScrollBarVisibility> HorizontalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(HorizontalScrollBarVisibility));
     
@@ -159,9 +174,6 @@ public partial class DataGrid : TemplatedControl
     public static readonly StyledProperty<DataGridSelectionMode> SelectionModeProperty =
         AvaloniaProperty.Register<DataGrid, DataGridSelectionMode>(nameof(SelectionMode));
     
-    public static readonly StyledProperty<IBrush?> VerticalGridLinesBrushProperty =
-        AvaloniaProperty.Register<DataGrid, IBrush?>(nameof(VerticalGridLinesBrush));
-    
     public static readonly StyledProperty<ScrollBarVisibility> VerticalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(VerticalScrollBarVisibility));
     
@@ -208,6 +220,15 @@ public partial class DataGrid : TemplatedControl
     public static readonly DirectProperty<DataGrid, IDataGridCollectionView?> CollectionViewProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, IDataGridCollectionView?>(nameof(CollectionView),
             o => o.CollectionView);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
+    
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
     
     /// <summary>
     /// Gets or sets a value that indicates whether the user can change
@@ -328,6 +349,15 @@ public partial class DataGrid : TemplatedControl
     }
     
     /// <summary>
+    /// Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint grid lines separating columns.
+    /// </summary>
+    public IBrush? VerticalGridLinesBrush
+    {
+        get => GetValue(VerticalGridLinesBrushProperty);
+        set => SetValue(VerticalGridLinesBrushProperty, value);
+    }
+    
+    /// <summary>
     /// Gets or sets a value that indicates how the horizontal scroll bar is displayed.
     /// </summary>
     public ScrollBarVisibility HorizontalScrollBarVisibility
@@ -436,15 +466,6 @@ public partial class DataGrid : TemplatedControl
     {
         get => GetValue(SelectionModeProperty);
         set => SetValue(SelectionModeProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint grid lines separating columns.
-    /// </summary>
-    public IBrush? VerticalGridLinesBrush
-    {
-        get => GetValue(VerticalGridLinesBrushProperty);
-        set => SetValue(VerticalGridLinesBrushProperty, value);
     }
     
     /// <summary>
@@ -617,7 +638,13 @@ public partial class DataGrid : TemplatedControl
     /// <summary>
     /// Gets a list that contains the data items corresponding to the selected rows.
     /// </summary>
-    public IList SelectedItems => _selectedItems as IList;
+    public IList SelectedItems => _selectedItems;
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
     
     #endregion
 
@@ -814,6 +841,8 @@ public partial class DataGrid : TemplatedControl
             HorizontalScrollBarVisibilityProperty,
             VerticalScrollBarVisibilityProperty);
         
+        SizeTypeProperty.OverrideDefaultValue<DataGrid>(SizeType.Large);
+        
         ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
         CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleCanUserResizeColumnsChanged(e));
         ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleColumnWidthChanged(e));
@@ -841,6 +870,8 @@ public partial class DataGrid : TemplatedControl
 
     public DataGrid()
     {
+        this.RegisterResources();
+        this.BindMotionProperties();
         KeyDown += HandleKeyDown;
         KeyUp   += HandleKeyUp;
 
@@ -875,6 +906,7 @@ public partial class DataGrid : TemplatedControl
         RowGroupHeaderHeightEstimate = DefaultRowHeight;
         RowGroupSublevelIndents      = [];
         _rowGroupHeightsByLevel      = [];
+        _resourceBindingsDisposable  = new CompositeDisposable();
         UpdatePseudoClasses();
     }
 
@@ -1030,6 +1062,10 @@ public partial class DataGrid : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
         if (DataConnection.DataSource != null && !DataConnection.EventsWired)
         {
             DataConnection.WireEvents(DataConnection.DataSource);
@@ -1045,6 +1081,7 @@ public partial class DataGrid : TemplatedControl
         {
             DataConnection.UnWireEvents(DataConnection.DataSource);
         }
+        this.DisposeTokenBindings();
     }
 
     /// <summary>

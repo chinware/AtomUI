@@ -64,6 +64,15 @@ public class DataGridColumnHeader : ContentControl
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridColumnHeader>();
+    
+    internal SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
 
     internal DataGridColumn? OwningColumn { get; set; }
     

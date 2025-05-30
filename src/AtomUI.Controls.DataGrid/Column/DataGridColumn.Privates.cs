@@ -66,10 +66,7 @@ public abstract partial class DataGridColumn
     {
         get
         {
-            if (_headerCell == null)
-            {
-                _headerCell = CreateHeader();
-            }
+            _headerCell ??= CreateHeader();;
             return _headerCell;
         }
     }
@@ -239,9 +236,10 @@ public abstract partial class DataGridColumn
         {
             OwningColumn = this
         };
+        Debug.Assert(OwningGrid != null);
         result[!ContentControl.ContentProperty]         = this[!HeaderProperty];
         result[!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty];
-        Debug.Assert(OwningGrid != null);
+        result[!DataGridColumnHeader.SizeTypeProperty]  = OwningGrid[!DataGrid.SizeTypeProperty];
         // TODO 需要审查，原则上我们 AtomUI 是不允许整体自定义的
         if (OwningGrid.ColumnHeaderTheme is { } columnTheme)
         {

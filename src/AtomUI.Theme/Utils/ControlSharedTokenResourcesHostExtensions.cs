@@ -5,7 +5,7 @@ using Avalonia.LogicalTree;
 
 namespace AtomUI.Theme.Utils;
 
-internal static class ControlSharedTokenResourcesHostExtensions
+public static class ControlSharedTokenResourcesHostExtensions
 {
     public static void RegisterResources(this IControlSharedTokenResourcesHost host)
     {

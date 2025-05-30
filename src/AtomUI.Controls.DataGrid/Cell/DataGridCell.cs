@@ -34,6 +34,15 @@ public class DataGridCell : ContentControl
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridCell>();
+    
+    internal SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
 
     internal DataGridRow? OwningRow { get; set; }
     

@@ -8,8 +8,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
+using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -161,6 +163,12 @@ public partial class DataGrid
 
     internal ScrollBar? VerticalScrollBar => _vScrollBar;
     internal ScrollBar? HorizontalScrollBar => _hScrollBar;
+    
+    Control IMotionAwareControl.PropertyBindTarget => this;
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => DataGridToken.ID;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    private CompositeDisposable? _resourceBindingsDisposable;
 
     #endregion
 
@@ -173,8 +181,7 @@ public partial class DataGrid
     /// some properties to be ordered at the beginning and some at the end.
     /// </remarks>
     private const int DefaultColumnDisplayOrder = 10000;
-
-    internal const double HorizontalGridLinesThickness = 1;
+    
     private const double MinimumRowHeaderWidth = 4;
     private const double MinimumColumnHeaderHeight = 4;
     internal const double MaximumStarColumnWidth = 10000;

@@ -5,6 +5,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
+using Avalonia.Styling;
 using HorizontalAlignment = Avalonia.Layout.HorizontalAlignment;
 using VerticalAlignment = Avalonia.Layout.VerticalAlignment;
 
@@ -130,5 +131,14 @@ internal class DataGridCellTheme : BaseControlTheme
         
         Grid.SetColumn(focusVisualLayout, 0);
         rootLayout.Children.Add(focusVisualLayout);
+    }
+
+    protected override void BuildStyles()
+    {
+        var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(DataGridCell.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+        commonStyle.Add(DataGridCell.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+        commonStyle.Add(DataGridCell.FocusableProperty, false);
+        Add(commonStyle);
     }
 }

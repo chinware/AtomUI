@@ -6,7 +6,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Theme.Data;
 
-internal class RenderScaleAwareThicknessConfigure
+public class RenderScaleAwareThicknessConfigure
 {
     private readonly WeakReference<Control> _control;
     private readonly Func<Thickness, Thickness>? _postProcessor;

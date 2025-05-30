@@ -6,6 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input.GestureRecognizers;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -82,8 +84,11 @@ internal class DataGridTheme : BaseControlTheme
             {
                 Name = ColumnHeadersAndRowsSeparatorPart,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                Height = 1
             };
+            
+            CreateTemplateParentBinding(columnHeadersAndRowsSeparator, Rectangle.HeightProperty, DataGrid.BorderThicknessProperty,
+                BindingMode.Default, new FuncValueConverter<Thickness, double>(thickness => thickness.Left));
+            
             Grid.SetRow(columnHeadersAndRowsSeparator, 0);
             Grid.SetColumn(columnHeadersAndRowsSeparator, 0);
             Grid.SetColumnSpan(columnHeadersAndRowsSeparator, 3);
@@ -188,6 +193,13 @@ internal class DataGridTheme : BaseControlTheme
         commonStyle.Add(DataGrid.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
         commonStyle.Add(DataGrid.SelectionModeProperty, DataGridSelectionMode.Extended);
         commonStyle.Add(DataGrid.FocusAdornerProperty, null);
+        commonStyle.Add(DataGrid.HorizontalGridLinesBrushProperty, DataGridTokenKey.TableBorderColor);
+        commonStyle.Add(DataGrid.VerticalGridLinesBrushProperty, DataGridTokenKey.TableBorderColor);
+
+        var columnHeadersAndRowsSeparatorStyle = new Style(selector => selector.Nesting().Template().Name(ColumnHeadersAndRowsSeparatorPart));
+        columnHeadersAndRowsSeparatorStyle.Add(Rectangle.FillProperty, DataGridTokenKey.TableBorderColor);
+        commonStyle.Add(columnHeadersAndRowsSeparatorStyle);
+        
         Add(commonStyle);
     }
 }

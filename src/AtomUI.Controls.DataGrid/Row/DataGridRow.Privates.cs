@@ -48,7 +48,8 @@ public partial class DataGridRow
             if (_bottomGridLine != null && OwningGrid != null && OwningGrid.AreRowBottomGridLinesRequired)
             {
                 // Unfortunately, _bottomGridLine has no size yet so we can't get its actualheight
-                return DataGrid.HorizontalGridLinesThickness;
+                // TODO 需要审查这里不是常量可以吗？是不是会导致高度计算错误
+                return OwningGrid.BorderThickness.Left;
             }
             return 0;
         }
