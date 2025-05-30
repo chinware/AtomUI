@@ -735,11 +735,6 @@ public class DataGridColumnHeader : ContentControl
             IsEnabled    = false,
             Content      = GetDragIndicatorContent(Content, ContentTemplate)
         };
-        if (OwningGrid.ColumnHeaderTheme is { } columnHeaderTheme)
-        {
-            dragIndicator.SetValue(ThemeProperty, columnHeaderTheme, BindingPriority.Template);
-        }
-
         dragIndicator.PseudoClasses.Add(StdPseudoClass.DragIndicator);
 
         Control? dropLocationIndicator = OwningGrid.DropLocationIndicatorTemplate?.Build();

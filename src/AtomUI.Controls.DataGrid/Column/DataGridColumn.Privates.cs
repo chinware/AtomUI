@@ -246,11 +246,6 @@ public abstract partial class DataGridColumn
         result[!ContentControl.ContentProperty]         = this[!HeaderProperty];
         result[!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty];
         result[!DataGridColumnHeader.SizeTypeProperty]  = OwningGrid[!DataGrid.SizeTypeProperty];
-        // TODO 需要审查，原则上我们 AtomUI 是不允许整体自定义的
-        if (OwningGrid.ColumnHeaderTheme is { } columnTheme)
-        {
-            result.SetValue(StyledElement.ThemeProperty, columnTheme, BindingPriority.Template);
-        }
         
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };

@@ -1155,14 +1155,9 @@ public partial class DataGrid
             dataGridRow.Slot        = slot;
             dataGridRow.OwningGrid  = this;
             dataGridRow.DataContext = dataContext;
-            if (RowTheme is { } rowTheme)
-            {
-                dataGridRow.SetValue(ThemeProperty, rowTheme, BindingPriority.Template);
-            }
 
             CompleteCellsCollection(dataGridRow);
-
-            OnLoadingRow(new DataGridRowEventArgs(dataGridRow));
+            NotifyLoadingRow(new DataGridRowEventArgs(dataGridRow));
         }
 
         return dataGridRow;
@@ -1776,7 +1771,7 @@ public partial class DataGrid
                 {
                     if (IsRowRecyclable(row))
                     {
-                        OnUnloadingRow(new DataGridRowEventArgs(row));
+                        NotifyUnloadingRow(new DataGridRowEventArgs(row));
                     }
                 }
                 // Raise Unloading Row for all the RowGroupHeaders we're displaying
@@ -2155,7 +2150,7 @@ public partial class DataGrid
                     // Raise UnloadingRow for any row that was visible
                     if (IsSlotVisible(row.Slot))
                     {
-                        OnUnloadingRow(new DataGridRowEventArgs(row));
+                        NotifyUnloadingRow(new DataGridRowEventArgs(row));
                     }
 
                     row.DetachFromDataGrid(recycle && row.IsRecyclable /*recycle*/);
@@ -2194,7 +2189,7 @@ public partial class DataGrid
         }
 
         // Raise UnloadingRow regardless of whether the row will be recycled
-        OnUnloadingRow(new DataGridRowEventArgs(dataGridRow));
+        NotifyUnloadingRow(new DataGridRowEventArgs(dataGridRow));
         bool recycleRow = CurrentSlot != dataGridRow.Index;
 
         if (recycleRow)

@@ -76,22 +76,10 @@ public partial class DataGrid : TemplatedControl,
             validate: IsValidColumnHeaderHeight);
     
     /// <summary>
-    /// Identifies the <see cref="ColumnHeaderTheme"/> dependency property.
-    /// </summary>
-    public static readonly StyledProperty<ControlTheme> ColumnHeaderThemeProperty =
-        AvaloniaProperty.Register<DataGrid, ControlTheme>(nameof(ColumnHeaderTheme));
-    
-    /// <summary>
     /// Identifies the ColumnWidth dependency property.
     /// </summary>
     public static readonly StyledProperty<DataGridLength> ColumnWidthProperty =
         AvaloniaProperty.Register<DataGrid, DataGridLength>(nameof(ColumnWidth), defaultValue: DataGridLength.Auto);
-    
-    /// <summary>
-    /// Identifies the <see cref="RowTheme"/> dependency property.
-    /// </summary>
-    public static readonly StyledProperty<ControlTheme> RowThemeProperty =
-        AvaloniaProperty.Register<DataGrid, ControlTheme>(nameof(RowTheme));
     
     /// <summary>
     /// Identifies the <see cref="CellTheme"/> dependency property.
@@ -277,30 +265,12 @@ public partial class DataGrid : TemplatedControl,
     }
     
     /// <summary>
-    /// Gets or sets the theme applied to all rows.
-    /// </summary>
-    public ControlTheme RowTheme
-    {
-        get => GetValue(RowThemeProperty);
-        set => SetValue(RowThemeProperty, value);
-    }
-    
-    /// <summary>
     /// Gets or sets the theme applied to all cells.
     /// </summary>
     public ControlTheme CellTheme
     {
         get => GetValue(CellThemeProperty);
         set => SetValue(CellThemeProperty, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the theme applied to all column headers.
-    /// </summary>
-    public ControlTheme ColumnHeaderTheme
-    {
-        get => GetValue(ColumnHeaderThemeProperty);
-        set => SetValue(ColumnHeaderThemeProperty, value);
     }
     
     /// <summary>
@@ -1225,7 +1195,7 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Raises the CurrentCellChanged event.
     /// </summary>
-    protected virtual void OnCurrentCellChanged(EventArgs e)
+    protected virtual void NotifyCurrentCellChanged(EventArgs e)
     {
         CurrentCellChanged?.Invoke(this, e);
     }
@@ -1233,7 +1203,7 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Raises the LoadingRow event for row preparation.
     /// </summary>
-    protected virtual void OnLoadingRow(DataGridRowEventArgs e)
+    protected virtual void NotifyLoadingRow(DataGridRowEventArgs e)
     {
         EventHandler<DataGridRowEventArgs>? handler = LoadingRow;
         if (handler != null)
@@ -1276,7 +1246,7 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Raises the PreparingCellForEdit event.
     /// </summary>
-    protected virtual void OnPreparingCellForEdit(DataGridPreparingCellForEditEventArgs e)
+    protected virtual void NotifyPreparingCellForEdit(DataGridPreparingCellForEditEventArgs e)
     {
         PreparingCellForEdit?.Invoke(this, e);
     }
@@ -1284,7 +1254,7 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Raises the RowEditEnded event.
     /// </summary>
-    protected virtual void OnRowEditEnded(DataGridRowEditEndedEventArgs e)
+    protected virtual void NotifyRowEditEnded(DataGridRowEditEndedEventArgs e)
     {
         RowEditEnded?.Invoke(this, e);
     }
@@ -1292,7 +1262,7 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Raises the RowEditEnding event.
     /// </summary>
-    protected virtual void OnRowEditEnding(DataGridRowEditEndingEventArgs e)
+    protected virtual void NotifyRowEditEnding(DataGridRowEditEndingEventArgs e)
     {
         RowEditEnding?.Invoke(this, e);
     }
@@ -1301,7 +1271,7 @@ public partial class DataGrid : TemplatedControl,
     /// Raises the SelectionChanged event and clears the _selectionChanged.
     /// This event won't get raised again until after _selectionChanged is set back to true.
     /// </summary>
-    protected virtual void OnSelectionChanged(SelectionChangedEventArgs e)
+    protected virtual void NotifySelectionChanged(SelectionChangedEventArgs e)
     {
         RaiseEvent(e);
     }
@@ -1309,7 +1279,7 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Raises the UnloadingRow event for row recycling.
     /// </summary>
-    protected virtual void OnUnloadingRow(DataGridRowEventArgs e)
+    protected virtual void NotifyUnloadingRow(DataGridRowEventArgs e)
     {
         EventHandler<DataGridRowEventArgs>? handler = UnloadingRow;
         if (handler != null)

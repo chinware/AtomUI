@@ -293,7 +293,7 @@ public partial class DataGrid
             _previousCurrentColumn = CurrentColumn;
             _previousCurrentItem   = CurrentItem;
 
-            OnCurrentCellChanged(EventArgs.Empty);
+            NotifyCurrentCellChanged(EventArgs.Empty);
         }
 
         _flushCurrentCellChanged = false;
@@ -2446,7 +2446,7 @@ public partial class DataGrid
         if (raiseEvents)
         {
             DataGridRowEditEndingEventArgs e = new DataGridRowEditEndingEventArgs(EditingRow, editAction);
-            OnRowEditEnding(e);
+            NotifyRowEditEnding(e);
             if (e.Cancel)
             {
                 // RowEditEnding has been cancelled
@@ -2494,7 +2494,7 @@ public partial class DataGrid
         // Raise the RowEditEnded event
         if (raiseEvents)
         {
-            OnRowEditEnded(new DataGridRowEditEndedEventArgs(editingRow, editAction));
+            NotifyRowEditEnded(new DataGridRowEditEndedEventArgs(editingRow, editAction));
         }
 
         return true;
@@ -2575,7 +2575,7 @@ public partial class DataGrid
             SelectionChangedEventArgs e = _selectedItems.GetSelectionChangedEventArgs();
             if (e.AddedItems.Count > 0 || e.RemovedItems.Count > 0)
             {
-                OnSelectionChanged(e);
+                NotifySelectionChanged(e);
             }
         }
     }
@@ -2825,7 +2825,7 @@ public partial class DataGrid
         Debug.Assert(dataGridColumn != null);
         Debug.Assert(_editingEventArgs != null);
         _uneditedValue = dataGridColumn.PrepareCellForEditInternal(editingElement, _editingEventArgs);
-        OnPreparingCellForEdit(new DataGridPreparingCellForEditEventArgs(dataGridColumn, EditingRow, _editingEventArgs,
+        NotifyPreparingCellForEdit(new DataGridPreparingCellForEditEventArgs(dataGridColumn, EditingRow, _editingEventArgs,
             editingElement));
     }
 
