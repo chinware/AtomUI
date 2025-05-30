@@ -29,7 +29,7 @@ namespace AtomUI.Controls;
 [TemplatePart(DataGridTheme.HorizontalScrollbarPart,         typeof(ScrollBar))]
 [TemplatePart(DataGridTheme.RowsPresenterPart,               typeof(DataGridRowsPresenter))]
 [TemplatePart(DataGridTheme.TopLeftCornerPart,               typeof(ContentControl))]
-[TemplatePart(DataGridTheme.TopRightCornePart,               typeof(ContentControl))]
+[TemplatePart(DataGridTheme.TopRightCornerPart,              typeof(ContentControl))]
 [TemplatePart(DataGridTheme.VerticalScrollbarPart,           typeof(ScrollBar))]
 [PseudoClasses(StdPseudoClass.Invalid, DataGridPseudoClass.EmptyRows, DataGridPseudoClass.EmptyColumns)]
 public partial class DataGrid : TemplatedControl
@@ -1394,7 +1394,7 @@ public partial class DataGrid : TemplatedControl
 
         _topLeftCornerHeader = e.NameScope.Find<ContentControl>(DataGridTheme.TopLeftCornerPart);
         EnsureTopLeftCornerHeader(); // EnsureTopLeftCornerHeader checks for a null _topLeftCornerHeader;
-        _topRightCornerHeader = e.NameScope.Find<ContentControl>(DataGridTheme.TopRightCornePart);
+        _topRightCornerHeader = e.NameScope.Find<ContentControl>(DataGridTheme.TopRightCornerPart);
         _bottomRightCorner    = e.NameScope.Find<Visual>(DataGridTheme.BottomRightCornerPart);
     }
 

@@ -317,6 +317,7 @@ public partial class DataGridRow : TemplatedControl
         base.OnPointerEntered(e);
         IsMouseOver = true;
     }
+    
     protected override void OnPointerExited(PointerEventArgs e)
     {
         IsMouseOver = false;

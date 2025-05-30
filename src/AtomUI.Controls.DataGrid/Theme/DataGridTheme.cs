@@ -8,6 +8,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Input.GestureRecognizers;
 using Avalonia.Layout;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -20,14 +21,15 @@ internal class DataGridTheme : BaseControlTheme
     public const string HorizontalScrollbarPart = "PART_HorizontalScrollbar";
     public const string VerticalScrollbarPart = "PART_VerticalScrollbar";
     public const string TopLeftCornerPart = "PART_TopLeftCorner";
-    public const string TopRightCornePart = "PART_TopRightCorner";
+    public const string TopRightCornerPart = "PART_TopRightCorner";
     public const string BottomRightCornerPart = "PART_BottomRightCorner";
     public const string ColumnHeadersAndRowsSeparatorPart = "PART_ColumnHeadersAndRowsSeparator";
     public const string FramePart = "PART_Frame";
     public const string RootLayoutPart = "PART_RootLayout";
     public const string DisabledVisualElementPart = "PART_DisabledVisualElement";
     
-    public DataGridTheme() : base(typeof(DataGrid))
+    public DataGridTheme()
+        : base(typeof(DataGrid))
     {
     }
 
@@ -42,24 +44,25 @@ internal class DataGridTheme : BaseControlTheme
             var rootLayout = new Grid()
             {
                 Name = RootLayoutPart,
-                ColumnDefinitions = [
-                    new ColumnDefinition(GridLength.Auto),
-                    new ColumnDefinition(GridLength.Star),
-                    new ColumnDefinition(GridLength.Auto)
-                ],
                 RowDefinitions = [
                     new RowDefinition(GridLength.Auto),
                     new RowDefinition(GridLength.Star),
                     new RowDefinition(GridLength.Auto),
                     new RowDefinition(GridLength.Auto),
                 ],
+                ColumnDefinitions = [
+                    new ColumnDefinition(GridLength.Auto),
+                    new ColumnDefinition(GridLength.Star),
+                    new ColumnDefinition(GridLength.Auto)
+                ],
                 ClipToBounds = true
             };
 
-            var topLeftCornerHeader = new DataGridColumnHeader()
+            var topLeftCornerHeader = new DataGridTopLeftColumnHeader()
             {
                 Name = TopLeftCornerPart,
             };
+            topLeftCornerHeader.RegisterInNameScope(scope);
             Grid.SetRow(topLeftCornerHeader, 0);
             Grid.SetColumn(topLeftCornerHeader, 0);
             rootLayout.Children.Add(topLeftCornerHeader);
@@ -68,6 +71,8 @@ internal class DataGridTheme : BaseControlTheme
             {
                 Name = ColumnHeadersPresenterPart,
             };
+
+            columnHeadersPresenter.RegisterInNameScope(scope);
             Grid.SetRow(columnHeadersPresenter, 0);
             Grid.SetColumn(columnHeadersPresenter, 1);
             Grid.SetColumnSpan(columnHeadersPresenter, 2);
@@ -88,8 +93,11 @@ internal class DataGridTheme : BaseControlTheme
             {
                 Name = RowsPresenterPart,
             };
+            rowsPresenter.RegisterInNameScope(scope);
             Grid.SetRow(rowsPresenter, 1);
             Grid.SetColumn(rowsPresenter, 0);
+            Grid.SetRowSpan(rowsPresenter, 2);
+            Grid.SetColumnSpan(rowsPresenter, 3);
             CreateTemplateParentBinding(rowsPresenter, ScrollViewer.IsScrollInertiaEnabledProperty, DataGrid.IsScrollInertiaEnabledProperty);
             var scrollGestureRecognizer = new ScrollGestureRecognizer()
             {
@@ -104,6 +112,7 @@ internal class DataGridTheme : BaseControlTheme
             {
                 Name = BottomRightCornerPart,
             };
+            bottomRightCorner.RegisterInNameScope(scope);
             Grid.SetRow(bottomRightCorner, 2);
             Grid.SetColumn(bottomRightCorner, 2);
             rootLayout.Children.Add(bottomRightCorner);
@@ -113,36 +122,12 @@ internal class DataGridTheme : BaseControlTheme
                 Name = VerticalScrollbarPart,
                 Orientation = Orientation.Vertical,
             };
+            verticalScrollbar.RegisterInNameScope(scope);
             Grid.SetRow(verticalScrollbar, 1);
             Grid.SetColumn(verticalScrollbar, 2);
             rootLayout.Children.Add(verticalScrollbar);
 
-            var horizontalScrollbarLayout = new Grid()
-            {
-                ColumnDefinitions = [
-                    new ColumnDefinition(GridLength.Auto),
-                    new ColumnDefinition(GridLength.Star),
-                ]
-            };
-            Grid.SetRow(verticalScrollbar, 2);
-            Grid.SetColumn(verticalScrollbar, 1);
-            
-            var frozenColumnScrollBarSpacer = new Rectangle()
-            {
-                Name = FrozenColumnScrollBarSpacerPart,
-            };
-            Grid.SetColumn(frozenColumnScrollBarSpacer, 0);
-            horizontalScrollbarLayout.Children.Add(frozenColumnScrollBarSpacer);
-
-            var horizontalScrollbar = new ScrollBar()
-            {
-                Name = HorizontalScrollbarPart,
-                Orientation = Orientation.Horizontal,
-            };
-            Grid.SetColumn(frozenColumnScrollBarSpacer, 1);
-            horizontalScrollbarLayout.Children.Add(horizontalScrollbar);
-     
-            rootLayout.Children.Add(horizontalScrollbarLayout);
+            BuildHorizontalScrollbar(rootLayout, scope);
 
             var disabledVisualElement = new Border()
             {
@@ -162,5 +147,47 @@ internal class DataGridTheme : BaseControlTheme
             frame.Child = rootLayout;
             return frame;
         });
+    }
+
+    private void BuildHorizontalScrollbar(Grid rootLayout, INameScope scope)
+    {
+        var horizontalScrollbarLayout = new Grid()
+        {
+            ColumnDefinitions = [
+                new ColumnDefinition(GridLength.Auto),
+                new ColumnDefinition(GridLength.Star),
+            ]
+        };
+        Grid.SetRow(horizontalScrollbarLayout, 2);
+        Grid.SetColumn(horizontalScrollbarLayout, 1);
+        var frozenColumnScrollBarSpacer = new Rectangle()
+        {
+            Name = FrozenColumnScrollBarSpacerPart,
+        };
+        frozenColumnScrollBarSpacer.RegisterInNameScope(scope);
+        Grid.SetColumn(frozenColumnScrollBarSpacer, 0);
+        horizontalScrollbarLayout.Children.Add(frozenColumnScrollBarSpacer);
+
+        var horizontalScrollbar = new ScrollBar()
+        {
+            Name        = HorizontalScrollbarPart,
+            Orientation = Orientation.Horizontal,
+        };
+        horizontalScrollbar.RegisterInNameScope(scope);
+        Grid.SetColumn(horizontalScrollbar, 1);
+        horizontalScrollbarLayout.Children.Add(horizontalScrollbar);
+     
+        rootLayout.Children.Add(horizontalScrollbarLayout);
+    }
+
+    protected override void BuildStyles()
+    {
+        var commonStyle = new Style(selector => selector.Nesting());
+        commonStyle.Add(DataGrid.HeadersVisibilityProperty, DataGridHeadersVisibility.Column);
+        commonStyle.Add(DataGrid.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
+        commonStyle.Add(DataGrid.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
+        commonStyle.Add(DataGrid.SelectionModeProperty, DataGridSelectionMode.Extended);
+        commonStyle.Add(DataGrid.FocusAdornerProperty, null);
+        Add(commonStyle);
     }
 }

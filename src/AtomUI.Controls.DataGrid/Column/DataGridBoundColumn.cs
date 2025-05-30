@@ -79,14 +79,8 @@ public abstract class DataGridBoundColumn : DataGridColumn
     /// </summary>
     public override IBinding? ClipboardContentBinding
     {
-        get
-        {
-            return base.ClipboardContentBinding ?? Binding;
-        }
-        set
-        {
-            base.ClipboardContentBinding = value;
-        }
+        get => base.ClipboardContentBinding ?? Binding;
+        set => base.ClipboardContentBinding = value;
     } 
 
     //TODO Rename

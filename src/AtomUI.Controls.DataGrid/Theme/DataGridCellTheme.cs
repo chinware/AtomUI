@@ -5,7 +5,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
-using ExCSS;
 using HorizontalAlignment = Avalonia.Layout.HorizontalAlignment;
 using VerticalAlignment = Avalonia.Layout.VerticalAlignment;
 
@@ -64,6 +63,13 @@ internal class DataGridCellTheme : BaseControlTheme
             {
                 Name = ContentPresenterPart
             };
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.MarginProperty, DataGridCell.PaddingProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.HorizontalAlignmentProperty, DataGridCell.HorizontalContentAlignmentProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.VerticalAlignmentProperty, DataGridCell.VerticalContentAlignmentProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, DataGridCell.ContentProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, DataGridCell.ContentTemplateProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.ForegroundProperty, DataGridCell.ForegroundProperty);
+            
             Grid.SetColumn(contentPresenter, 0);
             rootLayout.Children.Add(contentPresenter);
 

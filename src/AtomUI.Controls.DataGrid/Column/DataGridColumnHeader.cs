@@ -170,10 +170,8 @@ public class DataGridColumnHeader : ContentControl
             }
         }
 
-        PseudoClasses.Set(StdPseudoClass.SortAscending,
-            CurrentSortingState == ListSortDirection.Ascending);
-        PseudoClasses.Set(StdPseudoClass.SortDescending,
-            CurrentSortingState == ListSortDirection.Descending);
+        PseudoClasses.Set(StdPseudoClass.SortAscending, CurrentSortingState == ListSortDirection.Ascending);
+        PseudoClasses.Set(StdPseudoClass.SortDescending, CurrentSortingState == ListSortDirection.Descending);
     }
     
       internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
@@ -196,12 +194,12 @@ public class DataGridColumnHeader : ContentControl
         //  - AllowUserToSortColumns and CanSort are true, and
         //  - OwningColumn is bound
         // then try to sort
-        if (OwningColumn != null
-            && OwningGrid != null
-            && OwningGrid.EditingRow == null
-            && OwningColumn != OwningGrid.ColumnsInternal.FillerColumn
-            && OwningGrid.CanUserSortColumns
-            && OwningColumn.CanUserSort)
+        if (OwningColumn != null &&
+            OwningGrid != null &&
+            OwningGrid.EditingRow == null &&
+            OwningColumn != OwningGrid.ColumnsInternal.FillerColumn &&
+            OwningGrid.CanUserSortColumns &&
+            OwningColumn.CanUserSort)
         {
             var ea = new DataGridColumnEventArgs(OwningColumn);
             OwningGrid.HandleColumnSorting(ea);
@@ -290,7 +288,7 @@ public class DataGridColumnHeader : ContentControl
     
      //TODO DragDrop
 
-    internal void OnMouseLeftButtonDown(ref bool handled, PointerEventArgs args, Point mousePosition)
+    internal void HandleMouseLeftButtonDown(ref bool handled, PointerEventArgs args, Point mousePosition)
     {
         IsPressed = true;
 
@@ -333,7 +331,7 @@ public class DataGridColumnHeader : ContentControl
 
     //TODO DragEvents
     //TODO MouseCapture
-    internal void OnMouseLeftButtonUp(ref bool handled, PointerEventArgs args, Point mousePosition, Point mousePositionHeaders)
+    internal void HandleMouseLeftButtonUp(ref bool handled, PointerEventArgs args, Point mousePosition, Point mousePositionHeaders)
     {
         IsPressed = false;
 
@@ -362,14 +360,14 @@ public class DataGridColumnHeader : ContentControl
 
             // Variables that track drag mode states get reset in DataGridColumnHeader_LostMouseCapture
             args.Pointer.Capture(null);
-            OnLostMouseCapture();
+            HandleLostMouseCapture();
             _dragMode = DragMode.None;
             handled   = true;
         }
     }
 
     //TODO DragEvents
-    internal void OnMouseMove(PointerEventArgs args, Point mousePosition, Point mousePositionHeaders)
+    internal void HandleMouseMove(PointerEventArgs args, Point mousePosition, Point mousePositionHeaders)
     {
         var handled = args.Handled;
         if (handled || OwningGrid == null || OwningGrid.ColumnHeaders == null)
@@ -461,7 +459,7 @@ public class DataGridColumnHeader : ContentControl
         }
 
         Point mousePosition = e.GetPosition(this);
-        OnMouseEnter(mousePosition);
+        HandleMouseEnter(mousePosition);
         UpdatePseudoClasses();
     }
 
@@ -472,7 +470,7 @@ public class DataGridColumnHeader : ContentControl
             return;
         }
 
-        OnMouseLeave();
+        HandleMouseLeave();
         UpdatePseudoClasses();
     }
 
@@ -485,7 +483,7 @@ public class DataGridColumnHeader : ContentControl
 
         Point mousePosition = e.GetPosition(this);
         bool  handled       = e.Handled;
-        OnMouseLeftButtonDown(ref handled, e, mousePosition);
+        HandleMouseLeftButtonDown(ref handled, e, mousePosition);
         e.Handled = handled;
 
         UpdatePseudoClasses();
@@ -501,7 +499,7 @@ public class DataGridColumnHeader : ContentControl
         Point mousePosition        = e.GetPosition(this);
         Point mousePositionHeaders = e.GetPosition(OwningGrid.ColumnHeaders);
         bool  handled              = e.Handled;
-        OnMouseLeftButtonUp(ref handled, e, mousePosition, mousePositionHeaders);
+        HandleMouseLeftButtonUp(ref handled, e, mousePosition, mousePositionHeaders);
         e.Handled = handled;
 
         UpdatePseudoClasses();
@@ -517,7 +515,7 @@ public class DataGridColumnHeader : ContentControl
         Point mousePosition        = e.GetPosition(this);
         Point mousePositionHeaders = e.GetPosition(OwningGrid.ColumnHeaders);
 
-        OnMouseMove(e, mousePosition, mousePositionHeaders);
+        HandleMouseMove(e, mousePosition, mousePositionHeaders);
     }
 
     /// <summary>
@@ -627,7 +625,7 @@ public class DataGridColumnHeader : ContentControl
     /// <summary>
     /// Resets the static DataGridColumnHeader properties when a header loses mouse capture
     /// </summary>
-    private void OnLostMouseCapture()
+    private void HandleLostMouseCapture()
     {
         // When we stop interacting with the column headers, we need to reset the drag mode
         // and close any popups if they are open.
@@ -653,7 +651,7 @@ public class DataGridColumnHeader : ContentControl
     /// Sets up the DataGridColumnHeader for the MouseEnter event
     /// </summary>
     /// <param name="mousePosition">mouse position relative to the DataGridColumnHeader</param>
-    private void OnMouseEnter(Point mousePosition)
+    private void HandleMouseEnter(Point mousePosition)
     {
         IsMouseOver = true;
         SetDragCursor(mousePosition);
@@ -662,7 +660,7 @@ public class DataGridColumnHeader : ContentControl
     /// <summary>
     /// Sets up the DataGridColumnHeader for the MouseLeave event
     /// </summary>
-    private void OnMouseLeave()
+    private void HandleMouseLeave()
     {
         IsMouseOver = false;
     }
@@ -762,7 +760,6 @@ public class DataGridColumnHeader : ContentControl
         Debug.Assert(OwningGrid != null);
         Debug.Assert(OwningColumn != null);
         Debug.Assert(OwningGrid.ColumnHeaders != null);
-        Debug.Assert(_dragStart != null);
         //handle entry into reorder mode
         if (_dragMode == DragMode.MouseDown && _dragColumn == null && _lastMousePositionHeaders != null)
         {
@@ -781,6 +778,7 @@ public class DataGridColumnHeader : ContentControl
         //handle reorder mode (eg, positioning of the popup)
         if (_dragMode == DragMode.Reorder && OwningGrid.ColumnHeaders.DragIndicator != null)
         {
+            Debug.Assert(_dragStart != null);
             // Find header we're hovering over
             DataGridColumn? targetColumn = GetReorderingTargetColumn(mousePositionHeaders, !OwningColumn.IsFrozen /*scroll*/, out double scrollAmount);
 

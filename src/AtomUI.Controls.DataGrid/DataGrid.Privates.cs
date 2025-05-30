@@ -2099,8 +2099,8 @@ public partial class DataGrid
     private void HandleHeadersVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
     {
         // TODO 需要审查
-        var oldValue = (DataGridHeadersVisibility)(e.OldValue ?? DataGridHeadersVisibility.None);
-        var newValue = (DataGridHeadersVisibility)(e.NewValue ?? DataGridHeadersVisibility.None);
+        var oldValue = (DataGridHeadersVisibility)(e.OldValue ?? DataGridHeadersVisibility.All);
+        var newValue = (DataGridHeadersVisibility)(e.NewValue ?? DataGridHeadersVisibility.All);
         bool hasFlags(DataGridHeadersVisibility value, DataGridHeadersVisibility flags) => ((value & flags) == flags);
 
         bool newValueCols = hasFlags(newValue, DataGridHeadersVisibility.Column);

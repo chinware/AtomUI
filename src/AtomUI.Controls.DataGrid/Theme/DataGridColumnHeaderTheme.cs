@@ -25,6 +25,11 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         : base(typeof(DataGridColumnHeader))
     {
     }
+    
+    protected DataGridColumnHeaderTheme(Type targetType)
+        : base(targetType)
+    {
+    }
 
     protected override IControlTemplate BuildControlTemplate()
     {
@@ -79,6 +84,8 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         {
             Name = ContentPresenterPart,
         };
+        CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, DataGridColumnHeader.ContentProperty);
+        CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, DataGridColumnHeader.ContentTemplateProperty);
         Grid.SetColumn(contentPresenter, 0);
         gridLayout.Children.Add(contentPresenter);
 

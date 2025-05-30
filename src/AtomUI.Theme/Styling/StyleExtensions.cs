@@ -5,7 +5,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Theme.Styling;
 
-internal static class StyleExtensions
+public static class StyleExtensions
 {
     public static StyleBase Add(this StyleBase style, AvaloniaProperty targetProperty, object? value)
     {
