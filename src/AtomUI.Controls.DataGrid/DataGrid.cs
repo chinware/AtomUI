@@ -1336,6 +1336,7 @@ public partial class DataGrid : TemplatedControl,
         }
 
         _columnHeadersPresenter = e.NameScope.Find<DataGridColumnHeadersPresenter>(DataGridTheme.ColumnHeadersPresenterPart);
+        _groupHeaderView = e.NameScope.Find<DataGridHeaderView>(DataGridTheme.ColumnHeaderViewPart);
 
         if (_columnHeadersPresenter != null)
         {
@@ -1346,12 +1347,22 @@ public partial class DataGrid : TemplatedControl,
             _columnHeadersPresenter.OwningGrid = this;
 
             // Columns were added before our Template was applied, add the ColumnHeaders now
-            List<DataGridColumn> sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
-            sortedInternal.Sort(new DisplayIndexComparer());
-            foreach (DataGridColumn column in sortedInternal)
+            // List<DataGridColumn> sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
+            // sortedInternal.Sort(new DisplayIndexComparer());
+            // foreach (DataGridColumn column in sortedInternal)
+            // {
+            //     InsertDisplayedColumnHeader(column);
+            // }
+        }
+
+        if (_groupHeaderView != null)
+        {
+            if (ColumnsInternal.FillerColumn != null)
             {
-                InsertDisplayedColumnHeader(column);
+                ColumnsInternal.FillerColumn.IsRepresented = false;
             }
+
+            BuildColumnGroupView();
         }
 
         if (_rowsPresenter != null)

@@ -19,6 +19,7 @@ internal class DataGridTheme : BaseControlTheme
 {
     public const string RowsPresenterPart = "PART_RowPresenter";
     public const string ColumnHeadersPresenterPart = "PART_ColumnHeadersPresenter";
+    public const string ColumnHeaderViewPart = "PART_ColumnHeaderView";
     public const string FrozenColumnScrollBarSpacerPart = "PART_FrozenColumnScrollBarSpacer";
     public const string HorizontalScrollbarPart = "PART_HorizontalScrollbar";
     public const string VerticalScrollbarPart = "PART_VerticalScrollbar";
@@ -70,8 +71,8 @@ internal class DataGridTheme : BaseControlTheme
             Grid.SetColumn(topLeftCornerHeader, 0);
             rootLayout.Children.Add(topLeftCornerHeader);
 
-            BuildHeader(rootLayout, scope);
-
+            BuildHeader(rootLayout, scope, dataGrid);
+            
             var rowsPresenter = new DataGridRowsPresenter()
             {
                 Name = RowsPresenterPart,
@@ -132,25 +133,38 @@ internal class DataGridTheme : BaseControlTheme
         });
     }
 
-    private void BuildHeader(Grid rootLayout, INameScope scope)
+    private void BuildHeader(Grid rootLayout, INameScope scope, DataGrid dataGrid)
     {
-        var headerFrame = new Border
+        var columnHeaderView = new DataGridHeaderView(dataGrid)
         {
-            Name         = ColumnHeadersPresenterFramePart,
+            Name         = ColumnHeaderViewPart,
             ClipToBounds = true
         };
-        CreateTemplateParentBinding(headerFrame, Border.CornerRadiusProperty, DataGrid.CornerRadiusProperty, BindingMode.Default,
+        CreateTemplateParentBinding(columnHeaderView, Border.CornerRadiusProperty, DataGrid.CornerRadiusProperty, BindingMode.Default,
             new FuncValueConverter<CornerRadius, CornerRadius>(cornerRadius => new CornerRadius(cornerRadius.TopLeft, cornerRadius.TopRight, 0, 0)));
-        var columnHeadersPresenter = new DataGridColumnHeadersPresenter()
-        {
-            Name = ColumnHeadersPresenterPart,
-        };
-        headerFrame.Child = columnHeadersPresenter;
-        columnHeadersPresenter.RegisterInNameScope(scope);
-        Grid.SetRow(headerFrame, 0);
-        Grid.SetColumn(headerFrame, 1);
-        Grid.SetColumnSpan(headerFrame, 2);
-        rootLayout.Children.Add(headerFrame);
+        columnHeaderView.RegisterInNameScope(scope);
+        Grid.SetRow(columnHeaderView, 0);
+        Grid.SetColumn(columnHeaderView, 1);
+        Grid.SetColumnSpan(columnHeaderView, 2);
+        rootLayout.Children.Add(columnHeaderView);
+        
+        // var headerFrame = new Border
+        // {
+        //     Name         = ColumnHeadersPresenterFramePart,
+        //     ClipToBounds = true
+        // };
+        // CreateTemplateParentBinding(headerFrame, Border.CornerRadiusProperty, DataGrid.CornerRadiusProperty, BindingMode.Default,
+        //     new FuncValueConverter<CornerRadius, CornerRadius>(cornerRadius => new CornerRadius(cornerRadius.TopLeft, cornerRadius.TopRight, 0, 0)));
+        // var columnHeadersPresenter = new DataGridColumnHeadersPresenter()
+        // {
+        //     Name = ColumnHeadersPresenterPart,
+        // };
+        // headerFrame.Child = columnHeadersPresenter;
+        // columnHeadersPresenter.RegisterInNameScope(scope);
+        // Grid.SetRow(headerFrame, 0);
+        // Grid.SetColumn(headerFrame, 1);
+        // Grid.SetColumnSpan(headerFrame, 2);
+        // rootLayout.Children.Add(headerFrame);
         
         var columnHeadersAndRowsSeparator = new Rectangle()
         {

@@ -74,7 +74,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     {
         get
         {
-            _headerCell ??= CreateHeader();;
+            _headerCell ??= CreateHeader();
             return _headerCell;
         }
     }

@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
+using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -97,6 +98,7 @@ public partial class DataGrid
     #endregion
     
     private DataGridColumnHeadersPresenter? _columnHeadersPresenter;
+    private DataGridHeaderView? _groupHeaderView;
     
     protected virtual void NotifyColumnDisplayIndexChanged(DataGridColumnEventArgs e)
     {
@@ -1531,6 +1533,56 @@ public partial class DataGrid
         }
     }
 
+    private void BuildColumnGroupView()
+    {
+        if (_groupHeaderView == null)
+        {
+            return;
+        }
+        if (ColumnGroupsInternal.Count > 0)
+        {
+            foreach (IDataGridColumnGroupItem groupItem in ColumnGroupsInternal)
+            {
+                var headerViewItem = new DataGridHeaderViewItem();
+                if (groupItem is DataGridColumn column)
+                {
+                    headerViewItem.Header = column.HeaderCell;
+                }
+                else if (groupItem is DataGridColumnGroupItem columnGroupItem)
+                {
+                    headerViewItem.Header = columnGroupItem.HeaderCell;
+                }
+
+                if (groupItem.Children.Count > 0)
+                {
+                    foreach (IDataGridColumnGroupItem child in groupItem.Children)
+                    {
+                        BuildGroupViewItemRecursive(headerViewItem, child);
+                    }
+                }
+                _groupHeaderView.Items.Add(headerViewItem);
+            }
+        }
+    }
+
+    private void BuildGroupViewItemRecursive(DataGridHeaderViewItem headerViewItem, IDataGridColumnGroupItem columnGroupItem)
+    {
+        var childHeaderViewItem = new DataGridHeaderViewItem();
+        if (columnGroupItem is DataGridColumn column)
+        {
+            childHeaderViewItem.Header = column.HeaderCell;
+        }
+        else if (columnGroupItem is DataGridColumnGroupItem groupItem)
+        {
+            childHeaderViewItem.Header = groupItem.HeaderCell;
+        }
+        foreach (var child in columnGroupItem.Children)
+        {
+            BuildGroupViewItemRecursive(childHeaderViewItem, child);
+        }
+        headerViewItem.Items.Add(childHeaderViewItem);
+    }
+
     private static void RefreshCellElement(DataGridColumn dataGridColumn, DataGridRow dataGridRow, string propertyName)
     {
         Debug.Assert(dataGridColumn != null);
@@ -1890,8 +1942,9 @@ public partial class DataGrid
                     {
                         removedColumns.Add(column);
                     }
-                    else if (item is IDataGridColumnGroupItem gridColumn)
+                    else if (item is DataGridColumnGroupItem gridColumn)
                     {
+                        gridColumn.OwningGrid = null;
                         var columns = CollectColumnsFromGroupTree(gridColumn);
                         removedColumns.AddRange(columns);
                     }
@@ -1915,8 +1968,9 @@ public partial class DataGrid
                     {
                         addedColumns.Add(column);
                     }
-                    else if (item is IDataGridColumnGroupItem gridColumn)
+                    else if (item is DataGridColumnGroupItem gridColumn)
                     {
+                        gridColumn.OwningGrid = this;
                         var columns = CollectColumnsFromGroupTree(gridColumn);
                         addedColumns.AddRange(columns);
                     }
@@ -1978,6 +2032,10 @@ public partial class DataGrid
         if (groupItem is DataGridColumn column)
         {
             columns.Add(column);
+        }
+        else if (groupItem is DataGridColumnGroupItem gridColumnGroup)
+        {
+            gridColumnGroup.OwningGrid = this;    
         }
         foreach (var child in groupItem.Children)
         {

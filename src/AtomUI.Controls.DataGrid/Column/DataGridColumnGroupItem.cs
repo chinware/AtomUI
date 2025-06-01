@@ -2,13 +2,17 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
 public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem, IDataGridColumnGroupChanged
 {
+    #region 公共属性定义
+
     public static readonly DirectProperty<DataGridColumnGroupItem, object?> HeaderProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnGroupItem, object?>(
             nameof(Header),
@@ -39,8 +43,37 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
     
     [Content]
     public ObservableCollection<IDataGridColumnGroupItem> Children { get; }
-    
+    #endregion
+
+    #region 公共事件定义
+
     public event EventHandler<DataGridColumnGroupChangedArgs>? GroupChanged;
+    public event EventHandler<PointerPressedEventArgs>? HeaderPointerPressed;
+    public event EventHandler<PointerReleasedEventArgs>? HeaderPointerReleased;
+
+    #endregion
+    
+    #region 内部属性定义
+    
+    internal bool HasHeaderCell => _headerCell != null;
+
+    internal DataGridColumnGroupHeader HeaderCell
+    {
+        get
+        {
+            _headerCell ??= CreateHeader();
+            return _headerCell;
+        }
+    }
+    
+    protected internal DataGrid? OwningGrid
+    {
+        get;
+        internal set;
+    }
+    #endregion
+    
+    private DataGridColumnGroupHeader? _headerCell;
 
     public DataGridColumnGroupItem()
     {
@@ -87,5 +120,18 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
             }
             GroupChanged?.Invoke(this, new DataGridColumnGroupChangedArgs(groupItem, changedType));
         }
+    }
+    
+    internal virtual DataGridColumnGroupHeader CreateHeader()
+    {
+        var result = new DataGridColumnGroupHeader();
+        Debug.Assert(OwningGrid != null);
+        result[!DataGridColumnGroupHeader.HeaderProperty]         = this[!HeaderProperty];
+        result[!DataGridColumnGroupHeader.HeaderTemplateProperty] = this[!HeaderTemplateProperty];
+        result[!DataGridColumnHeader.SizeTypeProperty]            = OwningGrid[!DataGrid.SizeTypeProperty];
+        
+        result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
+        result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
+        return result;
     }
 }

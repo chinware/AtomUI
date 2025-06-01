@@ -9,7 +9,10 @@ namespace AtomUI.Theme
         {
             List<BaseControlTheme> themes = new List<BaseControlTheme>();
             themes.Add(new AtomUI.Controls.DataGridCellTheme());
+            themes.Add(new AtomUI.Controls.DataGridColumnGroupHeaderTheme());
             themes.Add(new AtomUI.Controls.DataGridColumnHeaderTheme());
+            themes.Add(new AtomUI.Controls.DataGridHeaderViewItemTheme());
+            themes.Add(new AtomUI.Controls.DataGridHeaderViewTheme());
             themes.Add(new AtomUI.Controls.DataGridRowGroupHeaderTheme());
             themes.Add(new AtomUI.Controls.DataGridRowHeaderTheme());
             themes.Add(new AtomUI.Controls.DataGridRowTheme());
