@@ -3,6 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
 using Avalonia;
@@ -16,13 +17,15 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public abstract partial class DataGridColumn
+public abstract partial class DataGridColumn : IDataGridColumnGroupItem
 {
     #region 常量定义
     
     internal const bool DefaultIsReadOnly = false;
-
     #endregion
+
+    #region 属性定义
+
     internal int Index { get; set; }
     internal bool? CanUserReorderInternal { get; set; }
     internal bool? CanUserResizeInternal { get; set; }
@@ -91,6 +94,16 @@ public abstract partial class DataGridColumn
     internal double LayoutRoundedWidth { get; private set; }
 
     internal ICellEditBinding? CellEditBinding => _editBinding;
+    
+    IDataGridColumnGroupItem? IDataGridColumnGroupItem.Parent { get; set; }
+    ObservableCollection<IDataGridColumnGroupItem> IDataGridColumnGroupItem.Children { get; } = new();
+    event EventHandler<DataGridColumnGroupChangedArgs>? IDataGridColumnGroupItem.GroupChanged
+    {
+        add => _groupChanged += value;
+        remove => _groupChanged -= value;
+    }
+    private EventHandler<DataGridColumnGroupChangedArgs>? _groupChanged;
+    #endregion
 
     private bool? _isReadOnly;
     private double? _maxWidth;
@@ -245,6 +258,7 @@ public abstract partial class DataGridColumn
         result[!ContentControl.ContentProperty]         = this[!HeaderProperty];
         result[!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty];
         result[!DataGridColumnHeader.SizeTypeProperty]  = OwningGrid[!DataGrid.SizeTypeProperty];
+        result[!DataGridColumnHeader.SupportedDirectionsProperty]  = this[!SupportedDirectionsProperty];
         
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };

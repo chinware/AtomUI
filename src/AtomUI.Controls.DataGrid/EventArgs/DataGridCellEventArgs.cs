@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace AtomUI.Controls;
 
-public class DataGridCellEventArgs  : EventArgs
+public class DataGridCellEventArgs : EventArgs
 {
     internal DataGridCellEventArgs(DataGridCell dataGridCell)
     {

@@ -92,6 +92,15 @@ public class DataGridColumnHeader : ContentControl
             o => o.CanUserSort,
             (o, v) => o.CanUserSort = v);
     
+    internal static readonly DirectProperty<DataGridColumnHeader, ListSortDirection?> CurrentSortingStateProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, ListSortDirection?>(
+            nameof(CurrentSortingState),
+            o => o.CurrentSortingState,
+            (o, v) => o.CurrentSortingState = v);
+    
+    internal static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
+        DataGridColumn.SupportedDirectionsProperty.AddOwner<DataGridColumnHeader>();
+    
     private bool _isFirstVisible = false;
     internal bool IsFirstVisible
     {
@@ -137,6 +146,19 @@ public class DataGridColumnHeader : ContentControl
         get => _canUserSort;
         set => SetAndRaise(CanUserSortProperty, ref _canUserSort, value);
     }
+    
+    private ListSortDirection? _currentSortingState;
+    internal ListSortDirection? CurrentSortingState
+    {
+        get => _currentSortingState;
+        set => SetAndRaise(CurrentSortingStateProperty, ref _currentSortingState, value);
+    }
+    
+    public DataGridSupportedDirections SupportedDirections
+    {
+        get => GetValue(SupportedDirectionsProperty);
+        set => SetValue(SupportedDirectionsProperty, value);
+    }
 
     internal DataGridColumn? OwningColumn { get; set; }
     
@@ -153,8 +175,6 @@ public class DataGridColumnHeader : ContentControl
             return OwningColumn.Index;
         }
     }
-
-    internal ListSortDirection? CurrentSortingState { get; private set; }
 
     private bool IsMouseOver { get; set; }
 
@@ -268,8 +288,7 @@ public class DataGridColumnHeader : ContentControl
             OwningGrid != null &&
             OwningGrid.EditingRow == null &&
             OwningColumn != OwningGrid.ColumnsInternal.FillerColumn &&
-            OwningGrid.CanUserSortColumns &&
-            OwningColumn.CanUserSort)
+            (OwningColumn.CanUserSort || OwningGrid.CanUserSortColumns))
         {
             
             var ea = new DataGridColumnEventArgs(OwningColumn);

@@ -230,7 +230,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
             {
                 canUserSort = CanUserSortInternal.Value;
             } 
-            else if (OwningGrid != null)
+            else if (OwningGrid != null && OwningGrid.CanUserSortColumns)
             {
                 string? propertyPath = GetSortPropertyName();
                 Type?  propertyType = OwningGrid.DataConnection.DataType.GetNestedPropertyType(propertyPath);

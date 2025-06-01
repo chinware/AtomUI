@@ -3,6 +3,8 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
@@ -20,6 +22,8 @@ public partial class DataGrid
     #region 内部属性定义
     internal DataGridColumnHeadersPresenter? ColumnHeaders => _columnHeadersPresenter;
     internal DataGridColumnCollection ColumnsInternal { get; }
+    internal ObservableCollection<IDataGridColumnGroupItem> ColumnGroupsInternal { get; }
+    
     internal List<DataGridColumn> ColumnsItemsInternal => ColumnsInternal.ItemsInternal;
     internal bool InDisplayIndexAdjustments { get; set; }
     internal bool AreColumnHeadersVisible => (HeadersVisibility & DataGridHeadersVisibility.Column) == DataGridHeadersVisibility.Column;
@@ -1866,5 +1870,120 @@ public partial class DataGrid
 
         InvalidateColumnHeadersArrange();
         InvalidateCellsArrange();
+    }
+    
+    private void HandleGroupColumnsInternalCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Reset)
+        {
+            ColumnsInternal.Clear();
+            return;
+        }
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                var removedColumns = new List<DataGridColumn>();
+                foreach (var item in e.OldItems)
+                {
+                    if (item is DataGridColumn column)
+                    {
+                        removedColumns.Add(column);
+                    }
+                    else if (item is IDataGridColumnGroupItem gridColumn)
+                    {
+                        var columns = CollectColumnsFromGroupTree(gridColumn);
+                        removedColumns.AddRange(columns);
+                    }
+                }
+
+                foreach (var column in removedColumns)
+                {
+                    ColumnsInternal.Remove(column);
+                }
+            }
+        }
+
+        if (e.Action == NotifyCollectionChangedAction.Add)
+        {
+            if (e.NewItems != null)
+            {
+                var addedColumns = new List<DataGridColumn>();
+                foreach (var item in e.NewItems)
+                {
+                    if (item is DataGridColumn column)
+                    {
+                        addedColumns.Add(column);
+                    }
+                    else if (item is IDataGridColumnGroupItem gridColumn)
+                    {
+                        var columns = CollectColumnsFromGroupTree(gridColumn);
+                        addedColumns.AddRange(columns);
+                    }
+                }
+                foreach (var column in addedColumns)
+                {
+                    ColumnsInternal.Add(column);
+                }
+            }
+        }
+
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is IDataGridColumnGroupItem gridItem)
+                    {
+                        gridItem.GroupChanged -= HandleColumnGroupItemChanged;
+                    }
+                }
+            }
+        }
+
+        if (e.Action == NotifyCollectionChangedAction.Add)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    if (item is IDataGridColumnGroupItem gridItem)
+                    {
+                        gridItem.GroupChanged += HandleColumnGroupItemChanged;
+                    }
+                }
+            }
+        }
+    }
+
+    private void HandleColumnGroupItemChanged(object? sender, DataGridColumnGroupChangedArgs args)
+    {
+        if (args.GroupItem is DataGridColumn gridColumn)
+        {
+            if (args.ChangedType == NotifyColumnGroupChangedType.Add)
+            {
+                ColumnsInternal.Add(gridColumn);
+            }
+            else if (args.ChangedType == NotifyColumnGroupChangedType.Remove)
+            {
+                ColumnsInternal.Remove(gridColumn);
+            }
+        }
+    }
+
+    private List<DataGridColumn> CollectColumnsFromGroupTree(IDataGridColumnGroupItem groupItem)
+    {
+        var columns = new List<DataGridColumn>();
+        if (groupItem is DataGridColumn column)
+        {
+            columns.Add(column);
+        }
+        foreach (var child in groupItem.Children)
+        {
+            var childColumns = CollectColumnsFromGroupTree(child);
+            columns.AddRange(childColumns);
+        }
+        return columns;
     }
 }

@@ -22,6 +22,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Utilities;
@@ -64,7 +65,7 @@ public partial class DataGrid : TemplatedControl,
     /// Identifies the CanUserSortColumns dependency property.
     /// </summary>
     public static readonly StyledProperty<bool> CanUserSortColumnsProperty =
-        AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserSortColumns), true);
+        AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserSortColumns), false);
     
     /// <summary>
     /// Identifies the ColumnHeaderHeight dependency property.
@@ -605,6 +606,8 @@ public partial class DataGrid : TemplatedControl,
     /// </summary>
     public ObservableCollection<DataGridColumn> Columns => ColumnsInternal;
     
+    public ObservableCollection<IDataGridColumnGroupItem> ColumnGroups => ColumnGroupsInternal;
+    
     /// <summary>
     /// Gets a list that contains the data items corresponding to the selected rows.
     /// </summary>
@@ -856,13 +859,14 @@ public partial class DataGrid : TemplatedControl,
         RowGroupHeadersTable     = new IndexToValueTable<DataGridRowGroupInfo>();
         _bindingValidationErrors = new List<Exception>();
 
-        DisplayData                       =  new DataGridDisplayData(this);
-        ColumnsInternal                   =  CreateColumnsInstance();
-        ColumnsInternal.CollectionChanged += HandleColumnsInternalCollectionChanged;
-
-        RowHeightEstimate        = DefaultRowHeight;
-        RowDetailsHeightEstimate = 0;
-        _rowHeaderDesiredWidth   = 0;
+        DisplayData                            =  new DataGridDisplayData(this);
+        ColumnGroupsInternal                   =  new ObservableCollection<IDataGridColumnGroupItem>();
+        ColumnsInternal                        =  CreateColumnsInstance();
+        ColumnsInternal.CollectionChanged      += HandleColumnsInternalCollectionChanged;
+        ColumnGroupsInternal.CollectionChanged += HandleGroupColumnsInternalCollectionChanged;
+        RowHeightEstimate                      =  DefaultRowHeight;
+        RowDetailsHeightEstimate               =  0;
+        _rowHeaderDesiredWidth                 =  0;
 
         DataConnection       = new DataGridDataConnection(this);
         _showDetailsTable    = new IndexToValueTable<bool>();
@@ -1490,8 +1494,7 @@ public partial class DataGrid : TemplatedControl,
             LoadingOrUnloadingRow = false;
         }
     }
-
-   
+    
     /// <summary>
     /// This method raises the CopyingRowClipboardContent event.
     /// </summary>

@@ -28,7 +28,7 @@ public partial class DataGrid
 {
     internal const bool DefaultCanUserReorderColumns = true;
     internal const bool DefaultCanUserResizeColumns = true;
-    internal const bool DefaultCanUserSortColumns = true;
+    internal const bool DefaultCanUserSortColumns = false;
 
     #region 内部属性定义
 
@@ -4474,7 +4474,9 @@ public partial class DataGrid
         var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
 
         if (clipboard != null)
+        {
             await clipboard.SetTextAsync(text);
+        }
     }
 
     /// <summary>

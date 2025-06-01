@@ -158,7 +158,29 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         BuildSizeTypeStyle(commonStyle);
         BuildVerticalSeparatorStyle(commonStyle);
         BuildIndicatorStyle(commonStyle);
+        BuildSortableColumnStyle(commonStyle);
         Add(commonStyle);
+    }
+
+    private void BuildSortableColumnStyle(Style commonStyle)
+    {
+        var canUserSortStyle = new Style(selector => selector.Nesting().PropertyEquals(DataGridColumnHeader.CanUserSortProperty, true));
+        var sortActivatedStyle = new Style(selector => selector.Nesting().Not(x => x.PropertyEquals(DataGridColumnHeader.CurrentSortingStateProperty, null)));
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, DataGridTokenKey.HeaderSortActiveBg);
+            sortActivatedStyle.Add(frameStyle);
+        }
+        canUserSortStyle.Add(sortActivatedStyle);
+
+        var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+        {
+            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+            frameStyle.Add(Border.BackgroundProperty, DataGridTokenKey.HeaderSortHoverBg);
+            hoverStyle.Add(frameStyle);
+        }
+        canUserSortStyle.Add(hoverStyle);
+        commonStyle.Add(canUserSortStyle);
     }
 
     private void BuildIndicatorStyle(Style commonStyle)
