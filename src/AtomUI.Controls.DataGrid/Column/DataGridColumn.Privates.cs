@@ -95,8 +95,8 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
 
     internal ICellEditBinding? CellEditBinding => _editBinding;
     
-    IDataGridColumnGroupItem? IDataGridColumnGroupItem.Parent { get; set; }
-    ObservableCollection<IDataGridColumnGroupItem> IDataGridColumnGroupItem.Children { get; } = new();
+    IDataGridColumnGroupItem? IDataGridColumnGroupItem.GroupParent { get; set; }
+    ObservableCollection<IDataGridColumnGroupItem> IDataGridColumnGroupItem.GroupChildren { get; } = new();
     event EventHandler<DataGridColumnGroupChangedArgs>? IDataGridColumnGroupItem.GroupChanged
     {
         add => _groupChanged += value;

@@ -45,6 +45,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(headerFrame, Border.BackgroundProperty,
                 DataGridColumnHeader.BackgroundProperty);
+            CreateTemplateParentBinding(headerFrame, Border.BorderThicknessProperty, DataGridColumnHeader.BorderThicknessProperty);
             CreateTemplateParentBinding(headerFrame, Border.PaddingProperty, DataGridColumnHeader.PaddingProperty);
 
             var headerRootLayout = new Panel()
@@ -92,6 +93,8 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         var contentPresenter = new ContentPresenter()
         {
             Name = ContentPresenterPart,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
         };
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
             DataGridColumnHeader.ContentProperty);
@@ -154,6 +157,10 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         commonStyle.Add(DataGridColumnHeader.FontWeightProperty, SharedTokenKey.FontWeightStrong);
         commonStyle.Add(DataGridColumnHeader.HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(DataGridColumnHeader.VerticalContentAlignmentProperty, VerticalAlignment.Center);
+        
+        var frameStyle  = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        frameStyle.Add(Border.BorderBrushProperty, DataGridTokenKey.TableBorderColor);
+        commonStyle.Add(frameStyle);
         
         BuildSizeTypeStyle(commonStyle);
         BuildVerticalSeparatorStyle(commonStyle);
@@ -228,7 +235,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
     private void BuildSizeTypeStyle(Style commonStyle)
     {
         var largeStyle =
-            new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Large));
+            new Style(selector => selector.Nesting().PropertyEquals(DataGridColumnHeader.SizeTypeProperty, SizeType.Large));
         {
             var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
             contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePadding);
@@ -238,7 +245,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         commonStyle.Add(largeStyle);
 
         var middleStyle =
-            new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Middle));
+            new Style(selector => selector.Nesting().PropertyEquals(DataGridColumnHeader.SizeTypeProperty, SizeType.Middle));
         {
             var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
             contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePaddingMiddle);
@@ -248,7 +255,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         commonStyle.Add(middleStyle);
 
         var smallStyle =
-            new Style(selector => selector.Nesting().PropertyEquals(ListBox.SizeTypeProperty, SizeType.Small));
+            new Style(selector => selector.Nesting().PropertyEquals(DataGridColumnHeader.SizeTypeProperty, SizeType.Small));
         {
             var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
             contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePaddingSmall);

@@ -1,6 +1,6 @@
 namespace AtomUI.Controls;
 
-public class DataGridTopLeftColumnHeader : DataGridColumnHeader
+internal class DataGridTopLeftColumnHeader : DataGridColumnHeader
 {
     
 }

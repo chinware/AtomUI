@@ -1,10 +1,11 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 
 namespace AtomUI.Controls;
 
-public class DataGridColumnGroupHeader : TemplatedControl
+internal class DataGridColumnGroupHeader : TemplatedControl
 {
     #region 公共属性定义
 
@@ -27,5 +28,26 @@ public class DataGridColumnGroupHeader : TemplatedControl
     }
 
     #endregion
- 
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridColumnGroupHeader>();
+    
+    internal static readonly StyledProperty<Thickness> BorderThicknessProperty =
+        Border.BorderThicknessProperty.AddOwner<DataGridColumnGroupHeader>();
+    
+    internal SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+    
+    internal Thickness BorderThickness
+    {
+        get => GetValue(BorderThicknessProperty);
+        set => SetValue(BorderThicknessProperty, value);
+    }
+
+    #endregion
 }

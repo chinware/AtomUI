@@ -7,7 +7,7 @@ public interface IDataGridColumnGroupItem
 {
     object? Header { get; set; }
     IDataTemplate? HeaderTemplate { get; set; }
-    IDataGridColumnGroupItem? Parent { get; set; }
-    ObservableCollection<IDataGridColumnGroupItem> Children { get; }
+    IDataGridColumnGroupItem? GroupParent { get; set; }
+    ObservableCollection<IDataGridColumnGroupItem> GroupChildren { get; }
     event EventHandler<DataGridColumnGroupChangedArgs>? GroupChanged;
 }

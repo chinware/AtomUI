@@ -1543,43 +1543,61 @@ public partial class DataGrid
         {
             foreach (IDataGridColumnGroupItem groupItem in ColumnGroupsInternal)
             {
-                var headerViewItem = new DataGridHeaderViewItem();
+                var headerViewItem = new DataGridHeaderViewItem(this);
                 if (groupItem is DataGridColumn column)
                 {
-                    headerViewItem.Header = column.HeaderCell;
+                    headerViewItem.Header                  = column.HeaderCell;
+                    column.HeaderCell.AreSeparatorsVisible = false;
                 }
                 else if (groupItem is DataGridColumnGroupItem columnGroupItem)
                 {
                     headerViewItem.Header = columnGroupItem.HeaderCell;
                 }
 
-                if (groupItem.Children.Count > 0)
+                if (groupItem.GroupChildren.Count > 0)
                 {
-                    foreach (IDataGridColumnGroupItem child in groupItem.Children)
+                    headerViewItem.IsLeaf = false;
+                    foreach (IDataGridColumnGroupItem child in groupItem.GroupChildren)
                     {
-                        BuildGroupViewItemRecursive(headerViewItem, child);
+                        BuildGroupViewItemRecursive(headerViewItem, child, 1);
                     }
+                }
+                else
+                {
+                    headerViewItem.IsLeaf = true;
                 }
                 _groupHeaderView.Items.Add(headerViewItem);
             }
         }
     }
 
-    private void BuildGroupViewItemRecursive(DataGridHeaderViewItem headerViewItem, IDataGridColumnGroupItem columnGroupItem)
+    private void BuildGroupViewItemRecursive(DataGridHeaderViewItem headerViewItem, IDataGridColumnGroupItem columnGroupItem, int depth)
     {
-        var childHeaderViewItem = new DataGridHeaderViewItem();
+        var childHeaderViewItem = new DataGridHeaderViewItem(this);
+        
         if (columnGroupItem is DataGridColumn column)
         {
-            childHeaderViewItem.Header = column.HeaderCell;
+            childHeaderViewItem.Header             = column.HeaderCell;
+            column.HeaderCell.AreSeparatorsVisible = false;
         }
         else if (columnGroupItem is DataGridColumnGroupItem groupItem)
         {
             childHeaderViewItem.Header = groupItem.HeaderCell;
         }
-        foreach (var child in columnGroupItem.Children)
+
+        if (columnGroupItem.GroupChildren.Count > 0)
         {
-            BuildGroupViewItemRecursive(childHeaderViewItem, child);
+            childHeaderViewItem.IsLeaf = false;
+            foreach (var child in columnGroupItem.GroupChildren)
+            {
+                BuildGroupViewItemRecursive(childHeaderViewItem, child, depth + 1);
+            }
         }
+        else
+        {
+            childHeaderViewItem.IsLeaf = true;
+        }
+
         headerViewItem.Items.Add(childHeaderViewItem);
     }
 
@@ -2037,7 +2055,7 @@ public partial class DataGrid
         {
             gridColumnGroup.OwningGrid = this;    
         }
-        foreach (var child in groupItem.Children)
+        foreach (var child in groupItem.GroupChildren)
         {
             var childColumns = CollectColumnsFromGroupTree(child);
             columns.AddRange(childColumns);

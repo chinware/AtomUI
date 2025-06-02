@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Metadata;
@@ -39,10 +38,10 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
         set => SetAndRaise(HeaderTemplateProperty, ref _headerTemplate, value);
     }
     
-    public IDataGridColumnGroupItem? Parent { get; set; }
+    public IDataGridColumnGroupItem? GroupParent { get; set; }
     
     [Content]
-    public ObservableCollection<IDataGridColumnGroupItem> Children { get; }
+    public ObservableCollection<IDataGridColumnGroupItem> GroupChildren { get; }
     #endregion
 
     #region 公共事件定义
@@ -77,8 +76,8 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
 
     public DataGridColumnGroupItem()
     {
-        Children                   =  new ObservableCollection<IDataGridColumnGroupItem>();
-        Children.CollectionChanged += HandleCollectionChanged;
+        GroupChildren                   =  new ObservableCollection<IDataGridColumnGroupItem>();
+        GroupChildren.CollectionChanged += HandleCollectionChanged;
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -90,7 +89,7 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
                 if (item is IDataGridColumnGroupItem groupItem)
                 {
                     HandleColumnGroupChanged(groupItem, NotifyColumnGroupChangedType.Remove);
-                    groupItem.Parent = null;
+                    groupItem.GroupParent = null;
                 }
             }
         }
@@ -101,7 +100,7 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
             {
                 if (item is IDataGridColumnGroupItem groupItem)
                 {
-                    groupItem.Parent = this;
+                    groupItem.GroupParent = this;
                     HandleColumnGroupChanged(groupItem, NotifyColumnGroupChangedType.Add);
                 }
             }
@@ -112,11 +111,11 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
     {
         if (groupItem is DataGridColumn)
         {
-            Debug.Assert(groupItem.Parent != null);
+            Debug.Assert(groupItem.GroupParent != null);
             var current = groupItem;
-            while (current.Parent != null)
+            while (current.GroupParent != null)
             {
-                current = current.Parent;
+                current = current.GroupParent;
             }
             GroupChanged?.Invoke(this, new DataGridColumnGroupChangedArgs(groupItem, changedType));
         }
@@ -128,8 +127,7 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
         Debug.Assert(OwningGrid != null);
         result[!DataGridColumnGroupHeader.HeaderProperty]         = this[!HeaderProperty];
         result[!DataGridColumnGroupHeader.HeaderTemplateProperty] = this[!HeaderTemplateProperty];
-        result[!DataGridColumnHeader.SizeTypeProperty]            = OwningGrid[!DataGrid.SizeTypeProperty];
-        
+        result[!DataGridColumnGroupHeader.SizeTypeProperty]       = OwningGrid[!DataGrid.SizeTypeProperty];
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
         return result;

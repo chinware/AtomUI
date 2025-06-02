@@ -22,7 +22,7 @@ using Avalonia.Utilities;
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.DragIndicator, StdPseudoClass.Pressed, StdPseudoClass.SortAscending, StdPseudoClass.SortDescending)]
-public class DataGridColumnHeader : ContentControl
+internal class DataGridColumnHeader : ContentControl
 {
     internal enum DragMode
     {
@@ -101,6 +101,9 @@ public class DataGridColumnHeader : ContentControl
     internal static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
         DataGridColumn.SupportedDirectionsProperty.AddOwner<DataGridColumnHeader>();
     
+    internal static readonly StyledProperty<Thickness> BorderThicknessProperty =
+        Border.BorderThicknessProperty.AddOwner<DataGridColumnHeader>();
+    
     private bool _isFirstVisible = false;
     internal bool IsFirstVisible
     {
@@ -158,6 +161,12 @@ public class DataGridColumnHeader : ContentControl
     {
         get => GetValue(SupportedDirectionsProperty);
         set => SetValue(SupportedDirectionsProperty, value);
+    }
+    
+    internal Thickness BorderThickness
+    {
+        get => GetValue(BorderThicknessProperty);
+        set => SetValue(BorderThicknessProperty, value);
     }
 
     internal DataGridColumn? OwningColumn { get; set; }
@@ -300,7 +309,7 @@ public class DataGridColumnHeader : ContentControl
                 // - SortDescriptionsCollection exists, and
                 // - the column's data type is comparable
 
-                DataGrid                owningGrid = OwningGrid;
+                DataGrid                 owningGrid = OwningGrid;
                 DataGridSortDescription? newSort;
 
                 KeyboardHelper.GetMetaKeyState(this, keyModifiers, out bool ctrl, out bool shift);

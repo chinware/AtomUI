@@ -3,7 +3,7 @@ using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
-using Avalonia.Layout;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -28,11 +28,10 @@ internal class DataGridHeaderViewItemTheme : BaseControlTheme
             {
                 Name = FramePart,
             };
-            
-            var rootLayout = new StackPanel
+            frame.RegisterInNameScope(scope);
+            var rootLayout = new DataGridHeaderViewItemPanel
             {
                 Name = RootLayoutPart,
-                Orientation = Orientation.Vertical
             };
 
             var headerPresenter = new ContentPresenter
@@ -41,14 +40,14 @@ internal class DataGridHeaderViewItemTheme : BaseControlTheme
             };
             CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentProperty, DataGridHeaderViewItem.HeaderProperty);
             CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentTemplateProperty, DataGridHeaderViewItem.HeaderTemplateProperty);
-            rootLayout.Children.Add(headerPresenter);
+            rootLayout.Header = headerPresenter;
             
             var itemsPresenter = new ItemsPresenter
             {
                 Name = ItemsPresenterPart
             };
             CreateTemplateParentBinding(itemsPresenter, ItemsPresenter.ItemsPanelProperty, DataGridHeaderViewItem.ItemsPanelProperty);
-            rootLayout.Children.Add(itemsPresenter);
+            rootLayout.ItemsPresenter = itemsPresenter;
             frame.Child = rootLayout;
             return frame;
         });
@@ -56,5 +55,17 @@ internal class DataGridHeaderViewItemTheme : BaseControlTheme
     
     protected override void BuildStyles()
     {
+        var commonStyle = new Style(selector => selector.Nesting());
+        var frameStyle  = new Style(selector => selector.Nesting().Template().Name(FramePart));
+        frameStyle.Add(Border.BorderBrushProperty, DataGridTokenKey.TableBorderColor);
+
+        var isLeafStyle = new Style(selector => selector.Nesting().PropertyEquals(DataGridHeaderViewItem.IsLeafProperty, true));
+        var itemsPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ItemsPresenterPart));
+        itemsPresenterStyle.Add(ItemsPresenter.IsVisibleProperty, false);
+        isLeafStyle.Add(itemsPresenterStyle);
+        commonStyle.Add(isLeafStyle);
+        
+        commonStyle.Add(frameStyle);
+        Add(commonStyle);
     }
 }

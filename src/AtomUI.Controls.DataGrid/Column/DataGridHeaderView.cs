@@ -1,3 +1,4 @@
+using AtomUI.Data;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
@@ -25,5 +26,34 @@ public class DataGridHeaderView : ItemsControl
     static DataGridHeaderView()
     {
         ItemsPanelProperty.OverrideDefaultValue<DataGridHeaderView>(DefaultPanel);
+    }
+    
+    protected override Control CreateContainerForItemOverride(
+        object? item,
+        int index,
+        object? recycleKey)
+    {
+        return new DataGridHeaderViewItem(OwningGrid);
+    }
+    
+    protected override bool NeedsContainerOverride(
+        object? item,
+        int index,
+        out object? recycleKey)
+    {
+        return NeedsContainer<DataGridHeaderViewItem>(item, out recycleKey);
+    }
+    
+    protected override void ContainerForItemPreparedOverride(
+        Control container,
+        object? item,
+        int index)
+    {
+        base.ContainerForItemPreparedOverride(container, item, index);
+        if (container is DataGridHeaderViewItem headerViewItem)
+        {
+            headerViewItem.OwningHeaderView = this;
+            BindUtils.RelayBind(OwningGrid, DataGrid.BorderThicknessProperty, headerViewItem, DataGridHeaderViewItem.BorderThicknessProperty);
+        }
     }
 }
