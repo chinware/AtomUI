@@ -12,6 +12,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
@@ -60,6 +61,12 @@ public abstract partial class DataGridColumn : AvaloniaObject
     public static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
         AvaloniaProperty.Register<DataGridColumn, DataGridSupportedDirections>(nameof(SupportedDirections), DataGridSupportedDirections.All);
     
+    public static readonly StyledProperty<HorizontalAlignment> HorizontalAlignmentProperty =
+        Layoutable.HorizontalAlignmentProperty.AddOwner<DataGridColumn>();
+    
+    public static readonly StyledProperty<VerticalAlignment> VerticalAlignmentProperty =
+        Layoutable.VerticalAlignmentProperty.AddOwner<DataGridColumn>();
+    
     /// <summary>
     /// Determines whether or not this column is visible.
     /// </summary>
@@ -106,6 +113,18 @@ public abstract partial class DataGridColumn : AvaloniaObject
     {
         get => GetValue(SupportedDirectionsProperty);
         set => SetValue(SupportedDirectionsProperty, value);
+    }
+    
+    public HorizontalAlignment HorizontalAlignment
+    {
+        get => GetValue(HorizontalAlignmentProperty);
+        set => SetValue(HorizontalAlignmentProperty, value);
+    }
+    
+    public VerticalAlignment VerticalAlignment
+    {
+        get => GetValue(VerticalAlignmentProperty);
+        set => SetValue(VerticalAlignmentProperty, value);
     }
 
     /// <summary>
@@ -425,6 +444,12 @@ public abstract partial class DataGridColumn : AvaloniaObject
         internal set;
     }
     #endregion
+
+    static DataGridColumn()
+    {
+        HorizontalAlignmentProperty.OverrideDefaultValue<DataGridColumn>(HorizontalAlignment.Left);
+        VerticalAlignmentProperty.OverrideDefaultValue<DataGridColumn>(VerticalAlignment.Center);
+    }
     
     /// <summary>
     /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridColumn" /> class.

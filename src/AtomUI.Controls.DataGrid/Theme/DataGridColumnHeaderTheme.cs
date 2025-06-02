@@ -93,9 +93,11 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         var contentPresenter = new ContentPresenter()
         {
             Name = ContentPresenterPart,
-            HorizontalContentAlignment = HorizontalAlignment.Center,
-            VerticalContentAlignment = VerticalAlignment.Center,
         };
+        CreateTemplateParentBinding(contentPresenter, ContentPresenter.HorizontalContentAlignmentProperty,
+            DataGridColumnHeader.HorizontalContentAlignmentProperty);
+        CreateTemplateParentBinding(contentPresenter, ContentPresenter.VerticalContentAlignmentProperty,
+            DataGridColumnHeader.VerticalContentAlignmentProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
             DataGridColumnHeader.ContentProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,

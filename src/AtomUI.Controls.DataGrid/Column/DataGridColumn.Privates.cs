@@ -255,10 +255,12 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
             OwningColumn = this
         };
         Debug.Assert(OwningGrid != null);
-        result[!ContentControl.ContentProperty]         = this[!HeaderProperty];
-        result[!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty];
-        result[!DataGridColumnHeader.SizeTypeProperty]  = OwningGrid[!DataGrid.SizeTypeProperty];
-        result[!DataGridColumnHeader.SupportedDirectionsProperty]  = this[!SupportedDirectionsProperty];
+        result[!ContentControl.ContentProperty]                          = this[!HeaderProperty];
+        result[!ContentControl.ContentTemplateProperty]                  = this[!HeaderTemplateProperty];
+        result[!DataGridColumnHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
+        result[!DataGridColumnHeader.SupportedDirectionsProperty]        = this[!SupportedDirectionsProperty];
+        result[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
+        result[!DataGridColumnHeader.VerticalContentAlignmentProperty]   = this[!VerticalAlignmentProperty];
         
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };

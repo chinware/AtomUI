@@ -34,9 +34,9 @@ internal class DataGridColumnGroupHeaderTheme : BaseControlTheme
                 Name                       = HeaderPresenterPart,
                 HorizontalAlignment        = HorizontalAlignment.Stretch,
                 VerticalAlignment          = VerticalAlignment.Stretch,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalContentAlignment   = VerticalAlignment.Center,
             };
+            CreateTemplateParentBinding(headerPresenter, ContentPresenter.HorizontalContentAlignmentProperty, DataGridColumnGroupHeader.HorizontalContentAlignmentProperty);
+            CreateTemplateParentBinding(headerPresenter, ContentPresenter.VerticalContentAlignmentProperty, DataGridColumnGroupHeader.VerticalContentAlignmentProperty);
             CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentProperty, DataGridColumnGroupHeader.HeaderProperty);
             CreateTemplateParentBinding(headerPresenter, ContentPresenter.ContentTemplateProperty, DataGridColumnGroupHeader.HeaderTemplateProperty);
             frame.Child = headerPresenter;

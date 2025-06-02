@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Layout;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
@@ -23,6 +24,12 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
             nameof(HeaderTemplate),
             o => o.HeaderTemplate,
             (o, v) => o.HeaderTemplate = v);
+    
+    public static readonly StyledProperty<HorizontalAlignment> HorizontalAlignmentProperty =
+        Layoutable.HorizontalAlignmentProperty.AddOwner<DataGridColumn>();
+    
+    public static readonly StyledProperty<VerticalAlignment> VerticalAlignmentProperty =
+        Layoutable.VerticalAlignmentProperty.AddOwner<DataGridColumn>();
 
     public object? _header;
     public object? Header
@@ -36,6 +43,18 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
     {
         get => _headerTemplate;
         set => SetAndRaise(HeaderTemplateProperty, ref _headerTemplate, value);
+    }
+    
+    public HorizontalAlignment HorizontalAlignment
+    {
+        get => GetValue(HorizontalAlignmentProperty);
+        set => SetValue(HorizontalAlignmentProperty, value);
+    }
+    
+    public VerticalAlignment VerticalAlignment
+    {
+        get => GetValue(VerticalAlignmentProperty);
+        set => SetValue(VerticalAlignmentProperty, value);
     }
     
     public IDataGridColumnGroupItem? GroupParent { get; set; }
@@ -73,6 +92,12 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
     #endregion
     
     private DataGridColumnGroupHeader? _headerCell;
+
+    static DataGridColumnGroupItem()
+    {
+        HorizontalAlignmentProperty.OverrideDefaultValue<DataGridColumnGroupItem>(HorizontalAlignment.Left);
+        VerticalAlignmentProperty.OverrideDefaultValue<DataGridColumnGroupItem>(VerticalAlignment.Center);
+    }
 
     public DataGridColumnGroupItem()
     {
@@ -128,6 +153,8 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
         result[!DataGridColumnGroupHeader.HeaderProperty]         = this[!HeaderProperty];
         result[!DataGridColumnGroupHeader.HeaderTemplateProperty] = this[!HeaderTemplateProperty];
         result[!DataGridColumnGroupHeader.SizeTypeProperty]       = OwningGrid[!DataGrid.SizeTypeProperty];
+        result[!DataGridColumnGroupHeader.HorizontalContentAlignmentProperty]       = this[!HorizontalAlignmentProperty];
+        result[!DataGridColumnGroupHeader.VerticalContentAlignmentProperty]       = this[!VerticalAlignmentProperty];
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
         return result;
