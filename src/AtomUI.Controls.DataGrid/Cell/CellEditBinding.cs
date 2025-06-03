@@ -3,6 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using System.Diagnostics;
 using AtomUI.Controls.Utils;
 using AtomUI.Reactive;
 using Avalonia.Data;
@@ -18,9 +19,9 @@ internal class CellEditBinding : ICellEditBinding
     public bool IsValid => _validationErrors.Count <= 0;
     public IEnumerable<Exception> ValidationErrors => _validationErrors;
     public IObservable<bool> ValidationChanged => _changedSubject;
-    public IAtomUISubject<object> InternalSubject => _inner;
+    public IAtomUISubject<object?> InternalSubject => _inner;
 
-    public CellEditBinding(IAtomUISubject<object> bindingSourceSubject)
+    public CellEditBinding(IObservable<object?> bindingSourceSubject)
     {
         _inner = new SubjectWrapper(bindingSourceSubject, this);
     }
@@ -43,30 +44,32 @@ internal class CellEditBinding : ICellEditBinding
         return IsValid;
     }
 
-    class SubjectWrapper : LightweightObservableBase<object>, IAtomUISubject<object>, IDisposable
+    class SubjectWrapper : LightweightObservableBase<object?>, IAtomUISubject<object?>, IDisposable
     {
-        private readonly IAtomUISubject<object> _sourceSubject;
+        private readonly IObservable<object?> _sourceSubject;
         private readonly CellEditBinding _editBinding;
         private IDisposable? _subscription;
         private object? _controlValue;
         private bool _settingSourceValue = false;
 
-        public SubjectWrapper(IAtomUISubject<object> bindingSourceSubject, CellEditBinding editBinding)
+        public SubjectWrapper(IObservable<object?> bindingSourceSubject, CellEditBinding editBinding)
         {
             _sourceSubject = bindingSourceSubject;
             _editBinding   = editBinding;
         }
 
-        private void SetSourceValue(object value)
+        private void SetSourceValue(object? value)
         {
             if (!_settingSourceValue)
             {
                 _settingSourceValue = true;
-                _sourceSubject.OnNext(value);
+                var observer = _sourceSubject as IObserver<object?>;
+                Debug.Assert(observer != null);
+                observer.OnNext(value);
                 _settingSourceValue = false;
             }
         }
-        private void SetControlValue(object value)
+        private void SetControlValue(object? value)
         {
             PublishNext(value);
         }
@@ -83,7 +86,7 @@ internal class CellEditBinding : ICellEditBinding
                 });
             }
         }
-        private void OnControlValueUpdated(object value)
+        private void OnControlValueUpdated(object? value)
         {
             _controlValue      = value;
 
@@ -92,9 +95,9 @@ internal class CellEditBinding : ICellEditBinding
                 SetSourceValue(value);
             }
         }
-        private void OnSourceValueUpdated(object value)
+        private void OnSourceValueUpdated(object? value)
         {
-            void OnValidValue(object val)
+            void OnValidValue(object? val)
             {
                 SetControlValue(val);
                 _editBinding.AlterValidationErrors(errors => errors.Clear());
@@ -123,15 +126,15 @@ internal class CellEditBinding : ICellEditBinding
             _subscription = _sourceSubject.Subscribe(OnSourceValueUpdated);
         }
 
-        void IObserver<object>.OnCompleted()
+        void IObserver<object?>.OnCompleted()
         {
             throw new NotImplementedException();
         }
-        void IObserver<object>.OnError(Exception error)
+        void IObserver<object?>.OnError(Exception error)
         {
             throw new NotImplementedException();
         }
-        void IObserver<object>.OnNext(object value)
+        void IObserver<object?>.OnNext(object? value)
         {
             OnControlValueUpdated(value);
         }

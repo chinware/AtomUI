@@ -234,13 +234,13 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
         }
     }
 
-    private void Columns_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleColumnsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.OldItems != null)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
             {
-                _owningGrid.Columns.CollectionChanged -= Columns_CollectionChanged;
+                _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
                 _owningGrid.CurrentCellChanged        -= HandleCurrentCellChanged;
                 _owningGrid.KeyDown                   -= HandleKeyDown;
                 _owningGrid.LoadingRow                -= HandleLoadingRow;
@@ -263,7 +263,7 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
             if (OwningGrid != _owningGrid)
             {
                 _owningGrid                           =  OwningGrid;
-                _owningGrid.Columns.CollectionChanged += Columns_CollectionChanged;
+                _owningGrid.Columns.CollectionChanged += HandleColumnsCollectionChanged;
                 _owningGrid.CurrentCellChanged        += HandleCurrentCellChanged;
                 _owningGrid.KeyDown                   += HandleKeyDown;
                 _owningGrid.LoadingRow                += HandleLoadingRow;

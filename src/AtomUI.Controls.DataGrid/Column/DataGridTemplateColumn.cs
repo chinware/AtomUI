@@ -55,6 +55,7 @@ public class DataGridTemplateColumn : DataGridColumn
         get => _cellEditingCellTemplate;
         set => SetAndRaise(CellEditingTemplateProperty, ref _cellEditingCellTemplate, value);
     }
+    
     private IDataTemplate? _cellEditingCellTemplate;
     
     public override bool IsReadOnly

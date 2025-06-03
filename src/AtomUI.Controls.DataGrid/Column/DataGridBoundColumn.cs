@@ -12,6 +12,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Metadata;
+using BindingFlags = System.Reflection.BindingFlags;
 
 namespace AtomUI.Controls;
 
@@ -36,7 +37,7 @@ public abstract class DataGridBoundColumn : DataGridColumn
                 {
                     // Edited value couldn't be committed, so we force a CancelEdit
                     OwningGrid.CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
-                } 
+                }
 
                 _binding = value; 
 
@@ -105,11 +106,11 @@ public abstract class DataGridBoundColumn : DataGridColumn
 
         if (result != null)
         {
-            if(result.Source is IAtomUISubject<object> subject)
+            if(result.Source is IObserver<object>)
             {
-                var bindingHelper   = new CellEditBinding(subject);
+                var bindingHelper   = new CellEditBinding(result.Source);
                 var instanceBinding = InstancedBindingFactory.CreateInstancedBinding(bindingHelper.InternalSubject, result.Mode, result.Priority); 
-
+                
                 BindingOperations.Apply(target, property, instanceBinding, null);
                 return bindingHelper;
             } 

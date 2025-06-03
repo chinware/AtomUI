@@ -36,7 +36,7 @@ internal class DataGridRowTheme : BaseControlTheme
             {
                 Name = FramePart
             };
-
+   
             var rootLayout = new DataGridFrozenGrid()
             {
                 Name = RootLayoutPart,
@@ -50,7 +50,7 @@ internal class DataGridRowTheme : BaseControlTheme
                     new ColumnDefinition(GridLength.Star)
                 ]
             };
-
+            rootLayout.RegisterInNameScope(scope);
             var rowCellsFrame = new Border
             {
                 Name = RowCellsFramePart,

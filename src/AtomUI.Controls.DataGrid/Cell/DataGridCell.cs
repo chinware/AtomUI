@@ -5,6 +5,7 @@
 
 using System.Diagnostics;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -107,6 +108,12 @@ public class DataGridCell : ContentControl, ICustomHitTest
     {
         HorizontalContentAlignmentProperty.OverrideDefaultValue<DataGridCell>(HorizontalAlignment.Left);
         VerticalContentAlignmentProperty.OverrideDefaultValue<DataGridCell>(VerticalAlignment.Center);
+        
+        PointerPressedEvent.AddClassHandler<DataGridCell>(
+            (x,e) => x.HandlePointerPressed(e), handledEventsToo: true);
+        FocusableProperty.OverrideDefaultValue<DataGridCell>(true);
+        IsTabStopProperty.OverrideDefaultValue<DataGridCell>(false);
+        AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridCell>(IsOffscreenBehavior.FromClip);
     }
 
     /// <summary>

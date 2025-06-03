@@ -1723,9 +1723,7 @@ public partial class DataGrid
         Debug.Assert(slot >= 0 && slot < SlotCount);
 
         OnRemovingElement(slot);
-
         CorrectSlotsAfterDeletion(slot, isRow);
-
         NotifyRemovedElement(slot, item);
 
         // Synchronize CurrentCellCoordinates, CurrentColumn, CurrentColumnIndex, CurrentItem
@@ -1740,7 +1738,7 @@ public partial class DataGrid
             ProcessSelectionAndCurrency(
                 columnIndex: _editingColumnIndex,
                 item: _previousCurrentItem,
-                backupSlot: this.EditingRow.Slot,
+                backupSlot: EditingRow.Slot,
                 action: DataGridSelectionAction.None,
                 scrollIntoView: false);
         }

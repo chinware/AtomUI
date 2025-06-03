@@ -263,7 +263,7 @@ public partial class DataGridRow : TemplatedControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        RootElement = e.NameScope.Find<Panel>(DataGridRowTheme.FramePart);
+        RootElement = e.NameScope.Find<Panel>(DataGridRowTheme.RootLayoutPart);
         if (RootElement != null)
         {
             ApplyState();

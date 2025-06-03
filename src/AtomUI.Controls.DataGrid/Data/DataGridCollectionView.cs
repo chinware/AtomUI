@@ -3300,10 +3300,21 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         if (args.Action == NotifyCollectionChangedAction.Reset)
         {
-            // if we have no items now, clear our own internal list
-            if (!SourceCollection.GetEnumerator().MoveNext())
+            var enumerator = SourceCollection.GetEnumerator();
+            try
             {
-                _internalList.Clear();
+                // if we have no items now, clear our own internal list
+                if (!enumerator.MoveNext())
+                {
+                    _internalList.Clear();
+                }
+            }
+            finally
+            {
+                if (enumerator is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
             }
 
             // calling Refresh, will fire the collectionchanged event
@@ -4029,12 +4040,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         /// <summary>
         /// Whether the monitor is entered
         /// </summary>
-        private bool entered;
+        private bool _entered;
 
         /// <summary>
         /// Gets a value indicating whether we have been entered or not
         /// </summary>
-        public bool Busy => entered;
+        public bool Busy => _entered;
 
         /// <summary>
         /// Sets a value indicating that we have been entered
@@ -4042,12 +4053,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         /// <returns>Boolean value indicating whether we were already entered</returns>
         public bool Enter()
         {
-            if (entered)
+            if (_entered)
             {
                 return false;
             }
 
-            entered = true;
+            _entered = true;
             return true;
         }
 
@@ -4056,7 +4067,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         /// </summary>
         public void Dispose()
         {
-            entered = false;
+            _entered = false;
             GC.SuppressFinalize(this);
         }
     }
