@@ -1,7 +1,6 @@
 ﻿using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -22,7 +21,7 @@ internal abstract class BaseLinkButtonTheme : BaseButtonTheme
 
     private void BuildEnabledStyle()
     {
-        var enabledStyle = new Style(selector => selector.Nesting());
+        var enabledStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.IsEnabledProperty, true));
         // 正常状态
         enabledStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorLink);
         

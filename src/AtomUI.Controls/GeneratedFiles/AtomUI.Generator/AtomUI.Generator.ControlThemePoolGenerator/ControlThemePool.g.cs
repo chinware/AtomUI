@@ -55,6 +55,7 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.GroupBoxTheme());
             themes.Add(new AtomUI.Controls.HeadTextButtonTheme());
             themes.Add(new AtomUI.Controls.HorizontalNavMenuTheme());
+            themes.Add(new AtomUI.Controls.HyperLinkTextBlockTheme());
             themes.Add(new AtomUI.Controls.IconButtonTheme());
             themes.Add(new AtomUI.Controls.InlineNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.Internal.RangeInfoPickerInputTheme());

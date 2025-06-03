@@ -11,18 +11,20 @@ using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 internal static class TextBlockReflectionExtensions
 {
     #region 反射信息定义
+
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(AvaloniaTextBlock))]
-    private static readonly Lazy<MethodInfo> GetMaxSizeFromConstraintMethodInfo = new Lazy<MethodInfo>(() => 
+    private static readonly Lazy<MethodInfo> GetMaxSizeFromConstraintMethodInfo = new Lazy<MethodInfo>(() =>
         typeof(AvaloniaTextBlock).GetMethodInfoOrThrow("GetMaxSizeFromConstraint",
             BindingFlags.Instance | BindingFlags.NonPublic));
-    
+
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AvaloniaTextBlock))]
-                                                                                     private static readonly Lazy<PropertyInfo> HasComplexContentPropertyInfo = new Lazy<PropertyInfo>(() => 
-                                                                                         typeof(AvaloniaTextBlock).GetPropertyInfoOrThrow("HasComplexContent",
-                                                                                             BindingFlags.Instance | BindingFlags.NonPublic));
-                                                                                     #endregion
-                                                                                 
-                                                                                     public static Size GetMaxSizeFromConstraint(this AvaloniaTextBlock textBlock)
+    private static readonly Lazy<PropertyInfo> HasComplexContentPropertyInfo = new Lazy<PropertyInfo>(() =>
+        typeof(AvaloniaTextBlock).GetPropertyInfoOrThrow("HasComplexContent",
+            BindingFlags.Instance | BindingFlags.NonPublic));
+
+    #endregion
+
+    public static Size GetMaxSizeFromConstraint(this AvaloniaTextBlock textBlock)
     {
         var size = GetMaxSizeFromConstraintMethodInfo.Value.Invoke(textBlock, []) as Size?;
         Debug.Assert(size != null);

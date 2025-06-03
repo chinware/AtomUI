@@ -193,8 +193,8 @@ public partial class DataGrid : TemplatedControl,
         AvaloniaProperty.RegisterDirect<DataGrid, IDataGridCollectionView?>(nameof(CollectionView),
             o => o.CollectionView);
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
     
     public SizeType SizeType
     {
