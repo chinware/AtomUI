@@ -129,13 +129,42 @@ internal class DataGridRowTheme : BaseControlTheme
             commonStyle.Add(frameStyle);
         }
         
-        var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+        
         {
-            var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
-            frameStyle.Add(Border.BackgroundProperty, DataGridTokenKey.TableRowHoverBg);
-            hoverStyle.Add(frameStyle);
+            var selectedStyle = new Style(selector => selector.Nesting().PropertyEquals(DataGridRow.IsSelectedProperty, true));
+
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, DataGridTokenKey.TableSelectedRowBg);
+                selectedStyle.Add(frameStyle);
+            }
+        
+            var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, DataGridTokenKey.TableSelectedRowHoverBg);
+                hoverStyle.Add(frameStyle);
+            }
+            selectedStyle.Add(hoverStyle);
+            commonStyle.Add(selectedStyle);
         }
-        commonStyle.Add(hoverStyle);
+        {
+            var unSelectedStyle = new Style(selector => selector.Nesting().PropertyEquals(DataGridRow.IsSelectedProperty, false));
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, DataGridTokenKey.TableBg);
+                unSelectedStyle.Add(frameStyle);
+            }
+            var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+            {
+                var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
+                frameStyle.Add(Border.BackgroundProperty, DataGridTokenKey.TableRowHoverBg);
+                hoverStyle.Add(frameStyle);
+            }
+            unSelectedStyle.Add(hoverStyle);
+            commonStyle.Add(unSelectedStyle);
+        }
+
         
         // 动画设置
         var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(DataGridRow.IsMotionEnabledProperty, true));

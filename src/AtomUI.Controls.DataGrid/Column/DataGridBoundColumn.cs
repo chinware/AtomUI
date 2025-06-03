@@ -6,13 +6,11 @@
 using System.Diagnostics;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Reactive;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Metadata;
-using BindingFlags = System.Reflection.BindingFlags;
 
 namespace AtomUI.Controls;
 
@@ -60,7 +58,7 @@ public abstract class DataGridBoundColumn : DataGridColumn
                         {
                             binding.Converter = DataGridValueConverter.Instance;
                         }
-                    }  
+                    }
 
                     // Apply the new Binding to existing rows in the DataGrid
                     if (OwningGrid != null)
