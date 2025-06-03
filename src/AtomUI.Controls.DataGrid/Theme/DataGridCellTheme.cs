@@ -89,7 +89,6 @@ internal class DataGridCellTheme : BaseControlTheme
             var rightGridLine = new Rectangle()
             {
                 Name = RightGridLinePart,
-                Width = 1,
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
             Grid.SetColumn(contentPresenter, 1);
@@ -115,20 +114,10 @@ internal class DataGridCellTheme : BaseControlTheme
             VerticalAlignment = VerticalAlignment.Stretch,
             Fill = Brushes.Transparent,
             IsHitTestVisible = false,
-            StrokeThickness = 2
+            StrokeThickness = 1
         };
         
-        var secondaryFocusVisual = new Rectangle()
-        {
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            VerticalAlignment   = VerticalAlignment.Stretch,
-            Fill                = Brushes.Transparent,
-            IsHitTestVisible    = false,
-            StrokeThickness     = 1
-        };
         focusVisualLayout.Children.Add(primaryFocusVisual);
-        focusVisualLayout.Children.Add(secondaryFocusVisual);
-        
         Grid.SetColumn(focusVisualLayout, 0);
         rootLayout.Children.Add(focusVisualLayout);
     }
@@ -139,6 +128,29 @@ internal class DataGridCellTheme : BaseControlTheme
         commonStyle.Add(DataGridCell.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         commonStyle.Add(DataGridCell.VerticalAlignmentProperty, VerticalAlignment.Stretch);
         commonStyle.Add(DataGridCell.FocusableProperty, false);
+
+        BuildSizeTypeStyle(commonStyle);
         Add(commonStyle);
+    }
+
+    private void BuildSizeTypeStyle(Style commonStyle)
+    {
+        var largeStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(DataGridCell.SizeTypeProperty, SizeType.Large));
+        largeStyle.Add(DataGridCell.PaddingProperty, DataGridTokenKey.TablePadding);
+        largeStyle.Add(DataGridCell.FontSizeProperty, DataGridTokenKey.TableFontSize);
+        commonStyle.Add(largeStyle);
+
+        var middleStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(DataGridCell.SizeTypeProperty, SizeType.Middle));
+        middleStyle.Add(DataGridCell.PaddingProperty, DataGridTokenKey.TablePaddingMiddle);
+        middleStyle.Add(DataGridCell.FontSizeProperty, DataGridTokenKey.TableFontSizeMiddle);
+        commonStyle.Add(middleStyle);
+
+        var smallStyle =
+            new Style(selector => selector.Nesting().PropertyEquals(DataGridCell.SizeTypeProperty, SizeType.Small));
+        smallStyle.Add(DataGridCell.PaddingProperty, DataGridTokenKey.TablePaddingSmall);
+        smallStyle.Add(DataGridCell.FontSizeProperty, DataGridTokenKey.TableFontSizeSmall);
+        commonStyle.Add(smallStyle);
     }
 }

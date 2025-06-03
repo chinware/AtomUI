@@ -22,8 +22,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
-using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Utilities;
 
@@ -100,16 +98,10 @@ public partial class DataGrid : TemplatedControl,
             validate: ValidateFrozenColumnCount);
     
     public static readonly StyledProperty<DataGridGridLinesVisibility> GridLinesVisibilityProperty =
-        AvaloniaProperty.Register<DataGrid, DataGridGridLinesVisibility>(nameof(GridLinesVisibility));
+        AvaloniaProperty.Register<DataGrid, DataGridGridLinesVisibility>(nameof(GridLinesVisibility), DataGridGridLinesVisibility.Horizontal);
     
     public static readonly StyledProperty<DataGridHeadersVisibility> HeadersVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, DataGridHeadersVisibility>(nameof(HeadersVisibility));
-    
-    public static readonly StyledProperty<IBrush?> HorizontalGridLinesBrushProperty =
-        AvaloniaProperty.Register<DataGrid, IBrush?>(nameof(HorizontalGridLinesBrush));
-    
-    public static readonly StyledProperty<IBrush?> VerticalGridLinesBrushProperty =
-        AvaloniaProperty.Register<DataGrid, IBrush?>(nameof(VerticalGridLinesBrush));
     
     public static readonly StyledProperty<ScrollBarVisibility> HorizontalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(HorizontalScrollBarVisibility));
@@ -139,14 +131,8 @@ public partial class DataGrid : TemplatedControl,
             defaultValue: DefaultMinColumnWidth,
             validate: IsValidMinColumnWidth);
     
-    /// <summary>
-    /// Defines the <see cref="IsScrollInertiaEnabled"/> property.
-    /// </summary>
     public static readonly AttachedProperty<bool> IsScrollInertiaEnabledProperty =
         ScrollViewer.IsScrollInertiaEnabledProperty.AddOwner<DataGrid>();
-    
-    public static readonly StyledProperty<IBrush> RowBackgroundProperty =
-        AvaloniaProperty.Register<DataGrid, IBrush>(nameof(RowBackground));
     
     public static readonly StyledProperty<double> RowHeightProperty =
         AvaloniaProperty.Register<DataGrid, double>(
@@ -190,10 +176,7 @@ public partial class DataGrid : TemplatedControl,
     
     public static readonly StyledProperty<bool> AutoGenerateColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(AutoGenerateColumns));
-    
-    /// <summary>
-    /// Identifies the ItemsSource property.
-    /// </summary>
+
     public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
         AvaloniaProperty.Register<DataGrid, IEnumerable?>(nameof(ItemsSource));
     
@@ -311,24 +294,6 @@ public partial class DataGrid : TemplatedControl,
     }
     
     /// <summary>
-    /// Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint grid lines separating rows.
-    /// </summary>
-    public IBrush? HorizontalGridLinesBrush
-    {
-        get => GetValue(HorizontalGridLinesBrushProperty);
-        set => SetValue(HorizontalGridLinesBrushProperty, value);
-    }
-    
-    /// <summary>
-    /// Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint grid lines separating columns.
-    /// </summary>
-    public IBrush? VerticalGridLinesBrush
-    {
-        get => GetValue(VerticalGridLinesBrushProperty);
-        set => SetValue(VerticalGridLinesBrushProperty, value);
-    }
-    
-    /// <summary>
     /// Gets or sets a value that indicates how the horizontal scroll bar is displayed.
     /// </summary>
     public ScrollBarVisibility HorizontalScrollBarVisibility
@@ -392,15 +357,6 @@ public partial class DataGrid : TemplatedControl,
     {
         get => GetValue(MinColumnWidthProperty);
         set => SetValue(MinColumnWidthProperty, value);
-    }
-    
-    /// <summary>
-    /// Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint row backgrounds.
-    /// </summary>
-    public IBrush RowBackground
-    {
-        get => GetValue(RowBackgroundProperty);
-        set => SetValue(RowBackgroundProperty, value);
     }
     
     /// <summary>
@@ -822,14 +778,12 @@ public partial class DataGrid : TemplatedControl,
         FrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleFrozenColumnCountChanged(e));
         GridLinesVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleGridLinesVisibilityChanged(e));
         HeadersVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleHeadersVisibilityChanged(e));
-        HorizontalGridLinesBrushProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleHorizontalGridLinesBrushChanged(e));
         IsReadOnlyProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleIsReadOnlyChanged(e));
         MaxColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleMaxColumnWidthChanged(e));
         MinColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleMinColumnWidthChanged(e));
         RowHeightProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeightChanged(e));
         RowHeaderWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeaderWidthChanged(e));
         SelectionModeProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectionModeChanged(e));
-        VerticalGridLinesBrushProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleVerticalGridLinesBrushChanged(e));
         SelectedIndexProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedIndexChanged(e));
         SelectedItemProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedItemChanged(e));
         IsEnabledProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleIsEnabledChanged(e));
@@ -1338,31 +1292,36 @@ public partial class DataGrid : TemplatedControl,
         _columnHeadersPresenter = e.NameScope.Find<DataGridColumnHeadersPresenter>(DataGridTheme.ColumnHeadersPresenterPart);
         _groupHeaderView = e.NameScope.Find<DataGridHeaderView>(DataGridTheme.ColumnHeaderViewPart);
 
-        if (_columnHeadersPresenter != null)
+        if (ColumnGroups.Count > 0)
         {
-            if (ColumnsInternal.FillerColumn != null)
+            if (_groupHeaderView != null)
             {
-                ColumnsInternal.FillerColumn.IsRepresented = false;
-            }
-            _columnHeadersPresenter.OwningGrid = this;
+                if (ColumnsInternal.FillerColumn != null)
+                {
+                    ColumnsInternal.FillerColumn.IsRepresented = false;
+                }
 
-            // Columns were added before our Template was applied, add the ColumnHeaders now
-            // List<DataGridColumn> sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
-            // sortedInternal.Sort(new DisplayIndexComparer());
-            // foreach (DataGridColumn column in sortedInternal)
-            // {
-            //     InsertDisplayedColumnHeader(column);
-            // }
+                BuildColumnGroupView();
+            }
         }
-
-        if (_groupHeaderView != null)
+        else
         {
-            if (ColumnsInternal.FillerColumn != null)
+            if (_columnHeadersPresenter != null)
             {
-                ColumnsInternal.FillerColumn.IsRepresented = false;
-            }
+                if (ColumnsInternal.FillerColumn != null)
+                {
+                    ColumnsInternal.FillerColumn.IsRepresented = false;
+                }
+                _columnHeadersPresenter.OwningGrid = this;
 
-            BuildColumnGroupView();
+                // Columns were added before our Template was applied, add the ColumnHeaders now
+                var sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
+                sortedInternal.Sort(new DisplayIndexComparer());
+                foreach (DataGridColumn column in sortedInternal)
+                {
+                    InsertDisplayedColumnHeader(column);
+                }
+            }
         }
 
         if (_rowsPresenter != null)

@@ -41,7 +41,7 @@ internal class DataGridTheme : BaseControlTheme
     {
         return new FuncControlTemplate<DataGrid>((dataGrid, scope) =>
         {
-            var frame = new Border()
+            var frame = new Border
             {
                 Name = FramePart
             };
@@ -135,12 +135,14 @@ internal class DataGridTheme : BaseControlTheme
 
     private void BuildHeader(Grid rootLayout, INameScope scope, DataGrid dataGrid)
     {
+        // TODO 这里需要考虑合并
         var columnHeaderView = new DataGridHeaderView(dataGrid)
         {
             Name         = ColumnHeaderViewPart,
             ClipToBounds = true
         };
-        CreateTemplateParentBinding(columnHeaderView, Border.CornerRadiusProperty, DataGrid.CornerRadiusProperty, BindingMode.Default,
+        CreateTemplateParentBinding(columnHeaderView, DataGridHeaderView.IsVisibleProperty, DataGrid.IsGroupHeaderModeProperty);
+        CreateTemplateParentBinding(columnHeaderView, DataGridHeaderView.CornerRadiusProperty, DataGrid.CornerRadiusProperty, BindingMode.Default,
             new FuncValueConverter<CornerRadius, CornerRadius>(cornerRadius => new CornerRadius(cornerRadius.TopLeft, cornerRadius.TopRight, 0, 0)));
         columnHeaderView.RegisterInNameScope(scope);
         Grid.SetRow(columnHeaderView, 0);
@@ -148,23 +150,25 @@ internal class DataGridTheme : BaseControlTheme
         Grid.SetColumnSpan(columnHeaderView, 2);
         rootLayout.Children.Add(columnHeaderView);
         
-        // var headerFrame = new Border
-        // {
-        //     Name         = ColumnHeadersPresenterFramePart,
-        //     ClipToBounds = true
-        // };
-        // CreateTemplateParentBinding(headerFrame, Border.CornerRadiusProperty, DataGrid.CornerRadiusProperty, BindingMode.Default,
-        //     new FuncValueConverter<CornerRadius, CornerRadius>(cornerRadius => new CornerRadius(cornerRadius.TopLeft, cornerRadius.TopRight, 0, 0)));
-        // var columnHeadersPresenter = new DataGridColumnHeadersPresenter()
-        // {
-        //     Name = ColumnHeadersPresenterPart,
-        // };
-        // headerFrame.Child = columnHeadersPresenter;
-        // columnHeadersPresenter.RegisterInNameScope(scope);
-        // Grid.SetRow(headerFrame, 0);
-        // Grid.SetColumn(headerFrame, 1);
-        // Grid.SetColumnSpan(headerFrame, 2);
-        // rootLayout.Children.Add(headerFrame);
+        var headerFrame = new Border
+        {
+            Name         = ColumnHeadersPresenterFramePart,
+            ClipToBounds = true
+        };
+        CreateTemplateParentBinding(headerFrame, Border.IsVisibleProperty, DataGrid.IsGroupHeaderModeProperty, BindingMode.Default,
+            BoolConverters.Not);
+        CreateTemplateParentBinding(headerFrame, Border.CornerRadiusProperty, DataGrid.CornerRadiusProperty, BindingMode.Default,
+            new FuncValueConverter<CornerRadius, CornerRadius>(cornerRadius => new CornerRadius(cornerRadius.TopLeft, cornerRadius.TopRight, 0, 0)));
+        var columnHeadersPresenter = new DataGridColumnHeadersPresenter()
+        {
+            Name = ColumnHeadersPresenterPart,
+        };
+        headerFrame.Child = columnHeadersPresenter;
+        columnHeadersPresenter.RegisterInNameScope(scope);
+        Grid.SetRow(headerFrame, 0);
+        Grid.SetColumn(headerFrame, 1);
+        Grid.SetColumnSpan(headerFrame, 2);
+        rootLayout.Children.Add(headerFrame);
         
         var columnHeadersAndRowsSeparator = new Rectangle()
         {
@@ -221,8 +225,6 @@ internal class DataGridTheme : BaseControlTheme
         commonStyle.Add(DataGrid.SelectionModeProperty, DataGridSelectionMode.Extended);
         commonStyle.Add(DataGrid.FocusAdornerProperty, null);
         commonStyle.Add(DataGrid.CornerRadiusProperty, DataGridTokenKey.TableRadius);
-        commonStyle.Add(DataGrid.HorizontalGridLinesBrushProperty, DataGridTokenKey.TableBorderColor);
-        commonStyle.Add(DataGrid.VerticalGridLinesBrushProperty, DataGridTokenKey.TableBorderColor);
 
         var columnHeadersAndRowsSeparatorStyle = new Style(selector => selector.Nesting().Template().Name(ColumnHeadersAndRowsSeparatorPart));
         columnHeadersAndRowsSeparatorStyle.Add(Rectangle.FillProperty, DataGridTokenKey.TableBorderColor);

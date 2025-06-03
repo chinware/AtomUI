@@ -54,19 +54,11 @@ internal class DataGridColumnGroupHeader : TemplatedControl
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridColumnGroupHeader>();
     
-    internal static readonly StyledProperty<Thickness> BorderThicknessProperty =
-        Border.BorderThicknessProperty.AddOwner<DataGridColumnGroupHeader>();
     
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
-    }
-    
-    internal Thickness BorderThickness
-    {
-        get => GetValue(BorderThicknessProperty);
-        set => SetValue(BorderThicknessProperty, value);
     }
 
     #endregion

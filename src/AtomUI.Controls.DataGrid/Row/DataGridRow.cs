@@ -110,6 +110,19 @@ public partial class DataGridRow : TemplatedControl
 
     #endregion
 
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridRow>();
+    
+    internal bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    #endregion
+
     static DataGridRow()
     {
         HeaderProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleHeaderChanged(e));

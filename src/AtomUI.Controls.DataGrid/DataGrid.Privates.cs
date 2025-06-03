@@ -31,6 +31,19 @@ public partial class DataGrid
     internal const bool DefaultCanUserSortColumns = false;
 
     #region 内部属性定义
+    
+    public static readonly DirectProperty<DataGrid, bool> IsGroupHeaderModeProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, bool>(
+            nameof(IsGroupHeaderMode),
+            o => o.IsGroupHeaderMode,
+            (o, v) => o.IsGroupHeaderMode = v);
+    
+    public bool IsGroupHeaderMode
+    {
+        get => _isGroupHeaderMode;
+        set => SetAndRaise(IsGroupHeaderModeProperty, ref _isGroupHeaderMode, value);
+    }
+    private bool _isGroupHeaderMode;
 
     internal IndexToValueTable<DataGridRowGroupInfo> RowGroupHeadersTable { get; private set; }
 

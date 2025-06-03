@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -95,7 +96,7 @@ public partial class DataGrid
 
     internal bool AreRowBottomGridLinesRequired =>
         (GridLinesVisibility == DataGridGridLinesVisibility.Horizontal ||
-         GridLinesVisibility == DataGridGridLinesVisibility.All) && HorizontalGridLinesBrush != null;
+         GridLinesVisibility == DataGridGridLinesVisibility.All); // && HorizontalGridLinesBrush != null;
 
     internal int FirstVisibleSlot => (SlotCount > 0) ? GetNextVisibleSlot(-1) : -1;
 
@@ -1155,6 +1156,7 @@ public partial class DataGrid
             dataGridRow.Slot        = slot;
             dataGridRow.OwningGrid  = this;
             dataGridRow.DataContext = dataContext;
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, dataGridRow, DataGridRow.IsMotionEnabledProperty);
 
             CompleteCellsCollection(dataGridRow);
             NotifyLoadingRow(new DataGridRowEventArgs(dataGridRow));

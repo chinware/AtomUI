@@ -187,8 +187,9 @@ public partial class DataGrid
 
     internal bool ColumnRequiresRightGridLine(DataGridColumn dataGridColumn, bool includeLastRightGridLineWhenPresent)
     {
+        // TODO border 绘制
         return (GridLinesVisibility == DataGridGridLinesVisibility.Vertical || GridLinesVisibility == DataGridGridLinesVisibility.All) &&
-               VerticalGridLinesBrush != null &&
+               // VerticalGridLinesBrush != null &&
                (dataGridColumn != ColumnsInternal.LastVisibleColumn || 
                 (includeLastRightGridLineWhenPresent && 
                  ColumnsInternal.FillerColumn != null && 
@@ -2027,6 +2028,8 @@ public partial class DataGrid
                 }
             }
         }
+
+        IsGroupHeaderMode = ColumnGroupsInternal.Count > 0;
     }
 
     private void HandleColumnGroupItemChanged(object? sender, DataGridColumnGroupChangedArgs args)

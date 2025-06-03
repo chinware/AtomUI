@@ -423,10 +423,7 @@ public partial class DataGridRow
 
     internal void EnsureFillerVisibility()
     {
-        if (_cellsElement != null)
-        {
-            _cellsElement.EnsureFillerVisibility();
-        }
+        _cellsElement?.EnsureFillerVisibility();
     }
 
     internal void EnsureGridLines()
@@ -443,7 +440,7 @@ public partial class DataGridRow
                 {
                     _bottomGridLine.IsVisible = newVisibility;
                 }
-                _bottomGridLine.Fill = OwningGrid.HorizontalGridLinesBrush;
+                _bottomGridLine.Height = OwningGrid.BorderThickness.Left;
             }
 
             foreach (DataGridCell cell in Cells)

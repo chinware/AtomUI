@@ -40,18 +40,10 @@ public class DataGridHeaderViewItem : HeaderedItemsControl
     #endregion
 
     #region 内部属性定义
-    internal static readonly StyledProperty<Thickness> BorderThicknessProperty =
-        Border.BorderThicknessProperty.AddOwner<DataGridHeaderViewItem>();
     
     internal static readonly DirectProperty<DataGridHeaderViewItem, Thickness> EffectiveBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<DataGridHeaderViewItem, Thickness>(
             nameof(EffectiveBorderThickness), o => o.EffectiveBorderThickness);
-    
-    internal Thickness BorderThickness
-    {
-        get => GetValue(BorderThicknessProperty);
-        set => SetValue(BorderThicknessProperty, value);
-    }
     
     internal Thickness EffectiveBorderThickness
     {

@@ -10,12 +10,13 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
+using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
 [TemplatePart(DataGridCellTheme.RightGridLinePart, typeof(Rectangle))]
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Current, StdPseudoClass.Edited, StdPseudoClass.Invalid, StdPseudoClass.Focus)]
-public class DataGridCell : ContentControl
+public class DataGridCell : ContentControl, ICustomHitTest
 {
     #region 公共属性定义
 
@@ -201,10 +202,11 @@ public class DataGridCell : ContentControl
     {
         if (OwningGrid != null && _rightGridLine != null)
         {
-            if (OwningGrid.VerticalGridLinesBrush != null && OwningGrid.VerticalGridLinesBrush != _rightGridLine.Fill)
-            {
-                _rightGridLine.Fill = OwningGrid.VerticalGridLinesBrush;
-            }
+            // TODO border 绘制
+            // if (OwningGrid.VerticalGridLinesBrush != null && OwningGrid.VerticalGridLinesBrush != _rightGridLine.Fill)
+            // {
+            //     _rightGridLine.Fill = OwningGrid.VerticalGridLinesBrush;
+            // }
 
             bool newVisibility =
                 (OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.Vertical || OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.All)
@@ -233,5 +235,10 @@ public class DataGridCell : ContentControl
                 
             Classes.Replace(column.CellStyleClasses);
         }
+    }
+
+    public bool HitTest(Point point)
+    {
+        return true;
     }
 }

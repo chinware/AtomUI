@@ -101,9 +101,6 @@ internal class DataGridColumnHeader : ContentControl
     internal static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
         DataGridColumn.SupportedDirectionsProperty.AddOwner<DataGridColumnHeader>();
     
-    internal static readonly StyledProperty<Thickness> BorderThicknessProperty =
-        Border.BorderThicknessProperty.AddOwner<DataGridColumnHeader>();
-    
     private bool _isFirstVisible = false;
     internal bool IsFirstVisible
     {
@@ -163,12 +160,6 @@ internal class DataGridColumnHeader : ContentControl
         set => SetValue(SupportedDirectionsProperty, value);
     }
     
-    internal Thickness BorderThickness
-    {
-        get => GetValue(BorderThicknessProperty);
-        set => SetValue(BorderThicknessProperty, value);
-    }
-
     internal DataGridColumn? OwningColumn { get; set; }
     
     internal DataGrid? OwningGrid => OwningColumn?.OwningGrid;

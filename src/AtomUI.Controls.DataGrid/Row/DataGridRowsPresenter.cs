@@ -26,11 +26,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         AddHandler(Gestures.ScrollGestureEvent, OnScrollGesture);
     }
 
-    internal DataGrid? OwningGrid
-    {
-        get;
-        set;
-    }
+    internal DataGrid? OwningGrid { get; set; }
 
     event EventHandler<ChildIndexChangedEventArgs>? IChildIndexProvider.ChildIndexChanged
     {
@@ -77,10 +73,11 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             return base.ArrangeOverride(finalSize);
         }
         Debug.Assert(OwningGrid.ColumnsInternal.FillerColumn is not null);
+        var availableHeight = 0d;
         if (OwningGrid.RowsPresenterAvailableSize.HasValue)
         {
             // TODO 需要审查，是否可以删除
-            var availableHeight = OwningGrid.RowsPresenterAvailableSize.Value.Height;
+            availableHeight = OwningGrid.RowsPresenterAvailableSize.Value.Height;
         }
 
         OwningGrid.HandleFillerColumnWidthNeeded(finalSize.Width);
