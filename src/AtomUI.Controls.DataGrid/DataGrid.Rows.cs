@@ -96,7 +96,7 @@ public partial class DataGrid
 
     internal bool AreRowBottomGridLinesRequired =>
         (GridLinesVisibility == DataGridGridLinesVisibility.Horizontal ||
-         GridLinesVisibility == DataGridGridLinesVisibility.All); // && HorizontalGridLinesBrush != null;
+         GridLinesVisibility == DataGridGridLinesVisibility.All);
 
     internal int FirstVisibleSlot => (SlotCount > 0) ? GetNextVisibleSlot(-1) : -1;
 

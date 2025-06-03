@@ -92,8 +92,8 @@ internal class DataGridCellTheme : BaseControlTheme
             {
                 Name = RightGridLinePart,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Width = 1
             };
+            rightGridLine.RegisterInNameScope(scope);
             Grid.SetColumn(rightGridLine, 1);
             rootLayout.Children.Add(rightGridLine);
             
@@ -131,7 +131,10 @@ internal class DataGridCellTheme : BaseControlTheme
         commonStyle.Add(DataGridCell.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
         commonStyle.Add(DataGridCell.VerticalAlignmentProperty, VerticalAlignment.Stretch);
         commonStyle.Add(DataGridCell.FocusableProperty, false);
-
+        
+        var rightGridLineStyle = new Style(selector => selector.Nesting().Template().Name(RightGridLinePart));
+        rightGridLineStyle.Add(Rectangle.FillProperty, DataGridTokenKey.TableBorderColor);
+        commonStyle.Add(rightGridLineStyle);
         BuildSizeTypeStyle(commonStyle);
         Add(commonStyle);
     }

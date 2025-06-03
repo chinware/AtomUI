@@ -209,12 +209,6 @@ public class DataGridCell : ContentControl, ICustomHitTest
     {
         if (OwningGrid != null && _rightGridLine != null)
         {
-            // TODO border 绘制
-            // if (OwningGrid.VerticalGridLinesBrush != null && OwningGrid.VerticalGridLinesBrush != _rightGridLine.Fill)
-            // {
-            //     _rightGridLine.Fill = OwningGrid.VerticalGridLinesBrush;
-            // }
-
             bool newVisibility =
                 (OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.Vertical || OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.All)
                 && ((OwningGrid.ColumnsInternal.FillerColumn != null && OwningGrid.ColumnsInternal.FillerColumn.IsActive) || OwningColumn != lastVisibleColumn);
@@ -223,6 +217,7 @@ public class DataGridCell : ContentControl, ICustomHitTest
             {
                 _rightGridLine.IsVisible = newVisibility;
             }
+            _rightGridLine.Width = OwningGrid.BorderThickness.Left;
         }
     }
 
