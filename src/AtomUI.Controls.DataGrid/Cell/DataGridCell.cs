@@ -10,6 +10,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
+using Avalonia.Layout;
 using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
@@ -101,6 +102,12 @@ public class DataGridCell : ContentControl, ICustomHitTest
     #endregion
     
     private Rectangle? _rightGridLine;
+
+    static DataGridCell()
+    {
+        HorizontalContentAlignmentProperty.OverrideDefaultValue<DataGridCell>(HorizontalAlignment.Left);
+        VerticalContentAlignmentProperty.OverrideDefaultValue<DataGridCell>(VerticalAlignment.Center);
+    }
 
     /// <summary>
     /// Builds the visual tree for the cell control when a new template is applied.

@@ -62,11 +62,13 @@ internal class DataGridCellTheme : BaseControlTheme
 
             var contentPresenter = new ContentPresenter()
             {
-                Name = ContentPresenterPart
+                Name = ContentPresenterPart,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
             };
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.MarginProperty, DataGridCell.PaddingProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.HorizontalAlignmentProperty, DataGridCell.HorizontalContentAlignmentProperty);
-            CreateTemplateParentBinding(contentPresenter, ContentPresenter.VerticalAlignmentProperty, DataGridCell.VerticalContentAlignmentProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.HorizontalContentAlignmentProperty, DataGridCell.HorizontalContentAlignmentProperty);
+            CreateTemplateParentBinding(contentPresenter, ContentPresenter.VerticalContentAlignmentProperty, DataGridCell.VerticalContentAlignmentProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty, DataGridCell.ContentProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty, DataGridCell.ContentTemplateProperty);
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ForegroundProperty, DataGridCell.ForegroundProperty);
@@ -90,8 +92,9 @@ internal class DataGridCellTheme : BaseControlTheme
             {
                 Name = RightGridLinePart,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Width = 1
             };
-            Grid.SetColumn(contentPresenter, 1);
+            Grid.SetColumn(rightGridLine, 1);
             rootLayout.Children.Add(rightGridLine);
             
             frame.Child = rootLayout;
@@ -108,7 +111,7 @@ internal class DataGridCellTheme : BaseControlTheme
             IsHitTestVisible = false,
         };
 
-        var primaryFocusVisual = new Rectangle()
+        var primaryFocusVisual = new Rectangle
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
