@@ -549,8 +549,6 @@ public partial class DataGrid
             deltaY -= GetSlotElementsHeight(slot, firstFullSlot);
             if (DisplayData.FirstScrollingSlot - slot > 1)
             {
-                //
-
                 ResetDisplayedRows();
             }
 
@@ -573,11 +571,8 @@ public partial class DataGrid
                     // We're already at the very bottom so we don't need to scroll down further
                     return true;
                 }
-                else
-                {
-                    // We're already showing the entire last row so don't count it as part of the delta
-                    firstFullSlot++;
-                }
+                // We're already showing the entire last row so don't count it as part of the delta
+                firstFullSlot++;
             }
             else if (rowHeight > availableHeight)
             {
@@ -1028,7 +1023,7 @@ public partial class DataGrid
         }
     }
 
-    private IEnumerable<DataGridRow> GetAllRows()
+    internal IEnumerable<DataGridRow> GetAllRows()
     {
         if (_rowsPresenter != null)
         {
@@ -3238,6 +3233,19 @@ public partial class DataGrid
     protected internal virtual void OnRowDetailsVisibilityChanged(DataGridRowDetailsEventArgs e)
     {
         RowDetailsVisibilityChanged?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// 是否全部选中
+    /// </summary>
+    /// <returns></returns>
+    internal bool IsAllRowSelected()
+    {
+        var collectionView = DataConnection.CollectionView as DataGridCollectionView;
+        Debug.Assert(collectionView != null);
+        int itemCount     = collectionView.Count;
+        int selectedCount = SelectedItems.Count;
+        return itemCount > 0 && selectedCount == itemCount;
     }
 
 #if DEBUG

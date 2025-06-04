@@ -1058,8 +1058,7 @@ public partial class DataGrid
             {
                 return false;
             }
-
-            // TODO 需要评估
+            
             if (item == null)
             {
                 return false;
@@ -4136,7 +4135,6 @@ public partial class DataGrid
         try
         {
             _noSelectionChangeCount++;
-
             beginEdit = allowEdit &&
                         CurrentSlot == slot &&
                         columnIndex != -1 &&
@@ -4178,7 +4176,24 @@ public partial class DataGrid
                 }
             }
 
-            UpdateSelectionAndCurrency(columnIndex, slot, action, scrollIntoView: false);
+            var updateSelection = true;
+            var column          = ColumnsInternal[columnIndex];
+            if (column is DataGridSelectionColumn selectionColumn)
+            {
+                var row = DisplayData.GetDisplayedElement(slot) as DataGridRow;
+                Debug.Assert(row != null);
+                var dataGridCell = row.Cells[columnIndex];
+                updateSelection = selectionColumn.NotifyAboutToUpdateSelection(pointerPressedEventArgs, dataGridCell);
+                if (updateSelection)
+                {
+                    action = selectionColumn.GetSelectionAction(dataGridCell);
+                }
+            }
+
+            if (updateSelection)
+            {
+                UpdateSelectionAndCurrency(columnIndex, slot, action, scrollIntoView: false);
+            }
         }
         finally
         {
@@ -4315,17 +4330,6 @@ public partial class DataGrid
         if (!_areHandlersSuspended)
         {
             ClearRowSelection(resetAnchorSlot: true);
-        }
-    }
-    
-    private void HandleVerticalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (_rowsPresenter != null)
-        {
-            foreach (DataGridRow row in GetAllRows())
-            {
-                row.EnsureGridLines();
-            }
         }
     }
     

@@ -1163,13 +1163,12 @@ public partial class DataGrid : TemplatedControl,
     /// </summary>
     protected virtual void NotifyLoadingRow(DataGridRowEventArgs e)
     {
-        EventHandler<DataGridRowEventArgs>? handler = LoadingRow;
-        if (handler != null)
+        if (LoadingRow != null)
         {
             Debug.Assert(!_loadedRows.Contains(e.Row));
             _loadedRows.Add(e.Row);
             LoadingOrUnloadingRow = true;
-            handler(this, e);
+            LoadingRow(this, e);
             LoadingOrUnloadingRow = false;
             Debug.Assert(_loadedRows.Contains(e.Row));
             _loadedRows.Remove(e.Row);
