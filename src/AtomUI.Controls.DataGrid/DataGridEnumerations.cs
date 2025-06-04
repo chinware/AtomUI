@@ -110,3 +110,12 @@ public enum DataGridSelectionMode
     Extended = 0,
     Single = 1
 }
+
+/// <summary>
+/// Column filter interface type
+/// </summary>
+public enum DataGridFilterMode
+{
+    Menu,
+    Tree
+}

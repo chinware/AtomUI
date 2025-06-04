@@ -58,12 +58,21 @@ public abstract partial class DataGridColumn : AvaloniaObject
             o => o.HeaderTemplate,
             (o, v) => o.HeaderTemplate = v);
     
+    /// <summary>
+    /// Supported sorting directions
+    /// </summary>
     public static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
         AvaloniaProperty.Register<DataGridColumn, DataGridSupportedDirections>(nameof(SupportedDirections), DataGridSupportedDirections.All);
     
+    /// <summary>
+    /// Horizontal alignment method for Header content
+    /// </summary>
     public static readonly StyledProperty<HorizontalAlignment> HorizontalAlignmentProperty =
         Layoutable.HorizontalAlignmentProperty.AddOwner<DataGridColumn>();
     
+    /// <summary>
+    /// How to vertically align the content of the Header
+    /// </summary>
     public static readonly StyledProperty<VerticalAlignment> VerticalAlignmentProperty =
         Layoutable.VerticalAlignmentProperty.AddOwner<DataGridColumn>();
     

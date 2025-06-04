@@ -204,36 +204,34 @@ public sealed class DataGridSelectionColumn : DataGridColumn
 
         foreach (var item in e.AddedItems)
         {
-            var row = _owningGrid.GetRowFromItem(item);
-            if (row == null)
+            var content = GetCellContent(item);
+            if (content == null)
             {
                 continue;
             }
-        
-            var cell = row.Cells[Index];
-            if (cell.Content is CheckBox checkBox)
+            
+            if (content is CheckBox checkBox)
             {
                 checkBox.IsChecked = true;
             }
-            else if (cell.Content is RadioButton radioButton)
+            else if (content is RadioButton radioButton)
             {
                 radioButton.IsChecked = true;
             }
         }
         foreach (var item in e.RemovedItems)
         {
-            var row = _owningGrid.GetRowFromItem(item);
-            if (row == null)
+            var content = GetCellContent(item);
+            if (content == null)
             {
                 continue;
             }
-        
-            var cell = row.Cells[Index];
-            if (cell.Content is CheckBox checkBox)
+            
+            if (content is CheckBox checkBox)
             {
                 checkBox.IsChecked = false;
             }
-            else if (cell.Content is RadioButton radioButton)
+            else if (content is RadioButton radioButton)
             {
                 radioButton.IsChecked = false;
             }

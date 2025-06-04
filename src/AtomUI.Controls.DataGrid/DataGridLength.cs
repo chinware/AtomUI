@@ -5,6 +5,7 @@
 
 using System.ComponentModel;
 using System.Globalization;
+using AtomUI.Utils;
 using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
@@ -21,17 +22,94 @@ public enum DataGridLengthUnitType
 public struct DataGridLength : IEquatable<DataGridLength>
 {
     // WPF uses 1.0 as the default value as well
-    internal const double DEFAULT_VALUE = 1.0;
+    private const double DEFAULT_VALUE = 1.0;
     
-    private double _desiredValue;   //  desired value storage
-    private double _displayValue;   //  display value storage
-    private double _unitValue;      //  unit value storage
-    private DataGridLengthUnitType _unitType; //  unit type storage
+    private readonly double _desiredValue;   //  desired value storage
+    private readonly double _displayValue;   //  display value storage
+    private readonly double _unitValue;      //  unit value storage
+    private readonly DataGridLengthUnitType _unitType; //  unit type storage
+
+    #region 公共属性定义
+
+    /// <summary>
+    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.
+    /// </returns>
+    public static DataGridLength Auto { get; } = new DataGridLength(DEFAULT_VALUE, DataGridLengthUnitType.Auto);
+
+    /// <summary>
+    ///     Returns the desired value of this instance.
+    /// </summary>
+    public double DesiredValue => _desiredValue;
+
+    /// <summary>
+    ///     Returns the display value of this instance.
+    /// </summary>
+    public double DisplayValue => _displayValue;
+
+    /// <summary>
+    ///     Returns <c>true</c> if this DataGridLength instance holds 
+    ///     an absolute (pixel) value.
+    /// </summary>
+    public bool IsAbsolute => _unitType == DataGridLengthUnitType.Pixel;
+
+    /// <summary>
+    ///     Returns <c>true</c> if this DataGridLength instance is 
+    ///     automatic (not specified).
+    /// </summary>
+    public bool IsAuto => _unitType == DataGridLengthUnitType.Auto;
+
+    /// <summary>
+    ///     Returns <c>true</c> if this instance is to size to the cells of a column or row.
+    /// </summary>
+    public bool IsSizeToCells => _unitType == DataGridLengthUnitType.SizeToCells;
+
+    /// <summary>
+    ///     Returns <c>true</c> if this instance is to size to the header of a column or row.
+    /// </summary>
+    public bool IsSizeToHeader => _unitType == DataGridLengthUnitType.SizeToHeader;
+
+    /// <summary>
+    ///     Returns <c>true</c> if this DataGridLength instance holds a weighted proportion
+    ///     of available space.
+    /// </summary>
+    public bool IsStar => _unitType == DataGridLengthUnitType.Star;
+
+    /// <summary>
+    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.
+    /// </returns>
+    public static DataGridLength SizeToCells { get; } =
+        new DataGridLength(DEFAULT_VALUE, DataGridLengthUnitType.SizeToCells);
+
+    /// <summary>
+    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.
+    /// </returns>
+    public static DataGridLength SizeToHeader { get; } =
+        new DataGridLength(DEFAULT_VALUE, DataGridLengthUnitType.SizeToHeader);
+
+    /// <summary>
+    /// Gets the <see cref="T:AtomUI.Controls.DataGridLengthUnitType" /> that represents the current sizing mode.
+    /// </summary>
+    public DataGridLengthUnitType UnitType => _unitType;
+
+    /// <summary>
+    /// Gets the absolute value of the <see cref="T:AtomUI.Controls.DataGridLength" /> in pixels.
+    /// </summary>
+    /// <returns>
+    /// The absolute value of the <see cref="T:AtomUI.Controls.DataGridLength" /> in pixels.
+    /// </returns>
+    public double Value => _unitValue;
+
+    #endregion
     
-    //  static instances of value invariant DataGridLengths
-    private static readonly DataGridLength _auto = new DataGridLength(DEFAULT_VALUE, DataGridLengthUnitType.Auto);
-    private static readonly DataGridLength _sizeToCells = new DataGridLength(DEFAULT_VALUE, DataGridLengthUnitType.SizeToCells);
-    private static readonly DataGridLength _sizeToHeader = new DataGridLength(DEFAULT_VALUE, DataGridLengthUnitType.SizeToHeader);
     
     /// <summary>
     /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridLength" /> class. 
@@ -126,81 +204,6 @@ public struct DataGridLength : IEquatable<DataGridLength>
     }
 
     /// <summary>
-    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.
-    /// </returns>
-    public static DataGridLength Auto => _auto;
-
-    /// <summary>
-    ///     Returns the desired value of this instance.
-    /// </summary>
-    public double DesiredValue => _desiredValue;
-
-    /// <summary>
-    ///     Returns the display value of this instance.
-    /// </summary>
-    public double DisplayValue => _displayValue;
-
-    /// <summary>
-    ///     Returns <c>true</c> if this DataGridLength instance holds 
-    ///     an absolute (pixel) value.
-    /// </summary>
-    public bool IsAbsolute => _unitType == DataGridLengthUnitType.Pixel;
-
-    /// <summary>
-    ///     Returns <c>true</c> if this DataGridLength instance is 
-    ///     automatic (not specified).
-    /// </summary>
-    public bool IsAuto => _unitType == DataGridLengthUnitType.Auto;
-
-    /// <summary>
-    ///     Returns <c>true</c> if this instance is to size to the cells of a column or row.
-    /// </summary>
-    public bool IsSizeToCells => _unitType == DataGridLengthUnitType.SizeToCells;
-
-    /// <summary>
-    ///     Returns <c>true</c> if this instance is to size to the header of a column or row.
-    /// </summary>
-    public bool IsSizeToHeader => _unitType == DataGridLengthUnitType.SizeToHeader;
-
-    /// <summary>
-    ///     Returns <c>true</c> if this DataGridLength instance holds a weighted proportion
-    ///     of available space.
-    /// </summary>
-    public bool IsStar => _unitType == DataGridLengthUnitType.Star;
-
-    /// <summary>
-    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.
-    /// </returns>
-    public static DataGridLength SizeToCells => _sizeToCells;
-
-    /// <summary>
-    /// Gets a <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="T:AtomUI.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.
-    /// </returns>
-    public static DataGridLength SizeToHeader => _sizeToHeader;
-
-    /// <summary>
-    /// Gets the <see cref="T:AtomUI.Controls.DataGridLengthUnitType" /> that represents the current sizing mode.
-    /// </summary>
-    public DataGridLengthUnitType UnitType => _unitType;
-
-    /// <summary>
-    /// Gets the absolute value of the <see cref="T:AtomUI.Controls.DataGridLength" /> in pixels.
-    /// </summary>
-    /// <returns>
-    /// The absolute value of the <see cref="T:AtomUI.Controls.DataGridLength" /> in pixels.
-    /// </returns>
-    public double Value => _unitValue;
-
-    /// <summary>
     /// Overloaded operator, compares 2 DataGridLength's.
     /// </summary>
     /// <param name="gl1">first DataGridLength to compare.</param>
@@ -210,9 +213,9 @@ public struct DataGridLength : IEquatable<DataGridLength>
     public static bool operator ==(DataGridLength gl1, DataGridLength gl2)
     {
         return (gl1.UnitType == gl2.UnitType
-                && gl1.Value == gl2.Value
-                && gl1.DesiredValue == gl2.DesiredValue
-                && gl1.DisplayValue == gl2.DisplayValue);
+                && MathUtils.AreClose(gl1.Value, gl2.Value)
+                && MathUtils.AreClose(gl1.DesiredValue, gl2.DesiredValue)
+                && MathUtils.AreClose(gl1.DisplayValue, gl2.DisplayValue));
     }
 
     /// <summary>
@@ -225,9 +228,9 @@ public struct DataGridLength : IEquatable<DataGridLength>
     public static bool operator !=(DataGridLength gl1, DataGridLength gl2)
     {
         return (gl1.UnitType != gl2.UnitType
-                || gl1.Value != gl2.Value
-                || gl1.DesiredValue != gl2.DesiredValue
-                || gl1.DisplayValue != gl2.DisplayValue);
+                || !MathUtils.AreClose(gl1.Value, gl2.Value)
+                || !MathUtils.AreClose(gl1.DesiredValue, gl2.DesiredValue)
+                || !MathUtils.AreClose(gl1.DisplayValue, gl2.DisplayValue));
     }
 
     /// <summary>
@@ -249,10 +252,9 @@ public struct DataGridLength : IEquatable<DataGridLength>
     /// and unit type as oCompare.</returns>
     public override bool Equals(object? obj)
     {
-        DataGridLength? dataGridLength = obj as DataGridLength?;
-        if (dataGridLength.HasValue)
+        if (obj is DataGridLength dataGridLength)
         {
-            return (this == dataGridLength);
+            return this == dataGridLength;
         }
         return false;
     }
@@ -273,9 +275,9 @@ public struct DataGridLength : IEquatable<DataGridLength>
 /// </summary> 
 public class DataGridLengthConverter : TypeConverter
 {
-    private static string _starSuffix = "*";
-    private static string[] _valueInvariantUnitStrings = ["auto", "sizetocells", "sizetoheader"];
-    private static DataGridLength[] _valueInvariantDataGridLengths = [DataGridLength.Auto, DataGridLength.SizeToCells, DataGridLength.SizeToHeader];
+    private static readonly string StarSuffix = "*";
+    private static readonly string[] ValueInvariantUnitStrings = ["auto", "sizetocells", "sizetoheader"];
+    private static readonly DataGridLength[] ValueInvariantDataGridLengths = [DataGridLength.Auto, DataGridLength.SizeToCells, DataGridLength.SizeToHeader];
 
     /// <summary>
     /// Checks whether or not this class can convert from a given type.
@@ -354,9 +356,9 @@ public class DataGridLengthConverter : TypeConverter
         {
             stringValue = stringValue.Trim();
 
-            if (stringValue.EndsWith(_starSuffix, StringComparison.Ordinal))
+            if (stringValue.EndsWith(StarSuffix, StringComparison.Ordinal))
             {
-                string stringValueWithoutSuffix = stringValue.Substring(0, stringValue.Length - _starSuffix.Length);
+                string stringValueWithoutSuffix = stringValue.Substring(0, stringValue.Length - StarSuffix.Length);
 
                 double starWeight;
                 if (string.IsNullOrEmpty(stringValueWithoutSuffix))
@@ -371,11 +373,11 @@ public class DataGridLengthConverter : TypeConverter
                 return new DataGridLength(starWeight, DataGridLengthUnitType.Star);
             }
 
-            for (int index = 0; index < _valueInvariantUnitStrings.Length; index++)
+            for (int index = 0; index < ValueInvariantUnitStrings.Length; index++)
             {
-                if (stringValue.Equals(_valueInvariantUnitStrings[index], StringComparison.OrdinalIgnoreCase))
+                if (stringValue.Equals(ValueInvariantUnitStrings[index], StringComparison.OrdinalIgnoreCase))
                 {
-                    return _valueInvariantDataGridLengths[index];
+                    return ValueInvariantDataGridLengths[index];
                 }
             }
         }
@@ -453,8 +455,8 @@ public class DataGridLengthConverter : TypeConverter
                 case DataGridLengthUnitType.Star:
                     return (
                         MathUtilities.AreClose(1.0, dataGridLength.Value.Value)
-                            ? _starSuffix
-                            : Convert.ToString(dataGridLength.Value.Value, culture ?? CultureInfo.CurrentCulture) + DataGridLengthConverter._starSuffix);
+                            ? StarSuffix
+                            : Convert.ToString(dataGridLength.Value.Value, culture ?? CultureInfo.CurrentCulture) + DataGridLengthConverter.StarSuffix);
 
                 default:
                     return (Convert.ToString(dataGridLength.Value.Value, culture ?? CultureInfo.CurrentCulture));
