@@ -338,8 +338,8 @@ public class DataGridComparerSortDescription : DataGridSortDescription
         }
 
         return result;
-            
     }
+    
     public override DataGridSortDescription SwitchSortDirection()
     {
         var newDirection = _direction == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;

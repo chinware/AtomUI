@@ -112,7 +112,7 @@ internal class DataGridDataConnection
     {
         if (dataType != null)
         {
-            Type type = TypeHelper.GetNonNullableType(dataType);  // no-opt if dataType isn't nullable
+            var type = dataType.GetNonNullableType();  // no-opt if dataType isn't nullable
             return type.IsPrimitive || type == typeof(string) || type == typeof(DateTime) || type == typeof(Decimal);
         }
         return false;

@@ -20,7 +20,6 @@ namespace AtomUI.Controls;
 public abstract partial class DataGridColumn : IDataGridColumnGroupItem
 {
     #region 常量定义
-    
     internal const bool DefaultIsReadOnly = false;
     #endregion
 
