@@ -206,10 +206,10 @@ internal class BaseTabStripItemTheme : BaseControlTheme
         itemCloseButtonStyle.Add(Layoutable.MarginProperty, TabControlTokenKey.CloseIconMargin);
         itemCloseButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
         itemCloseButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
-        itemCloseButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
-        itemCloseButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
-        itemCloseButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorIconHover);
-        itemCloseButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+        itemCloseButtonStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorIcon);
+        itemCloseButtonStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorIconHover);
+        itemCloseButtonStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorIconHover);
+        itemCloseButtonStyle.Add(IconButton.DisabledIconBrushProperty, SharedTokenKey.ColorTextDisabled);
         
         Add(itemCloseButtonStyle);
     }

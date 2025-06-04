@@ -27,19 +27,19 @@ public class ToggleIconButton : ToggleButton,
     public static readonly StyledProperty<double> IconHeightProperty
         = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconHeight));
         
-    public static readonly StyledProperty<IBrush?> NormalIconColorProperty =
+    public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
             nameof(NormalIconColor));
     
-    public static readonly StyledProperty<IBrush?> ActiveIconColorProperty =
+    public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
             nameof(ActiveIconColor));
     
-    public static readonly StyledProperty<IBrush?> SelectedIconColorProperty =
+    public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
             nameof(SelectedIconColor));
     
-    public static readonly StyledProperty<IBrush?> DisabledIconColorProperty =
+    public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
             nameof(DisabledIconColor));
 
@@ -69,26 +69,26 @@ public class ToggleIconButton : ToggleButton,
 
     public IBrush? NormalIconColor
     {
-        get => GetValue(NormalIconColorProperty);
-        set => SetValue(NormalIconColorProperty, value);
+        get => GetValue(NormalIconBrushProperty);
+        set => SetValue(NormalIconBrushProperty, value);
     }
 
     public IBrush? ActiveIconColor
     {
-        get => GetValue(ActiveIconColorProperty);
-        set => SetValue(ActiveIconColorProperty, value);
+        get => GetValue(ActiveIconBrushProperty);
+        set => SetValue(ActiveIconBrushProperty, value);
     }
 
     public IBrush? SelectedIconColor
     {
-        get => GetValue(SelectedIconColorProperty);
-        set => SetValue(SelectedIconColorProperty, value);
+        get => GetValue(SelectedIconBrushProperty);
+        set => SetValue(SelectedIconBrushProperty, value);
     }
 
     public IBrush? DisabledIconColor
     {
-        get => GetValue(DisabledIconColorProperty);
-        set => SetValue(DisabledIconColorProperty, value);
+        get => GetValue(DisabledIconBrushProperty);
+        set => SetValue(DisabledIconBrushProperty, value);
     }
     
     #endregion
@@ -119,10 +119,10 @@ public class ToggleIconButton : ToggleButton,
         
         if (icon.ThemeType != IconThemeType.TwoTone)
         {
-            BindUtils.RelayBind(this, NormalIconColorProperty, icon, Icon.NormalFilledBrushProperty);
-            BindUtils.RelayBind(this, ActiveIconColorProperty, icon, Icon.ActiveFilledBrushProperty);
-            BindUtils.RelayBind(this, SelectedIconColorProperty, icon, Icon.SelectedFilledBrushProperty);
-            BindUtils.RelayBind(this, DisabledIconColorProperty, icon, Icon.DisabledFilledBrushProperty);
+            BindUtils.RelayBind(this, NormalIconBrushProperty, icon, Icon.NormalFilledBrushProperty);
+            BindUtils.RelayBind(this, ActiveIconBrushProperty, icon, Icon.ActiveFilledBrushProperty);
+            BindUtils.RelayBind(this, SelectedIconBrushProperty, icon, Icon.SelectedFilledBrushProperty);
+            BindUtils.RelayBind(this, DisabledIconBrushProperty, icon, Icon.DisabledFilledBrushProperty);
         }
     }
 

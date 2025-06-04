@@ -54,9 +54,9 @@ internal class TextBoxInnerBoxTheme : AddOnDecoratedInnerBoxTheme
         var revealButtonStyle = new Style(selector => selector.Nesting().Template().Name(RevealButtonPart));
         revealButtonStyle.Add(ToggleIconButton.IconWidthProperty, SharedTokenKey.IconSize);
         revealButtonStyle.Add(ToggleIconButton.IconHeightProperty, SharedTokenKey.IconSize);
-        revealButtonStyle.Add(ToggleIconButton.NormalIconColorProperty, SharedTokenKey.ColorTextTertiary);
-        revealButtonStyle.Add(ToggleIconButton.ActiveIconColorProperty, SharedTokenKey.ColorText);
-        revealButtonStyle.Add(ToggleIconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
+        revealButtonStyle.Add(ToggleIconButton.NormalIconBrushProperty, SharedTokenKey.ColorTextTertiary);
+        revealButtonStyle.Add(ToggleIconButton.ActiveIconBrushProperty, SharedTokenKey.ColorText);
+        revealButtonStyle.Add(ToggleIconButton.SelectedIconBrushProperty, SharedTokenKey.ColorText);
         Add(revealButtonStyle);
     }
 

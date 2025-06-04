@@ -193,7 +193,7 @@ internal class CollapseItemTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
             expandButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
-            expandButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+            expandButtonStyle.Add(IconButton.DisabledIconBrushProperty, SharedTokenKey.ColorTextDisabled);
             commonStyle.Add(expandButtonStyle);
         }
         

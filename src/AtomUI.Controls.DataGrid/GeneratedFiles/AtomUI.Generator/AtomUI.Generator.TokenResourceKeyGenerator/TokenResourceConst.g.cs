@@ -19,6 +19,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ExpandIconSize = new TokenResourceKey("DataGrid.ExpandIconSize");
         public static readonly TokenResourceKey FilterDropdownBg = new TokenResourceKey("DataGrid.FilterDropdownBg");
         public static readonly TokenResourceKey FilterDropdownMenuBg = new TokenResourceKey("DataGrid.FilterDropdownMenuBg");
+        public static readonly TokenResourceKey FilterIndicatorPadding = new TokenResourceKey("DataGrid.FilterIndicatorPadding");
         public static readonly TokenResourceKey FixedHeaderSortActiveBg = new TokenResourceKey("DataGrid.FixedHeaderSortActiveBg");
         public static readonly TokenResourceKey FooterBg = new TokenResourceKey("DataGrid.FooterBg");
         public static readonly TokenResourceKey FooterColor = new TokenResourceKey("DataGrid.FooterColor");
@@ -37,7 +38,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RowSelectedHoverBg = new TokenResourceKey("DataGrid.RowSelectedHoverBg");
         public static readonly TokenResourceKey SelectionColumnWidth = new TokenResourceKey("DataGrid.SelectionColumnWidth");
         public static readonly TokenResourceKey SortIconSize = new TokenResourceKey("DataGrid.SortIconSize");
-        public static readonly TokenResourceKey SortIndicatorMargin = new TokenResourceKey("DataGrid.SortIndicatorMargin");
+        public static readonly TokenResourceKey SortIndicatorLayoutMargin = new TokenResourceKey("DataGrid.SortIndicatorLayoutMargin");
         public static readonly TokenResourceKey StickyScrollBarBg = new TokenResourceKey("DataGrid.StickyScrollBarBg");
         public static readonly TokenResourceKey StickyScrollBarBorderRadius = new TokenResourceKey("DataGrid.StickyScrollBarBorderRadius");
         public static readonly TokenResourceKey TableBg = new TokenResourceKey("DataGrid.TableBg");

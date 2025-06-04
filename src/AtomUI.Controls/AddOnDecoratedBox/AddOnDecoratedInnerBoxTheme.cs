@@ -209,9 +209,9 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
         var closeBtnStyle = new Style(selector => selector.Nesting().Template().Name(ClearButtonPart));
         closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
         closeBtnStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
-        closeBtnStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextQuaternary);
-        closeBtnStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorTextTertiary);
-        closeBtnStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
+        closeBtnStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorTextQuaternary);
+        closeBtnStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorTextTertiary);
+        closeBtnStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorText);
         Add(closeBtnStyle);
     }
 

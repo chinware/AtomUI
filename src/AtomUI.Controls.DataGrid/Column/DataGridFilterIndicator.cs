@@ -41,10 +41,10 @@ internal class DataGridFilterIndicator : TemplatedControl
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnApplyTemplate(e);
         if (Icon is null)
         {
-            SetValue(IconProperty, AntDesignIconPackage.FilterOutlined(), BindingPriority.Template);
+            SetValue(IconProperty, AntDesignIconPackage.FilterFilled(), BindingPriority.Template);
         }
+        base.OnApplyTemplate(e);
     }
 }

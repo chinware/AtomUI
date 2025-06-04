@@ -2,7 +2,6 @@
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -53,14 +52,12 @@ internal class IconButtonTheme : BaseControlTheme
     {
         var commonStyle = new Style(selector => selector.Nesting());
         commonStyle.Add(IconButton.CursorProperty, new SetterValueFactory<Cursor>(() => new Cursor(StandardCursorType.Hand)));
-        {
-            var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
-            contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorBgContainer);
-            commonStyle.Add(contentStyle);
-        }
+     
         {
             var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(IconButton.IsMotionEnabledProperty, true));
+            
             var contentStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart));
+            contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
             contentStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
                 AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
@@ -104,33 +101,20 @@ internal class IconButtonTheme : BaseControlTheme
 
     private void BuildIconModeStyle()
     {
-        {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
-            iconStyle.Add(Icon.IconModeProperty, IconMode.Normal);
-            Add(iconStyle);
-        }
+        var isEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(IconButton.IsEnabledProperty, true));
+        isEnabledStyle.Add(IconButton.IconModeProperty, IconMode.Normal);
         var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-        {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
-            iconStyle.Add(Icon.IconModeProperty, IconMode.Active);
-            hoverStyle.Add(iconStyle);
-        }
-        Add(hoverStyle);
+        hoverStyle.Add(IconButton.IconModeProperty, IconMode.Active);
+        isEnabledStyle.Add(hoverStyle);
         
         var pressedStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Pressed));
-        {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
-            iconStyle.Add(Icon.IconModeProperty, IconMode.Selected);
-            pressedStyle.Add(iconStyle);
-        }
-        Add(hoverStyle);
+        pressedStyle.Add(IconButton.IconModeProperty, IconMode.Selected);
+        isEnabledStyle.Add(pressedStyle);
         
-        var disabledStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Disabled));
-        {
-            var iconStyle = new Style(selector => selector.Nesting().Template().Name(IconContentPart).Descendant().OfType<Icon>());
-            iconStyle.Add(Icon.IconModeProperty, IconMode.Disabled);
-            disabledStyle.Add(iconStyle);
-        }
+        Add(isEnabledStyle);
+        
+        var disabledStyle = new Style(selector => selector.Nesting().PropertyEquals(IconButton.IsEnabledProperty, false));
+        disabledStyle.Add(IconButton.IconModeProperty, IconMode.Disabled);
         Add(disabledStyle);
     }
 }

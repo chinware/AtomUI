@@ -90,9 +90,9 @@ internal class CardTabStripTheme : BaseTabStripTheme
 
         {
             var addTabButtonStyle = new Style(selector => selector.Nesting().Template().Name(AddTabButtonPart));
-            addTabButtonStyle.Add(IconButton.NormalIconColorProperty, TabControlTokenKey.ItemColor);
-            addTabButtonStyle.Add(IconButton.ActiveIconColorProperty, TabControlTokenKey.ItemHoverColor);
-            addTabButtonStyle.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+            addTabButtonStyle.Add(IconButton.NormalIconBrushProperty, TabControlTokenKey.ItemColor);
+            addTabButtonStyle.Add(IconButton.ActiveIconBrushProperty, TabControlTokenKey.ItemHoverColor);
+            addTabButtonStyle.Add(IconButton.DisabledIconBrushProperty, SharedTokenKey.ColorTextDisabled);
             addTabButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
             addTabButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
             addTabButtonStyle.Add(TemplatedControl.BorderBrushProperty, SharedTokenKey.ColorBorderSecondary);

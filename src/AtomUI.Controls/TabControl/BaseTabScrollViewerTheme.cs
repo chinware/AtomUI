@@ -137,7 +137,7 @@ internal class BaseTabScrollViewerTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ScrollMenuIndicatorPart));
             menuIndicatorStyle.Add(DockPanel.DockProperty, Dock.Right);
             menuIndicatorStyle.Add(TemplatedControl.PaddingProperty, TabControlTokenKey.MenuIndicatorPaddingHorizontal);
-            menuIndicatorStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextSecondary);
+            menuIndicatorStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorTextSecondary);
 
             var startEdgeIndicatorStyle =
                 new Style(selector => selector.Nesting().Template().Name(ScrollStartEdgeIndicatorPart));

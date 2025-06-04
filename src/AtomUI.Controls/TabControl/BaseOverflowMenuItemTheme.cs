@@ -155,8 +155,8 @@ internal class BaseOverflowMenuItemTheme : BaseControlTheme
         commonStyle.Add(itemTextPresenterStyle);
         
         var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(ItemCloseButtonPart));
-        closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
-        closeButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
+        closeButtonStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorIcon);
+        closeButtonStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorIconHover);
         closeButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
         closeButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
         commonStyle.Add(closeButtonStyle);

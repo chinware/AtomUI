@@ -3,6 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
@@ -12,6 +13,7 @@ using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -184,17 +186,18 @@ internal class DataGridColumnHeader : ContentControl
 
     private const int ResizeRegionWidth = 5;
     private const int ColumnsDragThreshold = 5;
-
-    private bool _areHandlersSuspended;
+    
     private static DragMode _dragMode;
     private static Point? _lastMousePositionHeaders;
     private static Cursor? _originalCursor;
     private static double _originalHorizontalOffset;
     private static double _originalWidth;
-    private bool _desiredSeparatorVisibility = true;
     private static Point? _dragStart;
     private static DataGridColumn? _dragColumn;
     private static double _frozenColumnsWidth;
+    private bool _areHandlersSuspended;
+    private bool _desiredSeparatorVisibility = true;
+    private StackPanel? _indicatorsLayout;
     private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
     
     static DataGridColumnHeader()
@@ -950,5 +953,20 @@ internal class DataGridColumnHeader : ContentControl
             Cursor = _originalCursor;
         }
     }
-    
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _indicatorsLayout = e.NameScope.Find<StackPanel>(DataGridColumnHeaderTheme.IndicatorsLayoutPart);
+        if (_indicatorsLayout != null)
+        {
+            _indicatorsLayout.Children.CollectionChanged += HandleIndicatorLayoutChildrenChanged;
+        }
+    }
+
+    private void HandleIndicatorLayoutChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        Debug.Assert(_indicatorsLayout != null);
+        _indicatorsLayout.IsVisible = _indicatorsLayout.Children.Count > 0;
+    }
 }

@@ -242,9 +242,9 @@ internal class ComboBoxTheme : BaseControlTheme
     private void BuildOpenIndicatorStyle()
     {
         var openIndicatorButton = new Style(selector => selector.Nesting().Template().Name(OpenIndicatorButtonPart));
-        openIndicatorButton.Add(IconButton.ActiveIconColorProperty, ButtonSpinnerTokenKey.HandleHoverColor);
-        openIndicatorButton.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorPrimaryActive);
-        openIndicatorButton.Add(IconButton.DisabledIconColorProperty, SharedTokenKey.ColorTextDisabled);
+        openIndicatorButton.Add(IconButton.ActiveIconBrushProperty, ButtonSpinnerTokenKey.HandleHoverColor);
+        openIndicatorButton.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorPrimaryActive);
+        openIndicatorButton.Add(IconButton.DisabledIconBrushProperty, SharedTokenKey.ColorTextDisabled);
         openIndicatorButton.Add(IconButton.WidthProperty, ComboBoxTokenKey.OpenIndicatorWidth);
         openIndicatorButton.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
         openIndicatorButton.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);

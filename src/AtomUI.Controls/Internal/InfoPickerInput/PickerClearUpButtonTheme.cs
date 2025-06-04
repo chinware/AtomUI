@@ -65,9 +65,9 @@ internal class PickerClearUpButtonTheme : BaseControlTheme
         var clearUpButtonStyle = new Style(selector => selector.Nesting().Template().Name(ClearButtonPart));
         clearUpButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSize);
         clearUpButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSize);
-        clearUpButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextQuaternary);
-        clearUpButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorTextQuaternary);
-        clearUpButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
+        clearUpButtonStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorTextQuaternary);
+        clearUpButtonStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorTextQuaternary);
+        clearUpButtonStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorText);
         Add(clearUpButtonStyle);
         
         var infoIconStyle = new Style(selector => selector.Nesting().Template().Name(InfoIconPresenterPart).Descendant().OfType<Icon>());

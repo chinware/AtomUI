@@ -170,9 +170,9 @@ internal class DrawerInfoContainerTheme : BaseControlTheme
     private void BuildCloseButtonsStyle()
     {
         var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
-        closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
-        closeButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
-        closeButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorIconHover);
+        closeButtonStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorIcon);
+        closeButtonStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorIconHover);
+        closeButtonStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorIconHover);
         Add(closeButtonStyle);
     }
 

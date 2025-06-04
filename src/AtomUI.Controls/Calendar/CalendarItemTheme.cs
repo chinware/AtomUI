@@ -245,9 +245,9 @@ internal class CalendarItemTheme : BaseControlTheme
             selector.Nesting().Template().Name(NextMonthButtonPart)));
         buttonsStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
         buttonsStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
-        buttonsStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextDescription);
-        buttonsStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorText);
-        buttonsStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorText);
+        buttonsStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorTextDescription);
+        buttonsStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorText);
+        buttonsStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorText);
         commonStyle.Add(buttonsStyle);
     }
 }

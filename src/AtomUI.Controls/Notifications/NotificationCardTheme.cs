@@ -359,8 +359,8 @@ internal class NotificationCardTheme : BaseControlTheme
         Add(headerContainer);
 
         var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
-        closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
-        closeButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
+        closeButtonStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorIcon);
+        closeButtonStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorIconHover);
         closeButtonStyle.Add(IconButton.PaddingProperty, NotificationTokenKey.NotificationCloseButtonPadding);
         closeButtonStyle.Add(IconButton.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         closeButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);

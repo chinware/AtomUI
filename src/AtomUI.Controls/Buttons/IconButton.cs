@@ -30,33 +30,36 @@ public class IconButton : AvaloniaButton,
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         Icon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
     
-    public static readonly StyledProperty<IBrush?> NormalIconColorProperty =
+    public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
         AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(NormalIconColor));
+            nameof(NormalIconBrush));
     
-    public static readonly StyledProperty<IBrush?> ActiveIconColorProperty =
+    public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
         AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(ActiveIconColor));
+            nameof(ActiveIconBrush));
     
-    public static readonly StyledProperty<IBrush?> SelectedIconColorProperty =
+    public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
         AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(SelectedIconColor));
+            nameof(SelectedIconBrush));
     
-    public static readonly StyledProperty<IBrush?> DisabledIconColorProperty =
+    public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
         AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(DisabledIconColor));
+            nameof(DisabledIconBrush));
 
-    public static readonly StyledProperty<double> IconWidthProperty
-        = AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
+    public static readonly StyledProperty<double> IconWidthProperty =
+        AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
 
-    public static readonly StyledProperty<double> IconHeightProperty
-        = AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
+    public static readonly StyledProperty<double> IconHeightProperty = 
+        AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
+    
+    public static readonly StyledProperty<IconMode> IconModeProperty =
+        Icon.IconModeProperty.AddOwner<IconButton>();
 
-    public static readonly StyledProperty<bool> IsEnableHoverEffectProperty
-        = AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
+    public static readonly StyledProperty<bool> IsEnableHoverEffectProperty = 
+        AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconButton>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconButton>();
 
     public Icon? Icon
     {
@@ -100,28 +103,28 @@ public class IconButton : AvaloniaButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public IBrush? NormalIconColor
+    public IBrush? NormalIconBrush
     {
-        get => GetValue(NormalIconColorProperty);
-        set => SetValue(NormalIconColorProperty, value);
+        get => GetValue(NormalIconBrushProperty);
+        set => SetValue(NormalIconBrushProperty, value);
     }
 
-    public IBrush? ActiveIconColor
+    public IBrush? ActiveIconBrush
     {
-        get => GetValue(ActiveIconColorProperty);
-        set => SetValue(ActiveIconColorProperty, value);
+        get => GetValue(ActiveIconBrushProperty);
+        set => SetValue(ActiveIconBrushProperty, value);
     }
 
-    public IBrush? SelectedIconColor
+    public IBrush? SelectedIconBrush
     {
-        get => GetValue(SelectedIconColorProperty);
-        set => SetValue(SelectedIconColorProperty, value);
+        get => GetValue(SelectedIconBrushProperty);
+        set => SetValue(SelectedIconBrushProperty, value);
     }
 
-    public IBrush? DisabledIconColor
+    public IBrush? DisabledIconBrush
     {
-        get => GetValue(DisabledIconColorProperty);
-        set => SetValue(DisabledIconColorProperty, value);
+        get => GetValue(DisabledIconBrushProperty);
+        set => SetValue(DisabledIconBrushProperty, value);
     }
     
     #endregion
@@ -143,30 +146,6 @@ public class IconButton : AvaloniaButton,
     {
         this.RegisterResources();
         this.BindMotionProperties();
-        Classes.CollectionChanged += HandleClassesCollectionChanged;
-    }
-
-    private void HandleClassesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (Icon is not null)
-        {
-            if (Classes.Contains(StdPseudoClass.Disabled))
-            {
-                Icon.IconMode = IconMode.Disabled;
-            }
-            else if (Classes.Contains(StdPseudoClass.Selected))
-            {
-                Icon.IconMode = IconMode.Selected;
-            }
-            else if (Classes.Contains(StdPseudoClass.Pressed))
-            {
-                Icon.IconMode = IconMode.Active;
-            }
-            else
-            {
-                Icon.IconMode = IconMode.Normal;
-            }
-        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -197,12 +176,13 @@ public class IconButton : AvaloniaButton,
             Icon.LoadingAnimationDurationProperty);
         BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
         BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
+        BindUtils.RelayBind(this, IconModeProperty, icon, IconModeProperty);
         if (icon.ThemeType != IconThemeType.TwoTone)
         {
-            BindUtils.RelayBind(this, NormalIconColorProperty, icon, Icon.NormalFilledBrushProperty);
-            BindUtils.RelayBind(this, ActiveIconColorProperty, icon, Icon.ActiveFilledBrushProperty);
-            BindUtils.RelayBind(this, SelectedIconColorProperty, icon, Icon.SelectedFilledBrushProperty);
-            BindUtils.RelayBind(this, DisabledIconColorProperty, icon, Icon.DisabledFilledBrushProperty);
+            BindUtils.RelayBind(this, NormalIconBrushProperty, icon, Icon.NormalFilledBrushProperty);
+            BindUtils.RelayBind(this, ActiveIconBrushProperty, icon, Icon.ActiveFilledBrushProperty);
+            BindUtils.RelayBind(this, SelectedIconBrushProperty, icon, Icon.SelectedFilledBrushProperty);
+            BindUtils.RelayBind(this, DisabledIconBrushProperty, icon, Icon.DisabledFilledBrushProperty);
         }
         icon.SetTemplatedParent(this);
     }

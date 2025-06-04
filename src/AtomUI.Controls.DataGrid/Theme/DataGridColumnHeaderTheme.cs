@@ -1,11 +1,12 @@
 using System.ComponentModel;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -55,9 +56,9 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
                 Name = HeaderRootLayoutPart
             };
 
-            BuildContentPresenter(headerRootLayout);
+            BuildContentPresenter(headerRootLayout, scope);
 
-            var verticalSeparator = new Rectangle()
+            var verticalSeparator = new Rectangle
             {
                 Name                = VerticalSeparatorPart,
                 Width               = 1d,
@@ -74,7 +75,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         });
     }
 
-    private void BuildContentPresenter(Panel rootLayout)
+    private void BuildContentPresenter(Panel rootLayout, INameScope scope)
     {
         var decorator = new Decorator
         {
@@ -88,14 +89,17 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
                 new ColumnDefinition(GridLength.Auto),
             ]
         };
+        
         CreateTemplateParentBinding(gridLayout, Grid.HorizontalAlignmentProperty,
             DataGridColumnHeader.HorizontalAlignmentProperty);
         CreateTemplateParentBinding(gridLayout, Grid.VerticalAlignmentProperty,
             DataGridColumnHeader.VerticalAlignmentProperty);
+        
         var contentPresenter = new ContentPresenter()
         {
             Name = ContentPresenterPart,
         };
+        
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.HorizontalContentAlignmentProperty,
             DataGridColumnHeader.HorizontalContentAlignmentProperty);
         CreateTemplateParentBinding(contentPresenter, ContentPresenter.VerticalContentAlignmentProperty,
@@ -106,20 +110,28 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
             DataGridColumnHeader.ContentTemplateProperty);
         Grid.SetColumn(contentPresenter, 0);
         gridLayout.Children.Add(contentPresenter);
-
-        BuildIndicators(gridLayout);
+        
+        var indicatorLayout = BuildIndicators(gridLayout);
+        indicatorLayout.RegisterInNameScope(scope);
+        BindUtils.RelayBind(contentPresenter,
+            ContentPresenter.PaddingProperty, 
+            indicatorLayout,
+            StackPanel.MarginProperty,
+            new Func<Thickness, Thickness>(thickness=> new Thickness(0, 0, thickness.Right, 0)));
         
         decorator.Child = gridLayout;
+        
         rootLayout.Children.Add(decorator);
     }
 
-    private void BuildIndicators(Grid contentLayout)
+    private StackPanel BuildIndicators(Grid contentLayout)
     {
         var indicatorsLayout = new StackPanel()
         {
             Name = IndicatorsLayoutPart,
-            Orientation = Orientation.Horizontal,
+            Orientation = Orientation.Horizontal
         };
+        
         var sortIndicator = new DataGridSortIndicator
         {
             Name              = SortIndicatorPart,
@@ -127,21 +139,22 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         };
         CreateTemplateParentBinding(sortIndicator, DataGridSortIndicator.IsVisibleProperty, DataGridColumnHeader.CanUserSortProperty);
         indicatorsLayout.Children.Add(sortIndicator);
-
-        var filterIndicator = new DataGridFilterIndicator()
+        
+        var filterIndicator = new DataGridFilterIndicator
         {
             Name              = FilterIndicatorPart,
-            VerticalAlignment = VerticalAlignment.Center
+            VerticalAlignment = VerticalAlignment.Center,
         };
         indicatorsLayout.Children.Add(filterIndicator);
  
         Grid.SetColumn(indicatorsLayout, 1);
         contentLayout.Children.Add(indicatorsLayout);
+        return indicatorsLayout;
     }
 
     private void BuildFocusVisual(Panel rootLayout)
     {
-        var focusVisualLayout = new Panel()
+        var focusVisualLayout = new Panel
         {
             Name             = FocusVisualPart,
             IsVisible        = false,
@@ -188,7 +201,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         
         BuildSizeTypeStyle(commonStyle);
         BuildVerticalSeparatorStyle(commonStyle);
-        BuildIndicatorStyle(commonStyle);
+        BuildIndicatorsStyle(commonStyle);
         BuildSortableColumnStyle(commonStyle);
         Add(commonStyle);
     }
@@ -214,40 +227,38 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         commonStyle.Add(canUserSortStyle);
     }
 
-    private void BuildIndicatorStyle(Style commonStyle)
+    private void BuildIndicatorsStyle(Style commonStyle)
     {
         var indicatorsLayout = new Style(selector => selector.Nesting().Template().Name(IndicatorsLayoutPart));
         indicatorsLayout.Add(StackPanel.SpacingProperty, SharedTokenKey.MarginXXS);
         commonStyle.Add(indicatorsLayout);
-        {
-            var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
-            sortIndicatorStyle.Add(DataGridSortIndicator.MarginProperty, DataGridTokenKey.SortIndicatorMargin);
-            commonStyle.Add(sortIndicatorStyle);
-        }
         
-        var ascendingStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.SortAscending));
+        // 排序
         {
-            var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
-            sortIndicatorStyle.Add(DataGridSortIndicator.CurrentSortDirectionProperty, ListSortDirection.Ascending);
-            ascendingStyle.Add(sortIndicatorStyle);
-        }
-        commonStyle.Add(ascendingStyle);
+            var ascendingStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.SortAscending));
+            {
+                var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
+                sortIndicatorStyle.Add(DataGridSortIndicator.CurrentSortDirectionProperty, ListSortDirection.Ascending);
+                ascendingStyle.Add(sortIndicatorStyle);
+            }
+            commonStyle.Add(ascendingStyle);
         
-        var descendingStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.SortDescending));
-        {
-            var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
-            sortIndicatorStyle.Add(DataGridSortIndicator.CurrentSortDirectionProperty, ListSortDirection.Descending);
-            descendingStyle.Add(sortIndicatorStyle);
-        }
-        commonStyle.Add(descendingStyle);
+            var descendingStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.SortDescending));
+            {
+                var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
+                sortIndicatorStyle.Add(DataGridSortIndicator.CurrentSortDirectionProperty, ListSortDirection.Descending);
+                descendingStyle.Add(sortIndicatorStyle);
+            }
+            commonStyle.Add(descendingStyle);
         
-        var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
-        {
-            var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
-            sortIndicatorStyle.Add(DataGridSortIndicator.IsHoverModeProperty, true);
-            hoverStyle.Add(sortIndicatorStyle);
+            var hoverStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.PointerOver));
+            {
+                var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
+                sortIndicatorStyle.Add(DataGridSortIndicator.IsHoverModeProperty, true);
+                hoverStyle.Add(sortIndicatorStyle);
+            }
+            commonStyle.Add(hoverStyle);
         }
-        commonStyle.Add(hoverStyle);
     }
 
     private void BuildVerticalSeparatorStyle(Style commonStyle)
@@ -263,7 +274,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         var largeStyle =
             new Style(selector => selector.Nesting().PropertyEquals(DataGridColumnHeader.SizeTypeProperty, SizeType.Large));
         {
-            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
+            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
             contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePadding);
             largeStyle.Add(contentDecoratorStyle);
         }
@@ -273,7 +284,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         var middleStyle =
             new Style(selector => selector.Nesting().PropertyEquals(DataGridColumnHeader.SizeTypeProperty, SizeType.Middle));
         {
-            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
+            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
             contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePaddingMiddle);
             middleStyle.Add(contentDecoratorStyle);
         }
@@ -283,7 +294,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         var smallStyle =
             new Style(selector => selector.Nesting().PropertyEquals(DataGridColumnHeader.SizeTypeProperty, SizeType.Small));
         {
-            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentDecoratorPart));
+            var contentDecoratorStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
             contentDecoratorStyle.Add(Decorator.PaddingProperty, DataGridTokenKey.TablePaddingSmall);
             smallStyle.Add(contentDecoratorStyle);
         }

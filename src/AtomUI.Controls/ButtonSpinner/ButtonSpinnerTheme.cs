@@ -190,8 +190,8 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         var upAndDownButtonStyle = new Style(selector => Selectors.Or(selector.Nesting().Template().Name(IncreaseButtonPart),
             selector.Nesting().Template().Name(DecreaseButtonPart)));
 
-        upAndDownButtonStyle.Add(IconButton.ActiveIconColorProperty, ButtonSpinnerTokenKey.HandleHoverColor);
-        upAndDownButtonStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorPrimaryActive);
+        upAndDownButtonStyle.Add(IconButton.ActiveIconBrushProperty, ButtonSpinnerTokenKey.HandleHoverColor);
+        upAndDownButtonStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorPrimaryActive);
         upAndDownButtonStyle.Add(IconButton.IconWidthProperty, ButtonSpinnerTokenKey.HandleIconSize);
         upAndDownButtonStyle.Add(IconButton.IconHeightProperty, ButtonSpinnerTokenKey.HandleIconSize);
         

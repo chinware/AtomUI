@@ -192,7 +192,9 @@ internal class DataGridToken : AbstractControlDesignToken
     internal double SortIconSize { get; set; }
     internal Color HeaderIconColor { get; set; }
     internal Color HeaderIconHoverColor { get; set; }
-    internal Thickness SortIndicatorMargin { get; set; }
+    internal Thickness SortIndicatorLayoutMargin { get; set; }
+    
+    internal Thickness FilterIndicatorPadding { get; set; }
 
     #endregion
 
@@ -294,11 +296,12 @@ internal class DataGridToken : AbstractControlDesignToken
             baseColorAction.GetRedF(),
             baseColorAction.GetGreenF(),
             baseColorAction.GetBlueF());
-        ExpandIconHalfInner = expandIconHalfInner;
-        ExpandIconSize      = expandIconSize;
-        ExpandIconScale     = SharedToken.ControlInteractiveSize / expandIconSize;
-        SortIconSize        = SharedToken.FontHeight / 2.5;
-        SortIndicatorMargin = new Thickness(SharedToken.MarginXS, 0, 0, 0);
+        ExpandIconHalfInner       = expandIconHalfInner;
+        ExpandIconSize            = expandIconSize;
+        ExpandIconScale           = SharedToken.ControlInteractiveSize / expandIconSize;
+        SortIconSize              = SharedToken.FontHeight / 2.5;
+        SortIndicatorLayoutMargin = new Thickness(SharedToken.MarginXS, 0, 0, 0);
+        FilterIndicatorPadding    = new Thickness(SharedToken.PaddingXXS, SharedToken.PaddingXS);
         
         // 别名控件初始化
         TableFontSize = CellFontSize;

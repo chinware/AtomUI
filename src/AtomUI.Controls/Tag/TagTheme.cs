@@ -153,8 +153,8 @@ internal class TagTheme : BaseControlTheme
             var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
             closeButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeXS);
             closeButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeXS);
-            closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
-            closeButtonStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
+            closeButtonStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorIcon);
+            closeButtonStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorIconHover);
             Add(closeButtonStyle);
         }
 
@@ -165,7 +165,7 @@ internal class TagTheme : BaseControlTheme
                                                                        false));
         {
             var closeButtonStyle = new Style(selector => selector.Nesting().Template().Name(CloseButtonPart));
-            closeButtonStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorTextLightSolid);
+            closeButtonStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorTextLightSolid);
             isColorSetAndNotPresetTagStyle.Add(closeButtonStyle);
         }
         Add(isColorSetAndNotPresetTagStyle);

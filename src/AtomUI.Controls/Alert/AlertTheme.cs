@@ -302,9 +302,9 @@ internal class AlertTheme : BaseControlTheme
             closeBtnStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
             closeBtnStyle.Add(IconButton.MarginProperty, AlertTokenKey.ExtraElementMargin);
             
-            closeBtnStyle.Add(IconButton.NormalIconColorProperty, SharedTokenKey.ColorIcon);
-            closeBtnStyle.Add(IconButton.ActiveIconColorProperty, SharedTokenKey.ColorIconHover);
-            closeBtnStyle.Add(IconButton.SelectedIconColorProperty, SharedTokenKey.ColorIconHover);
+            closeBtnStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorIcon);
+            closeBtnStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorIconHover);
+            closeBtnStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorIconHover);
             Add(closeBtnStyle);
         }
     }
