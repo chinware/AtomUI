@@ -347,5 +347,5 @@ public class DataGridComparerSortDescription : DataGridSortDescription
     }
 }
 
-public class DataGridSortDescriptionCollection : AvaloniaList<DataGridSortDescription>
-{ }
+public class DataGridSortDescriptionCollection : AvaloniaList<DataGridSortDescription> {}
+public class DataGridFilterDescriptionCollection : AvaloniaList<DataGridFilterDescription> {}

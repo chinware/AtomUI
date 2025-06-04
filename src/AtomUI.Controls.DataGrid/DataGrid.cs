@@ -194,7 +194,7 @@ public partial class DataGrid : TemplatedControl,
             o => o.CollectionView);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
     
     public SizeType SizeType
     {

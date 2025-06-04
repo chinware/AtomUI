@@ -22,8 +22,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// Since there's nothing in the un-cancelable event args that is mutable,
     /// just create one instance to be used universally.
     /// </summary>
-    private static readonly DataGridCurrentChangingEventArgs UnCancelableCurrentChangingEventArgs =
-        new DataGridCurrentChangingEventArgs(false);
+    private static readonly DataGridCurrentChangingEventArgs UnCancelableCurrentChangingEventArgs = new (false);
 
     /// <summary>
     /// Value that we cache for the PageIndex if we are in a DeferRefresh,
@@ -136,6 +135,11 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     private DataGridSortDescriptionCollection? _sortDescriptions;
 
+    /// <summary>
+    /// Private accessor for the FilterDescriptions
+    /// </summary>
+    private DataGridFilterDescriptionCollection? _filterDescriptions;
+    
     /// <summary>
     /// Private accessor for the SourceCollection
     /// </summary>
@@ -836,6 +840,19 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             }
             Debug.Assert(_sortDescriptions != null);
             return _sortDescriptions;
+        }
+    }
+
+    public DataGridFilterDescriptionCollection FilterDescriptions
+    {
+        get
+        {
+            if (_filterDescriptions == null)
+            {
+                SetFilterDescriptions(new DataGridFilterDescriptionCollection());
+            }
+            Debug.Assert(_filterDescriptions != null);
+            return _filterDescriptions;
         }
     }
 
@@ -3793,11 +3810,11 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         if (value)
         {
-            _flags = _flags | flags;
+            _flags |= flags;
         }
         else
         {
-            _flags = _flags & ~flags;
+            _flags &= ~flags;
         }
     }
 
@@ -3818,6 +3835,26 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             Debug.Assert(_sortDescriptions.Count == 0, "must be empty SortDescription collection");
             _sortDescriptions.CollectionChanged += SortDescriptionsChanged;
+        }
+    }
+
+    /// <summary>
+    /// Set new FilterDescription collection; re-hook collection change notification handler
+    /// </summary>
+    /// <param name="descriptions"></param>
+    private void SetFilterDescriptions(DataGridFilterDescriptionCollection descriptions)
+    {
+        if (_filterDescriptions != null)
+        {
+            _filterDescriptions.CollectionChanged -= FilterDescriptionsChanged;
+        }
+
+        _filterDescriptions = descriptions;
+
+        if (_filterDescriptions != null)
+        {
+            Debug.Assert(_filterDescriptions.Count == 0, "must be empty FilterDescriptions collection");
+            _filterDescriptions.CollectionChanged += FilterDescriptionsChanged;
         }
     }
 
@@ -3853,6 +3890,39 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         NotifyPropertyChanged("SortDescriptions");
     }
+    
+    /// <summary>
+    /// SortDescription was added/removed, refresh DataGridCollectionView
+    /// </summary>
+    /// <param name="sender">Sender that triggered this handler</param>
+    /// <param name="e">NotifyCollectionChangedEventArgs for this change</param>
+    private void FilterDescriptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (IsAddingNew || IsEditingItem)
+        {
+            throw new InvalidOperationException(GetOperationNotAllowedDuringAddOrEditText("Filtering"));
+        }
+
+        // we want to make sure that the data is refreshed before we try to move to a page
+        // since the refresh would take care of the filtering, sorting, and grouping.
+        RefreshOrDefer();
+
+        if (PageSize > 0)
+        {
+            if (IsRefreshDeferred)
+            {
+                // set cached value and flag so that we move to first page on EndDefer
+                _cachedPageIndex = 0;
+                SetFlag(CollectionViewFlags.IsMoveToPageDeferred, true);
+            }
+            else
+            {
+                MoveToFirstPage();
+            }
+        }
+
+        NotifyPropertyChanged("FilterDescriptions");
+    }
 
     /// <summary>
     /// Sort the List based on the SortDescriptions property.
@@ -3863,12 +3933,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         Debug.Assert(list != null, "Input list to sort should not be null");
 
-        IEnumerable<object> seq      = (IEnumerable<object>)list;
+        IEnumerable<object> seq      = list;
         IComparer<object>   comparer = new CultureSensitiveComparer(Culture);
         var                 itemType = ItemType;
         Debug.Assert(itemType != null);
 
-        foreach (DataGridSortDescription sort in SortDescriptions)
+        foreach (var sort in SortDescriptions)
         {
             sort.Initialize(itemType);
 
