@@ -40,18 +40,38 @@ internal class DataGridFilterIndicatorTheme : BaseControlTheme
     protected override void BuildStyles()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        
-        var iconButtonStyle = new Style(selector => selector.Nesting().Template().Name(IconPresenterPart));
-        iconButtonStyle.Add(IconButton.NormalIconBrushProperty, DataGridTokenKey.HeaderIconColor);
-        iconButtonStyle.Add(IconButton.ActiveIconBrushProperty, DataGridTokenKey.HeaderIconHoverColor);
-        iconButtonStyle.Add(IconButton.SelectedIconBrushProperty, DataGridTokenKey.HeaderIconHoverColor);
-        iconButtonStyle.Add(IconButton.DisabledIconBrushProperty, SharedTokenKey.ColorTextDisabled);
-        iconButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
-        iconButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
-        iconButtonStyle.Add(IconButton.PaddingProperty, DataGridTokenKey.FilterIndicatorPadding);
-        iconButtonStyle.Add(IconButton.CornerRadiusProperty, SharedTokenKey.BorderRadius);
-        commonStyle.Add(iconButtonStyle);
-        
+
+        {
+            var iconButtonStyle = new Style(selector => selector.Nesting().Template().Name(IconPresenterPart));
+            iconButtonStyle.Add(IconButton.IconWidthProperty, SharedTokenKey.IconSizeSM);
+            iconButtonStyle.Add(IconButton.IconHeightProperty, SharedTokenKey.IconSizeSM);
+            iconButtonStyle.Add(IconButton.PaddingProperty, DataGridTokenKey.FilterIndicatorPadding);
+            iconButtonStyle.Add(IconButton.CornerRadiusProperty, SharedTokenKey.BorderRadius);
+            iconButtonStyle.Add(IconButton.DisabledIconBrushProperty, SharedTokenKey.ColorTextDisabled);
+            commonStyle.Add(iconButtonStyle);
+        }
+        var isFilterActivatedStyle = new Style(selector => selector.Nesting().PropertyEquals(DataGridFilterIndicator.IsFilterActivatedProperty, true));
+        {
+            var iconButtonStyle = new Style(selector => selector.Nesting().Template().Name(IconPresenterPart));
+            iconButtonStyle.Add(IconButton.NormalIconBrushProperty, SharedTokenKey.ColorPrimary);
+            iconButtonStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorPrimary);
+            iconButtonStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorPrimary);
+            isFilterActivatedStyle.Add(iconButtonStyle);
+        }
+        commonStyle.Add(isFilterActivatedStyle);
+        var isNormalStyle = new Style(selector =>
+            selector.Nesting().PropertyEquals(DataGridFilterIndicator.IsFilterActivatedProperty, false));
+
+        {
+            var iconButtonStyle = new Style(selector => selector.Nesting().Template().Name(IconPresenterPart));
+            iconButtonStyle.Add(IconButton.NormalIconBrushProperty, DataGridTokenKey.HeaderIconColor);
+            iconButtonStyle.Add(IconButton.ActiveIconBrushProperty, DataGridTokenKey.HeaderIconHoverColor);
+            iconButtonStyle.Add(IconButton.SelectedIconBrushProperty, DataGridTokenKey.HeaderIconHoverColor);
+      
+            isNormalStyle.Add(iconButtonStyle);
+        }
+ 
+        commonStyle.Add(isNormalStyle);
         Add(commonStyle);
     }
 }
