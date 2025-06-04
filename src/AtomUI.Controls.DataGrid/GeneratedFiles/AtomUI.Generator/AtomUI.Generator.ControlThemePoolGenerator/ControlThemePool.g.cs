@@ -11,6 +11,7 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.DataGridCellTheme());
             themes.Add(new AtomUI.Controls.DataGridColumnGroupHeaderTheme());
             themes.Add(new AtomUI.Controls.DataGridColumnHeaderTheme());
+            themes.Add(new AtomUI.Controls.DataGridFilterIndicatorTheme());
             themes.Add(new AtomUI.Controls.DataGridHeaderViewItemTheme());
             themes.Add(new AtomUI.Controls.DataGridHeaderViewTheme());
             themes.Add(new AtomUI.Controls.DataGridRowGroupHeaderTheme());

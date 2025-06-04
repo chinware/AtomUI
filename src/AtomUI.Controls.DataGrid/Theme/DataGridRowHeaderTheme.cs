@@ -43,7 +43,7 @@ internal class DataGridRowHeaderTheme : BaseControlTheme
 
             var horizontalSeparator = new Rectangle()
             {
-                Name = HorizontalSeparatorPart,
+                Name                = HorizontalSeparatorPart,
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
             Grid.SetRow(horizontalSeparator, 2);
@@ -71,7 +71,7 @@ internal class DataGridRowHeaderTheme : BaseControlTheme
         var layout                  = new Panel();
         var rowInvalidVisualElement = new Rectangle
         {
-            Name = RowInvalidVisualElementPart,
+            Name    = RowInvalidVisualElementPart,
             Opacity = 0,
             Stretch = Stretch.Fill
         };

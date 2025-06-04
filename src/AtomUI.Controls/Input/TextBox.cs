@@ -1,10 +1,9 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;

@@ -3,6 +3,7 @@ using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;

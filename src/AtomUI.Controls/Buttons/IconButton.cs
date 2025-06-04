@@ -1,11 +1,11 @@
-using AtomUI.Controls.Utils;
+using System.Collections.Specialized;
 using AtomUI.Data;
 using AtomUI.IconPkg;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
@@ -143,28 +143,30 @@ public class IconButton : AvaloniaButton,
     {
         this.RegisterResources();
         this.BindMotionProperties();
-        Classes.CollectionChanged += (sender, args) =>
+        Classes.CollectionChanged += HandleClassesCollectionChanged;
+    }
+
+    private void HandleClassesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (Icon is not null)
         {
-            if (Icon is not null)
+            if (Classes.Contains(StdPseudoClass.Disabled))
             {
-                if (Classes.Contains(StdPseudoClass.Disabled))
-                {
-                    Icon.IconMode = IconMode.Disabled;
-                }
-                else if (Classes.Contains(StdPseudoClass.Selected))
-                {
-                    Icon.IconMode = IconMode.Selected;
-                }
-                else if (Classes.Contains(StdPseudoClass.Pressed))
-                {
-                    Icon.IconMode = IconMode.Active;
-                }
-                else
-                {
-                    Icon.IconMode = IconMode.Normal;
-                }
+                Icon.IconMode = IconMode.Disabled;
             }
-        };
+            else if (Classes.Contains(StdPseudoClass.Selected))
+            {
+                Icon.IconMode = IconMode.Selected;
+            }
+            else if (Classes.Contains(StdPseudoClass.Pressed))
+            {
+                Icon.IconMode = IconMode.Active;
+            }
+            else
+            {
+                Icon.IconMode = IconMode.Normal;
+            }
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -182,37 +184,27 @@ public class IconButton : AvaloniaButton,
                 if (e.NewValue is Icon newIcon)
                 {
                     newIcon.SetTemplatedParent(this);
+                    ConfigureIcon(newIcon);
                 }
-
-                SetupIcon();
             }
         }
     }
 
-    private void SetupIcon()
+    private void ConfigureIcon(Icon icon)
     {
-        if (Icon is not null)
+        BindUtils.RelayBind(this, LoadingAnimationProperty, icon, Icon.LoadingAnimationProperty);
+        BindUtils.RelayBind(this, LoadingAnimationDurationProperty, icon,
+            Icon.LoadingAnimationDurationProperty);
+        BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
+        BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
+        if (icon.ThemeType != IconThemeType.TwoTone)
         {
-            BindUtils.RelayBind(this, LoadingAnimationProperty, Icon, Icon.LoadingAnimationProperty);
-            BindUtils.RelayBind(this, LoadingAnimationDurationProperty, Icon,
-                Icon.LoadingAnimationDurationProperty);
-            BindUtils.RelayBind(this, IconHeightProperty, Icon, HeightProperty);
-            BindUtils.RelayBind(this, IconWidthProperty, Icon, WidthProperty);
-            if (Icon.ThemeType != IconThemeType.TwoTone)
-            {
-                BindUtils.RelayBind(this, NormalIconColorProperty, Icon, Icon.NormalFilledBrushProperty);
-                BindUtils.RelayBind(this, ActiveIconColorProperty, Icon, Icon.ActiveFilledBrushProperty);
-                BindUtils.RelayBind(this, SelectedIconColorProperty, Icon, Icon.SelectedFilledBrushProperty);
-                BindUtils.RelayBind(this, DisabledIconColorProperty, Icon, Icon.DisabledFilledBrushProperty);
-            }
-            Icon.SetTemplatedParent(this);
+            BindUtils.RelayBind(this, NormalIconColorProperty, icon, Icon.NormalFilledBrushProperty);
+            BindUtils.RelayBind(this, ActiveIconColorProperty, icon, Icon.ActiveFilledBrushProperty);
+            BindUtils.RelayBind(this, SelectedIconColorProperty, icon, Icon.SelectedFilledBrushProperty);
+            BindUtils.RelayBind(this, DisabledIconColorProperty, icon, Icon.DisabledFilledBrushProperty);
         }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        SetupIcon();
+        icon.SetTemplatedParent(this);
     }
 
     public bool HitTest(Point point)

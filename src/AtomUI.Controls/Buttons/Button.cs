@@ -3,6 +3,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Media;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -79,7 +80,7 @@ public class Button : AvaloniaButton,
         = AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Button>();

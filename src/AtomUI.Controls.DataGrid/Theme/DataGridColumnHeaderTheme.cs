@@ -21,6 +21,8 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
     public const string ContentDecoratorPart = "PART_ContentDecorator";
     public const string ContentPresenterPart = "PART_ContentPresenter";
     public const string SortIndicatorPart = "PART_SortIndicator";
+    public const string FilterIndicatorPart = "PART_FilterIndicator";
+    public const string IndicatorsLayoutPart = "PART_IndicatorsLayout";
     public const string FocusVisualPart = "PART_FocusVisual";
     public const string FocusVisualPrimaryPart = "PART_FocusVisualPrimary";
     public const string FocusVisualSecondaryPart = "PART_FocusVisualSecondary";
@@ -48,7 +50,7 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
             CreateTemplateParentBinding(headerFrame, Border.BorderThicknessProperty, DataGridColumnHeader.BorderThicknessProperty);
             CreateTemplateParentBinding(headerFrame, Border.PaddingProperty, DataGridColumnHeader.PaddingProperty);
 
-            var headerRootLayout = new Panel()
+            var headerRootLayout = new Panel
             {
                 Name = HeaderRootLayoutPart
             };
@@ -105,16 +107,36 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
         Grid.SetColumn(contentPresenter, 0);
         gridLayout.Children.Add(contentPresenter);
 
-        var sortIndicator = new DataGridSortIndicator()
-        {
-            Name                 = SortIndicatorPart,
-            VerticalAlignment    = VerticalAlignment.Center
-        };
-        CreateTemplateParentBinding(sortIndicator, DataGridSortIndicator.IsVisibleProperty, DataGridColumnHeader.CanUserSortProperty);
-        Grid.SetColumn(sortIndicator, 1);
-        gridLayout.Children.Add(sortIndicator);
+        BuildIndicators(gridLayout);
+        
         decorator.Child = gridLayout;
         rootLayout.Children.Add(decorator);
+    }
+
+    private void BuildIndicators(Grid contentLayout)
+    {
+        var indicatorsLayout = new StackPanel()
+        {
+            Name = IndicatorsLayoutPart,
+            Orientation = Orientation.Horizontal,
+        };
+        var sortIndicator = new DataGridSortIndicator
+        {
+            Name              = SortIndicatorPart,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        CreateTemplateParentBinding(sortIndicator, DataGridSortIndicator.IsVisibleProperty, DataGridColumnHeader.CanUserSortProperty);
+        indicatorsLayout.Children.Add(sortIndicator);
+
+        var filterIndicator = new DataGridFilterIndicator()
+        {
+            Name              = FilterIndicatorPart,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        indicatorsLayout.Children.Add(filterIndicator);
+ 
+        Grid.SetColumn(indicatorsLayout, 1);
+        contentLayout.Children.Add(indicatorsLayout);
     }
 
     private void BuildFocusVisual(Panel rootLayout)
@@ -194,6 +216,9 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
 
     private void BuildIndicatorStyle(Style commonStyle)
     {
+        var indicatorsLayout = new Style(selector => selector.Nesting().Template().Name(IndicatorsLayoutPart));
+        indicatorsLayout.Add(StackPanel.SpacingProperty, SharedTokenKey.MarginXXS);
+        commonStyle.Add(indicatorsLayout);
         {
             var sortIndicatorStyle = new Style(selector => selector.Nesting().Template().Name(SortIndicatorPart));
             sortIndicatorStyle.Add(DataGridSortIndicator.MarginProperty, DataGridTokenKey.SortIndicatorMargin);
@@ -223,7 +248,6 @@ internal class DataGridColumnHeaderTheme : BaseControlTheme
             hoverStyle.Add(sortIndicatorStyle);
         }
         commonStyle.Add(hoverStyle);
-     
     }
 
     private void BuildVerticalSeparatorStyle(Style commonStyle)

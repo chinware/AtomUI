@@ -1,13 +1,12 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Reflection;
 
 internal static class StyledElementReflectionExtensions
 {
