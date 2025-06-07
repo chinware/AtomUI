@@ -5,9 +5,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Primitives;
 
@@ -17,90 +17,129 @@ namespace AtomUI.Controls.Primitives;
 internal class MotionGhostControl : Control
 {
     #region 公共属性定义
-
-    /// <summary>
-    /// 渲染的阴影值，一般在探测失败的时候使用
-    /// </summary>
-    public BoxShadows Shadows { get; }
-
-    /// <summary>
-    /// mask 的圆角大小，一般在探测失败的时候使用
-    /// </summary>
-    public CornerRadius MaskCornerRadius { get; }
-
-    public Point MaskOffset { get; }
-
-    public Size MaskSize { get; }
-
-    public Size MotionTargetSize { get; }
+    
+    public static readonly StyledProperty<Control?> ContentProperty =
+        AvaloniaProperty.Register<MotionGhostControl, Control?>(nameof(Content));
+    
+    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
+        Border.BoxShadowProperty.AddOwner<MotionGhostControl>();
+    
+    public static readonly StyledProperty<CornerRadius> MaskCornerRadiusProperty =
+        AvaloniaProperty.Register<MotionGhostControl, CornerRadius>(nameof(MaskCornerRadius));
+    
+    public static readonly StyledProperty<Point> MaskOffsetProperty =
+        AvaloniaProperty.Register<MotionGhostControl, Point>(nameof(MaskOffset));
+    
+    public static readonly StyledProperty<Size> MaskSizeProperty =
+        AvaloniaProperty.Register<MotionGhostControl, Size>(nameof(MaskSize));
+    
+    public Control? Content
+    {
+        get => GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
+    }
+    
+    public BoxShadows MaskShadows
+    {
+        get => GetValue(MaskShadowsProperty);
+        set => SetValue(MaskShadowsProperty, value);
+    }
+    
+    public CornerRadius MaskCornerRadius
+    {
+        get => GetValue(MaskCornerRadiusProperty);
+        set => SetValue(MaskCornerRadiusProperty, value);
+    }
+    
+    public Point MaskOffset
+    {
+        get => GetValue(MaskOffsetProperty);
+        set => SetValue(MaskOffsetProperty, value);
+    }
+    
+    public Size MaskSize
+    {
+        get => GetValue(MaskSizeProperty);
+        set => SetValue(MaskSizeProperty, value);
+    }
 
     #endregion
 
     protected Canvas? _layout;
-    protected MotionTargetBitmapControl _motionTargetBitmapControl;
+    protected Border? _maskCenterFrame;
 
-    public MotionGhostControl(RenderTargetBitmap motionTargetBitmap,
-                              Size motionTargetSize,
-                              Size maskSize,
-                              Point maskOffset,
-                              CornerRadius maskCornerRadius,
-                              BoxShadows shadows)
+    static MotionGhostControl()
     {
-        MotionTargetSize = motionTargetSize;
-
-        MaskOffset       = maskOffset;
-        MaskSize         = maskSize;
-        MaskCornerRadius = maskCornerRadius;
-
-        Shadows = shadows;
-
-        _motionTargetBitmapControl = new MotionTargetBitmapControl(motionTargetBitmap)
-        {
-            Width  = MotionTargetSize.Width,
-            Height = MotionTargetSize.Height
-        };
+        AffectsMeasure<MotionGhostControl>(ContentProperty, MaskShadowsProperty, MaskOffsetProperty, MaskSizeProperty);
+        AffectsRender<MotionGhostControl>(MaskCornerRadiusProperty);
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    public MotionGhostControl()
     {
-        base.OnAttachedToLogicalTree(e);
         IsHitTestVisible = false;
     }
 
-    public sealed override void ApplyTemplate()
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        base.OnAttachedToVisualTree(e);
         if (_layout != null)
         {
             return;
         }
+        
         _layout = new Canvas();
         LogicalChildren.Add(_layout);
         VisualChildren.Add(_layout);
-        var shadowThickness = Shadows.Thickness();
+        var shadowThickness = MaskShadows.Thickness();
         var offsetX         = shadowThickness.Left;
         var offsetY         = shadowThickness.Top;
 
-        var shadowRenderers = BuildShadowRenderers(Shadows);
+        SetupShadowRenderers(MaskShadows);
 
-        foreach (var renderer in shadowRenderers)
-        {
-            _layout.Children.Add(renderer);
-        }
-
-        var border = new Border
-        {
-            Width  = MotionTargetSize.Width,
-            Height = MotionTargetSize.Height,
-        };
-
-        _layout.Children.Add(border);
-        _layout.Children.Add(_motionTargetBitmapControl);
+        _maskCenterFrame = new Border();
+        Canvas.SetLeft(_maskCenterFrame, offsetX);
+        Canvas.SetTop(_maskCenterFrame, offsetY);
+        _layout.Children.Add(_maskCenterFrame);
         
-        Canvas.SetLeft(_motionTargetBitmapControl, offsetX);
-        Canvas.SetTop(_motionTargetBitmapControl, offsetY);
+        SetupContent(Content);
+    }
 
-        Canvas.SetLeft(border, offsetX);
-        Canvas.SetTop(border, offsetY);
+    private void SetupShadowRenderers(in BoxShadows boxShadows)
+    {
+        Debug.Assert(_layout != null);
+        
+        for (int i = _layout.Children.Count - 1; i >= 0; i--)
+        {
+            var child = _layout.Children[i];
+            if (child != _maskCenterFrame && child != Content)
+            {
+                _layout.Children.RemoveAt(i);
+                (child as IDisposable)?.Dispose();
+            }
+        }
+        if (boxShadows.Count > 0)
+        {
+            var shadowRenderers = BuildShadowRenderers(boxShadows);
+            _layout.Children.InsertRange(0, shadowRenderers);
+        }
+    }
+
+    private void SetupContent(Control? content)
+    {
+        Debug.Assert(_layout != null);
+        if (content != null)
+        {
+            var shadowThickness = MaskShadows.Thickness();
+            var offsetX         = shadowThickness.Left;
+            var offsetY         = shadowThickness.Top;
+            _layout.Children.Add(content);
+            Canvas.SetLeft(content, offsetX);
+            Canvas.SetTop(content, offsetY);
+            content.SizeChanged += HandleContentSizeChanged;
+            Debug.Assert(_maskCenterFrame != null);
+            _maskCenterFrame.Width = content.Width;
+            _maskCenterFrame.Height = content.Height;
+        }
     }
 
     /// <summary>
@@ -110,12 +149,13 @@ internal class MotionGhostControl : Control
     /// <returns></returns>
     private List<Control> BuildShadowRenderers(in BoxShadows shadows)
     {
-        var thickness = Shadows.Thickness();
+        var thickness = shadows.Thickness();
         var offsetX   = thickness.Left;
         var offsetY   = thickness.Top;
 
         offsetX += MaskOffset.X;
         offsetY += MaskOffset.Y;
+        
         // 不知道这里为啥不行
         var renderers = new List<Control>();
         for (var i = 0; i < shadows.Count; ++i)
@@ -139,7 +179,64 @@ internal class MotionGhostControl : Control
     protected override Size MeasureOverride(Size availableSize)
     {
         base.MeasureOverride(availableSize);
-        return MotionTargetSize.Inflate(Shadows.Thickness());
+        var  maskThickness = MaskShadows.Thickness();
+        Size size          = default;
+        if (Content != null)
+        {
+            size = Content.DesiredSize;
+        } 
+        return size.Inflate(maskThickness);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        Debug.Assert(_layout != null);
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == ContentProperty)
+            {
+                if (change.OldValue is Control oldContent)
+                {
+                    oldContent.SizeChanged -= HandleContentSizeChanged;
+                    _layout.Children.Remove(oldContent);
+                }
+
+                if (change.NewValue is Control newContent)
+                {
+                    SetupContent(newContent);
+                }
+            }
+            else if (change.Property == MaskShadowsProperty)
+            {
+                SetupShadowRenderers(MaskShadows);
+            }
+            else if (change.Property == MaskCornerRadiusProperty || change.Property == MaskSizeProperty)
+            {
+                HandleMaskCornerRadiusOrSizeChanged();
+            }
+        }
+    }
+
+    private void HandleMaskCornerRadiusOrSizeChanged()
+    {
+        Debug.Assert(_layout != null);
+        for (int i = 0; i < MaskShadows.Count; ++i)
+        {
+            if (_layout.Children[i] is Border border)
+            {
+                border.CornerRadius = MaskCornerRadius;
+                border.Width        = MaskSize.Width;
+                border.Height       = MaskSize.Height;
+            }
+        }
+    }
+
+    private void HandleContentSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        Debug.Assert(_maskCenterFrame != null);
+        _maskCenterFrame.Width  = e.NewSize.Width;
+        _maskCenterFrame.Height = e.NewSize.Height;
     }
 }
 
@@ -150,6 +247,7 @@ internal static class MotionGhostControlUtils
         CornerRadius cornerRadius = default;
         Point        maskOffset   = default;
         Size         maskSize     = default;
+        
         if (motionTarget is IShadowMaskInfoProvider shadowMaskInfoProvider)
         {
             cornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
@@ -165,20 +263,22 @@ internal static class MotionGhostControlUtils
         {
             cornerRadius = templatedControl.CornerRadius;
         }
-
-        Size targetSize = default;
+        
         if (motionTarget.DesiredSize == default)
         {
-            targetSize = LayoutHelper.MeasureChild(motionTarget, Size.Infinity, new Thickness());
-        }
-        else
-        {
-            targetSize = motionTarget.DesiredSize;
+            LayoutHelper.MeasureChild(motionTarget, Size.Infinity, new Thickness());
         }
 
         var motionTargetBitmap = motionTarget.CaptureCurrentBitmap();
 
-        return new MotionGhostControl(motionTargetBitmap, targetSize, maskSize, maskOffset, cornerRadius, maskShadows);
+        return new MotionGhostControl
+        {
+            Content = new MotionTargetBitmapControl(motionTargetBitmap),
+            MaskShadows = maskShadows,
+            MaskCornerRadius = cornerRadius,
+            MaskOffset = maskOffset,
+            MaskSize = maskSize,
+        };
     }
 }
 
