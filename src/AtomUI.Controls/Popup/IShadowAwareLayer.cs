@@ -2,9 +2,7 @@
 
 namespace AtomUI.Controls;
 
-internal interface IShadowDecorator
+internal interface IShadowAwareLayer
 { 
     BoxShadows MaskShadows { get; set; }
-    void Open();
-    void Close();
 }
