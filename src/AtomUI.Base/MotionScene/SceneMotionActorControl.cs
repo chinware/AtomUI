@@ -7,15 +7,6 @@ namespace AtomUI.MotionScene;
 internal class SceneMotionActorControl : MotionActorControl
 {
     public event EventHandler? SceneShowed;
-
-    #region 公共属性定义
-    
-    /// <summary>
-    /// 动画实体大小
-    /// </summary>
-    public Size MotionTargetSize { get; }
-
-    #endregion
     
     #region 内部属性定义
 
@@ -25,20 +16,16 @@ internal class SceneMotionActorControl : MotionActorControl
     public TopLevel? SceneParent { get; set; }
 
     #endregion
-    
-    protected Control? _ghost;
 
-    public SceneMotionActorControl(Control motionGhost, Size motionTargetSize)
+    public SceneMotionActorControl(Control? motionGhost = null)
     {
-        _ghost             = motionGhost;
         Child              = motionGhost;
-        MotionTargetSize   = motionTargetSize;
         UseRenderTransform = true;
     }
     
     public Control GetAnimatableGhost()
     {
-        return _ghost ?? this;
+        return Child ?? this;
     }
 
     protected virtual Point CalculateTopLevelGhostPosition()
@@ -89,5 +76,4 @@ internal class SceneMotionActorControl : MotionActorControl
     internal virtual void NotifySceneLayerHostWinOpened()
     {
     }
-    
 }

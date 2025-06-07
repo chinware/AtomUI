@@ -191,9 +191,10 @@ internal class MotionGhostControl : Control
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        Debug.Assert(_layout != null);
+      
         if (this.IsAttachedToVisualTree())
         {
+            Debug.Assert(_layout != null);
             if (change.Property == ContentProperty)
             {
                 if (change.OldValue is Control oldContent)
