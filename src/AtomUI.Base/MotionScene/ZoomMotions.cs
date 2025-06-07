@@ -26,7 +26,7 @@ internal class ZoomInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -106,7 +106,7 @@ public class ZoomOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
 
@@ -144,7 +144,7 @@ public class ZoomBigInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -262,7 +262,7 @@ public class ZoomUpInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -342,7 +342,7 @@ public class ZoomUpOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
 
@@ -380,7 +380,7 @@ public class ZoomLeftInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -460,7 +460,7 @@ public class ZoomLeftOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
 
@@ -498,7 +498,7 @@ public class ZoomRightInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -578,7 +578,7 @@ public class ZoomRightOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
 
@@ -616,7 +616,7 @@ public class ZoomDownInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 

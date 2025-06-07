@@ -1,9 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Primitives;
 using AtomUI.Data;
-using AtomUI.Media;
-using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -48,7 +45,7 @@ public class Popup : AvaloniaPopup,
             (o, v) => o.IsFlipped = v);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<Popup>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Popup>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Popup>();
@@ -111,7 +108,7 @@ public class Popup : AvaloniaPopup,
     #endregion
 
     private CompositeDisposable? _resourceBindingsDisposable;
-    private PopupShadowLayer? _shadowLayer;
+    private PopupBuddyLayer? _buddyLayer;
     private IDisposable? _selfLightDismissDisposable;
     private IManagedPopupPositionerPopup? _managedPopupPositioner;
     private bool _isNeedDetectFlip = true;
@@ -139,7 +136,7 @@ public class Popup : AvaloniaPopup,
         Closed += HandleClosed;
         Opened += HandleOpened;
     }
-
+    
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
@@ -148,7 +145,7 @@ public class Popup : AvaloniaPopup,
             TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationFast));
-        CreateShadowLayer();
+        CreateBuddyLayer();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -176,7 +173,10 @@ public class Popup : AvaloniaPopup,
         VerticalOffset   = offsetY;
 
         _selfLightDismissDisposable?.Dispose();
-        _shadowLayer?.Close();
+        if (!_closeAnimating)
+        {
+            _buddyLayer?.Detach();
+        }
         _firstDetected = true;
     }
 
@@ -210,7 +210,7 @@ public class Popup : AvaloniaPopup,
 
             if (!_openAnimating)
             {
-                _shadowLayer?.Open();
+                _buddyLayer?.Attach();
             }
 
             // 如果没有启动，我们使用自己的处理函数，一般是为了增加我们自己的动画效果
@@ -254,16 +254,19 @@ public class Popup : AvaloniaPopup,
             }
         }
     }
-
-    private void CreateShadowLayer()
+    
+    private void CreateBuddyLayer()
     {
-        if (_shadowLayer is not null)
+        if (_buddyLayer is not null)
         {
             return;
         }
-        _shadowLayer = new PopupShadowLayer(this);
-        BindUtils.RelayBind(this, MaskShadowsProperty, _shadowLayer);
-        BindUtils.RelayBind(this, OpacityProperty, _shadowLayer);
+
+        var topLevel = TopLevel.GetTopLevel(PlacementTarget);
+        Debug.Assert(topLevel is not null);
+        _buddyLayer = new PopupBuddyLayer(this, topLevel);
+        BindUtils.RelayBind(this, MaskShadowsProperty, _buddyLayer, PopupBuddyLayer.MaskShadowsProperty);
+        BindUtils.RelayBind(this, MotionDurationProperty, _buddyLayer, PopupBuddyLayer.MotionDurationProperty);
     }
 
     internal (bool, bool) CalculateFlipInfo(Size translatedSize, Rect anchorRect, PopupAnchor anchor,
@@ -483,6 +486,7 @@ public class Popup : AvaloniaPopup,
 
     public void MotionAwareOpen(Action? opened = null)
     {
+        Debug.Assert(_buddyLayer != null);
         // AbstractPopup is currently open
         if (IsOpen || _openAnimating || _closeAnimating)
         {
@@ -492,85 +496,52 @@ public class Popup : AvaloniaPopup,
         if (!IsMotionEnabled)
         {
             Open();
-            _shadowLayer?.Open();
+            _buddyLayer.Attach();
             opened?.Invoke();
+            (Host as PopupRoot)?.PlatformImpl?.SetTopmost(true);
             return;
         }
 
         _openAnimating = true;
         Open();
-
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
+        popupRoot.Opacity = 0.0;
         if (_isNeedWaitFlipSync)
         {
-            popupRoot.Opacity = 0.0;
             Dispatcher.UIThread.Post(() =>
             {
-                popupRoot.Opacity = 1.0;
-                RunOpenAnimation(popupRoot, opened);
+                ShowBuddyWithMotion(opened);
             });
             return;
         }
-
-        RunOpenAnimation(popupRoot, opened);
+        
+        ShowBuddyWithMotion(opened);
     }
 
-    private void RunOpenAnimation(PopupRoot popupRoot, Action? opened = null)
+    private void ShowBuddyWithMotion(Action? opened = null)
     {
-        var placementTarget = GetEffectivePlacementTarget();
-        var popupOffset     = popupRoot.PlatformImpl!.Position;
-        var topLevel        = TopLevel.GetTopLevel(placementTarget);
-        var scaling         = 1.0;
-        if (topLevel is WindowBase windowBase)
+        Debug.Assert(_buddyLayer != null);
+        var popupRoot = Host as PopupRoot;
+        Debug.Assert(popupRoot != null);
+        _buddyLayer.AttachWithMotion(null, () =>
         {
-            scaling = windowBase.DesktopScaling;
-        }
-
-        var offset = new Point(popupOffset.X, popupOffset.Y);
-
-        var maskShadowsThickness = MaskShadows.Thickness();
-        var motionActorOffset = new Point(offset.X - maskShadowsThickness.Left * scaling,
-            offset.Y - maskShadowsThickness.Top * scaling);
-
-        var motionTarget = Child ?? popupRoot;
-        var motion       = new ZoomBigInMotion(MotionDuration);
-        var motionActor = new PopupMotionActor(motionActorOffset,
-            MotionGhostControlUtils.BuildMotionGhost(Child ?? popupRoot, MaskShadows),
-            motionTarget.DesiredSize);
-
-        // 获取 popup 的具体位置，这个就是非常准确的位置，还有大小
-        // TODO 暂时只支持 WindowBase popup
-        popupRoot.Hide();
-
-        motionActor.SceneParent = topLevel;
-
-        MotionInvoker.DispatchInMotionSceneLayer(motionActor, motion, null, () =>
-        {
-            _shadowLayer?.Open();
-            popupRoot.Show();
-            if (OperatingSystem.IsMacOS())
-            {
-                popupRoot.Activate();
-            }
-            else
-            {
-                // 暂时这样，后面可能还需要针对 Linux 设置一下
-                popupRoot.PlatformImpl.SetTopmost(true);
-            }
-            opened?.Invoke();
             _isNeedWaitFlipSync = false;
             _openAnimating      = false;
+            opened?.Invoke();
             if (RequestCloseWhereAnimationCompleted)
             {
                 RequestCloseWhereAnimationCompleted = false;
-                Dispatcher.UIThread.InvokeAsync(() => { MotionAwareClose(); });
+                Dispatcher.UIThread.Post(() => { MotionAwareClose(); });
             }
+            popupRoot.Opacity = 1.0;
+            popupRoot.PlatformImpl?.SetTopmost(true);
         });
     }
 
     public void MotionAwareClose(Action? closed = null)
     {
+        Debug.Assert(_buddyLayer != null);
         if (_closeAnimating)
         {
             return;
@@ -589,7 +560,7 @@ public class Popup : AvaloniaPopup,
 
         if (!IsMotionEnabled)
         {
-            _shadowLayer?.Close();
+            _buddyLayer?.Detach();
             _isNeedDetectFlip = true;
             Close();
             closed?.Invoke();
@@ -597,37 +568,10 @@ public class Popup : AvaloniaPopup,
         }
 
         _closeAnimating = true;
-
-        var motion = new ZoomBigOutMotion(MotionDuration);
-
-        var popupRoot       = (Host as PopupRoot)!;
-        var popupOffset     = popupRoot.PlatformImpl!.Position;
-        var offset          = new Point(popupOffset.X, popupOffset.Y);
-        var placementTarget = GetEffectivePlacementTarget();
-        var topLevel        = TopLevel.GetTopLevel(placementTarget);
-
-        var scaling = 1.0;
-
-        if (topLevel is WindowBase windowBase)
-        {
-            scaling = windowBase.DesktopScaling;
-        }
-
-        var maskShadowsThickness = MaskShadows.Thickness();
-        var motionActorOffset = new Point(offset.X - maskShadowsThickness.Left * scaling,
-            offset.Y - maskShadowsThickness.Top * scaling);
-
-        var motionTarget = Child ?? popupRoot;
-        var motionActor = new PopupMotionActor(motionActorOffset,
-            MotionGhostControlUtils.BuildMotionGhost(Child ?? popupRoot, MaskShadows),
-            motionTarget.DesiredSize);
-
-        motionActor.SceneParent = topLevel;
-        MotionInvoker.DispatchOutMotionSceneLayer(motionActor, motion, () =>
-        {
-            _shadowLayer?.Hide();
-            popupRoot.Opacity = 0d;
-        }, () =>
+        var popupRoot = Host as PopupRoot;
+        Debug.Assert(popupRoot != null);
+        popupRoot.Opacity = 0d;
+        _buddyLayer.DetachWithMotion(null, () =>
         {
             _closeAnimating   = false;
             _isNeedDetectFlip = true;
@@ -642,22 +586,6 @@ public class Popup : AvaloniaPopup,
         if (change.Property == IsFlippedProperty)
         {
             _isNeedWaitFlipSync = true;
-        }
-    }
-
-    internal readonly struct IgnoreIsOpenScope : IDisposable
-    {
-        private readonly Popup _owner;
-
-        public IgnoreIsOpenScope(Popup owner)
-        {
-            _owner = owner;
-            _owner.SetIgnoreIsOpenChanged(true);
-        }
-
-        public void Dispose()
-        {
-            _owner.SetIgnoreIsOpenChanged(false);
         }
     }
 }

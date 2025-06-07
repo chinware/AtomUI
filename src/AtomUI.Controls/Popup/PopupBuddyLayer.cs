@@ -1,0 +1,201 @@
+using AtomUI.Data;
+using AtomUI.Media;
+using AtomUI.MotionScene;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Primitives;
+using Avalonia.Media;
+using Avalonia.Threading;
+
+namespace AtomUI.Controls;
+
+internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
+{
+    #region 公共属性定义
+
+    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
+        Border.BoxShadowProperty.AddOwner<PopupBuddyLayer>();
+    
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        Popup.MotionDurationProperty.AddOwner<PopupBuddyLayer>();
+    
+    public BoxShadows MaskShadows
+    {
+        get => GetValue(MaskShadowsProperty);
+        set => SetValue(MaskShadowsProperty, value);
+    }
+    
+    public TimeSpan MotionDuration
+    {
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
+    }
+    
+    #endregion
+
+    private Popup _buddyPopup;
+    private IPopupHost? _popupHost;
+    
+    private PopupBuddyDecorator _buddyDecorator; 
+    
+    public PopupBuddyLayer(Popup buddyPopup, TopLevel parent)
+        : base(parent)
+    {
+        _buddyPopup     = buddyPopup;
+        _buddyDecorator = new PopupBuddyDecorator(_buddyPopup);
+        BindUtils.RelayBind(this, MaskShadowsProperty, _buddyDecorator, PopupBuddyDecorator.MaskShadowsProperty);
+        if (_buddyPopup is IPopupHostProvider popupHostProvider)
+        {
+            popupHostProvider.PopupHostChanged += host =>
+            {
+                if (host is PopupRoot popupRoot)
+                {
+                    if (_popupHost is PopupRoot oldPopupRoot)
+                    {
+                        oldPopupRoot.SizeChanged     -= HandleBuddyPopupRootSizeChanged;
+                        oldPopupRoot.PositionChanged -= HandleBuddyPopupRootPositionChanged;
+                    }
+                    popupRoot.SizeChanged     += HandleBuddyPopupRootSizeChanged;
+                    popupRoot.PositionChanged += HandleBuddyPopupRootPositionChanged;
+                    ConfigureSizeAndPosition(popupRoot);
+                }
+                _popupHost = host;
+            };
+        }
+        SetMotionActor(_buddyDecorator);
+        _buddyDecorator.NotifyMotionTargetAddedToScene();
+    }
+
+    private void HandleBuddyPopupRootSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        if (sender is PopupRoot popupRoot)
+        {
+            ConfigureSizeAndPosition(popupRoot);
+        }
+    }
+
+    private void HandleBuddyPopupRootPositionChanged(object? sender, PixelPointEventArgs e)
+    {
+        if (sender is PopupRoot popupRoot)
+        {
+            ConfigureSizeAndPosition(popupRoot);
+        }
+    }
+
+    private void ConfigureSizeAndPosition(PopupRoot popupRoot)
+    {
+        // 这个是否大小和位置信息都有了
+        var popupOffset = popupRoot.PlatformImpl!.Position;
+        var topLevel    = GetTopLevel(_buddyPopup.PlacementTarget);
+        var scaling     = 1.0;
+        if (topLevel is WindowBase windowBase)
+        {
+            scaling = windowBase.DesktopScaling;
+        }
+        var offset = new Point(popupOffset.X, popupOffset.Y);
+        var maskShadowsThickness = MaskShadows.Thickness();
+        var layerOffset = new Point(offset.X - maskShadowsThickness.Left * scaling,
+            offset.Y - maskShadowsThickness.Top * scaling);
+
+        Size targetSize = default;
+        
+        var content = popupRoot.Presenter?.Content;
+        if (content is IShadowMaskInfoProvider shadowMaskInfoProvider)
+        {
+            var maskBounds   = shadowMaskInfoProvider.GetMaskBounds();
+            targetSize   = new Size(maskBounds.Width, maskBounds.Height);
+        }
+        else if (content is Border bordered)
+        {
+            targetSize         = bordered.DesiredSize;
+        }
+        else if (content is TemplatedControl templatedControl)
+        {
+            targetSize         = templatedControl.DesiredSize;
+        }
+        
+        MoveAndResize(layerOffset, targetSize.Inflate(MaskShadows.Thickness()));
+    }
+
+    public void Attach()
+    {
+        Show();
+    }
+
+    public void Detach()
+    {
+        Hide();
+    }
+
+    public void AttachWithMotion(Action? aboutToStart = null,
+                                 Action? completedAction = null,
+                                 CancellationToken cancellationToken = default)
+    {
+        Show();
+  
+        _buddyDecorator.NotifySceneShowed();
+        aboutToStart?.Invoke();
+        var motion       = new ZoomBigInMotion(MotionDuration);
+        NotifyAboutToRunAttachMotion();
+        Dispatcher.UIThread.Post(() =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await motion.RunAsync(_buddyDecorator, null, () =>
+                {
+                    completedAction?.Invoke();
+                    NotifyAttachMotionCompleted();
+                }, cancellationToken);
+            });
+        });
+    }
+    
+    public void DetachWithMotion(Action? aboutToStart = null,
+                                 Action? completedAction = null,
+                                 CancellationToken cancellationToken = default)
+    {
+
+        aboutToStart?.Invoke();
+        var motion = new ZoomBigOutMotion(MotionDuration);
+        NotifyAboutToRunDetachMotion();
+        Dispatcher.UIThread.Post(() =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await motion.RunAsync(_buddyDecorator, null, () =>
+                {
+                    Hide();
+                    completedAction?.Invoke();
+                    NotifyDetachMotionCompleted();
+                }, cancellationToken);
+            });
+        });
+    }
+
+    protected void NotifyAboutToRunAttachMotion()
+    {
+        _buddyDecorator.ShowDecoratorContent();
+    }
+    
+    protected void NotifyAttachMotionCompleted()
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            _buddyDecorator.HideDecoratorContent();
+        });
+    }
+    
+    protected void NotifyAboutToRunDetachMotion()
+    {
+        _buddyDecorator.ShowDecoratorContent();
+    }
+    
+    protected void NotifyDetachMotionCompleted()
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            _buddyDecorator.HideDecoratorContent();
+        });
+    }
+}

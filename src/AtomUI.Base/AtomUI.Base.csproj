@@ -21,5 +21,9 @@
     <ItemGroup>
         <ProjectReference Include="../AtomUI.Native/AtomUI.Native.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Media\INotifyTransitionCompleted.cs" />
+    </ItemGroup>
     
 </Project>

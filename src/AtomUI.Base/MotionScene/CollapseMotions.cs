@@ -63,7 +63,7 @@ public class CollapseMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
             if (isHorizontal)
@@ -133,7 +133,7 @@ public class ExpandMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
             if (isHorizontal)

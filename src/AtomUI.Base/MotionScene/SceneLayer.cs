@@ -98,6 +98,14 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
         _layout.Children.Add(actorControl);
     }
 
+    public void RemoveMotionActor()
+    {
+        if (_motionActorControl != null)
+        {
+            _layout.Children.Remove(_motionActorControl);
+        }
+    }
+
     // 这个地方我们可以需要定制
     protected override Size MeasureOverride(Size availableSize)
     {

@@ -25,7 +25,7 @@ public class FadeInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
         }
@@ -84,7 +84,7 @@ public class FadeOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
         }

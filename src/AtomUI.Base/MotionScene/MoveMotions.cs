@@ -29,7 +29,7 @@ public class MoveDownInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -166,7 +166,7 @@ public class MoveDownOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
 
@@ -213,7 +213,7 @@ public class MoveUpInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -351,7 +351,7 @@ public class MoveUpOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
 
@@ -399,7 +399,7 @@ public class MoveLeftInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -537,7 +537,7 @@ public class MoveLeftOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
 
@@ -585,7 +585,7 @@ public class MoveRightInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -721,7 +721,7 @@ public class MoveRightOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
 

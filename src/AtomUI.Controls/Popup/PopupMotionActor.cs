@@ -8,8 +8,8 @@ internal class PopupMotionActor : SceneMotionActorControl
 {
     private readonly Point _offset;
 
-    public PopupMotionActor(Point offset, MotionGhostControl motionGhost, Size motionTargetSize)
-        : base(motionGhost, motionTargetSize)
+    public PopupMotionActor(Point offset, MotionGhostControl motionGhost)
+        : base(motionGhost)
     {
         _offset     = offset;
     }

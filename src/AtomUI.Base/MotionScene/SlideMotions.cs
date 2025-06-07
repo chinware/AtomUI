@@ -25,7 +25,7 @@ public class SlideUpInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter
@@ -103,7 +103,7 @@ public class SlideUpOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter
@@ -140,7 +140,7 @@ public class SlideDownInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -161,7 +161,7 @@ public class SlideDownInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.2
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter
@@ -219,7 +219,7 @@ public class SlideDownOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
             var scaleYSetter = new Setter
@@ -256,7 +256,7 @@ public class SlideLeftInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -335,7 +335,7 @@ public class SlideLeftOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
             var scaleXSetter = new Setter
@@ -372,7 +372,7 @@ public class SlideRightInMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             startFrame.Setters.Add(opacitySetter);
 
@@ -451,7 +451,7 @@ public class SlideRightOutMotion : AbstractMotion
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.0
+                Value    = 0.1
             };
             endFrame.Setters.Add(opacitySetter);
             var scaleXSetter = new Setter
