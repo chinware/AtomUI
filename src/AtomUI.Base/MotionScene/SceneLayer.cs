@@ -12,17 +12,19 @@ namespace AtomUI.MotionScene;
 internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
     private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
-    // private static readonly FieldInfo ManagedPopupPositionerPopupInfo;
     private readonly Canvas _layout;
     private SceneMotionActorControl? _motionActorControl;
 
     static SceneLayer()
     {
         BackgroundProperty.OverrideDefaultValue<SceneLayer>(Brushes.Transparent);
-        // ManagedPopupPositionerPopupInfo = typeof(ManagedPopupPositioner).GetField("_popup",
-        //     BindingFlags.Instance | BindingFlags.NonPublic)!;
     }
 
+    public SceneLayer(TopLevel parent)
+        : this(parent, parent.PlatformImpl!.CreatePopup()!, null)
+    {
+    }
+    
     public SceneLayer(TopLevel parent, IPopupImpl impl)
         : this(parent, impl, null)
     {
