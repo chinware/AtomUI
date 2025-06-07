@@ -1,10 +1,9 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -127,7 +126,7 @@ internal class MenuScrollViewerTheme : BaseControlTheme
             var iconButtonStyle = new Style(selector => selector.Nesting().Template().OfType<IconButton>());
             iconButtonStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
             }));
             isMotionEnabledStyle.Add(iconButtonStyle);
             Add(isMotionEnabledStyle);

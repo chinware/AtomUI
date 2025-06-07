@@ -1,5 +1,5 @@
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Animation;
@@ -45,7 +45,7 @@ internal class HyperLinkTextBlockTheme : BaseControlTheme
             var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(HyperLinkTextBlock.IsMotionEnabledProperty, true));
             isMotionEnabledStyle.Add(HyperLinkTextBlock.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)
             }));
             commonStyle.Add(isMotionEnabledStyle);
         }

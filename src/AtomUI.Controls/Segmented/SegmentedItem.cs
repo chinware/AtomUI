@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Media;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
@@ -148,7 +148,7 @@ public class SegmentedItem : ContentControl,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
             };
         }
         else

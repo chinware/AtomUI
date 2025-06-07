@@ -2,7 +2,7 @@
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 
-namespace AtomUI.Media;
+namespace AtomUI.Animations;
 
 public class SolidColorBrushTransition : InterpolatingTransitionBase<IBrush?>
 {

@@ -1,3 +1,4 @@
+using AtomUI.Animations;
 using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
@@ -14,7 +15,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
-using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -265,11 +265,11 @@ public class ToggleSwitch : ToggleButton,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<RectTransition>(KnobMovingRectProperty),
-                AnimationUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
-                AnimationUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
-                AnimationUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
+                TransitionUtils.CreateTransition<RectTransition>(KnobMovingRectProperty),
+                TransitionUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
+                TransitionUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
+                TransitionUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
             };
         }
         else

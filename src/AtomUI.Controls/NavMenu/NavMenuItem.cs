@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Input;
-using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using Avalonia;
@@ -708,7 +708,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             Transitions ??= new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
             };
         }
         else

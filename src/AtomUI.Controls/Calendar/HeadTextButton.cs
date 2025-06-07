@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
@@ -34,7 +34,7 @@ internal class HeadTextButton : AvaloniaButton
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
                     SharedTokenKey.MotionDurationFast)
             };
         }

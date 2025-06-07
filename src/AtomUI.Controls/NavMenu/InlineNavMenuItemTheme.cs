@@ -1,4 +1,5 @@
-﻿using AtomUI.MotionScene;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
@@ -115,7 +116,7 @@ internal class InlineNavMenuItemTheme : BaseNavMenuItemTheme
             menuIndicatorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() =>
                 new Transitions
                 {
-                    AnimationUtils.CreateTransition<TransformOperationsTransition>(ContentPresenter
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(ContentPresenter
                         .RenderTransformProperty)
                 }));
             isMotionEnabledStyle.Add(menuIndicatorStyle);

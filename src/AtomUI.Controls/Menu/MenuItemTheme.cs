@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Animations;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -15,7 +16,6 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
-using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -317,7 +317,7 @@ internal class MenuItemTheme : BaseControlTheme
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(ItemDecoratorPart));
             borderStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
             }));
             isMotionEnabledStyle.Add(borderStyle);
             commonStyle.Add(isMotionEnabledStyle);

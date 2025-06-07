@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
@@ -134,7 +134,7 @@ internal sealed class CalendarButton : AvaloniaButton
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
                     SharedTokenKey.MotionDurationFast)
             };
         }

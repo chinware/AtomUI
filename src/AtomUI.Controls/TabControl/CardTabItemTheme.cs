@@ -1,13 +1,12 @@
-﻿using AtomUI.IconPkg;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Styling;
-using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -53,7 +52,7 @@ internal class CardTabItemTheme : BaseTabItemTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             decoratorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
             }));
             isMotionEnabledStyle.Add(decoratorStyle);
             commonStyle.Add(isMotionEnabledStyle);

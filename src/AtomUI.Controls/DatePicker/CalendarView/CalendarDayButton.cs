@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -201,9 +201,9 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
                     SharedTokenKey.MotionDurationFast),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
                     SharedTokenKey.MotionDurationFast)
             };
         }

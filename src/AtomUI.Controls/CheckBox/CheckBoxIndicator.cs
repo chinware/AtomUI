@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -186,10 +187,10 @@ internal class CheckBoxIndicator : Control,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TristateMarkBrushProperty),
-                AnimationUtils.CreateTransition<DoubleTransition>(CheckedMarkEffectSizeProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(TristateMarkBrushProperty),
+                TransitionUtils.CreateTransition<DoubleTransition>(CheckedMarkEffectSizeProperty,
                     SharedTokenKey.MotionDurationMid, new BackEaseOut())
             };
         }

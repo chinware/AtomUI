@@ -1,7 +1,7 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -161,7 +161,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
         frameStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
+            TransitionUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
         }));
         isMotionEnabledStyle.Add(frameStyle);
         Add(isMotionEnabledStyle);

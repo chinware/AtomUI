@@ -1,8 +1,8 @@
-﻿using AtomUI.IconPkg;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -228,7 +228,7 @@ internal class TopLevelHorizontalNavMenuItemTheme : BaseControlTheme
             var indicatorStyle = new Style(selector => selector.Nesting().Template().Name(ActiveIndicatorPart));
             indicatorStyle.Add(Rectangle.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty)
             }));
             isMotionEnabledStyle.Add(indicatorStyle);
             Add(isMotionEnabledStyle);

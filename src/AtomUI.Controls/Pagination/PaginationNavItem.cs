@@ -1,7 +1,7 @@
 using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -9,7 +9,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -231,9 +230,9 @@ internal class PaginationNavItem : ContentControl,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
             };
         }
         else

@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -182,9 +183,9 @@ internal class RadioIndicator : Control,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
-                AnimationUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
+                TransitionUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
                     SharedTokenKey.MotionDurationFast)
             };
         }

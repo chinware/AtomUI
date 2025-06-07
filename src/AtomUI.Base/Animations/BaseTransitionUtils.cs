@@ -2,11 +2,11 @@
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 
-namespace AtomUI.Utils;
+namespace AtomUI.Animations;
 
-public class AnimationUtils
+public class BaseTransitionUtils
 {
-    protected AnimationUtils() {}
+    protected BaseTransitionUtils() {}
 
     public static ITransition CreateTransition<T>(AvaloniaProperty targetProperty,
                                                   TimeSpan? duration = null,

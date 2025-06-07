@@ -1,7 +1,6 @@
-﻿using AtomUI.Controls;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls;
 using AtomUI.Theme.Utils;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -208,10 +207,9 @@ public class Icon : Control,
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
-            {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
-            };   
+            Transitions ??= [
+                BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
+            ];   
         }
         else
         {

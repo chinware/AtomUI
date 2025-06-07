@@ -1,9 +1,9 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -206,8 +206,8 @@ internal class BaseNavMenuItemTheme : BaseControlTheme
             var borderStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             borderStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.ForegroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.ForegroundProperty)
             }));
             isMotionEnabledStyle.Add(borderStyle);
             commonStyle.Add(isMotionEnabledStyle);

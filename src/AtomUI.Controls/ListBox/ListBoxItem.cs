@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Animation;
 
@@ -50,7 +50,7 @@ public class ListBoxItem : AvaloniaListBoxItem
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
             };
         }
         else

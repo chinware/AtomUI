@@ -1,5 +1,6 @@
-﻿using AtomUI.IconPkg;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Animation;
@@ -9,7 +10,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Styling;
-using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -60,7 +60,7 @@ internal class IconButtonTheme : BaseControlTheme
             contentStyle.Add(ContentPresenter.BackgroundProperty, SharedTokenKey.ColorTransparent);
             contentStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
             }));
             isMotionEnabledStyle.Add(contentStyle);
             commonStyle.Add(isMotionEnabledStyle);

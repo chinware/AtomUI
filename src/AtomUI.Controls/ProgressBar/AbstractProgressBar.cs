@@ -1,3 +1,5 @@
+using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -13,7 +15,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.VisualTree;
-using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -399,11 +400,11 @@ public abstract class AbstractProgressBar : RangeBase,
         {
             var transitions = new Transitions
             {
-                AnimationUtils.CreateTransition<DoubleTransition>(ValueProperty,
+                TransitionUtils.CreateTransition<DoubleTransition>(ValueProperty,
                     SharedTokenKey.MotionDurationVerySlow, new ExponentialEaseOut()),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
                     SharedTokenKey.MotionDurationFast),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
                     SharedTokenKey.MotionDurationFast)
             };
 

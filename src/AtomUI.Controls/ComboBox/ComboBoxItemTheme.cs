@@ -1,7 +1,7 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -11,7 +11,6 @@ using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
-using AnimationUtils = AtomUI.Controls.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -76,7 +75,7 @@ internal class ComboBoxItemTheme : BaseControlTheme
             var contentPresenterStyle = new Style(selector => selector.Nesting().Template().Name(ContentPresenterPart));
             contentPresenterStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
             }));
             isMotionEnabledStyle.Add(contentPresenterStyle);
             commonStyle.Add(isMotionEnabledStyle);

@@ -1,6 +1,6 @@
 using System.Diagnostics;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -195,14 +195,14 @@ public class OptionButton : AvaloniaRadioButton,
             var transitions = new Transitions();
             if (ButtonStyle == OptionButtonStyle.Solid)
             {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+                transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
             }
             else if (ButtonStyle == OptionButtonStyle.Outline)
             {
-                transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+                transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
             }
 
-            transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+            transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
             Transitions = transitions;
         }
         else

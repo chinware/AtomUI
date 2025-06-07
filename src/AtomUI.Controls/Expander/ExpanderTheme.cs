@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -225,7 +226,7 @@ internal class ExpanderTheme : BaseControlTheme
             expandIconButtonStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() =>
                 new Transitions
                 {
-                    AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
                 }));
             isMotionEnabledStyle.Add(expandIconButtonStyle);
             commonStyle.Add(isMotionEnabledStyle);

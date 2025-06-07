@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -21,7 +22,6 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
-using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -398,11 +398,11 @@ public class SliderTrack : Control,
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions()
+            Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty)
             };
         }
         else

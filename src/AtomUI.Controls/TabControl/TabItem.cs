@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Media;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -121,7 +121,7 @@ public class TabItem : AvaloniaTabItem,
         {
             Transitions ??= new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
             };
         }
         else

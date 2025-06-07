@@ -65,7 +65,7 @@ public class TabStrip : BaseTabStrip
             {
                 _selectedIndicator.Transitions ??= new Transitions()
                 {
-                    AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
                         SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
                 };
             }

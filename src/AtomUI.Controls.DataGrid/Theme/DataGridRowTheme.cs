@@ -1,10 +1,9 @@
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
@@ -172,7 +171,7 @@ internal class DataGridRowTheme : BaseControlTheme
             var frameStyle = new Style(selector => selector.Nesting().Template().Name(FramePart));
             frameStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty, SharedTokenKey.MotionDurationSlow)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty, SharedTokenKey.MotionDurationSlow)
             }));
             isMotionEnabledStyle.Add(frameStyle);
         }

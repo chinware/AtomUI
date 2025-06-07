@@ -1,4 +1,5 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -145,7 +146,7 @@ internal class SwitchKnob : Control,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
+                TransitionUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
             };
         }
         else

@@ -1,8 +1,8 @@
 using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
-using AtomUI.Media;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -555,18 +555,18 @@ public class Button : AvaloniaButton,
                     if (IsGhost)
                     {
                         transitions.Add(
-                            AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-                        transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+                            TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+                        transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                     }
                 }
                 else if (ButtonType == ButtonType.Default)
                 {
-                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+                    transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+                    transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                 }
                 else if (ButtonType == ButtonType.Link)
                 {
-                    transitions.Add(AnimationUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+                    transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                 }
 
                 Transitions = transitions;

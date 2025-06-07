@@ -102,14 +102,14 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             {
                 _rangePickerIndicator.Transitions ??= new Transitions
                 {
-                    AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty),
-                    AnimationUtils.CreateTransition<DoubleTransition>(OpacityProperty)
+                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty)
                 };
             }
         
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
+                TransitionUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
             };
         }
         else

@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -203,7 +204,7 @@ internal class CollapseItemTheme : BaseControlTheme
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(HeaderDecoratorPart));
             decoratorStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions
             {
-                AnimationUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
+                TransitionUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
             }));
             isMotionEnabledStyle.Add(decoratorStyle);
             
@@ -211,7 +212,7 @@ internal class CollapseItemTheme : BaseControlTheme
                 new Style(selector => selector.Nesting().Template().Name(ExpandButtonPart));
             expandButtonStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
+                TransitionUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
             }));
             isMotionEnabledStyle.Add(expandButtonStyle);
         }

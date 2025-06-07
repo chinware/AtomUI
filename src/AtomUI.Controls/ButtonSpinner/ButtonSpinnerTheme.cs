@@ -1,5 +1,5 @@
-﻿using AtomUI.IconPkg.AntDesign;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -10,7 +10,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
-using AnimationUtils = AtomUI.Utils.AnimationUtils;
 
 namespace AtomUI.Controls;
 
@@ -173,7 +172,7 @@ internal class ButtonSpinnerTheme : BaseControlTheme
         var iconStyle = new Style(selector => selector.Nesting().Nesting().OfType<IconButton>());
         iconStyle.Add(IconButton.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
+            BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(TemplatedControl.BackgroundProperty)
         }));
         isEnableMotionStyle.Add(iconStyle);
         commonStyle.Add(isEnableMotionStyle);

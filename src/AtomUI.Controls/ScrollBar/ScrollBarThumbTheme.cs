@@ -1,5 +1,5 @@
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Animation;
@@ -28,7 +28,7 @@ internal class ScrollBarThumbTheme : BaseControlTheme
                 Name = FramePart,
                 Transitions = new Transitions
                 {
-                    AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
                 }
             };
             CreateTemplateParentBinding(frame, Border.BackgroundProperty, ScrollBarThumb.BackgroundProperty);

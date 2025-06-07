@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -197,7 +197,7 @@ internal class BaseCalendarDayButton : AvaloniaButton,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
                     SharedTokenKey.MotionDurationFast)
             };
         }

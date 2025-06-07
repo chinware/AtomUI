@@ -1,7 +1,7 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using AtomUI.Theme;
@@ -626,7 +626,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
             };
         }
         else

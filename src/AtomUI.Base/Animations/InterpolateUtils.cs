@@ -1,6 +1,7 @@
-﻿using Avalonia.Media;
+﻿using AtomUI.Media;
+using Avalonia.Media;
 
-namespace AtomUI.Media;
+namespace AtomUI.Animations;
 
 public static class InterpolateUtils
 {

@@ -1,5 +1,5 @@
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -82,7 +82,7 @@ internal class DrawerContainerTheme : BaseControlTheme
             var isMotionEnabledStyle = new Style(selector => selector.Nesting().PropertyEquals(DrawerContainer.IsMotionEnabledProperty, true));
             isMotionEnabledStyle.Add(Border.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
             }));
             commonStyle.Add(isMotionEnabledStyle);
         }

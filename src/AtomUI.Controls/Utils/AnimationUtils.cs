@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AtomUI.Animations;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
@@ -7,7 +8,7 @@ using Avalonia.Animation.Easings;
 
 namespace AtomUI.Controls.Utils;
 
-public sealed class AnimationUtils : AtomUI.Utils.AnimationUtils
+public sealed class TransitionUtils : BaseTransitionUtils
 {
     public static ITransition CreateTransition<T>(AvaloniaProperty targetProperty,
                                                   TokenResourceKey? durationResourceKey = null,

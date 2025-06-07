@@ -171,7 +171,7 @@ internal class DrawerInfoContainer : HeaderedContentControl
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
             };
         }
         else

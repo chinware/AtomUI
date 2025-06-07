@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia.Animation;
@@ -120,8 +120,8 @@ internal class TopLevelMenuItemTheme : BaseControlTheme
         var headerPresenterStyle = new Style(selector => selector.Nesting().Template().Name(HeaderPresenterPart));
         headerPresenterStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() => new Transitions()
         {
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty),
-            AnimationUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)
+            TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty),
+            TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)
         }));
         isMotionEnabledStyle.Add(headerPresenterStyle);
         topLevelStyle.Add(isMotionEnabledStyle);

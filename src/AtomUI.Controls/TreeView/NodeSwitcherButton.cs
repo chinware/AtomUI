@@ -1,8 +1,8 @@
 using System.Diagnostics;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Media;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
@@ -146,7 +146,7 @@ internal class NodeSwitcherButton : ToggleButton
         {
             Transitions ??= new Transitions
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
             };
         }
         else

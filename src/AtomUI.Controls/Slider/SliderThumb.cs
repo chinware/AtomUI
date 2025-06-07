@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Utils;
-using AtomUI.Media;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
@@ -110,10 +110,10 @@ public class SliderThumb : TemplatedControl
         {
             Transitions ??= new Transitions()
             {
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty),
-                AnimationUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty,
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty),
+                TransitionUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty,
                     SharedTokenKey.MotionDurationFast),
-                AnimationUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty)
             };
         }
         else

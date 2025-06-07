@@ -1,3 +1,4 @@
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -195,7 +196,7 @@ internal class NodeSwitcherButtonTheme : BaseControlTheme
             rotationIconStyle.Add(ContentPresenter.TransitionsProperty, new SetterValueFactory<Transitions>(() =>
                 new Transitions
                 {
-                    AnimationUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
                 }));
             isMotionEnabledStyle.Add(rotationIconStyle);
             Add(isMotionEnabledStyle);
