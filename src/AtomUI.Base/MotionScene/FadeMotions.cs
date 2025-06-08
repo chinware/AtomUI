@@ -13,40 +13,21 @@ public class FadeInMotion : AbstractMotion
         : base(duration, easing ?? new LinearEasing(), fillMode)
     {
     }
-
-    protected override void Configure()
+    
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            startFrame.Setters.Add(opacitySetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
     }
 }
 
@@ -58,39 +39,20 @@ public class FadeOutMotion : AbstractMotion
         : base(duration, easing ?? new LinearEasing(), fillMode)
     {
     }
-
-    protected override void Configure()
+    
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            endFrame.Setters.Add(opacitySetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
     }
 }

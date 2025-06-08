@@ -249,8 +249,7 @@ internal class CountBadgeAdorner : TemplatedControl
         {
             _indicatorMotionActor.IsVisible = false;
             var motion = new BadgeZoomBadgeInMotion(MotionDuration);
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, () => { _indicatorMotionActor.IsVisible = true; }, null,
-                _motionCancellationTokenSource!.Token);
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, () => { _indicatorMotionActor.IsVisible = true; });
         }
     }
 
@@ -262,8 +261,7 @@ internal class CountBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource = new CancellationTokenSource();
 
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction(),
-                _motionCancellationTokenSource.Token);
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction());
         }
         else
         {

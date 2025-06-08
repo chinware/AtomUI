@@ -129,8 +129,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     }
 
     public void AttachWithMotion(Action? aboutToStart = null,
-                                 Action? completedAction = null,
-                                 CancellationToken cancellationToken = default)
+                                 Action? completedAction = null)
     {
         Show();
   
@@ -138,38 +137,25 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         aboutToStart?.Invoke();
         var motion       = new ZoomBigInMotion(MotionDuration);
         NotifyAboutToRunAttachMotion();
-        Dispatcher.UIThread.Post(() =>
+        motion.RunTransitions(_buddyDecorator, null, () =>
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await motion.RunAsync(_buddyDecorator, null, () =>
-                {
-                    completedAction?.Invoke();
-                    NotifyAttachMotionCompleted();
-                }, cancellationToken);
-            });
+            completedAction?.Invoke();
+            NotifyAttachMotionCompleted();
         });
     }
     
     public void DetachWithMotion(Action? aboutToStart = null,
-                                 Action? completedAction = null,
-                                 CancellationToken cancellationToken = default)
+                                 Action? completedAction = null)
     {
 
         aboutToStart?.Invoke();
         var motion = new ZoomBigOutMotion(MotionDuration);
         NotifyAboutToRunDetachMotion();
-        Dispatcher.UIThread.Post(() =>
+        motion.RunTransitions(_buddyDecorator, null, () =>
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await motion.RunAsync(_buddyDecorator, null, () =>
-                {
-                    Hide();
-                    completedAction?.Invoke();
-                    NotifyDetachMotionCompleted();
-                }, cancellationToken);
-            });
+            Hide();
+            completedAction?.Invoke();
+            NotifyDetachMotionCompleted();
         });
     }
 

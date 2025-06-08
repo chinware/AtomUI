@@ -1,8 +1,11 @@
-﻿using Avalonia;
+﻿using System.Reactive.Linq;
+using AtomUI.Animations;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media.Transformation;
+using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 
 namespace AtomUI.MotionScene;
@@ -11,6 +14,7 @@ public class AbstractMotion : IMotion
 {
     public RelativePoint RenderTransformOrigin { get; protected set; }
     public IList<Animation> Animations { get; }
+    public IList<INotifyTransitionCompleted> Transitions { get; }
     public TimeSpan Duration { get; }
     public Easing Easing { get; }
     public FillMode PropertyValueFillMode { get; }
@@ -21,6 +25,7 @@ public class AbstractMotion : IMotion
         Duration              = duration;
         Easing                = easing ?? new LinearEasing();
         PropertyValueFillMode = fillMode;
+        Transitions           = new List<INotifyTransitionCompleted>();
     }
 
     public async Task RunAsync(MotionActorControl actor,
@@ -48,8 +53,73 @@ public class AbstractMotion : IMotion
             completedAction?.Invoke();
         });
     }
+    
+    internal void RunTransitions(MotionActorControl actor,
+                                 Action? aboutToStart = null,
+                                 Action? completedAction = null)
+    {
+        ConfigureTransitions();
+        using var originRestore = new RenderTransformOriginRestore(actor);
+        actor.NotifyMotionPreStart();
+        NotifyPreStart();
+        aboutToStart?.Invoke();
+        
+        actor.RenderTransformOrigin = RenderTransformOrigin;
+        var observables = new List<IObservable<bool>>();
+
+        // 暂时先不保存 actor 原有的 transitions
+        actor.Transitions ??= new Transitions();
+        actor.Transitions.Clear();
+        foreach (var transition in Transitions)
+        {
+            observables.Add(transition.CompletedObservable);
+            actor.Transitions.Add(transition);
+        }
+        
+        actor.DisableTransitions();
+        ConfigureMotionStartValue(actor);
+        actor.EnableTransitions();
+        ConfigureMotionEndValue(actor);
+
+        observables.Zip()
+                   .LastAsync()
+                   .ObserveOn(AvaloniaScheduler.Instance)
+                   .Subscribe((v) =>
+                   {
+                       actor.NotifyMotionCompleted();
+                       NotifyCompleted();
+                       completedAction?.Invoke();
+                   });
+    }
 
     protected virtual void Configure()
+    {
+    }
+
+    protected virtual void ConfigureTransitions()
+    {
+        var opacityTransition             = new NotifiableDoubleTransition()
+        {
+            Duration = Duration,
+            Easing   = Easing,
+            Property = MotionActorControl.OpacityProperty,
+        };
+        Transitions.Add(opacityTransition);
+        
+        var transformOperationsTransition = new NotifiableTransformOperationsTransition()
+        {
+            Duration = Duration,
+            Easing   = Easing,
+            Property = MotionActorControl.MotionTransformProperty,
+        };
+        Transitions.Add(transformOperationsTransition);
+    }
+
+    protected virtual void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+    }
+
+    protected virtual void ConfigureMotionEndValue(MotionActorControl actor)
     {
     }
 

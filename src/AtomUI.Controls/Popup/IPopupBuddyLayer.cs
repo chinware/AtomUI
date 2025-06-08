@@ -5,9 +5,7 @@ internal interface IPopupBuddyLayer
     void Attach();
     void Detach();
     void AttachWithMotion(Action? aboutToStart = null,
-                          Action? completedAction = null,
-                          CancellationToken cancellationToken = default);
+                          Action? completedAction = null);
     void DetachWithMotion(Action? aboutToStart = null,
-                          Action? completedAction = null,
-                          CancellationToken cancellationToken = default);
+                          Action? completedAction = null);
 }

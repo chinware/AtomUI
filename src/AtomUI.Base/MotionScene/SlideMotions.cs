@@ -14,51 +14,22 @@ public class SlideUpInMotion : AbstractMotion
     {
     }
 
-    protected override void Configure()
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            startFrame.Setters.Add(opacitySetter);
-            var scaleYSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(0.01) // 不知道为啥设置成 0.0, 子元素渲染不正常
-            };
-            startFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleYSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(1.0)
-            };
-            endFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+        actor.MotionTransform = BuildScaleYTransform(0.8); // 不知道为啥设置成 0.0, 子元素渲染不正常;
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = BuildScaleYTransform(1.0);
     }
 }
 
@@ -71,52 +42,22 @@ public class SlideUpOutMotion : AbstractMotion
     {
     }
 
-    protected override void Configure()
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(1.0)
-            };
-            startFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleYSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(0.0)
-            };
-            endFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = BuildScaleYTransform(1.0);
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+        actor.MotionTransform = BuildScaleYTransform(0.8);
     }
 }
 
@@ -129,52 +70,22 @@ public class SlideDownInMotion : AbstractMotion
     {
     }
 
-    protected override void Configure()
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(0.01)
-            };
-            startFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleYSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(1.0)
-            };
-            endFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+        actor.MotionTransform = BuildScaleYTransform(0.8);
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = BuildScaleYTransform(1.0);
     }
 }
 
@@ -187,52 +98,22 @@ public class SlideDownOutMotion : AbstractMotion
     {
     }
 
-    protected override void Configure()
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleYSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(1.0)
-            };
-            startFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleYSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleYTransform(0.8)
-            };
-            endFrame.Setters.Add(scaleYSetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = BuildScaleYTransform(1.0);
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+        actor.MotionTransform = BuildScaleYTransform(0.8);
     }
 }
 
@@ -244,53 +125,23 @@ public class SlideLeftInMotion : AbstractMotion
         : base(duration, easing ?? new CubicEaseOut(), fillMode)
     {
     }
-
-    protected override void Configure()
+    
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(0.01)
-            };
-            startFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(1.0)
-            };
-            endFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+        actor.MotionTransform = BuildScaleXTransform(0.8);
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = BuildScaleXTransform(1.0);
     }
 }
 
@@ -303,52 +154,22 @@ public class SlideLeftOutMotion : AbstractMotion
     {
     }
 
-    protected override void Configure()
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(1.0)
-            };
-            startFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(0.8)
-            };
-            endFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = BuildScaleXTransform(1.0);
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+        actor.MotionTransform = BuildScaleXTransform(0.8);
     }
 }
 
@@ -361,52 +182,22 @@ public class SlideRightInMotion : AbstractMotion
     {
     }
 
-    protected override void Configure()
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(0.01)
-            };
-            startFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(1.0)
-            };
-            endFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+        actor.MotionTransform = BuildScaleXTransform(0.8);
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = BuildScaleXTransform(1.0);
     }
 }
 
@@ -419,51 +210,21 @@ public class SlideRightOutMotion : AbstractMotion
     {
     }
 
-    protected override void Configure()
+    protected override void ConfigureTransitions()
     {
-        var animation = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(1.0)
-            };
-            startFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            endFrame.Setters.Add(opacitySetter);
-            var scaleXSetter = new Setter
-            {
-                Property = MotionActorControl.MotionTransformProperty,
-                Value    = BuildScaleXTransform(0.8)
-            };
-            endFrame.Setters.Add(scaleXSetter);
-        }
-        animation.Children.Add(endFrame);
+        base.ConfigureTransitions();
         RenderTransformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = BuildScaleXTransform(1.0);
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        actor.Opacity         = 0.0;
+        actor.MotionTransform = BuildScaleXTransform(0.8);
     }
 }

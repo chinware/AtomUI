@@ -122,8 +122,7 @@ internal class DotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource = new CancellationTokenSource();
             var motion = new BadgeZoomBadgeInMotion(MotionDuration, null, FillMode.Forward);
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, () => _indicatorMotionActor.IsVisible = true,
-                null, _motionCancellationTokenSource.Token);
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, () => _indicatorMotionActor.IsVisible = true);
         }
     }
 
@@ -134,8 +133,7 @@ internal class DotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource = new CancellationTokenSource();
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration, null, FillMode.Forward);
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction(),
-                _motionCancellationTokenSource.Token);
+            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction());
         }
     }
 

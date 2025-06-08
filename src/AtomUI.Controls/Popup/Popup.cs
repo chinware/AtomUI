@@ -144,7 +144,7 @@ public class Popup : AvaloniaPopup,
         this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
-            SharedTokenKey.MotionDurationFast));
+            SharedTokenKey.MotionDurationMid));
         CreateBuddyLayer();
     }
 

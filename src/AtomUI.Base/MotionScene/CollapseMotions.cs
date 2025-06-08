@@ -18,75 +18,9 @@ public class CollapseMotion : AbstractMotion
         Direction = direction;
     }
 
-    protected override void Configure()
+    protected override void ConfigureTransitions()
     {
-        var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
-        var animation    = CreateAnimation();
-
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            startFrame.Setters.Add(opacitySetter);
-            if (isHorizontal)
-            {
-                var scaleXSetter = new Setter
-                {
-                    Property = MotionActorControl.MotionTransformProperty,
-                    Value    = BuildScaleXTransform(1.0)
-                };
-                startFrame.Setters.Add(scaleXSetter);
-            }
-            else
-            {
-                var scaleYSetter = new Setter
-                {
-                    Property = MotionActorControl.MotionTransformProperty,
-                    Value    = BuildScaleYTransform(1.0)
-                };
-                startFrame.Setters.Add(scaleYSetter);
-            }
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            endFrame.Setters.Add(opacitySetter);
-            if (isHorizontal)
-            {
-                var scaleXSetter = new Setter
-                {
-                    Property = MotionActorControl.MotionTransformProperty,
-                    Value    = BuildScaleXTransform(0.0)
-                };
-                endFrame.Setters.Add(scaleXSetter);
-            }
-            else
-            {
-                var scaleYSetter = new Setter
-                {
-                    Property = MotionActorControl.MotionTransformProperty,
-                    Value    = BuildScaleYTransform(0.0)
-                };
-                endFrame.Setters.Add(scaleYSetter);
-            }
-        }
-        animation.Children.Add(endFrame);
-
+        base.ConfigureTransitions();
         if (Direction == Direction.Left)
         {
             RenderTransformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative);
@@ -103,8 +37,34 @@ public class CollapseMotion : AbstractMotion
         {
             RenderTransformOrigin = new RelativePoint(0.5, 0.0, RelativeUnit.Relative);
         }
+    }
 
-        Animations.Add(animation);
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
+        actor.Opacity         = 1.0;
+        if (isHorizontal)
+        {
+            actor.MotionTransform = BuildScaleXTransform(1.0);
+        }
+        else
+        {
+            actor.MotionTransform = BuildScaleYTransform(1.0);
+        }
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
+        actor.Opacity         = 0.0;
+        if (isHorizontal)
+        {
+            actor.MotionTransform = BuildScaleXTransform(0.0);
+        }
+        else
+        {
+            actor.MotionTransform = BuildScaleYTransform(0.0);
+        }
     }
 }
 
@@ -120,76 +80,10 @@ public class ExpandMotion : AbstractMotion
     {
         Direction = direction;
     }
-
-    protected override void Configure()
+    
+    protected override void ConfigureTransitions()
     {
-        var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
-        var animation    = CreateAnimation();
-        var startFrame = new KeyFrame
-        {
-            Cue = new Cue(0.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 0.1
-            };
-            startFrame.Setters.Add(opacitySetter);
-            if (isHorizontal)
-            {
-                var scaleXSetter = new Setter
-                {
-                    Property = MotionActorControl.MotionTransformProperty,
-                    Value    = BuildScaleXTransform(0.01)
-                };
-                startFrame.Setters.Add(scaleXSetter);
-            }
-            else
-            {
-                var scaleYSetter = new Setter
-                {
-                    Property = MotionActorControl.MotionTransformProperty,
-                    Value    = BuildScaleYTransform(0.01)
-                };
-                startFrame.Setters.Add(scaleYSetter);
-            }
-        }
-        animation.Children.Add(startFrame);
-
-        var endFrame = new KeyFrame
-        {
-            Cue = new Cue(1.0)
-        };
-        {
-            var opacitySetter = new Setter
-            {
-                Property = Visual.OpacityProperty,
-                Value    = 1.0
-            };
-            endFrame.Setters.Add(opacitySetter);
-            if (isHorizontal)
-            {
-                var scaleXSetter = new Setter
-                {
-                    Property = MotionActorControl.MotionTransformProperty,
-                    Value    = BuildScaleXTransform(1.0)
-                };
-                endFrame.Setters.Add(scaleXSetter);
-            }
-            else
-            {
-                var scaleYSetter = new Setter
-                {
-                    Property = MotionActorControl.MotionTransformProperty,
-                    Value    = BuildScaleYTransform(1.0)
-                };
-                endFrame.Setters.Add(scaleYSetter);
-            }
-        }
-
-        animation.Children.Add(endFrame);
-
+        base.ConfigureTransitions();
         if (Direction == Direction.Left)
         {
             RenderTransformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
@@ -207,6 +101,33 @@ public class ExpandMotion : AbstractMotion
             RenderTransformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
         }
 
-        Animations.Add(animation);
+    }
+
+    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    {
+        var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
+        actor.Opacity         = 0.0;
+        if (isHorizontal)
+        {
+            actor.MotionTransform = BuildScaleXTransform(0.0);
+        }
+        else
+        {
+            actor.MotionTransform = BuildScaleYTransform(0.0);
+        }
+    }
+
+    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    {
+        var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
+        actor.Opacity         = 1.0;
+        if (isHorizontal)
+        {
+            actor.MotionTransform = BuildScaleXTransform(1.0);
+        }
+        else
+        {
+            actor.MotionTransform = BuildScaleYTransform(1.0);
+        }
     }
 }

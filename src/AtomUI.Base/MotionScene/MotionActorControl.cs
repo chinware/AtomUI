@@ -2,7 +2,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
@@ -10,13 +9,13 @@ public class MotionActorControl : Decorator
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<TransformOperations?> MotionTransformProperty =
-        AvaloniaProperty.Register<MotionActorControl, TransformOperations?>(nameof(MotionTransform));
+    public static readonly StyledProperty<ITransform?> MotionTransformProperty =
+        AvaloniaProperty.Register<MotionActorControl, ITransform?>(nameof(MotionTransform));
 
     public static readonly StyledProperty<bool> UseRenderTransformProperty =
         AvaloniaProperty.Register<MotionActorControl, bool>(nameof(UseRenderTransform));
 
-    public TransformOperations? MotionTransform
+    public ITransform? MotionTransform
     {
         get => GetValue(MotionTransformProperty);
         set => SetValue(MotionTransformProperty, value);

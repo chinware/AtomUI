@@ -1,13 +1,16 @@
 ﻿using Avalonia.Animation;
 using Avalonia.Media;
-using Avalonia.Media.Immutable;
 
 namespace AtomUI.Animations;
 
-public class SolidColorBrushTransition : InterpolatingTransitionBase<ISolidColorBrush?>
+public class SolidColorBrushTransition : InterpolatingTransitionBase<IBrush?>
 {
-    protected override ISolidColorBrush? Interpolate(double progress, ISolidColorBrush? from, ISolidColorBrush? to)
+    protected override IBrush? Interpolate(double progress, IBrush? from, IBrush? to)
     {
-        return InterpolateUtils.SolidColorBrushInterpolate(progress, from, to);
+        if (from is ISolidColorBrush fromBrush && to is ISolidColorBrush toBrush)
+        {
+            return InterpolateUtils.SolidColorBrushInterpolate(progress, fromBrush, toBrush);
+        }
+        return InterpolateUtils.BrushInterpolate(progress, from, to);
     }
 }

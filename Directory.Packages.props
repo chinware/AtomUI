@@ -10,7 +10,7 @@
         <PackageVersion Include="AtomUI.Controls.DataGrid" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
-
+        <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="AtomUI" Version="$(AtomUIVersion)"/>
 
         <!-- TODO 版本是否跟随 AvaloniaVersion？-->

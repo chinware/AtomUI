@@ -1,3 +1,5 @@
+using Avalonia.Animation;
+
 namespace AtomUI.Animations;
 
 public class TransitionCompletedEventArgs : EventArgs
@@ -10,7 +12,7 @@ public class TransitionCompletedEventArgs : EventArgs
     }
 }
 
-internal interface INotifyTransitionCompleted
+public interface INotifyTransitionCompleted : ITransition
 {
     public IObservable<bool> CompletedObservable { get; }
     public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
