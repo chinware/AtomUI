@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -10,7 +12,7 @@ namespace AtomUI.Input;
 internal class TransformTrackingHelper : IDisposable
 {
     #region 反射信息定义
-
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields, typeof(DispatcherPriority))]
     private static readonly Lazy<FieldInfo> AfterRenderFieldInfo = new Lazy<FieldInfo>(() =>
         typeof(DispatcherPriority).GetFieldInfoOrThrow("AfterRender",
             BindingFlags.Static | BindingFlags.NonPublic));
