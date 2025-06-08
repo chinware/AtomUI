@@ -4,28 +4,10 @@ using Avalonia.Media.Immutable;
 
 namespace AtomUI.Animations;
 
-public class SolidColorBrushTransition : InterpolatingTransitionBase<IBrush?>
+public class SolidColorBrushTransition : InterpolatingTransitionBase<ISolidColorBrush?>
 {
-    protected override IBrush? Interpolate(double progress, IBrush? from, IBrush? to)
+    protected override ISolidColorBrush? Interpolate(double progress, ISolidColorBrush? from, ISolidColorBrush? to)
     {
-        if (from is null || to is null)
-        {
-            return progress >= 0.5 ? to : from;
-        }
-
-        if (from is ISolidColorBrush fromBrush && to is ISolidColorBrush toBrush)
-        {
-            return new ImmutableSolidColorBrush(
-                InterpolateUtils.ColorInterpolate(fromBrush.Color, toBrush.Color, progress),
-                DoubleInterpolate(progress, from.Opacity, to.Opacity));
-        }
-
-        // TODO 不知道这样返回是否合适
-        return from;
-    }
-
-    private double DoubleInterpolate(double progress, double oldValue, double newValue)
-    {
-        return (newValue - oldValue) * progress + oldValue;
+        return InterpolateUtils.SolidColorBrushInterpolate(progress, from, to);
     }
 }

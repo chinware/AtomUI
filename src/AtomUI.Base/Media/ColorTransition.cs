@@ -8,6 +8,6 @@ public class ColorTransition : InterpolatingTransitionBase<Color>
 {
     protected override Color Interpolate(double progress, Color from, Color to)
     {
-        return InterpolateUtils.ColorInterpolate(from, to, progress);
+        return InterpolateUtils.ColorInterpolate(progress, from, to);
     }
 }
