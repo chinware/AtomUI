@@ -65,21 +65,28 @@ internal class AbstractMotion : IMotion
                                           CancellationToken cancellationToken = default)
     {
         ConfigureAnimation();
-        
-        using var originRestore = new RenderTransformOriginRestore(actor);
-        actor.RenderTransformOrigin = RenderTransformOrigin;
-        actor.NotifyMotionPreStart();
-        NotifyPreStart();
-        aboutToStart?.Invoke();
-      
-        foreach (var animation in Animations)
+        var originRenderTransformOrigin = actor.RenderTransformOrigin;
+        try
         {
-            await animation.RunAsync(actor, cancellationToken);
-        }
+            actor.RenderTransformOrigin = RenderTransformOrigin;
+            actor.NotifyMotionPreStart();
+            NotifyPreStart();
+            aboutToStart?.Invoke();
+      
+            foreach (var animation in Animations)
+            {
+                await animation.RunAsync(actor, cancellationToken);
+            }
 
-        actor.NotifyMotionCompleted();
-        NotifyCompleted();
-        completedAction?.Invoke();
+            actor.NotifyMotionCompleted();
+            NotifyCompleted();
+            completedAction?.Invoke();
+        }
+        finally
+        {
+            actor.RenderTransformOrigin = originRenderTransformOrigin;
+        }
+        
     }
     
     private async Task RunTransitionsAsync(MotionActorControl actor,
@@ -88,7 +95,7 @@ internal class AbstractMotion : IMotion
                                            CancellationToken cancellationToken = default)
     {
         ConfigureTransitions();
-        using var originRestore = new RenderTransformOriginRestore(actor);
+        var originRenderTransformOrigin = actor.RenderTransformOrigin;
         actor.NotifyMotionPreStart();
         NotifyPreStart();
         aboutToStart?.Invoke();
@@ -116,9 +123,13 @@ internal class AbstractMotion : IMotion
                          .ToTask(cancellationToken);
         Dispatcher.UIThread.Post(() =>
         {
+            actor.DisableTransitions();
             actor.NotifyMotionCompleted();
             NotifyCompleted();
             completedAction?.Invoke();
+            actor.RenderTransformOrigin = originRenderTransformOrigin;
+            actor.MotionTransform       = null;
+            actor.Opacity               = 1.0d;
         });
     }
 
@@ -233,22 +244,5 @@ internal class AbstractMotion : IMotion
             FillMode = PropertyValueFillMode
         };
         return animation;
-    }
-}
-
-internal class RenderTransformOriginRestore : IDisposable
-{
-    RelativePoint _origin;
-    Control _target;
-
-    public RenderTransformOriginRestore(Control target)
-    {
-        _target = target;
-        _origin = target.RenderTransformOrigin;
-    }
-
-    public void Dispose()
-    {
-        _target.RenderTransformOrigin = _origin;
     }
 }

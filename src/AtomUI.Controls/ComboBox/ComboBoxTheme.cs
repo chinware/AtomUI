@@ -163,7 +163,7 @@ internal class ComboBoxTheme : BaseControlTheme
         {
             Name                       = PopupPart,
             WindowManagerAddShadowHint = false,
-            IsLightDismissEnabled      = true,
+            IsLightDismissEnabled      = false,
             Placement                  = PlacementMode.BottomEdgeAlignedLeft
         };
         popup.RegisterInNameScope(scope);

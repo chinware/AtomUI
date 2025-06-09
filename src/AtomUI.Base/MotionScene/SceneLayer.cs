@@ -39,7 +39,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     public SceneLayer(TopLevel parent, IPopupImpl impl, IAvaloniaDependencyResolver? dependencyResolver)
         : base(impl, dependencyResolver)
     {
-        ParentTopLevel = parent;
+        ParentTopLevel   = parent;
         IsHitTestVisible = false;
         impl.SetWindowManagerAddShadowHint(false);
         if (PlatformImpl is not null)
@@ -53,8 +53,8 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
             _managedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
         }
 
-        _layout = new Canvas();
-        Content = _layout;
+        _layout   = new Canvas();
+        Content   = _layout;
         Focusable = true;
     }
 
@@ -110,7 +110,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     protected override Size MeasureOverride(Size availableSize)
     {
         var maxAutoSize = PlatformImpl?.MaxAutoSizeHint ?? Size.Infinity;
-        var constraint = availableSize;
+        var constraint  = availableSize;
 
         if (double.IsInfinity(constraint.Width))
         {
@@ -122,10 +122,10 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
             constraint = constraint.WithHeight(maxAutoSize.Height);
         }
 
-        var measured = base.MeasureOverride(constraint);
-        var width = measured.Width;
-        var height = measured.Height;
-        var widthCache = Width;
+        var measured    = base.MeasureOverride(constraint);
+        var width       = measured.Width;
+        var height      = measured.Height;
+        var widthCache  = Width;
         var heightCache = Height;
 
         if (!double.IsNaN(widthCache))
@@ -154,7 +154,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 
     public void MoveAndResize(Point point, Size size)
     {
-        Width = size.Width;
+        Width  = size.Width;
         Height = size.Height;
         _managedPopupPositionerPopup?.MoveAndResize(new Point(Math.Round(point.X), Math.Floor(point.Y + 0.5)), size);
     }

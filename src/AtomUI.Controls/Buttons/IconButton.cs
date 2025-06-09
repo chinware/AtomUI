@@ -151,20 +151,11 @@ public class IconButton : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (this.IsAttachedToVisualTree())
+        if (e.Property == IconProperty)
         {
-            if (e.Property == IconProperty)
+            if (e.NewValue is Icon newIcon)
             {
-                if (e.OldValue is Icon oldIcon)
-                {
-                    oldIcon.SetTemplatedParent(null);
-                }
-
-                if (e.NewValue is Icon newIcon)
-                {
-                    newIcon.SetTemplatedParent(this);
-                    ConfigureIcon(newIcon);
-                }
+                ConfigureIcon(newIcon);
             }
         }
     }
@@ -184,7 +175,6 @@ public class IconButton : AvaloniaButton,
             BindUtils.RelayBind(this, SelectedIconBrushProperty, icon, Icon.SelectedFilledBrushProperty);
             BindUtils.RelayBind(this, DisabledIconBrushProperty, icon, Icon.DisabledFilledBrushProperty);
         }
-        icon.SetTemplatedParent(this);
     }
 
     public bool HitTest(Point point)

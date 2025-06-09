@@ -47,7 +47,7 @@ internal class CollapseItemTheme : BaseControlTheme
             };
 
             BuildHeader(collapseItem, mainLayout, scope);
-            var motionActor = new MotionActorControl()
+            var motionActor = new MotionActorControl
             {
                 Name = ContentMotionActorPart
             };
@@ -59,19 +59,18 @@ internal class CollapseItemTheme : BaseControlTheme
             motionActor.Child = contentPresenter;
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentProperty,
                 ContentControl.ContentProperty,
-                BindingMode.Default, 
+                BindingMode.Default,
                 new FuncValueConverter<object?, object?>(
                     o =>
                     {
                         if (o is string str)
                         {
-                            return new TextBlock()
+                            return new TextBlock
                             {
                                 Text              = str,
                                 VerticalAlignment = VerticalAlignment.Center
                             };
                         }
-
                         return o;
                     }));
             CreateTemplateParentBinding(contentPresenter, ContentPresenter.ContentTemplateProperty,
@@ -110,8 +109,9 @@ internal class CollapseItemTheme : BaseControlTheme
 
         var expandButton = new IconButton
         {
-            Name              = ExpandButtonPart,
-            VerticalAlignment = VerticalAlignment.Center
+            Name                = ExpandButtonPart,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center,
         };
        
         expandButton.RegisterInNameScope(scope);

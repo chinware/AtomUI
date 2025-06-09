@@ -220,7 +220,9 @@ public class Popup : AvaloniaPopup,
 
             if (!_openAnimating)
             {
+                CreateBuddyLayer();
                 _buddyLayer?.Attach();
+                (Host as PopupRoot)?.PlatformImpl?.SetTopmost(true);
             }
 
             // 如果没有启动，我们使用自己的处理函数，一般是为了增加我们自己的动画效果
@@ -586,8 +588,8 @@ public class Popup : AvaloniaPopup,
         {
             _closeAnimating   = false;
             _isNeedDetectFlip = true;
-            Close();
             closed?.Invoke();
+            Close();
         });
     }
 

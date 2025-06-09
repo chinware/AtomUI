@@ -77,17 +77,16 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
             else if (content is Border bordered)
             {
                 _decoratorControl.MaskCornerRadius = bordered.CornerRadius;
-                _decoratorControl.MaskSize         = bordered.DesiredSize;
+                _decoratorControl.MaskSize         = bordered.Bounds.Size;
             }
             else if (content is TemplatedControl templatedControl)
             {
                 _decoratorControl.MaskCornerRadius = templatedControl.CornerRadius;
-                _decoratorControl.MaskSize         = templatedControl.DesiredSize;
+                _decoratorControl.MaskSize         = templatedControl.Bounds.Size;
             }
-
-            if (content is not null)
+            if (content != null)
             {
-                _decoratorControl.Content  = BuildDecoratorControlContent(content);
+                _decoratorControl.Content = BuildDecoratorControlContent(content);
             }
         }
     }
@@ -102,8 +101,8 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
     {
         return new MotionTargetBitmapControl(control.CaptureCurrentBitmap())
         {
-            Width  = control.DesiredSize.Width,
-            Height = control.DesiredSize.Height,
+            Width  = control.Bounds.Width,
+            Height = control.Bounds.Height,
         };
     }
 
