@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Styling;
+using DynamicData;
 
 namespace AtomUI.Theme;
 
@@ -22,6 +23,8 @@ public class ThemeManager : Styles, IThemeManager
     private readonly List<string> _customThemeDirs;
     private readonly List<string> _builtInThemeDirs;
     private ResourceDictionary? _controlThemeResources;
+    private IList<IControlThemesProvider> _controlThemesProviders;
+    
     private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
     private List<ILanguageProvider>? _languageProviders;
 
@@ -74,11 +77,12 @@ public class ThemeManager : Styles, IThemeManager
             Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
                 THEME_DIR)
         };
-        DefaultThemeId         = DEFAULT_THEME_ID;
-        _controlThemeResources = new ResourceDictionary();
-        ControlTokenTypes      = new List<Type>();
-        _languageProviders     = new List<ILanguageProvider>();
-        _languages             = new Dictionary<CultureInfo, ResourceDictionary>();
+        DefaultThemeId          = DEFAULT_THEME_ID;
+        _controlThemesProviders = new List<IControlThemesProvider>();
+        _controlThemeResources  = new ResourceDictionary();
+        ControlTokenTypes       = new List<Type>();
+        _languageProviders      = new List<ILanguageProvider>();
+        _languages              = new Dictionary<CultureInfo, ResourceDictionary>();
     }
 
     public IReadOnlyCollection<ITheme> AvailableThemes
@@ -194,6 +198,11 @@ public class ThemeManager : Styles, IThemeManager
         _controlThemeResources?.Add(resourceKey, controlTheme);
     }
 
+    public void RegisterControlThemesProvider(IControlThemesProvider controlThemesProvider)
+    {
+        _controlThemesProviders.Add(controlThemesProvider);
+    }
+
     public void RegisterLanguageProvider(ILanguageProvider languageProvider)
     {
         _languageProviders?.Add(languageProvider);
@@ -285,6 +294,11 @@ public class ThemeManager : Styles, IThemeManager
     internal void Configure()
     {
         RegisterControlThemes();
+        foreach (var provider in _controlThemesProviders)
+        {
+            Resources.MergedDictionaries.AddRange(provider.ControlThemes);
+        }
+        _controlThemesProviders.Clear();
         BuildLanguageResources();
     }
 

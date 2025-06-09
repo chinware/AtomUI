@@ -1,0 +1,9 @@
+<atom:ControlThemesProvider xmlns="https://github.com/avaloniaui"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:atom="https://atomui.net"
+                            x:Class="AtomUI.Controls.AtomUIOSSControlThemesProvider"
+                            Id="AtomUI.Controls">
+    <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="Alert/AlertTheme.axaml" />
+    </atom:ControlThemesProvider.ControlThemes>
+</atom:ControlThemesProvider>

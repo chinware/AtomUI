@@ -9,9 +9,9 @@ using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -25,6 +25,13 @@ public enum AlertType
     Error
 }
 
+public static class AlertPseudoClass
+{
+    public const string HasDescription = ":has-description";
+    public const string HasExtraAction = ":has-extra-action";
+}
+
+[PseudoClasses(AlertPseudoClass.HasDescription, AlertPseudoClass.HasExtraAction)]
 public class Alert : TemplatedControl,
                      IControlSharedTokenResourcesHost,
                      IResourceBindingManager
@@ -156,29 +163,33 @@ public class Alert : TemplatedControl,
             {
                 newIcon.SetTemplatedParent(this);
             }
+        } else if (e.Property == DescriptionProperty)
+        {
+            UpdatePseudoClasses();
         }
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
         SetupCloseButton();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        UpdatePseudoClasses();
     }
 
     private void SetupCloseButton()
@@ -190,5 +201,11 @@ public class Alert : TemplatedControl,
         }
         Debug.Assert(CloseIcon != null);
         CloseIcon.SetTemplatedParent(this);
+    }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(AlertPseudoClass.HasDescription, !string.IsNullOrEmpty(Description));
+        PseudoClasses.Set(AlertPseudoClass.HasExtraAction, ExtraAction != null);
     }
 }
