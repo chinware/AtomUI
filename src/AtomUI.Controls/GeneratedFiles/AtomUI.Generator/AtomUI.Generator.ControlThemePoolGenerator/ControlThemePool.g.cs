@@ -10,7 +10,6 @@ namespace AtomUI.Theme
             List<BaseControlTheme> themes = new List<BaseControlTheme>();
             themes.Add(new AtomUI.Controls.AddOnDecoratedBoxTheme());
             themes.Add(new AtomUI.Controls.AddOnDecoratedInnerBoxTheme());
-            themes.Add(new AtomUI.Controls.AlertTheme());
             themes.Add(new AtomUI.Controls.ArrowDecoratedBoxTheme());
             themes.Add(new AtomUI.Controls.Badge.CountBadgeAdornerTheme());
             themes.Add(new AtomUI.Controls.Badge.DotBadgeAdornerTheme());
@@ -109,7 +108,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.TabItemTheme());
             themes.Add(new AtomUI.Controls.TabStripItemTheme());
             themes.Add(new AtomUI.Controls.TabStripTheme());
-            themes.Add(new AtomUI.Controls.TagTheme());
             themes.Add(new AtomUI.Controls.TextBoxInnerBoxTheme());
             themes.Add(new AtomUI.Controls.TextBoxTheme());
             themes.Add(new AtomUI.Controls.TextButtonTheme());

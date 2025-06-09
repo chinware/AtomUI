@@ -1,0 +1,98 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:Tag}" TargetType="atom:Tag">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="{x:Static atom:TagThemeConstants.FramePart}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BorderThickness="{TemplateBinding BorderThickness}" />
+                    <Grid Name="{x:Static atom:TagThemeConstants.ElementsLayoutPart}"
+                          ColumnDefinitions="Auto, *, Auto"
+                          Margin="{TemplateBinding Padding}">
+                        <atom:IconPresenter Name="{x:Static atom:TagThemeConstants.IconPresenterPart}"
+                                            Grid.Column="0"
+                                            Icon="{TemplateBinding Icon}" />
+                        <TextBlock Name="{x:Static atom:TagThemeConstants.TagTextLabelPart}"
+                                   Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="{TemplateBinding TagText}"
+                                   Padding="{TemplateBinding TagTextPaddingInline}" />
+                        <atom:IconButton Name="{x:Static atom:TagThemeConstants.CloseButtonPart}"
+                                         Grid.Column="2"
+                                         IsVisible="{TemplateBinding IsClosable}"
+                                         Icon="{TemplateBinding CloseIcon}" />
+                    </Grid>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <!-- basic 样式开始 -->
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:TagTokenKey.DefaultBg}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TagTokenKey.DefaultColor}}" />
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TagTokenKey.TagFontSize}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TagTokenKey.TagPadding}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        <Setter Property="TagTextPaddingInline"
+                Value="{DynamicResource {x:Static atom:TagTokenKey.TagTextPaddingInline}}" />
+
+        <Style Selector="^ /template/ TextBlock#PART_TagTextLabel">
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:TagTokenKey.TagLineHeight}}" />
+        </Style>
+
+        <!-- basic 样式结束 -->
+
+        <!-- BuildTagIconStyle 开始 -->
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Setter Property="atom:IconPresenter.IconWidth"
+                    Value="{DynamicResource {x:Static atom:TagTokenKey.TagIconSize}}" />
+            <Setter Property="atom:IconPresenter.IconHeight"
+                    Value="{DynamicResource {x:Static atom:TagTokenKey.TagIconSize}}" />
+            <Setter Property="atom:IconPresenter.NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+            <Setter Property="atom:IconPresenter.ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+        </Style>
+        <Style Selector="^[IsColorSet=True]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="atom:IconPresenter.NormalIconBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[IsPresetColorTag=True]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="atom:IconPresenter.NormalIconBrush"
+                        Value="{TemplateBinding Foreground}" />
+            </Style>
+        </Style>
+        <!-- BuildTagIconStyle 结束 -->
+
+        <!-- BuildCloseButtonStyle 开始 -->
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
+            <Setter Property="IconWidth"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
+            <Setter Property="IconHeight"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+            <Setter Property="ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+        </Style>
+        <Style Selector="^[IsColorSet=True][IsPresetColorTag=False]">
+            <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
+                <Setter Property="NormalIconBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
+                <Setter Property="ActiveIconBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
+                <Setter Property="SelectedIconBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
+            </Style>
+            </Style>
+        <!-- BuildCloseButtonStyle 结束 -->
+
+    </ControlTheme>
+</ResourceDictionary>

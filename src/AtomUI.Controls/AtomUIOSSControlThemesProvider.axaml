@@ -5,5 +5,6 @@
                             Id="AtomUI.Controls">
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Alert/AlertTheme.axaml" />
+        <ResourceInclude Source="Tag/TagTheme.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

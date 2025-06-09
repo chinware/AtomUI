@@ -1,10 +1,7 @@
-using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
@@ -186,12 +183,6 @@ public class Tag : TemplatedControl,
         this.RegisterResources();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
@@ -201,6 +192,7 @@ public class Tag : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
             RenderScaleAwareBorderThicknessProperty,
             SharedTokenKey.BorderThickness,
@@ -216,6 +208,12 @@ public class Tag : TemplatedControl,
         SetupBorderThicknessBinding();
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -223,16 +221,6 @@ public class Tag : TemplatedControl,
         if (e.Property == IconProperty ||
             e.Property == CloseIconProperty)
         {
-            if (e.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (e.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-
             if (e.Property == CloseIconProperty)
             {
                 SetupDefaultCloseIcon();
@@ -370,8 +358,6 @@ public class Tag : TemplatedControl,
         {
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined());
-            Debug.Assert(CloseIcon != null);
-            CloseIcon.SetTemplatedParent(this);
         }
     }
 }
