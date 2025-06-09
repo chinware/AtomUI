@@ -47,24 +47,36 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         BindUtils.RelayBind(this, MaskShadowsProperty, _buddyDecorator, PopupBuddyDecorator.MaskShadowsProperty);
         if (_buddyPopup is IPopupHostProvider popupHostProvider)
         {
-            popupHostProvider.PopupHostChanged += host =>
+            if (popupHostProvider.PopupHost != null)
             {
-                if (host is PopupRoot popupRoot)
+                SetupPopupHost(popupHostProvider.PopupHost);
+            }
+            else
+            {
+                popupHostProvider.PopupHostChanged += host =>
                 {
-                    if (_popupHost is PopupRoot oldPopupRoot)
-                    {
-                        oldPopupRoot.SizeChanged     -= HandleBuddyPopupRootSizeChanged;
-                        oldPopupRoot.PositionChanged -= HandleBuddyPopupRootPositionChanged;
-                    }
-                    popupRoot.SizeChanged     += HandleBuddyPopupRootSizeChanged;
-                    popupRoot.PositionChanged += HandleBuddyPopupRootPositionChanged;
-                    ConfigureSizeAndPosition(popupRoot);
-                }
-                _popupHost = host;
-            };
+                    SetupPopupHost(host);
+                }; 
+            }
         }
         SetMotionActor(_buddyDecorator);
         _buddyDecorator.NotifyMotionTargetAddedToScene();
+    }
+
+    private void SetupPopupHost(IPopupHost? popupHost)
+    {
+        if (popupHost is PopupRoot popupRoot)
+        {
+            if (_popupHost is PopupRoot oldPopupRoot)
+            {
+                oldPopupRoot.SizeChanged     -= HandleBuddyPopupRootSizeChanged;
+                oldPopupRoot.PositionChanged -= HandleBuddyPopupRootPositionChanged;
+            }
+            popupRoot.SizeChanged     += HandleBuddyPopupRootSizeChanged;
+            popupRoot.PositionChanged += HandleBuddyPopupRootPositionChanged;
+            ConfigureSizeAndPosition(popupRoot);
+        }
+        _popupHost = popupHost;
     }
 
     private void HandleBuddyPopupRootSizeChanged(object? sender, SizeChangedEventArgs e)
@@ -85,8 +97,12 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     private void ConfigureSizeAndPosition(PopupRoot popupRoot)
     {
+        if (popupRoot.PlatformImpl == null)
+        {
+            return;
+        }
         // 这个是否大小和位置信息都有了
-        var popupOffset = popupRoot.PlatformImpl!.Position;
+        var popupOffset = popupRoot.PlatformImpl.Position;
         var topLevel    = GetTopLevel(_buddyPopup.PlacementTarget);
         var scaling     = 1.0;
         if (topLevel is WindowBase windowBase)
@@ -137,7 +153,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         aboutToStart?.Invoke();
         var motion       = new ZoomBigInMotion(MotionDuration);
         NotifyAboutToRunAttachMotion();
-        motion.RunTransitions(_buddyDecorator, null, () =>
+        motion.Run(_buddyDecorator, null, () =>
         {
             completedAction?.Invoke();
             NotifyAttachMotionCompleted();
@@ -151,7 +167,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         aboutToStart?.Invoke();
         var motion = new ZoomBigOutMotion(MotionDuration);
         NotifyAboutToRunDetachMotion();
-        motion.RunTransitions(_buddyDecorator, null, () =>
+        motion.Run(_buddyDecorator, null, () =>
         {
             Hide();
             completedAction?.Invoke();
@@ -183,5 +199,17 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         {
             _buddyDecorator.HideDecoratorContent();
         });
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == MaskShadowsProperty)
+        {
+            if (_popupHost is PopupRoot popupRoot)
+            {
+                ConfigureSizeAndPosition(popupRoot);
+            }
+        }
     }
 }

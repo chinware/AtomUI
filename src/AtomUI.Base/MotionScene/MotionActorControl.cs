@@ -1,7 +1,9 @@
-﻿using System.Reactive.Linq;
+﻿using System.Diagnostics;
+using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
@@ -11,6 +13,9 @@ public class MotionActorControl : Decorator
 
     public static readonly StyledProperty<ITransform?> MotionTransformProperty =
         AvaloniaProperty.Register<MotionActorControl, ITransform?>(nameof(MotionTransform));
+    
+    public static readonly StyledProperty<TransformOperations?> MotionTransformOperationsProperty =
+        AvaloniaProperty.Register<MotionActorControl, TransformOperations?>(nameof(MotionTransformOperations));
 
     public static readonly StyledProperty<bool> UseRenderTransformProperty =
         AvaloniaProperty.Register<MotionActorControl, bool>(nameof(UseRenderTransform));
@@ -19,6 +24,12 @@ public class MotionActorControl : Decorator
     {
         get => GetValue(MotionTransformProperty);
         set => SetValue(MotionTransformProperty, value);
+    }
+    
+    public TransformOperations? MotionTransformOperations
+    {
+        get => GetValue(MotionTransformOperationsProperty);
+        set => SetValue(MotionTransformOperationsProperty, value);
     }
 
     public bool UseRenderTransform
@@ -76,6 +87,9 @@ public class MotionActorControl : Decorator
 
         MotionTransformProperty.Changed
                                .AddClassHandler<MotionActorControl>((x, e) => x.HandleLayoutTransformChanged(e));
+        
+        MotionTransformOperationsProperty.Changed
+                               .AddClassHandler<MotionActorControl>((x, e) => x.HandleLayoutTransformOperationsChanged(e));
 
         ChildProperty.Changed
                      .AddClassHandler<MotionActorControl>((x, _) => x.HandleChildChanged());
@@ -83,6 +97,23 @@ public class MotionActorControl : Decorator
     }
 
     private void HandleLayoutTransformChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var newTransform = e.NewValue as Transform;
+
+        _transformChangedEvent?.Dispose();
+        _transformChangedEvent = null;
+
+        if (newTransform != null)
+        {
+            _transformChangedEvent = Observable.FromEventPattern(
+                                                   v => newTransform.Changed += v, v => newTransform.Changed -= v)
+                                               .Subscribe(_ => ApplyMotionTransform());
+        }
+
+        ApplyMotionTransform();
+    }
+
+    private void HandleLayoutTransformOperationsChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var newTransform = e.NewValue as Transform;
 
@@ -122,15 +153,29 @@ public class MotionActorControl : Decorator
     private void ApplyMotionTransform()
     {
         // Get the transform matrix and apply it
-        var matrix = MotionTransform is null ? Matrix.Identity : RoundMatrix(MotionTransform.Value, DecimalsAfterRound);
+        Matrix? matrix = default;
 
+        if (MotionTransform == null && MotionTransformOperations == null)
+        {
+            matrix = Matrix.Identity;
+        } 
+        else if (MotionTransform != null)
+        {
+            matrix = RoundMatrix(MotionTransform.Value, DecimalsAfterRound);
+        }
+        else if (MotionTransformOperations != null)
+        {
+            matrix = RoundMatrix(MotionTransformOperations.Value, DecimalsAfterRound);
+        }
+        Debug.Assert(matrix != null);
+        
         if (_transformation == matrix)
         {
             return;
         }
 
-        _transformation         = matrix;
-        _matrixTransform.Matrix = UseRenderTransform ? matrix : FilterScaleTransform(matrix);
+        _transformation         = matrix.Value;
+        _matrixTransform.Matrix = UseRenderTransform ? matrix.Value : FilterScaleTransform(matrix.Value);
         RenderTransform         = _matrixTransform;
         // New transform means re-layout is necessary
         InvalidateMeasure();
@@ -166,7 +211,7 @@ public class MotionActorControl : Decorator
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (MotionTransformRoot == null || MotionTransform == null || UseRenderTransform)
+        if (MotionTransformRoot == null || (MotionTransform == null && MotionTransformOperations == null) || UseRenderTransform)
         {
             // TODO 这里可能会引起混淆，因为我们不会对 Target 实施 Scale 转换
             return base.ArrangeOverride(finalSize);
@@ -218,7 +263,7 @@ public class MotionActorControl : Decorator
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (MotionTransformRoot == null || MotionTransform == null || UseRenderTransform)
+        if (MotionTransformRoot == null || (MotionTransform == null && MotionTransformOperations == null) || UseRenderTransform)
         {
             return base.MeasureOverride(availableSize);
         }

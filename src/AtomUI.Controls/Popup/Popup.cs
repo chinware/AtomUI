@@ -135,8 +135,19 @@ public class Popup : AvaloniaPopup,
         this.BindWaveSpiritProperties();
         Closed += HandleClosed;
         Opened += HandleOpened;
+        if (this is IPopupHostProvider popupHostProvider)
+        {
+            popupHostProvider.PopupHostChanged += host =>
+            {
+                if (host != null)
+                {
+                    CreateBuddyLayer();
+                }
+            };
+        }
     }
     
+    // Popup 好像不加入视觉树，所以我们放在逻辑树
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
@@ -145,15 +156,14 @@ public class Popup : AvaloniaPopup,
             TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationMid));
-        CreateBuddyLayer();
     }
-
+    
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
-
+    
     protected Control? GetEffectivePlacementTarget()
     {
         return PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
@@ -261,8 +271,7 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
-
-        var topLevel = TopLevel.GetTopLevel(PlacementTarget);
+        var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         Debug.Assert(topLevel is not null);
         _buddyLayer = new PopupBuddyLayer(this, topLevel);
         BindUtils.RelayBind(this, MaskShadowsProperty, _buddyLayer, PopupBuddyLayer.MaskShadowsProperty);
@@ -486,7 +495,7 @@ public class Popup : AvaloniaPopup,
 
     public void MotionAwareOpen(Action? opened = null)
     {
-        Debug.Assert(_buddyLayer != null);
+        
         // AbstractPopup is currently open
         if (IsOpen || _openAnimating || _closeAnimating)
         {
@@ -496,6 +505,7 @@ public class Popup : AvaloniaPopup,
         if (!IsMotionEnabled)
         {
             Open();
+            Debug.Assert(_buddyLayer != null);
             _buddyLayer.Attach();
             opened?.Invoke();
             (Host as PopupRoot)?.PlatformImpl?.SetTopmost(true);
@@ -504,6 +514,7 @@ public class Popup : AvaloniaPopup,
 
         _openAnimating = true;
         Open();
+        Debug.Assert(_buddyLayer != null);
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
         popupRoot.Opacity = 0.0;

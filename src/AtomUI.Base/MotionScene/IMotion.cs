@@ -5,17 +5,24 @@ using Avalonia.Animation.Easings;
 
 namespace AtomUI.MotionScene;
 
+internal enum MotionSpiritType
+{
+    Animation,
+    Transition
+}
+
 internal interface IMotion
 {
-    public RelativePoint RenderTransformOrigin { get; }
-    public IList<Animation> Animations { get; }
-    public IList<INotifyTransitionCompleted> Transitions { get; }
-    public TimeSpan Duration { get; }
-    public Easing Easing { get; }
-    public FillMode PropertyValueFillMode { get; }
+    RelativePoint RenderTransformOrigin { get; }
+    IList<Animation> Animations { get; }
+    IList<INotifyTransitionCompleted> Transitions { get; }
+    TimeSpan Duration { get; }
+    Easing Easing { get; }
+    FillMode PropertyValueFillMode { get; }
+    MotionSpiritType SpiritType { get; set; }
 
-    public Task RunAsync(MotionActorControl actor,
-                         Action? aboutToStart = null,
-                         Action? completedAction = null,
-                         CancellationToken cancellationToken = default);
+    Task RunAsync(MotionActorControl actor,
+                  Action? aboutToStart = null,
+                  Action? completedAction = null,
+                  CancellationToken cancellationToken = default);
 }

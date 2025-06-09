@@ -5,7 +5,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
-public class MoveDownInMotion : AbstractMotion
+internal class MoveDownInMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -15,25 +15,78 @@ public class MoveDownInMotion : AbstractMotion
                             FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        Offset = offset;
+        SpiritType = MotionSpiritType.Animation;
+        Offset     = offset;
     }
-    
-    protected override void ConfigureTransitions()
+
+    protected override void ConfigureAnimation()
     {
-        base.ConfigureTransitions();
+        var animation = CreateAnimation();
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.8)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.1
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset / 4)
+            };
+            middleFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(middleFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-    }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset);
-    }
-
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0);
+        Animations.Add(animation);
     }
 
     internal override Size CalculateSceneSize(Size actorSize)
@@ -47,7 +100,7 @@ public class MoveDownInMotion : AbstractMotion
     }
 }
 
-public class MoveDownOutMotion : AbstractMotion
+internal class MoveDownOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -57,25 +110,79 @@ public class MoveDownOutMotion : AbstractMotion
                              FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
-        Offset = offset;
-    }
-    
-    protected override void ConfigureTransitions()
-    {
-        base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+        SpiritType = MotionSpiritType.Animation;
+        Offset     = offset;
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureAnimation()
     {
-        actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0);
-    }
+        var animation = CreateAnimation();
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            startFrame.Setters.Add(opacitySetter);
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset);
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+            };
+
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.8)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.1
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset / 4)
+            };
+            middleFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(middleFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
+
+        Animations.Add(animation);
     }
 
     internal override Size CalculateSceneSize(Size actorSize)
@@ -84,7 +191,7 @@ public class MoveDownOutMotion : AbstractMotion
     }
 }
 
-public class MoveUpInMotion : AbstractMotion
+internal class MoveUpInMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -94,25 +201,78 @@ public class MoveUpInMotion : AbstractMotion
                           FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        Offset = offset;
+        SpiritType = MotionSpiritType.Animation;
+        Offset     = offset;
     }
-    
-    protected override void ConfigureTransitions()
+
+    protected override void ConfigureAnimation()
     {
-        base.ConfigureTransitions();
+        var animation = CreateAnimation();
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, -Offset)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.8)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.1
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset / 4)
+            };
+            middleFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(middleFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-    }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, -Offset);
-    }
-
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0);
+        Animations.Add(animation);
     }
 
     internal override Size CalculateSceneSize(Size actorSize)
@@ -126,7 +286,7 @@ public class MoveUpInMotion : AbstractMotion
     }
 }
 
-public class MoveUpOutMotion : AbstractMotion
+internal class MoveUpOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -136,25 +296,81 @@ public class MoveUpOutMotion : AbstractMotion
                            FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
-        Offset = offset;
-    }
-    
-    protected override void ConfigureTransitions()
-    {
-        base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+        SpiritType = MotionSpiritType.Animation;
+        Offset     = offset;
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureAnimation()
     {
-        actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0);
-    }
+        var animation = CreateAnimation();
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            startFrame.Setters.Add(opacitySetter);
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset);
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+            };
+
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.8)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.1
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset / 4)
+            };
+
+            middleFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(middleFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset)
+            };
+
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
+
+        Animations.Add(animation);
     }
 
     internal override Size CalculateSceneSize(Size actorSize)
@@ -163,7 +379,7 @@ public class MoveUpOutMotion : AbstractMotion
     }
 }
 
-public class MoveLeftInMotion : AbstractMotion
+internal class MoveLeftInMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -173,25 +389,81 @@ public class MoveLeftInMotion : AbstractMotion
                             FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        Offset = offset;
+        SpiritType = MotionSpiritType.Animation;
+        Offset     = offset;
     }
-    
-    protected override void ConfigureTransitions()
+
+    protected override void ConfigureAnimation()
     {
-        base.ConfigureTransitions();
+        var animation = CreateAnimation();
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
+            };
+
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.8)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.1
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset / 2, 0.0)
+            };
+
+            middleFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(middleFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+            };
+
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-    }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0);
-    }
-
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0);
+        Animations.Add(animation);
     }
 
     internal override Size CalculateSceneSize(Size actorSize)
@@ -205,7 +477,7 @@ public class MoveLeftInMotion : AbstractMotion
     }
 }
 
-public class MoveLeftOutMotion : AbstractMotion
+internal class MoveLeftOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -215,34 +487,86 @@ public class MoveLeftOutMotion : AbstractMotion
                              FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
-        Offset = offset;
+        SpiritType = MotionSpiritType.Animation;
+        Offset     = offset;
     }
 
-    protected override void ConfigureTransitions()
+    protected override void ConfigureAnimation()
     {
-        base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+        var animation = CreateAnimation();
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.8)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.1
+            };
+            middleFrame.Setters.Add(opacitySetter);
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset / 2, 0.0)
+            };
+            middleFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(middleFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
+
+        Animations.Add(animation);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0);
-    }
-
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0);
-    }
-    
     internal override Size CalculateSceneSize(Size actorSize)
     {
         return actorSize.WithHeight(actorSize.Width * 2);
     }
 }
 
-public class MoveRightInMotion : AbstractMotion
+internal class MoveRightInMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -252,25 +576,79 @@ public class MoveRightInMotion : AbstractMotion
                              FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        Offset = offset;
+        SpiritType = MotionSpiritType.Animation;
+        Offset     = offset;
     }
-    
-    protected override void ConfigureTransitions()
+
+    protected override void ConfigureAnimation()
     {
-        base.ConfigureTransitions();
+        var animation = CreateAnimation();
+
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            startFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.8)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.1
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset / 2, 0.0)
+            };
+            middleFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(middleFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
-    }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0);
-    }
-
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0);
+        Animations.Add(animation);
     }
 
     internal override Size CalculateSceneSize(Size actorSize)
@@ -284,7 +662,7 @@ public class MoveRightInMotion : AbstractMotion
     }
 }
 
-public class MoveRightOutMotion : AbstractMotion
+internal class MoveRightOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -294,25 +672,78 @@ public class MoveRightOutMotion : AbstractMotion
                               FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
-        Offset = offset;
-    }
-    
-    protected override void ConfigureTransitions()
-    {
-        base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+        SpiritType = MotionSpiritType.Animation;
+        Offset     = offset;
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureAnimation()
     {
-        actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0);
-    }
+        var animation = CreateAnimation();
+        var startFrame = new KeyFrame
+        {
+            Cue = new Cue(0.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            startFrame.Setters.Add(opacitySetter);
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
-    {
-        actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0);
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
+            };
+            startFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(startFrame);
+
+        var middleFrame = new KeyFrame
+        {
+            Cue = new Cue(0.8)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 1.0
+            };
+            middleFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset / 2, 0.0)
+            };
+            middleFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(middleFrame);
+
+        var endFrame = new KeyFrame
+        {
+            Cue = new Cue(1.0)
+        };
+        {
+            var opacitySetter = new Setter
+            {
+                Property = Visual.OpacityProperty,
+                Value    = 0.0
+            };
+            endFrame.Setters.Add(opacitySetter);
+
+            var transformSetter = new Setter
+            {
+                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
+            };
+            endFrame.Setters.Add(transformSetter);
+        }
+        animation.Children.Add(endFrame);
+        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
+
+        Animations.Add(animation);
     }
 
     internal override Size CalculateSceneSize(Size actorSize)

@@ -1,16 +1,18 @@
 ﻿using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using AtomUI.Animations;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 
 namespace AtomUI.MotionScene;
 
-public class AbstractMotion : IMotion
+internal class AbstractMotion : IMotion
 {
     public RelativePoint RenderTransformOrigin { get; protected set; }
     public IList<Animation> Animations { get; }
@@ -18,6 +20,7 @@ public class AbstractMotion : IMotion
     public TimeSpan Duration { get; }
     public Easing Easing { get; }
     public FillMode PropertyValueFillMode { get; }
+    public MotionSpiritType SpiritType { get; set; } = MotionSpiritType.Transition;
 
     public AbstractMotion(TimeSpan duration, Easing? easing = null, FillMode fillMode = FillMode.Forward)
     {
@@ -33,37 +36,63 @@ public class AbstractMotion : IMotion
                                Action? completedAction = null,
                                CancellationToken cancellationToken = default)
     {
-        Configure();
-        
-        await Dispatcher.UIThread.InvokeAsync(async () =>
+        if (SpiritType == MotionSpiritType.Transition)
         {
-            using var originRestore = new RenderTransformOriginRestore(actor);
-            actor.RenderTransformOrigin = RenderTransformOrigin;
-            actor.NotifyMotionPreStart();
-            NotifyPreStart();
-            aboutToStart?.Invoke();
-      
-            foreach (var animation in Animations)
-            {
-                await animation.RunAsync(actor, cancellationToken);
-            }
-
-            actor.NotifyMotionCompleted();
-            NotifyCompleted();
-            completedAction?.Invoke();
-        });
+            await RunTransitionsAsync(actor, aboutToStart, completedAction, cancellationToken);
+            return;
+        }
+        await RunAnimationsAsync(actor, aboutToStart, completedAction, cancellationToken);
     }
     
-    internal void RunTransitions(MotionActorControl actor,
-                                 Action? aboutToStart = null,
-                                 Action? completedAction = null)
+    public void Run(MotionActorControl actor,
+                    Action? aboutToStart = null,
+                    Action? completedAction = null)
+    {
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            if (SpiritType == MotionSpiritType.Transition)
+            {
+                await RunTransitionsAsync(actor, aboutToStart, completedAction);
+                return;
+            }
+            await RunAnimationsAsync(actor, aboutToStart, completedAction);
+        });
+    }
+
+    private async Task RunAnimationsAsync(MotionActorControl actor,
+                                          Action? aboutToStart = null,
+                                          Action? completedAction = null,
+                                          CancellationToken cancellationToken = default)
+    {
+        ConfigureAnimation();
+        
+        using var originRestore = new RenderTransformOriginRestore(actor);
+        actor.RenderTransformOrigin = RenderTransformOrigin;
+        actor.NotifyMotionPreStart();
+        NotifyPreStart();
+        aboutToStart?.Invoke();
+      
+        foreach (var animation in Animations)
+        {
+            await animation.RunAsync(actor, cancellationToken);
+        }
+
+        actor.NotifyMotionCompleted();
+        NotifyCompleted();
+        completedAction?.Invoke();
+    }
+    
+    private async Task RunTransitionsAsync(MotionActorControl actor,
+                                           Action? aboutToStart = null,
+                                           Action? completedAction = null,
+                                           CancellationToken cancellationToken = default)
     {
         ConfigureTransitions();
         using var originRestore = new RenderTransformOriginRestore(actor);
         actor.NotifyMotionPreStart();
         NotifyPreStart();
         aboutToStart?.Invoke();
-        
+  
         actor.RenderTransformOrigin = RenderTransformOrigin;
         var observables = new List<IObservable<bool>>();
 
@@ -81,18 +110,19 @@ public class AbstractMotion : IMotion
         actor.EnableTransitions();
         ConfigureMotionEndValue(actor);
 
-        observables.Zip()
-                   .LastAsync()
-                   .ObserveOn(AvaloniaScheduler.Instance)
-                   .Subscribe((v) =>
-                   {
-                       actor.NotifyMotionCompleted();
-                       NotifyCompleted();
-                       completedAction?.Invoke();
-                   });
+        await observables.Zip()
+                         .LastAsync()
+                         .ObserveOn(AvaloniaScheduler.Instance)
+                         .ToTask(cancellationToken);
+        Dispatcher.UIThread.Post(() =>
+        {
+            actor.NotifyMotionCompleted();
+            NotifyCompleted();
+            completedAction?.Invoke();
+        });
     }
 
-    protected virtual void Configure()
+    protected virtual void ConfigureAnimation()
     {
     }
 
@@ -156,36 +186,36 @@ public class AbstractMotion : IMotion
         return motionTargetPosition;
     }
 
-    protected static TransformOperations BuildScaleTransform(double scaleX, double scaleY)
+    protected static ITransform BuildScaleTransform(double scaleX, double scaleY)
     {
         var builder = new TransformOperations.Builder(1);
         builder.AppendScale(scaleX, scaleY);
         return builder.Build();
     }
 
-    protected static TransformOperations BuildScaleTransform(double scale)
+    protected static ITransform BuildScaleTransform(double scale)
     {
         return BuildScaleTransform(scale, scale);
     }
 
-    protected static TransformOperations BuildScaleXTransform(double scale)
+    protected static ITransform BuildScaleXTransform(double scale)
     {
         return BuildScaleTransform(scale, 1.0);
     }
 
-    protected static TransformOperations BuildScaleYTransform(double scale)
+    protected static ITransform BuildScaleYTransform(double scale)
     {
         return BuildScaleTransform(1.0, scale);
     }
 
-    protected static TransformOperations BuildTranslateTransform(double offsetX, double offsetY)
+    protected static ITransform BuildTranslateTransform(double offsetX, double offsetY)
     {
         var builder = new TransformOperations.Builder(1);
         builder.AppendTranslate(offsetX, offsetY);
         return builder.Build();
     }
 
-    protected static TransformOperations BuildTranslateScaleAndTransform(
+    protected static ITransform BuildTranslateScaleAndTransform(
         double scaleX, double scaleY, double offsetX, double offsetY)
     {
         var builder = new TransformOperations.Builder(2);

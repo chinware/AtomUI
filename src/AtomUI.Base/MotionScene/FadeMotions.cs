@@ -5,7 +5,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
-public class FadeInMotion : AbstractMotion
+internal class FadeInMotion : AbstractMotion
 {
     public FadeInMotion(TimeSpan duration,
                         Easing? easing = null,
@@ -31,7 +31,7 @@ public class FadeInMotion : AbstractMotion
     }
 }
 
-public class FadeOutMotion : AbstractMotion
+internal class FadeOutMotion : AbstractMotion
 {
     public FadeOutMotion(TimeSpan duration,
                          Easing? easing = null,

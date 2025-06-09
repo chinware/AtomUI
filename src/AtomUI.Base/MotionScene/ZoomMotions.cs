@@ -33,7 +33,7 @@ internal class ZoomInMotion : AbstractMotion
     }
 }
 
-public class ZoomOutMotion : AbstractMotion
+internal class ZoomOutMotion : AbstractMotion
 {
     public ZoomOutMotion(TimeSpan duration,
                          Easing? easing = null,
@@ -61,7 +61,7 @@ public class ZoomOutMotion : AbstractMotion
     }
 }
 
-public class ZoomBigInMotion : AbstractMotion
+internal class ZoomBigInMotion : AbstractMotion
 {
     public ZoomBigInMotion(TimeSpan duration,
                            Easing? easing = null,
@@ -73,7 +73,7 @@ public class ZoomBigInMotion : AbstractMotion
     protected override void ConfigureTransitions()
     {
         base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+        RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
     }
 
     protected override void ConfigureMotionStartValue(MotionActorControl actor)
@@ -89,7 +89,7 @@ public class ZoomBigInMotion : AbstractMotion
     }
 }
 
-public class ZoomBigOutMotion : AbstractMotion
+internal class ZoomBigOutMotion : AbstractMotion
 {
     public ZoomBigOutMotion(TimeSpan duration,
                             Easing? easing = null,
@@ -101,7 +101,7 @@ public class ZoomBigOutMotion : AbstractMotion
     protected override void ConfigureTransitions()
     {
         base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
+        RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
     }
 
     protected override void ConfigureMotionStartValue(MotionActorControl actor)
@@ -117,7 +117,7 @@ public class ZoomBigOutMotion : AbstractMotion
     }
 }
 
-public class ZoomUpInMotion : AbstractMotion
+internal class ZoomUpInMotion : AbstractMotion
 {
     public ZoomUpInMotion(TimeSpan duration,
                           Easing? easing = null,
@@ -145,7 +145,7 @@ public class ZoomUpInMotion : AbstractMotion
     }
 }
 
-public class ZoomUpOutMotion : AbstractMotion
+internal class ZoomUpOutMotion : AbstractMotion
 {
     public ZoomUpOutMotion(TimeSpan duration,
                            Easing? easing = null,
@@ -173,7 +173,7 @@ public class ZoomUpOutMotion : AbstractMotion
     }
 }
 
-public class ZoomLeftInMotion : AbstractMotion
+internal class ZoomLeftInMotion : AbstractMotion
 {
     public ZoomLeftInMotion(TimeSpan duration,
                             Easing? easing = null,
@@ -201,7 +201,7 @@ public class ZoomLeftInMotion : AbstractMotion
     }
 }
 
-public class ZoomLeftOutMotion : AbstractMotion
+internal class ZoomLeftOutMotion : AbstractMotion
 {
     public ZoomLeftOutMotion(TimeSpan duration,
                              Easing? easing = null,
@@ -229,7 +229,7 @@ public class ZoomLeftOutMotion : AbstractMotion
     }
 }
 
-public class ZoomRightInMotion : AbstractMotion
+internal class ZoomRightInMotion : AbstractMotion
 {
     public ZoomRightInMotion(TimeSpan duration,
                              Easing? easing = null,
@@ -257,7 +257,7 @@ public class ZoomRightInMotion : AbstractMotion
     }
 }
 
-public class ZoomRightOutMotion : AbstractMotion
+internal class ZoomRightOutMotion : AbstractMotion
 {
     public ZoomRightOutMotion(TimeSpan duration,
                               Easing? easing = null,
@@ -285,7 +285,7 @@ public class ZoomRightOutMotion : AbstractMotion
     }
 }
 
-public class ZoomDownInMotion : AbstractMotion
+internal class ZoomDownInMotion : AbstractMotion
 {
     public ZoomDownInMotion(TimeSpan duration,
                             Easing? easing = null,
@@ -313,7 +313,7 @@ public class ZoomDownInMotion : AbstractMotion
     }
 }
 
-public class ZoomDownOutMotion : AbstractMotion
+internal class ZoomDownOutMotion : AbstractMotion
 {
     public ZoomDownOutMotion(TimeSpan duration,
                              Easing? easing = null,

@@ -16,10 +16,11 @@ internal class NotificationMoveDownInMotion : AbstractMotion
                                         FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        Offset = offset;
+        Offset     = offset;
+        SpiritType = MotionSpiritType.Animation;
     }
 
-    protected override void Configure()
+    protected override void ConfigureAnimation()
     {
         var animation = CreateAnimation();
         var startFrame = new KeyFrame
@@ -36,7 +37,7 @@ internal class NotificationMoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, Offset)
             };
             startFrame.Setters.Add(transformSetter);
@@ -57,7 +58,7 @@ internal class NotificationMoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -78,7 +79,7 @@ internal class NotificationMoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -110,10 +111,11 @@ internal class NotificationMoveDownOutMotion : AbstractMotion
                                          FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
-        Offset = offset;
+        Offset     = offset;
+        SpiritType = MotionSpiritType.Animation;
     }
 
-    protected override void Configure()
+    protected override void ConfigureAnimation()
     {
         var animation = CreateAnimation();
         var startFrame = new KeyFrame
@@ -130,7 +132,7 @@ internal class NotificationMoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -152,7 +154,7 @@ internal class NotificationMoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.2, 0.0, Offset / 4)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -173,7 +175,7 @@ internal class NotificationMoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, Offset)
             };
             endFrame.Setters.Add(transformSetter);
@@ -200,10 +202,11 @@ internal class NotificationMoveUpInMotion : AbstractMotion
                                       FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        Offset = offset;
+        Offset     = offset;
+        SpiritType = MotionSpiritType.Animation;
     }
 
-    protected override void Configure()
+    protected override void ConfigureAnimation()
     {
         var animation = CreateAnimation();
         var startFrame = new KeyFrame
@@ -220,7 +223,7 @@ internal class NotificationMoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, -Offset)
             };
             startFrame.Setters.Add(transformSetter);
@@ -241,7 +244,7 @@ internal class NotificationMoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -262,7 +265,7 @@ internal class NotificationMoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -294,10 +297,11 @@ internal class NotificationMoveUpOutMotion : AbstractMotion
                                        FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
-        Offset = offset;
+        Offset     = offset;
+        SpiritType = MotionSpiritType.Animation;
     }
 
-    protected override void Configure()
+    protected override void ConfigureAnimation()
     {
         var animation = CreateAnimation();
         var startFrame = new KeyFrame
@@ -314,7 +318,7 @@ internal class NotificationMoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -336,7 +340,7 @@ internal class NotificationMoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.2, 0.0, -Offset / 4)
             };
 
@@ -358,7 +362,7 @@ internal class NotificationMoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, -Offset)
             };
 
@@ -388,11 +392,12 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
                                         FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        IsTop  = isTop;
-        Offset = offset;
+        IsTop      = isTop;
+        Offset     = offset;
+        SpiritType = MotionSpiritType.Animation;
     }
 
-    protected override void Configure()
+    protected override void ConfigureAnimation()
     {
         var animation = CreateAnimation();
         var startFrame = new KeyFrame
@@ -409,7 +414,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, -Offset, 0.0)
             };
 
@@ -431,7 +436,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, IsTop ? 0.3 : 1.0, -Offset, 0.0)
             };
 
@@ -453,7 +458,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -486,10 +491,11 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
                                          FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
-        Offset = offset;
+        Offset     = offset;
+        SpiritType = MotionSpiritType.Animation;
     }
 
-    protected override void Configure()
+    protected override void ConfigureAnimation()
     {
         var animation = CreateAnimation();
         var startFrame = new KeyFrame
@@ -506,7 +512,7 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -526,7 +532,7 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
             middleFrame.Setters.Add(opacitySetter);
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -547,7 +553,7 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.0, -Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -576,11 +582,12 @@ internal class NotificationMoveRightInMotion : AbstractMotion
                                          FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        IsTop  = isTop;
-        Offset = offset;
+        IsTop      = isTop;
+        Offset     = offset;
+        SpiritType = MotionSpiritType.Animation;
     }
 
-    protected override void Configure()
+    protected override void ConfigureAnimation()
     {
         var animation = CreateAnimation();
 
@@ -598,7 +605,7 @@ internal class NotificationMoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, Offset, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -619,7 +626,7 @@ internal class NotificationMoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, IsTop ? 0.3 : 1.0, Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -640,7 +647,7 @@ internal class NotificationMoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -672,10 +679,11 @@ internal class NotificationMoveRightOutMotion : AbstractMotion
                                           FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseIn(), fillMode)
     {
-        Offset = offset;
+        Offset     = offset;
+        SpiritType = MotionSpiritType.Animation;
     }
 
-    protected override void Configure()
+    protected override void ConfigureAnimation()
     {
         var animation = CreateAnimation();
         var startFrame = new KeyFrame
@@ -692,7 +700,7 @@ internal class NotificationMoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -713,7 +721,7 @@ internal class NotificationMoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -734,7 +742,7 @@ internal class NotificationMoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformProperty,
+                Property = MotionActorControl.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.0, Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
