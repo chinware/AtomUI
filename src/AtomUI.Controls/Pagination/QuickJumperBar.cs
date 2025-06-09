@@ -6,7 +6,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -65,7 +64,7 @@ internal class QuickJumperBar : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _lineEdit = e.NameScope.Find<LineEdit>(QuickJumperBarTheme.PageLineEditPart);
+        _lineEdit = e.NameScope.Find<LineEdit>(PaginationQuickJumperBarThemeConstants.PageLineEditPart);
         this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, JumpToTextProperty, PaginationLangResourceKey.JumpToText));
         this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, PageTextProperty, PaginationLangResourceKey.PageText));
 

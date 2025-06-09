@@ -107,7 +107,7 @@ internal class PaginationNav : SelectingItemsControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _itemsPresenter = e.NameScope.Find<NavItemsPresenter>(PaginationNavTheme.ItemsPresenterPart);
+        _itemsPresenter = e.NameScope.Find<NavItemsPresenter>(PaginationNavThemeConstants.ItemsPresenterPart);
         SetupItemPresenterSpacing();
     }
 

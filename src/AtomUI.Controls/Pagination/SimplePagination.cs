@@ -50,10 +50,10 @@ public class SimplePagination : AbstractPagination,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _previousPageItem = e.NameScope.Find<PaginationNavItem>(SimplePaginationTheme.PreviousNavItemPart);
-        _nextPageItem     = e.NameScope.Find<PaginationNavItem>(SimplePaginationTheme.NextNavItemPart);
-        _infoIndicator    = e.NameScope.Find<TextBlock>(SimplePaginationTheme.InfoIndicatorPart);
-        _quickJumper      = e.NameScope.Find<LineEdit>(SimplePaginationTheme.QuickJumperPart);
+        _previousPageItem = e.NameScope.Find<PaginationNavItem>(SimplePaginationThemeConstants.PreviousNavItemPart);
+        _nextPageItem     = e.NameScope.Find<PaginationNavItem>(SimplePaginationThemeConstants.NextNavItemPart);
+        _infoIndicator    = e.NameScope.Find<TextBlock>(SimplePaginationThemeConstants.InfoIndicatorPart);
+        _quickJumper      = e.NameScope.Find<LineEdit>(SimplePaginationThemeConstants.QuickJumperPart);
 
         Debug.Assert(_nextPageItem != null);
         Debug.Assert(_previousPageItem != null);

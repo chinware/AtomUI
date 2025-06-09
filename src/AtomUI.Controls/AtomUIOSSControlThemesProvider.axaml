@@ -6,5 +6,6 @@
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Alert/AlertTheme.axaml" />
         <ResourceInclude Source="Tag/TagTheme.axaml" />
+        <ResourceInclude Source="Pagination/Themes/Paginations.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

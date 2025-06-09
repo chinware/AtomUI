@@ -1,0 +1,67 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:SimplePagination}" TargetType="atom:SimplePagination">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Name="{x:Static atom:SimplePaginationThemeConstants.RootLayoutPart}"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <atom:PaginationNavItem Name="{x:Static atom:SimplePaginationThemeConstants.PreviousNavItemPart}"
+                                            PaginationItemType="Previous"
+                                            Content="{atom:IconProvider LeftOutlined}"
+                                            SizeType="{TemplateBinding SizeType}"
+                                            IsEnabled="{TemplateBinding IsEnabled}" />
+                    <atom:LineEdit Name="{x:Static atom:SimplePaginationThemeConstants.QuickJumperPart}"
+                                   IsVisible="{TemplateBinding IsReadOnly, Mode=Default, Converter={x:Static BoolConverters.Not}}"
+                                   SizeType="{TemplateBinding SizeType}"
+                                   IsEnabled="{TemplateBinding IsEnabled}" />
+                    <atom:TextBlock Name="{x:Static atom:SimplePaginationThemeConstants.InfoIndicatorPart}"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    IsEnabled="{TemplateBinding IsEnabled}" />
+                    <atom:PaginationNavItem Name="{x:Static atom:SimplePaginationThemeConstants.NextNavItemPart}"
+                                            PaginationItemType="Previous"
+                                            Content="{atom:IconProvider RightOutlined}"
+                                            SizeType="{TemplateBinding SizeType}"
+                                            IsEnabled="{TemplateBinding IsEnabled}" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^[Align=Start]">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+        <Style Selector="^[Align=Center]">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="^[Align=End]">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ StackPanel#PART_RootLayoutPart">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationLayoutSpacing}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ StackPanel#PART_RootLayoutPart">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationLayoutSpacing}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ StackPanel#PART_RootLayoutPart">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationLayoutMiniSpacing}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|LineEdit#PART_QuickJumper">
+            <Setter Property="MinWidth"
+                    Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationQuickJumperInputWidth}}" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

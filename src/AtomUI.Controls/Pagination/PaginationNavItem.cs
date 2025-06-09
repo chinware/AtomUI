@@ -272,7 +272,10 @@ internal class PaginationNavItem : ContentControl,
             e.Handled = true;
             if (this.GetVisualsAt(e.GetPosition(this)).Any(c => this == c || this.IsVisualAncestorOf(c)))
             {
-                OnClick();
+                if (PaginationItemType != PaginationItemType.Ellipses)
+                {
+                    OnClick();
+                }
             }
         }
     }

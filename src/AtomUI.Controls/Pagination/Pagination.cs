@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.PaginationLang;
 using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
@@ -9,9 +8,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -157,7 +154,7 @@ public class Pagination : AbstractPagination,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _paginationNav  = e.NameScope.Find<PaginationNav>(PaginationTheme.NavPart);
+        _paginationNav  = e.NameScope.Find<PaginationNav>(PaginationThemeConstants.NavPart);
         Debug.Assert(_paginationNav is not null);
         this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, PageTextProperty, PaginationLangResourceKey.PageText));
         this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, TotalInfoTemplateProperty, PaginationLangResourceKey.TotalInfoFormat));

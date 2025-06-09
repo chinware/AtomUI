@@ -1,0 +1,29 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"/>
+    <ControlTheme x:Key="{x:Type atom:QuickJumperBar}" TargetType="atom:QuickJumperBar">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Name="{x:Static atom:PaginationQuickJumperBarThemeConstants.RootLayoutPart}"
+                            Orientation="Horizontal">
+                    <ContentPresenter Name="{x:Static atom:PaginationQuickJumperBarThemeConstants.JumpToContentPresenterPart}"
+                                      Content="{TemplateBinding JumpToText, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}"/>
+                    <atom:LineEdit Name="{x:Static atom:PaginationQuickJumperBarThemeConstants.PageLineEditPart}"
+                                   SizeType="{TemplateBinding SizeType}"/>
+                    <ContentPresenter Name="{x:Static atom:PaginationQuickJumperBarThemeConstants.PageContentPresenterPart}"
+                                      Content="{TemplateBinding PageText, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}"/>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^ /template/ StackPanel#PART_RootLayout">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationLayoutSpacing}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|LineEdit#PART_PageLineEdit">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationQuickJumperInputWidth}}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

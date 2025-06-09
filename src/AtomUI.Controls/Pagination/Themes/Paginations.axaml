@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="PaginationNavItemTheme.axaml"/>
+        <ResourceInclude Source="PaginationNavTheme.axaml"/>
+        <ResourceInclude Source="PaginationTheme.axaml"/>
+        <ResourceInclude Source="QuickJumperBarTheme.axaml"/>
+        <ResourceInclude Source="SimplePaginationTheme.axaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

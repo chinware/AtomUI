@@ -78,15 +78,11 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.NumericUpDownTheme());
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
             themes.Add(new AtomUI.Controls.OptionButtonTheme());
-            themes.Add(new AtomUI.Controls.PaginationNavItemTheme());
-            themes.Add(new AtomUI.Controls.PaginationNavTheme());
-            themes.Add(new AtomUI.Controls.PaginationTheme());
             themes.Add(new AtomUI.Controls.PickerClearUpButtonTheme());
             themes.Add(new AtomUI.Controls.PopupConfirmContainerTheme());
             themes.Add(new AtomUI.Controls.PrimaryButtonTheme());
             themes.Add(new AtomUI.Controls.PrimaryDropdownButtonTheme());
             themes.Add(new AtomUI.Controls.ProgressBarTheme());
-            themes.Add(new AtomUI.Controls.QuickJumperBarTheme());
             themes.Add(new AtomUI.Controls.RadioButtonTheme());
             themes.Add(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
             themes.Add(new AtomUI.Controls.RangeDatePickerTheme());
@@ -99,7 +95,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.SegmentedItemTheme());
             themes.Add(new AtomUI.Controls.SegmentedTheme());
             themes.Add(new AtomUI.Controls.SeparatorTheme());
-            themes.Add(new AtomUI.Controls.SimplePaginationTheme());
             themes.Add(new AtomUI.Controls.SliderTheme());
             themes.Add(new AtomUI.Controls.SliderThumbTheme());
             themes.Add(new AtomUI.Controls.SplitButtonTheme());
