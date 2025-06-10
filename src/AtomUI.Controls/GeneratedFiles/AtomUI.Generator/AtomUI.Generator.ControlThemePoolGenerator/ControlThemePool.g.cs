@@ -87,9 +87,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
             themes.Add(new AtomUI.Controls.RangeDatePickerTheme());
             themes.Add(new AtomUI.Controls.RangeTimePickerTheme());
-            themes.Add(new AtomUI.Controls.ScrollBarRepeatButtonTheme());
-            themes.Add(new AtomUI.Controls.ScrollBarTheme());
-            themes.Add(new AtomUI.Controls.ScrollBarThumbTheme());
             themes.Add(new AtomUI.Controls.SearchEditDecoratedBoxTheme());
             themes.Add(new AtomUI.Controls.SearchEditTheme());
             themes.Add(new AtomUI.Controls.SegmentedItemTheme());

@@ -22,14 +22,13 @@
                                    VerticalContentAlignment="Center"
                                    Padding="0"
                                    TextBlock.TextWrapping="Wrap"
-                                   Content="{TemplateBinding Message}"/>
+                                   Content="{TemplateBinding Message}" />
                             <atom:MarqueeLabel
                                 Name="{x:Static atom:AlertThemeConstants.MarqueeLabelPart}"
                                 HorizontalAlignment="Stretch"
                                 Padding="0"
                                 IsVisible="{TemplateBinding IsMessageMarqueEnabled}"
-                                Text="{TemplateBinding Message}"
-                                />
+                                Text="{TemplateBinding Message}" />
                             <Label Name="{x:Static atom:AlertThemeConstants.DescriptionLabelPart}"
                                    HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Left"
@@ -37,167 +36,175 @@
                                    Padding="0"
                                    IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                    TextBlock.TextWrapping="Wrap"
-                                   Content="{TemplateBinding Description}"
-                            />
-                
+                                   Content="{TemplateBinding Description}" />
+
                         </StackPanel>
                         <atom:IconButton
                             Name="{x:Static atom:AlertThemeConstants.CloseBtnPart}"
                             IsVisible="{TemplateBinding IsClosable}"
                             Icon="{TemplateBinding CloseIcon}"
                             Grid.Row="0"
-                            Grid.Column="3"/>
+                            Grid.Column="3" />
                         <atom:Icon
                             Name="{x:Static atom:AlertThemeConstants.InfoIconPart}"
                             IsVisible="{TemplateBinding IsShowIcon}"
                             Grid.Row="0"
-                            Grid.Column="0"/>
+                            Grid.Column="0" />
                         <ContentPresenter Name="{x:Static atom:AlertThemeConstants.ExtraActionPresenterPart}"
                                           Grid.Row="0"
                                           Grid.Column="2"
                                           IsVisible="{TemplateBinding ExtraAction, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                          Content="{TemplateBinding ExtraAction}"
-                        />
+                                          Content="{TemplateBinding ExtraAction}" />
                     </Grid>
                 </Border>
             </ControlTemplate>
         </Setter>
-        
+
         <!-- 普通样式设置开始 -->
-        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
         <Style Selector="^:has-extra-action">
             <Setter Property="VerticalAlignment" Value="Top"></Setter>
         </Style>
         <!-- 普通样式设置结束 -->
-        
+
         <!-- BuildAlertTypeStyle 开始 -->
         <Style Selector="^[Type=Success]">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccessBg}}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccessBorder}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccessBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccessBorder}}" />
         </Style>
-        
+
         <Style Selector="^[Type=Info]">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBg}}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBorder}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBorder}}" />
         </Style>
-        
+
         <Style Selector="^[Type=Warning]">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBorder}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBorder}}" />
         </Style>
-        
+
         <Style Selector="^[Type=Error]">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorder}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorder}}" />
         </Style>
-        
+
         <Style Selector="^:not(:has-description)">
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:AlertTokenKey.DefaultPadding}}"/>
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:AlertTokenKey.DefaultPadding}}" />
         </Style>
-        
+
         <Style Selector="^:has-description">
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:AlertTokenKey.WithDescriptionPadding}}"/>
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:AlertTokenKey.WithDescriptionPadding}}" />
         </Style>
-        
+
         <!-- BuildAlertTypeStyle 结束 -->
-        
+
         <!-- BuildMessageLabelStyle 开始 -->
         <Style Selector="^:has-description">
             <Style Selector="^ /template/ Label#PART_MessageLabel, ^ /template/ atom|MarqueeLabel#PART_MarqueeLabel">
-                <Setter Property="TemplatedControl.FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}"/>
-                <Setter Property="TemplatedControl.VerticalAlignment" Value="Top"/>
+                <Setter Property="TemplatedControl.FontSize"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+                <Setter Property="TemplatedControl.VerticalAlignment" Value="Top" />
             </Style>
         </Style>
         <Style Selector="^:not(:has-description)">
             <Style Selector="^ /template/ Label#PART_MessageLabel, ^ /template/ atom|MarqueeLabel#PART_MarqueeLabel">
-                <Setter Property="TemplatedControl.FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
-                <Setter Property="TemplatedControl.VerticalAlignment" Value="Stretch"/>
+                <Setter Property="TemplatedControl.FontSize"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+                <Setter Property="TemplatedControl.VerticalAlignment" Value="Stretch" />
             </Style>
         </Style>
         <Style Selector="^ /template/ Label#PART_MessageLabel">
-            <Setter Property="TextBox.LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}"/>
+            <Setter Property="TextBox.LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
         </Style>
         <!-- 根据是否显示 MarqueeLabel 是指对应的样式 -->
         <Style Selector="^[IsMessageMarqueEnabled=True]">
             <Style Selector="^ /template/ Label#PART_MessageLabel">
-                <Setter Property="IsVisible" Value="False"/>
+                <Setter Property="IsVisible" Value="False" />
             </Style>
         </Style>
-        
+
         <!-- BuildMessageLabelStyle 结束 -->
-        
+
         <!-- BuildDescriptionLabelStyle 开始 -->
         <Style Selector="^ /template/ Label#PART_DescriptionLabel">
-            <Setter Property="TextBox.LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}"/>
-            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.DescriptionLabelMargin}}"/>
+            <Setter Property="TextBox.LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.DescriptionLabelMargin}}" />
         </Style>
         <!-- BuildDescriptionLabelStyle 结束 -->
-        
+
         <!-- BuildCloseBtnStyle 开始 -->
         <Style Selector="^:has-description">
             <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
-                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="VerticalAlignment" Value="Top" />
             </Style>
         </Style>
-        
+
         <Style Selector="^:not(:has-description)">
             <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
-                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Style>
         <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}"/>
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}"/>
-            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.ExtraElementMargin}}"/>
-            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}"/>
-            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}"/>
-            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}"/>
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.ExtraElementMargin}}" />
+            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+            <Setter Property="SelectedIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
         </Style>
         <!-- BuildCloseBtnStyle 结束 -->
-        
+
         <!-- BuildInfoIconStyle 开始 -->
         <Style Selector="^[Type=Success]">
             <Style Selector="^ /template/ atom|Icon#PART_InfoIcon">
-                <Setter Property="IconInfo" Value="{atom:IconInfoProvider Kind=CheckCircleFilled}"/>
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}"/>
+                <Setter Property="IconInfo" Value="{atom:IconInfoProvider Kind=CheckCircleFilled}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Type=Info]">
             <Style Selector="^ /template/ atom|Icon#PART_InfoIcon">
-                <Setter Property="IconInfo" Value="{atom:IconInfoProvider Kind=InfoCircleFilled}"/>
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"/>
+                <Setter Property="IconInfo" Value="{atom:IconInfoProvider Kind=InfoCircleFilled}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Type=Warning]">
             <Style Selector="^ /template/ atom|Icon#PART_InfoIcon">
-                <Setter Property="IconInfo" Value="{atom:IconInfoProvider Kind=ExclamationCircleFilled}"/>
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}"/>
+                <Setter Property="IconInfo" Value="{atom:IconInfoProvider Kind=ExclamationCircleFilled}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Type=Error]">
             <Style Selector="^ /template/ atom|Icon#PART_InfoIcon">
-                <Setter Property="IconInfo" Value="{atom:IconInfoProvider Kind=CloseCircleFilled}"/>
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}"/>
+                <Setter Property="IconInfo" Value="{atom:IconInfoProvider Kind=CloseCircleFilled}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
             </Style>
         </Style>
         <Style Selector="^:has-description">
             <Style Selector="^ /template/ atom|Icon#PART_InfoIcon">
-                <Setter Property="Width" Value="{DynamicResource {x:Static atom:AlertTokenKey.WithDescriptionIconSize}}"/>
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:AlertTokenKey.WithDescriptionIconSize}}"/>
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconWithDescriptionMargin}}"/>
-                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="Width"
+                        Value="{DynamicResource {x:Static atom:AlertTokenKey.WithDescriptionIconSize}}" />
+                <Setter Property="Height"
+                        Value="{DynamicResource {x:Static atom:AlertTokenKey.WithDescriptionIconSize}}" />
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:AlertTokenKey.IconWithDescriptionMargin}}" />
+                <Setter Property="VerticalAlignment" Value="Top" />
             </Style>
         </Style>
-        
+
         <Style Selector="^:not(:has-description)">
             <Style Selector="^ /template/ atom|Icon#PART_InfoIcon">
-                <Setter Property="Width" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconSize}}"/>
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconSize}}"/>
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconDefaultMargin}}"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconSize}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconSize}}" />
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconDefaultMargin}}" />
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Style>
         <!-- BuildInfoIconStyle 结束 -->
