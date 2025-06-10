@@ -59,7 +59,7 @@ public class ToggleSwitch : ToggleButton,
         AvaloniaProperty.Register<ToggleSwitch, bool>(nameof(IsLoading));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleSwitch>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleSwitch>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<ToggleSwitch>();

@@ -43,7 +43,7 @@ public abstract class AbstractPagination : TemplatedControl,
             (o, v) => o.Total = v);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractPagination>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractPagination>();
     
     public PaginationAlign Align
     {

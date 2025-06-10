@@ -16,7 +16,7 @@ public class CheckBox : AvaloniaCheckBox,
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBox>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBox>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<CheckBox>();

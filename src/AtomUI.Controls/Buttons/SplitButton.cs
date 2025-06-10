@@ -101,7 +101,7 @@ public class SplitButton : ContentControl,
         AvaloniaProperty.Register<SplitButton, bool>(nameof(IsPrimaryButtonType));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<SplitButton>();

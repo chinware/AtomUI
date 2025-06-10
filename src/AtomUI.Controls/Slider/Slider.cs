@@ -134,7 +134,7 @@ public class Slider : RangeBase,
         SliderTrack.IncludedProperty.AddOwner<Slider>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
 
     public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Slider>();

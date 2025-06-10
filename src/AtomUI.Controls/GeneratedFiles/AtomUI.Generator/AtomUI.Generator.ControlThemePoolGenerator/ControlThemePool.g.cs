@@ -32,7 +32,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.CardTabItemTheme());
             themes.Add(new AtomUI.Controls.CardTabStripItemTheme());
             themes.Add(new AtomUI.Controls.CardTabStripTheme());
-            themes.Add(new AtomUI.Controls.CheckBoxTheme());
             themes.Add(new AtomUI.Controls.CircleProgressTheme());
             themes.Add(new AtomUI.Controls.CollapseItemTheme());
             themes.Add(new AtomUI.Controls.CollapseTheme());

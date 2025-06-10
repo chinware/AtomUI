@@ -78,7 +78,7 @@ public class ToolTip : ContentControl,
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomHide");
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToolTip>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToolTip>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<ToolTip>();

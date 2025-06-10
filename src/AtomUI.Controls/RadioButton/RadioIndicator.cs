@@ -119,7 +119,7 @@ internal class RadioIndicator : Control,
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<RadioIndicator>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<RadioIndicator>();
 
     internal static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<RadioIndicator>();

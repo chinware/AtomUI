@@ -22,7 +22,7 @@ public static class WaveSpiritAwareControlExtensions
             {
                 var compositeDisposable = new CompositeDisposable();
                 compositeDisposable.Add(TokenResourceBinder.CreateTokenBinding(control,
-                    WaveSpiritAwareControlProperty.IsMotionEnabledProperty,
+                    MotionAwareControlProperty.IsMotionEnabledProperty,
                     SharedTokenKey.EnableMotion));
                 compositeDisposable.Add(TokenResourceBinder.CreateTokenBinding(control,
                     WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty,
@@ -49,7 +49,7 @@ public static class WaveSpiritAwareControlExtensions
     {
         if (sender is Control hostControl)
         {
-            var isMotionEnabledChanged = e.Property.Name == WaveSpiritAwareControlProperty.IsMotionEnabledPropertyName;
+            var isMotionEnabledChanged = e.Property.Name == MotionAwareControlProperty.IsMotionEnabledPropertyName;
             var isWaveSpiritEnabledChanged =
                 e.Property.Name == WaveSpiritAwareControlProperty.IsWaveSpiritEnabledPropertyName;
             if (isMotionEnabledChanged || isWaveSpiritEnabledChanged)

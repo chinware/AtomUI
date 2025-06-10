@@ -76,7 +76,7 @@ public class OptionButton : AvaloniaRadioButton,
             OptionButtonPositionTrait.OnlyOne);
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButton>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButton>();
 
     internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButton>();

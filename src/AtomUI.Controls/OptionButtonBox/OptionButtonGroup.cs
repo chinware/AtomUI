@@ -42,7 +42,7 @@ public class OptionButtonGroup : SelectingItemsControl,
         AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButtonGroup>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButtonGroup>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
         = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButtonGroup>();

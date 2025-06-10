@@ -44,7 +44,7 @@ public class HyperLinkTextBlock : TemplatedControl, ICustomHitTest, IMotionAware
         TextBlock.TextTrimmingProperty.AddOwner<HyperLinkTextBlock>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = WaveSpiritAwareControlProperty.IsMotionEnabledProperty.AddOwner<HyperLinkTextBlock>();
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<HyperLinkTextBlock>();
     
     /// <summary>
     /// Defines the <see cref="Command"/> property.
