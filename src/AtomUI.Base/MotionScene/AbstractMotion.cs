@@ -52,7 +52,7 @@ internal class AbstractMotion : IMotion
         
         actor.RenderTransformOrigin = RenderTransformOrigin;
         actor.NotifyMotionPreStart();
-        NotifyPreStart();
+        NotifyPreStart(actor);
         aboutToStart?.Invoke();
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
@@ -61,7 +61,7 @@ internal class AbstractMotion : IMotion
                 await animation.RunAsync(actor);
             }
             actor.NotifyMotionCompleted();
-            NotifyCompleted();
+            NotifyCompleted(actor);
             completedAction?.Invoke();
             actor.RenderTransformOrigin = originRenderTransformOrigin;
         });
@@ -74,7 +74,7 @@ internal class AbstractMotion : IMotion
         ConfigureTransitions();
         var originRenderTransformOrigin = actor.RenderTransformOrigin;
         actor.NotifyMotionPreStart();
-        NotifyPreStart();
+        NotifyPreStart(actor);
         aboutToStart?.Invoke();
   
         actor.RenderTransformOrigin = RenderTransformOrigin;
@@ -106,11 +106,10 @@ internal class AbstractMotion : IMotion
                            {
                                actor.DisableTransitions();
                                actor.NotifyMotionCompleted();
-                               NotifyCompleted();
+                               NotifyCompleted(actor);
                                completedAction?.Invoke();
                                actor.RenderTransformOrigin = originRenderTransformOrigin;
                                actor.MotionTransform       = null;
-                               actor.Opacity               = 1.0d;
                            });
                        });
         });
@@ -147,11 +146,11 @@ internal class AbstractMotion : IMotion
     {
     }
 
-    protected virtual void NotifyPreStart()
+    protected virtual void NotifyPreStart(MotionActorControl actor)
     {
     }
 
-    protected virtual void NotifyCompleted()
+    protected virtual void NotifyCompleted(MotionActorControl actor)
     {
     }
 
