@@ -4,9 +4,10 @@
                             x:Class="AtomUI.Controls.AtomUIOSSControlThemesProvider"
                             Id="AtomUI.Controls">
     <atom:ControlThemesProvider.ControlThemes>
-        <ResourceInclude Source="Alert/AlertTheme.axaml" />
-        <ResourceInclude Source="Tag/TagTheme.axaml" />
+        <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
+        <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
+        <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

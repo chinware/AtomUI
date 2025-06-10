@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using AtomUI.IconPkg;
+﻿using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -118,17 +116,21 @@ internal class PopupConfirmContainer : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-
-        _okButton     = e.NameScope.Find<Button>(PopupConfirmContainerTheme.OkButtonPart);
-        _cancelButton = e.NameScope.Find<Button>(PopupConfirmContainerTheme.CancelButtonPart);
+        SetupDefaultIcon();
+        _okButton     = e.NameScope.Find<Button>(PopupConfirmContainerThemeConstants.OkButtonPart);
+        _cancelButton = e.NameScope.Find<Button>(PopupConfirmContainerThemeConstants.CancelButtonPart);
         if (_okButton is not null)
         {
-            _okButton.Click += HandleButtonClicked;
+            _okButton.Click  += HandleButtonClicked;
+            _okButton.Width  =  double.NaN;
+            _okButton.Height =  double.NaN;
         }
 
         if (_cancelButton is not null)
         {
-            _cancelButton.Click += HandleButtonClicked;
+            _cancelButton.Click  += HandleButtonClicked;
+            _cancelButton.Width  =  double.NaN;
+            _cancelButton.Height =  double.NaN;
         }
     }
 
@@ -162,14 +164,6 @@ internal class PopupConfirmContainer : TemplatedControl,
         {
             if (change.Property == IconProperty)
             {
-                if (change.OldValue is Icon oldIcon)
-                {
-                    oldIcon.SetTemplatedParent(null);
-                }
-                if (change.NewValue is Icon newIcon)
-                {
-                    newIcon.SetTemplatedParent(this);
-                }
                 SetupDefaultIcon();
             }
         }
@@ -182,13 +176,5 @@ internal class PopupConfirmContainer : TemplatedControl,
             ClearValue(IconProperty);
             SetValue(IconProperty, AntDesignIconPackage.ExclamationCircleFilled(), BindingPriority.Template);
         }
-        Debug.Assert(Icon != null);
-        Icon.SetTemplatedParent(this);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        SetupDefaultIcon();
     }
 }

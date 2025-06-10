@@ -1,0 +1,90 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:PopupConfirmContainer}" TargetType="atom:PopupConfirmContainer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.MainLayoutPart}"
+                           LastChildFill="True">
+                    <StackPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.ButtonLayoutPart}"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                DockPanel.Dock="Bottom">
+                        <atom:Button Name="{x:Static atom:PopupConfirmContainerThemeConstants.CancelButtonPart}"
+                                     SizeType="Small"
+                                     Margin="0"
+                                     Text="{TemplateBinding CancelText}"
+                                     IsVisible="{TemplateBinding IsShowCancelButton}" />
+                        <atom:Button Name="{x:Static atom:PopupConfirmContainerThemeConstants.OkButtonPart}"
+                                     SizeType="Small"
+                                     Margin="0"
+                                     Text="{TemplateBinding OkText}"
+                                     ButtonType="{TemplateBinding OkButtonType}" />
+                    </StackPanel>
+                    <DockPanel LastChildFill="True">
+                        <atom:IconPresenter
+                            Name="{x:Static atom:PopupConfirmContainerThemeConstants.IconPresenterPart}"
+                            Icon="{TemplateBinding Icon}"
+                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                            DockPanel.Dock="Left" />
+                        <DockPanel LastChildFill="True">
+                            <atom:TextBlock Name="{x:Static atom:PopupConfirmContainerThemeConstants.TitlePart}"
+                                            VerticalAlignment="Center"
+                                            Text="{TemplateBinding Title}"
+                                            DockPanel.Dock="Top" />
+                            <ContentPresenter Name="{x:Static atom:PopupConfirmContainerThemeConstants.ContentPart}"
+                                              Content="{TemplateBinding ConfirmContent}"
+                                              ContentTemplate="{TemplateBinding ConfirmContentTemplate}" />
+                        </DockPanel>
+                    </DockPanel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ DockPanel#PART_MainLayout">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.PopupMinWidth}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.PopupMinHeight}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|TextBlock#PART_Title">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.TitleMargin}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextHeading}}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_Content">
+            <Setter Property="Margin"
+                    Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.ContentContainerMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.ButtonSpacing}}" />
+            <Setter Property="Margin"
+                    Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.ButtonContainerMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.IconMargin}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <Style Selector="^[ConfirmStatus=Info]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[ConfirmStatus=Warning]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[ConfirmStatus=Error]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

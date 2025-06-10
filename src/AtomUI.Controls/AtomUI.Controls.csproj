@@ -36,6 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Alert\Themes\AlertTheme.axaml" />
       <AdditionalFiles Include="Pagination\Themes\Pagination.axaml" />
       <AdditionalFiles Include="Pagination\Themes\PaginationNavItemTheme.axaml" />
       <AdditionalFiles Include="Pagination\Themes\PaginationNavTheme.axaml" />
@@ -43,6 +44,7 @@
       <AdditionalFiles Include="Pagination\Themes\PaginationTheme.axaml" />
       <AdditionalFiles Include="Pagination\Themes\QuickJumperBarTheme.axaml" />
       <AdditionalFiles Include="Pagination\Themes\SimplePaginationTheme.axaml" />
+      <AdditionalFiles Include="Tag\Themes\TagTheme.axaml" />
     </ItemGroup>
 
 </Project>

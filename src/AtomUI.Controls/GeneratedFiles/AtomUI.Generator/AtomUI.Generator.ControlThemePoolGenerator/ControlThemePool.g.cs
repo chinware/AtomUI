@@ -79,7 +79,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
             themes.Add(new AtomUI.Controls.OptionButtonTheme());
             themes.Add(new AtomUI.Controls.PickerClearUpButtonTheme());
-            themes.Add(new AtomUI.Controls.PopupConfirmContainerTheme());
             themes.Add(new AtomUI.Controls.PrimaryButtonTheme());
             themes.Add(new AtomUI.Controls.PrimaryDropdownButtonTheme());
             themes.Add(new AtomUI.Controls.ProgressBarTheme());

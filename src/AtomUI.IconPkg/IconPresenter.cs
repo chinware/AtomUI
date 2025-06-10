@@ -30,19 +30,19 @@ public class IconPresenter : Control
     
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
         AvaloniaProperty.Register<IconPresenter, IBrush?>(
-            nameof(NormalIconColor));
+            nameof(NormalIconBrush));
     
     public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
         AvaloniaProperty.Register<IconPresenter, IBrush?>(
-            nameof(ActiveIconColor));
+            nameof(ActiveIconBrush));
     
     public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
         AvaloniaProperty.Register<IconPresenter, IBrush?>(
-            nameof(SelectedIconColor));
+            nameof(SelectedIconBrush));
     
     public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
         AvaloniaProperty.Register<IconPresenter, IBrush?>(
-            nameof(DisabledIconColor));
+            nameof(DisabledIconBrush));
 
     public static readonly StyledProperty<double> IconWidthProperty
         = AvaloniaProperty.Register<IconPresenter, double>(nameof(IconWidth));
@@ -87,25 +87,25 @@ public class IconPresenter : Control
         set => SetValue(IconHeightProperty, value);
     }
     
-    public IBrush? NormalIconColor
+    public IBrush? NormalIconBrush
     {
         get => GetValue(NormalIconBrushProperty);
         set => SetValue(NormalIconBrushProperty, value);
     }
 
-    public IBrush? ActiveIconColor
+    public IBrush? ActiveIconBrush
     {
         get => GetValue(ActiveIconBrushProperty);
         set => SetValue(ActiveIconBrushProperty, value);
     }
 
-    public IBrush? SelectedIconColor
+    public IBrush? SelectedIconBrush
     {
         get => GetValue(SelectedIconBrushProperty);
         set => SetValue(SelectedIconBrushProperty, value);
     }
 
-    public IBrush? DisabledIconColor
+    public IBrush? DisabledIconBrush
     {
         get => GetValue(DisabledIconBrushProperty);
         set => SetValue(DisabledIconBrushProperty, value);
