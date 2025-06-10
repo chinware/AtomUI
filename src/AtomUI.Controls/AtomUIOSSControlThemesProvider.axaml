@@ -7,9 +7,10 @@
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxTheme.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
-        <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
+        <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
+        <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

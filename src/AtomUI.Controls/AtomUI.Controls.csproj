@@ -47,4 +47,8 @@
       <AdditionalFiles Include="Tag\Themes\TagTheme.axaml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Pagination\Utils\" />
+    </ItemGroup>
+
 </Project>

@@ -10,7 +10,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -578,7 +577,7 @@ public class ToolTip : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(ToolTipTheme.ToolTipContainerPart);
+        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(ToolTipThemeConstants.ToolTipContainerPart);
     }
 
     private Point CalculatePopupPositionDelta(Control control,

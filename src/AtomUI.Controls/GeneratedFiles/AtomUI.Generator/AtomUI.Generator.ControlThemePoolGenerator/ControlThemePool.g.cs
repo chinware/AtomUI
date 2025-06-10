@@ -110,7 +110,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.TimeViewTheme());
             themes.Add(new AtomUI.Controls.ToggleIconButtonTheme());
             themes.Add(new AtomUI.Controls.ToggleSwitchTheme());
-            themes.Add(new AtomUI.Controls.ToolTipTheme());
             themes.Add(new AtomUI.Controls.TopLevelHorizontalNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.TopLevelMenuItemTheme());
             themes.Add(new AtomUI.Controls.TreeViewItemTheme());
