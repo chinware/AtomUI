@@ -13,5 +13,6 @@
         <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
         <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
+        <ResourceInclude Source="Switch/Themes/ToggleSwitchTheme.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

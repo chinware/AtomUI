@@ -1,0 +1,69 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:ToggleSwitch}" TargetType="atom:ToggleSwitch">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Canvas Name="{x:Static atom:ToggleSwitchThemeConstants.MainContainerPart}">
+                    <atom:SwitchKnob Name="{x:Static atom:ToggleSwitchThemeConstants.SwitchKnobPart}"
+                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                     IsCheckedState="{TemplateBinding IsChecked}"/>
+                </Canvas>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="TrackPadding" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.TrackPadding}}"/>
+        
+        <Style Selector="^[IsLoading=True], ^:disabled">
+            <Setter Property="SwitchOpacity" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.SwitchDisabledOpacity}}"/>
+        </Style>
+        
+        <Style Selector="^[IsChecked=True]">
+            <Setter Property="GrooveBackground" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.SwitchColor}}"/>
+        </Style>
+        
+        <Style Selector="^[IsChecked=True]:pointerover">
+            <Setter Property="GrooveBackground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}"/>
+        </Style>
+        
+        <Style Selector="^[IsChecked=False]">
+            <Setter Property="GrooveBackground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"/>
+        </Style>
+        
+        <Style Selector="^[IsChecked=False]:pointerover">
+            <Setter Property="GrooveBackground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"/>
+        </Style>
+        
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.ExtraInfoFontSizeSM}}"/>
+            <Setter Property="KnobSize" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.HandleSizeSM}}"/>
+            <Setter Property="InnerMaxMargin" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.InnerMaxMarginSM}}"/>
+            <Setter Property="InnerMinMargin" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.InnerMinMarginSM}}"/>
+            <Setter Property="TrackHeight" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.TrackHeightSM}}"/>
+            <Setter Property="TrackMinWidth" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.TrackMinWidthSM}}"/>
+            <Setter Property="IconSize" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.IconSizeSM}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Large]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.ExtraInfoFontSize}}"/>
+            <Setter Property="KnobSize" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.HandleSize}}"/>
+            <Setter Property="InnerMaxMargin" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.InnerMaxMargin}}"/>
+            <Setter Property="InnerMinMargin" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.InnerMinMargin}}"/>
+            <Setter Property="TrackHeight" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.TrackHeight}}"/>
+            <Setter Property="TrackMinWidth" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.TrackMinWidth}}"/>
+            <Setter Property="IconSize" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.IconSize}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|SwitchKnob#PART_SwitchKnob">
+            <Setter Property="KnobBackgroundColor" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.HandleBg}}"/>
+            <Setter Property="KnobBoxShadow" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.HandleShadow}}"/>
+            <Setter Property="LoadIndicatorBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"/>
+            <Style Selector="^[IsCheckedState=True]">
+                <Setter Property="LoadIndicatorBrush" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.SwitchColor}}"/>
+            </Style>
+        </Style>
+       
+    </ControlTheme>
+</ResourceDictionary>

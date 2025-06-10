@@ -15,7 +15,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Switch;
+namespace AtomUI.Controls;
 
 internal class SwitchKnob : Control,
                             IResourceBindingManager

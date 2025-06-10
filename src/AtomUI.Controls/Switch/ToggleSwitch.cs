@@ -1,5 +1,4 @@
 using AtomUI.Animations;
-using AtomUI.Controls.Switch;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
@@ -58,11 +57,11 @@ public class ToggleSwitch : ToggleButton,
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<ToggleSwitch, bool>(nameof(IsLoading));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleSwitch>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleSwitch>();
 
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<ToggleSwitch>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<ToggleSwitch>();
 
     /// <summary>
     /// Gets or Sets the Content that is displayed when in the On State.
@@ -464,8 +463,8 @@ public class ToggleSwitch : ToggleButton,
     {
         base.OnApplyTemplate(e);
         var scope = e.NameScope;
-        _togglePanel = scope.Find<Canvas>(ToggleSwitchTheme.MainContainerPart);
-        _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchTheme.SwitchKnobPart);
+        _togglePanel = scope.Find<Canvas>(ToggleSwitchThemeConstants.MainContainerPart);
+        _switchKnob  = scope.Find<SwitchKnob>(ToggleSwitchThemeConstants.SwitchKnobPart);
         if (_switchKnob is not null)
         {
             _switchKnob.KnobSize = KnobSize;
