@@ -6,6 +6,7 @@ using AtomUI.IconPkg.AntDesign;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Media;
@@ -120,6 +121,7 @@ internal class NodeSwitcherButton : ToggleButton
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper;
+    private IconPresenter? _rotationIconPresenter;
 
     static NodeSwitcherButton()
     {
@@ -137,7 +139,6 @@ internal class NodeSwitcherButton : ToggleButton
     {
         base.OnAttachedToVisualTree(e);
         SetupDefaultIcons();
-        SetupTransitions();
     }
 
     private void SetupTransitions()
@@ -148,10 +149,21 @@ internal class NodeSwitcherButton : ToggleButton
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
             };
+            if (_rotationIconPresenter != null)
+            {
+                _rotationIconPresenter.Transitions ??= new Transitions()
+                {
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(IconPresenter.RenderTransformProperty),
+                };
+            }
         }
         else
         {
             Transitions = null;
+            if (_rotationIconPresenter != null)
+            {
+                _rotationIconPresenter.Transitions = null;
+            }
         }
     }
 
@@ -179,7 +191,7 @@ internal class NodeSwitcherButton : ToggleButton
             }
         }
         
-        if (change.Property == IconModeProperty)
+        if (change.Property == IsMotionEnabledProperty)
         {
             SetupTransitions();
         }
@@ -199,7 +211,14 @@ internal class NodeSwitcherButton : ToggleButton
                 default);
         }
     }
-    
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _rotationIconPresenter = e.NameScope.Find<IconPresenter>(NodeSwitcherButtonThemeConstants.RotationIconPresenterPart);
+        SetupTransitions();
+    }
+
     private void SetupDefaultIcons()
     {
         if (ExpandIcon == null)

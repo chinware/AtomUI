@@ -50,6 +50,9 @@ public class IconPresenter : Control
     public static readonly StyledProperty<double> IconHeightProperty
         = AvaloniaProperty.Register<IconPresenter, double>(nameof(IconHeight));
     
+    public static readonly StyledProperty<IconMode> IconModeProperty =
+        Icon.IconModeProperty.AddOwner<IconPresenter>();
+    
     [Content]
     public Icon? Icon
     {
@@ -109,6 +112,12 @@ public class IconPresenter : Control
     {
         get => GetValue(DisabledIconBrushProperty);
         set => SetValue(DisabledIconBrushProperty, value);
+    }
+    
+    public IconMode IconMode
+    {
+        get => GetValue(IconModeProperty);
+        set => SetValue(IconModeProperty, value);
     }
 
     #endregion
@@ -184,6 +193,7 @@ public class IconPresenter : Control
             Icon.LoadingAnimationDurationProperty);
         BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
         BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
+        BindUtils.RelayBind(this, IconModeProperty, icon, IconModeProperty);
         if (icon.ThemeType != IconThemeType.TwoTone)
         {
             BindUtils.RelayBind(this, NormalIconBrushProperty, icon, Icon.NormalFilledBrushProperty);

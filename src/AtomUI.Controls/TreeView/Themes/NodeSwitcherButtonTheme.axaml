@@ -1,0 +1,119 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:NodeSwitcherIconModeConverter x:Key="NodeSwitcherIconModeConverter" />
+    <!--
+        我们需要在这个切换按钮显示几种状态的图标
+        1、展开和收缩两种状态的图标
+        2、只设置一个图标，展开和收缩通过旋转开表示
+        3、当节点是叶子节点的时候，没有展开和收缩的概念，直接显示叶子节点的图标
+        4、加载状态的图标
+    -->
+    <ControlTheme x:Key="{x:Type atom:NodeSwitcherButton}" TargetType="atom:NodeSwitcherButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="{x:Static atom:NodeSwitcherButtonThemeConstants.RootPart}"
+                       IsHitTestVisible="False">
+                    <atom:IconPresenter Name="{x:Static atom:NodeSwitcherButtonThemeConstants.ExpandIconPresenterPart}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Icon="{TemplateBinding ExpandIcon}" 
+                                        IsVisible="False"/>
+                    <atom:IconPresenter
+                        Name="{x:Static atom:NodeSwitcherButtonThemeConstants.CollapseIconPresenterPart}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Icon="{TemplateBinding CollapseIcon}" 
+                        IsVisible="False"/>
+                    <atom:IconPresenter
+                        Name="{x:Static atom:NodeSwitcherButtonThemeConstants.RotationIconPresenterPart}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Icon="{TemplateBinding RotationIcon}"
+                        IsVisible="{TemplateBinding IconMode, Converter={StaticResource NodeSwitcherIconModeConverter},
+                                                    ConverterParameter={x:Static atom:NodeSwitcherButtonIconMode.Rotation}}" />
+                    <atom:IconPresenter
+                        Name="{x:Static atom:NodeSwitcherButtonThemeConstants.LoadingIconPresenterPart}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Icon="{TemplateBinding LoadingIcon}"
+                        IsVisible="{TemplateBinding IconMode, Converter={StaticResource NodeSwitcherIconModeConverter},
+                                                    ConverterParameter={x:Static atom:NodeSwitcherButtonIconMode.Loading}}" />
+                    <atom:IconPresenter
+                        Name="{x:Static atom:NodeSwitcherButtonThemeConstants.LeafIconPresenterPart}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Icon="{TemplateBinding LeafIcon}"
+                        IsVisible="False"/>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}"/>
+
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconMode" Value="Active"/>
+            </Style>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:TreeViewTokenKey.NodeHoverBg}}"/>
+        </Style>
+
+        <Style Selector="^:checked">
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconMode" Value="Selected"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconMode" Value="Disabled"/>
+            </Style>
+        </Style>
+        
+        <!-- BuildIconsStyle 开始 -->
+        <Style Selector="^ /template/ atom|IconPresenter">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>
+            <Setter Property="IconMode" Value="Normal"/>
+        </Style>
+        <Style Selector="^ /template/ atom|IconPresenter#PART_RotationIconPresenter">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}"/>
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}"/>
+        </Style>
+        
+        <Style Selector="^:checked[IconMode=Rotation]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_RotationIconPresenter">
+                <Setter Property="RenderTransform" Value="rotate(90deg)"/>
+            </Style>
+        </Style>
+        
+        <!-- BuildIconsStyle 结束 -->
+        
+        <!-- BuildModeStyle 开始 -->
+        <Style Selector="^[IconMode=Default]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ExpandIconPresenter">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="^ /template/ atom|IconPresenter#PART_CollapseIconPresenter">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="^[IsChecked=True]">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ExpandIconPresenter">
+                    <Setter Property="IsVisible" Value="False"/>
+                </Style>
+                <Style Selector="^ /template/ atom|IconPresenter#PART_CollapseIconPresenter">
+                    <Setter Property="IsVisible" Value="True"/>
+                </Style>
+            </Style>
+        </Style>
+        <Style Selector="^[IconMode=Leaf][IsLeafIconVisible=True]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_LeafIconPresenter">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+        </Style>
+        <!-- BuildModeStyle 结束 -->
+    </ControlTheme>
+</ResourceDictionary>

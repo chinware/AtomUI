@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
@@ -59,11 +58,11 @@ internal class CollapseMotion : AbstractMotion
         actor.Opacity         = 0.0;
         if (isHorizontal)
         {
-            actor.MotionTransform = BuildScaleXTransform(0.0);
+            actor.MotionTransform = BuildScaleXTransform(0.01);
         }
         else
         {
-            actor.MotionTransform = BuildScaleYTransform(0.0);
+            actor.MotionTransform = BuildScaleYTransform(0.01);
         }
     }
 }
@@ -109,11 +108,11 @@ internal class ExpandMotion : AbstractMotion
         actor.Opacity         = 0.0;
         if (isHorizontal)
         {
-            actor.MotionTransform = BuildScaleXTransform(0.0);
+            actor.MotionTransform = BuildScaleXTransform(0.01);
         }
         else
         {
-            actor.MotionTransform = BuildScaleYTransform(0.0);
+            actor.MotionTransform = BuildScaleYTransform(0.01);
         }
     }
 

@@ -10,21 +10,9 @@ internal static class MotionInvoker
                               Action? aboutToStart = null,
                               Action? completedAction = null)
     {
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            await motion.RunAsync(actor, aboutToStart, completedAction);
-        });
+        motion.Run(actor, aboutToStart, completedAction);
     }
     
-    public static async Task InvokeAsync(MotionActorControl actor,
-                                         AbstractMotion motion,
-                                         Action? aboutToStart = null,
-                                         Action? completedAction = null,
-                                         CancellationToken cancellationToken = default)
-    {
-        await motion.RunAsync(actor, aboutToStart, completedAction, cancellationToken);
-    }
-
     public static void DispatchMotionInSceneLayer(SceneMotionActorControl actor,
                                                   AbstractMotion motion,
                                                   Action? aboutToStart = null,
@@ -45,44 +33,15 @@ internal static class MotionInvoker
         actor.NotifySceneShowed();
         aboutToStart?.Invoke();
         // 等待一个事件循环，让动画窗口置顶
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.UIThread.Post(() =>
         {
-            await motion.RunAsync(actor, null, () =>
+            motion.Run(actor, null, () =>
             {
                 completedAction?.Invoke();
                 compositeDisposable.Dispose();
                 compositeDisposable = null;
             });
         });
-    }
-    
-    public static async Task DispatchMotionInSceneLayerAsync(SceneMotionActorControl actor,
-                                                             AbstractMotion motion,
-                                                             Action? aboutToStart = null,
-                                                             Action? completedAction = null,
-                                                             CancellationToken cancellationToken = default)
-    {
-        var sceneLayer          = PrepareSceneLayer(motion, actor);
-        var compositeDisposable = new CompositeDisposable();
-        compositeDisposable.Add(Disposable.Create(sceneLayer, (state) =>
-        {
-            sceneLayer.Hide();
-            sceneLayer.Dispose();
-        }));
-        sceneLayer.SetMotionActor(actor);
-        actor.NotifyMotionTargetAddedToScene();
-        sceneLayer.Topmost = true;
-        actor.IsVisible    = false;
-        sceneLayer.Show();
-        actor.NotifySceneShowed();
-        aboutToStart?.Invoke();
-        // 等待一个事件循环，让动画窗口置顶
-        await motion.RunAsync(actor, null, () =>
-        {
-            completedAction?.Invoke();
-            compositeDisposable.Dispose();
-            compositeDisposable = null;
-        }, cancellationToken);
     }
 
     private static SceneLayer PrepareSceneLayer(AbstractMotion motion, SceneMotionActorControl actor)

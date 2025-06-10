@@ -72,7 +72,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.MessageCardTheme());
             themes.Add(new AtomUI.Controls.NavMenuItemTheme());
             themes.Add(new AtomUI.Controls.NavMenuTheme());
-            themes.Add(new AtomUI.Controls.NodeSwitcherButtonTheme());
             themes.Add(new AtomUI.Controls.NotificationCardTheme());
             themes.Add(new AtomUI.Controls.NumericUpDownTheme());
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
@@ -112,8 +111,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.ToggleSwitchTheme());
             themes.Add(new AtomUI.Controls.TopLevelHorizontalNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.TopLevelMenuItemTheme());
-            themes.Add(new AtomUI.Controls.TreeViewItemTheme());
-            themes.Add(new AtomUI.Controls.TreeViewTheme());
             themes.Add(new AtomUI.Controls.VerticalNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.VerticalNavMenuTheme());
             themes.Add(new AtomUI.Controls.WindowMessageManagerTheme());

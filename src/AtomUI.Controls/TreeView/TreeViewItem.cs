@@ -349,7 +349,7 @@ public class TreeViewItem : AvaloniaTreeItem,
     private ContentPresenter? _headerPresenter;
     private MotionActorControl? _itemsPresenterMotionActor;
     private Border? _frame;
-    private ContentPresenter? _iconPresenter;
+    private IconPresenter? _iconPresenter;
     private NodeSwitcherButton? _switcherButton;
     private Rect _effectiveBgRect;
     private readonly BorderRenderHelper _borderRenderHelper;
@@ -528,10 +528,11 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             _switcherButton.IsNodeAnimating = true;
         }
-
+        
         var motion = new ExpandMotion(Direction.Top,
             MotionDuration,
             new CubicEaseOut());
+
         MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, () =>
             {
                 _itemsPresenterMotionActor.IsVisible = true;
@@ -590,11 +591,11 @@ public class TreeViewItem : AvaloniaTreeItem,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.HeaderPresenterPart);
-        _iconPresenter   = e.NameScope.Find<ContentPresenter>(TreeViewItemTheme.IconPresenterPart);
-        _frame  = e.NameScope.Find<Border>(TreeViewItemTheme.FramePart);
-        _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemTheme.NodeSwitcherButtonPart);
-        _itemsPresenterMotionActor = e.NameScope.Find<MotionActorControl>(TreeViewItemTheme.ItemsPresenterMotionActorPart);
+        _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemThemeConstants.HeaderPresenterPart);
+        _iconPresenter   = e.NameScope.Find<IconPresenter>(TreeViewItemThemeConstants.IconPresenterPart);
+        _frame  = e.NameScope.Find<Border>(TreeViewItemThemeConstants.FramePart);
+        _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemThemeConstants.NodeSwitcherButtonPart);
+        _itemsPresenterMotionActor = e.NameScope.Find<MotionActorControl>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
         
         if (_frame is not null)
         {

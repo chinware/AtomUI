@@ -30,69 +30,51 @@ internal class AbstractMotion : IMotion
         PropertyValueFillMode = fillMode;
         Transitions           = new List<INotifyTransitionCompleted>();
     }
-
-    public async Task RunAsync(MotionActorControl actor,
-                               Action? aboutToStart = null,
-                               Action? completedAction = null,
-                               CancellationToken cancellationToken = default)
-    {
-        if (SpiritType == MotionSpiritType.Transition)
-        {
-            await RunTransitionsAsync(actor, aboutToStart, completedAction, cancellationToken);
-            return;
-        }
-        await RunAnimationsAsync(actor, aboutToStart, completedAction, cancellationToken);
-    }
     
     public void Run(MotionActorControl actor,
                     Action? aboutToStart = null,
                     Action? completedAction = null)
     {
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        if (SpiritType == MotionSpiritType.Transition)
         {
-            if (SpiritType == MotionSpiritType.Transition)
-            {
-                await RunTransitionsAsync(actor, aboutToStart, completedAction);
-                return;
-            }
-            await RunAnimationsAsync(actor, aboutToStart, completedAction);
-        });
+            RunTransitions(actor, aboutToStart, completedAction);
+            return;
+        }
+        RunAnimations(actor, aboutToStart, completedAction);
     }
 
-    private async Task RunAnimationsAsync(MotionActorControl actor,
-                                          Action? aboutToStart = null,
-                                          Action? completedAction = null,
-                                          CancellationToken cancellationToken = default)
+    private void RunAnimations(MotionActorControl actor,
+                               Action? aboutToStart = null,
+                               Action? completedAction = null)
     {
         ConfigureAnimation();
         var originRenderTransformOrigin = actor.RenderTransformOrigin;
-        try
-        {
-            actor.RenderTransformOrigin = RenderTransformOrigin;
-            actor.NotifyMotionPreStart();
-            NotifyPreStart();
-            aboutToStart?.Invoke();
+
+        actor.RenderTransformOrigin = RenderTransformOrigin;
+        actor.NotifyMotionPreStart();
+        NotifyPreStart();
+        aboutToStart?.Invoke();
       
-            foreach (var animation in Animations)
+        Dispatcher.UIThread.Post(() =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await animation.RunAsync(actor, cancellationToken);
-            }
+                foreach (var animation in Animations)
+                {
+                    await animation.RunAsync(actor);
+                }
+            });
 
             actor.NotifyMotionCompleted();
             NotifyCompleted();
             completedAction?.Invoke();
-        }
-        finally
-        {
             actor.RenderTransformOrigin = originRenderTransformOrigin;
-        }
-        
+        });
     }
     
-    private async Task RunTransitionsAsync(MotionActorControl actor,
-                                           Action? aboutToStart = null,
-                                           Action? completedAction = null,
-                                           CancellationToken cancellationToken = default)
+    private void RunTransitions(MotionActorControl actor,
+                                Action? aboutToStart = null,
+                                Action? completedAction = null)
     {
         ConfigureTransitions();
         var originRenderTransformOrigin = actor.RenderTransformOrigin;
@@ -115,21 +97,27 @@ internal class AbstractMotion : IMotion
         actor.DisableTransitions();
         ConfigureMotionStartValue(actor);
         actor.EnableTransitions();
-        ConfigureMotionEndValue(actor);
 
-        await observables.Zip()
-                         .LastAsync()
-                         .ObserveOn(AvaloniaScheduler.Instance)
-                         .ToTask(cancellationToken);
         Dispatcher.UIThread.Post(() =>
         {
-            actor.DisableTransitions();
-            actor.NotifyMotionCompleted();
-            NotifyCompleted();
-            completedAction?.Invoke();
-            actor.RenderTransformOrigin = originRenderTransformOrigin;
-            actor.MotionTransform       = null;
-            actor.Opacity               = 1.0d;
+            ConfigureMotionEndValue(actor);
+
+            observables.Zip()
+                       .LastAsync()
+                       .ObserveOn(AvaloniaScheduler.Instance)
+                       .Subscribe(_ =>
+                       {
+                           Dispatcher.UIThread.Post(() =>
+                           {
+                               actor.DisableTransitions();
+                               actor.NotifyMotionCompleted();
+                               NotifyCompleted();
+                               completedAction?.Invoke();
+                               actor.RenderTransformOrigin = originRenderTransformOrigin;
+                               actor.MotionTransform       = null;
+                               actor.Opacity               = 1.0d;
+                           });
+                       });
         });
     }
 

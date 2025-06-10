@@ -12,5 +12,6 @@
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
         <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
+        <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>
