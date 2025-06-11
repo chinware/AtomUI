@@ -90,7 +90,6 @@ internal abstract class BaseLinkButtonTheme : BaseButtonTheme
     }
 }
 
-[ControlThemeProvider]
 internal class LinkButtonTheme : BaseLinkButtonTheme
 {
     public const string ID = "LinkButton";

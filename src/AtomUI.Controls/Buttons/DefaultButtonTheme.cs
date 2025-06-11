@@ -148,7 +148,6 @@ internal abstract class BaseDefaultButtonTheme : BaseButtonTheme
     }
 }
 
-[ControlThemeProvider]
 internal class DefaultButtonTheme : BaseDefaultButtonTheme
 {
     public const string ID = "DefaultButton";

@@ -2,8 +2,73 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               xmlns:themes="clr-namespace:AtomUI.Controls.Themes"
+              x:Class="AtomUI.Controls.Themes.LinkButtonTheme"
               TargetType="{x:Type atom:Button}">
     <ControlTheme.BasedOn>
-        <themes:BaseButtonTheme TargetType="{x:Type atom:Button}"/>
+        <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
+
+    <Style Selector="^atom|Button:link">
+        <Style Selector="^:not(:disabled)">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
+            <Style Selector="^/template/ Border#PART_Frame">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultBg}}" />
+            </Style>
+
+            <Style Selector="^:pointerover">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkHover}}" />
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkActive}}" />
+            </Style>
+
+            <Style Selector="^:danger">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+
+                <Style Selector="^:pointerover">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorHover}}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[IsGhost=True]">
+                <Style Selector="^/template/ Border#PART_Frame">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^/template/ Border#PART_Frame">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+        </Style>
+
+        <!-- icon 的各种颜色 -->
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="atom:Icon.NormalFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
+            <Setter Property="atom:Icon.ActiveFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkHover}}" />
+            <Setter Property="atom:Icon.SelectedFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkActive}}" />
+        </Style>
+
+        <Style Selector="^:danger">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="atom:Icon.NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                <Setter Property="atom:Icon.ActiveFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorderHover}}" />
+                <Setter Property="atom:Icon.SelectedFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
+            </Style>
+        </Style>
+    </Style>
 </ControlTheme>

@@ -6,9 +6,220 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:Button">
             <Border Name="{x:Static atom:ButtonThemeConstants.FramePart}"
-                    Padding="{TemplateBinding Padding}">
-                
+                    Padding="{TemplateBinding Padding}"
+                    BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                    CornerRadius="{TemplateBinding CornerRadius}">
+                <DockPanel Name="{x:Static atom:ButtonThemeConstants.RootLayoutPart}"
+                           LastChildFill="True">
+                    <ContentPresenter Name="{x:Static atom:ButtonThemeConstants.RightExtraPresenterPart}"
+                                      IsVisible="{TemplateBinding ExtraContainerVisible}" />
+                    <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Orientation="Horizontal">
+                        <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
+                                   IconInfo="{atom:IconInfoProvider LoadingOutlined}"
+                                   Margin="{Binding (atom:IconPresenter.Margin), 
+                                   ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" />
+                        <atom:IconPresenter
+                            Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
+                            Icon="{TemplateBinding Icon}"
+                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <atom:TextBlock
+                            Name="{x:Static atom:ButtonThemeConstants.LabelPart}"
+                            VerticalAlignment="Center"
+                            Text="{TemplateBinding Text}" />
+                    </StackPanel>
+                </DockPanel>
             </Border>
         </ControlTemplate>
     </Setter>
+
+    <Style Selector="^atom|Button">
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="DefaultShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultShadow}}" />
+        <Setter Property="PrimaryShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryShadow}}" />
+        <Setter Property="DangerShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DangerShadow}}" />
+
+        <!-- BuildSizeStyle 开始 -->
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="ControlHeightToken"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ContentFontSizeLG}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+            <Style Selector="^:not(^[Shape=Circle])">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PaddingLG}}" />
+            </Style>
+            <Style Selector="^:icononly">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.IconOnyPaddingLG}}" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_RightExtraLayout">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ExtraContentMarginLG}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="ControlHeightToken"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ContentFontSize}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+            <Style Selector="^:not(^[Shape=Circle])">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.Padding}}" />
+            </Style>
+            <Style Selector="^:icononly">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.IconOnyPadding}}" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_RightExtraLayout">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ExtraContentMargin}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="ControlHeightToken"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ContentFontSizeSM}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+            <Style Selector="^:not(^[Shape=Circle])">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PaddingSM}}" />
+            </Style>
+            <Style Selector="^:icononly">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.IconOnyPaddingSM}}" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_RightExtraLayout">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ExtraContentMarginSM}}" />
+            </Style>
+        </Style>
+        <!-- BuildSizeStyle 结束 -->
+
+        <!-- BuildIconStyle 开始 -->
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+            <Setter Property="IconMode" Value="Normal" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconMode" Value="Active" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:pressed">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconMode" Value="Selected" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="atom:Icon.IconMode" Value="Disabled" />
+            </Style>
+        </Style>
+
+        <!--  text 和 icon 都存在的情况 -->
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="atom:Icon.Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+                <Setter Property="atom:Icon.Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="atom:Icon.Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+                <Setter Property="atom:Icon.Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="atom:Icon.Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+                <Setter Property="atom:Icon.Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:icononly">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Margin" Value="0" />
+            </Style>
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="atom:Icon.Width"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeLG}}" />
+                    <Setter Property="atom:Icon.Height"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeLG}}" />
+                </Style>
+                
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="atom:Icon.Width" Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSize}}" />
+                    <Setter Property="atom:Icon.Height"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSize}}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="atom:Icon.Width"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeSM}}" />
+                    <Setter Property="atom:Icon.Height"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeSM}}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^:not(^:icononly)">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ButtonTokenKey.IconMargin}}" />
+            </Style>
+        </Style>
+
+        <!-- icon 的各种颜色 -->
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="atom:Icon.NormalFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}"/>
+            <Setter Property="atom:Icon.ActiveFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}"/>
+            <Setter Property="atom:Icon.SelectedFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}"/>
+            <Setter Property="atom:Icon.DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}"/>
+        </Style>
+
+        <!-- BuildIconStyle 结束 -->
+
+        <!-- BuildLoadingStyle 开始 -->
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
+        <Style Selector="^:loading">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="LoadingAnimation" Value="Spin" />
+            </Style>
+            <Setter Property="Opacity" Value="{DynamicResource {x:Static atom:SharedTokenKey.OpacityLoading}}" />
+        </Style>
+        <!-- BuildLoadingStyle 结束 -->
+
+        <!-- BuildShapeStyle -->
+        <Style Selector="^[Shape=Circle]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.CirclePadding}}" />
+        </Style>
+        <!-- BuildShapeStyle -->
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.BorderColorDisabled}}" />
+
+            <Style Selector="^/template/ Border#PART_Frame">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+            </Style>
+        </Style>
+    </Style>
+
 </ControlTheme>

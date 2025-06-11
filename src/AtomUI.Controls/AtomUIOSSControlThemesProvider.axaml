@@ -5,6 +5,7 @@
                             Id="AtomUI.Controls">
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
+        <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxTheme.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />

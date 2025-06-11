@@ -42,8 +42,8 @@ internal abstract class BaseButtonTheme : BaseControlTheme
 
             loadingIcon.RegisterInNameScope(scope);
 
-            CreateTemplateParentBinding(loadingIcon, Layoutable.WidthProperty, Button.IconSizeProperty);
-            CreateTemplateParentBinding(loadingIcon, Layoutable.HeightProperty, Button.IconSizeProperty);
+            // CreateTemplateParentBinding(loadingIcon, Layoutable.WidthProperty, Button.IconSizeProperty);
+            // CreateTemplateParentBinding(loadingIcon, Layoutable.HeightProperty, Button.IconSizeProperty);
             CreateTemplateParentBinding(loadingIcon, Layoutable.MarginProperty, Button.IconMarginProperty);
             CreateTemplateParentBinding(loadingIcon, Icon.NormalFilledBrushProperty, Button.IconNormalColorProperty);
             CreateTemplateParentBinding(loadingIcon, Icon.ActiveFilledBrushProperty, Button.IconHoverColorProperty);
@@ -175,7 +175,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         largeSizeStyle.Add(TemplatedControl.FontSizeProperty, ButtonTokenKey.ContentFontSizeLG);
         {
             var notCircleTypeStyle = new Style(selector => selector.Nesting().Not(nest =>
-                nest.Nesting().PropertyEquals(Button.ButtonShapeProperty, ButtonShape.Circle)));
+                nest.Nesting().PropertyEquals(Button.ShapeProperty, ButtonShape.Circle)));
             notCircleTypeStyle.Add(TemplatedControl.PaddingProperty, ButtonTokenKey.PaddingLG);
             largeSizeStyle.Add(notCircleTypeStyle);
         }
@@ -199,7 +199,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         middleSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadius);
         {
             var notCircleTypeStyle = new Style(selector => selector.Nesting().Not(nest =>
-                nest.Nesting().PropertyEquals(Button.ButtonShapeProperty, ButtonShape.Circle)));
+                nest.Nesting().PropertyEquals(Button.ShapeProperty, ButtonShape.Circle)));
             notCircleTypeStyle.Add(TemplatedControl.PaddingProperty, ButtonTokenKey.Padding);
             middleSizeStyle.Add(notCircleTypeStyle);
         }
@@ -222,7 +222,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
         smallSizeStyle.Add(TemplatedControl.CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
         {
             var notCircleTypeStyle = new Style(selector => selector.Nesting().Not(nest =>
-                nest.Nesting().PropertyEquals(Button.ButtonShapeProperty, ButtonShape.Circle)));
+                nest.Nesting().PropertyEquals(Button.ShapeProperty, ButtonShape.Circle)));
             notCircleTypeStyle.Add(TemplatedControl.PaddingProperty, ButtonTokenKey.PaddingSM);
             smallSizeStyle.Add(notCircleTypeStyle);
         }
@@ -267,48 +267,48 @@ internal abstract class BaseButtonTheme : BaseControlTheme
             disabledStyle.Add(iconStyle);
         }
         Add(disabledStyle);
-        // text 和 icon 都存在的情况
-        {
-            var largeSizeStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
-            largeSizeStyle.Add(Button.IconSizeProperty, SharedTokenKey.IconSizeLG);
-            Add(largeSizeStyle);
-
-            var middleSizeStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
-            middleSizeStyle.Add(Button.IconSizeProperty, SharedTokenKey.IconSize);
-            Add(middleSizeStyle);
-
-            var smallSizeStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
-            smallSizeStyle.Add(Button.IconSizeProperty, SharedTokenKey.IconSizeSM);
-            Add(smallSizeStyle);
-        }
-
-        // icon only
-        var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
-        iconOnlyStyle.Add(Button.IconMarginProperty, new Thickness());
-        {
-            var largeSizeStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
-            largeSizeStyle.Add(Button.IconSizeProperty, ButtonTokenKey.OnlyIconSizeLG);
-            iconOnlyStyle.Add(largeSizeStyle);
-
-            var middleSizeStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
-            middleSizeStyle.Add(Button.IconSizeProperty, ButtonTokenKey.OnlyIconSize);
-            iconOnlyStyle.Add(middleSizeStyle);
-
-            var smallSizeStyle = new Style(selector =>
-                selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
-            smallSizeStyle.Add(Button.IconSizeProperty, ButtonTokenKey.OnlyIconSizeSM);
-            iconOnlyStyle.Add(smallSizeStyle);
-        }
-        Add(iconOnlyStyle);
-
-        var notIconOnyStyle = new Style(selector => selector.Nesting().Not(x => x.Nesting().Class(Button.IconOnlyPC)));
-        notIconOnyStyle.Add(Button.IconMarginProperty, ButtonTokenKey.IconMargin);
-        Add(notIconOnyStyle);
+        // // text 和 icon 都存在的情况
+        // {
+        //     var largeSizeStyle = new Style(selector =>
+        //         selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
+        //     largeSizeStyle.Add(Button.IconSizeProperty, SharedTokenKey.IconSizeLG);
+        //     Add(largeSizeStyle);
+        //
+        //     var middleSizeStyle = new Style(selector =>
+        //         selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
+        //     middleSizeStyle.Add(Button.IconSizeProperty, SharedTokenKey.IconSize);
+        //     Add(middleSizeStyle);
+        //
+        //     var smallSizeStyle = new Style(selector =>
+        //         selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
+        //     smallSizeStyle.Add(Button.IconSizeProperty, SharedTokenKey.IconSizeSM);
+        //     Add(smallSizeStyle);
+        // }
+        //
+        // // icon only
+        // var iconOnlyStyle = new Style(selector => selector.Nesting().Class(Button.IconOnlyPC));
+        // iconOnlyStyle.Add(Button.IconMarginProperty, new Thickness());
+        // {
+        //     var largeSizeStyle = new Style(selector =>
+        //         selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Large));
+        //     largeSizeStyle.Add(Button.IconSizeProperty, ButtonTokenKey.OnlyIconSizeLG);
+        //     iconOnlyStyle.Add(largeSizeStyle);
+        //
+        //     var middleSizeStyle = new Style(selector =>
+        //         selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Middle));
+        //     middleSizeStyle.Add(Button.IconSizeProperty, ButtonTokenKey.OnlyIconSize);
+        //     iconOnlyStyle.Add(middleSizeStyle);
+        //
+        //     var smallSizeStyle = new Style(selector =>
+        //         selector.Nesting().PropertyEquals(Button.SizeTypeProperty, SizeType.Small));
+        //     smallSizeStyle.Add(Button.IconSizeProperty, ButtonTokenKey.OnlyIconSizeSM);
+        //     iconOnlyStyle.Add(smallSizeStyle);
+        // }
+        // Add(iconOnlyStyle);
+        //
+        // var notIconOnyStyle = new Style(selector => selector.Nesting().Not(x => x.Nesting().Class(Button.IconOnlyPC)));
+        // notIconOnyStyle.Add(Button.IconMarginProperty, ButtonTokenKey.IconMargin);
+        // Add(notIconOnyStyle);
     }
 
     private void BuildLoadingStyle()
@@ -341,7 +341,7 @@ internal abstract class BaseButtonTheme : BaseControlTheme
 
     private void BuildShapeStyle()
     {
-        var circleStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.ButtonShapeProperty, ButtonShape.Circle));
+        var circleStyle = new Style(selector => selector.Nesting().PropertyEquals(Button.ShapeProperty, ButtonShape.Circle));
         circleStyle.Add(Button.PaddingProperty, ButtonTokenKey.CirclePadding);
         Add(circleStyle);
     }

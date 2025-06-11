@@ -29,26 +29,22 @@ public class IconPresenter : Control
         Icon.LoadingAnimationDurationProperty.AddOwner<IconPresenter>();
     
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
-        AvaloniaProperty.Register<IconPresenter, IBrush?>(
-            nameof(NormalIconBrush));
+        Icon.NormalFilledBrushProperty.AddOwner<IconPresenter>();
     
     public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
-        AvaloniaProperty.Register<IconPresenter, IBrush?>(
-            nameof(ActiveIconBrush));
+        Icon.ActiveFilledBrushProperty.AddOwner<IconPresenter>();
     
     public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
-        AvaloniaProperty.Register<IconPresenter, IBrush?>(
-            nameof(SelectedIconBrush));
+        Icon.SelectedFilledBrushProperty.AddOwner<IconPresenter>();
     
     public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
-        AvaloniaProperty.Register<IconPresenter, IBrush?>(
-            nameof(DisabledIconBrush));
+        Icon.DisabledFilledBrushProperty.AddOwner<IconPresenter>();
 
-    public static readonly StyledProperty<double> IconWidthProperty
-        = AvaloniaProperty.Register<IconPresenter, double>(nameof(IconWidth));
+    public static readonly StyledProperty<double> IconWidthProperty =
+        Icon.WidthProperty.AddOwner<IconPresenter>();
 
-    public static readonly StyledProperty<double> IconHeightProperty
-        = AvaloniaProperty.Register<IconPresenter, double>(nameof(IconHeight));
+    public static readonly StyledProperty<double> IconHeightProperty =
+        Icon.HeightProperty.AddOwner<IconPresenter>();
     
     public static readonly StyledProperty<IconMode> IconModeProperty =
         Icon.IconModeProperty.AddOwner<IconPresenter>();

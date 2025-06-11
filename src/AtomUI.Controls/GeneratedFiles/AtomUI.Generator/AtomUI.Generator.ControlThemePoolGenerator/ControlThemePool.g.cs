@@ -43,7 +43,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.DatePickerFlyoutPresenterTheme());
             themes.Add(new AtomUI.Controls.DatePickerPresenterTheme());
             themes.Add(new AtomUI.Controls.DatePickerTheme());
-            themes.Add(new AtomUI.Controls.DefaultButtonTheme());
             themes.Add(new AtomUI.Controls.DefaultDropdownButtonTheme());
             themes.Add(new AtomUI.Controls.DrawerContainerTheme());
             themes.Add(new AtomUI.Controls.DrawerInfoContainerTheme());
@@ -58,7 +57,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.InlineNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.Internal.RangeInfoPickerInputTheme());
             themes.Add(new AtomUI.Controls.LineEditTheme());
-            themes.Add(new AtomUI.Controls.LinkButtonTheme());
             themes.Add(new AtomUI.Controls.LinkDropdownButtonTheme());
             themes.Add(new AtomUI.Controls.ListBoxItemTheme());
             themes.Add(new AtomUI.Controls.ListBoxTheme());
@@ -77,7 +75,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
             themes.Add(new AtomUI.Controls.OptionButtonTheme());
             themes.Add(new AtomUI.Controls.PickerClearUpButtonTheme());
-            themes.Add(new AtomUI.Controls.PrimaryButtonTheme());
             themes.Add(new AtomUI.Controls.PrimaryDropdownButtonTheme());
             themes.Add(new AtomUI.Controls.ProgressBarTheme());
             themes.Add(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
@@ -98,7 +95,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.TabStripTheme());
             themes.Add(new AtomUI.Controls.TextBoxInnerBoxTheme());
             themes.Add(new AtomUI.Controls.TextBoxTheme());
-            themes.Add(new AtomUI.Controls.TextButtonTheme());
             themes.Add(new AtomUI.Controls.TextDropdownButtonTheme());
             themes.Add(new AtomUI.Controls.TimedRangeDatePickerPresenterTheme());
             themes.Add(new AtomUI.Controls.TimelineItemTheme());

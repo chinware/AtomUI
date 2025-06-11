@@ -72,7 +72,7 @@ internal abstract class BaseTextButtonTheme : BaseButtonTheme
     }
 }
 
-[ControlThemeProvider]
+
 internal class TextButtonTheme : BaseTextButtonTheme
 {
     public const string ID = "TextButton";
