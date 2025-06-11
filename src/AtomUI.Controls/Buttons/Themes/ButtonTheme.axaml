@@ -1,0 +1,28 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="clr-namespace:AtomUI.Controls.Themes">
+    <ControlTheme x:Key="{x:Type atom:Button}" TargetType="atom:Button">
+        <Style Selector="^:default">
+            <Setter Property="Theme">
+                <themes:DefaultButtonTheme TargetType="atom:Button"/>
+            </Setter>
+        </Style>
+        <Style Selector="^:default">
+            <Setter Property="Theme">
+                <themes:PrimaryButtonTheme TargetType="atom:Button"/>
+            </Setter>
+        </Style>
+        <Style Selector="^:link">
+            <Setter Property="Theme">
+                <themes:LinkButtonTheme TargetType="atom:Button"/>
+            </Setter>
+        </Style>
+        <Style Selector="^:text">
+            <Setter Property="Theme">
+                <themes:TextButtonTheme TargetType="atom:Button"/>
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

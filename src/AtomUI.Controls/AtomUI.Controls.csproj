@@ -13,38 +13,17 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia" />
-        <PackageReference Include="Avalonia.Svg"/>
+        <PackageReference Include="Avalonia.Svg" />
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="AtomUI"/>
+        <InternalsVisibleTo Include="AtomUI" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="../AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj" />
-        <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj"/>
-        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false" 
-                          PrivateAssets="all"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Avalonia.Base">
-        <HintPath>C:\Users\CHINBOY\.nuget\packages\avalonia\11.3.1\lib\net6.0\Avalonia.Base.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Alert\Themes\AlertTheme.axaml" />
-      <AdditionalFiles Include="Pagination\Themes\Pagination.axaml" />
-      <AdditionalFiles Include="Pagination\Themes\PaginationNavItemTheme.axaml" />
-      <AdditionalFiles Include="Pagination\Themes\PaginationNavTheme.axaml" />
-      <AdditionalFiles Include="Pagination\Themes\Paginations.axaml" />
-      <AdditionalFiles Include="Pagination\Themes\PaginationTheme.axaml" />
-      <AdditionalFiles Include="Pagination\Themes\QuickJumperBarTheme.axaml" />
-      <AdditionalFiles Include="Pagination\Themes\SimplePaginationTheme.axaml" />
-      <AdditionalFiles Include="Tag\Themes\TagTheme.axaml" />
+        <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj" />
+        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

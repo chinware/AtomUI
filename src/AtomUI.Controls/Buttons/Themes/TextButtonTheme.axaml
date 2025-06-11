@@ -1,0 +1,9 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="clr-namespace:AtomUI.Controls.Themes"
+              TargetType="{x:Type atom:Button}">
+    <ControlTheme.BasedOn>
+        <themes:BaseButtonTheme TargetType="{x:Type atom:Button}"/>
+    </ControlTheme.BasedOn>
+</ControlTheme>

@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Media\INotifyTransitionCompleted.cs" />
+      <Compile Remove="Media/INotifyTransitionCompleted.cs" />
     </ItemGroup>
     
 </Project>
