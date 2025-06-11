@@ -16,7 +16,7 @@ using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridCellTheme.RightGridLinePart, typeof(Rectangle))]
+[TemplatePart(DataGridCellThemeConstants.RightGridLinePart, typeof(Rectangle))]
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Current, StdPseudoClass.Edited, StdPseudoClass.Invalid, StdPseudoClass.Focus)]
 public class DataGridCell : ContentControl, ICustomHitTest
 {
@@ -122,7 +122,7 @@ public class DataGridCell : ContentControl, ICustomHitTest
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         UpdatePseudoClasses();
-        _rightGridLine = e.NameScope.Find<Rectangle>(DataGridCellTheme.RightGridLinePart);
+        _rightGridLine = e.NameScope.Find<Rectangle>(DataGridCellThemeConstants.RightGridLinePart);
         if (_rightGridLine != null && OwningColumn == null)
         {
             // Turn off the right GridLine for filler cells

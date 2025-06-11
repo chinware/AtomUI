@@ -16,12 +16,12 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridRowGroupHeaderTheme.ExpanderButtonPart,      typeof(ToggleButton))]
-[TemplatePart(DataGridRowGroupHeaderTheme.IndentSpacerPart,        typeof(Control))]
-[TemplatePart(DataGridRowGroupHeaderTheme.ItemCountElementPart,    typeof(TextBlock))]
-[TemplatePart(DataGridRowGroupHeaderTheme.PropertyNameElementPart, typeof(TextBlock))]
-[TemplatePart(DataGridRowTheme.FramePart,        typeof(Panel))]
-[TemplatePart(DataGridRowTheme.RowHeaderPart,   typeof(DataGridRowHeader))]
+[TemplatePart(DataGridRowGroupHeaderThemeConstants.ExpanderButtonPart,      typeof(ToggleButton))]
+[TemplatePart(DataGridRowGroupHeaderThemeConstants.IndentSpacerPart,        typeof(Control))]
+[TemplatePart(DataGridRowGroupHeaderThemeConstants.ItemCountElementPart,    typeof(TextBlock))]
+[TemplatePart(DataGridRowGroupHeaderThemeConstants.PropertyNameElementPart, typeof(TextBlock))]
+[TemplatePart(DataGridRowThemeConstants.FramePart,        typeof(Panel))]
+[TemplatePart(DataGridRowThemeConstants.RowHeaderPart,   typeof(DataGridRowHeader))]
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Current, StdPseudoClass.Expanded)]
 public class DataGridRowGroupHeader : TemplatedControl
 {
@@ -171,10 +171,10 @@ public class DataGridRowGroupHeader : TemplatedControl
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _rootElement = e.NameScope.Find<Panel>(DataGridRowTheme.FramePart);
+        _rootElement = e.NameScope.Find<Panel>(DataGridRowThemeConstants.FramePart);
 
         _expanderButtonSubscription?.Dispose();
-        _expanderButton = e.NameScope.Find<ToggleButton>(DataGridRowGroupHeaderTheme.ExpanderButtonPart);
+        _expanderButton = e.NameScope.Find<ToggleButton>(DataGridRowGroupHeaderThemeConstants.ExpanderButtonPart);
         if(_expanderButton != null)
         {
             EnsureExpanderButtonIsChecked();
@@ -184,21 +184,21 @@ public class DataGridRowGroupHeader : TemplatedControl
                                .Subscribe(v => HandleExpanderButtonIsCheckedChanged(v));
         }
 
-        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowTheme.RowHeaderPart);
+        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowThemeConstants.RowHeaderPart);
         if(_headerElement != null)
         {
             _headerElement.Owner = this;
             EnsureHeaderVisibility();
         }
 
-        _indentSpacer = e.NameScope.Find<Control>(DataGridRowGroupHeaderTheme.IndentSpacerPart);
+        _indentSpacer = e.NameScope.Find<Control>(DataGridRowGroupHeaderThemeConstants.IndentSpacerPart);
         if(_indentSpacer != null)
         {
             _indentSpacer.Width = _totalIndent;
         }
 
-        _itemCountElement    = e.NameScope.Find<TextBlock>(DataGridRowGroupHeaderTheme.ItemCountElementPart);
-        _propertyNameElement = e.NameScope.Find<TextBlock>(DataGridRowGroupHeaderTheme.PropertyNameElementPart);
+        _itemCountElement    = e.NameScope.Find<TextBlock>(DataGridRowGroupHeaderThemeConstants.ItemCountElementPart);
+        _propertyNameElement = e.NameScope.Find<TextBlock>(DataGridRowGroupHeaderThemeConstants.PropertyNameElementPart);
         UpdateTitleElements();
     }
 

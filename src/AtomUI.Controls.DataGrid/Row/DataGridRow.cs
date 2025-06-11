@@ -3,9 +3,12 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -18,11 +21,11 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridRowTheme.BottomGridLinePart, typeof(Rectangle))]
-[TemplatePart(DataGridRowTheme.CellsPresenterPart, typeof(DataGridCellsPresenter))]
-[TemplatePart(DataGridRowTheme.DetailsPresenterPart, typeof(DataGridDetailsPresenter))]
-[TemplatePart(DataGridRowTheme.FramePart, typeof(Panel))]
-[TemplatePart(DataGridRowTheme.RowHeaderPart, typeof(DataGridRowHeader))]
+[TemplatePart(DataGridRowThemeConstants.BottomGridLinePart, typeof(Rectangle))]
+[TemplatePart(DataGridRowThemeConstants.CellsPresenterPart, typeof(DataGridCellsPresenter))]
+[TemplatePart(DataGridRowThemeConstants.DetailsPresenterPart, typeof(DataGridDetailsPresenter))]
+[TemplatePart(DataGridRowThemeConstants.FramePart, typeof(Panel))]
+[TemplatePart(DataGridRowThemeConstants.RowHeaderPart, typeof(DataGridRowHeader))]
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Editing, StdPseudoClass.Invalid)]
 public partial class DataGridRow : TemplatedControl
 {
@@ -263,7 +266,7 @@ public partial class DataGridRow : TemplatedControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        RootElement = e.NameScope.Find<Panel>(DataGridRowTheme.RootLayoutPart);
+        RootElement = e.NameScope.Find<Panel>(DataGridRowThemeConstants.RootLayoutPart);
         if (RootElement != null)
         {
             ApplyState();
@@ -277,7 +280,7 @@ public partial class DataGridRow : TemplatedControl
             updateVerticalScrollBar = true;
         }
 
-        _cellsElement = e.NameScope.Find<DataGridCellsPresenter>(DataGridRowTheme.CellsPresenterPart);
+        _cellsElement = e.NameScope.Find<DataGridCellsPresenter>(DataGridRowThemeConstants.CellsPresenterPart);
         if (_cellsElement != null)
         {
             _cellsElement.OwningRow = this;
@@ -292,7 +295,7 @@ public partial class DataGridRow : TemplatedControl
             }
         }
 
-        _detailsElement = e.NameScope.Find<DataGridDetailsPresenter>(DataGridRowTheme.DetailsPresenterPart);
+        _detailsElement = e.NameScope.Find<DataGridDetailsPresenter>(DataGridRowThemeConstants.DetailsPresenterPart);
         if (_detailsElement != null && OwningGrid != null)
         {
             _detailsElement.OwningRow = this;
@@ -304,10 +307,10 @@ public partial class DataGridRow : TemplatedControl
             }
         }
 
-        _bottomGridLine = e.NameScope.Find<Rectangle>(DataGridRowTheme.BottomGridLinePart);
+        _bottomGridLine = e.NameScope.Find<Rectangle>(DataGridRowThemeConstants.BottomGridLinePart);
         EnsureGridLines();
 
-        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowTheme.RowHeaderPart);
+        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowThemeConstants.RowHeaderPart);
         if (_headerElement != null)
         {
             _headerElement.Owner = this;
@@ -323,6 +326,9 @@ public partial class DataGridRow : TemplatedControl
         {
             OwningGrid.UpdateVerticalScrollBar();
         }
+        
+        _rowFrame = e.NameScope.Find<Border>(DataGridRowThemeConstants.FramePart);
+        SetupTransitions();
     }
     
     protected override void OnPointerEntered(PointerEventArgs e)
@@ -371,6 +377,36 @@ public partial class DataGridRow : TemplatedControl
             PseudoClasses.Set(StdPseudoClass.Selected, value);
         }
 
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                SetupTransitions();
+            }
+        }
+
         base.OnPropertyChanged(change);
+    }
+
+    private void SetupTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            if (_rowFrame != null)
+            {
+                _rowFrame.Transitions ??= new Transitions
+                {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                        SharedTokenKey.MotionDurationSlow)
+                };
+            }
+        }
+        else
+        {
+            if (_rowFrame != null)
+            {
+                _rowFrame.Transitions = null;
+            }
+        }
     }
 }

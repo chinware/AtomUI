@@ -957,7 +957,7 @@ internal class DataGridColumnHeader : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _indicatorsLayout = e.NameScope.Find<StackPanel>(DataGridColumnHeaderTheme.IndicatorsLayoutPart);
+        _indicatorsLayout = e.NameScope.Find<StackPanel>(DataGridColumnHeaderThemeConstants.IndicatorsLayoutPart);
         if (_indicatorsLayout != null)
         {
             _indicatorsLayout.Children.CollectionChanged += HandleIndicatorLayoutChildrenChanged;

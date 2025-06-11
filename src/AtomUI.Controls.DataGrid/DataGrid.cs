@@ -27,14 +27,14 @@ using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridTheme.BottomRightCornerPart,           typeof(Visual))]
-[TemplatePart(DataGridTheme.ColumnHeadersPresenterPart,      typeof(DataGridColumnHeadersPresenter))]
-[TemplatePart(DataGridTheme.FrozenColumnScrollBarSpacerPart, typeof(Control))]
-[TemplatePart(DataGridTheme.HorizontalScrollbarPart,         typeof(ScrollBar))]
-[TemplatePart(DataGridTheme.RowsPresenterPart,               typeof(DataGridRowsPresenter))]
-[TemplatePart(DataGridTheme.TopLeftCornerPart,               typeof(ContentControl))]
-[TemplatePart(DataGridTheme.TopRightCornerPart,              typeof(ContentControl))]
-[TemplatePart(DataGridTheme.VerticalScrollbarPart,           typeof(ScrollBar))]
+[TemplatePart(DataGridThemeConstants.BottomRightCornerPart,           typeof(Visual))]
+[TemplatePart(DataGridThemeConstants.ColumnHeadersPresenterPart,      typeof(DataGridColumnHeadersPresenter))]
+[TemplatePart(DataGridThemeConstants.FrozenColumnScrollBarSpacerPart, typeof(Control))]
+[TemplatePart(DataGridThemeConstants.HorizontalScrollbarPart,         typeof(ScrollBar))]
+[TemplatePart(DataGridThemeConstants.RowsPresenterPart,               typeof(DataGridRowsPresenter))]
+[TemplatePart(DataGridThemeConstants.TopLeftCornerPart,               typeof(ContentControl))]
+[TemplatePart(DataGridThemeConstants.TopRightCornerPart,              typeof(ContentControl))]
+[TemplatePart(DataGridThemeConstants.VerticalScrollbarPart,           typeof(ScrollBar))]
 [PseudoClasses(StdPseudoClass.Invalid, DataGridPseudoClass.EmptyRows, DataGridPseudoClass.EmptyColumns)]
 public partial class DataGrid : TemplatedControl,
                                 ISizeTypeAware,
@@ -1288,8 +1288,12 @@ public partial class DataGrid : TemplatedControl,
             _columnHeadersPresenter.Children.Clear();
         }
 
-        _columnHeadersPresenter = e.NameScope.Find<DataGridColumnHeadersPresenter>(DataGridTheme.ColumnHeadersPresenterPart);
-        _groupHeaderView = e.NameScope.Find<DataGridHeaderView>(DataGridTheme.ColumnHeaderViewPart);
+        _columnHeadersPresenter = e.NameScope.Find<DataGridColumnHeadersPresenter>(DataGridThemeConstants.ColumnHeadersPresenterPart);
+        _groupHeaderView = e.NameScope.Find<DataGridHeaderView>(DataGridThemeConstants.ColumnHeaderViewPart);
+        if (_groupHeaderView != null)
+        {
+            _groupHeaderView.OwningGrid = this;
+        }
 
         if (ColumnGroups.Count > 0)
         {
@@ -1329,7 +1333,7 @@ public partial class DataGrid : TemplatedControl,
             UnloadElements(recycle: false);
         }
 
-        _rowsPresenter = e.NameScope.Find<DataGridRowsPresenter>(DataGridTheme.RowsPresenterPart);
+        _rowsPresenter = e.NameScope.Find<DataGridRowsPresenter>(DataGridThemeConstants.RowsPresenterPart);
 
         if (_rowsPresenter != null)
         {
@@ -1338,14 +1342,14 @@ public partial class DataGrid : TemplatedControl,
             UpdateRowDetailsHeightEstimate();
         }
 
-        _frozenColumnScrollBarSpacer = e.NameScope.Find<Control>(DataGridTheme.FrozenColumnScrollBarSpacerPart);
+        _frozenColumnScrollBarSpacer = e.NameScope.Find<Control>(DataGridThemeConstants.FrozenColumnScrollBarSpacerPart);
 
         if (_hScrollBar != null)
         {
             _hScrollBar.Scroll -= HandleHorizontalScrollBarScroll;
         }
 
-        _hScrollBar = e.NameScope.Find<ScrollBar>(DataGridTheme.HorizontalScrollbarPart);
+        _hScrollBar = e.NameScope.Find<ScrollBar>(DataGridThemeConstants.HorizontalScrollbarPart);
 
         if (_hScrollBar != null)
         {
@@ -1361,7 +1365,7 @@ public partial class DataGrid : TemplatedControl,
             _vScrollBar.Scroll -= HandleVerticalScrollBarScroll;
         }
 
-        _vScrollBar = e.NameScope.Find<ScrollBar>(DataGridTheme.VerticalScrollbarPart);
+        _vScrollBar = e.NameScope.Find<ScrollBar>(DataGridThemeConstants.VerticalScrollbarPart);
 
         if (_vScrollBar != null)
         {
@@ -1372,10 +1376,10 @@ public partial class DataGrid : TemplatedControl,
             _vScrollBar.Scroll      += HandleVerticalScrollBarScroll;
         }
 
-        _topLeftCornerHeader = e.NameScope.Find<ContentControl>(DataGridTheme.TopLeftCornerPart);
+        _topLeftCornerHeader = e.NameScope.Find<ContentControl>(DataGridThemeConstants.TopLeftCornerPart);
         EnsureTopLeftCornerHeader(); // EnsureTopLeftCornerHeader checks for a null _topLeftCornerHeader;
-        _topRightCornerHeader = e.NameScope.Find<ContentControl>(DataGridTheme.TopRightCornerPart);
-        _bottomRightCorner    = e.NameScope.Find<Visual>(DataGridTheme.BottomRightCornerPart);
+        _topRightCornerHeader = e.NameScope.Find<ContentControl>(DataGridThemeConstants.TopRightCornerPart);
+        _bottomRightCorner    = e.NameScope.Find<Visual>(DataGridThemeConstants.BottomRightCornerPart);
     }
 
     /// <summary>

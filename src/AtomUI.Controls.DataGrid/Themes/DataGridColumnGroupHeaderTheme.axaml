@@ -1,0 +1,54 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:DataGridColumnGroupHeader}" TargetType="atom:DataGridColumnGroupHeader">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:DataGridColumnGroupHeaderThemeConstants.FramePart}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Background="{TemplateBinding Background}">
+                    <ContentPresenter
+                        Name="{x:Static atom:DataGridColumnGroupHeaderThemeConstants.HeaderPresenterPart}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Content="{TemplateBinding Header}"
+                        ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderTextColor}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}"/>
+        <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}"/>
+        <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        
+        <Style Selector="^ /template/ Border#PART_Frame">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePadding}}"/>
+            </Style>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSize}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingMiddle}}"/>
+            </Style>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeMiddle}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingSmall}}"/>
+            </Style>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeSmall}}"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

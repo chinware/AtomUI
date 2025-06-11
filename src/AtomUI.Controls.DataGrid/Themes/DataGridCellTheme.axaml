@@ -1,0 +1,78 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:DataGridCell}" TargetType="atom:DataGridCell">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:DataGridCellThemeConstants.CellFramePart}">
+                    <Grid Name="{x:Static atom:DataGridCellThemeConstants.CellRootLayoutPart}"
+                          ColumnDefinitions="*, Auto">
+                        <Rectangle Name="{x:Static atom:DataGridCellThemeConstants.CurrencyVisualPart}"
+                                   IsVisible="False"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Fill="Transparent"
+                                   IsHitTestVisible="False"
+                                   StrokeThickness="1"
+                                   Grid.Column="0" />
+                        <Grid Name="{x:Static atom:DataGridCellThemeConstants.FocusVisualPart}"
+                              IsVisible="False"
+                              IsHitTestVisible="False"
+                              Grid.Column="0">
+                            <Rectangle IsVisible="False"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Fill="Transparent"
+                                       IsHitTestVisible="False"
+                                       StrokeThickness="1"
+                                       Grid.Column="0" />
+                        </Grid>
+                        <ContentPresenter Name="{x:Static atom:DataGridCellThemeConstants.ContentPresenterPart}"
+                                          Grid.Column="0"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        <Rectangle Name="{x:Static atom:DataGridCellThemeConstants.InvalidVisualElementPart}"
+                                   Grid.Column="0"
+                                   IsVisible="False"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   IsHitTestVisible="False"
+                                   StrokeThickness="1" />
+                        <Rectangle Name="{x:Static atom:DataGridCellThemeConstants.RightGridLinePart}"
+                                   Grid.Column="1"
+                                   VerticalAlignment="Stretch" />
+
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Focusable" Value="False"/>
+        
+        <Style Selector="^ /template/ Rectangle#PART_RightGridLine">
+            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePadding}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSize}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingMiddle}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeMiddle}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingSmall}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeSmall}}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

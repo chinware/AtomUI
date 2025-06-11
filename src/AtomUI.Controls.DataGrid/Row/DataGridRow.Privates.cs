@@ -216,6 +216,7 @@ public partial class DataGridRow
     private Control? _detailsContent;
     private IDisposable? _detailsContentSizeSubscription;
     private DataGridDetailsPresenter? _detailsElement;
+    private Border? _rowFrame;
     
     // Locally cache whether or not details are visible so we don't run redundant storyboards
     // The Details Template that is actually applied to the Row

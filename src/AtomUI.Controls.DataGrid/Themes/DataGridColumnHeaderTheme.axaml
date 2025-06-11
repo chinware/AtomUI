@@ -1,0 +1,148 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    xmlns:atom="https://atomui.net">
+    <converters:DataGridHeaderIndicatorLayoutMarginsConverter x:Key="DataGridHeaderIndicatorLayoutMarginsConverter" />
+    <ControlTheme x:Key="{x:Type atom:DataGridColumnHeader}" TargetType="atom:DataGridColumnHeader">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FramePart}"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                    <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.HeaderRootLayoutPart}">
+                        <Decorator Name="{x:Static atom:DataGridColumnHeaderThemeConstants.ContentDecoratorPart}">
+                            <Grid ColumnDefinitions="*, Auto"
+                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                                <ContentPresenter
+                                    Name="{x:Static atom:DataGridColumnHeaderThemeConstants.ContentPresenterPart}"
+                                    Grid.Column="0"
+                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                <StackPanel
+                                    Name="{x:Static atom:DataGridColumnHeaderThemeConstants.IndicatorsLayoutPart}"
+                                    Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Margin="{Binding (ContentPresenter.Padding),
+                                     ElementName={x:Static atom:DataGridColumnHeaderThemeConstants.ContentPresenterPart},
+                                     Converter={StaticResource DataGridHeaderIndicatorLayoutMarginsConverter}}">
+                                    <atom:DataGridSortIndicator
+                                        Name="{x:Static atom:DataGridColumnHeaderThemeConstants.SortIndicatorPart}"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{TemplateBinding CanUserSort}" />
+                                    <atom:DataGridFilterIndicator
+                                        Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FilterIndicatorPart}"
+                                        VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Grid>
+                        </Decorator>
+                        <Rectangle Name="{x:Static atom:DataGridColumnHeaderThemeConstants.VerticalSeparatorPart}"
+                                   Width="1.0"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+                        <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualPart}"
+                               IsVisible="False"
+                               IsHitTestVisible="False">
+                            <Rectangle Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualPrimaryPart}"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Fill="Transparent"
+                                       IsHitTestVisible="False"
+                                       StrokeThickness="2" />
+                            <Rectangle
+                                Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualSecondaryPart}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Transparent"
+                                IsHitTestVisible="False"
+                                StrokeThickness="1" />
+                        </Panel>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderTextColor}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
+        <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+
+        <Style Selector="^ /template/ Border#PART_Frame">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />
+        </Style>
+
+        <!-- BuildSizeTypeStyle 开始 -->
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePadding}}" />
+            </Style>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSize}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingMiddle}}" />
+            </Style>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeMiddle}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingSmall}}" />
+            </Style>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeSmall}}" />
+        </Style>
+        <!-- BuildSizeTypeStyle 结束 -->
+
+        <!-- BuildVerticalSeparatorStyle 开始 -->
+        <Style Selector="^ /template/ Rectangle#PART_VerticalSeparator">
+            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSplitColor}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
+        </Style>
+        <!-- BuildVerticalSeparatorStyle 结束 -->
+
+        <!-- BuildIndicatorsStyle 开始 -->
+        <Style Selector="^ /template/ StackPanel#PART_IndicatorsLayout">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.MarginXXS}}" />
+        </Style>
+        <Style Selector="^:sort-ascending">
+            <Style Selector="^ /template/ atom|DataGridSortIndicator#PART_SortIndicator">
+                <Setter Property="CurrentSortDirection" Value="Ascending" />
+            </Style>
+        </Style>
+        <Style Selector="^:sort-descending">
+            <Style Selector="^ /template/ atom|DataGridSortIndicator#PART_SortIndicator">
+                <Setter Property="CurrentSortDirection" Value="Descending" />
+            </Style>
+        </Style>
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ atom|DataGridSortIndicator#PART_SortIndicator">
+                <Setter Property="IsHoverMode" Value="True" />
+            </Style>
+        </Style>
+        <!-- BuildIndicatorsStyle 结束 -->
+        <!-- BuildSortableColumnStyle 开始 -->
+        <Style Selector="^[CanUserSort=True]">
+            <Style Selector="^:sort-ascending, ^:sort-descending">
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <!-- BuildSortableColumnStyle 结束 -->
+    </ControlTheme>
+</ResourceDictionary>

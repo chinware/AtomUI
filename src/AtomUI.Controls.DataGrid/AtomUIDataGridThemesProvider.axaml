@@ -1,0 +1,20 @@
+<atom:ControlThemesProvider xmlns="https://github.com/avaloniaui"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:atom="https://atomui.net"
+                            x:Class="AtomUI.Controls.AtomUIDataGridThemesProvider"
+                            Id="AtomUI.Controls.DataGrid">
+    <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="Themes/DataGridCellTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridColumnGroupHeaderTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridColumnHeaderTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridFilterIndicatorTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridHeaderViewItemTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridHeaderViewTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridRowGroupHeaderTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridRowHeaderTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridRowTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridSortIndicatorTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridTheme.axaml"/>
+        <ResourceInclude Source="Themes/DataGridTopLeftColumnHeaderTheme.axaml"/>
+    </atom:ControlThemesProvider.ControlThemes>
+</atom:ControlThemesProvider>

@@ -4,3 +4,4 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Controls")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Controls.Utils")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Controls.DataGrid")]
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Styling")]

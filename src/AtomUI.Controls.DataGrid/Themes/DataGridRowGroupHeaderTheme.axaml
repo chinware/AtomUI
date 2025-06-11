@@ -1,0 +1,85 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:DataGridRowGroupHeader}" TargetType="atom:DataGridRowGroupHeader">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:DataGridFrozenGrid Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.RootLayoutPart}"
+                                         RowDefinitions="*, Auto"
+                                         ColumnDefinitions="Auto, Auto, Auto, Auto, *">
+                    <Rectangle Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.IndentSpacerPart}"
+                               Grid.Row="0" 
+                               Grid.Column="1"/>
+                    <ToggleButton Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.ExpanderButtonPart}"
+                                  Grid.Row="0" 
+                                  Grid.Column="2"
+                                  Width="12"
+                                  Height="12"
+                                  Margin="12, 0, 0, 0"
+                                  IsTabStop="False"/>
+                    <!-- PropertyInfo -->
+                    <StackPanel Grid.Row="0" 
+                                Grid.Column="3"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="12, 0, 0, 0">
+                        <atom:TextBlock Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.PropertyNameElementPart}"
+                                        Margin="4, 0, 0, 0"/>
+                        <atom:TextBlock Margin="4, 0, 0, 0"/>
+                        <atom:TextBlock Margin="4, 0, 0, 0"/>
+                    </StackPanel>
+                    
+                    <Rectangle
+                        Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.CurrencyVisualPart}"
+                        Grid.Row="0" 
+                        Grid.Column="0"
+                        Grid.ColumnSpan="5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Fill="Transparent"
+                        IsHitTestVisible="False"
+                        StrokeThickness="1"
+                        />
+                    
+                    <!-- FocusVisual -->
+                    <Grid Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.FocusVisualPart}"
+                          Grid.Row="0"
+                          Grid.Column="0"
+                          Grid.ColumnSpan="5"
+                          IsVisible="False"
+                          IsHitTestVisible="False">
+                        <Rectangle Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.FocusVisualPrimaryPart}"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Fill="Transparent"
+                                   IsHitTestVisible="False"
+                                   StrokeThickness="2"/>
+                        <Rectangle Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.FocusVisualSecondaryPart}"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Fill="Transparent"
+                                   IsHitTestVisible="False"
+                                   StrokeThickness="1"/>
+                    </Grid>
+                    
+                    <atom:DataGridRowHeader
+                        Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.RowHeaderPart}"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.RowSpan="2"
+                        atom:DataGridFrozenGrid.IsFrozen="True"
+                        />
+                    <Rectangle
+                        Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.BottomGridLinePart}"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="5"
+                        Height="1"
+                        />
+                    
+                </atom:DataGridFrozenGrid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

@@ -129,7 +129,7 @@ public class DataGridHeaderViewItem : HeaderedItemsControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _headerFrame = e.NameScope.Find<Border>(DataGridHeaderViewItemTheme.FramePart);
+        _headerFrame = e.NameScope.Find<Border>(DataGridHeaderViewItemThemeConstants.FramePart);
         ApplyEffectiveBorder();
     }
 

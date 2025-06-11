@@ -1,0 +1,36 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:DataGridRowHeader}" TargetType="atom:DataGridRowHeader">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="{x:Static atom:DataGridRowHeaderThemeConstants.RootLayoutPart}"
+                      RowDefinitions="*, Auto, Auto"
+                      ColumnDefinitions="Auto, *">
+                    <Border Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2">
+                        <Panel>
+                            <Rectangle
+                                Name="{x:Static atom:DataGridRowHeaderThemeConstants.RowInvalidVisualElementPart}"
+                                Opacity="0"
+                                Stretch="Fill" />
+                            <Rectangle Name="{x:Static atom:DataGridRowHeaderThemeConstants.RowBackgroundPart}"
+                                       Stretch="Fill" />
+                        </Panel>
+                    </Border>
+
+                    <Rectangle Name="{x:Static atom:DataGridRowHeaderThemeConstants.HorizontalSeparatorPart}"
+                               Grid.Row="2"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               HorizontalAlignment="Stretch" />
+                    <ContentPresenter Grid.Row="0"
+                                      Grid.Column="1"
+                                      Grid.RowSpan="2" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

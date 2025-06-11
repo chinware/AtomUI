@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AtomUI.Data;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -7,12 +8,7 @@ namespace AtomUI.Controls;
 
 public class DataGridHeaderView : ItemsControl
 {
-    internal DataGrid OwningGrid { get; set; }
-
-    public DataGridHeaderView(DataGrid owningGrid)
-    {
-        OwningGrid = owningGrid;
-    }
+    internal DataGrid? OwningGrid { get; set; }
     
     #region 内部属性定义
     private static readonly FuncTemplate<Panel?> DefaultPanel =
@@ -33,6 +29,7 @@ public class DataGridHeaderView : ItemsControl
         int index,
         object? recycleKey)
     {
+        Debug.Assert(OwningGrid != null);
         return new DataGridHeaderViewItem(OwningGrid);
     }
     
@@ -50,6 +47,7 @@ public class DataGridHeaderView : ItemsControl
         int index)
     {
         base.ContainerForItemPreparedOverride(container, item, index);
+        Debug.Assert(OwningGrid is not null);
         if (container is DataGridHeaderViewItem headerViewItem)
         {
             headerViewItem.OwningHeaderView = this;
