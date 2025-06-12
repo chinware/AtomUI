@@ -2,7 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="clr-namespace:Avalonia.Controls.Converters;assembly=Avalonia.Controls">
+    xmlns:converters="using:Avalonia.Controls.Converters">
     <!-- 暂时写死缩进 -->
     <converters:MarginMultiplierConverter x:Key="MarginMultiplierConverter"
                                           Left="True"
