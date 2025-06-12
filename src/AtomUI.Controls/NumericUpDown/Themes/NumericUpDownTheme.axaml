@@ -1,0 +1,37 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:NumericUpDown}" TargetType="atom:NumericUpDown">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:ButtonSpinner
+                    Name="{x:Static atom:NumericUpDownThemeConstants.SpinnerPart}"
+                    IsEnabled="{TemplateBinding IsEnabled}"
+                    SizeType="{TemplateBinding SizeType}"
+                    StyleVariant="{TemplateBinding StyleVariant}"
+                    Status="{TemplateBinding Status}"
+                    LeftAddOn="{TemplateBinding LeftAddOn}"
+                    InnerLeftContent="{TemplateBinding InnerLeftContent}"
+                    RightAddOn="{TemplateBinding RightAddOn}"
+                    InnerRightContent="{TemplateBinding InnerRightContent}">
+                    <atom:TextBox
+                        Name="PART_TextBox"
+                        VerticalContentAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        BorderThickness="0"
+                        TextWrapping="NoWrap"
+                        AcceptsReturn="False"
+                        EmbedMode="True"
+                        DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                        SizeType="{TemplateBinding SizeType}"
+                        IsReadOnly="{TemplateBinding IsReadOnly}"
+                        Text="{TemplateBinding Text}"
+                        Watermark="{TemplateBinding Watermark}"
+                        IsEnableClearButton="{TemplateBinding IsEnableClearButton}" />
+                </atom:ButtonSpinner>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

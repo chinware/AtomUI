@@ -15,6 +15,7 @@
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
         <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
+        <ResourceInclude Source="NumericUpDown/Themes/NumericUpDownTheme.axaml" />
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
         <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchTheme.axaml" />

@@ -61,7 +61,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.NavMenuItemTheme());
             themes.Add(new AtomUI.Controls.NavMenuTheme());
             themes.Add(new AtomUI.Controls.NotificationCardTheme());
-            themes.Add(new AtomUI.Controls.NumericUpDownTheme());
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
             themes.Add(new AtomUI.Controls.OptionButtonTheme());
             themes.Add(new AtomUI.Controls.PickerClearUpButtonTheme());
