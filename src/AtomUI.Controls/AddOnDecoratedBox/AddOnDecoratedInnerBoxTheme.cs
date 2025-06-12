@@ -15,7 +15,6 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
 internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
 {
     public const string MainLayoutPart = "PART_MainLayout";
@@ -218,7 +217,7 @@ internal class AddOnDecoratedInnerBoxTheme : BaseControlTheme
     private void BuildCommonStyle()
     {
         var commonStyle = new Style(selector => selector.Nesting());
-        commonStyle.Add(AddOnDecoratedInnerBox.MarginXSTokenProperty, SharedTokenKey.MarginXS);
+       // commonStyle.Add(AddOnDecoratedInnerBox.MarginXSTokenProperty, SharedTokenKey.MarginXS);
         {
             var decoratorStyle = new Style(selector => selector.Nesting().Template().Name(InnerBoxDecoratorPart));
             decoratorStyle.Add(Visual.ZIndexProperty, AddOnDecoratedBoxTheme.NormalZIndex);

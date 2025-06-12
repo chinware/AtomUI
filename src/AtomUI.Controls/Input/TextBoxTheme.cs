@@ -203,7 +203,7 @@ internal class TextBoxTheme : BaseControlTheme
                                               AddOnDecoratedVariant.Borderless));
 
         {
-            var errorStyle        = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
+            var errorStyle        = new Style(selector => selector.Nesting().Class(StdPseudoClass.Error));
             var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
             scrollViewerStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorErrorText);
             errorStyle.Add(scrollViewerStyle);
@@ -211,7 +211,7 @@ internal class TextBoxTheme : BaseControlTheme
         }
 
         {
-            var warningStyle      = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
+            var warningStyle      = new Style(selector => selector.Nesting().Class(StdPseudoClass.Warning));
             var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
             scrollViewerStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorWarningText);
             warningStyle.Add(scrollViewerStyle);
@@ -226,7 +226,7 @@ internal class TextBoxTheme : BaseControlTheme
                         .PropertyEquals(AddOnDecoratedBox.StyleVariantProperty, AddOnDecoratedVariant.Filled));
 
         {
-            var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
+            var errorStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Error));
 
             var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
             scrollViewerStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorErrorText);
@@ -235,7 +235,7 @@ internal class TextBoxTheme : BaseControlTheme
         }
 
         {
-            var warningStyle      = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
+            var warningStyle      = new Style(selector => selector.Nesting().Class(StdPseudoClass.Warning));
             var scrollViewerStyle = new Style(selector => selector.Nesting().Template().Name(ScrollViewerPart));
             scrollViewerStyle.Add(TemplatedControl.ForegroundProperty, SharedTokenKey.ColorWarningText);
             warningStyle.Add(scrollViewerStyle);

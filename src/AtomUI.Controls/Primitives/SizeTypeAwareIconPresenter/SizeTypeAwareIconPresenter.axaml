@@ -1,0 +1,51 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:primitives="using:AtomUI.Controls.Primitives">
+    <ControlTheme x:Key="{x:Type primitives:SizeTypeAwareIconPresenter}"
+                  TargetType="primitives:SizeTypeAwareIconPresenter">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:IconPresenter
+                    Name="PART_IconPresenter"
+                    Icon="{TemplateBinding Icon}"
+                    Padding="{TemplateBinding Padding}"
+                    LoadingAnimation="{TemplateBinding LoadingAnimation}"
+                    LoadingAnimationDuration="{TemplateBinding LoadingAnimationDuration}"
+                    NormalFilledBrush="{TemplateBinding NormalFilledBrush}"
+                    ActiveFilledBrush="{TemplateBinding ActiveFilledBrush}"
+                    SelectedFilledBrush="{TemplateBinding SelectedFilledBrush}"
+                    DisabledFilledBrush="{TemplateBinding DisabledFilledBrush}"
+                    IconWidth="{TemplateBinding IconWidth}"
+                    IconHeight="{TemplateBinding IconHeight}"
+                    IconMode="{TemplateBinding IconMode}" />
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

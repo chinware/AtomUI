@@ -48,24 +48,24 @@
 
         <!-- BuildTagIconStyle 开始 -->
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-            <Setter Property="atom:IconPresenter.IconWidth"
+            <Setter Property="IconWidth"
                     Value="{DynamicResource {x:Static atom:TagTokenKey.TagIconSize}}" />
-            <Setter Property="atom:IconPresenter.IconHeight"
+            <Setter Property="IconHeight"
                     Value="{DynamicResource {x:Static atom:TagTokenKey.TagIconSize}}" />
-            <Setter Property="atom:IconPresenter.NormalIconBrush"
+            <Setter Property="NormalFilledBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
-            <Setter Property="atom:IconPresenter.ActiveIconBrush"
+            <Setter Property="ActiveFilledBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
         </Style>
         <Style Selector="^[IsColorSet=True]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="atom:IconPresenter.NormalIconBrush"
+                <Setter Property="NormalFilledBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
             </Style>
         </Style>
         <Style Selector="^[IsPresetColorTag=True]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="atom:IconPresenter.NormalIconBrush"
+                <Setter Property="NormalFilledBrush"
                         Value="{TemplateBinding Foreground}" />
             </Style>
         </Style>

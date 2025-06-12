@@ -6,6 +6,7 @@
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
+        <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxTheme.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
@@ -15,5 +16,6 @@
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
         <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchTheme.axaml" />
+        <ResourceInclude Source="Primitives/SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

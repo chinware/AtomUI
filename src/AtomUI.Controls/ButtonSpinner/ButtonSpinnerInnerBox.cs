@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -14,7 +15,7 @@ using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
+[TemplatePart(ButtonSpinnerThemeConstants.SpinnerHandlePart, typeof(ContentPresenter))]
 internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, 
                                        ICustomHitTest,
                                        IResourceBindingManager
@@ -156,7 +157,7 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerInnerBoxTheme.SpinnerHandlePart);
+        _handleContentPresenter = e.NameScope.Find<ContentPresenter>(ButtonSpinnerThemeConstants.SpinnerHandlePart);
     }
 
     public override void Render(DrawingContext context)

@@ -1,0 +1,57 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:ButtonSpinnerHandle}" TargetType="atom:ButtonSpinnerHandle">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border
+                        Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandleDecoratorPart}"
+                        BackgroundSizing="InnerBorderEdge"
+                        ClipToBounds="True" />
+                    <UniformGrid
+                        Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerButtonsLayoutPart}"
+                        Columns="1" Rows="2">
+                        <atom:IconButton
+                            Name="{x:Static atom:ButtonSpinnerThemeConstants.IncreaseButtonPart}"
+                            Icon="{atom:IconProvider UpOutlined}"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            BackgroundSizing="InnerBorderEdge"
+                            Background="Transparent"/>
+                        <atom:IconButton
+                            Name="{x:Static atom:ButtonSpinnerThemeConstants.DecreaseButtonPart}"
+                            Icon="{atom:IconProvider DownOutlined}"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            BackgroundSizing="InnerBorderEdge"
+                            Background="Transparent"/>
+                    </UniformGrid>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ UniformGrid#PART_SpinnerButtonsLayout">
+            <Setter Property="Width"
+                    Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}" />
+        </Style>
+
+        <Style
+            Selector="^ /template/ atom|IconButton#PART_IncreaseButton, ^ /template/ atom|IconButton#PART_DecreaseButton">
+            <Setter Property="ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleHoverColor}}" />
+            <Setter Property="SelectedIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleIconSize}}" />
+            <Setter Property="IconHeight"
+                    Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleIconSize}}" />
+        </Style>
+        
+            <Style
+                Selector="^ /template/ atom|IconButton#PART_IncreaseButton:pressed, ^ /template/ atom|IconButton#PART_DecreaseButton:pressed">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleActiveBg}}" />
+            </Style>
+    </ControlTheme>
+</ResourceDictionary>

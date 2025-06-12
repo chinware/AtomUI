@@ -1,15 +1,21 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Reflection;
 using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(AddOnDecoratedInnerBoxTheme.ContentPresenterPart, typeof(ContentPresenter), IsRequired = true)]
+[TemplatePart(AddOnDecoratedInnerBoxThemeConstants.ContentPresenterPart, typeof(ContentPresenter), IsRequired = true)]
 public class AddOnDecoratedInnerBox : ContentControl,
                                       IMotionAwareControl
 {
@@ -26,9 +32,15 @@ public class AddOnDecoratedInnerBox : ContentControl,
 
     public static readonly StyledProperty<object?> LeftAddOnContentProperty =
         AvaloniaProperty.Register<AddOnDecoratedInnerBox, object?>(nameof(LeftAddOnContent));
+    
+    public static readonly StyledProperty<IDataTemplate?> LeftAddOnContentTemplateProperty =
+        ContentTemplateProperty.AddOwner<ContentPresenter>();
 
     public static readonly StyledProperty<object?> RightAddOnContentProperty =
         AvaloniaProperty.Register<AddOnDecoratedInnerBox, object?>(nameof(RightAddOnContent));
+    
+    public static readonly StyledProperty<IDataTemplate?> RightAddOnContentTemplateProperty =
+        ContentTemplateProperty.AddOwner<ContentPresenter>();
 
     public static readonly StyledProperty<bool> IsClearButtonVisibleProperty =
         AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsClearButtonVisible));
@@ -59,11 +71,23 @@ public class AddOnDecoratedInnerBox : ContentControl,
         get => GetValue(LeftAddOnContentProperty);
         set => SetValue(LeftAddOnContentProperty, value);
     }
+    
+    public IDataTemplate? LeftAddOnContentTemplate
+    {
+        get => GetValue(LeftAddOnContentTemplateProperty);
+        set => SetValue(LeftAddOnContentTemplateProperty, value);
+    }
 
     public object? RightAddOnContent
     {
         get => GetValue(RightAddOnContentProperty);
         set => SetValue(RightAddOnContentProperty, value);
+    }
+    
+    public IDataTemplate? RightAddOnContentTemplate
+    {
+        get => GetValue(RightAddOnContentTemplateProperty);
+        set => SetValue(RightAddOnContentTemplateProperty, value);
     }
 
     public bool IsClearButtonVisible
@@ -90,15 +114,13 @@ public class AddOnDecoratedInnerBox : ContentControl,
             o => o.EffectiveInnerBoxPadding,
             (o, v) => o.EffectiveInnerBoxPadding = v);
 
-    internal static readonly DirectProperty<AddOnDecoratedInnerBox, Thickness> ContentPresenterMarginProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedInnerBox, Thickness>(nameof(ContentPresenterMargin),
-            o => o.ContentPresenterMargin,
-            (o, v) => o.ContentPresenterMargin = v);
+    internal static readonly DirectProperty<AddOnDecoratedInnerBox, Thickness> EffectiveContentPresenterMarginProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedInnerBox, Thickness>(nameof(EffectiveContentPresenterMargin),
+            o => o.EffectiveContentPresenterMargin,
+            (o, v) => o.EffectiveContentPresenterMargin = v);
 
-    internal static readonly DirectProperty<AddOnDecoratedInnerBox, double> MarginXSTokenProperty =
-        AvaloniaProperty.RegisterDirect<AddOnDecoratedInnerBox, double>(nameof(MarginXSToken),
-            o => o.MarginXSToken,
-            (o, v) => o.MarginXSToken = v);
+    internal static readonly StyledProperty<double> ContentPresenterMarginProperty =
+        AvaloniaProperty.Register<AddOnDecoratedInnerBox, double>(nameof(ContentPresenterMargin));
 
     internal Thickness InnerBoxPadding
     {
@@ -113,21 +135,19 @@ public class AddOnDecoratedInnerBox : ContentControl,
         get => _effectiveInnerBoxPadding;
         set => SetAndRaise(EffectiveInnerBoxPaddingProperty, ref _effectiveInnerBoxPadding, value);
     }
-
-    private double _marginXSToken;
-
-    private double MarginXSToken
+    
+    internal double ContentPresenterMargin
     {
-        get => _marginXSToken;
-        set => SetAndRaise(MarginXSTokenProperty, ref _marginXSToken, value);
+        get => GetValue(ContentPresenterMarginProperty);
+        set => SetValue(ContentPresenterMarginProperty, value);
     }
 
-    private Thickness _contentPresenterMargin;
+    private Thickness _effectiveContentPresenterMargin;
 
-    internal Thickness ContentPresenterMargin
+    internal Thickness EffectiveContentPresenterMargin
     {
-        get => _contentPresenterMargin;
-        set => SetAndRaise(ContentPresenterMarginProperty, ref _contentPresenterMargin, value);
+        get => _effectiveContentPresenterMargin;
+        set => SetAndRaise(EffectiveContentPresenterMarginProperty, ref _effectiveContentPresenterMargin, value);
     }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -137,6 +157,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
     private StackPanel? _leftAddOnLayout;
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
+    private Border? _decorator;
 
     public AddOnDecoratedInnerBox()
     {
@@ -169,6 +190,18 @@ public class AddOnDecoratedInnerBox : ContentControl,
                 newControl.SetTemplatedParent(this);
             }
         }
+        else if (change.Property == StyleVariantProperty)
+        {
+            UpdatePseudoClasses();
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -177,6 +210,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
         _leftAddOnLayout  = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.LeftAddOnLayoutPart);
         _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.RightAddOnLayoutPart);
         _clearButton      = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxTheme.ClearButtonPart);
+        _decorator        = e.NameScope.Find<Border>(AddOnDecoratedInnerBoxTheme.InnerBoxDecoratorPart);
 
         if (_leftAddOnLayout is not null)
         {
@@ -193,15 +227,17 @@ public class AddOnDecoratedInnerBox : ContentControl,
             _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
         }
 
-        SetupContentPresenterMargin();
+        SetupEffectiveContentPresenterMargin();
+        ConfigureTransitions();
+        UpdatePseudoClasses();
     }
 
     private void HandleLayoutSizeChanged(object? sender, SizeChangedEventArgs args)
     {
-        SetupContentPresenterMargin();
+        SetupEffectiveContentPresenterMargin();
     }
 
-    private void SetupContentPresenterMargin()
+    private void SetupEffectiveContentPresenterMargin()
     {
         var marginLeft  = 0d;
         var marginRight = 0d;
@@ -209,7 +245,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
         {
             if (_leftAddOnLayout.DesiredSize.Width > 0 && _leftAddOnLayout.DesiredSize.Height > 0)
             {
-                marginLeft = _marginXSToken;
+                marginLeft = ContentPresenterMargin;
             }
         }
 
@@ -217,16 +253,46 @@ public class AddOnDecoratedInnerBox : ContentControl,
         {
             if (_rightAddOnLayout.DesiredSize.Width > 0 && _rightAddOnLayout.DesiredSize.Height > 0)
             {
-                marginRight = _marginXSToken;
+                marginRight = ContentPresenterMargin;
             }
         }
 
-        ContentPresenterMargin = new Thickness(marginLeft, 0, marginRight, 0);
+        EffectiveContentPresenterMargin = new Thickness(marginLeft, 0, marginRight, 0);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         BuildEffectiveInnerBoxPadding();
+    }
+
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            if (_decorator != null)
+            {
+                _decorator.Transitions ??= new Transitions()
+                {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                };
+            }
+        }
+        else
+        {
+            if (_decorator != null)
+            {
+                _decorator.Transitions?.Clear();
+                _decorator.Transitions = null;
+            }
+        }
+    }
+
+    protected virtual void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == AddOnDecoratedVariant.Outline);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
     }
 }

@@ -28,23 +28,23 @@ public class IconPresenter : Control
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         Icon.LoadingAnimationDurationProperty.AddOwner<IconPresenter>();
     
-    public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
+    public static readonly StyledProperty<IBrush?> NormalFilledBrushProperty =
         Icon.NormalFilledBrushProperty.AddOwner<IconPresenter>();
     
-    public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
+    public static readonly StyledProperty<IBrush?> ActiveFilledBrushProperty =
         Icon.ActiveFilledBrushProperty.AddOwner<IconPresenter>();
     
-    public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
+    public static readonly StyledProperty<IBrush?> SelectedFilledBrushProperty =
         Icon.SelectedFilledBrushProperty.AddOwner<IconPresenter>();
     
-    public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
+    public static readonly StyledProperty<IBrush?> DisabledFilledBrushProperty =
         Icon.DisabledFilledBrushProperty.AddOwner<IconPresenter>();
 
     public static readonly StyledProperty<double> IconWidthProperty =
-        Icon.WidthProperty.AddOwner<IconPresenter>();
+        AvaloniaProperty.Register<IconPresenter, double>(nameof(IconWidth), double.NaN);
 
     public static readonly StyledProperty<double> IconHeightProperty =
-        Icon.HeightProperty.AddOwner<IconPresenter>();
+        AvaloniaProperty.Register<IconPresenter, double>(nameof(IconHeight), double.NaN);
     
     public static readonly StyledProperty<IconMode> IconModeProperty =
         Icon.IconModeProperty.AddOwner<IconPresenter>();
@@ -86,28 +86,28 @@ public class IconPresenter : Control
         set => SetValue(IconHeightProperty, value);
     }
     
-    public IBrush? NormalIconBrush
+    public IBrush? NormalFilledBrush
     {
-        get => GetValue(NormalIconBrushProperty);
-        set => SetValue(NormalIconBrushProperty, value);
+        get => GetValue(NormalFilledBrushProperty);
+        set => SetValue(NormalFilledBrushProperty, value);
     }
 
-    public IBrush? ActiveIconBrush
+    public IBrush? ActiveFilledBrush
     {
-        get => GetValue(ActiveIconBrushProperty);
-        set => SetValue(ActiveIconBrushProperty, value);
+        get => GetValue(ActiveFilledBrushProperty);
+        set => SetValue(ActiveFilledBrushProperty, value);
     }
 
-    public IBrush? SelectedIconBrush
+    public IBrush? SelectedFilledBrush
     {
-        get => GetValue(SelectedIconBrushProperty);
-        set => SetValue(SelectedIconBrushProperty, value);
+        get => GetValue(SelectedFilledBrushProperty);
+        set => SetValue(SelectedFilledBrushProperty, value);
     }
 
-    public IBrush? DisabledIconBrush
+    public IBrush? DisabledFilledBrush
     {
-        get => GetValue(DisabledIconBrushProperty);
-        set => SetValue(DisabledIconBrushProperty, value);
+        get => GetValue(DisabledFilledBrushProperty);
+        set => SetValue(DisabledFilledBrushProperty, value);
     }
     
     public IconMode IconMode
@@ -192,10 +192,10 @@ public class IconPresenter : Control
         BindUtils.RelayBind(this, IconModeProperty, icon, IconModeProperty);
         if (icon.ThemeType != IconThemeType.TwoTone)
         {
-            BindUtils.RelayBind(this, NormalIconBrushProperty, icon, Icon.NormalFilledBrushProperty);
-            BindUtils.RelayBind(this, ActiveIconBrushProperty, icon, Icon.ActiveFilledBrushProperty);
-            BindUtils.RelayBind(this, SelectedIconBrushProperty, icon, Icon.SelectedFilledBrushProperty);
-            BindUtils.RelayBind(this, DisabledIconBrushProperty, icon, Icon.DisabledFilledBrushProperty);
+            BindUtils.RelayBind(this, NormalFilledBrushProperty, icon, Icon.NormalFilledBrushProperty);
+            BindUtils.RelayBind(this, ActiveFilledBrushProperty, icon, Icon.ActiveFilledBrushProperty);
+            BindUtils.RelayBind(this, SelectedFilledBrushProperty, icon, Icon.SelectedFilledBrushProperty);
+            BindUtils.RelayBind(this, DisabledFilledBrushProperty, icon, Icon.DisabledFilledBrushProperty);
         }
     }
     

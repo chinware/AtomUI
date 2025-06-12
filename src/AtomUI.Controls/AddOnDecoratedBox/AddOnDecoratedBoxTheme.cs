@@ -14,7 +14,6 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
 internal class AddOnDecoratedBoxTheme : BaseControlTheme
 {
     public const string MainLayoutPart = "PART_MainLayout";

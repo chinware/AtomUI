@@ -274,7 +274,7 @@ internal class ComboBoxTheme : BaseControlTheme
                                               AddOnDecoratedVariant.Borderless));
 
         {
-            var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
+            var errorStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Error));
             var contentPresenter =
                 new Style(selector => selector.Nesting().Template().Name(SelectedContentPresenterPart));
             contentPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorErrorText);
@@ -283,7 +283,7 @@ internal class ComboBoxTheme : BaseControlTheme
         }
 
         {
-            var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
+            var warningStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Warning));
             var contentPresenter =
                 new Style(selector => selector.Nesting().Template().Name(SelectedContentPresenterPart));
             contentPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorWarningText);
@@ -299,7 +299,7 @@ internal class ComboBoxTheme : BaseControlTheme
                                               AddOnDecoratedVariant.Filled));
 
         {
-            var errorStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.ErrorPC));
+            var errorStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Error));
 
             var contentPresenter =
                 new Style(selector => selector.Nesting().Template().Name(SelectedContentPresenterPart));
@@ -309,7 +309,7 @@ internal class ComboBoxTheme : BaseControlTheme
         }
 
         {
-            var warningStyle = new Style(selector => selector.Nesting().Class(AddOnDecoratedBox.WarningPC));
+            var warningStyle = new Style(selector => selector.Nesting().Class(StdPseudoClass.Warning));
             var contentPresenter =
                 new Style(selector => selector.Nesting().Template().Name(SelectedContentPresenterPart));
             contentPresenter.Add(ContentPresenter.ForegroundProperty, SharedTokenKey.ColorWarningText);

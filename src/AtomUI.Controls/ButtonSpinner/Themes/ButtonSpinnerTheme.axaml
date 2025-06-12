@@ -1,0 +1,54 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:ButtonSpinner}" TargetType="atom:ButtonSpinner">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:ButtonSpinnerDecoratedBox
+                    Name="{x:Static atom:ButtonSpinnerThemeConstants.DecoratedBoxPart}"
+                    Focusable="True"
+                    StyleVariant="{TemplateBinding StyleVariant}"
+                    SizeType="{TemplateBinding SizeType}"
+                    Status="{TemplateBinding Status}"
+                    LeftAddOn="{TemplateBinding LeftAddOn}"
+                    LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
+                    RightAddOn="{TemplateBinding RightAddOn}"
+                    RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                    ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
+                    ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}">
+                    <atom:ButtonSpinnerInnerBox
+                        Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerInnerBoxPart}"
+                        LeftAddOnContent="{TemplateBinding InnerLeftContent}"
+                        LeftAddOnContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
+                        RightAddOnContent="{TemplateBinding InnerRightContent}"
+                        RightAddOnContentTemplate="{TemplateBinding InnerRightContentTemplate}"
+                        StyleVariant="{TemplateBinding StyleVariant}"
+                        SizeType="{TemplateBinding SizeType}"
+                        Status="{TemplateBinding Status}"
+                        ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
+                        ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}">
+                        <atom:ButtonSpinnerInnerBox.SpinnerContent>
+                            <atom:ButtonSpinnerHandle
+                                ButtonSpinnerLocation="{Binding (atom:ButtonSpinner.ButtonSpinnerLocation), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
+                                IsMotionEnabled="{Binding (atom:ButtonSpinner.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"/>
+                        </atom:ButtonSpinnerInnerBox.SpinnerContent>
+                    </atom:ButtonSpinnerInnerBox>
+                </atom:ButtonSpinnerDecoratedBox>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

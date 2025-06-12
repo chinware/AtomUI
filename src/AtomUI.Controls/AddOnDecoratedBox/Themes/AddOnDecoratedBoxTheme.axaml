@@ -1,0 +1,91 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Controls.Themes.AddOnDecoratedBoxTheme"
+              TargetType="atom:AddOnDecoratedBox">
+    <Setter Property="Template">
+        <ControlTemplate>
+            <Grid
+                Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.MainLayoutPart}"
+                ColumnDefinitions="Auto, *, Auto">
+
+                <ContentPresenter
+                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
+                    Grid.Column="0"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    HorizontalAlignment="Left"
+                    Focusable="False"
+                    Content="{TemplateBinding LeftAddOn}"
+                    ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                    BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
+                    CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
+                    IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                <ContentPresenter
+                    Name="PART_InnerBoxContent"
+                    Grid.Column="1"
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+                <ContentPresenter
+                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
+                    Grid.Column="2"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Focusable="False"
+                    Content="{TemplateBinding RightAddOn}"
+                    ContentTemplate="{TemplateBinding RightAddOnTemplate}"
+                    BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
+                    CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
+                    IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            </Grid>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|AddOnDecoratedBox)">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+
+        <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn, ^ /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.AddonBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn, ^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn, ^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.Padding}}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn, ^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+            <Style Selector="^ /template/ ContentPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+        </Style>
+    </Style>
+</ControlTheme>

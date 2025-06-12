@@ -24,4 +24,6 @@ public static class StdPseudoClass
     public const string Edited = ":edited";
     public const string Editing = ":editing";
     public const string Invalid = ":invalid";
+    public const string Error = ":error";
+    public const string Warning = ":warning";
 }

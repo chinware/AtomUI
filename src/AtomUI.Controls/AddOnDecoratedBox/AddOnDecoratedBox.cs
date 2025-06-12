@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Reflection;
 using AtomUI.Theme;
@@ -10,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
@@ -30,23 +32,27 @@ public enum AddOnDecoratedStatus
     Error
 }
 
-[TemplatePart(AddOnDecoratedBoxTheme.LeftAddOnPart, typeof(ContentPresenter))]
-[TemplatePart(AddOnDecoratedBoxTheme.RightAddOnPart, typeof(ContentPresenter))]
-[TemplatePart(AddOnDecoratedBoxTheme.InnerBoxContentPart, typeof(ContentPresenter), IsRequired = true)]
+[TemplatePart(AddOnDecoratedBoxThemeConstants.LeftAddOnPart, typeof(ContentPresenter))]
+[TemplatePart(AddOnDecoratedBoxThemeConstants.RightAddOnPart, typeof(ContentPresenter))]
+[TemplatePart(AddOnDecoratedBoxThemeConstants.InnerBoxContentPart, typeof(ContentPresenter), IsRequired = true)]
 public class AddOnDecoratedBox : ContentControl,
                                  IControlSharedTokenResourcesHost,
                                  IResourceBindingManager
 {
-    public const string ErrorPC = ":error";
-    public const string WarningPC = ":warning";
 
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(LeftAddOn));
+    
+    public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
+        ContentTemplateProperty.AddOwner<ContentPresenter>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(RightAddOn));
+    
+    public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
+        ContentTemplateProperty.AddOwner<ContentPresenter>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();
@@ -63,11 +69,23 @@ public class AddOnDecoratedBox : ContentControl,
         get => GetValue(LeftAddOnProperty);
         set => SetValue(LeftAddOnProperty, value);
     }
+    
+    public IDataTemplate? LeftAddOnTemplate
+    {
+        get => GetValue(LeftAddOnTemplateProperty);
+        set => SetValue(LeftAddOnTemplateProperty, value);
+    }
 
     public object? RightAddOn
     {
         get => GetValue(RightAddOnProperty);
         set => SetValue(RightAddOnProperty, value);
+    }
+    
+    public IDataTemplate? RightAddOnTemplate
+    {
+        get => GetValue(RightAddOnTemplateProperty);
+        set => SetValue(RightAddOnTemplateProperty, value);
     }
 
     public SizeType SizeType
@@ -310,7 +328,7 @@ public class AddOnDecoratedBox : ContentControl,
 
     protected virtual void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
-        PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
+        PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
     }
 }

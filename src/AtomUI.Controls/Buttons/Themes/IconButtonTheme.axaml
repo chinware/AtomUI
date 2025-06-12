@@ -5,13 +5,15 @@
     <ControlTheme x:Key="{x:Type atom:IconButton}" TargetType="atom:IconButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border 
+                <Border
                     Name="{x:Static atom:IconButtonThemeConstants.FramePart}"
                     BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}">
+                    BorderBrush="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Background="{TemplateBinding Background}"
+                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                    Padding="{TemplateBinding Padding}">
                     <atom:IconPresenter
                         Name="{x:Static atom:IconButtonThemeConstants.IconContentPart}"
                         HorizontalAlignment="Center"
@@ -22,54 +24,57 @@
                         IconWidth="{TemplateBinding IconWidth}"
                         IconHeight="{TemplateBinding IconHeight}"
                         IconMode="{TemplateBinding atom:IconButton.IconMode}"
-                        NormalIconBrush="{TemplateBinding NormalIconBrush}"
-                        ActiveIconBrush="{TemplateBinding ActiveIconBrush}"
-                        SelectedIconBrush="{TemplateBinding SelectedIconBrush}"
-                        DisabledIconBrush="{TemplateBinding DisabledIconBrush}"
-                        />
+                        NormalFilledBrush="{TemplateBinding NormalIconBrush}"
+                        ActiveFilledBrush="{TemplateBinding ActiveIconBrush}"
+                        SelectedFilledBrush="{TemplateBinding SelectedIconBrush}"
+                        DisabledFilledBrush="{TemplateBinding DisabledIconBrush}" />
                 </Border>
             </ControlTemplate>
         </Setter>
         
+        <Setter Property="Cursor" Value="Hand" />
+
         <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent" />
         </Style>
-        
+
         <Style Selector="^[IsEnableHoverEffect=True]">
             <Style Selector="^:pointerover">
                 <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}"/>
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
                 </Style>
             </Style>
-            
+
             <Style Selector="^:pressed">
                 <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}"/>
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
                 </Style>
             </Style>
         </Style>
-        
+
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
-            <Setter Property="IconMode" Value="Normal"/>
+            <Setter Property="IconMode" Value="Normal" />
         </Style>
-        
+
         <Style Selector="^:pointerover">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
-                <Setter Property="IconMode" Value="Active"/>
+                <Setter Property="IconMode" Value="Active" />
             </Style>
         </Style>
-            
+
         <Style Selector="^:pressed">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
-                <Setter Property="IconMode" Value="Selected"/>
+                <Setter Property="IconMode" Value="Selected" />
             </Style>
         </Style>
-        
+
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
-                <Setter Property="IconMode" Value="Disabled"/>
+                <Setter Property="IconMode" Value="Disabled" />
             </Style>
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>
