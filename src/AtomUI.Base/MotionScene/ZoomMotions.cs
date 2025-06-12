@@ -59,6 +59,12 @@ internal class ZoomOutMotion : AbstractMotion
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.2);
     }
+    
+    protected override void NotifyCompleted(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = null;
+    }
 }
 
 internal class ZoomBigInMotion : AbstractMotion
@@ -114,6 +120,12 @@ internal class ZoomBigOutMotion : AbstractMotion
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.85);
+    }
+    
+    protected override void NotifyCompleted(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = null;
     }
 }
 
@@ -171,6 +183,12 @@ internal class ZoomUpOutMotion : AbstractMotion
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
+    
+    protected override void NotifyCompleted(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = null;
+    }
 }
 
 internal class ZoomLeftInMotion : AbstractMotion
@@ -226,6 +244,12 @@ internal class ZoomLeftOutMotion : AbstractMotion
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
+    }
+    
+    protected override void NotifyCompleted(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = null;
     }
 }
 
@@ -283,6 +307,12 @@ internal class ZoomRightOutMotion : AbstractMotion
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
+    
+    protected override void NotifyCompleted(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = null;
+    }
 }
 
 internal class ZoomDownInMotion : AbstractMotion
@@ -338,5 +368,11 @@ internal class ZoomDownOutMotion : AbstractMotion
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
+    }
+    
+    protected override void NotifyCompleted(MotionActorControl actor)
+    {
+        actor.Opacity         = 1.0;
+        actor.MotionTransform = null;
     }
 }

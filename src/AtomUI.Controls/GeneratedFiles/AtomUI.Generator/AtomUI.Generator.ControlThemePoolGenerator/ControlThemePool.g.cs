@@ -31,9 +31,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.CircleProgressTheme());
             themes.Add(new AtomUI.Controls.CollapseItemTheme());
             themes.Add(new AtomUI.Controls.CollapseTheme());
-            themes.Add(new AtomUI.Controls.ComboBoxItemTheme());
-            themes.Add(new AtomUI.Controls.ComboBoxSpinnerInnerBoxTheme());
-            themes.Add(new AtomUI.Controls.ComboBoxTheme());
             themes.Add(new AtomUI.Controls.ContextMenuTheme());
             themes.Add(new AtomUI.Controls.DashboardProgressTheme());
             themes.Add(new AtomUI.Controls.DatePickerFlyoutPresenterTheme());

@@ -1,4 +1,10 @@
-﻿using Avalonia;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
+using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -26,4 +32,38 @@ public class ComboBoxItem : AvaloniaComboBoxItem
         set => SetValue(IsMotionEnabledProperty, value);
     }
     #endregion
+    
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            Transitions ??= new Transitions
+            {
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
+            };
+        }
+        else
+        {
+            Transitions?.Clear();
+            Transitions = null;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureTransitions();
+    }
 }

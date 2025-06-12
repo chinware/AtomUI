@@ -21,28 +21,28 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
-        AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(LeftAddOn));
+        AddOnDecoratedBox.LeftAddOnProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-        ContentTemplateProperty.AddOwner<ButtonSpinner>();
+        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
-        AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(RightAddOn));
+        AddOnDecoratedBox.RightAddOnProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
-        ContentTemplateProperty.AddOwner<ButtonSpinner>();
+        AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<object?> InnerLeftContentProperty
         = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerLeftContent));
     
     public static readonly StyledProperty<IDataTemplate?> InnerLeftContentTemplateProperty =
-        ContentTemplateProperty.AddOwner<ButtonSpinner>();
+        AvaloniaProperty.Register<ButtonSpinner, IDataTemplate?>(nameof(InnerLeftContentTemplate));
 
     public static readonly StyledProperty<object?> InnerRightContentProperty
         = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerRightContent));
     
     public static readonly StyledProperty<IDataTemplate?> InnerRightContentTemplateProperty =
-        ContentTemplateProperty.AddOwner<ButtonSpinner>();
+        AvaloniaProperty.Register<ButtonSpinner, IDataTemplate?>(nameof(InnerRightContentTemplate));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ButtonSpinner>();

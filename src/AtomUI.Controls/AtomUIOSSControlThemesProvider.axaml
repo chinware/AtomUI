@@ -5,9 +5,11 @@
                             Id="AtomUI.Controls">
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
+        <ResourceInclude Source="AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
         <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxTheme.axaml" />
+        <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />

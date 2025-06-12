@@ -1,0 +1,38 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:ComboBoxHandle}" TargetType="atom:ComboBoxHandle">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border
+                    Name="{x:Static atom:ComboBoxThemeConstants.SpinnerHandleDecoratorPart}"
+                    BackgroundSizing="InnerBorderEdge"
+                    ClipToBounds="True">
+                    <atom:IconButton
+                        Name="{x:Static atom:ComboBoxThemeConstants.OpenIndicatorButtonPart}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                        Icon="{atom:IconProvider DownOutlined}"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        BackgroundSizing="InnerBorderEdge"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style
+            Selector="^ /template/ atom|IconButton#PART_OpenIndicatorButton">
+            <Setter Property="ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleHoverColor}}" />
+            <Setter Property="SelectedIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
+            <Setter Property="DisabledIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.OpenIndicatorWidth}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

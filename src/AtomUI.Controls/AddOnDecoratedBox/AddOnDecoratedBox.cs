@@ -46,13 +46,13 @@ public class AddOnDecoratedBox : ContentControl,
         AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(LeftAddOn));
     
     public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-        ContentTemplateProperty.AddOwner<ContentPresenter>();
+        AvaloniaProperty.Register<AddOnDecoratedBox, IDataTemplate?>(nameof(LeftAddOnTemplate));
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(RightAddOn));
     
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
-        ContentTemplateProperty.AddOwner<ContentPresenter>();
+        AvaloniaProperty.Register<AddOnDecoratedBox, IDataTemplate?>(nameof(RightAddOnTemplate));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();

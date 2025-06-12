@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Themes;
+using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Media;
@@ -6,7 +7,7 @@ using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(ComboBoxSpinnerInnerBoxTheme.SpinnerHandlePart, typeof(ContentPresenter))]
+[TemplatePart(ComboBoxThemeConstants.SpinnerHandlePart, typeof(ContentPresenter))]
 internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, 
                                          ICustomHitTest
 {
