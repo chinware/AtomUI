@@ -31,7 +31,7 @@ internal class SearchEditDecoratedBoxTheme : AddOnDecoratedBoxTheme
         };
 
         searchButton.RegisterInNameScope(scope);
-        CreateTemplateParentBinding(searchButton, Button.TextProperty, SearchEditDecoratedBox.SearchButtonTextProperty);
+        CreateTemplateParentBinding(searchButton, Button.ContentProperty, SearchEditDecoratedBox.SearchButtonTextProperty);
         CreateTemplateParentBinding(searchButton, Button.SizeTypeProperty, AddOnDecoratedBox.SizeTypeProperty);
         CreateTemplateParentBinding(searchButton, TemplatedControl.BorderThicknessProperty,
             AddOnDecoratedBox.RightAddOnBorderThicknessProperty,

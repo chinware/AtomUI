@@ -115,7 +115,7 @@ internal sealed class CalendarButton : AvaloniaButton
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ internal sealed class CalendarButton : AvaloniaButton
         UpdatePseudoClasses();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -229,7 +229,7 @@ internal sealed class CalendarButton : AvaloniaButton
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

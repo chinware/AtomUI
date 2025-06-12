@@ -606,7 +606,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         base.OnAttachedToVisualTree(e);
         UpdatePseudoClasses();
         TryUpdateCanExecute();
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     /// <summary>
@@ -702,7 +702,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -914,7 +914,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

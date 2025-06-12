@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using Avalonia;
@@ -179,8 +180,6 @@ public class DropdownButton : Button
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
-        
-        ExtraContainerVisible = true;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -267,8 +266,9 @@ public class DropdownButton : Button
         RaiseEvent(eventArgs);
     }
 
-    protected override bool SetupExtraContainerVisible()
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        return true;
+        base.OnApplyTemplate(e);
+        RightExtraContent = new Border();
     }
 }

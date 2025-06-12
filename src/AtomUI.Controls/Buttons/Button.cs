@@ -1,9 +1,8 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.IconPkg;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -13,6 +12,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -39,7 +39,14 @@ public enum ButtonShape
     Round
 }
 
-[PseudoClasses(IconOnlyPC, LoadingPC)]
+[PseudoClasses(
+    ButtonPseudoClass.IconOnly,
+    ButtonPseudoClass.Loading, 
+    ButtonPseudoClass.IsDanger,
+    ButtonPseudoClass.DefaultType,
+    ButtonPseudoClass.PrimaryType,
+    ButtonPseudoClass.LinkType,
+    ButtonPseudoClass.TextType)]
 public class Button : AvaloniaButton,
                       ISizeTypeAware,
                       IWaveAdornerInfoProvider,
@@ -47,9 +54,6 @@ public class Button : AvaloniaButton,
                       IControlSharedTokenResourcesHost,
                       IResourceBindingManager
 {
-    public const string IconOnlyPC = ":icononly";
-    public const string LoadingPC = ":loading";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<ButtonType> ButtonTypeProperty =
@@ -70,20 +74,17 @@ public class Button : AvaloniaButton,
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Button>();
 
-    public static readonly StyledProperty<Icon?> IconProperty
-        = AvaloniaProperty.Register<Button, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty = 
+        AvaloniaProperty.Register<Button, Icon?>(nameof(Icon));
 
-    public static readonly StyledProperty<string?> TextProperty
-        = AvaloniaProperty.Register<Button, string?>(nameof(Text));
+    public static readonly StyledProperty<bool> IsIconVisibleProperty = 
+        AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
 
-    public static readonly StyledProperty<bool> IsIconVisibleProperty
-        = AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
-
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Button>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty = 
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Button>();
 
     public ButtonType ButtonType
     {
@@ -127,12 +128,6 @@ public class Button : AvaloniaButton,
         set => SetValue(IconProperty, value);
     }
 
-    public string? Text
-    {
-        get => GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
-    }
-
     public bool IsIconVisible
     {
         get => GetValue(IsIconVisibleProperty);
@@ -155,14 +150,6 @@ public class Button : AvaloniaButton,
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<double> ControlHeightTokenProperty =
-        AvaloniaProperty.Register<Button, double>(
-            nameof(ControlHeightToken));
-
-    internal static readonly StyledProperty<Thickness> IconMarginProperty =
-        AvaloniaProperty.Register<Button, Thickness>(
-            nameof(IconMargin));
-
     internal static readonly StyledProperty<BoxShadow> DefaultShadowProperty =
         AvaloniaProperty.Register<Button, BoxShadow>(
             nameof(DefaultShadow));
@@ -177,48 +164,14 @@ public class Button : AvaloniaButton,
 
     internal static readonly StyledProperty<object?> RightExtraContentProperty =
         AvaloniaProperty.Register<Button, object?>(nameof(RightExtraContent));
+    
+    internal static readonly StyledProperty<IDataTemplate?> RightExtraContentTemplateProperty =
+        AvaloniaProperty.Register<ContentControl, IDataTemplate?>(nameof(RightExtraContentTemplate));
 
     internal static readonly StyledProperty<Thickness> EffectiveBorderThicknessProperty =
         AvaloniaProperty.Register<Button, Thickness>(
             nameof(EffectiveBorderThickness));
     
-    internal static readonly DirectProperty<Button, IBrush?> IconNormalColorProperty =
-        AvaloniaProperty.RegisterDirect<Button, IBrush?>(nameof(IconNormalColor),
-            o => o.IconNormalColor,
-            (o, v) => o.IconNormalColor = v);
-    
-    internal static readonly DirectProperty<Button, IBrush?> IconHoverColorProperty =
-        AvaloniaProperty.RegisterDirect<Button, IBrush?>(nameof(IconHoverColor),
-            o => o.IconHoverColor,
-            (o, v) => o.IconHoverColor = v);
-    
-    internal static readonly DirectProperty<Button, IBrush?> IconPressedColorProperty =
-        AvaloniaProperty.RegisterDirect<Button, IBrush?>(nameof(IconPressedColor),
-            o => o.IconPressedColor,
-            (o, v) => o.IconPressedColor = v);
-    
-    internal static readonly DirectProperty<Button, IBrush?> IconDisabledColorProperty =
-        AvaloniaProperty.RegisterDirect<Button, IBrush?>(nameof(IconDisabledColor),
-            o => o.IconDisabledColor,
-            (o, v) => o.IconDisabledColor = v);
-    
-    internal static readonly DirectProperty<Button, bool> ExtraContainerVisibleProperty =
-        AvaloniaProperty.RegisterDirect<Button, bool>(nameof(ExtraContainerVisible),
-            o => o.ExtraContainerVisible,
-            (o, v) => o.ExtraContainerVisible = v);
-
-    internal double ControlHeightToken
-    {
-        get => GetValue(ControlHeightTokenProperty);
-        set => SetValue(ControlHeightTokenProperty, value);
-    }
-
-    internal Thickness IconMargin
-    {
-        get => GetValue(IconMarginProperty);
-        set => SetValue(IconMarginProperty, value);
-    }
-
     internal BoxShadow DefaultShadow
     {
         get => GetValue(DefaultShadowProperty);
@@ -243,50 +196,16 @@ public class Button : AvaloniaButton,
         set => SetValue(RightExtraContentProperty, value);
     }
 
+    public IDataTemplate? RightExtraContentTemplate
+    {
+        get => GetValue(RightExtraContentTemplateProperty);
+        set => SetValue(RightExtraContentTemplateProperty, value);
+    }
+    
     public Thickness EffectiveBorderThickness
     {
         get => GetValue(EffectiveBorderThicknessProperty);
         set => SetValue(EffectiveBorderThicknessProperty, value);
-    }
-    
-    private IBrush? _iconNormalColor;
-
-    internal IBrush? IconNormalColor
-    {
-        get => _iconNormalColor;
-        set => SetAndRaise(IconNormalColorProperty, ref _iconNormalColor, value);
-    }
-
-    private IBrush? _iconHoverColor;
-
-    internal IBrush? IconHoverColor
-    {
-        get => _iconHoverColor;
-        set => SetAndRaise(IconHoverColorProperty, ref _iconHoverColor, value);
-    }
-    
-    private IBrush? _iconPressedColor;
-
-    internal IBrush? IconPressedColor
-    {
-        get => _iconPressedColor;
-        set => SetAndRaise(IconPressedColorProperty, ref _iconPressedColor, value);
-    }
-    
-    private IBrush? _iconDisabledColor;
-
-    internal IBrush? IconDisabledColor
-    {
-        get => _iconDisabledColor;
-        set => SetAndRaise(IconDisabledColorProperty, ref _iconDisabledColor, value);
-    }
-    
-    private bool _extraContainerVisible;
-
-    internal bool ExtraContainerVisible
-    {
-        get => _extraContainerVisible;
-        set => SetAndRaise(ExtraContainerVisibleProperty, ref _extraContainerVisible, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -328,8 +247,6 @@ public class Button : AvaloniaButton,
         var targetWidth  = size.Width;
         var targetHeight = size.Height;
 
-        targetHeight = Math.Max(targetHeight, ControlHeightToken);
-
         targetWidth = Math.Max(targetWidth, targetHeight);
 
         if (Shape == ButtonShape.Circle)
@@ -351,12 +268,6 @@ public class Button : AvaloniaButton,
         _resourceBindingsDisposable = new CompositeDisposable();
         SetupControlThemeBindings();
         base.OnAttachedToLogicalTree(e);
-      
-        if (Text is null && Content is string content)
-        {
-            Text    = content;
-            Content = null;
-        }
     }
 
     private void SetupShadows()
@@ -457,7 +368,6 @@ public class Button : AvaloniaButton,
         }
 
         if (e.Property == ContentProperty ||
-            e.Property == TextProperty ||
             e.Property == IsLoadingProperty)
         {
             UpdatePseudoClasses();
@@ -468,28 +378,14 @@ public class Button : AvaloniaButton,
         {
             SetupEffectiveBorderThickness();
         }
-        else if (e.Property == RightExtraContentProperty)
-        {
-            ExtraContainerVisible = SetupExtraContainerVisible();
-        }
 
         if (this.IsAttachedToVisualTree())
-        {
-            if (e.Property == IconProperty)
-            {
-                if (e.OldValue is Icon oldIcon)
-                {
-                    oldIcon.SetTemplatedParent(null);
-                }
-                // SetupIcon();
-                // SetupIconBrush();
-            }
-            else if (e.Property == IsDangerProperty ||
-                     e.Property == IsGhostProperty ||
-                     e.Property == ButtonTypeProperty)
+        { 
+            if (e.Property == IsDangerProperty ||
+              e.Property == IsGhostProperty ||
+              e.Property == ButtonTypeProperty)
             {
                 SetupShadows();
-                SetupIconBrush();
             }
             else if (e.Property == ButtonTypeProperty)
             {
@@ -498,15 +394,10 @@ public class Button : AvaloniaButton,
             else if (e.Property == IsMotionEnabledProperty ||
                      e.Property == IsWaveSpiritEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
         
-    }
-
-    protected virtual bool SetupExtraContainerVisible()
-    {
-        return RightExtraContent != null;
     }
 
     protected virtual void SetupControlThemeBindings()
@@ -533,7 +424,7 @@ public class Button : AvaloniaButton,
         }
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -584,8 +475,8 @@ public class Button : AvaloniaButton,
     {
         base.OnApplyTemplate(e);
         // 为了防止意外被用户改变背景，做了一个 frame
-        _frame = e.NameScope.Find<Border>(BaseButtonTheme.FramePart);
-        SetupTransitions();
+        _frame = e.NameScope.Find<Border>(ButtonThemeConstants.FramePart);
+        ConfigureTransitions();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -597,8 +488,6 @@ public class Button : AvaloniaButton,
             new RenderScaleAwareThicknessConfigure(this)));
         SetupEffectiveBorderThickness();
         SetupShadows();
-        SetupIconBrush();
-        // SetupIcon();
         UpdatePseudoClasses();
     }
 
@@ -625,97 +514,6 @@ public class Button : AvaloniaButton,
         }
     }
 
-    // private void SetupIcon()
-    // {
-    //     if (Icon is not null)
-    //     {
-    //         BindUtils.RelayBind(this, IconMarginProperty, Icon, MarginProperty);
-    //         BindUtils.RelayBind(this, IconNormalColorProperty, Icon, Icon.NormalFilledBrushProperty);
-    //         BindUtils.RelayBind(this, IconHoverColorProperty, Icon, Icon.ActiveFilledBrushProperty);
-    //         BindUtils.RelayBind(this, IconPressedColorProperty, Icon, Icon.SelectedFilledBrushProperty);
-    //         BindUtils.RelayBind(this, IconDisabledColorProperty, Icon, Icon.DisabledFilledBrushProperty);
-    //         Icon.SetTemplatedParent(this);
-    //     }
-    // }
-
-    private void SetupIconBrush()
-    {
-        var normalFilledBrushKey   = ButtonTokenKey.DefaultColor;
-        var selectedFilledBrushKey = ButtonTokenKey.DefaultActiveColor;
-        var activeFilledBrushKey   = ButtonTokenKey.DefaultHoverColor;
-        var disabledFilledBrushKey = SharedTokenKey.ColorTextDisabled;
-        if (ButtonType == ButtonType.Default)
-        {
-            if (IsGhost)
-            {
-                normalFilledBrushKey   = SharedTokenKey.ColorTextLightSolid;
-                selectedFilledBrushKey = SharedTokenKey.ColorPrimaryActive;
-                activeFilledBrushKey   = SharedTokenKey.ColorPrimaryHover;
-            }
-
-            if (IsDanger)
-            {
-                normalFilledBrushKey   = SharedTokenKey.ColorError;
-                selectedFilledBrushKey = SharedTokenKey.ColorErrorActive;
-                activeFilledBrushKey   = SharedTokenKey.ColorErrorBorderHover;
-            }
-        }
-        else if (ButtonType == ButtonType.Primary)
-        {
-            normalFilledBrushKey   = ButtonTokenKey.PrimaryColor;
-            selectedFilledBrushKey = ButtonTokenKey.PrimaryColor;
-            activeFilledBrushKey   = ButtonTokenKey.PrimaryColor;
-            if (IsGhost)
-            {
-                normalFilledBrushKey   = SharedTokenKey.ColorPrimary;
-                selectedFilledBrushKey = SharedTokenKey.ColorPrimaryActive;
-                activeFilledBrushKey   = SharedTokenKey.ColorPrimaryHover;
-                if (IsDanger)
-                {
-                    normalFilledBrushKey   = SharedTokenKey.ColorError;
-                    selectedFilledBrushKey = SharedTokenKey.ColorErrorActive;
-                    activeFilledBrushKey   = SharedTokenKey.ColorErrorBorderHover;
-                }
-            }
-        }
-        else if (ButtonType == ButtonType.Text)
-        {
-            normalFilledBrushKey   = ButtonTokenKey.DefaultColor;
-            selectedFilledBrushKey = ButtonTokenKey.DefaultColor;
-            activeFilledBrushKey   = ButtonTokenKey.DefaultColor;
-            if (IsDanger)
-            {
-                normalFilledBrushKey   = SharedTokenKey.ColorError;
-                selectedFilledBrushKey = SharedTokenKey.ColorErrorActive;
-                activeFilledBrushKey   = SharedTokenKey.ColorErrorBorderHover;
-            }
-        }
-        else if (ButtonType == ButtonType.Link)
-        {
-            normalFilledBrushKey   = SharedTokenKey.ColorLink;
-            selectedFilledBrushKey = SharedTokenKey.ColorLinkActive;
-            activeFilledBrushKey   = SharedTokenKey.ColorLinkHover;
-
-            if (IsDanger)
-            {
-                normalFilledBrushKey   = SharedTokenKey.ColorError;
-                selectedFilledBrushKey = SharedTokenKey.ColorErrorActive;
-                activeFilledBrushKey   = SharedTokenKey.ColorErrorHover;
-            }
-        }
-        
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconNormalColorProperty,
-            normalFilledBrushKey));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconHoverColorProperty,
-            activeFilledBrushKey));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IconPressedColorProperty,
-            selectedFilledBrushKey));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
-            IconDisabledColorProperty,
-            disabledFilledBrushKey));
-        
-    }
-
     public Rect WaveGeometry()
     {
         return new Rect(0, 0, Bounds.Width, Bounds.Height);
@@ -728,8 +526,8 @@ public class Button : AvaloniaButton,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(IconOnlyPC, Icon is not null && Text is null);
-        PseudoClasses.Set(LoadingPC, IsLoading);
+        PseudoClasses.Set(ButtonPseudoClass.IconOnly, Icon is not null && Content is null);
+        PseudoClasses.Set(ButtonPseudoClass.Loading, IsLoading);
         PseudoClasses.Set(ButtonPseudoClass.DefaultType, ButtonType == ButtonType.Default);
         PseudoClasses.Set(ButtonPseudoClass.PrimaryType, ButtonType == ButtonType.Primary);
         PseudoClasses.Set(ButtonPseudoClass.LinkType, ButtonType == ButtonType.Link);

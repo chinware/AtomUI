@@ -200,10 +200,10 @@ public class Icon : Control,
         base.ApplyTemplate();
         BuildSourceRenderData();
         SetupFilledBrush();
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -256,7 +256,7 @@ public class Icon : Control,
             }
             else if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

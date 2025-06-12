@@ -131,7 +131,7 @@ public class TabStripItem : AvaloniaTabStripItem,
         }
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -187,7 +187,7 @@ public class TabStripItem : AvaloniaTabStripItem,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
         
@@ -227,7 +227,7 @@ public class TabStripItem : AvaloniaTabStripItem,
     {
         base.OnAttachedToVisualTree(e);
         SetupDefaultCloseIcon();
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     private void SetupShapeThemeBindings()

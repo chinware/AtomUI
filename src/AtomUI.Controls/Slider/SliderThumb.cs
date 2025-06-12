@@ -104,7 +104,7 @@ public class SliderThumb : TemplatedControl
         set => SetValue(ThumbCircleSizeProperty, value);
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -125,7 +125,7 @@ public class SliderThumb : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -135,7 +135,7 @@ public class SliderThumb : TemplatedControl
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

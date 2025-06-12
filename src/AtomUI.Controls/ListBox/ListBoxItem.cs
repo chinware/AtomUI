@@ -44,7 +44,7 @@ public class ListBoxItem : AvaloniaListBoxItem
 
     #endregion
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -66,7 +66,7 @@ public class ListBoxItem : AvaloniaListBoxItem
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }
@@ -74,6 +74,6 @@ public class ListBoxItem : AvaloniaListBoxItem
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupTransitions();
+        ConfigureTransitions();
     }
 }

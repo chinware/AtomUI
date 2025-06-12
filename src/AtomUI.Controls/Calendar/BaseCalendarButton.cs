@@ -114,10 +114,10 @@ internal class BaseCalendarButton : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         UpdatePseudoClasses();
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -218,7 +218,7 @@ internal class BaseCalendarButton : AvaloniaButton
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

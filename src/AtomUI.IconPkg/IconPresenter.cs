@@ -18,9 +18,9 @@ public class IconPresenter : Control
     
     public static readonly StyledProperty<Icon?> IconProperty =
         AvaloniaProperty.Register<IconPresenter, Icon?>(nameof(Icon));
-    
+
     public static readonly StyledProperty<Thickness> PaddingProperty =
-        AvaloniaProperty.Register<IconPresenter, Thickness>(nameof(Padding));
+        Decorator.PaddingProperty.AddOwner<IconPresenter>();
 
     public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
         Icon.LoadingAnimationProperty.AddOwner<IconPresenter>();

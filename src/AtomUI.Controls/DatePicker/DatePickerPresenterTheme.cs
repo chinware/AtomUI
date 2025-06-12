@@ -101,7 +101,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
             HorizontalAlignment = HorizontalAlignment.Left,
             SizeType            = SizeType.Small
         };
-        LanguageResourceBinder.CreateBinding(nowButton, Button.TextProperty, DatePickerLangResourceKey.Now);
+        LanguageResourceBinder.CreateBinding(nowButton, Button.ContentProperty, DatePickerLangResourceKey.Now);
         nowButton.RegisterInNameScope(scope);
         buttonsPanel.Children.Add(nowButton);
         
@@ -112,7 +112,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
             HorizontalAlignment = HorizontalAlignment.Left,
             SizeType            = SizeType.Small
         };
-        LanguageResourceBinder.CreateBinding(todayButton, Button.TextProperty, DatePickerLangResourceKey.Today);
+        LanguageResourceBinder.CreateBinding(todayButton, Button.ContentProperty, DatePickerLangResourceKey.Today);
         todayButton.RegisterInNameScope(scope);
         buttonsPanel.Children.Add(todayButton);
 
@@ -123,7 +123,7 @@ internal class DatePickerPresenterTheme : BaseControlTheme
             SizeType            = SizeType.Small,
             HorizontalAlignment = HorizontalAlignment.Right
         };
-        LanguageResourceBinder.CreateBinding(confirmButton, Button.TextProperty, CommonLangResourceKey.OkText);
+        LanguageResourceBinder.CreateBinding(confirmButton, Button.ContentProperty, CommonLangResourceKey.OkText);
         confirmButton.RegisterInNameScope(scope);
         buttonsPanel.Children.Add(confirmButton);
         

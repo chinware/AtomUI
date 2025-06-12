@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using System.Windows.Input;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
@@ -13,7 +14,6 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
-using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
@@ -27,8 +27,6 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(SplitButtonTheme.PrimaryButtonPart, typeof(Button))]
-[TemplatePart(SplitButtonTheme.SecondaryButtonPart, typeof(Button))]
 public class SplitButton : ContentControl, 
                            ICommandSource, 
                            ISizeTypeAware,
@@ -100,11 +98,11 @@ public class SplitButton : ContentControl,
     public static readonly StyledProperty<bool> IsPrimaryButtonTypeProperty =
         AvaloniaProperty.Register<SplitButton, bool>(nameof(IsPrimaryButtonType));
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<SplitButton>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<SplitButton>();
     
     public event EventHandler<RoutedEventArgs>? Click
     {
@@ -446,8 +444,8 @@ public class SplitButton : ContentControl,
         UnregisterEvents();
         UnregisterFlyoutEvents(Flyout);
 
-        _primaryButton                  = e.NameScope.Find<Button>(SplitButtonTheme.PrimaryButtonPart);
-        _secondaryButton                = e.NameScope.Find<Button>(SplitButtonTheme.SecondaryButtonPart);
+        _primaryButton                  = e.NameScope.Find<Button>(SplitButtonThemeConstants.PrimaryButtonPart);
+        _secondaryButton                = e.NameScope.Find<Button>(SplitButtonThemeConstants.SecondaryButtonPart);
         _flyoutStateHelper.AnchorTarget = _secondaryButton;
         SetupButtonCornerRadius();
         if (_primaryButton != null)

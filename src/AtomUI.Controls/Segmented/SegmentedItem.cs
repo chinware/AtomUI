@@ -113,7 +113,7 @@ public class SegmentedItem : ContentControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -124,7 +124,7 @@ public class SegmentedItem : ContentControl,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();    
+                ConfigureTransitions();    
             }
         }
 
@@ -142,7 +142,7 @@ public class SegmentedItem : ContentControl,
         }
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {

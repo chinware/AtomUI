@@ -1,11 +1,12 @@
-using System.Collections.Specialized;
-using AtomUI.Data;
+using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
@@ -31,26 +32,22 @@ public class IconButton : AvaloniaButton,
         Icon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
     
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
-        AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(NormalIconBrush));
+        Icon.NormalFilledBrushProperty.AddOwner<IconButton>();
     
     public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
-        AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(ActiveIconBrush));
+        Icon.ActiveFilledBrushProperty.AddOwner<IconButton>();
     
     public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
-        AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(SelectedIconBrush));
+        Icon.SelectedFilledBrushProperty.AddOwner<IconButton>();
     
     public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
-        AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(DisabledIconBrush));
+        Icon.DisabledFilledBrushProperty.AddOwner<IconButton>();
 
     public static readonly StyledProperty<double> IconWidthProperty =
-        AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
+        Icon.WidthProperty.AddOwner<IconButton>();
 
     public static readonly StyledProperty<double> IconHeightProperty = 
-        AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
+        Icon.HeightProperty.AddOwner<IconButton>();
     
     public static readonly StyledProperty<IconMode> IconModeProperty =
         Icon.IconModeProperty.AddOwner<IconButton>();
@@ -151,29 +148,35 @@ public class IconButton : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.Property == IconProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            if (e.NewValue is Icon newIcon)
+            if (e.Property == IsMotionEnabledProperty)
             {
-                ConfigureIcon(newIcon);
+                ConfigureTransitions();
             }
         }
     }
 
-    private void ConfigureIcon(Icon icon)
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        BindUtils.RelayBind(this, LoadingAnimationProperty, icon, Icon.LoadingAnimationProperty);
-        BindUtils.RelayBind(this, LoadingAnimationDurationProperty, icon,
-            Icon.LoadingAnimationDurationProperty);
-        BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
-        BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
-        BindUtils.RelayBind(this, IconModeProperty, icon, IconModeProperty);
-        if (icon.ThemeType != IconThemeType.TwoTone)
+        base.OnApplyTemplate(e);
+        ConfigureTransitions();
+    }
+
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
         {
-            BindUtils.RelayBind(this, NormalIconBrushProperty, icon, Icon.NormalFilledBrushProperty);
-            BindUtils.RelayBind(this, ActiveIconBrushProperty, icon, Icon.ActiveFilledBrushProperty);
-            BindUtils.RelayBind(this, SelectedIconBrushProperty, icon, Icon.SelectedFilledBrushProperty);
-            BindUtils.RelayBind(this, DisabledIconBrushProperty, icon, Icon.DisabledFilledBrushProperty);
+            Transitions ??= new Transitions()
+            {
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+            };
+        }
+        else
+        {
+            Transitions?.Clear();
+            Transitions = null;
         }
     }
 

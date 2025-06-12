@@ -52,12 +52,12 @@ public class TabStrip : BaseTabStrip
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
-        SetupTransitions();
+        ConfigureTransitions();
         // 只需要执行一次
         LayoutUpdated -= HandleLayoutUpdated;
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (_selectedIndicator is not null)
         {

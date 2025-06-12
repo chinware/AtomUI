@@ -139,7 +139,7 @@ public class OptionButton : AvaloniaRadioButton,
     {
         base.OnAttachedToVisualTree(e);
         HandleSizeTypeChanged();
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -167,7 +167,7 @@ public class OptionButton : AvaloniaRadioButton,
         {
             if (e.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }
@@ -188,7 +188,7 @@ public class OptionButton : AvaloniaRadioButton,
         return CornerRadius;
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {

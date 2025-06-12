@@ -195,7 +195,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         UpdatePseudoClasses();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -301,7 +301,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
     {
         base.OnAttachedToLogicalTree(e);
         _resourceBindingsDisposable = new CompositeDisposable();
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -325,7 +325,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

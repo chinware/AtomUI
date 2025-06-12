@@ -141,7 +141,7 @@ internal class NodeSwitcherButton : ToggleButton
         SetupDefaultIcons();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -193,7 +193,7 @@ internal class NodeSwitcherButton : ToggleButton
         
         if (change.Property == IsMotionEnabledProperty)
         {
-            SetupTransitions();
+            ConfigureTransitions();
         }
     }
 
@@ -216,7 +216,7 @@ internal class NodeSwitcherButton : ToggleButton
     {
         base.OnApplyTemplate(e);
         _rotationIconPresenter = e.NameScope.Find<IconPresenter>(NodeSwitcherButtonThemeConstants.RotationIconPresenterPart);
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     private void SetupDefaultIcons()

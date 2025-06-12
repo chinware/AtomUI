@@ -200,13 +200,13 @@ public class Segmented : SelectingItemsControl,
         if (Transitions is null)
         {
             SetupSelectedThumbRect();
-            SetupTransitions();
+            ConfigureTransitions();
         }
 
         return finalSize;
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -248,7 +248,7 @@ public class Segmented : SelectingItemsControl,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

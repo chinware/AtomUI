@@ -391,10 +391,10 @@ public class SliderTrack : Control,
         HandleRangeModeChanged();
         SetupMarkLabelBrush();
         CalculateMaxMarkSize();
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -761,7 +761,7 @@ public class SliderTrack : Control,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

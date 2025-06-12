@@ -314,7 +314,7 @@ public abstract class AbstractProgressBar : RangeBase,
         { 
             if (e.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
 
@@ -331,7 +331,7 @@ public abstract class AbstractProgressBar : RangeBase,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupTransitions();
+        ConfigureTransitions();
         UpdatePseudoClasses();
     }
 
@@ -394,7 +394,7 @@ public abstract class AbstractProgressBar : RangeBase,
         UpdateProgress();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {

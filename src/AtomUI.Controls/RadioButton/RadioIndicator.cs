@@ -173,11 +173,11 @@ internal class RadioIndicator : Control,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
         RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
-        SetupTransitions();
+        ConfigureTransitions();
         UpdatePseudoClasses();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -217,7 +217,7 @@ internal class RadioIndicator : Control,
         {
             if (e.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
             else if (e.Property == IsPointerOverProperty ||
                 e.Property == IsCheckedProperty ||

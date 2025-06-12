@@ -2,10 +2,74 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net">
-    <ControlTheme x:Key="BaseButtonTheme" TargetType="atom:Button">
+    <ControlTheme x:Key="{x:Type atom:IconButton}" TargetType="atom:IconButton">
         <Setter Property="Template">
             <ControlTemplate>
+                <Border 
+                    Name="{x:Static atom:IconButtonThemeConstants.FramePart}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                    <atom:IconPresenter
+                        Name="{x:Static atom:IconButtonThemeConstants.IconContentPart}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Icon="{TemplateBinding Icon}"
+                        LoadingAnimation="{TemplateBinding LoadingAnimation}"
+                        LoadingAnimationDuration="{TemplateBinding LoadingAnimationDuration}"
+                        IconWidth="{TemplateBinding IconWidth}"
+                        IconHeight="{TemplateBinding IconHeight}"
+                        IconMode="{TemplateBinding atom:IconButton.IconMode}"
+                        NormalIconBrush="{TemplateBinding NormalIconBrush}"
+                        ActiveIconBrush="{TemplateBinding ActiveIconBrush}"
+                        SelectedIconBrush="{TemplateBinding SelectedIconBrush}"
+                        DisabledIconBrush="{TemplateBinding DisabledIconBrush}"
+                        />
+                </Border>
             </ControlTemplate>
         </Setter>
+        
+        <Style Selector="^ /template/ Border#PART_Frame">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        
+        <Style Selector="^[IsEnableHoverEffect=True]">
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}"/>
+                </Style>
+            </Style>
+            
+            <Style Selector="^:pressed">
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}"/>
+                </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
+            <Setter Property="IconMode" Value="Normal"/>
+        </Style>
+        
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
+                <Setter Property="IconMode" Value="Active"/>
+            </Style>
+        </Style>
+            
+        <Style Selector="^:pressed">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
+                <Setter Property="IconMode" Value="Selected"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
+                <Setter Property="IconMode" Value="Disabled"/>
+            </Style>
+        </Style>
+        
     </ControlTheme>
 </ResourceDictionary>

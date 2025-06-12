@@ -91,10 +91,10 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         _rangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputTheme.RangePickerIndicatorPart);
         _rangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputTheme.RangePickerArrowPart);
         
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -254,7 +254,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
 
         if (this.IsAttachedToVisualTree())
         {
-            SetupTransitions();
+            ConfigureTransitions();
         }
     }
     

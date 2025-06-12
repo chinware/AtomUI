@@ -1,4 +1,4 @@
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Themes;
 
 internal class ButtonThemeConstants
 {
@@ -9,5 +9,4 @@ internal class ButtonThemeConstants
     public const string LoadingIconPart = "PART_LoadingIcon";
     public const string ButtonIconPart = "PART_ButtonIcon";
     public const string RightExtraPresenterPart = "PART_RightExtraPresenter";
-    public const string RightExtraLayoutPart = "PART_RightExtraLayout";
 }

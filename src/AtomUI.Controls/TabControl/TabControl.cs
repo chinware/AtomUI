@@ -53,12 +53,12 @@ public class TabControl : BaseTabControl
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)
     {
-        SetupTransitions();
+        ConfigureTransitions();
         // 只需要执行一次
         LayoutUpdated -= HandleLayoutUpdated;
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (_selectedIndicator is not null)
         {
@@ -165,7 +165,7 @@ public class TabControl : BaseTabControl
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

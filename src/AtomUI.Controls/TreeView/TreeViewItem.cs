@@ -385,7 +385,7 @@ public class TreeViewItem : AvaloniaTreeItem,
 
         SetupSwitcherButtonIconMode();
         SetupCheckBoxEnabled();
-        SetupTransitions();
+        ConfigureTransitions();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -436,7 +436,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
             else if (change.Property == NodeHoverModeProperty)
             {
@@ -621,7 +621,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         _tempAnimationDisabled = false;
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {

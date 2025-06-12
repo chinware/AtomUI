@@ -2,46 +2,46 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               xmlns:themes="clr-namespace:AtomUI.Controls.Themes"
-              x:Class="AtomUI.Controls.Themes.LinkButtonTheme"
+              x:Class="AtomUI.Controls.Themes.TextButtonTheme"
               TargetType="{x:Type atom:Button}">
     <ControlTheme.BasedOn>
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
 
-    <Style Selector="^atom|Button:link">
+    <Style Selector="^:is(atom|Button):text">
         <Style Selector="^:not(:disabled)">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}" />
             <Style Selector="^/template/ Border#PART_Frame">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultBg}}" />
+                <Setter Property="Background" Value="Transparent" />
             </Style>
 
             <Style Selector="^:pointerover">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkHover}}" />
+                <Style Selector="^/template/ Border#PART_Frame">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:ButtonTokenKey.TextHoverBg}}" />
+                </Style>
             </Style>
 
             <Style Selector="^:pressed">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkActive}}" />
+                <Style Selector="^/template/ Border#PART_Frame">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
+                </Style>
             </Style>
 
             <Style Selector="^:danger">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
 
                 <Style Selector="^:pointerover">
-                    <Setter Property="Foreground"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorHover}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgHover}}" />
                 </Style>
 
                 <Style Selector="^:pressed">
-                    <Setter Property="Foreground"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgActive}}" />
                 </Style>
             </Style>
 
-            <Style Selector="^[IsGhost=True]">
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="Transparent" />
-                </Style>
-            </Style>
         </Style>
         
         <Style Selector="^:disabled">
@@ -49,15 +49,15 @@
                 <Setter Property="Background" Value="Transparent" />
             </Style>
         </Style>
-
+        
         <!-- icon 的各种颜色 -->
         <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
             <Setter Property="atom:Icon.NormalFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
+                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}" />
             <Setter Property="atom:Icon.ActiveFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkHover}}" />
+                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}" />
             <Setter Property="atom:Icon.SelectedFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkActive}}" />
+                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}" />
         </Style>
 
         <Style Selector="^:danger">
@@ -71,4 +71,5 @@
             </Style>
         </Style>
     </Style>
+
 </ControlTheme>

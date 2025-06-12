@@ -2,10 +2,48 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net">
-    <ControlTheme x:Key="BaseButtonTheme" TargetType="atom:Button">
+    <ControlTheme x:Key="{x:Type atom:SplitButton}" TargetType="atom:SplitButton">
         <Setter Property="Template">
             <ControlTemplate>
+                <DockPanel Name="{x:Static atom:SplitButtonThemeConstants.MainLayoutPart}">
+                    <atom:Button Name="{x:Static atom:SplitButtonThemeConstants.PrimaryButtonPart}"
+                                 Content="{TemplateBinding Content}"
+                                 ContentTemplate="{TemplateBinding ContentTemplate}"
+                                 SizeType="{TemplateBinding SizeType}"
+                                 Icon="{TemplateBinding Icon}"
+                                 IsEnabled="{TemplateBinding IsEnabled}"
+                                 IsDanger="{TemplateBinding IsDanger}"
+                                 ButtonType="{TemplateBinding EffectiveButtonType}"
+                                 />
+                    <atom:Button Name="{x:Static atom:SplitButtonThemeConstants.SecondaryButtonPart}"
+                                 SizeType="{TemplateBinding SizeType}"
+                                 Icon="{TemplateBinding FlyoutButtonIcon}"
+                                 IsEnabled="{TemplateBinding IsEnabled}"
+                                 IsDanger="{TemplateBinding IsDanger}"
+                                 ButtonType="{TemplateBinding EffectiveButtonType}"/>
+                </DockPanel>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}"/>
+        </Style>
+                
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}"/>
+        </Style>
+                
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ #PART_MainLayout > atom|Button">
+            <Setter Property="ZIndex" Value="{x:Static atom:SplitButtonThemeConstants.NormalZIndex}"/>
+        </Style>
+        <Style Selector="^ /template/ #PART_MainLayout > atom|Button:pointerover">
+            <Setter Property="ZIndex" Value="{x:Static atom:SplitButtonThemeConstants.ActivatedZIndex}"/>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

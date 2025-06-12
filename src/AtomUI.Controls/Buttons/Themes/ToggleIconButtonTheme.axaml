@@ -2,10 +2,47 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net">
-    <ControlTheme x:Key="BaseButtonTheme" TargetType="atom:Button">
+    <ControlTheme x:Key="{x:Type atom:ToggleIconButton}" TargetType="atom:ToggleIconButton">
         <Setter Property="Template">
             <ControlTemplate>
+                <Panel Name="{x:Static atom:ToggleIconButtonThemeConstants.RootLayoutPart}">
+                    <atom:IconPresenter
+                        Name="{x:Static atom:ToggleIconButtonThemeConstants.CheckedIconPresenterPart}"
+                        Icon="{TemplateBinding CheckedIcon}"
+                        IsVisible="{TemplateBinding IsChecked}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+                    <atom:IconPresenter
+                        Name="{x:Static atom:ToggleIconButtonThemeConstants.UnCheckedIconPresenterPart}"
+                        Icon="{TemplateBinding UnCheckedIcon}"
+                        IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+                </Panel>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style Selector="^ /template/ atom|IconPresenter">
+            <Setter Property="IconMode" Value="Normal"/>
+        </Style>
+        
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconMode" Value="Active"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^:selected">
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconMode" Value="Selected"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconMode" Value="Disabled"/>
+            </Style>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
