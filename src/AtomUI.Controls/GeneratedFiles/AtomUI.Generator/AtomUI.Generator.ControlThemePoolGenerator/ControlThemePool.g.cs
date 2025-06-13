@@ -8,8 +8,6 @@ namespace AtomUI.Theme
         internal static IList<BaseControlTheme> GetControlThemes()
         {
             List<BaseControlTheme> themes = new List<BaseControlTheme>();
-            themes.Add(new AtomUI.Controls.Badge.CountBadgeAdornerTheme());
-            themes.Add(new AtomUI.Controls.Badge.DotBadgeAdornerTheme());
             themes.Add(new AtomUI.Controls.BaseCalendarButtonTheme());
             themes.Add(new AtomUI.Controls.BaseCalendarDayButtonTheme());
             themes.Add(new AtomUI.Controls.BaseOverflowMenuItemTheme());

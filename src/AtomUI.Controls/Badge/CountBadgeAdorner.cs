@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls.Badge;
+using AtomUI.Controls.Themes;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
@@ -169,7 +170,7 @@ internal class CountBadgeAdorner : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(CountBadgeAdornerTheme.IndicatorMotionActorPart);
+        _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(CountBadgeAdornerThemeConstants.IndicatorMotionActorPart);
         if (_needInitialHide)
         {
             _indicatorMotionActor.IsVisible = false;

@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls.Badge;
+using AtomUI.Controls.Themes;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Animation;
@@ -111,7 +112,7 @@ internal class DotBadgeAdorner : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
-        _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(DotBadgeAdornerTheme.IndicatorMotionActorPart);
+        _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(DotBadgeAdornerThemeConstants.IndicatorMotionActorPart);
     }
 
     private void ApplyShowMotion()

@@ -1,0 +1,63 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:CountBadgeAdorner}" TargetType="atom:CountBadgeAdorner">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:MotionActorControl
+                    Name="{x:Static atom:CountBadgeAdornerThemeConstants.IndicatorMotionActorPart}"
+                    ClipToBounds="False"
+                    UseRenderTransform="True">
+                    <Panel
+                        Name="{x:Static atom:CountBadgeAdornerThemeConstants.RootLayoutPart}">
+                        <Border Name="{x:Static atom:CountBadgeAdornerThemeConstants.BadgeIndicatorPart}"
+                                BoxShadow="{TemplateBinding BoxShadow}"
+                                Background="{TemplateBinding BadgeColor}" />
+                        <atom:TextBlock
+                            Name="{x:Static atom:CountBadgeAdornerThemeConstants.BadgeTextPart}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="{TemplateBinding CountText}" />
+                    </Panel>
+                </atom:MotionActorControl>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="BadgeShadowSize" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeShadowSize}}" />
+        <Setter Property="BadgeShadowColor" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeShadowColor}}" />
+        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}" />
+        <Setter Property="BadgeColor" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeColor}}" />
+
+        <Style Selector="^[IsAdornerMode=True]">
+            <Style Selector="^ /template/ Panel#PART_RootLayout">
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+        <Style Selector="^ /template/ Border#PART_BadgeIndicator">
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:BadgeTokenKey.IndicatorHeight}}" />
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:BadgeTokenKey.IndicatorHeight}}" />
+            <Setter Property="CornerRadius"
+                    Value="{DynamicResource {x:Static atom:BadgeTokenKey.CountBadgeCornerRadius}}" />
+        </Style>
+        <Style Selector="^ /template/ atom|TextBlock#PART_BadgeText">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeTextColor}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:BadgeTokenKey.TextFontSize}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:BadgeTokenKey.CountBadgeTextPadding}}" />
+        </Style>
+
+        <Style Selector="^[Size=Small]">
+            <Style Selector="^ /template/ Border#PART_BadgeIndicator">
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:BadgeTokenKey.IndicatorHeightSM}}" />
+                <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:BadgeTokenKey.IndicatorHeightSM}}" />
+                <Setter Property="CornerRadius"
+                        Value="{DynamicResource {x:Static atom:BadgeTokenKey.CountBadgeCornerRadiusSM}}" />
+            </Style>
+            <Style Selector="^ /template/ atom|TextBlock#PART_BadgeText">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:BadgeTokenKey.TextFontSizeSM}}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
