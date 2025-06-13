@@ -1,0 +1,73 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="using:AtomUI.Controls.Themes"
+              TargetType="atom:LineEdit"
+              x:Class="AtomUI.Controls.Themes.LineEditTheme">
+    <ControlTheme.BasedOn>
+        <themes:TextBoxTheme TargetType="{x:Type atom:LineEdit}" />
+    </ControlTheme.BasedOn>
+    <Setter Property="Template">
+        <ControlTemplate>
+            <atom:AddOnDecoratedBox
+                Name="{x:Static atom:TextBoxThemeConstants.DecoratedBoxPart}"
+                Focusable="False"
+                StyleVariant="{TemplateBinding StyleVariant}"
+                SizeType="{TemplateBinding SizeType}"
+                Status="{TemplateBinding Status}"
+                LeftAddOn="{TemplateBinding LeftAddOn}"
+                LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
+                RightAddOn="{TemplateBinding RightAddOn}"
+                RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}">
+                <atom:TextBoxInnerBox
+                    Name="{x:Static atom:TextBoxThemeConstants.TextBoxInnerBoxPart}"
+                    Cursor="Ibeam"
+                    LeftAddOnContent="{TemplateBinding InnerLeftContent}"
+                    RightAddOnContent="{TemplateBinding InnerRightContent}"
+                    SizeType="{TemplateBinding SizeType}"
+                    StyleVariant="{TemplateBinding StyleVariant}"
+                    IsClearButtonVisible="{TemplateBinding IsEffectiveShowClearButton}"
+                    IsRevealButtonVisible="{TemplateBinding IsEnableRevealButton}"
+                    IsRevealButtonChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
+                    Status="{TemplateBinding Status}"
+                    EmbedMode="{TemplateBinding EmbedMode}">
+                    <ScrollViewer
+                        Name="{x:Static atom:TextBoxThemeConstants.ScrollViewerPart}"
+                        Focusable="True"
+                        AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                        HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                        VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                        IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                        <Panel>
+                            <atom:TextBlock
+                                Name="{x:Static atom:TextBoxThemeConstants.WatermarkPart}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Text="{TemplateBinding Watermark}"
+                                TextAlignment="{TemplateBinding TextAlignment}"
+                                TextWrapping="{TemplateBinding TextWrapping}"
+                                IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                            <TextPresenter
+                                Name="PART_TextPresenter"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                CaretBrush="{TemplateBinding CaretBrush}"
+                                CaretIndex="{TemplateBinding CaretIndex}"
+                                LineHeight="{TemplateBinding LineHeight}"
+                                PasswordChar="{TemplateBinding PasswordChar}"
+                                RevealPassword="{TemplateBinding RevealPassword}"
+                                SelectionBrush="{TemplateBinding SelectionBrush}"
+                                SelectionStart="{TemplateBinding SelectionStart}"
+                                SelectionEnd="{TemplateBinding SelectionEnd}"
+                                SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                Text="{TemplateBinding Text, Mode=TwoWay}"
+                                TextAlignment="{TemplateBinding TextAlignment}"
+                                TextWrapping="{TemplateBinding TextWrapping}" />
+                        </Panel>
+                    </ScrollViewer>
+                </atom:TextBoxInnerBox>
+            </atom:AddOnDecoratedBox>
+        </ControlTemplate>
+    </Setter>
+</ControlTheme>

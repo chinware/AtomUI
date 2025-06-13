@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="SearchEditDecoratedBoxTheme.axaml" />
+        <ResourceInclude Source="SearchEditTheme.axaml" />
+        <ResourceInclude Source="TextBoxInnerBoxTheme.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <themes:TextBoxTheme x:Key="{x:Type atom:TextBox}" TargetType="atom:TextBox"/>
+    <themes:LineEditTheme x:Key="{x:Type atom:LineEdit}" TargetType="atom:LineEdit"/>
+</ResourceDictionary>

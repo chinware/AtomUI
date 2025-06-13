@@ -10,12 +10,24 @@
                         Name="{x:Static atom:ToggleIconButtonThemeConstants.CheckedIconPresenterPart}"
                         Icon="{TemplateBinding CheckedIcon}"
                         IsVisible="{TemplateBinding IsChecked}"
+                        IconWidth="{TemplateBinding IconWidth}"
+                        IconHeight="{TemplateBinding IconHeight}"
+                        NormalFilledBrush="{TemplateBinding NormalIconBrush}"
+                        ActiveFilledBrush="{TemplateBinding ActiveIconBrush}"
+                        SelectedFilledBrush="{TemplateBinding SelectedIconBrush}"
+                        DisabledFilledBrush="{TemplateBinding DisabledIconBrush}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"/>
                     <atom:IconPresenter
                         Name="{x:Static atom:ToggleIconButtonThemeConstants.UnCheckedIconPresenterPart}"
                         Icon="{TemplateBinding UnCheckedIcon}"
+                        IconWidth="{TemplateBinding IconWidth}"
+                        IconHeight="{TemplateBinding IconHeight}"
                         IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
+                        NormalFilledBrush="{TemplateBinding NormalIconBrush}"
+                        ActiveFilledBrush="{TemplateBinding ActiveIconBrush}"
+                        SelectedFilledBrush="{TemplateBinding SelectedIconBrush}"
+                        DisabledFilledBrush="{TemplateBinding DisabledIconBrush}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"/>
                 </Panel>

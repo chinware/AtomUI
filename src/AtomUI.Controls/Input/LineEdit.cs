@@ -2,6 +2,7 @@
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 
 namespace AtomUI.Controls;
 
@@ -11,10 +12,16 @@ public class LineEdit : TextBox,
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
-        AvaloniaProperty.Register<LineEdit, object?>(nameof(LeftAddOn));
+        AddOnDecoratedBox.LeftAddOnProperty.AddOwner<LineEdit>();
+    
+    public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
+        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<LineEdit>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
-        AvaloniaProperty.Register<LineEdit, object?>(nameof(RightAddOn));
+        AddOnDecoratedBox.RightAddOnProperty.AddOwner<LineEdit>();
+    
+    public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
+        AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<LineEdit>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<LineEdit>();
@@ -24,11 +31,23 @@ public class LineEdit : TextBox,
         get => GetValue(LeftAddOnProperty);
         set => SetValue(LeftAddOnProperty, value);
     }
+    
+    public IDataTemplate? LeftAddOnTemplate
+    {
+        get => GetValue(LeftAddOnTemplateProperty);
+        set => SetValue(LeftAddOnTemplateProperty, value);
+    }
 
     public object? RightAddOn
     {
         get => GetValue(RightAddOnProperty);
         set => SetValue(RightAddOnProperty, value);
+    }
+    
+    public IDataTemplate? RightAddOnTemplate
+    {
+        get => GetValue(RightAddOnTemplateProperty);
+        set => SetValue(RightAddOnTemplateProperty, value);
     }
 
     public bool IsMotionEnabled

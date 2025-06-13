@@ -104,28 +104,43 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="atom:Icon.IconMode" Value="Disabled" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconMode" Value="Disabled" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="IconMode" Value="Disabled" />
             </Style>
         </Style>
 
         <!--  text 和 icon 都存在的情况 -->
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="atom:Icon.Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
-                <Setter Property="atom:Icon.Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="atom:Icon.Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-                <Setter Property="atom:Icon.Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="atom:Icon.Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-                <Setter Property="atom:Icon.Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             </Style>
         </Style>
 
@@ -134,26 +149,44 @@
                 <Setter Property="Margin" Value="0" />
             </Style>
             <Style Selector="^[SizeType=Large]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="atom:Icon.Width"
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="IconWidth"
                             Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeLG}}" />
-                    <Setter Property="atom:Icon.Height"
+                    <Setter Property="IconHeight"
                             Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeLG}}" />
                 </Style>
-                
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="Width"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeLG}}" />
+                    <Setter Property="Height"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeLG}}" />
+                </Style>
             </Style>
             <Style Selector="^[SizeType=Middle]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="atom:Icon.Width" Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSize}}" />
-                    <Setter Property="atom:Icon.Height"
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="IconWidth"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSize}}" />
+                    <Setter Property="IconHeight"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSize}}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="Width"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSize}}" />
+                    <Setter Property="Height"
                             Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSize}}" />
                 </Style>
             </Style>
             <Style Selector="^[SizeType=Small]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="atom:Icon.Width"
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="IconWidth"
                             Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeSM}}" />
-                    <Setter Property="atom:Icon.Height"
+                    <Setter Property="IconHeight"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeSM}}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="Width"
+                            Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeSM}}" />
+                    <Setter Property="Height"
                             Value="{DynamicResource {x:Static atom:ButtonTokenKey.OnlyIconSizeSM}}" />
                 </Style>
             </Style>
@@ -166,11 +199,17 @@
         </Style>
 
         <!-- icon 的各种颜色 -->
-        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="atom:Icon.NormalFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}"/>
-            <Setter Property="atom:Icon.ActiveFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}"/>
-            <Setter Property="atom:Icon.SelectedFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}"/>
-            <Setter Property="atom:Icon.DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}"/>
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
+            <Setter Property="ActiveFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}"/>
+            <Setter Property="SelectedFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}"/>
+            <Setter Property="DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}"/>
+        </Style>
+        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
+            <Setter Property="ActiveFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}"/>
+            <Setter Property="SelectedFilledBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}"/>
+            <Setter Property="DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}"/>
         </Style>
 
         <!-- BuildIconStyle 结束 -->

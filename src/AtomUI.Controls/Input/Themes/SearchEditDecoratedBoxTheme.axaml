@@ -1,0 +1,77 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ControlTheme x:Key="{x:Type atom:SearchEditDecoratedBox}" TargetType="atom:SearchEditDecoratedBox">
+        <ControlTheme.BasedOn>
+            <themes:AddOnDecoratedBoxTheme TargetType="atom:SearchEditDecoratedBox" />
+        </ControlTheme.BasedOn>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid
+                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.MainLayoutPart}"
+                    ColumnDefinitions="Auto, *, Auto">
+
+                    <ContentPresenter
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
+                        Grid.Column="0"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Left"
+                        Focusable="False"
+                        Content="{TemplateBinding LeftAddOn}"
+                        ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                        BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
+                        CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
+                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                    <ContentPresenter
+                        Name="PART_InnerBoxContent"
+                        Grid.Column="1"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+                    <atom:Button
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
+                        Grid.Column="2"
+                        Focusable="True"
+                        Icon="{atom:IconProvider SearchOutlined}"
+                        BackgroundSizing="OuterBorderEdge"
+                        Content="{TemplateBinding SearchButtonText}"
+                        SizeType="{TemplateBinding SizeType}"/>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_InnerBoxContent">
+            <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
+        </Style>
+
+        <Style Selector="^[SearchButtonStyle=Default]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_InnerBoxContent:focus-within, ^ /template/ ContentPresenter#PART_InnerBoxContent:pointerover">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
+                <Setter Property="IsIconVisible" Value="True" />
+                <Setter Property="ButtonType" Value="Default" />
+            </Style>
+            <Style
+                Selector="^ /template/ atom|Button#PART_RightAddOn:pressed, ^ /template/ atom|Button#PART_RightAddOn:pointerover">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+            </Style>
+
+        </Style>
+        <Style Selector="^[SearchButtonStyle=Primary]">
+            <Style Selector="^ /template/ atom|Button#PART_RightAddOn">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+                <Setter Property="IsIconVisible" Value="False" />
+                <Setter Property="ButtonType" Value="Primary" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

@@ -29,19 +29,19 @@ public class ToggleIconButton : ToggleButton,
         
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
-            nameof(NormalIconColor));
+            nameof(NormalIconBrush));
     
     public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
-            nameof(ActiveIconColor));
+            nameof(ActiveIconBrush));
     
     public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
-            nameof(SelectedIconColor));
+            nameof(SelectedIconBrush));
     
     public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
-            nameof(DisabledIconColor));
+            nameof(DisabledIconBrush));
 
     public Icon? CheckedIcon
     {
@@ -67,25 +67,25 @@ public class ToggleIconButton : ToggleButton,
         set => SetValue(IconHeightProperty, value);
     }
 
-    public IBrush? NormalIconColor
+    public IBrush? NormalIconBrush
     {
         get => GetValue(NormalIconBrushProperty);
         set => SetValue(NormalIconBrushProperty, value);
     }
 
-    public IBrush? ActiveIconColor
+    public IBrush? ActiveIconBrush
     {
         get => GetValue(ActiveIconBrushProperty);
         set => SetValue(ActiveIconBrushProperty, value);
     }
 
-    public IBrush? SelectedIconColor
+    public IBrush? SelectedIconBrush
     {
         get => GetValue(SelectedIconBrushProperty);
         set => SetValue(SelectedIconBrushProperty, value);
     }
 
-    public IBrush? DisabledIconColor
+    public IBrush? DisabledIconBrush
     {
         get => GetValue(DisabledIconBrushProperty);
         set => SetValue(DisabledIconBrushProperty, value);
@@ -110,40 +110,6 @@ public class ToggleIconButton : ToggleButton,
     public ToggleIconButton()
     {
         this.RegisterResources();
-    }
-
-    protected virtual void ConfigureIcon(Icon icon)
-    {
-        BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty);
-        BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty);
-        
-        if (icon.ThemeType != IconThemeType.TwoTone)
-        {
-            BindUtils.RelayBind(this, NormalIconBrushProperty, icon, Icon.NormalFilledBrushProperty);
-            BindUtils.RelayBind(this, ActiveIconBrushProperty, icon, Icon.ActiveFilledBrushProperty);
-            BindUtils.RelayBind(this, SelectedIconBrushProperty, icon, Icon.SelectedFilledBrushProperty);
-            BindUtils.RelayBind(this, DisabledIconBrushProperty, icon, Icon.DisabledFilledBrushProperty);
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (change.Property == CheckedIconProperty ||
-            change.Property == UnCheckedIconProperty)
-        {
-            if (change.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-                ConfigureIcon(newIcon);
-            }
-        }
     }
     
     public bool HitTest(Point point)

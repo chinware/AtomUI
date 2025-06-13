@@ -32,26 +32,26 @@ public class IconButton : AvaloniaButton,
         Icon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
     
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
+        AvaloniaProperty.Register<IconButton, IBrush?>(
             nameof(NormalIconBrush));
 
     public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
+        AvaloniaProperty.Register<IconButton, IBrush?>(
             nameof(ActiveIconBrush));
 
     public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
+        AvaloniaProperty.Register<IconButton, IBrush?>(
             nameof(SelectedIconBrush));
 
     public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
+        AvaloniaProperty.Register<IconButton, IBrush?>(
             nameof(DisabledIconBrush));
 
     public static readonly StyledProperty<double> IconWidthProperty =
-        AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth), double.NaN);
+        AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
 
     public static readonly StyledProperty<double> IconHeightProperty = 
-        AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight), double.NaN);
+        AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
     
     public static readonly StyledProperty<IconMode> IconModeProperty =
         Icon.IconModeProperty.AddOwner<IconButton>();

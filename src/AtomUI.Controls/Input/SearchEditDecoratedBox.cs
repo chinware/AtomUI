@@ -1,4 +1,8 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Data;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
@@ -27,6 +31,7 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
     #endregion
 
     private Rect? _originRect;
+    private Button? _searchButton;
 
     protected override void NotifyAddOnBorderInfoCalculated()
     {
@@ -47,5 +52,17 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
         }
 
         return size;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _searchButton = e.NameScope.Find<Button>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
+
+        if (_searchButton is not null)
+        {
+            BindUtils.RelayBind(this, RightAddOnBorderThicknessProperty, _searchButton, BorderThicknessProperty);
+            BindUtils.RelayBind(this, RightAddOnCornerRadiusProperty, _searchButton, CornerRadiusProperty);
+        }
     }
 }

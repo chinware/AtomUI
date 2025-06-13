@@ -43,19 +43,11 @@ internal class TextBoxInnerBox : AddOnDecoratedInnerBox
 
     #endregion
 
-    private readonly WeakReference<TextBox> _textBox;
-
-    public TextBoxInnerBox(TextBox textBox)
-    {
-        _textBox = new WeakReference<TextBox>(textBox);
-    }
-
+    internal TextBox? OwningTextBox;
+    
     protected override void NotifyClearButtonClicked()
     {
-        if (_textBox.TryGetTarget(out var textBox))
-        {
-            textBox.Clear();
-        }
+        OwningTextBox?.Clear();
     }
 
     protected override void BuildEffectiveInnerBoxPadding()

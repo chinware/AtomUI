@@ -1,9 +1,11 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
@@ -14,9 +16,6 @@ public class TextBox : AvaloniaTextBox,
                        IControlSharedTokenResourcesHost,
                        IResourceBindingManager
 {
-    public const string ErrorPC = ":error";
-    public const string WarningPC = ":warning";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -101,6 +100,7 @@ public class TextBox : AvaloniaTextBox,
     #endregion
 
     private CompositeDisposable? _resourceBindingsDisposable;
+    private TextBoxInnerBox? _textBoxInnerBox;
 
     static TextBox()
     {
@@ -123,12 +123,12 @@ public class TextBox : AvaloniaTextBox,
         {
             SetupEffectiveShowClearButton();
         }
-        else if (change.Property == StatusProperty)
+        else if (change.Property == StatusProperty || change.Property == StyleVariantProperty)
         {
             UpdatePseudoClasses();
         }
         else if (change.Property == InnerLeftContentProperty ||
-            change.Property == InnerRightContentProperty)
+                 change.Property == InnerRightContentProperty)
         {
             if (change.OldValue is Control oldControl)
             {
@@ -155,25 +155,33 @@ public class TextBox : AvaloniaTextBox,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(ErrorPC, Status == AddOnDecoratedStatus.Error);
-        PseudoClasses.Set(WarningPC, Status == AddOnDecoratedStatus.Warning);
+        PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == AddOnDecoratedVariant.Outline);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnApplyTemplate(e);
+        _textBoxInnerBox = e.NameScope.Find<TextBoxInnerBox>(TextBoxThemeConstants.TextBoxInnerBoxPart);
+        if (_textBoxInnerBox != null)
+        {
+            _textBoxInnerBox.OwningTextBox = this;
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         SetupEffectiveShowClearButton();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
     }
 }

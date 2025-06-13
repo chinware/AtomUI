@@ -19,6 +19,7 @@
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
         <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchTheme.axaml" />
+        <ResourceInclude Source="Input/Themes/InputThemes.axaml" />
         <ResourceInclude Source="Primitives/SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

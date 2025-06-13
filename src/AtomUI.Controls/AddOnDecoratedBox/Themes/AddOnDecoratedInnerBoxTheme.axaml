@@ -226,6 +226,15 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXXS}}" />
         </Style>
         <!-- BuildAddOnStyle 结束 -->
+        
+        <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
+            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        </Style>
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
