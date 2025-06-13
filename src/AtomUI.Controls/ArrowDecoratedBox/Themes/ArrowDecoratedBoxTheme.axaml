@@ -1,0 +1,79 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              x:Class="AtomUI.Controls.Themes.ArrowDecoratedBoxTheme"
+              xmlns:atom="https://atomui.net"
+              TargetType="atom:ArrowDecoratedBox">
+    <Setter Property="Template">
+        <ControlTemplate>
+            <DockPanel
+                Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ContentLayoutPart}"
+                LastChildFill="True">
+                <Panel Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ArrowPositionLayoutPart}">
+                    <LayoutTransformControl
+                        Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ArrowIndicatorLayoutPart}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        IsVisible="{TemplateBinding IsShowArrow}">
+                        <atom:ArrowIndicator
+                            Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ArrowIndicatorPart}"
+                            FilledColor="{TemplateBinding Background}" />
+                    </LayoutTransformControl>
+                </Panel>
+                <Border
+                    Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ContentDecoratorPart}"
+                    Margin="0"
+                    BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Padding="{TemplateBinding Padding}">
+                    <ContentPresenter
+                        Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ContentPresenterPart}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}" />
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+    </Setter>
+
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+    <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+    <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.Padding}}" />
+    <Setter Property="ArrowSize" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.ArrowSize}}" />
+    <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+
+    <Style Selector="^ /template/ atom|ArrowIndicator#PART_ArrowIndicator">
+        <Setter Property="ArrowSize" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.ArrowSize}}" />
+    </Style>
+
+    <Style Selector="^[ArrowDirection=Top]">
+        <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
+            <Setter Property="DockPanel.Dock" Value="Top" />
+        </Style>
+    </Style>
+    <Style Selector="^[ArrowDirection=Right]">
+        <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+            <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+        </Style>
+        <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
+            <Setter Property="DockPanel.Dock" Value="Right" />
+        </Style>
+    </Style>
+    <Style Selector="^[ArrowDirection=Bottom]">
+        <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+            <Setter Property="LayoutTransform" Value="rotate(180deg)" />
+        </Style>
+        <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
+            <Setter Property="DockPanel.Dock" Value="Bottom" />
+        </Style>
+    </Style>
+    <Style Selector="^[ArrowDirection=Left]">
+        <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+            <Setter Property="LayoutTransform" Value="rotate(-90deg)" />
+        </Style>
+        <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
+            <Setter Property="DockPanel.Dock" Value="Left" />
+        </Style>
+    </Style>
+
+</ControlTheme>

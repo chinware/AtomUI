@@ -6,6 +6,7 @@
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
         <ResourceInclude Source="AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
+        <ResourceInclude Source="ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
         <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxTheme.axaml" />

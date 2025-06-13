@@ -11,7 +11,6 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
 internal class ArrowDecoratedBoxTheme : BaseControlTheme
 {
     public const string ContentDecoratorPart = "PART_ContentDecorator";
