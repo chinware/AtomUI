@@ -8,12 +8,8 @@ namespace AtomUI.Theme
         internal static IList<BaseControlTheme> GetControlThemes()
         {
             List<BaseControlTheme> themes = new List<BaseControlTheme>();
-            themes.Add(new AtomUI.Controls.BaseCalendarButtonTheme());
-            themes.Add(new AtomUI.Controls.BaseCalendarDayButtonTheme());
             themes.Add(new AtomUI.Controls.BaseOverflowMenuItemTheme());
             themes.Add(new AtomUI.Controls.BaseTabScrollViewerTheme());
-            themes.Add(new AtomUI.Controls.CalendarItemTheme());
-            themes.Add(new AtomUI.Controls.CalendarTheme());
             themes.Add(new AtomUI.Controls.CalendarView.CalendarButtonTheme());
             themes.Add(new AtomUI.Controls.CalendarView.CalendarDayButtonTheme());
             themes.Add(new AtomUI.Controls.CalendarView.CalendarItemTheme());
@@ -39,7 +35,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.EmptyIndicatorTheme());
             themes.Add(new AtomUI.Controls.ExpanderTheme());
             themes.Add(new AtomUI.Controls.GroupBoxTheme());
-            themes.Add(new AtomUI.Controls.HeadTextButtonTheme());
             themes.Add(new AtomUI.Controls.HorizontalNavMenuTheme());
             themes.Add(new AtomUI.Controls.HyperLinkTextBlockTheme());
             themes.Add(new AtomUI.Controls.InlineNavMenuItemTheme());

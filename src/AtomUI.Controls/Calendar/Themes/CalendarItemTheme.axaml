@@ -1,0 +1,104 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
+    <ControlTheme x:Key="{x:Type atom:CalendarItem}" TargetType="atom:CalendarItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border
+                    Name="{x:Static atom:CalendarItemThemeConstants.ItemFramePart}">
+                    <DockPanel
+                        Name="{x:Static atom:CalendarItemThemeConstants.ItemRootLayoutPart}"
+                        LastChildFill="True">
+                        <Grid Name="{x:Static atom:CalendarItemThemeConstants.HeaderLayoutPart}"
+                              ColumnDefinitions="Auto, Auto, *, Auto, Auto"
+                              DockPanel.Dock="Top">
+                            <atom:IconButton
+                                Name="{x:Static atom:CalendarItemThemeConstants.PreviousButtonPart}"
+                                Icon="{atom:IconProvider DoubleLeftOutlined}"
+                                Grid.Column="0" />
+                            <atom:IconButton
+                                Name="{x:Static atom:CalendarItemThemeConstants.PreviousMonthButtonPart}"
+                                Icon="{atom:IconProvider LeftOutlined}"
+                                Grid.Column="1" />
+                            <atom:HeadTextButton
+                                Name="{x:Static atom:CalendarItemThemeConstants.HeaderButtonPart}"
+                                Grid.Column="2" />
+                            <atom:IconButton
+                                Name="{x:Static atom:CalendarItemThemeConstants.NextMonthButtonPart}"
+                                Icon="{atom:IconProvider RightOutlined}"
+                                Grid.Column="3" />
+                            <atom:IconButton
+                                Name="{x:Static atom:CalendarItemThemeConstants.NextButtonPart}"
+                                Icon="{atom:IconProvider DoubleRightOutlined}"
+                                Grid.Column="4" />
+                        </Grid>
+
+                        <Grid Name="{x:Static atom:CalendarItemThemeConstants.MonthViewPart}"
+                              HorizontalAlignment="Stretch"
+                              IsVisible="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition
+                                    Height="{Binding (atom:CalendarItem.DayTitleHeight), RelativeSource={RelativeSource Self},
+                                    Converter={StaticResource DoubleToGridLengthConverter}}" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                        <Grid Name="{x:Static atom:CalendarItemThemeConstants.YearViewPart}"
+                              IsVisible="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="DayTitleTemplate">
+            <Template x:DataType="x:String">
+                <atom:TextBlock Text="{Binding}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Template>
+        </Setter>
+
+        <Style Selector="^ /template/ Grid#PART_HeaderLayout">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CalendarTokenKey.HeaderMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="DisabledIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

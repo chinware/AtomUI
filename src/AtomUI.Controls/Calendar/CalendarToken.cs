@@ -89,7 +89,7 @@ internal class CalendarToken : AbstractControlDesignToken
     /// <summary>
     /// 星期的高度
     /// </summary>
-    public GridLength DayTitleHeight { get; set; }
+    public double DayTitleHeight { get; set; }
 
     /// <summary>
     /// Header 头外边距
@@ -120,7 +120,7 @@ internal class CalendarToken : AbstractControlDesignToken
         PanelContentPadding   = new Thickness(SharedToken.PaddingSM);
         ItemPanelMinWidth     = 260;
         ItemPanelMinHeight    = 290;
-        DayTitleHeight        = new GridLength(40, GridUnitType.Pixel);
+        DayTitleHeight        = SharedToken.ControlHeightSM;
         HeaderMargin          = new Thickness(0, 0, 0, SharedToken.MarginXS);
         CellLineHeight        = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
         RangeCalendarSpacing  = 20;

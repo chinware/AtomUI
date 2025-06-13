@@ -1,0 +1,66 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    <ControlTheme x:Key="{x:Type atom:BaseCalendarDayButton}" TargetType="atom:BaseCalendarDayButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter 
+                    Name="{x:Static atom:BaseCalendarDayButtonThemeConstants.ContentPart}"
+                    Padding="{TemplateBinding Padding}"
+                    Foreground="{TemplateBinding Foreground}"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    FontSize="{TemplateBinding FontSize}"
+                    Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                />
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="ClickMode" Value="Release" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLabel}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+        <Setter Property="Width" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellWidth}}" />
+        <Setter Property="Height" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellHeight}}" />
+        <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellMargin}}" />
+        
+        <Style Selector="^ /template/ ContentPresenter#PART_Content">
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellLineHeight}}" />
+        </Style>
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellHoverBg}}" />
+        </Style>
+        
+        <Style Selector="^:inactive">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+        <Style Selector="^:today">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+        </Style>
+        
+        <Style Selector="^:selected:not(^:inactive)">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWhite}}" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

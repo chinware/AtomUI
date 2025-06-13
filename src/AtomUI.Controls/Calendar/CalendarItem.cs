@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -19,15 +20,12 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
-/// <summary>
-/// Represents the currently displayed month or year on a
-/// <see cref="T:Avalonia.Controls.Calendar" />.
-/// </summary>
-[TemplatePart(CalendarItemTheme.HeaderButtonPart, typeof(AvaloniaButton))]
-[TemplatePart(CalendarItemTheme.MonthViewPart, typeof(Grid))]
-[TemplatePart(CalendarItemTheme.NextMonthButtonPart, typeof(AvaloniaButton))]
-[TemplatePart(CalendarItemTheme.PreviousMonthButtonPart, typeof(AvaloniaButton))]
-[TemplatePart(CalendarItemTheme.YearViewPart, typeof(Grid))]
+
+[TemplatePart(CalendarItemThemeConstants.HeaderButtonPart, typeof(AvaloniaButton))]
+[TemplatePart(CalendarItemThemeConstants.MonthViewPart, typeof(Grid))]
+[TemplatePart(CalendarItemThemeConstants.NextMonthButtonPart, typeof(AvaloniaButton))]
+[TemplatePart(CalendarItemThemeConstants.PreviousMonthButtonPart, typeof(AvaloniaButton))]
+[TemplatePart(CalendarItemThemeConstants.YearViewPart, typeof(Grid))]
 [PseudoClasses(CalendarDisabledPC)]
 internal class CalendarItem : TemplatedControl,
                               IResourceBindingManager
@@ -66,7 +64,17 @@ internal class CalendarItem : TemplatedControl,
     #endregion
 
     #region 内部属性定义
+    
+    public static readonly StyledProperty<GridLength> DayTitleHeightProperty =
+        AvaloniaProperty.Register<CalendarItem, GridLength>(
+            nameof(DayTitleHeight));
 
+    public GridLength DayTitleHeight
+    {
+        get => GetValue(DayTitleHeightProperty);
+        set => SetValue(DayTitleHeightProperty, value);
+    }
+    
     /// <summary>
     /// Gets the button that allows switching between month mode, year mode,
     /// and decade mode.
@@ -264,7 +272,7 @@ internal class CalendarItem : TemplatedControl,
                     this.AddThemeResourceBindingAction(() =>
                     {
                         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlockCell,
-                            TextBlock.HeightProperty, DatePickerTokenKey.DayTitleHeight));
+                            HeightProperty, CalendarTokenKey.DayTitleHeight));
                     });
                 }
                 if (cell is not null)
@@ -351,13 +359,13 @@ internal class CalendarItem : TemplatedControl,
     {
         base.OnApplyTemplate(e);
 
-        HeaderButton        = e.NameScope.Find<HeadTextButton>(CalendarItemTheme.HeaderButtonPart);
-        PreviousButton      = e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousButtonPart);
-        PreviousMonthButton = e.NameScope.Find<IconButton>(CalendarItemTheme.PreviousMonthButtonPart);
-        NextButton          = e.NameScope.Find<IconButton>(CalendarItemTheme.NextButtonPart);
-        NextMonthButton     = e.NameScope.Find<IconButton>(CalendarItemTheme.NextMonthButtonPart);
-        MonthView           = e.NameScope.Find<Grid>(CalendarItemTheme.MonthViewPart);
-        YearView            = e.NameScope.Find<Grid>(CalendarItemTheme.YearViewPart);
+        HeaderButton        = e.NameScope.Find<HeadTextButton>(CalendarItemThemeConstants.HeaderButtonPart);
+        PreviousButton      = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.PreviousButtonPart);
+        PreviousMonthButton = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.PreviousMonthButtonPart);
+        NextButton          = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.NextButtonPart);
+        NextMonthButton     = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.NextMonthButtonPart);
+        MonthView           = e.NameScope.Find<Grid>(CalendarItemThemeConstants.MonthViewPart);
+        YearView            = e.NameScope.Find<Grid>(CalendarItemThemeConstants.YearViewPart);
 
         if (Owner != null)
         {

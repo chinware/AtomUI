@@ -68,7 +68,7 @@ internal class CalendarItemTheme : BaseControlTheme
 
     private void BuildDayTitleTemplate(CalendarItem calendarItem)
     {
-        calendarItem.DayTitleTemplate = new DayTitleTemplate();
+        // calendarItem.DayTitleTemplate = new DayTitleTemplate();
     }
 
     protected void BuildHeader(CalendarItem calendarItem, DockPanel layout, INameScope scope)

@@ -6,6 +6,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -225,8 +226,8 @@ public class CalendarModeChangedEventArgs : RoutedEventArgs
 /// element in XAML.
 /// </para>
 /// </remarks>
-[TemplatePart(CalendarTheme.CalendarItemPart, typeof(CalendarItem))]
-[TemplatePart(CalendarTheme.RootPart, typeof(Panel))]
+[TemplatePart(CalendarThemeConstants.CalendarItemPart, typeof(CalendarItem))]
+[TemplatePart(CalendarThemeConstants.RootPart, typeof(Panel))]
 public class Calendar : TemplatedControl,
                         IMotionAwareControl,
                         IControlSharedTokenResourcesHost,
@@ -2223,14 +2224,14 @@ public class Calendar : TemplatedControl,
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        Root = e.NameScope.Find<Panel>(CalendarTheme.RootPart);
+        Root = e.NameScope.Find<Panel>(CalendarThemeConstants.RootPart);
 
         SelectedMonth = DisplayDate;
         SelectedYear  = DisplayDate;
 
         if (Root != null)
         {
-            var month = e.NameScope.Find<CalendarItem>(CalendarTheme.CalendarItemPart);
+            var month = e.NameScope.Find<CalendarItem>(CalendarThemeConstants.CalendarItemPart);
 
             if (month != null)
             {
