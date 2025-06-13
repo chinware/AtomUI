@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using AtomUI.Controls.CalendarView;
-using AtomUI.Controls.Internal;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
 using AtomUI.Media;
@@ -9,7 +9,6 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;

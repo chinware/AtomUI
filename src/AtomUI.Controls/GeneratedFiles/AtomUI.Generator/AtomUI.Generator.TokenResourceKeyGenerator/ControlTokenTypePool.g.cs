@@ -25,7 +25,6 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.ExpanderToken));
             tokenTypes.Add(typeof(AtomUI.Controls.FlyoutPresenterToken));
             tokenTypes.Add(typeof(AtomUI.Controls.GroupBoxToken));
-            tokenTypes.Add(typeof(AtomUI.Controls.Internal.InfoPickerInputToken));
             tokenTypes.Add(typeof(AtomUI.Controls.LineEditToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ListBoxToken));
             tokenTypes.Add(typeof(AtomUI.Controls.LoadingIndicatorToken));
@@ -38,6 +37,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.OptionButtonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.PaginationToken));
             tokenTypes.Add(typeof(AtomUI.Controls.PopupConfirmToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.Primitives.InfoPickerInputToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ProgressBarToken));
             tokenTypes.Add(typeof(AtomUI.Controls.RadioButtonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ScrollBarToken));

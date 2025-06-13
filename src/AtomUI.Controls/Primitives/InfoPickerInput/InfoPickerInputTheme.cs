@@ -8,7 +8,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Internal;
+namespace AtomUI.Controls.Primitives;
 
 internal class InfoPickerInputTheme : BaseControlTheme
 {

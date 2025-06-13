@@ -46,7 +46,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.HorizontalNavMenuTheme());
             themes.Add(new AtomUI.Controls.HyperLinkTextBlockTheme());
             themes.Add(new AtomUI.Controls.InlineNavMenuItemTheme());
-            themes.Add(new AtomUI.Controls.Internal.RangeInfoPickerInputTheme());
             themes.Add(new AtomUI.Controls.ListBoxItemTheme());
             themes.Add(new AtomUI.Controls.ListBoxTheme());
             themes.Add(new AtomUI.Controls.LoadingIndicatorAdornerTheme());
@@ -63,11 +62,11 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
             themes.Add(new AtomUI.Controls.OptionButtonTheme());
             themes.Add(new AtomUI.Controls.PickerClearUpButtonTheme());
+            themes.Add(new AtomUI.Controls.Primitives.RangeInfoPickerInputTheme());
             themes.Add(new AtomUI.Controls.ProgressBarTheme());
             themes.Add(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
             themes.Add(new AtomUI.Controls.RangeDatePickerTheme());
             themes.Add(new AtomUI.Controls.RangeTimePickerTheme());
-            themes.Add(new AtomUI.Controls.SearchEditTheme());
             themes.Add(new AtomUI.Controls.SegmentedItemTheme());
             themes.Add(new AtomUI.Controls.SegmentedTheme());
             themes.Add(new AtomUI.Controls.SeparatorTheme());

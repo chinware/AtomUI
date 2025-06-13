@@ -294,12 +294,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey WarningActiveShadow = new TokenResourceKey("LineEdit.WarningActiveShadow");
     }
 
-    public static class InfoPickerInputTokenKey
-    {
-        public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("InfoPickerInput.RangePickerArrowMargin");
-        public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("InfoPickerInput.RangePickerIndicatorThickness");
-    }
-
     public static class ListBoxTokenKey
     {
         public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("ListBox.ContentPadding");
@@ -531,6 +525,12 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey PopupMinHeight = new TokenResourceKey("PopupConfirm.PopupMinHeight");
         public static readonly TokenResourceKey PopupMinWidth = new TokenResourceKey("PopupConfirm.PopupMinWidth");
         public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("PopupConfirm.TitleMargin");
+    }
+
+    public static class InfoPickerInputTokenKey
+    {
+        public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("InfoPickerInput.RangePickerArrowMargin");
+        public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("InfoPickerInput.RangePickerIndicatorThickness");
     }
 
     public static class ProgressBarTokenKey

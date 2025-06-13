@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using AtomUI.Controls.CalendarView;
-using AtomUI.Controls.Internal;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
 using AtomUI.Media;

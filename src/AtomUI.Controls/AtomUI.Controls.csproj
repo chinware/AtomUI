@@ -36,4 +36,8 @@
       <AdditionalFiles Include="Buttons\Themes\Button\TextButtonTheme.axaml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Internal\" />
+    </ItemGroup>
+
 </Project>

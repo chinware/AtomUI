@@ -11,7 +11,7 @@ using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Internal;
+namespace AtomUI.Controls.Primitives;
 
 [PseudoClasses(FlyoutOpenPC)]
 public abstract class InfoPickerInput : TemplatedControl,

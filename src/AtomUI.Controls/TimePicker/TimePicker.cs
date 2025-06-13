@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Internal;
+﻿using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
@@ -6,7 +6,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;

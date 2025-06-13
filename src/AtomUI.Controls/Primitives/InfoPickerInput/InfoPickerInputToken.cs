@@ -1,7 +1,7 @@
 ﻿using AtomUI.Theme.TokenSystem;
 using Avalonia;
 
-namespace AtomUI.Controls.Internal;
+namespace AtomUI.Controls.Primitives;
 
 [ControlDesignToken]
 internal class InfoPickerInputToken : AbstractControlDesignToken

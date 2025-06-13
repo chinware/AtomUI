@@ -7,7 +7,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Internal;
+namespace AtomUI.Controls.Primitives;
 
 [ControlThemeProvider]
 internal class RangeInfoPickerInputTheme : InfoPickerInputTheme

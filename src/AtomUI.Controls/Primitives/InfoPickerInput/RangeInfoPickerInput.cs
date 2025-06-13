@@ -9,7 +9,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Input.Raw;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Internal;
+namespace AtomUI.Controls.Primitives;
 
 public abstract class RangeInfoPickerInput : InfoPickerInput
 {

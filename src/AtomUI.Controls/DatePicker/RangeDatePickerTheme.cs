@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Internal;
+﻿using AtomUI.Controls.Primitives;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Styling;
