@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -30,7 +31,7 @@ public enum CollapseExpandIconPosition
     End
 }
 
-[TemplatePart(CollapseTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
+[TemplatePart(CollapseThemeConstants.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Collapse : SelectingItemsControl,
                         IMotionAwareControl,
                         IControlSharedTokenResourcesHost,

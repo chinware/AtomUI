@@ -1,0 +1,159 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type atom:CollapseItem}" TargetType="atom:CollapseItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="{x:Static atom:CollapseItemThemeConstants.MainLayoutPart}"
+                           LastChildFill="True">
+                    <Border Name="{x:Static atom:CollapseItemThemeConstants.HeaderDecoratorPart}"
+                            DockPanel.Dock="Top"
+                            BorderThickness="{TemplateBinding HeaderBorderThickness}">
+                        <Grid ColumnDefinitions="Auto, *, Auto, Auto">
+                            <atom:IconButton
+                                Name="{x:Static atom:CollapseItemThemeConstants.ExpandButtonPart}"
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Icon="{TemplateBinding ExpandIcon}"
+                                IsVisible="{TemplateBinding IsShowExpandIcon}"
+                                IsEnabled="{TemplateBinding IsEnabled}" />
+                            <ContentPresenter Name="{x:Static atom:CollapseItemThemeConstants.HeaderPresenterPart}"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center"
+                                              HorizontalContentAlignment="Left"
+                                              VerticalContentAlignment="Center"
+                                              Margin="0, 1, 0, 0"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              Grid.Column="1" />
+                            <ContentPresenter
+                                Name="{x:Static atom:CollapseItemThemeConstants.AddOnContentPresenterPart}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Left"
+                                VerticalContentAlignment="Center"
+                                Content="{TemplateBinding AddOnContent}"
+                                ContentTemplate="{TemplateBinding AddOnContentTemplate}"
+                                Grid.Column="2" />
+                        </Grid>
+                    </Border>
+                    <atom:MotionActorControl Name="{x:Static atom:CollapseItemThemeConstants.ContentMotionActorPart}">
+                        <ContentPresenter Name="{x:Static atom:CollapseItemThemeConstants.ContentPresenterPart}"
+                                          Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          BorderThickness="{TemplateBinding ContentBorderThickness}" />
+                    </atom:MotionActorControl>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}" />
+        <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:CollapseTokenKey.HeaderBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextHeading}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="DisabledIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+        <Style Selector="^:selected">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="RenderTransform" Value="rotate(90deg)" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CollapseTokenKey.CollapseHeaderPaddingLG}}" />
+                <Setter Property="TextElement.FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+                <Setter Property="TextBlock.LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CollapseTokenKey.CollapseContentPaddingLG}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CollapseTokenKey.HeaderPadding}}" />
+                <Setter Property="TextElement.FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+                <Setter Property="TextBlock.LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CollapseTokenKey.ContentPadding}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CollapseTokenKey.CollapseHeaderPaddingSM}}" />
+                <Setter Property="TextElement.FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+                <Setter Property="TextBlock.LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CollapseTokenKey.CollapseContentPaddingSM}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TriggerType=Header]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TriggerType=Icon]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[ExpandIconPosition=Start]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="Grid.Column" Value="0" />
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CollapseTokenKey.LeftExpandButtonMargin}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[ExpandIconPosition=End]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="Grid.Column" Value="3" />
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CollapseTokenKey.RightExpandButtonMargin}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IsBorderless=True]">
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:CollapseTokenKey.HeaderBg}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsGhostStyle=True]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:CollapseTokenKey.ContentBg}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator ContentPresenter">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

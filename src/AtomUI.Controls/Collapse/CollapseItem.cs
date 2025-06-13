@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics;
+using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
@@ -233,9 +236,9 @@ public class CollapseItem : HeaderedContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _motionActor           = e.NameScope.Find<MotionActorControl>(CollapseItemTheme.ContentMotionActorPart);
-        _headerDecorator       = e.NameScope.Find<Border>(CollapseItemTheme.HeaderDecoratorPart);
-        _expandButton          = e.NameScope.Find<IconButton>(CollapseItemTheme.ExpandButtonPart);
+        _motionActor           = e.NameScope.Find<MotionActorControl>(CollapseItemThemeConstants.ContentMotionActorPart);
+        _headerDecorator       = e.NameScope.Find<Border>(CollapseItemThemeConstants.HeaderDecoratorPart);
+        _expandButton          = e.NameScope.Find<IconButton>(CollapseItemThemeConstants.ExpandButtonPart);
         
         // 必须放在这里，因为依赖 _motionActor 是否设置
         _tempAnimationDisabled = true;
@@ -245,6 +248,7 @@ public class CollapseItem : HeaderedContentControl,
         {
             _expandButton.Click += (sender, args) => { IsSelected = !IsSelected; };
         }
+        ConfigureTransitions();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -291,6 +295,10 @@ public class CollapseItem : HeaderedContentControl,
             {
                 SetupDefaultExpandIcon();
             }
+        }
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            ConfigureTransitions();
         }
     }
 
@@ -358,5 +366,39 @@ public class CollapseItem : HeaderedContentControl,
         }
 
         return false;
+    }
+
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            if (_headerDecorator != null)
+            {
+                _headerDecorator.Transitions ??= new Transitions()
+                {
+                    TransitionUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
+                };
+            }
+
+            if (_expandButton != null)
+            {
+                _expandButton.Transitions ??= new Transitions()
+                {
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
+                };
+            }
+        }
+        else
+        {
+            if (_headerDecorator != null)
+            {
+                _headerDecorator.Transitions?.Clear();
+            }
+
+            if (_expandButton != null)
+            {
+                _expandButton.Transitions?.Clear();
+            }
+        }
     }
 }

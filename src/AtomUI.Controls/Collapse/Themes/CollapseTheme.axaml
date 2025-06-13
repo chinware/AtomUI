@@ -1,0 +1,22 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:Collapse}" TargetType="atom:Collapse">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:CollapseThemeConstants.FramePart}"
+                        BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True">
+                    <ItemsPresenter Name="{x:Static atom:CollapseThemeConstants.ItemsPresenterPart}"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:CollapseTokenKey.CollapsePanelBorderRadius}}" />
+    </ControlTheme>
+</ResourceDictionary>

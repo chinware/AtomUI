@@ -22,8 +22,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.CardTabStripItemTheme());
             themes.Add(new AtomUI.Controls.CardTabStripTheme());
             themes.Add(new AtomUI.Controls.CircleProgressTheme());
-            themes.Add(new AtomUI.Controls.CollapseItemTheme());
-            themes.Add(new AtomUI.Controls.CollapseTheme());
             themes.Add(new AtomUI.Controls.ContextMenuTheme());
             themes.Add(new AtomUI.Controls.DashboardProgressTheme());
             themes.Add(new AtomUI.Controls.DatePickerFlyoutPresenterTheme());

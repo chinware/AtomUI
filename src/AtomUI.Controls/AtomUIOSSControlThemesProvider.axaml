@@ -13,6 +13,7 @@
         <ResourceInclude Source="CheckBox/Themes/CheckBoxTheme.axaml" />
         <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" />
+        <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
