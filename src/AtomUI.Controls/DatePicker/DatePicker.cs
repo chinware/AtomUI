@@ -256,13 +256,13 @@ public class DatePicker : InfoPickerInput,
         {
             SelectedDateTime = DefaultDateTime;
         }
+
+        Text = FormatDateTime(SelectedDateTime);
         
         if (InfoIcon is null)
         {
             SetValue(InfoIconProperty, AntDesignIconPackage.CalendarOutlined(), BindingPriority.Template);
         }
-
-        Text = FormatDateTime(SelectedDateTime);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.CalendarView;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -194,11 +195,11 @@ internal class DatePickerPresenter : PickerPresenterBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _nowButton     = e.NameScope.Get<Button>(DatePickerPresenterTheme.NowButtonPart);
-        _todayButton   = e.NameScope.Get<Button>(DatePickerPresenterTheme.TodayButtonPart);
-        _confirmButton = e.NameScope.Get<Button>(DatePickerPresenterTheme.ConfirmButtonPart);
-        _calendarView  = e.NameScope.Get<PickerCalendar>(DatePickerPresenterTheme.CalendarViewPart);
-        _timeView      = e.NameScope.Find<TimeView>(DatePickerPresenterTheme.TimeViewPart);
+        _nowButton     = e.NameScope.Get<Button>(DatePickerPresenterThemeConstants.NowButtonPart);
+        _todayButton   = e.NameScope.Get<Button>(DatePickerPresenterThemeConstants.TodayButtonPart);
+        _confirmButton = e.NameScope.Get<Button>(DatePickerPresenterThemeConstants.ConfirmButtonPart);
+        _calendarView  = e.NameScope.Get<PickerCalendar>(DatePickerPresenterThemeConstants.CalendarViewPart);
+        _timeView      = e.NameScope.Find<TimeView>(DatePickerPresenterThemeConstants.TimeViewPart);
         SetupButtonStatus();
         if (_calendarView is not null)
         {

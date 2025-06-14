@@ -3,9 +3,11 @@
               xmlns:atom="https://atomui.net"
               xmlns:calendarview="using:AtomUI.Controls.CalendarView"
               xmlns:datePickerLang="using:AtomUI.Controls.DatePickerLang"
+              xmlns:localization="clr-namespace:AtomUI.Controls.Localization"
+              x:Class="AtomUI.Controls.Themes.DatePickerPresenterTheme"
               TargetType="atom:DatePickerPresenter">
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="atom:DatePickerPresenter">
             <DockPanel Name="{x:Static atom:DatePickerPresenterThemeConstants.MainLayoutPart}"
                        LastChildFill="True">
                 <Border Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsFramePart}"
@@ -30,7 +32,7 @@
                             ButtonType="Primary"
                             HorizontalAlignment="Right"
                             SizeType="Small"
-                            Content="{DynamicResource {x:Static datePickerLang:DatePickerLangResourceKey.Today}}" />
+                            Content="{DynamicResource {x:Static localization:CommonLangResourceKey.OkText}}" />
                     </Panel>
                 </Border>
                 <StackPanel Orientation="Horizontal">
@@ -40,6 +42,7 @@
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
                     <atom:TimeView Name="{x:Static atom:DatePickerPresenterThemeConstants.TimeViewPart}"
                                    VerticalAlignment="Top"
+                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                    ClockIdentifier="{TemplateBinding ClockIdentifier}"
                                    IsVisible="{TemplateBinding IsShowTime}" />
                 </StackPanel>

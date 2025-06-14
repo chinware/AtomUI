@@ -84,7 +84,7 @@
 
         <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />
 
-        <Style Selector="^ /template/ atom|TextBlock#HeaderTextPart">
+        <Style Selector="^ /template/ atom|TextBlock#PART_HeaderText">
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />

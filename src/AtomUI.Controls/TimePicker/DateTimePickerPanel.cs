@@ -311,8 +311,7 @@ internal class DateTimePickerPanel : Panel,
                         break;
                     }
                 }
-
-                children.MoveRange(0, numCountsToMove, children.Count);
+                children.MoveRange(0, numCountsToMove, children.Count - 1);
 
                 var scrollHeight = _extent.Height - Viewport.Height;
                 if (ShouldLoop && value.Y >= scrollHeight - _extentOne)

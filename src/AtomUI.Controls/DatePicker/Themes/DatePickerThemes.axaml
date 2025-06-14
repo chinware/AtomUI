@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
                     xmlns:themes="using:AtomUI.Controls.Themes"
                     xmlns:calendarview="using:AtomUI.Controls.CalendarView">
     <ResourceDictionary.MergedDictionaries>
@@ -9,15 +10,15 @@
         <ResourceInclude Source="CalendarView/DualMonthRangeCalendarTheme.axaml"/>
         <ResourceInclude Source="CalendarView/DualMonthCalendarItemTheme.axaml"/>
         
-        <!-- <ResourceInclude Source="CalendarView/DualMonthCalendarItemTheme.axaml"/> -->
-        <!-- <ResourceInclude Source="CalendarView/RangeCalendarTheme.axaml"/> -->
-        <!-- <ResourceInclude Source="DatePickerFlyoutPresenterTheme.axaml"/> -->
-        <!-- <ResourceInclude Source="DualMonthRangeDatePickerPresenterTheme.axaml"/> -->
-        <!-- <ResourceInclude Source="RangeDatePickerFlyoutPresenterTheme.axaml"/> -->
-        <!-- <ResourceInclude Source="TimedRangeDatePickerPresenterTheme.axaml"/> -->
+        <ResourceInclude Source="DatePickerFlyoutPresenterTheme.axaml"/>
+        <ResourceInclude Source="DualMonthRangeDatePickerPresenterTheme.axaml"/>
+        <ResourceInclude Source="RangeDatePickerFlyoutPresenterTheme.axaml"/>
+        <ResourceInclude Source="TimedRangeDatePickerPresenterTheme.axaml"/>
         <ResourceInclude Source="DatePickerTheme.axaml"/>
         <ResourceInclude Source="RangeDatePickerTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
+
     <themes:CalendarTheme x:Key="{x:Type calendarview:Calendar}" TargetType="calendarview:Calendar"/>
     <themes:CalendarItemTheme x:Key="{x:Type calendarview:CalendarItem}" TargetType="calendarview:CalendarItem"/>
+    <themes:DatePickerPresenterTheme x:Key="{x:Type atom:DatePickerPresenter}" TargetType="atom:DatePickerPresenter"/>
 </ResourceDictionary>

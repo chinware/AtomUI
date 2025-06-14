@@ -4,6 +4,8 @@ namespace AtomUI.Controls.CalendarView;
 
 internal class DualMonthRangeCalendar : RangeCalendar
 {
+    protected override Type StyleKeyOverride => typeof(DualMonthRangeCalendar);
+    
     internal override void ResetStates()
     {
         base.ResetStates();

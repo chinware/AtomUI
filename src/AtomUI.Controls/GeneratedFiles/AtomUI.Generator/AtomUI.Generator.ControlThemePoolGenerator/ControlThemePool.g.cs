@@ -17,11 +17,8 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.CircleProgressTheme());
             themes.Add(new AtomUI.Controls.ContextMenuTheme());
             themes.Add(new AtomUI.Controls.DashboardProgressTheme());
-            themes.Add(new AtomUI.Controls.DatePickerFlyoutPresenterTheme());
-            themes.Add(new AtomUI.Controls.DatePickerPresenterTheme());
             themes.Add(new AtomUI.Controls.DrawerContainerTheme());
             themes.Add(new AtomUI.Controls.DrawerInfoContainerTheme());
-            themes.Add(new AtomUI.Controls.DualMonthRangeDatePickerPresenterTheme());
             themes.Add(new AtomUI.Controls.EmptyIndicatorTheme());
             themes.Add(new AtomUI.Controls.ExpanderTheme());
             themes.Add(new AtomUI.Controls.GroupBoxTheme());
@@ -44,7 +41,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
             themes.Add(new AtomUI.Controls.OptionButtonTheme());
             themes.Add(new AtomUI.Controls.ProgressBarTheme());
-            themes.Add(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
             themes.Add(new AtomUI.Controls.SegmentedItemTheme());
             themes.Add(new AtomUI.Controls.SegmentedTheme());
             themes.Add(new AtomUI.Controls.SeparatorTheme());

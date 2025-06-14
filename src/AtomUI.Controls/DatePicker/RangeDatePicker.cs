@@ -559,11 +559,9 @@ public class RangeDatePicker : RangeInfoPickerInput,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
         if (InfoIcon is null)
         {
             SetValue(InfoIconProperty, AntDesignIconPackage.CalendarOutlined(), BindingPriority.Template);
         }
-        
     }
 }
