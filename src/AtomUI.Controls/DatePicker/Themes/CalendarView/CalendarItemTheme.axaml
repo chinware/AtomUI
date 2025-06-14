@@ -1,0 +1,126 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView"
+    x:Class="AtomUI.Controls.Themes.CalendarItemTheme"
+    TargetType="calendarView:CalendarItem">
+    <Setter Property="Template">
+        <ControlTemplate>
+            <Border
+                Name="{x:Static atom:DatePickerCalendarItemThemeConstants.ItemFramePart}"
+                MinWidth="{TemplateBinding MinWidth}"
+                MinHeight="{TemplateBinding MinHeight}">
+                <DockPanel
+                    Name="{x:Static atom:DatePickerCalendarItemThemeConstants.ItemRootLayoutPart}"
+                    LastChildFill="True">
+                    <Border Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderFramePart}"
+                            DockPanel.Dock="Top">
+                        <UniformGrid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderLayoutPart}"
+                                     Columns="1">
+                            <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+                                <atom:IconButton
+                                    Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousButtonPart}"
+                                    Icon="{atom:IconProvider DoubleLeftOutlined}"
+                                    IsVisible="{TemplateBinding IsMonthViewMode}"
+                                    Grid.Column="0" />
+                                <atom:IconButton
+                                    Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousMonthButtonPart}"
+                                    Icon="{atom:IconProvider LeftOutlined}"
+                                    Grid.Column="1" />
+
+                                <atom:HeadTextButton
+                                    Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderButtonPart}"
+                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                    Grid.Column="2" />
+
+                                <atom:IconButton
+                                    Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextMonthButtonPart}"
+                                    Icon="{atom:IconProvider RightOutlined}"
+                                    Grid.Column="3" />
+                                <atom:IconButton
+                                    Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextButtonPart}"
+                                    Icon="{atom:IconProvider DoubleRightOutlined}"
+                                    IsVisible="{TemplateBinding IsMonthViewMode}"
+                                    Grid.Column="4" />
+                            </Grid>
+                        </UniformGrid>
+                    </Border>
+
+                    <UniformGrid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.MonthViewLayoutPart}"
+                                 Columns="1"
+                                 IsVisible="False">
+                        <Grid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.MonthViewPart}"
+                              HorizontalAlignment="Stretch"
+                              IsVisible="{TemplateBinding IsVisible}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </UniformGrid>
+
+                    <Grid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.YearViewPart}"
+                          IsVisible="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </DockPanel>
+            </Border>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(calendarView|CalendarItem)">
+        <Setter Property="DayTitleTemplate">
+            <Template x:DataType="x:String">
+                <atom:TextBlock Text="{Binding}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Template>
+        </Setter>
+
+        <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.ItemPanelMinHeight}}" />
+        <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.ItemPanelMinWidth}}" />
+
+        <Style Selector="^ /template/ Border#PART_HeaderFrame">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.HeaderMargin}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.HeaderPadding}}" />
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="DisabledIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+    </Style>
+</ControlTheme>

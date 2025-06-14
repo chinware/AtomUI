@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Themes;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
@@ -158,12 +159,12 @@ internal class DualMonthCalendarItem : RangeCalendarItem
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SecondaryMonthView    = e.NameScope.Get<Grid>(DualMonthCalendarItemTheme.SecondaryMonthViewPart);
-        SecondaryHeaderButton = e.NameScope.Get<HeadTextButton>(DualMonthCalendarItemTheme.SecondaryHeaderButtonPart);
-        SecondaryPreviousButton = e.NameScope.Get<IconButton>(DualMonthCalendarItemTheme.SecondaryPreviousButtonPart);
-        SecondaryPreviousMonthButton = e.NameScope.Find<IconButton>(DualMonthCalendarItemTheme.SecondaryPreviousMonthButtonPart);
-        SecondaryNextButton      = e.NameScope.Get<IconButton>(DualMonthCalendarItemTheme.SecondaryNextButtonPart);
-        SecondaryNextMonthButton = e.NameScope.Get<IconButton>(DualMonthCalendarItemTheme.SecondaryNextMonthButtonPart);
+        SecondaryMonthView    = e.NameScope.Get<Grid>(DualMonthCalendarItemThemeConstants.SecondaryMonthViewPart);
+        SecondaryHeaderButton = e.NameScope.Get<HeadTextButton>(DualMonthCalendarItemThemeConstants.SecondaryHeaderButtonPart);
+        SecondaryPreviousButton = e.NameScope.Get<IconButton>(DualMonthCalendarItemThemeConstants.SecondaryPreviousButtonPart);
+        SecondaryPreviousMonthButton = e.NameScope.Find<IconButton>(DualMonthCalendarItemThemeConstants.SecondaryPreviousMonthButtonPart);
+        SecondaryNextButton      = e.NameScope.Get<IconButton>(DualMonthCalendarItemThemeConstants.SecondaryNextButtonPart);
+        SecondaryNextMonthButton = e.NameScope.Get<IconButton>(DualMonthCalendarItemThemeConstants.SecondaryNextMonthButtonPart);
         
         base.OnApplyTemplate(e);
         SetupMonthViewMode();

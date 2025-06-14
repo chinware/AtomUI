@@ -3,12 +3,14 @@ using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
@@ -552,5 +554,16 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             RangeEndSelectedDate = RangeEndDefaultDate;
         }
+    }
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        
+        if (InfoIcon is null)
+        {
+            SetValue(InfoIconProperty, AntDesignIconPackage.CalendarOutlined(), BindingPriority.Template);
+        }
+        
     }
 }

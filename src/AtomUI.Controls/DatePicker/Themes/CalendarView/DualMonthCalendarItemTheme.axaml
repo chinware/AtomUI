@@ -1,12 +1,153 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView">
+    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView"
+    xmlns:atom="https://atomui.net">
     <ControlTheme x:Key="{x:Type calendarView:DualMonthCalendarItem}" TargetType="calendarView:DualMonthCalendarItem">
+        <ControlTheme.BasedOn>
+            <atom:CalendarItemTheme TargetType="calendarView:DualMonthCalendarItem" />
+        </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
+                <Border
+                    Name="{x:Static atom:DatePickerCalendarItemThemeConstants.ItemFramePart}"
+                    MinWidth="{TemplateBinding MinWidth}"
+                    MinHeight="{TemplateBinding MinHeight}">
+                    <DockPanel
+                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.ItemRootLayoutPart}"
+                        LastChildFill="True">
+                        <Border Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderFramePart}"
+                                DockPanel.Dock="Top">
+                            <UniformGrid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderLayoutPart}"
+                                         Columns="2">
+                                <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+                                    <atom:IconButton
+                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousButtonPart}"
+                                        Icon="{atom:IconProvider DoubleLeftOutlined}"
+                                        IsVisible="{TemplateBinding IsMonthViewMode}"
+                                        Grid.Column="0" />
+                                    <atom:IconButton
+                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousMonthButtonPart}"
+                                        Icon="{atom:IconProvider LeftOutlined}"
+                                        Grid.Column="1" />
+
+                                    <atom:HeadTextButton
+                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderButtonPart}"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                        Grid.Column="2" />
+
+                                    <atom:IconButton
+                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextMonthButtonPart}"
+                                        Icon="{atom:IconProvider RightOutlined}"
+                                        Grid.Column="3" />
+                                    <atom:IconButton
+                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextButtonPart}"
+                                        Icon="{atom:IconProvider DoubleRightOutlined}"
+                                        IsVisible="{TemplateBinding IsMonthViewMode}"
+                                        Grid.Column="4" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+                                    <atom:IconButton
+                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryPreviousButtonPart}"
+                                        Icon="{atom:IconProvider DoubleLeftOutlined}"
+                                        IsVisible="{TemplateBinding IsMonthViewMode}"
+                                        Grid.Column="0" />
+                                    <atom:IconButton
+                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryPreviousMonthButtonPart}"
+                                        Icon="{atom:IconProvider LeftOutlined}"
+                                        Grid.Column="1" />
+
+                                    <atom:HeadTextButton
+                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryHeaderButtonPart}"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                        Grid.Column="2" />
+
+                                    <atom:IconButton
+                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextButtonPart}"
+                                        Icon="{atom:IconProvider RightOutlined}"
+                                        Grid.Column="3" />
+                                    <atom:IconButton
+                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextMonthButtonPart}"
+                                        Icon="{atom:IconProvider DoubleRightOutlined}"
+                                        IsVisible="{TemplateBinding IsMonthViewMode}"
+                                        Grid.Column="4" />
+                                </Grid>
+                            </UniformGrid>
+                        </Border>
+
+                        <UniformGrid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.MonthViewLayoutPart}"
+                                     Columns="2"
+                                     IsVisible="False">
+                            <Grid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.MonthViewPart}"
+                                  HorizontalAlignment="Stretch"
+                                  IsVisible="{TemplateBinding IsVisible}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+
+                            <Grid Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryMonthViewPart}"
+                                  HorizontalAlignment="Stretch"
+                                  IsVisible="{TemplateBinding IsVisible}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </UniformGrid>
+
+                        <Grid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.YearViewPart}"
+                              IsVisible="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </DockPanel>
+                </Border>
             </ControlTemplate>
         </Setter>
+
+        <Style Selector="^ /template/ Grid#PART_SecondaryMonthView">
+            <Setter Property="Margin"
+                    Value="{DynamicResource {x:Static atom:DatePickerTokenKey.RangeCalendarMonthViewMargin}}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

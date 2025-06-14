@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -20,7 +21,7 @@ public class DateSelectedEventArgs : EventArgs
     }
 }
 
-[TemplatePart(CalendarTheme.CalendarItemPart, typeof(CalendarItem))]
+[TemplatePart(DatePickerCalendarThemeConstants.CalendarItemPart, typeof(CalendarItem))]
 internal class Calendar : TemplatedControl
 {
     internal const int RowsPerMonth = 7;
@@ -1430,7 +1431,7 @@ internal class Calendar : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        CalendarItem = e.NameScope.Find<CalendarItem>(CalendarTheme.CalendarItemPart);
+        CalendarItem = e.NameScope.Find<CalendarItem>(DatePickerCalendarThemeConstants.CalendarItemPart);
 
         if (SelectedDate is not null)
         {

@@ -1,57 +1,11 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    xmlns:themes="using:AtomUI.Controls.Primitives.Themes">
+    xmlns:themes="using:AtomUI.Controls.Primitives.Themes"
+    xmlns:atom="https://atomui.net">
     <ControlTheme x:Key="{x:Type atom:DatePicker}" TargetType="atom:DatePicker">
         <ControlTheme.BasedOn>
-            <themes:InfoPickerInputTheme TargetType="atom:DatePicker"/>
+            <themes:InfoPickerInputTheme TargetType="atom:DatePicker" />
         </ControlTheme.BasedOn>
-        <Setter Property="Template">
-            <ControlTemplate TargetType="atom:DatePicker">
-                <Panel>
-                    <atom:AddOnDecoratedBox
-                        Name="{x:Static atom:InfoPickerInputThemeConstants.DecoratedBoxPart}"
-                        Focusable="True"
-                        MinWidth="{TemplateBinding MinWidth}"
-                        StyleVariant="{TemplateBinding StyleVariant}"
-                        SizeType="{TemplateBinding SizeType}"
-                        Status="{TemplateBinding Status}"
-                        LeftAddOn="{TemplateBinding LeftAddOn}"
-                        RightAddOn="{TemplateBinding RightAddOn}">
-                        <atom:AddOnDecoratedInnerBox
-                            Name="{x:Static atom:InfoPickerInputThemeConstants.PickerInnerPart}"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            LeftAddOnContent="{TemplateBinding InnerLeftContent}"
-                            StyleVariant="{TemplateBinding StyleVariant}"
-                            Status="{TemplateBinding Status}"
-                            SizeType="{TemplateBinding SizeType}">
-                            <atom:AddOnDecoratedInnerBox.RightAddOnContent>
-                                <atom:PickerClearUpButton
-                                    Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
-                                    Icon="{atom:IconProvider CalendarOutlined}"/>
-                            </atom:AddOnDecoratedInnerBox.RightAddOnContent>
-                            <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
-                                          HorizontalContentAlignment="Stretch"
-                                          VerticalContentAlignment="Center"
-                                          VerticalAlignment="Stretch"
-                                          HorizontalAlignment="Stretch"
-                                          BorderThickness="0"
-                                          TextWrapping="NoWrap"
-                                          AcceptsReturn="False"
-                                          EmbedMode="True"
-                                          IsEnableClearButton="False"
-                                          IsEnableRevealButton="False"
-                                          DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                          Foreground="{TemplateBinding InputTextBrush}"
-                                          SizeType="{TemplateBinding SizeType}"
-                                          Width="{TemplateBinding PreferredInputWidth}"
-                                          IsReadOnly="{TemplateBinding IsReadOnly}" />
-                        </atom:AddOnDecoratedInnerBox>
-                    </atom:AddOnDecoratedBox>
-                </Panel>
-            </ControlTemplate>
-        </Setter>
     </ControlTheme>
 </ResourceDictionary>

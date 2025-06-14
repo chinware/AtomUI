@@ -3,6 +3,7 @@ using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -10,6 +11,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
@@ -253,6 +255,11 @@ public class DatePicker : InfoPickerInput,
         if (DefaultDateTime is not null && SelectedDateTime is null)
         {
             SelectedDateTime = DefaultDateTime;
+        }
+        
+        if (InfoIcon is null)
+        {
+            SetValue(InfoIconProperty, AntDesignIconPackage.CalendarOutlined(), BindingPriority.Template);
         }
 
         Text = FormatDateTime(SelectedDateTime);

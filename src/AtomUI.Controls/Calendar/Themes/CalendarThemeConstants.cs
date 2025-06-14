@@ -14,9 +14,11 @@ internal static class CalendarItemThemeConstants
 {
     public const string ItemFramePart = "PART_ItemFrame";
     public const string ItemRootLayoutPart = "PART_ItemRootLayout";
+    public const string MonthViewLayoutPart = "PART_MonthViewLayout";
     public const string MonthViewPart = "PART_MonthView";
     public const string YearViewPart = "PART_YearView";
     public const string HeaderLayoutPart = "PART_HeaderLayout";
+    public const string HeaderFramePart = "PART_HeaderFrame";
 
     public const string PreviousButtonPart = "PART_PreviousButton";
     public const string PreviousMonthButtonPart = "PART_PreviousMonthButton";

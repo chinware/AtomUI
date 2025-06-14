@@ -10,13 +10,6 @@ namespace AtomUI.Theme
             List<BaseControlTheme> themes = new List<BaseControlTheme>();
             themes.Add(new AtomUI.Controls.BaseOverflowMenuItemTheme());
             themes.Add(new AtomUI.Controls.BaseTabScrollViewerTheme());
-            themes.Add(new AtomUI.Controls.CalendarView.CalendarButtonTheme());
-            themes.Add(new AtomUI.Controls.CalendarView.CalendarDayButtonTheme());
-            themes.Add(new AtomUI.Controls.CalendarView.CalendarItemTheme());
-            themes.Add(new AtomUI.Controls.CalendarView.CalendarTheme());
-            themes.Add(new AtomUI.Controls.CalendarView.DualMonthCalendarItemTheme());
-            themes.Add(new AtomUI.Controls.CalendarView.DualMonthRangeCalendarTheme());
-            themes.Add(new AtomUI.Controls.CalendarView.RangeCalendarTheme());
             themes.Add(new AtomUI.Controls.CardTabControlTheme());
             themes.Add(new AtomUI.Controls.CardTabItemTheme());
             themes.Add(new AtomUI.Controls.CardTabStripItemTheme());
@@ -28,6 +21,7 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.DatePickerPresenterTheme());
             themes.Add(new AtomUI.Controls.DrawerContainerTheme());
             themes.Add(new AtomUI.Controls.DrawerInfoContainerTheme());
+            themes.Add(new AtomUI.Controls.DualMonthRangeDatePickerPresenterTheme());
             themes.Add(new AtomUI.Controls.EmptyIndicatorTheme());
             themes.Add(new AtomUI.Controls.ExpanderTheme());
             themes.Add(new AtomUI.Controls.GroupBoxTheme());
@@ -50,7 +44,7 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
             themes.Add(new AtomUI.Controls.OptionButtonTheme());
             themes.Add(new AtomUI.Controls.ProgressBarTheme());
-            themes.Add(new AtomUI.Controls.RangeDatePickerTheme());
+            themes.Add(new AtomUI.Controls.RangeDatePickerFlyoutPresenterTheme());
             themes.Add(new AtomUI.Controls.SegmentedItemTheme());
             themes.Add(new AtomUI.Controls.SegmentedTheme());
             themes.Add(new AtomUI.Controls.SeparatorTheme());
