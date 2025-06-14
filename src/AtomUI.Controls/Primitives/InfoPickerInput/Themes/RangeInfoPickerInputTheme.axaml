@@ -32,7 +32,7 @@
                         <atom:AddOnDecoratedInnerBox.RightAddOnContent>
                             <atom:PickerClearUpButton
                                 Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
-                                Icon="{Binding (atom:InfoPickerInput.InfoIcon), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}" />
+                                Icon="{Binding (atom:RangeInfoPickerInput.InfoIcon), RelativeSource={RelativeSource AncestorType=atom:RangeInfoPickerInput}}" />
                         </atom:AddOnDecoratedInnerBox.RightAddOnContent>
                         <Grid ColumnDefinitions="*, Auto, *">
                             <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"

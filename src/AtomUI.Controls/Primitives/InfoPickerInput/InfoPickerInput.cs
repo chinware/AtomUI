@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Diagnostics;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -454,22 +455,30 @@ public abstract class InfoPickerInput : TemplatedControl,
         {
             if (args is RawPointerEventArgs pointerEventArgs)
             {
-                if (_pickerInnerBox is not null)
+                if (_pickerInnerBox is not null && _pickerClearUpButton != null)
                 {
-                    var pos = _pickerInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-                    if (!pos.HasValue)
+                    var topLevel = TopLevel.GetTopLevel(this);
+                    Debug.Assert(topLevel is not null);
+                    if (topLevel != pointerEventArgs.Root)
                     {
-                        return;
-                    }
-
-                    var bounds = new Rect(pos.Value, _pickerInnerBox.Bounds.Size);
-                    if (bounds.Contains(pointerEventArgs.Position))
-                    {
-                        _pickerClearUpButton!.IsInClearMode = ShowClearButtonPredicate();
+                        _pickerClearUpButton!.IsInClearMode = false;
                     }
                     else
                     {
-                        _pickerClearUpButton!.IsInClearMode = false;
+                        var pos      = _pickerInnerBox.TranslatePoint(new Point(0, 0), topLevel);
+                        if (!pos.HasValue)
+                        {
+                            return;
+                        }
+                        var bounds = new Rect(pos.Value, _pickerInnerBox.Bounds.Size);
+                        if (bounds.Contains(pointerEventArgs.Position))
+                        {
+                            _pickerClearUpButton.IsInClearMode = ShowClearButtonPredicate();
+                        }
+                        else
+                        {
+                            _pickerClearUpButton.IsInClearMode = false;
+                        }
                     }
                 }
             }
