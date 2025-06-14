@@ -1,11 +1,14 @@
 ﻿using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
@@ -290,6 +293,15 @@ public class TimePicker : InfoPickerInput,
         if (DefaultTime is not null && SelectedTime is null)
         {
             SelectedTime = DefaultTime;
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        if (InfoIcon is null)
+        {
+            SetValue(InfoIconProperty, AntDesignIconPackage.ClockCircleOutlined(), BindingPriority.Template);
         }
     }
 }

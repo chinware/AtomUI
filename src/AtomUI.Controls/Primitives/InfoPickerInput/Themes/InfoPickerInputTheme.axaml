@@ -26,7 +26,7 @@
                                                  SizeType="{TemplateBinding SizeType}">
                         <atom:AddOnDecoratedInnerBox.RightAddOnContent>
                             <atom:PickerClearUpButton Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
-                                                      Icon="{Binding (atom:InfoPickerInput.InfoIcon), RelativeSource={RelativeSource Self}}"/>
+                                                      Icon="{Binding (atom:InfoPickerInput.InfoIcon), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"/>
                         </atom:AddOnDecoratedInnerBox.RightAddOnContent>
                         <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
                                       HorizontalContentAlignment="Stretch"
@@ -37,8 +37,11 @@
                                       TextWrapping="NoWrap"
                                       AcceptsReturn="False"
                                       EmbedMode="True"
+                                      Width="{TemplateBinding PreferredInputWidth}"
                                       IsEnableClearButton="False"
                                       IsEnableRevealButton="False"
+                                      Text="{TemplateBinding Text}"
+                                      Watermark="{TemplateBinding Watermark}"
                                       DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                                       Foreground="{TemplateBinding InputTextBrush}"
                                       SizeType="{TemplateBinding SizeType}"

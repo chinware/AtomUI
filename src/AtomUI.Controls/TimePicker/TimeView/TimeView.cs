@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -26,13 +27,13 @@ internal class TimeSelectedEventArgs : EventArgs
     }
 }
 
-[TemplatePart(TimeViewTheme.HourSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewTheme.MinuteSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewTheme.SecondSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewTheme.PeriodHostPart, typeof(Panel), IsRequired = true)]
-[TemplatePart(TimeViewTheme.PeriodSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewTheme.PickerSelectorContainerPart, typeof(Grid), IsRequired = true)]
-[TemplatePart(TimeViewTheme.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
+[TemplatePart(TimeViewThemeConstants.HourSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
+[TemplatePart(TimeViewThemeConstants.MinuteSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
+[TemplatePart(TimeViewThemeConstants.SecondSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
+[TemplatePart(TimeViewThemeConstants.PeriodHostPart, typeof(Panel), IsRequired = true)]
+[TemplatePart(TimeViewThemeConstants.PeriodSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
+[TemplatePart(TimeViewThemeConstants.PickerSelectorContainerPart, typeof(Grid), IsRequired = true)]
+[TemplatePart(TimeViewThemeConstants.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
 internal class TimeView : TemplatedControl,
                           IResourceBindingManager
 {
@@ -102,7 +103,7 @@ internal class TimeView : TemplatedControl,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<TimeView, double> SpacerThicknessProperty =
+    internal static readonly DirectProperty<TimeView, double> SpacerWidthProperty =
         AvaloniaProperty.RegisterDirect<TimeView, double>(nameof(SpacerWidth),
             o => o.SpacerWidth,
             (o, v) => o.SpacerWidth = v);
@@ -123,7 +124,7 @@ internal class TimeView : TemplatedControl,
     internal double SpacerWidth
     {
         get => _spacerWidth;
-        set => SetAndRaise(SpacerThicknessProperty, ref _spacerWidth, value);
+        set => SetAndRaise(SpacerWidthProperty, ref _spacerWidth, value);
     }
 
     internal bool IsPointerInSelector
@@ -231,7 +232,7 @@ internal class TimeView : TemplatedControl,
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerThicknessProperty, SharedTokenKey.LineWidth,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerWidthProperty, SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this)));
     }
@@ -258,17 +259,17 @@ internal class TimeView : TemplatedControl,
     {
         base.OnApplyTemplate(e);
 
-        _pickerSelectorContainer = e.NameScope.Get<Grid>(TimeViewTheme.PickerSelectorContainerPart);
-        _periodHost              = e.NameScope.Get<Panel>(TimeViewTheme.PeriodHostPart);
-        _headerText              = e.NameScope.Get<TextBlock>(TimeViewTheme.HeaderTextPart);
+        _pickerSelectorContainer = e.NameScope.Get<Grid>(TimeViewThemeConstants.PickerSelectorContainerPart);
+        _periodHost              = e.NameScope.Get<Panel>(TimeViewThemeConstants.PeriodHostPart);
+        _headerText              = e.NameScope.Get<TextBlock>(TimeViewThemeConstants.HeaderTextPart);
 
-        _hourSelector   = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.HourSelectorPart);
-        _minuteSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.MinuteSelectorPart);
-        _secondSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.SecondSelectorPart);
-        _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewTheme.PeriodSelectorPart);
+        _hourSelector   = e.NameScope.Get<DateTimePickerPanel>(TimeViewThemeConstants.HourSelectorPart);
+        _minuteSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewThemeConstants.MinuteSelectorPart);
+        _secondSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewThemeConstants.SecondSelectorPart);
+        _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewThemeConstants.PeriodSelectorPart);
         SetupPickerSelectorContainerHeight();
 
-        _spacer3 = e.NameScope.Get<Rectangle>(TimeViewTheme.ThirdSpacerPart);
+        _spacer3 = e.NameScope.Get<Rectangle>(TimeViewThemeConstants.ThirdSpacerPart);
         InitPicker();
 
         if (_hourSelector is not null)

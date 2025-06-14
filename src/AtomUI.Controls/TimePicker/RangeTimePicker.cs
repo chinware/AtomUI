@@ -1,11 +1,13 @@
 ﻿using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
@@ -502,6 +504,15 @@ public class RangeTimePicker : RangeInfoPickerInput,
         if (RangeEndDefaultTime is not null && RangeEndSelectedTime is null)
         {
             RangeEndSelectedTime = RangeEndDefaultTime;
+        }
+    }
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        if (InfoIcon is null)
+        {
+            SetValue(InfoIconProperty, AntDesignIconPackage.ClockCircleOutlined(), BindingPriority.Template);
         }
     }
 }

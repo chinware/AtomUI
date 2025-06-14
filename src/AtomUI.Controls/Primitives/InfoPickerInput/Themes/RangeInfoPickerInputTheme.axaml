@@ -31,7 +31,8 @@
                                                  IsEnabled="{TemplateBinding IsEnabled}">
                         <atom:AddOnDecoratedInnerBox.RightAddOnContent>
                             <atom:PickerClearUpButton
-                                Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}" />
+                                Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
+                                Icon="{Binding (atom:InfoPickerInput.InfoIcon), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}" />
                         </atom:AddOnDecoratedInnerBox.RightAddOnContent>
                         <Grid ColumnDefinitions="*, Auto, *">
                             <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
@@ -89,33 +90,36 @@
 
     <Style Selector="^:is(atom|RangeInfoPickerInput)">
         <Style Selector="^ /template/ atom|Icon#PART_RangePickerArrow">
-            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:InfoPickerInputTokenKey.RangePickerArrowMargin}}" />
+            <Setter Property="Margin"
+                    Value="{DynamicResource {x:Static atom:InfoPickerInputTokenKey.RangePickerArrowMargin}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
+            <Setter Property="NormalFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
         </Style>
-        
+
         <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
-            <Setter Property="Height" Value="{DynamicResource {x:Static atom:InfoPickerInputTokenKey.RangePickerIndicatorThickness}}" />
+            <Setter Property="Height"
+                    Value="{DynamicResource {x:Static atom:InfoPickerInputTokenKey.RangePickerIndicatorThickness}}" />
         </Style>
-        
+
         <Style Selector="^[Status=Default]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
                 <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Status=Error]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
                 <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
             </Style>
         </Style>
-       
+
         <Style Selector="^[Status=Warning]">
             <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">
                 <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
-        
+
     </Style>
 </ControlTheme>

@@ -1,0 +1,120 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:TimeView}" TargetType="atom:TimeView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:TimeViewThemeConstants.MainFramePart}"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}">
+                    <Grid Name="{x:Static atom:TimeViewThemeConstants.RootLayoutPart}"
+                          RowDefinitions="Auto, Auto, *">
+                        <atom:TextBlock Name="{x:Static atom:TimeViewThemeConstants.HeaderTextPart}"
+                                   Grid.Row="0"
+                                   IsVisible="{TemplateBinding IsShowHeader}" />
+                        <Rectangle Grid.Row="1"
+                                   HorizontalAlignment="Stretch"
+                                   Height="{TemplateBinding SpacerWidth}"
+                                   IsVisible="{TemplateBinding IsShowHeader}" />
+                        <Grid Name="PART_PickerContainer"
+                              Grid.Row="2"
+                              ColumnDefinitions="*, Auto, *, Auto, *, Auto, *">
+                            <Panel Name="PART_HourHost"
+                                   Grid.Column="0">
+                                <ScrollViewer
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    VerticalScrollBarVisibility="Hidden">
+                                    <atom:DateTimePickerPanel Name="PART_HourSelector"
+                                                              PanelType="Hour"
+                                                              ShouldLoop="True"
+                                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                </ScrollViewer>
+                            </Panel>
+                            <Rectangle Name="{x:Static atom:TimeViewThemeConstants.FirstSpacerPart}"
+                                       Grid.Column="1"
+                                       HorizontalAlignment="Center"
+                                       Width="{TemplateBinding SpacerWidth}" />
+                            <Panel Name="PART_MinuteHost"
+                                   Grid.Column="2">
+                                <ScrollViewer
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    VerticalScrollBarVisibility="Hidden">
+                                    <atom:DateTimePickerPanel Name="PART_MinuteSelector"
+                                                              PanelType="Minute"
+                                                              ShouldLoop="True"
+                                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                </ScrollViewer>
+                            </Panel>
+                            <Rectangle Name="PART_SecondSpacer"
+                                       Grid.Column="3"
+                                       HorizontalAlignment="Center"
+                                       Width="{TemplateBinding SpacerWidth}" />
+                            <Panel Name="PART_SecondHost"
+                                   Grid.Column="4">
+                                <ScrollViewer
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    VerticalScrollBarVisibility="Hidden">
+                                    <atom:DateTimePickerPanel Name="PART_SecondSelector"
+                                                              PanelType="Second"
+                                                              ShouldLoop="True"
+                                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                </ScrollViewer>
+                            </Panel>
+                            <Rectangle Name="{x:Static atom:TimeViewThemeConstants.ThirdSpacerPart}"
+                                       Grid.Column="5"
+                                       HorizontalAlignment="Center"
+                                       Width="{TemplateBinding SpacerWidth}" />
+                            <Panel Name="PART_PeriodHost"
+                                   Grid.Column="6">
+                                <ScrollViewer
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    VerticalScrollBarVisibility="Hidden">
+                                    <atom:DateTimePickerPanel Name="PART_PeriodSelector"
+                                                              PanelType="TimePeriod"
+                                                              ShouldLoop="False"
+                                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                </ScrollViewer>
+                            </Panel>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />
+
+        <Style Selector="^ /template/ atom|TextBlock#HeaderTextPart">
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.HeaderMargin}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|DateTimePickerPanel">
+            <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Rectangle">
+            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Panel#PART_HourHost">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemWidth}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Panel#PART_MinuteHost">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemWidth}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Panel#PART_SecondHost">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemWidth}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Panel#PART_PeriodHost">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemWidth}}" />
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

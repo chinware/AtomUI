@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -178,9 +179,9 @@ internal class TimePickerPresenter : PickerPresenterBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _nowButton     = e.NameScope.Get<Button>(TimePickerPresenterTheme.NowButtonPart);
-        _confirmButton = e.NameScope.Get<Button>(TimePickerPresenterTheme.ConfirmButtonPart);
-        _timeView      = e.NameScope.Get<TimeView>(TimePickerPresenterTheme.TimeViewPart);
+        _nowButton     = e.NameScope.Get<Button>(TimePickerPresenterThemeConstants.NowButtonPart);
+        _confirmButton = e.NameScope.Get<Button>(TimePickerPresenterThemeConstants.ConfirmButtonPart);
+        _timeView      = e.NameScope.Get<TimeView>(TimePickerPresenterThemeConstants.TimeViewPart);
         SetupButtonStatus();
         if (_timeView is not null)
         {
