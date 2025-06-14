@@ -11,6 +11,7 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
+                    IsEnabled="{TemplateBinding IsEnabled}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"
@@ -19,6 +20,7 @@
                     ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}">
                     <atom:ButtonSpinnerInnerBox
                         Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerInnerBoxPart}"
+                        IsEnabled="{TemplateBinding IsEnabled}"
                         LeftAddOnContent="{TemplateBinding InnerLeftContent}"
                         LeftAddOnContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
                         RightAddOnContent="{TemplateBinding InnerRightContent}"

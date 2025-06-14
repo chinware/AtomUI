@@ -12,7 +12,6 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-[ControlThemeProvider]
 internal class PickerClearUpButtonTheme : BaseControlTheme
 {
     public const string ClearButtonPart = "PART_ClearButton";

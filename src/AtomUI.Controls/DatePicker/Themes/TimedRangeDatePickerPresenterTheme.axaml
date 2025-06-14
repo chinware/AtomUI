@@ -1,0 +1,60 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    xmlns:calendarview="using:AtomUI.Controls.CalendarView"
+    xmlns:datePickerLang="using:AtomUI.Controls.DatePickerLang">
+    <ControlTheme x:Key="{x:Type atom:TimedRangeDatePickerPresenter}"
+                  TargetType="atom:TimedRangeDatePickerPresenter">
+        <ControlTheme.BasedOn>
+            <themes:DatePickerPresenterTheme TargetType="atom:TimedRangeDatePickerPresenter" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="{x:Static atom:DatePickerPresenterThemeConstants.MainLayoutPart}"
+                           LastChildFill="True">
+                    <Border Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsFramePart}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            IsVisible="{TemplateBinding ButtonsPanelVisible}"
+                            DockPanel.Dock="Bottom">
+                        <Panel Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsLayoutPart}">
+                            <atom:Button
+                                Name="{x:Static atom:DatePickerPresenterThemeConstants.NowButtonPart}"
+                                ButtonType="Link"
+                                HorizontalAlignment="Left"
+                                SizeType="Small"
+                                Content="{DynamicResource {x:Static datePickerLang:DatePickerLangResourceKey.Now}}" />
+                            <atom:Button
+                                Name="{x:Static atom:DatePickerPresenterThemeConstants.TodayButtonPart}"
+                                ButtonType="Link"
+                                HorizontalAlignment="Left"
+                                SizeType="Small"
+                                Content="{DynamicResource {x:Static datePickerLang:DatePickerLangResourceKey.Today}}" />
+                            <atom:Button
+                                Name="{x:Static atom:DatePickerPresenterThemeConstants.ConfirmButtonPart}"
+                                ButtonType="Primary"
+                                HorizontalAlignment="Right"
+                                SizeType="Small"
+                                Content="{DynamicResource {x:Static datePickerLang:DatePickerLangResourceKey.Today}}" />
+                        </Panel>
+                    </Border>
+                    <StackPanel Orientation="Horizontal">
+                        <calendarview:RangeCalendar Name="{x:Static atom:DatePickerPresenterThemeConstants.CalendarViewPart}"
+                                                    VerticalAlignment="Top"
+                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                    SelectedDate="{TemplateBinding SelectedDateTime}"
+                                                    SecondarySelectedDate="{TemplateBinding SecondarySelectedDateTime}"/>
+                        <atom:TimeView
+                            Name="{x:Static atom:DatePickerPresenterThemeConstants.TimeViewPart}"
+                            VerticalAlignment="Top"
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
+                            ClockIdentifier="{TemplateBinding ClockIdentifier}"
+                            IsVisible="{TemplateBinding IsShowTime}"/>
+                        
+                    </StackPanel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

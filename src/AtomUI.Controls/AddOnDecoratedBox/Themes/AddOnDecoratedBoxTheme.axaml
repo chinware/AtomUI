@@ -4,7 +4,7 @@
               x:Class="AtomUI.Controls.Themes.AddOnDecoratedBoxTheme"
               TargetType="atom:AddOnDecoratedBox">
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="atom:AddOnDecoratedBox">
             <Grid
                 Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.MainLayoutPart}"
                 ColumnDefinitions="Auto, *, Auto">
@@ -78,8 +78,7 @@
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         </Style>
 
-        <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Background"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
             <Style Selector="^ /template/ ContentPresenter">

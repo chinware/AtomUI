@@ -20,6 +20,7 @@
                         <atom:ComboBoxSpinnerInnerBox
                             Name="{x:Static atom:ComboBoxThemeConstants.SpinnerInnerBoxPart}"
                             Focusable="False"
+                            IsEnabled="{TemplateBinding IsEnabled}"
                             LeftAddOnContent="{TemplateBinding InnerLeftContent}"
                             LeftAddOnContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
                             RightAddOnContent="{TemplateBinding InnerRightContent}"
@@ -50,8 +51,7 @@
                                     VerticalAlignment="Center"
                                     Content="{TemplateBinding SelectionBoxItem}"
                                     ContentTemplate="{TemplateBinding ItemTemplate}"
-                                    >
-                                </ContentPresenter>
+                                    />
                             </Panel>
                         </atom:ComboBoxSpinnerInnerBox>
                     </atom:AddOnDecoratedBox>

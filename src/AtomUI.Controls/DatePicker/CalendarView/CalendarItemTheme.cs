@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
@@ -68,7 +69,7 @@ internal class CalendarItemTheme : BaseControlTheme
 
     private void BuildDayTitleTemplate(CalendarItem calendarItem)
     {
-        // calendarItem.DayTitleTemplate = new DayTitleTemplate();
+        calendarItem.DayTitleTemplate = new DayTitleTemplate();
     }
 
     protected void BuildHeader(CalendarItem calendarItem, DockPanel layout, INameScope scope)
@@ -332,5 +333,26 @@ internal class CalendarItemTheme : BaseControlTheme
         buttonsStyle.Add(IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorText);
         buttonsStyle.Add(IconButton.SelectedIconBrushProperty, SharedTokenKey.ColorText);
         commonStyle.Add(buttonsStyle);
+    }
+}
+
+internal class DayTitleTemplate : ITemplate<Control>
+{
+    public Control Build()
+    {
+        var textBlock = new TextBlock
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        
+        // TODO 需要观察是否有内存泄漏
+        textBlock.Bind(TextBlock.TextProperty, new Binding());
+        return textBlock;
+    }
+
+    object ITemplate.Build()
+    {
+        return Build();
     }
 }

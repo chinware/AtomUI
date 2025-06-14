@@ -3,103 +3,110 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               x:Class="AtomUI.Controls.Themes.TextBoxTheme">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <atom:TextBoxInnerBox
-                    Name="{x:Static atom:TextBoxThemeConstants.TextBoxInnerBoxPart}"
-                    Cursor="Ibeam"
-                    LeftAddOnContent="{TemplateBinding InnerLeftContent}"
-                    RightAddOnContent="{TemplateBinding InnerRightContent}"
-                    SizeType="{TemplateBinding SizeType}"
-                    StyleVariant="{TemplateBinding StyleVariant}"
-                    IsClearButtonVisible="{TemplateBinding IsEffectiveShowClearButton}"
-                    IsRevealButtonVisible="{TemplateBinding IsEnableRevealButton}"
-                    IsRevealButtonChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
-                    Status="{TemplateBinding Status}"
-                    EmbedMode="{TemplateBinding EmbedMode}">
-                    <ScrollViewer
-                        Name="{x:Static atom:TextBoxThemeConstants.ScrollViewerPart}"
-                        Focusable="True"
-                        AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
-                        HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                        VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                        IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
-                        <Panel>
-                            <atom:TextBlock
-                                Name="{x:Static atom:TextBoxThemeConstants.WatermarkPart}"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                Text="{TemplateBinding Watermark}"
-                                TextAlignment="{TemplateBinding TextAlignment}"
-                                TextWrapping="{TemplateBinding TextWrapping}"
-                                IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
-                            <TextPresenter
-                                Name="PART_TextPresenter"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
-                                CaretBrush="{TemplateBinding CaretBrush}"
-                                CaretIndex="{TemplateBinding CaretIndex}"
-                                LineHeight="{TemplateBinding LineHeight}"
-                                PasswordChar="{TemplateBinding PasswordChar}"
-                                RevealPassword="{TemplateBinding RevealPassword}"
-                                SelectionBrush="{TemplateBinding SelectionBrush}"
-                                SelectionStart="{TemplateBinding SelectionStart}"
-                                SelectionEnd="{TemplateBinding SelectionEnd}"
-                                SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
-                                Text="{TemplateBinding Text, Mode=TwoWay}"
-                                TextAlignment="{TemplateBinding TextAlignment}"
-                                TextWrapping="{TemplateBinding TextWrapping}" />
-                        </Panel>
-                    </ScrollViewer>
-                </atom:TextBoxInnerBox>
-            </ControlTemplate>
-        </Setter>
-        
-        <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionBackground}}"/>
-        <Setter Property="CaretBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"/>
-        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionForeground}}"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True"/>
-        
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:TextBox">
+            <atom:TextBoxInnerBox
+                Name="{x:Static atom:TextBoxThemeConstants.TextBoxInnerBoxPart}"
+                Cursor="Ibeam"
+                LeftAddOnContent="{TemplateBinding InnerLeftContent}"
+                RightAddOnContent="{TemplateBinding InnerRightContent}"
+                SizeType="{TemplateBinding SizeType}"
+                StyleVariant="{TemplateBinding StyleVariant}"
+                IsClearButtonVisible="{TemplateBinding IsEffectiveShowClearButton}"
+                IsRevealButtonVisible="{TemplateBinding IsEnableRevealButton}"
+                IsRevealButtonChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
+                Status="{TemplateBinding Status}"
+                EmbedMode="{TemplateBinding EmbedMode}">
+                <ScrollViewer
+                    Name="{x:Static atom:TextBoxThemeConstants.ScrollViewerPart}"
+                    Focusable="True"
+                    AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                    IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                    <Panel>
+                        <atom:TextBlock
+                            Name="{x:Static atom:TextBoxThemeConstants.WatermarkPart}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Text="{TemplateBinding Watermark}"
+                            TextAlignment="{TemplateBinding TextAlignment}"
+                            TextWrapping="{TemplateBinding TextWrapping}"
+                            IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                        <TextPresenter
+                            Name="PART_TextPresenter"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                            CaretBrush="{TemplateBinding CaretBrush}"
+                            CaretIndex="{TemplateBinding CaretIndex}"
+                            LineHeight="{TemplateBinding LineHeight}"
+                            PasswordChar="{TemplateBinding PasswordChar}"
+                            RevealPassword="{TemplateBinding RevealPassword}"
+                            SelectionBrush="{TemplateBinding SelectionBrush}"
+                            SelectionStart="{TemplateBinding SelectionStart}"
+                            SelectionEnd="{TemplateBinding SelectionEnd}"
+                            SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                            Text="{TemplateBinding Text, Mode=TwoWay}"
+                            TextAlignment="{TemplateBinding TextAlignment}"
+                            TextWrapping="{TemplateBinding TextWrapping}" />
+                    </Panel>
+                </ScrollViewer>
+            </atom:TextBoxInnerBox>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|TextBox)">
+        <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionBackground}}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        <Setter Property="SelectionForegroundBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionForeground}}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}"/>
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}"/>
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightSM}}"/>
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightSM}}" />
         </Style>
-        
+
         <Style Selector="^ /template/ atom|TextBlock#PART_Watermark">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
         </Style>
-        
+
         <Style Selector="^[StyleVariant=Borderless]">
             <Style Selector="^:error">
                 <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}"/>
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
                 </Style>
             </Style>
             <Style Selector="^:warning">
                 <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}"/>
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
                 </Style>
             </Style>
         </Style>
         <Style Selector="^[StyleVariant=Filled]">
             <Style Selector="^:error">
                 <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}"/>
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
                 </Style>
             </Style>
             <Style Selector="^:warning">
                 <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}"/>
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
                 </Style>
             </Style>
         </Style>
-        
-    </ControlTheme>
+    </Style>
+
+</ControlTheme>

@@ -8,13 +8,14 @@
         <themes:TextBoxTheme TargetType="{x:Type atom:LineEdit}" />
     </ControlTheme.BasedOn>
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="atom:LineEdit">
             <atom:AddOnDecoratedBox
                 Name="{x:Static atom:TextBoxThemeConstants.DecoratedBoxPart}"
                 Focusable="False"
                 StyleVariant="{TemplateBinding StyleVariant}"
                 SizeType="{TemplateBinding SizeType}"
                 Status="{TemplateBinding Status}"
+                IsEnabled="{TemplateBinding IsEnabled}"
                 LeftAddOn="{TemplateBinding LeftAddOn}"
                 LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                 RightAddOn="{TemplateBinding RightAddOn}"
@@ -22,6 +23,7 @@
                 <atom:TextBoxInnerBox
                     Name="{x:Static atom:TextBoxThemeConstants.TextBoxInnerBoxPart}"
                     Cursor="Ibeam"
+                    IsEnabled="{TemplateBinding IsEnabled}"
                     LeftAddOnContent="{TemplateBinding InnerLeftContent}"
                     RightAddOnContent="{TemplateBinding InnerRightContent}"
                     SizeType="{TemplateBinding SizeType}"

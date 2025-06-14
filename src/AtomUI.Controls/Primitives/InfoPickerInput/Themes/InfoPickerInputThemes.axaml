@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:themes="using:AtomUI.Controls.Primitives.Themes">
+    <!-- <ResourceDictionary.MergedDictionaries> -->
+    <!--     <ResourceInclude Source="PickerClearUpButtonTheme.axaml"/> -->
+    <!-- </ResourceDictionary.MergedDictionaries> -->
+    <!-- <themes:InfoPickerInputTheme x:Key="{x:Type atom:InfoPickerInput}" TargetType="atom:InfoPickerInput"/> -->
+    <!-- <themes:InfoPickerInputTheme x:Key="{x:Type atom:RangeInfoPickerInput}" TargetType="atom:RangeInfoPickerInput"/> -->
+</ResourceDictionary>

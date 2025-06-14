@@ -1,0 +1,78 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Controls.Primitives.Themes.InfoPickerInputTheme"
+              TargetType="atom:InfoPickerInput">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:InfoPickerInput">
+            <Panel>
+                <atom:AddOnDecoratedBox
+                    Name="{x:Static atom:InfoPickerInputThemeConstants.DecoratedBoxPart}"
+                    Focusable="True"
+                    MinWidth="{TemplateBinding MinWidth}"
+                    StyleVariant="{TemplateBinding StyleVariant}"
+                    SizeType="{TemplateBinding SizeType}"
+                    Status="{TemplateBinding Status}"
+                    IsEnabled="{TemplateBinding IsEnabled}"
+                    LeftAddOn="{TemplateBinding LeftAddOn}"
+                    RightAddOn="{TemplateBinding RightAddOn}">
+                    <atom:AddOnDecoratedInnerBox Name="{x:Static atom:InfoPickerInputThemeConstants.PickerInnerPart}"
+                                                 HorizontalAlignment="Stretch"
+                                                 VerticalAlignment="Stretch"
+                                                 IsEnabled="{TemplateBinding IsEnabled}"
+                                                 LeftAddOnContent="{TemplateBinding InnerLeftContent}"
+                                                 StyleVariant="{TemplateBinding StyleVariant}"
+                                                 Status="{TemplateBinding Status}"
+                                                 SizeType="{TemplateBinding SizeType}">
+                        <atom:AddOnDecoratedInnerBox.RightAddOnContent>
+                            <atom:PickerClearUpButton Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
+                                                      Icon="{Binding (atom:InfoPickerInput.InfoIcon), RelativeSource={RelativeSource Self}}"/>
+                        </atom:AddOnDecoratedInnerBox.RightAddOnContent>
+                        <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
+                                      HorizontalContentAlignment="Stretch"
+                                      VerticalContentAlignment="Center"
+                                      VerticalAlignment="Stretch"
+                                      HorizontalAlignment="Stretch"
+                                      BorderThickness="0"
+                                      TextWrapping="NoWrap"
+                                      AcceptsReturn="False"
+                                      EmbedMode="True"
+                                      IsEnableClearButton="False"
+                                      IsEnableRevealButton="False"
+                                      DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                                      Foreground="{TemplateBinding InputTextBrush}"
+                                      SizeType="{TemplateBinding SizeType}"
+                                      IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                    </atom:AddOnDecoratedInnerBox>
+                </atom:AddOnDecoratedBox>
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+    
+    <Style Selector="^:is(atom|InfoPickerInput)">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="MarginToAnchor" Value="{DynamicResource {x:Static atom:SharedTokenKey.MarginXXS}}" />
+        <Setter Property="InputTextBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        
+        <Style Selector="^:flyout-open">
+            <Setter Property="InputTextBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="InputTextBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+        </Style>
+        
+    </Style>
+    
+</ControlTheme>

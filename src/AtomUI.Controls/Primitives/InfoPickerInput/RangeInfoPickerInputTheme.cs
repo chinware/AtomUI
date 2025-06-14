@@ -9,7 +9,6 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Primitives;
 
-[ControlThemeProvider]
 internal class RangeInfoPickerInputTheme : InfoPickerInputTheme
 {
     public const string SecondaryInfoInputBoxPart = "PART_SecondaryInfoInputBox";

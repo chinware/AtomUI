@@ -73,13 +73,15 @@
             <Setter Property="SpinnerBorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
             <Setter Property="SpinnerHandleWidthToken" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
             
-            <Style Selector="^:not(^:filled)">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="Background" Value="Transparent"/>
-                </Style>
-                <Style Selector="^:pointerover">
+            <Style Selector="^[IsEnabled=True]">
+                <Style Selector="^:not(^:filled)">
                     <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Style>
+                    <Style Selector="^:pointerover">
+                        <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}"/>
+                        </Style>
                     </Style>
                 </Style>
             </Style>

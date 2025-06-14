@@ -15,6 +15,7 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
+                    IsEnabled="{TemplateBinding IsEnabled}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"
@@ -33,6 +34,7 @@
                         IsRevealButtonVisible="{TemplateBinding IsEnableRevealButton}"
                         IsRevealButtonChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
                         Status="{TemplateBinding Status}"
+                        IsEnabled="{TemplateBinding IsEnabled}"
                         EmbedMode="{TemplateBinding EmbedMode}">
                         <ScrollViewer
                             Name="{x:Static atom:TextBoxThemeConstants.ScrollViewerPart}"

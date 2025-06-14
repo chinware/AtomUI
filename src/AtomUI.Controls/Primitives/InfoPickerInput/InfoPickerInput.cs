@@ -1,4 +1,5 @@
 ﻿using AtomUI.Data;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -43,6 +44,9 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     public static readonly StyledProperty<string?> WatermarkProperty =
         AvaloniaProperty.Register<InfoPickerInput, string?>(nameof(Watermark));
+    
+    public static readonly StyledProperty<Icon?> InfoIconProperty =
+        AvaloniaProperty.Register<InfoPickerInput, Icon?>(nameof(InfoIcon));
 
     public static readonly StyledProperty<PlacementMode> PickerPlacementProperty =
         AvaloniaProperty.Register<InfoPickerInput, PlacementMode>(nameof(PickerPlacement),
@@ -69,8 +73,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     public static readonly StyledProperty<IBrush?> InputTextBrushProperty =
         AvaloniaProperty.Register<InfoPickerInput, IBrush?>(nameof(InputTextBrush));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<InfoPickerInput>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<InfoPickerInput>();
 
     public object? LeftAddOn
     {
@@ -112,6 +116,12 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         get => GetValue(WatermarkProperty);
         set => SetValue(WatermarkProperty, value);
+    }
+    
+    public Icon? InfoIcon
+    {
+        get => GetValue(InfoIconProperty);
+        set => SetValue(InfoIconProperty, value);
     }
 
     public PlacementMode PickerPlacement

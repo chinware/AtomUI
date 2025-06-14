@@ -65,21 +65,24 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="InnerBoxPadding" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />
+            <Setter Property="InnerBoxPadding"
+                    Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
                 <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="InnerBoxPadding" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.Padding}}" />
+            <Setter Property="InnerBoxPadding"
+                    Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.Padding}}" />
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
                 <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="InnerBoxPadding" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
+            <Setter Property="InnerBoxPadding"
+                    Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightSM}}" />
                 <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightSM}}" />
@@ -89,7 +92,8 @@
         <Style Selector="^:outline">
             <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
                 <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
             </Style>
 
             <Style Selector="^:pointerover">
@@ -108,7 +112,8 @@
 
             <Style Selector="^[Status=Error]">
                 <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
                 </Style>
 
                 <Style Selector="^:pointerover">
@@ -226,17 +231,18 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXXS}}" />
         </Style>
         <!-- BuildAddOnStyle 结束 -->
-        
+
         <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             <Setter Property="NormalIconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
-            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+            <Setter Property="ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
             <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         </Style>
 
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />

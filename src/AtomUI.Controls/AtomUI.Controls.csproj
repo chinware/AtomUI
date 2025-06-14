@@ -25,19 +25,4 @@
         <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Buttons\Themes\Button\BaseButtonTheme.axaml" />
-      <AdditionalFiles Include="Buttons\Themes\Button\ButtonTheme.axaml" />
-      <AdditionalFiles Include="Buttons\Themes\Button\ButtonThemes.axaml" />
-      <AdditionalFiles Include="Buttons\Themes\Button\DefaultButtonTheme.axaml" />
-      <AdditionalFiles Include="Buttons\Themes\Button\LinkButtonTheme.axaml" />
-      <AdditionalFiles Include="Buttons\Themes\Button\PrimaryButtonTheme.axaml" />
-      <AdditionalFiles Include="Buttons\Themes\Button\TextButtonTheme.axaml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Internal\" />
-    </ItemGroup>
-
 </Project>

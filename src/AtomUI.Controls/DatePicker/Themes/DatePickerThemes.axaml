@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ResourceDictionary.MergedDictionaries>
+        <!-- <ResourceInclude Source="CalendarView/CalendarButtonTheme.axaml"/> -->
+        <!-- <ResourceInclude Source="CalendarView/CalendarDayButtonTheme.axaml"/> -->
+        <!-- <ResourceInclude Source="CalendarView/DualMonthCalendarItemTheme.axaml"/> -->
+        <!-- <ResourceInclude Source="CalendarView/RangeCalendarTheme.axaml"/> -->
+        <!-- <ResourceInclude Source="DatePickerFlyoutPresenterTheme.axaml"/> -->
+        <!-- <ResourceInclude Source="DualMonthRangeDatePickerPresenterTheme.axaml"/> -->
+        <!-- <ResourceInclude Source="RangeDatePickerFlyoutPresenterTheme.axaml"/> -->
+        <!-- <ResourceInclude Source="TimedRangeDatePickerPresenterTheme.axaml"/> -->
+    </ResourceDictionary.MergedDictionaries>
+    <!-- <themes:DatePickerPresenterTheme x:Key="{x:Type atom:DatePickerPresenter}" TargetType="atom:DatePickerPresenter"/> -->
+</ResourceDictionary>

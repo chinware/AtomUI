@@ -1,0 +1,41 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:PickerClearUpButton}" TargetType="atom:PickerClearUpButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <atom:IconButton
+                        Name="{x:Static atom:PickerClearUpButtonThemeConstants.ClearButtonPart}"
+                        Icon="{atom:IconProvider CloseCircleFilled}"
+                        IsVisible="{TemplateBinding IsInClearMode}" />
+                    <atom:IconPresenter
+                        Name="{x:Static atom:PickerClearUpButtonThemeConstants.InfoIconPresenterPart}"
+                        Icon="{TemplateBinding Icon}"
+                        IsVisible="{TemplateBinding IsInClearMode, Converter={x:Static BoolConverters.Not}}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
+            <Setter Property="ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
+            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="DisabledIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_InfoIconPresenter">
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="NormalFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>
