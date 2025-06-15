@@ -20,8 +20,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.HorizontalNavMenuTheme());
             themes.Add(new AtomUI.Controls.HyperLinkTextBlockTheme());
             themes.Add(new AtomUI.Controls.InlineNavMenuItemTheme());
-            themes.Add(new AtomUI.Controls.ListBoxItemTheme());
-            themes.Add(new AtomUI.Controls.ListBoxTheme());
             themes.Add(new AtomUI.Controls.LoadingIndicatorAdornerTheme());
             themes.Add(new AtomUI.Controls.LoadingIndicatorTheme());
             themes.Add(new AtomUI.Controls.MenuFlyoutPresenterTheme());
