@@ -17,8 +17,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.CircleProgressTheme());
             themes.Add(new AtomUI.Controls.ContextMenuTheme());
             themes.Add(new AtomUI.Controls.DashboardProgressTheme());
-            themes.Add(new AtomUI.Controls.DrawerContainerTheme());
-            themes.Add(new AtomUI.Controls.DrawerInfoContainerTheme());
             themes.Add(new AtomUI.Controls.EmptyIndicatorTheme());
             themes.Add(new AtomUI.Controls.ExpanderTheme());
             themes.Add(new AtomUI.Controls.GroupBoxTheme());

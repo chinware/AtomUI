@@ -3,6 +3,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
@@ -22,12 +23,6 @@ internal class HeadTextButton : AvaloniaButton
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        ConfigureTransitions();
-    }
-
     private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
@@ -43,7 +38,13 @@ internal class HeadTextButton : AvaloniaButton
             Transitions = null;
         }
     }
-    
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureTransitions();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

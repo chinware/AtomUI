@@ -277,6 +277,10 @@ public class CollapseItem : HeaderedContentControl,
             {
                 HandleSelectedChanged();
             }
+            else if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
         }
 
         if (change.Property == AddOnContentProperty ||
@@ -296,10 +300,7 @@ public class CollapseItem : HeaderedContentControl,
                 SetupDefaultExpandIcon();
             }
         }
-        else if (change.Property == IsMotionEnabledProperty)
-        {
-            ConfigureTransitions();
-        }
+        
     }
 
     private void HandleSelectedChanged()

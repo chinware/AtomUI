@@ -230,22 +230,21 @@ public class Drawer : Control,
         var parentDrawer = FindParentDrawer();
         if (parentDrawer != null)
         {
-            BindUtils.RelayBind(parentDrawer, OpenOnProperty, this, OpenOnProperty, BindingMode.Default,
-                BindingPriority.Template);
-            BindUtils.RelayBind(parentDrawer, IsMotionEnabledProperty, this, IsMotionEnabledProperty,
-                BindingMode.Default, BindingPriority.Template);
+            this.AddResourceBindingDisposable(BindUtils.RelayBind(parentDrawer, OpenOnProperty, this, OpenOnProperty, BindingMode.Default,
+                BindingPriority.Template));
+            this.AddResourceBindingDisposable(BindUtils.RelayBind(parentDrawer, IsMotionEnabledProperty, this, IsMotionEnabledProperty,
+                BindingMode.Default, BindingPriority.Template));
         }
         else
         {
-            // TODO 需要评估是否会造成资源泄漏
-            Bind(OpenOnProperty, new Binding()
+            this.AddResourceBindingDisposable(Bind(OpenOnProperty, new Binding()
             {
                 Priority = BindingPriority.Template,
                 RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor)
                 {
                     AncestorType = typeof(TopLevel),
                 }
-            });
+            }));
         }
     }
 

@@ -189,11 +189,10 @@ internal class NodeSwitcherButton : ToggleButton
 
                 SetupDefaultIcons();
             }
-        }
-        
-        if (change.Property == IsMotionEnabledProperty)
-        {
-            ConfigureTransitions();
+            else if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
         }
     }
 

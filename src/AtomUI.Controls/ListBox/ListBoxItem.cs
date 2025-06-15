@@ -2,6 +2,8 @@
 using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls.Primitives;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -62,7 +64,7 @@ public class ListBoxItem : AvaloniaListBoxItem
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToLogicalTree())
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsMotionEnabledProperty)
             {
@@ -71,9 +73,9 @@ public class ListBoxItem : AvaloniaListBoxItem
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnApplyTemplate(e);
         ConfigureTransitions();
     }
 }

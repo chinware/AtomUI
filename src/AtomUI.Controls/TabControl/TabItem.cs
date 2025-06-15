@@ -113,6 +113,8 @@ public class TabItem : AvaloniaTabItem,
         {
             _closeButton.Click += HandleCloseRequest;
         }
+        ConfigureTransitions();
+        SetupDefaultCloseIcon();
     }
 
     private void ConfigureTransitions()
@@ -205,13 +207,6 @@ public class TabItem : AvaloniaTabItem,
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        ConfigureTransitions();
-        SetupDefaultCloseIcon();
     }
 
     private void SetupShapeThemeBindings()

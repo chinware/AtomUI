@@ -54,16 +54,19 @@ internal class AbstractMotion : IMotion
         actor.NotifyMotionPreStart();
         NotifyPreStart(actor);
         aboutToStart?.Invoke();
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.UIThread.Post(() =>
         {
-            foreach (var animation in Animations)
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await animation.RunAsync(actor);
-            }
-            actor.NotifyMotionCompleted();
-            NotifyCompleted(actor);
-            completedAction?.Invoke();
-            actor.RenderTransformOrigin = originRenderTransformOrigin;
+                foreach (var animation in Animations)
+                {
+                    await animation.RunAsync(actor);
+                }
+                actor.NotifyMotionCompleted();
+                NotifyCompleted(actor);
+                completedAction?.Invoke();
+                actor.RenderTransformOrigin = originRenderTransformOrigin;
+            });
         });
     }
     

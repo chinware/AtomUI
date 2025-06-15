@@ -122,6 +122,8 @@ public class TabStripItem : AvaloniaTabStripItem,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        SetupDefaultCloseIcon();
+        ConfigureTransitions();
         base.OnApplyTemplate(e);
         _closeButton   = e.NameScope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
         
@@ -221,13 +223,6 @@ public class TabStripItem : AvaloniaTabStripItem,
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        SetupDefaultCloseIcon();
-        ConfigureTransitions();
     }
 
     private void SetupShapeThemeBindings()

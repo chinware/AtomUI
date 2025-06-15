@@ -122,9 +122,9 @@ public class SliderThumb : TemplatedControl
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnApplyTemplate(e);
         ConfigureTransitions();
     }
 

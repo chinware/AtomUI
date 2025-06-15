@@ -606,7 +606,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         base.OnAttachedToVisualTree(e);
         UpdatePseudoClasses();
         TryUpdateCanExecute();
-        ConfigureTransitions();
     }
 
     /// <summary>
@@ -700,6 +699,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _childItemsLayoutTransform.SetCurrentValue(MotionActorControl.IsVisibleProperty, IsSubMenuOpen);
             }
         }
+        ConfigureTransitions();
     }
 
     private void ConfigureTransitions()

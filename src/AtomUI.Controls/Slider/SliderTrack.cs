@@ -383,17 +383,7 @@ public class SliderTrack : Control,
         return !double.IsInfinity(value.StartValue) && !double.IsNaN(value.StartValue) &&
                !double.IsInfinity(value.EndValue) && !double.IsNaN(value.EndValue);
     }
-
-    public override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-
-        HandleRangeModeChanged();
-        SetupMarkLabelBrush();
-        CalculateMaxMarkSize();
-        ConfigureTransitions();
-    }
-
+    
     private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
@@ -450,6 +440,10 @@ public class SliderTrack : Control,
                 }
             }
         });
+        HandleRangeModeChanged();
+        SetupMarkLabelBrush();
+        CalculateMaxMarkSize();
+        ConfigureTransitions();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

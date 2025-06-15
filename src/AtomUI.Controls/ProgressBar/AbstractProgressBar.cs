@@ -331,7 +331,6 @@ public abstract class AbstractProgressBar : RangeBase,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        ConfigureTransitions();
         UpdatePseudoClasses();
     }
 
@@ -350,6 +349,7 @@ public abstract class AbstractProgressBar : RangeBase,
         _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
         _exceptionCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
         _successCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
+        ConfigureTransitions();
         NotifySetupUI();
     }
 

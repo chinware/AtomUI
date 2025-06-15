@@ -32,14 +32,6 @@ public class RangeDatePicker : RangeInfoPickerInput,
             defaultBindingMode: BindingMode.TwoWay,
             enableDataValidation: true);
     
-    public static readonly StyledProperty<DateTime?> RangeStartDefaultDateProperty =
-        AvaloniaProperty.Register<RangeDatePicker, DateTime?>(nameof(RangeStartDefaultDate),
-            enableDataValidation: true);
-
-    public static readonly StyledProperty<DateTime?> RangeEndDefaultDateProperty =
-        AvaloniaProperty.Register<RangeDatePicker, DateTime?>(nameof(RangeEndDefaultDate),
-            enableDataValidation: true);
-    
     public static readonly StyledProperty<bool> IsNeedConfirmProperty =
         AvaloniaProperty.Register<RangeDatePicker, bool>(nameof(IsNeedConfirm));
     
@@ -67,17 +59,9 @@ public class RangeDatePicker : RangeInfoPickerInput,
         set => SetValue(RangeEndSelectedDateProperty, value);
     }
 
-    public DateTime? RangeStartDefaultDate
-    {
-        get => GetValue(RangeStartDefaultDateProperty);
-        set => SetValue(RangeStartDefaultDateProperty, value);
-    }
+    public DateTime? RangeStartDefaultDate { get; set; }
 
-    public DateTime? RangeEndDefaultDate
-    {
-        get => GetValue(RangeEndDefaultDateProperty);
-        set => SetValue(RangeEndDefaultDateProperty, value);
-    }
+    public DateTime? RangeEndDefaultDate { get; set; }
     
     public bool IsNeedConfirm
     {

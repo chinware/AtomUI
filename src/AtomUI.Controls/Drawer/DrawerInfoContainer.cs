@@ -1,3 +1,4 @@
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -159,12 +160,6 @@ internal class DrawerInfoContainer : HeaderedContentControl
     internal event EventHandler? CloseRequested;
     private IconButton? _closeButton;
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        ConfigureTransitions();
-    }
-
     private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
@@ -223,11 +218,12 @@ internal class DrawerInfoContainer : HeaderedContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _closeButton = e.NameScope.Find<IconButton>(DrawerInfoContainerTheme.CloseButtonPart);
+        _closeButton = e.NameScope.Find<IconButton>(DrawerInfoContainerThemeConstants.CloseButtonPart);
         if (_closeButton != null)
         {
             _closeButton.Click += HandleCloseButtonClick;
         }
+        ConfigureTransitions();
     }
 
     private void HandleCloseButtonClick(object? sender, RoutedEventArgs e)

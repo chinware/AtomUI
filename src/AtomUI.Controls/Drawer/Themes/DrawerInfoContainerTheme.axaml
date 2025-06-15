@@ -1,0 +1,148 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:DrawerInfoContainer}" TargetType="atom:DrawerInfoContainer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel
+                    Name="{x:Static atom:DrawerInfoContainerThemeConstants.RootLayoutPart}">
+                    <Border Name="{x:Static atom:DrawerInfoContainerThemeConstants.FramePart}" />
+                    <Grid Name="{x:Static atom:DrawerInfoContainerThemeConstants.InfoLayoutPart}"
+                          RowDefinitions="Auto, Auto, *, Auto, Auto">
+                        <Grid Name="{x:Static atom:DrawerInfoContainerThemeConstants.InfoHeaderPart}"
+                              Grid.Row="0"
+                              ColumnDefinitions="Auto, *, Auto">
+                            <atom:IconButton Name="{x:Static atom:DrawerInfoContainerThemeConstants.CloseButtonPart}"
+                                             Grid.Column="0"
+                                             Icon="{atom:IconProvider CloseOutlined}"
+                                             IsEnableHoverEffect="True"
+                                             VerticalAlignment="Center"
+                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                             IsVisible="{TemplateBinding IsShowCloseButton}" />
+                            <atom:TextBlock Name="{x:Static atom:DrawerInfoContainerThemeConstants.HeaderTextPart}"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Grid.Column="1" />
+                            <ContentPresenter
+                                Name="{x:Static atom:DrawerInfoContainerThemeConstants.ExtraContentPresenterPart}"
+                                Grid.Column="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                IsVisible="{TemplateBinding HasExtra}"
+                                Content="{TemplateBinding Extra}"
+                                ContentTemplate="{TemplateBinding ExtraTemplate}" />
+                        </Grid>
+                        <atom:Separator Grid.Row="1" />
+                        <ContentPresenter
+                            Name="{x:Static atom:DrawerInfoContainerThemeConstants.InfoContainerPart}"
+                            Grid.Row="2"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        <atom:Separator Grid.Row="3" IsVisible="{TemplateBinding HasFooter}" />
+                        <ContentPresenter
+                            Name="{x:Static atom:DrawerInfoContainerThemeConstants.InfoFooterPart}"
+                            Grid.Row="4"
+                            IsVisible="{TemplateBinding HasFooter}"
+                            Content="{TemplateBinding Footer}"
+                            ContentTemplate="{TemplateBinding FooterTemplate}" />
+                    </Grid>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Style Selector="^ /template/ Border#PART_Frame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        </Style>
+
+        <!-- BoxShadow style begin -->
+        <Style Selector="^[Placement=Top]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DrawerTokenKey.BoxShadowDrawerUp}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Placement=Right]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="BoxShadow"
+                        Value="{DynamicResource {x:Static atom:DrawerTokenKey.BoxShadowDrawerRight}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Placement=Bottom]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="BoxShadow"
+                        Value="{DynamicResource {x:Static atom:DrawerTokenKey.BoxShadowDrawerDown}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Placement=Left]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="BoxShadow"
+                        Value="{DynamicResource {x:Static atom:DrawerTokenKey.BoxShadowDrawerLeft}}" />
+            </Style>
+        </Style>
+        <!-- BoxShadow style end -->
+
+        <!-- DialogSizeStyle begin -->
+        <Style Selector="^[Placement=Top]">
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Height" Value="{Binding DialogSize, RelativeSource={RelativeSource Self}}" />
+        </Style>
+
+        <Style Selector="^[Placement=Right]">
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Width" Value="{Binding DialogSize, RelativeSource={RelativeSource Self}}" />
+        </Style>
+
+        <Style Selector="^[Placement=Bottom]">
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Height" Value="{Binding DialogSize, RelativeSource={RelativeSource Self}}" />
+        </Style>
+
+        <Style Selector="^[Placement=Left]">
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Width" Value="{Binding DialogSize, RelativeSource={RelativeSource Self}}" />
+        </Style>
+        <!-- DialogSizeStyle end -->
+
+        <!-- Head style begin -->
+        <Style Selector="^ /template/ Grid#PART_InfoHeader">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DrawerTokenKey.HeaderMargin}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|TextBlock#PART_HeaderText">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}"/>
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}"/>
+            <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}"/>
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DrawerTokenKey.CloseIconPadding}}"/>
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DrawerTokenKey.CloseIconMargin}}"/>
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
+        </Style>
+        <!-- Head style end -->
+        
+        <Style Selector="^ /template/ ContentPresenter#PART_InfoContainer">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DrawerTokenKey.ContentPadding}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#PART_InfoFooter">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DrawerTokenKey.FooterPadding}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
+            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}"/>
+            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}"/>
+            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

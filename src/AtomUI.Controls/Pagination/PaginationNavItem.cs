@@ -131,7 +131,6 @@ internal class PaginationNavItem : ContentControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        ConfigureTransitions();
         if (Content is Icon icon)
         {
             SetupIconFillColors(icon);
@@ -185,6 +184,12 @@ internal class PaginationNavItem : ContentControl,
                 SetupIconStatus(icon);
             }
         }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureTransitions();
     }
 
     private void SetupIconFillColors(Icon icon)

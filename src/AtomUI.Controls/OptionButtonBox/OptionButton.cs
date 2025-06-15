@@ -5,6 +5,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -139,7 +140,6 @@ public class OptionButton : AvaloniaRadioButton,
     {
         base.OnAttachedToVisualTree(e);
         HandleSizeTypeChanged();
-        ConfigureTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -287,5 +287,11 @@ public class OptionButton : AvaloniaRadioButton,
             Background,
             BorderBrush,
             default);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureTransitions();
     }
 }

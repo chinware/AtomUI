@@ -385,7 +385,6 @@ public class TreeViewItem : AvaloniaTreeItem,
 
         SetupSwitcherButtonIconMode();
         SetupCheckBoxEnabled();
-        ConfigureTransitions();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -596,7 +595,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         _frame  = e.NameScope.Find<Border>(TreeViewItemThemeConstants.FramePart);
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemThemeConstants.NodeSwitcherButtonPart);
         _itemsPresenterMotionActor = e.NameScope.Find<MotionActorControl>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
-        
+        ConfigureTransitions();
         if (_frame is not null)
         {
             _frame.PointerEntered += HandleFrameEntered;

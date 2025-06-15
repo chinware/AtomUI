@@ -1,5 +1,8 @@
 using System.Diagnostics;
+using AtomUI.Animations;
 using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Animation;
@@ -242,11 +245,12 @@ internal class DrawerContainer : ContentControl
                 }
 
                 _openAnimating         = true;
-                _motionActor.IsVisible = true;
+                _motionActor.Opacity = 0.0;
                 
                 LayoutHelper.MeasureChild(_motionActor, DesiredSize, new Thickness());
                 
                 var motion = BuildMotionByPlacement(Placement, MotionDuration, true);
+                
                 MotionInvoker.Invoke(_motionActor, motion, null,
                     () =>
                     {
@@ -299,6 +303,7 @@ internal class DrawerContainer : ContentControl
                 () =>
                 {
                     _closeAnimating = false;
+                    _motionActor.Opacity = 0.0;
                     moveAnimTaskSrc.SetResult();
                 });
             Dispatcher.UIThread.InvokeAsync(async () =>
@@ -377,13 +382,15 @@ internal class DrawerContainer : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _motionActor   = e.NameScope.Find<MotionActorControl>(DrawerContainerTheme.InfoContainerMotionActorPart);
-        _infoContainer = e.NameScope.Find<DrawerInfoContainer>(DrawerContainerTheme.InfoContainerPart);
+        _motionActor   = e.NameScope.Find<MotionActorControl>(DrawerContainerThemeConstants.InfoContainerMotionActorPart);
+        _infoContainer = e.NameScope.Find<DrawerInfoContainer>(DrawerContainerThemeConstants.InfoContainerPart);
         if (_infoContainer != null)
         {
             _infoContainer.CloseRequested -= HandleCloseRequested;
             _infoContainer.CloseRequested += HandleCloseRequested;
         }
+
+        ConfigureTransitions();
     }
 
     private void HandleCloseRequested(object? sender, EventArgs e)
@@ -438,6 +445,34 @@ internal class DrawerContainer : ContentControl
                 return;
             }
             _infoContainer.RenderTransform = _originInfoContainerTransform;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (this.IsAttachedToLogicalTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
+        }
+    }
+
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            Transitions ??= new Transitions()
+            {
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            };
+        }
+        else
+        {
+            Transitions?.Clear();
+            Transitions = null;
         }
     }
 }

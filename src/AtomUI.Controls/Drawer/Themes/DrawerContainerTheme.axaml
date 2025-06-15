@@ -1,0 +1,39 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:DrawerContainer}" TargetType="atom:DrawerContainer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="{x:Static atom:DrawerContainerThemeConstants.RootLayoutPart}">
+                    <Border Name="{x:Static atom:DrawerContainerThemeConstants.MaskPart}"
+                            IsVisible="{TemplateBinding IsShowMask}"
+                            Background="{TemplateBinding Background}" />
+                    <atom:MotionActorControl
+                        Name="{x:Static atom:DrawerContainerThemeConstants.InfoContainerMotionActorPart}"
+                        Opacity="0.0">
+                        <atom:DrawerInfoContainer
+                            Name="{x:Static atom:DrawerContainerThemeConstants.InfoContainerPart}" 
+                            Placement="{TemplateBinding Placement}"
+                            Title="{TemplateBinding Title}"
+                            Footer="{TemplateBinding Footer}"
+                            FooterTemplate="{TemplateBinding FooterTemplate}"
+                            Extra="{TemplateBinding Extra}"
+                            ExtraTemplate="{TemplateBinding ExtraTemplate}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                            DialogSize="{TemplateBinding DialogSize}"/>
+                    </atom:MotionActorControl>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="MotionDuration"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}" />
+        <Setter Property="MaskBgColor"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgMask}}" />
+        
+    </ControlTheme>
+</ResourceDictionary>
