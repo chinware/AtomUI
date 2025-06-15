@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -239,7 +240,7 @@ public class EmptyIndicator : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyIndicatorTheme.SvgImagePart);
+        _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyIndicatorThemeConstants.SvgImagePart);
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment   = VerticalAlignment.Center;
         CheckImageSource();

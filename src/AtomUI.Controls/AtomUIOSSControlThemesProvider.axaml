@@ -16,6 +16,7 @@
         <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
         <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" />
+        <ResourceInclude Source="EmptyIndicator/Themes/EmptyIndicatorTheme.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
