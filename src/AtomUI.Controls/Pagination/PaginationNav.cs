@@ -52,6 +52,7 @@ internal class PaginationNav : SelectingItemsControl,
 
     static PaginationNav()
     {
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<PaginationNav>(false);
         AffectsMeasure<PaginationNav>(SizeTypeProperty);
     }
 

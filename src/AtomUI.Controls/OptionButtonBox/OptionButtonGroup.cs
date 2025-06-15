@@ -126,6 +126,7 @@ public class OptionButtonGroup : SelectingItemsControl,
     {
         SelectionModeProperty.OverrideDefaultValue<OptionButtonGroup>(SelectionMode.Single |
                                                                       SelectionMode.AlwaysSelected);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<OptionButtonGroup>(false);
         ItemsPanelProperty.OverrideDefaultValue<OptionButtonGroup>(DefaultPanel);
         AffectsRender<OptionButtonGroup>(SelectionModeProperty);
 
