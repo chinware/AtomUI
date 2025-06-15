@@ -1504,17 +1504,4 @@ internal class Calendar : TemplatedControl
             }
         }
     }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        if (SelectedDate is not null)
-        {
-            if (DisplayDate.Year != SelectedDate.Value.Year ||
-                DisplayDate.Month != SelectedDate.Value.Month)
-            {
-                DisplayDate = SelectedDate.Value;
-            }
-        }
-    }
 }

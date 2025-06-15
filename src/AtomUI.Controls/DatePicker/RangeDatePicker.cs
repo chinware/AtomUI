@@ -142,6 +142,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
     protected override Flyout CreatePickerFlyout()
     {
         var flyout = new RangeDatePickerFlyout();
+        flyout.IsDetectMouseClickEnabled = false;
         BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, RangeDatePickerFlyout.IsMotionEnabledProperty);
         return flyout;
     }
@@ -392,20 +393,12 @@ public class RangeDatePicker : RangeInfoPickerInput,
                 {
                     Text = FormatDateTime(RangeStartSelectedDate.Value);
                 }
-                else
-                {
-                    ResetRangeStartDateValue();
-                }
             }
             else if (change.Property == RangeEndSelectedDateProperty)
             {
                 if (RangeEndSelectedDate.HasValue)
                 {
                     SecondaryText = FormatDateTime(RangeEndSelectedDate.Value);
-                }
-                else
-                {
-                    ResetRangeEndDateValue();
                 }
             }
         }
@@ -444,54 +437,22 @@ public class RangeDatePicker : RangeInfoPickerInput,
         }
     }
     
-     protected void ResetRangeStartDateValue()
-    {
-        if (_infoInputBox is not null)
-        {
-            if (RangeStartDefaultDate is not null)
-            {
-                _infoInputBox.Text = FormatDateTime(RangeStartDefaultDate.Value);
-            }
-            else
-            {
-                _infoInputBox.Clear();
-            }
-        }
-    }
-    
-    protected void ResetRangeEndDateValue()
-    {
-        if (_secondaryInfoInputBox is not null)
-        {
-            if (RangeEndDefaultDate is not null)
-            {
-                _secondaryInfoInputBox.Text = FormatDateTime(RangeEndDefaultDate.Value);;
-            }
-            else
-            {
-                _secondaryInfoInputBox.Clear();
-            }
-        }
-    }
-    
     protected override void HandleRangeActivatedPartChanged()
     {
         SetupPickerIndicatorPosition();
         if (RangeActivatedPart == RangeActivatedPart.Start)
         {
-            _infoInputBox!.Focus();
             if (RangeEndSelectedDate is null)
             {
-                ResetRangeStartDateValue();
+                _infoInputBox?.Clear();
             }
             _pickerPresenter?.NotifySelectRangeStart(true);
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
         {
-            _secondaryInfoInputBox!.Focus();
             if (RangeStartSelectedDate is null)
             {
-                ResetRangeEndDateValue();
+                _secondaryInfoInputBox?.Clear();
             }
             _pickerPresenter?.NotifySelectRangeStart(false);
         }
@@ -499,12 +460,12 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             if (RangeStartSelectedDate is null)
             {
-                ResetRangeStartDateValue();
+                _infoInputBox?.Clear();
             }
     
             if (RangeEndSelectedDate is null)
             {
-                ResetRangeEndDateValue();
+                _secondaryInfoInputBox?.Clear();
             }
         }
     }
@@ -563,5 +524,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             SetValue(InfoIconProperty, AntDesignIconPackage.CalendarOutlined(), BindingPriority.Template);
         }
+        Text = FormatDateTime(RangeStartSelectedDate);
+        SecondaryText = FormatDateTime(RangeEndSelectedDate);
     }
 }

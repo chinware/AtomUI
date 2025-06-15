@@ -64,11 +64,11 @@
                                         Grid.Column="2" />
 
                                     <atom:IconButton
-                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextButtonPart}"
+                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextMonthButtonPart}"
                                         Icon="{atom:IconProvider RightOutlined}"
                                         Grid.Column="3" />
                                     <atom:IconButton
-                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextMonthButtonPart}"
+                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextButtonPart}"
                                         Icon="{atom:IconProvider DoubleRightOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="4" />

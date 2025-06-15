@@ -163,6 +163,7 @@ public class DatePicker : InfoPickerInput,
     protected override Flyout CreatePickerFlyout()
     {
         var flyout = new DatePickerFlyout();
+        flyout.IsDetectMouseClickEnabled = false;
         BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerFlyout.IsMotionEnabledProperty);
         return flyout;
     }

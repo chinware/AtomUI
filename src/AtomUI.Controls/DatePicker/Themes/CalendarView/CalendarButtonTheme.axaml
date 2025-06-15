@@ -37,7 +37,6 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-        <Setter Property="Width" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellWidth}}" />
         <Setter Property="Height" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellHeight}}" />
         <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellMargin}}" />
 

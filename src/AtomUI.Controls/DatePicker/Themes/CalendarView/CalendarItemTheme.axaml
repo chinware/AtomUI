@@ -22,10 +22,10 @@
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousButtonPart}"
                                     Icon="{atom:IconProvider DoubleLeftOutlined}"
-                                    IsVisible="{TemplateBinding IsMonthViewMode}"
                                     Grid.Column="0" />
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousMonthButtonPart}"
+                                    IsVisible="{TemplateBinding IsMonthViewMode}"
                                     Icon="{atom:IconProvider LeftOutlined}"
                                     Grid.Column="1" />
 
@@ -37,11 +37,12 @@
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextMonthButtonPart}"
                                     Icon="{atom:IconProvider RightOutlined}"
+                                    IsVisible="{TemplateBinding IsMonthViewMode}"
                                     Grid.Column="3" />
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextButtonPart}"
                                     Icon="{atom:IconProvider DoubleRightOutlined}"
-                                    IsVisible="{TemplateBinding IsMonthViewMode}"
+                                  
                                     Grid.Column="4" />
                             </Grid>
                         </UniformGrid>

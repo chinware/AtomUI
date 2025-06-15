@@ -24,10 +24,20 @@ public class FlyoutPresenterCreatedEventArgs : EventArgs
     }
 }
 
+public class FlyoutPopupCreatedEventArgs : EventArgs
+{
+    public Popup Popup { get; }
+
+    public FlyoutPopupCreatedEventArgs(Popup popup)
+    {
+        Popup = popup;
+    }
+}
+
 /// <summary>
 /// 最基本得弹窗 Flyout，在这里不处理那种带箭头得
 /// </summary>
-public abstract class PopupFlyoutBase : FlyoutBase, 
+public abstract class PopupFlyoutBase : FlyoutBase,
                                         IPopupHostProvider
 {
     #region 公共属性定义
@@ -176,6 +186,8 @@ public abstract class PopupFlyoutBase : FlyoutBase,
         add => _popupHostChangedHandler += value;
         remove => _popupHostChangedHandler -= value;
     }
+    
+    public event EventHandler<FlyoutPopupCreatedEventArgs>? PopupCreated;
 
     public event EventHandler<CancelEventArgs>? Closing;
     public event EventHandler? Opening;
@@ -207,6 +219,7 @@ public abstract class PopupFlyoutBase : FlyoutBase,
         BindUtils.RelayBind(this, MarginToAnchorProperty, popup);
         BindUtils.RelayBind(this, IsDetectMouseClickEnabledProperty, popup, Popup.IsDetectMouseClickEnabledProperty);
         BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
+        PopupCreated?.Invoke(this, new FlyoutPopupCreatedEventArgs(popup));
     }
 
     protected internal virtual void NotifyPositionPopup(bool showAtPointer)

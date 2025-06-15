@@ -394,6 +394,10 @@ internal class DatePickerPresenter : PickerPresenterBase,
 
     protected override void OnConfirmed()
     {
+        if (_calendarView is not null)
+        {
+            _calendarView.SelectedDate = SelectedDateTime;
+        }
         EmitChoosingStatueChanged(false);
         base.OnConfirmed();
     }
