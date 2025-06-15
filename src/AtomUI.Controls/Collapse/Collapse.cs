@@ -138,6 +138,7 @@ public class Collapse : SelectingItemsControl,
     {
         SelectionModeProperty.OverrideDefaultValue<Collapse>(SelectionMode.Multiple | SelectionMode.Toggle);
         ItemsPanelProperty.OverrideDefaultValue<Collapse>(DefaultPanel);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<Collapse>(false);
         AffectsRender<Collapse>(SelectionModeProperty);
     }
 

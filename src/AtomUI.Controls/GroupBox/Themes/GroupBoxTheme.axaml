@@ -1,0 +1,85 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:GroupBox}" TargetType="atom:GroupBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:GroupBoxThemeConstants.FramePart}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <DockPanel LastChildFill="True">
+                        <Panel Name="{x:Static atom:GroupBoxThemeConstants.HeaderContainerPart}"
+                               DockPanel.Dock="Top">
+                            <Decorator Name="{x:Static atom:GroupBoxThemeConstants.HeaderContentPart}"
+                                       VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <atom:IconPresenter
+                                        Name="{x:Static atom:GroupBoxThemeConstants.HeaderIconPresenterPart}"
+                                        IsVisible="{TemplateBinding HeaderIcon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                        Icon="{TemplateBinding HeaderIcon}" />
+                                    <atom:TextBlock Name="{x:Static atom:GroupBoxThemeConstants.HeaderPresenterPart}"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    Text="{TemplateBinding HeaderTitle}"
+                                                    FontSize="{TemplateBinding HeaderFontSize}"
+                                                    Foreground="{TemplateBinding HeaderTitleColor}"
+                                                    FontStyle="{TemplateBinding HeaderFontStyle}"
+                                                    FontWeight="{TemplateBinding HeaderFontWeight}" />
+                                </StackPanel>
+                            </Decorator>
+                        </Panel>
+
+                        <ContentPresenter Name="{x:Static atom:GroupBoxThemeConstants.ContentPresenterPart}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        <Setter Property="HeaderTitleColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        <Setter Property="HeaderFontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+
+        <Style Selector="^ /template/ Panel#PART_HeaderContainer">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:GroupBoxTokenKey.HeaderContainerMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ Decorator#PART_HeaderContent">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:GroupBoxTokenKey.HeaderContentPadding}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_HeaderIconPresenter">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:GroupBoxTokenKey.HeaderIconMargin}}" />
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:GroupBoxTokenKey.ContentPadding}}" />
+        </Style>
+
+        <Style Selector="^[HeaderTitlePosition=Left]">
+            <Style Selector="^ /template/ Decorator#PART_HeaderContent">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[HeaderTitlePosition=Center]">
+            <Style Selector="^ /template/ Decorator#PART_HeaderContent">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[HeaderTitlePosition=Right]">
+            <Style Selector="^ /template/ Decorator#PART_HeaderContent">
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

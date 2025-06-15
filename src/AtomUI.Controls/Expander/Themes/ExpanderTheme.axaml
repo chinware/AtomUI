@@ -1,0 +1,256 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type atom:Expander}" TargetType="atom:Expander">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:ExpanderThemeConstants.FramePart}"
+                        ClipToBounds="True"
+                        BorderThickness="{TemplateBinding EffectiveBorderThickness}">
+                    <DockPanel Name="{x:Static atom:ExpanderThemeConstants.MainLayoutPart}"
+                               LastChildFill="True">
+                        <LayoutTransformControl Name="{x:Static atom:ExpanderThemeConstants.HeaderLayoutTransformPart}">
+                            <Border Name="{x:Static atom:ExpanderThemeConstants.HeaderDecoratorPart}"
+                                    BorderThickness="{TemplateBinding HeaderBorderThickness}">
+                                <Grid Name="{x:Static atom:ExpanderThemeConstants.HeaderLayoutPart}"
+                                      ColumnDefinitions="Auto, *, Auto, Auto">
+                                    <atom:IconButton
+                                        Name="{x:Static atom:ExpanderThemeConstants.ExpandButtonPart}"
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Icon="{TemplateBinding ExpandIcon}"
+                                        IsVisible="{TemplateBinding IsShowExpandIcon}"
+                                        IsEnabled="{TemplateBinding IsEnabled}" />
+                                    <ContentPresenter Name="{x:Static atom:ExpanderThemeConstants.HeaderPresenterPart}"
+                                                      HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Center"
+                                                      HorizontalContentAlignment="Left"
+                                                      VerticalContentAlignment="Center"
+                                                      Margin="0, 1, 0, 0"
+                                                      Content="{TemplateBinding Header, Converter={StaticResource StringToTextBlockConverter}}"
+                                                      ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                      Grid.Column="1" />
+                                    <ContentPresenter
+                                        Name="{x:Static atom:ExpanderThemeConstants.AddOnContentPresenterPart}"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        HorizontalContentAlignment="Left"
+                                        VerticalContentAlignment="Center"
+                                        Content="{TemplateBinding AddOnContent}"
+                                        ContentTemplate="{TemplateBinding AddOnContentTemplate}"
+                                        Grid.Column="2" />
+                                </Grid>
+                            </Border>
+                        </LayoutTransformControl>
+
+                        <atom:MotionActorControl Name="{x:Static atom:ExpanderThemeConstants.ContentMotionActorPart}"
+                                                 IsVisible="False">
+                            <ContentPresenter Name="{x:Static atom:ExpanderThemeConstants.ContentPresenterPart}"
+                                              Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </atom:MotionActorControl>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}" />
+
+        <Style Selector="^ /template/ Border#PART_Frame">
+            <Setter Property="CornerRadius"
+                    Value="{DynamicResource {x:Static atom:ExpanderTokenKey.ExpanderBorderRadius}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ExpanderTokenKey.HeaderBg}}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextHeading}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="DisabledIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+
+        <Style Selector="^[IsExpanded=True]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+            </Style>
+        </Style>
+
+        <!-- ExpandButtonPosition style begin -->
+        <Style Selector="^[ExpandIconPosition=Start]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="Grid.Column" Value="0" />
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:ExpanderTokenKey.LeftExpandButtonHMargin}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ExpandIconPosition=End]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="Grid.Column" Value="3" />
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:ExpanderTokenKey.RightExpandButtonHMargin}}" />
+            </Style>
+        </Style>
+        <!-- ExpandButtonPosition style end -->
+
+        <!-- BuildExpandDirection style begin -->
+        <Style Selector="^:up">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Style Selector="^ /template/ LayoutTransformControl#PART_HeaderLayoutTransform">
+                <Setter Property="DockPanel.Dock" Value="Bottom" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:down">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Style Selector="^ /template/ LayoutTransformControl#PART_HeaderLayoutTransform">
+                <Setter Property="DockPanel.Dock" Value="Top" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:left">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Style Selector="^ /template/ LayoutTransformControl#PART_HeaderLayoutTransform">
+                <Setter Property="DockPanel.Dock" Value="Right" />
+                <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:right">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Style Selector="^ /template/ LayoutTransformControl#PART_HeaderLayoutTransform">
+                <Setter Property="DockPanel.Dock" Value="Left" />
+                <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+            </Style>
+        </Style>
+        <!-- BuildExpandDirection style end -->
+
+        <!-- selected style begin -->
+        <Style Selector="^:expanded">
+            <Style Selector="^:up">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:down">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="RenderTransform" Value="rotate(90deg)" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:left">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="RenderTransform" Value="rotate(90deg)" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:right">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+                </Style>
+            </Style>
+        </Style>
+        <!-- selected style end -->
+
+        <!-- SizeType style begin -->
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:ExpanderTokenKey.HeaderPaddingLG}}" />
+                <Setter Property="TextElement.FontSize"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+                <Setter Property="TextBlock.LineHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:ExpanderTokenKey.ContentPaddingLG}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ExpanderTokenKey.HeaderPadding}}" />
+                <Setter Property="TextElement.FontSize"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+                <Setter Property="TextBlock.LineHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ExpanderTokenKey.ContentPadding}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:ExpanderTokenKey.HeaderPaddingSM}}" />
+                <Setter Property="TextElement.FontSize"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+                <Setter Property="TextBlock.LineHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:ExpanderTokenKey.ContentPaddingSM}}" />
+            </Style>
+        </Style>
+
+        <!-- SizeType style end -->
+        
+        <!-- Trigger style begin -->
+        <Style Selector="^[TriggerType=Header]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TriggerType=Icon]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+        </Style>
+        <!-- Trigger style end -->
+        
+        <Style Selector="^[IsBorderless=True]">
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:ExpanderTokenKey.HeaderBg}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsGhostStyle=True]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:ExpanderTokenKey.ContentBg}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator ContentPresenter">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

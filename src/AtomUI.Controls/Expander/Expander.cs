@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -9,8 +11,10 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -34,17 +38,17 @@ public enum ExpanderIconPosition
     End
 }
 
+[PseudoClasses(
+    ExpanderPseudoClass.Expanded,
+    ExpanderPseudoClass.ExpandUp, 
+    ExpanderPseudoClass.ExpandDown,
+    ExpanderPseudoClass.ExpandLeft,
+    ExpanderPseudoClass.ExpandRight)]
 public class Expander : AvaloniaExpander,
                         IMotionAwareControl,
                         IControlSharedTokenResourcesHost,
                         IResourceBindingManager
 {
-    public const string ExpandedPC = ":expanded";
-    public const string ExpandUpPC = ":up";
-    public const string ExpandDownPC = ":down";
-    public const string ExpandLeftPC = ":left";
-    public const string ExpandRightPC = ":right";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -221,16 +225,15 @@ public class Expander : AvaloniaExpander,
             BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
-        SetupDefaultIcon();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         this.RunThemeResourceBindingActions();
-        _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderTheme.ContentMotionActorPart);
-        _headerDecorator = e.NameScope.Find<Border>(ExpanderTheme.HeaderDecoratorPart);
-        _expandButton    = e.NameScope.Find<IconButton>(ExpanderTheme.ExpandButtonPart);
+        _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderThemeConstants.ContentMotionActorPart);
+        _headerDecorator = e.NameScope.Find<Border>(ExpanderThemeConstants.HeaderDecoratorPart);
+        _expandButton    = e.NameScope.Find<IconButton>(ExpanderThemeConstants.ExpandButtonPart);
 
         _tempAnimationDisabled = true;
         HandleExpandedChanged();
@@ -247,6 +250,8 @@ public class Expander : AvaloniaExpander,
                 IsExpanded = !IsExpanded;
             };
         }
+        SetupDefaultIcon();
+        ConfigureTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -256,37 +261,19 @@ public class Expander : AvaloniaExpander,
         {
             if (change.Property == AddOnContentProperty)
             {
-                if (change.OldValue is Control oldControl)
-                {
-                    oldControl.SetTemplatedParent(null);
-                }
-
-                if (change.NewValue is Control newControl)
-                {
-                    newControl.SetTemplatedParent(this);
-                }
-
                 SetupDefaultIcon();
             }
             else if (change.Property == IsBorderlessProperty)
             {
                 SetupEffectiveBorderThickness();
             }
+            else if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
         }
         
-        if (change.Property == ExpandIconProperty)
-        {
-            if (change.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-        }
-        else if (change.Property == IsExpandedProperty)
+        if (change.Property == IsExpandedProperty)
         {
             HandleExpandedChanged();
         }
@@ -296,18 +283,6 @@ public class Expander : AvaloniaExpander,
                  change.Property == ExpandDirectionProperty)
         {
             SetupExpanderBorderThickness();
-        }
-        else if (change.Property == AddOnContentProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                oldControl.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Control newControl)
-            {
-                newControl.SetTemplatedParent(this);
-            }
         }
     }
 
@@ -319,7 +294,6 @@ public class Expander : AvaloniaExpander,
             SetValue(ExpandIconProperty, AntDesignIconPackage.RightOutlined(), BindingPriority.Template);
         }
         Debug.Assert(ExpandIcon is not null);
-        ExpandIcon.SetTemplatedParent(this);
     }
 
     private void SetupExpanderBorderThickness()
@@ -441,6 +415,28 @@ public class Expander : AvaloniaExpander,
         else
         {
             EffectiveBorderThickness = BorderThickness;
+        }
+    }
+    
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            if (_expandButton != null)
+            {
+                _expandButton.Transitions ??= new Transitions()
+                {
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                };
+            }
+        }
+        else
+        {
+            if (_expandButton != null)
+            {
+                _expandButton.Transitions?.Clear();
+                _expandButton.Transitions = null;
+            }
         }
     }
 }
