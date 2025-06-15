@@ -20,7 +20,6 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
-
 [TemplatePart(CalendarItemThemeConstants.HeaderButtonPart, typeof(AvaloniaButton))]
 [TemplatePart(CalendarItemThemeConstants.MonthViewPart, typeof(Grid))]
 [TemplatePart(CalendarItemThemeConstants.NextMonthButtonPart, typeof(AvaloniaButton))]
@@ -65,10 +64,25 @@ internal class CalendarItem : TemplatedControl,
 
     #region 内部属性定义
     
+    internal static readonly DirectProperty<CalendarItem, bool> IsMonthViewModeProperty =
+        AvaloniaProperty.RegisterDirect<CalendarItem, bool>(nameof(IsMonthViewMode),
+            o => o.IsMonthViewMode,
+            (o, v) => o.IsMonthViewMode = v);
+    
     public static readonly StyledProperty<GridLength> DayTitleHeightProperty =
         AvaloniaProperty.Register<CalendarItem, GridLength>(
             nameof(DayTitleHeight));
 
+    /// <summary>
+    /// 主要方便在模板中控制导航按钮的显示和关闭
+    /// </summary>
+    internal bool IsMonthViewMode
+    {
+        get => _isMonthViewMode;
+        set => SetAndRaise(IsMonthViewModeProperty, ref _isMonthViewMode, value);
+    }
+    private bool _isMonthViewMode = true;
+    
     public GridLength DayTitleHeight
     {
         get => GetValue(DayTitleHeightProperty);
@@ -243,6 +257,7 @@ internal class CalendarItem : TemplatedControl,
     protected IconButton? _nextMonthButton;
     protected IconButton? _previousButton;
     protected IconButton? _previousMonthButton;
+    protected Grid? _headerLayout;
 
     internal Calendar? Owner { get; set; }
     internal CalendarDayButton? CurrentButton { get; set; }
@@ -366,7 +381,8 @@ internal class CalendarItem : TemplatedControl,
         NextMonthButton     = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.NextMonthButtonPart);
         MonthView           = e.NameScope.Find<Grid>(CalendarItemThemeConstants.MonthViewPart);
         YearView            = e.NameScope.Find<Grid>(CalendarItemThemeConstants.YearViewPart);
-
+        _headerLayout       = e.NameScope.Get<Grid>(CalendarItemThemeConstants.HeaderLayoutPart);
+        
         if (Owner != null)
         {
             UpdateDisabled(Owner.IsEnabled);
@@ -413,7 +429,17 @@ internal class CalendarItem : TemplatedControl,
                 YearView.IsVisible  = false;
             }
         }
-        this.RunThemeResourceBindingActions();
+        SetupHeaderForDisplayModeChanged();
+    }
+    
+    protected virtual void SetupHeaderForDisplayModeChanged()
+    {
+        if (Owner is null || MonthView is null || _headerLayout is null)
+        {
+            return;
+        }
+
+        IsMonthViewMode = Owner.DisplayMode == CalendarMode.Month;
     }
 
     protected void SetDayTitles()
@@ -974,6 +1000,7 @@ internal class CalendarItem : TemplatedControl,
                     Owner.SelectedYear = new DateTime(d.Year, d.Month, 1);
                     Owner.DisplayMode  = CalendarMode.Decade;
                 }
+                SetupHeaderForDisplayModeChanged();
             }
         }
     }
@@ -1332,6 +1359,7 @@ internal class CalendarItem : TemplatedControl,
                 Owner.SelectedMonth = newMonth;
                 Owner.DisplayMode   = CalendarMode.Year;
             }
+            SetupHeaderForDisplayModeChanged();
         }
     }
 

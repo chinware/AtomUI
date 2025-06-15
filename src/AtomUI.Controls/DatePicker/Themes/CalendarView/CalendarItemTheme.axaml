@@ -6,7 +6,7 @@
     x:Class="AtomUI.Controls.Themes.CalendarItemTheme"
     TargetType="calendarView:CalendarItem">
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="calendarView:CalendarItem">
             <Border
                 Name="{x:Static atom:DatePickerCalendarItemThemeConstants.ItemFramePart}"
                 MinWidth="{TemplateBinding MinWidth}"

@@ -21,6 +21,7 @@
                             <atom:IconButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.PreviousMonthButtonPart}"
                                 Icon="{atom:IconProvider LeftOutlined}"
+                                IsVisible="{TemplateBinding IsMonthViewMode}"
                                 Grid.Column="1" />
                             <atom:HeadTextButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.HeaderButtonPart}"
@@ -28,6 +29,7 @@
                             <atom:IconButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.NextMonthButtonPart}"
                                 Icon="{atom:IconProvider RightOutlined}"
+                                IsVisible="{TemplateBinding IsMonthViewMode}"
                                 Grid.Column="3" />
                             <atom:IconButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.NextButtonPart}"
@@ -42,35 +44,35 @@
                                 <RowDefinition
                                     Height="{Binding (atom:CalendarItem.DayTitleHeight), RelativeSource={RelativeSource Self},
                                     Converter={StaticResource DoubleToGridLengthConverter}}" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                         </Grid>
                         <Grid Name="{x:Static atom:CalendarItemThemeConstants.YearViewPart}"
                               IsVisible="False">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                         </Grid>
                     </DockPanel>
