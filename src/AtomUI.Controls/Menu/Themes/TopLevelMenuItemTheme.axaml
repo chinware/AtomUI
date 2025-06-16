@@ -1,0 +1,133 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="TopLevelMenuItemTheme" TargetType="atom:MenuItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <ContentPresenter Name="{x:Static atom:TopLevelMenuItemThemeConstants.HeaderPresenterPart}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Center"
+                                      RecognizesAccessKey="True"
+                                      Content="{TemplateBinding Header}"
+                                      ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      Padding="{TemplateBinding Padding}"
+                                      MinHeight="{TemplateBinding MinHeight}"
+                                      FontSize="{TemplateBinding FontSize}" />
+                    <atom:Popup Name="{x:Static atom:TopLevelMenuItemThemeConstants.PopupPart}"
+                                WindowManagerAddShadowHint="False"
+                                IsLightDismissEnabled="False"
+                                Placement="BottomEdgeAlignedLeft"
+                                IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                        <Border Name="{x:Static atom:TopLevelMenuItemThemeConstants.PopupFramePart}">
+                            <atom:MenuScrollViewer
+                                IsScrollChainingEnabled="False">
+                                <ItemsPresenter
+                                    Name="{x:Static atom:TopLevelMenuItemThemeConstants.ItemsPresenterPart}"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}"
+                                    Grid.IsSharedSizeScope="True"
+                                    KeyboardNavigation.TabNavigation="Continue" />
+                            </atom:MenuScrollViewer>
+                        </Border>
+                    </atom:Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:toplevel">
+            <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemHoverBg}}" />
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemHoverColor}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[IsSubMenuOpen=True]">
+                <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemHoverBg}}" />
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemHoverColor}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="CornerRadius"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemBorderRadiusLG}}" />
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemPaddingLG}}" />
+                <Setter Property="FontSize"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemFontSizeLG}}" />
+                <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                    <Setter Property="LineHeight"
+                            Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemLineHeightLG}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="CornerRadius"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemBorderRadius}}" />
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemPadding}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemFontSize}}" />
+                <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                    <Setter Property="LineHeight"
+                            Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemLineHeight}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="CornerRadius"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemBorderRadiusSM}}" />
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemPaddingSM}}" />
+                <Setter Property="FontSize"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemFontSizeSM}}" />
+                <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                    <Setter Property="LineHeight"
+                            Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemLineHeightSM}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_PopupFrame">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+                <Setter Property="CornerRadius"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
+                <Setter Property="MinWidth"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
+                <Setter Property="MaxWidth"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
+                <Setter Property="MinHeight"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinHeight}}" />
+                <Setter Property="MaxHeight"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupContentPadding}}" />
+            </Style>
+
+            <Style Selector="^ /template/ atom|Popup#PART_Popup">
+                <Setter Property="MarginToAnchor"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemPopupMarginToAnchor}}" />
+                <Setter Property="MaskShadows"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBoxShadows}}" />
+            </Style>
+
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

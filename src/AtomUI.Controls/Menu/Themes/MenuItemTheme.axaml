@@ -1,0 +1,182 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="clr-namespace:Avalonia.Controls.Converters;assembly=Avalonia.Controls">
+    <atom:ToggleItemsLayoutVisibleConverter x:Key="ToggleItemsLayoutVisibleConverter" />
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <converters:PlatformKeyGestureConverter x:Key="KeyGestureConverter" />
+    <ControlTheme x:Key="{x:Type atom:MenuItem}" TargetType="atom:MenuItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="{x:Static atom:MenuItemThemeConstants.ItemDecoratorPart}">
+                        <Grid Name="{x:Static atom:MenuItemThemeConstants.MainContainerPart}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ToggleItemsLayout" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="IconPresenter" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="InputGestureText" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuIndicatorIcon" />
+                            </Grid.ColumnDefinitions>
+
+                            <Panel Name="{x:Static atom:MenuItemThemeConstants.ToggleItemsLayoutPart}"
+                                   Grid.Column="0"
+                                   IsEnabled="{TemplateBinding IsEnabled}">
+                                <Panel.IsVisible>
+                                    <MultiBinding Converter="{StaticResource ToggleItemsLayoutVisibleConverter}">
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsTopLevel" />
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ToggleType" />
+                                    </MultiBinding>
+                                </Panel.IsVisible>
+                                <atom:CheckBox Name="{x:Static atom:MenuItemThemeConstants.ToggleCheckboxPart}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               IsChecked="{TemplateBinding IsChecked}"
+                                               IsVisible="False" />
+                                <atom:RadioButton Name="{x:Static atom:MenuItemThemeConstants.ToggleRadioPart}"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  GroupName="{TemplateBinding GroupName}"
+                                                  IsVisible="False" />
+                            </Panel>
+
+                            <atom:IconPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemIconPresenterPart}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Icon="{TemplateBinding Icon}"
+                                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                Grid.Column="1" />
+                            <ContentPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemTextPresenterPart}"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding Header, Converter={StaticResource StringToTextBlockConverter}}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              Grid.Column="2" />
+                            <atom:TextBlock Name="{x:Static atom:MenuItemThemeConstants.InputGestureTextPart}"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Right"
+                                            Text="{TemplateBinding InputGesture, Converter={StaticResource KeyGestureConverter}}"
+                                            Grid.Column="3" />
+
+                            <atom:Icon Name="{x:Static atom:MenuItemThemeConstants.MenuIndicatorIconPart}"
+                                       IconInfo="{atom:IconInfoProvider RightOutlined}"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       Grid.Column="4" />
+                        </Grid>
+                    </Border>
+                    <atom:Popup Name="{x:Static atom:MenuItemThemeConstants.PopupPart}"
+                                WindowManagerAddShadowHint="False"
+                                IsLightDismissEnabled="False"
+                                Placement="RightEdgeAlignedTop"
+                                IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                        <Border Name="{x:Static atom:MenuItemThemeConstants.PopupFramePart}">
+                            <atom:MenuScrollViewer IsScrollChainingEnabled="False">
+                                <ItemsPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemsPresenterPart}"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                Grid.IsSharedSizeScope="True" />
+                            </atom:MenuScrollViewer>
+                        </Border>
+                    </atom:Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Cursor" Value="Hand" />
+
+        <Style Selector="^[ToggleType=None]">
+            <Style Selector="^ /template/ atom|CheckBox#PART_ToggleCheckbox">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|RadioButton#PART_ToggleRadio">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+        <Style Selector="^[ToggleType=CheckBox]">
+            <Style Selector="^ /template/ atom|CheckBox#PART_ToggleCheckbox">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ToggleType=Radio]">
+            <Style Selector="^ /template/ atom|RadioButton#PART_ToggleRadio">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ Panel#PART_ToggleItemsLayout">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|TextBlock#PART_InputGestureText">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.KeyGestureColor}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_ItemTextPresenter">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#PART_ItemDecorator">
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemPaddingInline}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBg}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBorderRadius}}" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverColor}}" />
+            <Style Selector="^ /template/ Border#PART_ItemDecorator">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverBg}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|Icon#PART_MenuIndicatorIcon">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
+        </Style>
+
+        <Style Selector="^:empty">
+            <Style Selector="^ /template/ atom|Icon#PART_MenuIndicatorIcon">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Border#PART_PopupFrame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
+            <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinHeight}}" />
+            <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupContentPadding}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|Popup#PART_Popup">
+            <Setter Property="MarginToAnchor" Value="{DynamicResource {x:Static atom:MenuTokenKey.TopLevelItemPopupMarginToAnchor}}" />
+            <Setter Property="MaskShadows" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBoxShadows}}" />
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

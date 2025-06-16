@@ -15,15 +15,11 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.CardTabStripItemTheme());
             themes.Add(new AtomUI.Controls.CardTabStripTheme());
             themes.Add(new AtomUI.Controls.CircleProgressTheme());
-            themes.Add(new AtomUI.Controls.ContextMenuTheme());
             themes.Add(new AtomUI.Controls.DashboardProgressTheme());
             themes.Add(new AtomUI.Controls.HorizontalNavMenuTheme());
             themes.Add(new AtomUI.Controls.HyperLinkTextBlockTheme());
             themes.Add(new AtomUI.Controls.InlineNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.MenuFlyoutPresenterTheme());
-            themes.Add(new AtomUI.Controls.MenuItemTheme());
-            themes.Add(new AtomUI.Controls.MenuScrollViewerTheme());
-            themes.Add(new AtomUI.Controls.MenuSeparatorTheme());
             themes.Add(new AtomUI.Controls.MenuTheme());
             themes.Add(new AtomUI.Controls.MessageCardTheme());
             themes.Add(new AtomUI.Controls.NavMenuItemTheme());
@@ -45,7 +41,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.TimelineItemTheme());
             themes.Add(new AtomUI.Controls.TimelineTheme());
             themes.Add(new AtomUI.Controls.TopLevelHorizontalNavMenuItemTheme());
-            themes.Add(new AtomUI.Controls.TopLevelMenuItemTheme());
             themes.Add(new AtomUI.Controls.VerticalNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.VerticalNavMenuTheme());
             themes.Add(new AtomUI.Controls.WindowMessageManagerTheme());

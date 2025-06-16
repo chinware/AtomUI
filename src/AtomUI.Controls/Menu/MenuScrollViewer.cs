@@ -1,18 +1,24 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
+using AtomUI.Animations;
+using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 using AvaloniaScrollViewer = ScrollViewer;
 
-[TemplatePart(MenuScrollViewerTheme.ScrollDownButtonPart, typeof(IconButton))]
-[TemplatePart(MenuScrollViewerTheme.ScrollUpButtonPart, typeof(IconButton))]
-[TemplatePart(MenuScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
+[TemplatePart(MenuScrollViewerThemeConstants.ScrollDownButtonPart, typeof(IconButton))]
+[TemplatePart(MenuScrollViewerThemeConstants.ScrollUpButtonPart, typeof(IconButton))]
+[TemplatePart(MenuScrollViewerThemeConstants.ScrollViewContentPart, typeof(ScrollContentPresenter))]
 public class MenuScrollViewer : AvaloniaScrollViewer
 {
     private IconButton? _scrollUpButton;
@@ -34,10 +40,11 @@ public class MenuScrollViewer : AvaloniaScrollViewer
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _scrollUpButton   = e.NameScope.Find<IconButton>(MenuScrollViewerTheme.ScrollUpButtonPart);
-        _scrollDownButton = e.NameScope.Find<IconButton>(MenuScrollViewerTheme.ScrollDownButtonPart);
+        _scrollUpButton   = e.NameScope.Find<IconButton>(MenuScrollViewerThemeConstants.ScrollUpButtonPart);
+        _scrollDownButton = e.NameScope.Find<IconButton>(MenuScrollViewerThemeConstants.ScrollDownButtonPart);
 
         SetupScrollButtonVisibility();
+        ConfigureTransitions();
     }
     
     private void SetupScrollButtonVisibility()
@@ -75,6 +82,34 @@ public class MenuScrollViewer : AvaloniaScrollViewer
             change.Property == ViewportProperty)
         {
             SetupScrollButtonVisibility();
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            ConfigureTransitions();
+        }
+    }
+    
+    private void ConfigureTransitions()
+    {
+        Debug.Assert(_scrollDownButton != null && _scrollUpButton != null);
+        if (IsMotionEnabled)
+        {
+            _scrollDownButton.Transitions ??= new Transitions()
+            {
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            };
+            _scrollUpButton.Transitions ??= new Transitions()
+            {
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            };
+        }
+        else
+        {
+            _scrollDownButton.Transitions?.Clear();
+            _scrollDownButton.Transitions = null;
+            _scrollUpButton.Transitions?.Clear();
+            _scrollUpButton.Transitions = null;
         }
     }
 }

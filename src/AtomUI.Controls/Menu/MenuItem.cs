@@ -1,10 +1,16 @@
-﻿using AtomUI.Data;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Reflection;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -41,33 +47,42 @@ public class MenuItem : AvaloniaMenuItem
 
     #endregion
 
-    internal static PlatformKeyGestureConverter KeyGestureConverter = new();
-
+    private Border? _itemDecorator;
+    private ContentPresenter? _headerPresenterPart;
+    
     static MenuItem()
     {
         AffectsRender<MenuItem>(BackgroundProperty);
         AffectsMeasure<MenuItem>(IconProperty);
     }
     
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == ParentProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == ParentProperty)
         {
             UpdatePseudoClasses();
         }
-
-        if (e.Property == IconProperty)
+        
+        if (change.Property == IconProperty)
         {
-            if (e.OldValue is Icon oldIcon)
+            if (change.OldValue is Icon oldIcon)
             {
                 oldIcon.SetTemplatedParent(null);
             }
 
-            if (e.NewValue is Icon newIcon)
+            if (change.NewValue is Icon newIcon)
             {
                 LogicalChildren.Remove(newIcon);
                 newIcon.SetTemplatedParent(this);
+            }
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
             }
         }
     }
@@ -88,9 +103,52 @@ public class MenuItem : AvaloniaMenuItem
         base.PrepareContainerForItemOverride(container, item, index);
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnApplyTemplate(e);
+        _itemDecorator       = e.NameScope.Find<Border>(MenuItemThemeConstants.ItemDecoratorPart);
+        _headerPresenterPart = e.NameScope.Find<ContentPresenter>(TopLevelMenuItemThemeConstants.HeaderPresenterPart);
         UpdatePseudoClasses();
+        ConfigureTransitions();
+    }
+    
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            if (_itemDecorator != null)
+            {
+                _itemDecorator.Transitions ??= new Transitions()
+                {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                };
+            }
+
+            if (IsTopLevel)
+            {
+                if (_headerPresenterPart != null)
+                {
+                    _headerPresenterPart.Transitions ??= new Transitions()
+                    {
+                        TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty),
+                        TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)
+                    };
+                }
+            }
+        }
+        else
+        {
+            if (_itemDecorator != null)
+            {
+                _itemDecorator.Transitions?.Clear();
+                _itemDecorator.Transitions = null;
+            }
+
+            if (_headerPresenterPart != null)
+            {
+                _headerPresenterPart.Transitions?.Clear();
+                _headerPresenterPart.Transitions = null;
+            }
+        }
     }
 }

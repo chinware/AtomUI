@@ -21,6 +21,7 @@
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
         <ResourceInclude Source="ListBox/Themes/ListBoxThemes.axaml" />
         <ResourceInclude Source="Loading/Themes/LoadingIndicatorThemes.axaml" />
+        <ResourceInclude Source="Menu/Themes/MenuThemes.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
