@@ -10,7 +10,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -78,12 +77,9 @@ public class MenuItem : AvaloniaMenuItem
             }
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == IsMotionEnabledProperty)
         {
-            if (change.Property == IsMotionEnabledProperty)
-            {
-                ConfigureTransitions();
-            }
+            ConfigureTransitions();
         }
     }
 

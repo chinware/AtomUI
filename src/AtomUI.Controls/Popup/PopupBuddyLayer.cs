@@ -130,6 +130,10 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     public void Detach()
     {
+        if (this is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
         Hide();
     }
 

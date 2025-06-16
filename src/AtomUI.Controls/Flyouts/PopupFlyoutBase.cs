@@ -87,6 +87,9 @@ public abstract class PopupFlyoutBase : FlyoutBase,
     /// </summary>
     public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
 
     public double MarginToAnchor
     {
@@ -155,26 +158,23 @@ public abstract class PopupFlyoutBase : FlyoutBase,
         set => SetValue(PlacementConstraintAdjustmentProperty, value);
     }
     
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
         AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
-
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
     
     internal bool IsDetectMouseClickEnabled
     {
         get => GetValue(IsDetectMouseClickEnabledProperty);
         set => SetValue(IsDetectMouseClickEnabledProperty, value);
-    }
-    
-    internal bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #endregion

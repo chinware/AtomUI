@@ -36,3 +36,8 @@ internal static class TopLevelMenuItemThemeConstants
     public const string HeaderPresenterPart = "PART_HeaderPresenter";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 }
+
+internal static class MenuThemeConstants
+{
+    public const string ItemsPresenterPart = "PART_ItemsPresenter";
+}

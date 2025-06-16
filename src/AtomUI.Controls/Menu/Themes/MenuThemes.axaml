@@ -6,5 +6,6 @@
         <ResourceInclude Source="MenuScrollViewerTheme.axaml"/>
         <ResourceInclude Source="MenuSeparatorTheme.axaml"/>
         <ResourceInclude Source="TopLevelMenuItemTheme.axaml"/>
+        <ResourceInclude Source="MenuTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

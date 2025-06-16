@@ -12,7 +12,8 @@
                         Icon="{atom:IconProvider UpOutlined}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        RenderTransform="{x:Null}"
+                        IsEnableHoverEffect="True"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         Command="{Binding LineUp, RelativeSource={RelativeSource TemplatedParent}}" />
                     <atom:IconButton
                         Name="{x:Static atom:MenuScrollViewerThemeConstants.ScrollDownButtonPart}"
@@ -20,7 +21,8 @@
                         Icon="{atom:IconProvider DownOutlined}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        RenderTransform="{x:Null}"
+                        IsEnableHoverEffect="True"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         Command="{Binding LineDown, RelativeSource={RelativeSource TemplatedParent}}" />
                     <ScrollContentPresenter Name="{x:Static atom:MenuScrollViewerThemeConstants.ScrollViewContentPart}"
                                             Margin="{TemplateBinding Padding}"
@@ -38,20 +40,13 @@
                 </DockPanel>
             </ControlTemplate>
         </Setter>
-        
+
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.ScrollButtonPadding}}" />
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ScrollButtonMargin}}" />
-            <Setter Property="Background" Value="Transparent" />
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.ScrollButtonIconSize}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ScrollButtonIconSize}}" />
         </Style>
-        
-        <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ atom|IconButton">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverBg}}" />
-            </Style>
-            </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>

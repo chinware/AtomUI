@@ -1,4 +1,5 @@
 using AtomUI.Animations;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
@@ -22,8 +23,8 @@ public class IconButton : AvaloniaButton,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<Icon?> IconProperty
-        = AvaloniaProperty.Register<IconButton, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<IconButton, Icon?>(nameof(Icon));
 
     public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
         Icon.LoadingAnimationProperty.AddOwner<IconButton>();
@@ -137,6 +138,8 @@ public class IconButton : AvaloniaButton,
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
 
     #endregion
+    
+    private Border? _frame;
 
     static IconButton()
     {
@@ -159,12 +162,17 @@ public class IconButton : AvaloniaButton,
             {
                 ConfigureTransitions();
             }
+            else if (e.Property == BackgroundProperty)
+            {
+                Console.WriteLine(Background);
+            }
         }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _frame = e.NameScope.Find<Border>(IconButtonThemeConstants.FramePart);
         ConfigureTransitions();
     }
 
@@ -172,15 +180,21 @@ public class IconButton : AvaloniaButton,
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions()
+            if (_frame != null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
-            };
+                _frame.Transitions ??= new Transitions()
+                {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                };
+            }
         }
         else
         {
-            Transitions?.Clear();
-            Transitions = null;
+            if (_frame != null)
+            {
+                _frame.Transitions?.Clear();
+                _frame.Transitions = null;
+            }
         }
     }
 

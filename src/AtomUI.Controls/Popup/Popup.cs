@@ -135,16 +135,6 @@ public class Popup : AvaloniaPopup,
         this.BindWaveSpiritProperties();
         Closed += HandleClosed;
         Opened += HandleOpened;
-        if (this is IPopupHostProvider popupHostProvider)
-        {
-            popupHostProvider.PopupHostChanged += host =>
-            {
-                if (host != null)
-                {
-                    CreateBuddyLayer();
-                }
-            };
-        }
     }
     
     // Popup 好像不加入视觉树，所以我们放在逻辑树
@@ -269,10 +259,6 @@ public class Popup : AvaloniaPopup,
     
     private void CreateBuddyLayer()
     {
-        if (_buddyLayer is not null)
-        {
-            return;
-        }
         var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         Debug.Assert(topLevel is not null);
         _buddyLayer = new PopupBuddyLayer(this, topLevel);
@@ -514,12 +500,12 @@ public class Popup : AvaloniaPopup,
             return;
         }
 
-        _openAnimating = true;
         Open();
+        _openAnimating = true;
         Debug.Assert(_buddyLayer != null);
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
-        popupRoot.Opacity = 0.0;
+        popupRoot.Opacity = 0.0d;
         if (_isNeedWaitFlipSync)
         {
             Dispatcher.UIThread.Post(() =>

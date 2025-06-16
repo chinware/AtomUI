@@ -16,8 +16,8 @@ public class ContextMenu : AvaloniaContextMenu,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
 
     public bool IsMotionEnabled
     {
@@ -46,10 +46,10 @@ public class ContextMenu : AvaloniaContextMenu,
             IsLightDismissEnabled          = true,
             OverlayDismissEventPassThrough = true
         };
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
+
         popup.Opened += this.CreateEventHandler("PopupOpened");
         popup.Closed += this.CreateEventHandler<EventArgs>("PopupClosed");
-
+        
         popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
         popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
         Closing += (sender, args) =>

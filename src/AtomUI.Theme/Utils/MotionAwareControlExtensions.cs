@@ -6,7 +6,6 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Theme.Utils;
 
@@ -15,7 +14,7 @@ public static class MotionAwareControlExtensions
     public static void BindMotionProperties(this IMotionAwareControl motionAwareControl)
     {
         var                  bindTarget          = motionAwareControl.PropertyBindTarget;
-        bindTarget.AttachedToLogicalTree += (object? sender, LogicalTreeAttachmentEventArgs args) =>
+        bindTarget.AttachedToVisualTree += (object? sender, VisualTreeAttachmentEventArgs args) =>
         {
             if (sender is Control control)
             {
@@ -26,7 +25,7 @@ public static class MotionAwareControlExtensions
             }
         };
 
-        bindTarget.DetachedFromLogicalTree += (object? sender, LogicalTreeAttachmentEventArgs args) =>
+        bindTarget.DetachedFromVisualTree += (object? sender, VisualTreeAttachmentEventArgs args) =>
         {
             if (sender is Control control)
             {
@@ -66,10 +65,7 @@ public static class MotionAwareControlExtensions
 
                     var               newValue = e.GetNewValue<bool>();
 
-                    if (resourceDictionary.ContainsKey(SharedTokenKey.EnableMotion))
-                    {
-                        resourceDictionary.Remove(SharedTokenKey.EnableMotion);
-                    }
+                    resourceDictionary.Remove(SharedTokenKey.EnableMotion);
 
                     resourceDictionary.Add(SharedTokenKey.EnableMotion, newValue);
                 }
