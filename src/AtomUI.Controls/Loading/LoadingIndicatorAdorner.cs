@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Themes;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
@@ -18,7 +19,7 @@ internal class LoadingIndicatorAdorner : TemplatedControl
 
     private void HandleTemplateApplied(INameScope scope)
     {
-        _loadingIndicator = scope.Find<LoadingIndicator>(LoadingIndicatorAdornerTheme.LoadingIndicatorPart);
+        _loadingIndicator = scope.Find<LoadingIndicator>(LoadingIndicatorAdornerThemeConstants.LoadingIndicatorPart);
         if (_loadingIndicator is not null)
         {
             IndicatorCreated?.Invoke(this, new LoadingIndicatorCreatedEventArgs(_loadingIndicator));

@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.IconPkg;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -7,7 +8,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
@@ -131,12 +131,13 @@ public class LoadingIndicator : TemplatedControl,
     private Animation? _animation;
     private TextBlock? _loadingText;
     private RenderInfo? _renderInfo;
-    private ContentPresenter? _customIndicatorIconPresenter;
+    private IconPresenter? _customIndicatorIconPresenter;
     private CancellationTokenSource? _cancellationTokenSource;
 
-    internal const double LARGE_INDICATOR_SIZE = 48;
-    internal const double MIDDLE_INDICATOR_SIZE = 32;
-    internal const double SMALL_INDICATOR_SIZE = 16;
+    // internal const double LARGE_INDICATOR_SIZE = 48;
+    // internal const double MIDDLE_INDICATOR_SIZE = 32;
+    // internal const double SMALL_INDICATOR_SIZE = 16;
+    
     internal const double MAX_CONTENT_WIDTH = 120; // 拍脑袋的决定
     internal const double MAX_CONTENT_HEIGHT = 400;
     internal const double DOT_START_OPACITY = 0.3;
@@ -194,9 +195,9 @@ public class LoadingIndicator : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _loadingText = e.NameScope.Find<TextBlock>(LoadingIndicatorTheme.LoadingTextPart);
+        _loadingText = e.NameScope.Find<TextBlock>(LoadingIndicatorThemeConstants.LoadingTextPart);
         _customIndicatorIconPresenter =
-            e.NameScope.Find<ContentPresenter>(LoadingIndicatorTheme.CustomIndicatorIconPresenterPart);
+            e.NameScope.Find<IconPresenter>(LoadingIndicatorThemeConstants.CustomIndicatorIconPresenterPart);
     }
 
     // 只在使用自定义的 Icon 的时候有效
@@ -230,7 +231,7 @@ public class LoadingIndicator : TemplatedControl,
             }
         }
 
-        var indicatorSize = GetIndicatorSize(SizeType);
+        var indicatorSize = _customIndicatorIconPresenter?.IconWidth ?? 0d;
         targetWidth  =  Math.Max(indicatorSize, targetWidth);
         targetHeight += indicatorSize;
 
@@ -292,7 +293,7 @@ public class LoadingIndicator : TemplatedControl,
 
     private Rect GetIndicatorRect()
     {
-        var indicatorSize = GetIndicatorSize(SizeType);
+        var indicatorSize = _customIndicatorIconPresenter?.IconWidth ?? 0d;
         var offsetX       = (DesiredSize.Width - indicatorSize) / 2;
         var offsetY       = (DesiredSize.Height - indicatorSize) / 2;
         if (IsShowLoadingMsg && LoadingMsg is not null)
@@ -317,16 +318,16 @@ public class LoadingIndicator : TemplatedControl,
         return new Rect(new Point(offsetX, offsetY), _loadingText.DesiredSize);
     }
 
-    private static double GetIndicatorSize(SizeType sizeType)
-    {
-        return sizeType switch
-        {
-            SizeType.Small => SMALL_INDICATOR_SIZE,
-            SizeType.Middle => MIDDLE_INDICATOR_SIZE,
-            SizeType.Large => LARGE_INDICATOR_SIZE,
-            _ => throw new ArgumentOutOfRangeException(nameof(sizeType), sizeType, "Invalid value for SizeType")
-        };
-    }
+    // private static double GetIndicatorSize(SizeType sizeType)
+    // {
+    //     return sizeType switch
+    //     {
+    //         SizeType.Small => SMALL_INDICATOR_SIZE,
+    //         SizeType.Middle => MIDDLE_INDICATOR_SIZE,
+    //         SizeType.Large => LARGE_INDICATOR_SIZE,
+    //         _ => throw new ArgumentOutOfRangeException(nameof(sizeType), sizeType, "Invalid value for SizeType")
+    //     };
+    // }
 
     private static double GetOpacityForAngle(double degree)
     {

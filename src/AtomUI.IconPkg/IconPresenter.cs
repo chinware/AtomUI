@@ -2,6 +2,7 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -184,6 +185,28 @@ public class IconPresenter : Control
 
     private void ConfigureIcon(Icon icon)
     {
+        // SetValue(LoadingAnimationProperty, icon.LoadingAnimation, BindingPriority.Template);
+        // SetValue(LoadingAnimationDurationProperty, icon.LoadingAnimationDuration, BindingPriority.Template);
+        if (icon.ThemeType != IconThemeType.TwoTone)
+        {
+            if (icon.NormalFilledBrush != null)
+            {
+                SetValue(NormalFilledBrushProperty, icon.NormalFilledBrush, BindingPriority.Template);
+            }
+            if (icon.ActiveFilledBrush != null)
+            {
+                SetValue(ActiveFilledBrushProperty, icon.ActiveFilledBrush, BindingPriority.Template);
+            }
+            if (icon.SecondaryFilledBrush != null)
+            {
+                SetValue(SelectedFilledBrushProperty, icon.SecondaryFilledBrush, BindingPriority.Template);
+            }
+            if (icon.SecondaryFilledBrush != null)
+            {
+                SetValue(DisabledFilledBrushProperty, icon.DisabledFilledBrush, BindingPriority.Template);
+            }
+        }
+        
         BindUtils.RelayBind(this, LoadingAnimationProperty, icon, Icon.LoadingAnimationProperty);
         BindUtils.RelayBind(this, LoadingAnimationDurationProperty, icon,
             Icon.LoadingAnimationDurationProperty);

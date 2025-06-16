@@ -13,19 +13,34 @@ internal class LoadingIndicatorToken : AbstractControlDesignToken
     }
 
     /// <summary>
-    /// 加载图标尺寸
+    /// 加载圆圈尺寸
     /// </summary>
     public double DotSize { get; set; }
 
     /// <summary>
-    /// 加载图标尺寸
+    /// 小号加载圆圈尺寸
     /// </summary>
     public double DotSizeSM { get; set; }
 
     /// <summary>
-    /// 大号加载图标尺寸
+    /// 大号加载圆圈尺寸
     /// </summary>
     public double DotSizeLG { get; set; }
+    
+    /// <summary>
+    /// 大号加载器尺寸
+    /// </summary>
+    public double IndicatorSizeLG { get; set; }
+    
+    /// <summary>
+    /// 加载器尺寸
+    /// </summary>
+    public double IndicatorSize { get; set; }
+    
+    /// <summary>
+    /// 小号加载器尺寸
+    /// </summary>
+    public double IndicatorSizeSM { get; set; }
 
     /// <summary>
     /// 加载器的周期时间
@@ -41,5 +56,8 @@ internal class LoadingIndicatorToken : AbstractControlDesignToken
         DotSizeSM         = controlHeightLG * 0.35;
         DotSizeLG         = controlHeight;
         IndicatorDuration = SharedToken.MotionDurationSlow * 4;
+        IndicatorSizeLG   = 48;
+        IndicatorSize     = 32;
+        IndicatorSizeSM   = 16;
     }
 }

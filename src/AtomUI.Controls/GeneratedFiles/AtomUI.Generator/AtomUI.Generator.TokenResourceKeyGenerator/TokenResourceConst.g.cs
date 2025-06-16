@@ -316,6 +316,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey DotSizeLG = new TokenResourceKey("LoadingIndicator.DotSizeLG");
         public static readonly TokenResourceKey DotSizeSM = new TokenResourceKey("LoadingIndicator.DotSizeSM");
         public static readonly TokenResourceKey IndicatorDuration = new TokenResourceKey("LoadingIndicator.IndicatorDuration");
+        public static readonly TokenResourceKey IndicatorSize = new TokenResourceKey("LoadingIndicator.IndicatorSize");
+        public static readonly TokenResourceKey IndicatorSizeLG = new TokenResourceKey("LoadingIndicator.IndicatorSizeLG");
+        public static readonly TokenResourceKey IndicatorSizeSM = new TokenResourceKey("LoadingIndicator.IndicatorSizeSM");
     }
 
     public static class MarqueeLabelTokenKey
