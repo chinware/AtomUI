@@ -20,7 +20,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.HyperLinkTextBlockTheme());
             themes.Add(new AtomUI.Controls.InlineNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.MenuFlyoutPresenterTheme());
-            themes.Add(new AtomUI.Controls.MessageCardTheme());
             themes.Add(new AtomUI.Controls.NavMenuItemTheme());
             themes.Add(new AtomUI.Controls.NavMenuTheme());
             themes.Add(new AtomUI.Controls.NotificationCardTheme());
@@ -42,7 +41,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.TopLevelHorizontalNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.VerticalNavMenuItemTheme());
             themes.Add(new AtomUI.Controls.VerticalNavMenuTheme());
-            themes.Add(new AtomUI.Controls.WindowMessageManagerTheme());
             themes.Add(new AtomUI.Controls.WindowNotificationManagerTheme());
             return themes;
         }

@@ -185,8 +185,8 @@ public class IconPresenter : Control
 
     private void ConfigureIcon(Icon icon)
     {
-        // SetValue(LoadingAnimationProperty, icon.LoadingAnimation, BindingPriority.Template);
-        // SetValue(LoadingAnimationDurationProperty, icon.LoadingAnimationDuration, BindingPriority.Template);
+        SetValue(LoadingAnimationProperty, icon.LoadingAnimation, BindingPriority.Template);
+        SetValue(LoadingAnimationDurationProperty, icon.LoadingAnimationDuration, BindingPriority.Template);
         if (icon.ThemeType != IconThemeType.TwoTone)
         {
             if (icon.NormalFilledBrush != null)

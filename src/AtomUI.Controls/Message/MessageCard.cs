@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -16,17 +17,15 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC, LoadingPC)]
+[PseudoClasses(MessageCardPseudoClass.Error, 
+    MessageCardPseudoClass.Information,
+    MessageCardPseudoClass.Success, 
+    MessageCardPseudoClass.Warning, 
+    MessageCardPseudoClass.Loading)]
 public class MessageCard : TemplatedControl,
                            IMotionAwareControl,
                            IControlSharedTokenResourcesHost
 {
-    public const string ErrorPC = ":error";
-    public const string InformationPC = ":information";
-    public const string SuccessPC = ":success";
-    public const string WarningPC = ":warning";
-    public const string LoadingPC = ":loading";
-
     internal const double AnimationMaxOffsetY = 100d;
 
     #region 公共属性定义
@@ -181,16 +180,6 @@ public class MessageCard : TemplatedControl,
 
         if (e.Property == IconProperty)
         {
-            if (e.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (e.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-
             if (Icon is null)
             {
                 SetupDefaultMessageIcon();
@@ -215,18 +204,13 @@ public class MessageCard : TemplatedControl,
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        UpdatePseudoClasses();
-        SetupDefaultMessageIcon();
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _motionActor = e.NameScope.Find<MotionActorControl>(MessageCardTheme.MotionActorPart);
+        _motionActor = e.NameScope.Find<MotionActorControl>(MessageCardThemeConstants.MotionActorPart);
         ApplyShowMotion();
+        UpdatePseudoClasses();
+        SetupDefaultMessageIcon();
     }
 
     private void ApplyShowMotion()
@@ -268,23 +252,23 @@ public class MessageCard : TemplatedControl,
         switch (MessageType)
         {
             case MessageType.Error:
-                PseudoClasses.Add(":error");
+                PseudoClasses.Add(MessageCardPseudoClass.Error);
                 break;
 
             case MessageType.Information:
-                PseudoClasses.Add(":information");
+                PseudoClasses.Add(MessageCardPseudoClass.Information);
                 break;
 
             case MessageType.Success:
-                PseudoClasses.Add(":success");
+                PseudoClasses.Add(MessageCardPseudoClass.Success);
                 break;
 
             case MessageType.Warning:
-                PseudoClasses.Add(":warning");
+                PseudoClasses.Add(MessageCardPseudoClass.Warning);
                 break;
 
             case MessageType.Loading:
-                PseudoClasses.Add(":loading");
+                PseudoClasses.Add(MessageCardPseudoClass.Loading);
                 break;
         }
     }
