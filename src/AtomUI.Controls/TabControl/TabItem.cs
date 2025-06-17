@@ -121,7 +121,7 @@ public class TabItem : AvaloniaTabItem,
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions()
+            Transitions = new Transitions()
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
             };

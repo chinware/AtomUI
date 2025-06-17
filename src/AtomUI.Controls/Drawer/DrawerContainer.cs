@@ -464,7 +464,7 @@ internal class DrawerContainer : ContentControl
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions()
+            Transitions = new Transitions()
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
             };

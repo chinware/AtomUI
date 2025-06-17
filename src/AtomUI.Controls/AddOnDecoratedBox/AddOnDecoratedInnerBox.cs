@@ -272,7 +272,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
         {
             if (_decorator != null)
             {
-                _decorator.Transitions ??= new Transitions()
+                _decorator.Transitions = new Transitions()
                 {
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)

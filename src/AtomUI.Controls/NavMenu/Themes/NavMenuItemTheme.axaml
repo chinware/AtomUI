@@ -1,0 +1,110 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:Class="AtomUI.Controls.Themes.NavMenuItemTheme"
+    TargetType="atom:NavMenuItem">
+    <ControlTheme.BasedOn>
+        <themes:BaseNavMenuItemTheme TargetType="atom:NavMenuItem" />
+    </ControlTheme.BasedOn>
+    <Setter Property="Template">
+        <ControlTemplate>
+            <Panel>
+                <Border Name="{x:Static atom:BaseNavMenuItemThemeConstants.HeaderDecoratorPart}">
+                    <Grid Name="{x:Static atom:BaseNavMenuItemThemeConstants.MainContainerPart}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.InputGestureTextSizeGroup}" />
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
+                        </Grid.ColumnDefinitions>
+                        <atom:IconPresenter
+                            Name="{x:Static atom:BaseNavMenuItemThemeConstants.ItemIconPresenterPart}"
+                            Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsEnabled="{TemplateBinding IsEnabled}"
+                            Icon="{TemplateBinding Icon}" />
+                        <ContentPresenter
+                            Name="{x:Static atom:BaseNavMenuItemThemeConstants.ItemTextPresenterPart}"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True"
+                            IsHitTestVisible="False"
+                            Content="{TemplateBinding Header, Converter={x:Static themes:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        <atom:TextBlock
+                            Name="{x:Static atom:BaseNavMenuItemThemeConstants.InputGestureTextPart}"
+                            Grid.Column="2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            TextAlignment="Right"
+                            Text="{TemplateBinding InputGesture, Converter={x:Static themes:BaseNavMenuItemTheme.KeyGestureConverter}}" />
+                        <atom:Icon
+                            Name="{x:Static atom:BaseNavMenuItemThemeConstants.MenuIndicatorIconPart}"
+                            Grid.Column="3"
+                            IconInfo="{atom:IconInfoProvider RightOutlined}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            IsEnabled="{TemplateBinding IsEnabled}" />
+                    </Grid>
+                </Border>
+
+                <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
+                            WindowManagerAddShadowHint="False"
+                            IsLightDismissEnabled="False"
+                            Placement="RightEdgeAlignedTop"
+                            IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                    <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}">
+                        <atom:MenuScrollViewer>
+                            <ItemsPresenter Name="{x:Static atom:NavMenuItemThemeConstants.ItemsPresenterPart}"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}"
+                                            Grid.IsSharedSizeScope="True" />
+                        </atom:MenuScrollViewer>
+                    </Border>
+                </atom:Popup>
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|NavMenuItem)">
+        <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+            <Setter Property="Spacing"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalItemsPanelSpacing}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|Popup#PART_Popup">
+            <Setter Property="MarginToAnchor"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.TopLevelItemPopupMarginToAnchor}}" />
+            <Setter Property="MaskShadows"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.MenuPopupBoxShadows}}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#PART_PopupFrame">
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+            <Setter Property="CornerRadius"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.MenuPopupBorderRadius}}" />
+            <Setter Property="MinWidth"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.MenuPopupMinWidth}}" />
+            <Setter Property="MaxWidth"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.MenuPopupMaxWidth}}" />
+            <Setter Property="MaxHeight"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.MenuPopupMaxHeight}}" />
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.MenuPopupContentPadding}}" />
+        </Style>
+
+        <Style Selector="^[IsDarkStyle=True]">
+            <Style Selector="^ /template/ Border#PART_PopupFrame">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemBg}}" />
+            </Style>
+        </Style>
+    </Style>
+</ControlTheme>

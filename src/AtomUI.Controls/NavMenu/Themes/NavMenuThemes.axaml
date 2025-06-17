@@ -1,0 +1,14 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="InlineNavMenuItemTheme.axaml" />
+        <ResourceInclude Source="TopLevelHorizontalNavMenuItemTheme.axaml" />
+        <ResourceInclude Source="VerticalNavMenuItemTheme.axaml" />
+        <ResourceInclude Source="NavMenuTheme.axaml" />
+        <ResourceInclude Source="HorizontalNavMenuTheme.axaml" />
+        <ResourceInclude Source="VerticalNavMenuTheme.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <themes:NavMenuItemTheme x:Key="{x:Type atom:NavMenuItem}" TargetType="atom:NavMenuItem"/>
+</ResourceDictionary>

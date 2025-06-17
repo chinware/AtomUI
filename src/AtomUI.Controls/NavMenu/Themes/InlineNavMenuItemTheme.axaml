@@ -1,0 +1,106 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    xmlns:atom="https://atomui.net">
+    <atom:MarginMultiplierConverter x:Key="MarginMultiplierConverter" Left="True" />
+    <ControlTheme x:Key="{x:Static themes:NavMenuThemeConstants.InlineNavMenuItemThemeId}" TargetType="atom:NavMenuItem">
+        <ControlTheme.BasedOn>
+            <themes:BaseNavMenuItemTheme TargetType="atom:NavMenuItem" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Vertical">
+                    <Panel>
+                        <Border Name="{x:Static atom:BaseNavMenuItemThemeConstants.HeaderDecoratorPart}">
+                            <Grid Name="{x:Static atom:BaseNavMenuItemThemeConstants.MainContainerPart}">
+                                <Grid.Margin>
+                                    <MultiBinding Converter="{StaticResource MarginMultiplierConverter}">
+                                        <Binding Path="Level" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="InlineItemIndentUnit"
+                                                 RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Grid.Margin>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"
+                                                      SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto"
+                                                      SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.InputGestureTextSizeGroup}" />
+                                    <ColumnDefinition Width="Auto"
+                                                      SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
+                                </Grid.ColumnDefinitions>
+                                <atom:IconPresenter
+                                    Name="{x:Static atom:BaseNavMenuItemThemeConstants.ItemIconPresenterPart}"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsEnabled="{TemplateBinding IsEnabled}"
+                                    Icon="{TemplateBinding Icon}" />
+                                <ContentPresenter
+                                    Name="{x:Static atom:BaseNavMenuItemThemeConstants.ItemTextPresenterPart}"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    RecognizesAccessKey="True"
+                                    IsHitTestVisible="False"
+                                    Content="{TemplateBinding Header, Converter={x:Static themes:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
+                                    ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                                <atom:TextBlock
+                                    Name="{x:Static atom:BaseNavMenuItemThemeConstants.InputGestureTextPart}"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Right"
+                                    Text="{TemplateBinding InputGesture, Converter={x:Static themes:BaseNavMenuItemTheme.KeyGestureConverter}}" />
+                                <Border Grid.Column="3"
+                                        Name="{x:Static atom:InlineNavMenuItemThemeConstants.MenuIndicatorIconFramePart}">
+                                    <atom:Icon
+                                        Name="{x:Static atom:BaseNavMenuItemThemeConstants.MenuIndicatorIconPart}"
+                                        IconInfo="{atom:IconInfoProvider RightOutlined}"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        IsEnabled="{TemplateBinding IsEnabled}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Panel>
+
+                    <atom:MotionActorControl
+                        Name="{x:Static atom:InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart}">
+                        <ItemsPresenter Name="{x:Static atom:InlineNavMenuItemThemeConstants.ChildItemsPresenterPart}"
+                                        Focusable="False"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}" />
+                    </atom:MotionActorControl>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:is(atom|NavMenuItem)^[Mode=Inline]">
+            <Style Selector="^ /template/ ItemsPresenter#PART_ChildItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalItemsPanelSpacing}}" />
+            </Style>
+            
+            <!-- BuildMenuIndicatorStyle begin -->
+            <Style Selector="^ /template/ Border#PART_MenuIndicatorIconFrame">
+                <Setter Property="RenderTransform" Value="rotate(90deg)" />
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+
+            <Style Selector="^:open">
+                <Style Selector="^ /template/ Border#PART_MenuIndicatorIconFrame">
+                    <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+                </Style>
+            </Style>
+            
+            <Style Selector="^:empty">
+                <Style Selector="^ /template/ Border#PART_MenuIndicatorIconFrame">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+            </Style>
+            
+            <!-- BuildMenuIndicatorStyle end -->
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

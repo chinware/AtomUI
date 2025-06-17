@@ -91,30 +91,40 @@ internal class AbstractMotion : IMotion
             observables.Add(transition.CompletedObservable);
             actor.Transitions.Add(transition);
         }
-        
         actor.DisableTransitions();
         ConfigureMotionStartValue(actor);
         actor.EnableTransitions();
+
+        void FinishedCallback () {
+            actor.DisableTransitions();
+            actor.NotifyMotionCompleted();
+            NotifyCompleted(actor);
+            completedAction?.Invoke();
+            actor.RenderTransformOrigin = originRenderTransformOrigin;
+            actor.MotionTransform       = null;
+        };
 
         Dispatcher.UIThread.Post(() =>
         {
             ConfigureMotionEndValue(actor);
 
-            observables.Zip()
-                       .LastAsync()
-                       .ObserveOn(AvaloniaScheduler.Instance)
-                       .Subscribe(_ =>
-                       {
-                           Dispatcher.UIThread.Post(() =>
+            if (!actor.IsVisible)
+            {      
+                FinishedCallback();
+            }
+            else
+            {
+                observables.Zip()
+                           .LastAsync()
+                           .ObserveOn(AvaloniaScheduler.Instance)
+                           .Subscribe(_ =>
                            {
-                               actor.DisableTransitions();
-                               actor.NotifyMotionCompleted();
-                               NotifyCompleted(actor);
-                               completedAction?.Invoke();
-                               actor.RenderTransformOrigin = originRenderTransformOrigin;
-                               actor.MotionTransform       = null;
+                               Dispatcher.UIThread.Post(() =>
+                               {
+                                   FinishedCallback();
+                               });
                            });
-                       });
+            }
         });
     }
 

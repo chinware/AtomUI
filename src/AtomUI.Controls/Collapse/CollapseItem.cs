@@ -375,7 +375,7 @@ public class CollapseItem : HeaderedContentControl,
         {
             if (_headerDecorator != null)
             {
-                _headerDecorator.Transitions ??= new Transitions()
+                _headerDecorator.Transitions = new Transitions()
                 {
                     TransitionUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
                 };
@@ -383,7 +383,7 @@ public class CollapseItem : HeaderedContentControl,
 
             if (_expandButton != null)
             {
-                _expandButton.Transitions ??= new Transitions()
+                _expandButton.Transitions = new Transitions()
                 {
                     TransitionUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
                 };

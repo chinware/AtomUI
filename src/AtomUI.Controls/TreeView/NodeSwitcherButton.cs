@@ -151,7 +151,7 @@ internal class NodeSwitcherButton : ToggleButton
             };
             if (_rotationIconPresenter != null)
             {
-                _rotationIconPresenter.Transitions ??= new Transitions()
+                _rotationIconPresenter.Transitions = new Transitions()
                 {
                     TransitionUtils.CreateTransition<TransformOperationsTransition>(IconPresenter.RenderTransformProperty),
                 };

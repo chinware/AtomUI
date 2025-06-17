@@ -1,0 +1,67 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ControlTheme x:Key="{x:Static themes:NavMenuThemeConstants.VerticalNavMenuThemeId}" TargetType="atom:NavMenu">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ScrollViewer AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                              IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
+                              IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                    <Border HorizontalAlignment="Stretch"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ItemsPresenter Name="{x:Static atom:NavMenuThemeConstants.ItemsPresenterPart}"
+                                        KeyboardNavigation.TabNavigation="Continue">
+                            <ItemsPresenter.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsPresenter.ItemsPanel>
+                        </ItemsPresenter>
+                    </Border>
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
+
+        <Style Selector="^[Mode=Vertical]">
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalMenuContentPadding}}" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+            <Style Selector="^[IsDarkStyle=True]">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemBg}}" />
+            </Style>
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalItemsPanelSpacing}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Mode=Inline]">
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalMenuContentPadding}}" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+            <Style Selector="^[IsDarkStyle=True]">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemBg}}" />
+            </Style>
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalItemsPanelSpacing}}" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

@@ -430,7 +430,7 @@ public class Button : AvaloniaButton,
         {
             if (_frame != null)
             {
-                _frame.Transitions ??= new Transitions();
+                _frame.Transitions = new Transitions();
                 _frame.Transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
             }
             

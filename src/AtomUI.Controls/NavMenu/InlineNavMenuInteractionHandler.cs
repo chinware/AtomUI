@@ -113,7 +113,7 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
             for (var j = 0; j < rhsAncestors.Count; j++)
             {
                 var rhsAncestor = rhsAncestors[j];
-                if (object.ReferenceEquals(lhsAncestor, rhsAncestor))
+                if (ReferenceEquals(lhsAncestor, rhsAncestor))
                 {
                     commonAncestor = lhsAncestor;
                     break;

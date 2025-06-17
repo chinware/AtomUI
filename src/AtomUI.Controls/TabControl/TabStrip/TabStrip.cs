@@ -63,7 +63,7 @@ public class TabStrip : BaseTabStrip
         {
             if (IsMotionEnabled)
             {
-                _selectedIndicator.Transitions ??= new Transitions()
+                _selectedIndicator.Transitions = new Transitions()
                 {
                     TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
                         SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())

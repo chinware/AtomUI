@@ -95,11 +95,11 @@ public class MenuScrollViewer : AvaloniaScrollViewer
         Debug.Assert(_scrollDownButton != null && _scrollUpButton != null);
         if (IsMotionEnabled)
         {
-            _scrollDownButton.Transitions ??= new Transitions()
+            _scrollDownButton.Transitions = new Transitions()
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
             };
-            _scrollUpButton.Transitions ??= new Transitions()
+            _scrollUpButton.Transitions = new Transitions()
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
             };

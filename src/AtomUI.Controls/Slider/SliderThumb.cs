@@ -108,7 +108,7 @@ public class SliderThumb : TemplatedControl
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions()
+            Transitions = new Transitions()
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty),
                 TransitionUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty,

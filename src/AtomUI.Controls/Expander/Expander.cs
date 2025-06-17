@@ -424,7 +424,7 @@ public class Expander : AvaloniaExpander,
         {
             if (_expandButton != null)
             {
-                _expandButton.Transitions ??= new Transitions()
+                _expandButton.Transitions = new Transitions()
                 {
                     TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
                 };
