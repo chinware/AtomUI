@@ -38,7 +38,6 @@
         
         <Style Selector="^[Position=BottomLeft]">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
-                <Setter Property="ReverseOrder" Value="True" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="VerticalAlignment" Value="Bottom" />
             </Style>
@@ -46,7 +45,6 @@
         
         <Style Selector="^[Position=BottomRight]">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
-                <Setter Property="ReverseOrder" Value="True" />
                 <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="VerticalAlignment" Value="Bottom" />
             </Style>
@@ -54,7 +52,6 @@
         
         <Style Selector="^[Position=BottomCenter]">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
-                <Setter Property="ReverseOrder" Value="True" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Bottom" />
             </Style>

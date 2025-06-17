@@ -99,6 +99,12 @@ internal class NotificationMoveDownInMotion : AbstractMotion
     {
         return actorPosition.WithY(actorPosition.Y + actorSize.Height);
     }
+    
+    protected override void NotifyPreStart(MotionActorControl actor)
+    {
+        base.NotifyPreStart(actor);
+        actor.Opacity = 0.0;
+    }
 }
 
 internal class NotificationMoveDownOutMotion : AbstractMotion
@@ -284,6 +290,12 @@ internal class NotificationMoveUpInMotion : AbstractMotion
     internal override Point CalculateScenePosition(Size actorSize, Point actorPosition)
     {
         return actorPosition.WithY(actorPosition.Y - actorSize.Height);
+    }
+    
+    protected override void NotifyPreStart(MotionActorControl actor)
+    {
+        base.NotifyPreStart(actor);
+        actor.Opacity = 0.0;
     }
 }
 
@@ -479,6 +491,12 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
     {
         return actorPosition.WithX(actorPosition.X - actorSize.Width);
     }
+    
+    protected override void NotifyPreStart(MotionActorControl actor)
+    {
+        base.NotifyPreStart(actor);
+        actor.Opacity = 0.0;
+    }
 }
 
 internal class NotificationMoveLeftOutMotion : AbstractMotion
@@ -666,6 +684,12 @@ internal class NotificationMoveRightInMotion : AbstractMotion
     internal override Point CalculateScenePosition(Size actorSize, Point actorPosition)
     {
         return actorPosition.WithY(actorPosition.X + actorSize.Height);
+    }
+    
+    protected override void NotifyPreStart(MotionActorControl actor)
+    {
+        base.NotifyPreStart(actor);
+        actor.Opacity = 0.0;
     }
 }
 

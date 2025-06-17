@@ -25,7 +25,12 @@ public class WindowNotificationManager : TemplatedControl,
                                          IMotionAwareControl,
                                          IControlSharedTokenResourcesHost
 {
-
+    public const string TopLeftPC = ":topleft";
+    public const string TopRightPC = ":topright";
+    public const string BottomLeftPC = ":bottomleft";
+    public const string BottomRightPC = ":bottomright";
+    public const string TopCenterPC = ":topcenter";
+    public const string BottomCenterPC = ":bottomcenter";
     private IList? _items;
     private readonly Queue<NotificationCard> _cleanupQueue;
     private readonly DispatcherTimer _cardExpiredTimer;
