@@ -18,7 +18,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.DashboardProgressTheme());
             themes.Add(new AtomUI.Controls.HyperLinkTextBlockTheme());
             themes.Add(new AtomUI.Controls.MenuFlyoutPresenterTheme());
-            themes.Add(new AtomUI.Controls.NotificationCardTheme());
             themes.Add(new AtomUI.Controls.OptionButtonGroupTheme());
             themes.Add(new AtomUI.Controls.OptionButtonTheme());
             themes.Add(new AtomUI.Controls.ProgressBarTheme());
@@ -34,7 +33,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.TabStripTheme());
             themes.Add(new AtomUI.Controls.TimelineItemTheme());
             themes.Add(new AtomUI.Controls.TimelineTheme());
-            themes.Add(new AtomUI.Controls.WindowNotificationManagerTheme());
             return themes;
         }
     }

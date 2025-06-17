@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -191,8 +192,8 @@ public class NotificationCard : ContentControl,
     {
         base.OnApplyTemplate(e);
 
-        _closeButton = e.NameScope.Find<IconButton>(NotificationCardTheme.CloseButtonPart);
-        _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardTheme.MotionActorPart);
+        _closeButton = e.NameScope.Find<IconButton>(NotificationCardThemeConstants.CloseButtonPart);
+        _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardThemeConstants.MotionActorPart);
 
         if (_closeButton is not null)
         {
@@ -436,11 +437,11 @@ public class NotificationCard : ContentControl,
 
     private void SetupPositionPseudoClasses(NotificationPosition position)
     {
-        PseudoClasses.Set(WindowNotificationManager.TopLeftPC, position == NotificationPosition.TopLeft);
-        PseudoClasses.Set(WindowNotificationManager.TopRightPC, position == NotificationPosition.TopRight);
-        PseudoClasses.Set(WindowNotificationManager.BottomLeftPC, position == NotificationPosition.BottomLeft);
-        PseudoClasses.Set(WindowNotificationManager.BottomRightPC, position == NotificationPosition.BottomRight);
-        PseudoClasses.Set(WindowNotificationManager.TopCenterPC, position == NotificationPosition.TopCenter);
-        PseudoClasses.Set(WindowNotificationManager.BottomCenterPC, position == NotificationPosition.BottomCenter);
+        PseudoClasses.Set(NotificationPseudoClass.TopLeft, position == NotificationPosition.TopLeft);
+        PseudoClasses.Set(NotificationPseudoClass.TopRight, position == NotificationPosition.TopRight);
+        PseudoClasses.Set(NotificationPseudoClass.BottomLeft, position == NotificationPosition.BottomLeft);
+        PseudoClasses.Set(NotificationPseudoClass.BottomRight, position == NotificationPosition.BottomRight);
+        PseudoClasses.Set(NotificationPseudoClass.TopCenter, position == NotificationPosition.TopCenter);
+        PseudoClasses.Set(NotificationPseudoClass.BottomCenter, position == NotificationPosition.BottomCenter);
     }
 }

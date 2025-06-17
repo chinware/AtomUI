@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Specialized;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -12,19 +13,18 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(WindowNotificationManagerTheme.ItemsPart, typeof(Panel))]
-[PseudoClasses(TopLeftPC, TopRightPC, BottomLeftPC, BottomRightPC, TopCenterPC, BottomCenterPC)]
+[TemplatePart(WindowNotificationManagerThemeConstants.ItemsPart, typeof(Panel))]
+[PseudoClasses(NotificationPseudoClass.TopLeft, 
+    NotificationPseudoClass.TopRight,
+    NotificationPseudoClass.BottomLeft,
+    NotificationPseudoClass.BottomRight, 
+    NotificationPseudoClass.TopCenter,
+    NotificationPseudoClass.BottomCenter)]
 public class WindowNotificationManager : TemplatedControl, 
                                          INotificationManager,
                                          IMotionAwareControl,
                                          IControlSharedTokenResourcesHost
 {
-    public const string TopLeftPC = ":topleft";
-    public const string TopRightPC = ":topright";
-    public const string BottomLeftPC = ":bottomleft";
-    public const string BottomRightPC = ":bottomright";
-    public const string TopCenterPC = ":topcenter";
-    public const string BottomCenterPC = ":bottomcenter";
 
     private IList? _items;
     private readonly Queue<NotificationCard> _cleanupQueue;
@@ -102,7 +102,7 @@ public class WindowNotificationManager : TemplatedControl,
     {
         base.OnApplyTemplate(e);
 
-        var itemsControl = e.NameScope.Find<Panel>(WindowNotificationManagerTheme.ItemsPart);
+        var itemsControl = e.NameScope.Find<Panel>(WindowNotificationManagerThemeConstants.ItemsPart);
         _items = itemsControl?.Children;
         if (itemsControl is not null)
         {
@@ -259,12 +259,12 @@ public class WindowNotificationManager : TemplatedControl,
 
     private void UpdatePseudoClasses(NotificationPosition position)
     {
-        PseudoClasses.Set(TopLeftPC, position == NotificationPosition.TopLeft);
-        PseudoClasses.Set(TopRightPC, position == NotificationPosition.TopRight);
-        PseudoClasses.Set(BottomLeftPC, position == NotificationPosition.BottomLeft);
-        PseudoClasses.Set(BottomRightPC, position == NotificationPosition.BottomRight);
-        PseudoClasses.Set(TopCenterPC, position == NotificationPosition.TopCenter);
-        PseudoClasses.Set(BottomCenterPC, position == NotificationPosition.BottomCenter);
+        PseudoClasses.Set(NotificationPseudoClass.TopLeft, position == NotificationPosition.TopLeft);
+        PseudoClasses.Set(NotificationPseudoClass.TopRight, position == NotificationPosition.TopRight);
+        PseudoClasses.Set(NotificationPseudoClass.BottomLeft, position == NotificationPosition.BottomLeft);
+        PseudoClasses.Set(NotificationPseudoClass.BottomRight, position == NotificationPosition.BottomRight);
+        PseudoClasses.Set(NotificationPseudoClass.TopCenter, position == NotificationPosition.TopCenter);
+        PseudoClasses.Set(NotificationPseudoClass.BottomCenter, position == NotificationPosition.BottomCenter);
     }
 
     internal void StopExpiredTimer()
