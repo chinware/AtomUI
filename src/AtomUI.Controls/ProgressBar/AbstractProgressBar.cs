@@ -1,7 +1,7 @@
 using AtomUI.Animations;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -26,7 +26,7 @@ public enum ProgressStatus
     Active
 }
 
-[PseudoClasses(IndeterminatePC)]
+[PseudoClasses(ProgressBarPseudoClass.Indeterminate, ProgressBarPseudoClass.Completed)]
 public abstract class AbstractProgressBar : RangeBase,
                                             ISizeTypeAware,
                                             IMotionAwareControl,
@@ -35,9 +35,6 @@ public abstract class AbstractProgressBar : RangeBase,
     protected const double LARGE_STROKE_THICKNESS = 8;
     protected const double MIDDLE_STROKE_THICKNESS = 6;
     protected const double SMALL_STROKE_THICKNESS = 4;
-
-    public const string IndeterminatePC = ":indeterminate";
-    public const string CompletedPC = ":completed";
 
     #region 公共属性定义
 
@@ -324,7 +321,12 @@ public abstract class AbstractProgressBar : RangeBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        NotifyTemplateApplied(e.NameScope);
+        _layoutTransformLabel = e.NameScope.Find<LayoutTransformControl>(ProgressBarThemeConstants.LayoutTransformControlPart);
+        _percentageLabel = e.NameScope.Find<Label>(ProgressBarThemeConstants.PercentageLabelPart);
+        _exceptionCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.ExceptionCompletedIconPart);
+        _successCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.SuccessCompletedIconPart);
+        ConfigureTransitions();
+        NotifySetupUI();
         AfterUIStructureReady();
     }
 
@@ -342,16 +344,6 @@ public abstract class AbstractProgressBar : RangeBase,
     protected abstract void RenderGroove(DrawingContext context);
     protected abstract void RenderIndicatorBar(DrawingContext context);
     protected abstract void CalculateStrokeThickness();
-
-    protected virtual void NotifyTemplateApplied(INameScope scope)
-    {
-        _layoutTransformLabel = scope.Find<LayoutTransformControl>(AbstractProgressBarTheme.LayoutTransformControlPart);
-        _percentageLabel = scope.Find<Label>(AbstractProgressBarTheme.PercentageLabelPart);
-        _exceptionCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
-        _successCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
-        ConfigureTransitions();
-        NotifySetupUI();
-    }
 
     protected virtual void NotifyEffectSizeTypeChanged()
     {
@@ -453,8 +445,8 @@ public abstract class AbstractProgressBar : RangeBase,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(IndeterminatePC, IsIndeterminate);
-        PseudoClasses.Set(CompletedPC, MathUtils.AreClose(Value, Maximum));
+        PseudoClasses.Set(ProgressBarPseudoClass.Indeterminate, IsIndeterminate);
+        PseudoClasses.Set(ProgressBarPseudoClass.Completed, MathUtils.AreClose(Value, Maximum));
     }
 
     protected virtual void NotifySetupUI()

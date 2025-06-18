@@ -63,7 +63,7 @@
         <!-- 普通样式设置开始 -->
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
         <Style Selector="^:has-extra-action">
-            <Setter Property="VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
         <!-- 普通样式设置结束 -->
 

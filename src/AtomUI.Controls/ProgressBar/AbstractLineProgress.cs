@@ -1,9 +1,11 @@
+using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
@@ -22,12 +24,9 @@ internal class SizeTypeThresholdValue
     internal double InnerStateValue { get; set; }
 }
 
-[PseudoClasses(VerticalPC, HorizontalPC)]
+[PseudoClasses(ProgressBarPseudoClass.Vertical, ProgressBarPseudoClass.Horizontal)]
 public abstract class AbstractLineProgress : AbstractProgressBar
 {
-    public const string VerticalPC = ":vertical";
-    public const string HorizontalPC = ":horizontal";
-
     #region 公共属性定义
     /// <summary>
     /// Defines the <see cref="Orientation" /> property.
@@ -97,8 +96,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
             return new Size(LineInfoIconSize, LineInfoIconSize);
         }
 
-        var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), fontSize, FontFamily);
-        return textSize;
+        return TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), fontSize, FontFamily);
     }
 
     protected override void NotifyUiStructureReady()
@@ -128,8 +126,8 @@ public abstract class AbstractLineProgress : AbstractProgressBar
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(VerticalPC, Orientation == Orientation.Vertical);
-        PseudoClasses.Set(HorizontalPC, Orientation == Orientation.Horizontal);
+        PseudoClasses.Set(ProgressBarPseudoClass.Vertical, Orientation == Orientation.Vertical);
+        PseudoClasses.Set(ProgressBarPseudoClass.Horizontal, Orientation == Orientation.Horizontal);
     }
 
     protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -154,12 +152,12 @@ public abstract class AbstractLineProgress : AbstractProgressBar
             }
         }
     }
-
-    protected override void NotifyTemplateApplied(INameScope scope)
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _exceptionCompletedIcon = scope.Find<Icon>(AbstractProgressBarTheme.ExceptionCompletedIconPart);
-        _successCompletedIcon   = scope.Find<Icon>(AbstractProgressBarTheme.SuccessCompletedIconPart);
-        base.NotifyTemplateApplied(scope);
+        base.OnApplyTemplate(e);
+        _exceptionCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.ExceptionCompletedIconPart);
+        _successCompletedIcon   = e.NameScope.Find<Icon>(ProgressBarThemeConstants.SuccessCompletedIconPart);
     }
 
     protected virtual void NotifyOrientationChanged()

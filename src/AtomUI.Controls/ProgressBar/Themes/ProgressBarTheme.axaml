@@ -1,0 +1,73 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:ProgressBar}" TargetType="atom:ProgressBar">
+        <ControlTheme.BasedOn>
+            <themes:AbstractLineProgressTheme TargetType="atom:ProgressBar" />
+        </ControlTheme.BasedOn>
+
+        <Setter Property="ColorTextLabel"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLabel}}" />
+        <Setter Property="ColorTextLightSolid"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
+
+        <!-- BuildPercentPositionStyle begin -->
+        <Style Selector="^[ShowProgressInfo=True]">
+            <Style Selector="^[Orientation=Horizontal]">
+                <Style Selector="^:labelinner-start">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="HorizontalAlignment" Value="Right" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^:labelinner-end">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="HorizontalAlignment" Value="Left" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^:labelinner-center">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                    </Style>
+                </Style>
+            </Style>
+
+            <Style Selector="^[Orientation=Vertical]">
+                <Style Selector="^:labelinner-start">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^:labelinner-end">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="VerticalAlignment" Value="Bottom" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^:labelinner-center">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^:labelinner">
+            <!-- 如果是 Inner 模式，成功状态下不显示成功 icon -->
+            <Style Selector="^ /template/ atom|Icon">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+
+            <Style Selector="^[Orientation=Vertical]">
+                <Style Selector="^ /template/ LayoutTransformControl">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+                </Style>
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

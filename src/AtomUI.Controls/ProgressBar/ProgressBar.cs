@@ -20,11 +20,9 @@ public record struct PercentPosition
     public LinePercentAlignment Alignment { get; set; } = LinePercentAlignment.End;
 }
 
-[PseudoClasses(IndeterminatePC)]
+[PseudoClasses(ProgressBarPseudoClass.Indeterminate, ProgressBarPseudoClass.Completed)]
 public class ProgressBar : AbstractLineProgress
 {
-    public const string PercentLabelInnerPC = ":labelinner";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<PercentPosition> PercentPositionProperty =
@@ -652,7 +650,10 @@ public class ProgressBar : AbstractLineProgress
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(PercentLabelInnerPC, PercentPosition.IsInner);
+        PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInner, PercentPosition.IsInner);
+        PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerStart, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.Start);
+        PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerCenter, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.Center);
+        PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerCenter, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.End);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

@@ -1,0 +1,62 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ControlTheme x:Key="{x:Type atom:StepsProgressBar}" TargetType="atom:StepsProgressBar">
+        <ControlTheme.BasedOn>
+            <themes:AbstractLineProgressTheme TargetType="atom:StepsProgressBar" />
+        </ControlTheme.BasedOn>
+
+        <Style Selector="^[Orientation=Horizontal]">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+
+        <Style Selector="^[Orientation=Vertical]">
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <Style Selector="^[ShowProgressInfo=True]">
+            <Style Selector="^[Orientation=Horizontal]">
+                <Style Selector="^[PercentPosition=Start]">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="HorizontalAlignment" Value="Right" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[PercentPosition=Center]">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[PercentPosition=End]">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="HorizontalAlignment" Value="Left" />
+                    </Style>
+                </Style>
+            </Style>
+
+            <Style Selector="^[Orientation=Vertical]">
+                <Style Selector="^[PercentPosition=Start]">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="VerticalAlignment" Value="Bottom" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[PercentPosition=Center]">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[PercentPosition=End]">
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                    </Style>
+                </Style>
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

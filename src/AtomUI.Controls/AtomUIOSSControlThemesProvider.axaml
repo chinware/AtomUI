@@ -27,8 +27,9 @@
         <ResourceInclude Source="NavMenu/Themes/NavMenuThemes.axaml" />
         <ResourceInclude Source="Notifications/Themes/NotificationsThemes.axaml" />
         <ResourceInclude Source="OptionButtonBox/Themes/OptionButtonBoxThemes.axaml" />
-        <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
+        <ResourceInclude Source="ProgressBar/Themes/ProgressBarThemes.axaml" />
+        <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
         <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />

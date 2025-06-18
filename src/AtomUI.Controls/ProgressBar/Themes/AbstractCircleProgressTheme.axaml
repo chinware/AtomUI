@@ -1,0 +1,58 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="using:AtomUI.Controls.Themes"
+              x:Class="AtomUI.Controls.Themes.AbstractCircleProgressTheme"
+              TargetType="atom:AbstractCircleProgress">
+    <ControlTheme.BasedOn>
+        <themes:AbstractProgressBarTheme TargetType="atom:AbstractCircleProgress" />
+    </ControlTheme.BasedOn>
+
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:AbstractCircleProgress">
+            <Canvas>
+                <LayoutTransformControl Name="{x:Static atom:ProgressBarThemeConstants.LayoutTransformControlPart}">
+                    <Label Name="{x:Static atom:ProgressBarThemeConstants.PercentageLabelPart}"
+                           Padding="0"
+                           Margin="0"
+                           VerticalContentAlignment="Center"
+                           HorizontalContentAlignment="Center"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           IsEnabled="{TemplateBinding IsEnabled}" 
+                           IsVisible="{TemplateBinding PercentLabelVisible}"/>
+                </LayoutTransformControl>
+
+                <atom:Icon Name="{x:Static atom:ProgressBarThemeConstants.ExceptionCompletedIconPart}"
+                           IconInfo="{atom:IconInfoProvider CloseOutlined}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+
+                <atom:Icon Name="{x:Static atom:ProgressBarThemeConstants.SuccessCompletedIconPart}"
+                           IconInfo="{atom:IconInfoProvider CheckOutlined}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </Canvas>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|AbstractCircleProgress)">
+        <Setter Property="CircleMinimumTextFontSize"
+                Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.CircleMinimumTextFontSize}}" />
+        <Setter Property="CircleMinimumIconSize"
+                Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.CircleMinimumIconSize}}" />
+
+        <Style Selector="^ /template/ atom|Icon#PART_ExceptionCompletedIcon">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+            <Setter Property="DisabledFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|Icon#PART_SuccessCompletedIcon">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+            <Setter Property="DisabledFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
+        </Style>
+
+    </Style>
+</ControlTheme>
