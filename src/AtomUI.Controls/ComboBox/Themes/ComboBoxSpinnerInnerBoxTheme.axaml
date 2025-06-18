@@ -74,7 +74,7 @@
             <Setter Property="SpinnerHandleWidthToken" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
             
             <Style Selector="^[IsEnabled=True]">
-                <Style Selector="^:not(^:filled)">
+                <Style Selector="^:not(:filled)">
                     <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
                         <Setter Property="Background" Value="Transparent"/>
                     </Style>

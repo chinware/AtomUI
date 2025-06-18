@@ -1,0 +1,48 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:Segmented}" TargetType="atom:Segmented">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:SegmentedThemeConstants.FramePart}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True">
+                    <ItemsPresenter Name="{x:Static atom:SegmentedThemeConstants.ItemsPresenterPart}">
+                        <ItemsPresenter.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <atom:SegmentedStackPanel IsExpanding="{Binding IsExpanding, RelativeSource={RelativeSource AncestorType=atom:Segmented}}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsPresenter.ItemsPanel>
+                    </ItemsPresenter>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SegmentedTokenKey.TrackPadding}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SegmentedTokenKey.TrackBg}}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="SelectedThumbBg" Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedBg}}" />
+        <Setter Property="SelectedThumbBoxShadows" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadowsTertiary}}" />
+        
+        <Style Selector="^[IsExpanding=True]">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+            <Setter Property="SelectedThumbCornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+                
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+            <Setter Property="SelectedThumbCornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        </Style>
+                
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+            <Setter Property="SelectedThumbCornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusXS}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

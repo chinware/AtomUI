@@ -1,8 +1,7 @@
-﻿using System.Reactive.Disposables;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -11,13 +10,12 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(SegmentedTheme.ItemsPresenterPart, typeof(ItemsPresenter))]
+[TemplatePart(SegmentedThemeConstants.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Segmented : SelectingItemsControl,
                          IMotionAwareControl,
                          IControlSharedTokenResourcesHost
@@ -112,9 +110,12 @@ public class Segmented : SelectingItemsControl,
     static Segmented()
     {
         AffectsMeasure<Segmented>(IsExpandingProperty, SizeTypeProperty);
-        AffectsRender<Segmented>(SelectedThumbCornerRadiusProperty, SelectedThumbBgProperty,
+        AffectsRender<Segmented>(
+            SelectedThumbCornerRadiusProperty, 
+            SelectedThumbBgProperty,
             SelectedThumbBoxShadowsProperty,
-            SelectedThumbSizeProperty, SelectedThumbPosProperty);
+            SelectedThumbSizeProperty, 
+            SelectedThumbPosProperty);
     }
 
     public Segmented()
@@ -151,9 +152,18 @@ public class Segmented : SelectingItemsControl,
 
         SetupSelectedThumbRect();
     }
-
+    
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
+        if (this.IsAttachedToVisualTree())
+        {
+            SetupSelectedThumbRect();
+        }
+    }
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
         SetupSelectedThumbRect();
     }
 
@@ -194,18 +204,6 @@ public class Segmented : SelectingItemsControl,
         }
     }
 
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        base.ArrangeOverride(finalSize);
-        if (Transitions is null)
-        {
-            SetupSelectedThumbRect();
-            ConfigureTransitions();
-        }
-
-        return finalSize;
-    }
-
     private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
@@ -213,8 +211,7 @@ public class Segmented : SelectingItemsControl,
             Transitions = new Transitions
             {
                 TransitionUtils.CreateTransition<PointTransition>(SelectedThumbPosProperty),
-                TransitionUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty,
-                    SharedTokenKey.MotionDurationFast)
+                TransitionUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty)
             };
         }
         else

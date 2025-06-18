@@ -56,7 +56,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
         </Style>
 
-        <Style Selector="^:selected:not(^:inactive)">
+        <Style Selector="^:selected:not(:inactive)">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWhite}}" />
             <Setter Property="BorderThickness" Value="0" />

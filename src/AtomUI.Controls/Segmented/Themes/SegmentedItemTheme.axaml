@@ -1,0 +1,158 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type atom:SegmentedItem}" TargetType="atom:SegmentedItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:SegmentedItemThemeConstants.MainFramePart}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <DockPanel LastChildFill="True">
+                        <atom:IconPresenter Name="{x:Static atom:SegmentedItemThemeConstants.IconPresenterPart}"
+                                            Icon="{TemplateBinding Icon}"
+                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <ContentPresenter Name="{x:Static atom:SegmentedItemThemeConstants.ContentPart}"
+                                          HorizontalContentAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                          IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[IsEnabled=True]">
+            <Setter Property="Cursor" Value="Hand" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconMode" Value="Normal" />
+            </Style>
+
+            <Style Selector="^:selected">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedColor}}" />
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedBg}}" />
+
+                <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                    <Setter Property="IconMode" Value="Selected" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:not(^:selected)">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemColor}}" />
+                <Setter Property="Background" Value="Transparent" />
+
+                <Style Selector="^:pointerover">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemHoverColor}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemHoverBg}}" />
+                    <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                        <Setter Property="IconMode" Value="Active" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemActiveBg}}" />
+                    <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                        <Setter Property="IconMode" Value="Selected" />
+                    </Style>
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="CornerRadius"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+            <Setter Property="FontSize"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+            <Setter Property="MinHeight"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemMinHeightLG}}" />
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.SegmentedItemPadding}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="CornerRadius"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+            <Setter Property="FontSize"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+            <Setter Property="MinHeight"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemMinHeight}}" />
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.SegmentedItemPadding}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="CornerRadius"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusXS}}" />
+            <Setter Property="FontSize"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+            <Setter Property="MinHeight"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemMinHeightSM}}" />
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.SegmentedItemPaddingSM}}" />
+        </Style>
+
+        <!-- BuildIconStyle begin -->
+        <Style Selector="^:has-icon">
+            <Style Selector="^ /template/ ContentPresenter#PART_Content">
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:SegmentedTokenKey.SegmentedItemContentMargin}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Setter Property="NormalFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemColor}}" />
+            <Setter Property="ActiveFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemHoverColor}}" />
+            <Setter Property="SelectedFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedColor}}" />
+            <Setter Property="DisabledFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            </Style>
+        </Style>
+        <!-- BuildIconStyle end -->
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconMode" Value="Disabled"/>
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

@@ -192,7 +192,7 @@
             </Style>
         </Style>
 
-        <Style Selector="^:not(^:icononly)">
+        <Style Selector="^:not(:icononly)">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ButtonTokenKey.IconMargin}}" />
             </Style>

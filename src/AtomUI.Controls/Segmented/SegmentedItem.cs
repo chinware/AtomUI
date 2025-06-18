@@ -1,10 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Reflection;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -17,10 +14,8 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
-public class SegmentedItem : ContentControl,
-                             ISelectable,
-                             IResourceBindingManager
+[PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected, SegmentedPseudoClass.HasIcon)]
+public class SegmentedItem : ContentControl, ISelectable
 {
     #region 公共属性定义
 
@@ -64,11 +59,7 @@ public class SegmentedItem : ContentControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
-    
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
     
     static SegmentedItem()
     {
@@ -81,14 +72,7 @@ public class SegmentedItem : ContentControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         Debug.Assert(Parent is Segmented, "SegmentedItem's Parent must be Segmented Control.");
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -114,30 +98,23 @@ public class SegmentedItem : ContentControl,
     {
         base.OnApplyTemplate(e);
         ConfigureTransitions();
+        UpdatePseudoClasses();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
+        if (change.Property == IconProperty)
+        {
+            UpdatePseudoClasses();
+        }
+
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions();    
-            }
-        }
-
-        if (change.Property == IconProperty)
-        {
-            if (change.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
             }
         }
     }
@@ -155,5 +132,10 @@ public class SegmentedItem : ContentControl,
         {
             Transitions = null;
         }
+    }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(SegmentedPseudoClass.HasIcon, Icon is not null);
     }
 }
