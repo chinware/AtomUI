@@ -33,6 +33,7 @@
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
         <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />
+        <ResourceInclude Source="Slider/Themes/SliderThemes.axaml" />
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
         <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
         <ResourceInclude Source="NumericUpDown/Themes/NumericUpDownTheme.axaml" />

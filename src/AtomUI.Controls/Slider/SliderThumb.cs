@@ -16,9 +16,6 @@ namespace AtomUI.Controls;
 [PseudoClasses(StdPseudoClass.Pressed)]
 public class SliderThumb : TemplatedControl
 {
-    internal const int FocusZIndex = 1000;
-    internal const int NormalZIndex = 100;
-
     #region 公共属性定义
 
     public static readonly RoutedEvent<VectorEventArgs> DragStartedEvent =

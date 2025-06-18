@@ -1,0 +1,42 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:SliderThumb}" TargetType="atom:SliderThumb">
+
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        <Setter Property="BorderThickness"
+                Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderThickness}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderColor}}" />
+        <Setter Property="OutlineBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbOutlineColor}}" />
+        <Setter Property="OutlineThickness" Value="0" />
+        <Setter Property="ThumbCircleSize" Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleSize}}" />
+        <Setter Property="Width" Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbSize}}" />
+        <Setter Property="Height" Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbSize}}" />
+        <Setter Property="ZIndex" Value="100" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="BorderThickness"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderThicknessHover}}" />
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderActiveColor}}" />
+            <Setter Property="ThumbCircleSize"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleSizeHover}}" />
+            <Setter Property="OutlineThickness"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbOutlineThickness}}" />
+        </Style>
+
+        <Style Selector="^:focus">
+            <Setter Property="BorderThickness"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderThicknessHover}}" />
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderActiveColor}}" />
+            <Setter Property="ThumbCircleSize"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleSizeHover}}" />
+            <Setter Property="OutlineThickness"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbOutlineThickness}}" />
+            <Setter Property="ZIndex" Value="1000" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

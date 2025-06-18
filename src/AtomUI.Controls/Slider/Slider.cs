@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using AtomUI.Controls.Themes;
 using AtomUI.Input;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -86,7 +87,7 @@ public record SliderMark(string Label, double Value)
 /// <summary>
 /// A control that lets the user select from a range of values by moving a SliderThumb control along a SliderTrack.
 /// </summary>
-[TemplatePart(SliderTheme.TrackPart, typeof(SliderTrack))]
+[TemplatePart(SliderThemeConstants.TrackPart, typeof(SliderTrack))]
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal, StdPseudoClass.Pressed)]
 public class Slider : RangeBase,
                       IMotionAwareControl,
@@ -286,7 +287,7 @@ public class Slider : RangeBase,
         _pointerPressDispose?.Dispose();
         _pointerReleaseDispose?.Dispose();
 
-        SliderTrack = e.NameScope.Find<SliderTrack>(SliderTheme.TrackPart);
+        SliderTrack = e.NameScope.Find<SliderTrack>(SliderThemeConstants.TrackPart);
 
         if (SliderTrack != null)
         {

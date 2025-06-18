@@ -1,0 +1,93 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:Slider}" TargetType="atom:Slider">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:SliderTrack Name="{x:Static atom:SliderThemeConstants.TrackPart}"
+                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                  IsEnabled="{TemplateBinding IsEnabled}"
+                                  IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                  Minimum="{TemplateBinding Minimum}"
+                                  Maximum="{TemplateBinding Maximum}"
+                                  Orientation="{TemplateBinding Orientation}"
+                                  Value="{TemplateBinding Value, Mode=TwoWay}"
+                                  RangeValue="{TemplateBinding RangeValue, Mode=TwoWay}"
+                                  IsRangeMode="{TemplateBinding IsRangeMode}"
+                                  MarkLabelFontFamily="{TemplateBinding FontFamily}"
+                                  MarkLabelFontSize="{TemplateBinding FontSize}"
+                                  Marks="{TemplateBinding Marks}"
+                                  Included="{TemplateBinding Included}">
+                    <atom:SliderTrack.StartSliderThumb>
+                        <atom:SliderThumb Name="{x:Static atom:SliderThemeConstants.StartThumbPart}"
+                                          IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Slider}}"
+                                          atom:ToolTip.Placement="Top"
+                                          atom:ToolTip.ShowDelay="20" />
+                    </atom:SliderTrack.StartSliderThumb>
+                    <atom:SliderTrack.EndSliderThumb>
+                        <atom:SliderThumb Name="{x:Static atom:SliderThemeConstants.EndThumbPart}"
+                                          IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Slider}}"
+                                          atom:ToolTip.Placement="Top"
+                                          atom:ToolTip.ShowDelay="20" />
+                    </atom:SliderTrack.EndSliderThumb>
+                </atom:SliderTrack>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Focusable" Value="False" />
+
+        <Style Selector="^[Orientation=Vertical]">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+
+        <!-- BuildSliderTrackStyle begin -->
+        <Style Selector="^ /template/ atom|SliderTrack#PART_Track">
+            <Setter Property="TrackGrooveBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.RailBg}}" />
+            <Setter Property="TrackBarBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.TrackBg}}" />
+            <Setter Property="MarkBorderBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.MarkBorderColor}}" />
+            <Setter Property="MarkBorderActiveBrush"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.MarkBorderColorActive}}" />
+        </Style>
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ atom|SliderThumb[IsFocused=False]:not(:pointerover)">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderHoverColor}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|SliderTrack[Orientation=Horizontal]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SliderTokenKey.SliderPaddingHorizontal}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|SliderTrack[Orientation=Vertical]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SliderTokenKey.SliderPaddingVertical}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|SliderTrack:pointerover">
+            <Setter Property="TrackGrooveBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.RailHoverBg}}" />
+            <Setter Property="TrackBarBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.TrackHoverBg}}" />
+            <Setter Property="MarkBorderBrush"
+                    Value="{DynamicResource {x:Static atom:SliderTokenKey.MarkBorderColorHover}}" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <!-- BuildSliderTrackStyle end -->
+
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|SliderTrack">
+                <Setter Property="TrackBarBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.TrackBgDisabled}}" />
+                <Setter Property="MarkBorderActiveBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderColorDisabled}}" />
+                <Setter Property="MarkBorderBrush"
+                        Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderColorDisabled}}" />
+            </Style>
+            
+            <Style Selector="^ /template/ atom|SliderThumb">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderColorDisabled}}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
