@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -169,7 +170,7 @@ public class MenuFlyoutPresenter : MenuBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutPresenterTheme.RootContainerPart);
+        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutThemeConstants.RootContainerPart);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

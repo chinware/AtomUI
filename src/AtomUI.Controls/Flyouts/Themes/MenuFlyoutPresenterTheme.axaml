@@ -1,0 +1,34 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:MenuFlyoutPresenter}" TargetType="atom:MenuFlyoutPresenter">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:ArrowDecoratedBox Name="{x:Static atom:MenuFlyoutThemeConstants.RootContainerPart}"
+                                        IsShowArrow="{TemplateBinding IsShowArrow}"
+                                        ArrowPosition="{TemplateBinding ArrowPosition}">
+                    <atom:MenuScrollViewer HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Stretch">
+                        <ItemsPresenter Name="{x:Static atom:MenuFlyoutThemeConstants.ItemsPresenterPart}"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}"
+                                        KeyboardNavigation.TabNavigation="Continue"
+                                        Grid.IsSharedSizeScope="True"/>
+                    </atom:MenuScrollViewer>
+                </atom:ArrowDecoratedBox>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
+        
+        <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_RootContainer">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuBgColor}}" />
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
+            <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinHeight}}" />
+            <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

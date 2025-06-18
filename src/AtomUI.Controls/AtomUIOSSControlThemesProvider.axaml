@@ -18,6 +18,7 @@
         <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" />
         <ResourceInclude Source="EmptyIndicator/Themes/EmptyIndicatorTheme.axaml" />
         <ResourceInclude Source="Expander/Themes/ExpanderTheme.axaml" />
+        <ResourceInclude Source="Flyouts/Themes/MenuFlyoutPresenterTheme.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
         <ResourceInclude Source="ListBox/Themes/ListBoxThemes.axaml" />
         <ResourceInclude Source="Loading/Themes/LoadingIndicatorThemes.axaml" />
