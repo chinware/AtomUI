@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -188,7 +189,7 @@ public class Separator : AvaloniaSeparator,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _titleLabel = e.NameScope.Find<Label>(SeparatorTheme.TitlePart);
+        _titleLabel = e.NameScope.Find<Label>(SeparatorThemeConstants.TitlePart);
 
     }
     
