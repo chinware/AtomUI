@@ -66,7 +66,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
             }
         }
     }
-
     
     private void SetupPopupHost(IPopupHost? popupHost)
     {

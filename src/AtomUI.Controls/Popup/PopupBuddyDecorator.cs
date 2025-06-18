@@ -35,30 +35,37 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
         _popup            = popup;
         _decoratorControl = new MotionGhostControl();
         BindUtils.RelayBind(this, MaskShadowsProperty, _decoratorControl, MotionGhostControl.MaskShadowsProperty);
+        
         if (_popup is IPopupHostProvider popupHostProvider)
         {
-            if (popupHostProvider.PopupHost == null)
+            if (popupHostProvider.PopupHost != null)
             {
-                popupHostProvider.PopupHostChanged += host =>
-                {
-                    _popupHost = host;
-                    if (_popupHost != null)
-                    {
-                        ConfigureDecorator(_popupHost);
-                    }
-                };
+                SetupPopupHost(popupHostProvider.PopupHost);
             }
             else
             {
-                _popupHost = popupHostProvider.PopupHost;
-                if (_popupHost != null)
+                popupHostProvider.PopupHostChanged += host =>
                 {
-                    ConfigureDecorator(_popupHost);
-                }
+                    SetupPopupHost(host);
+                }; 
             }
         }
 
         Child = _decoratorControl;
+    }
+    
+    private void SetupPopupHost(IPopupHost? popupHost)
+    {
+        if (popupHost is PopupRoot popupRoot)
+        {
+            if (_popupHost is PopupRoot oldPopupRoot)
+            {
+                oldPopupRoot.SizeChanged     -= HandleBuddyPopupRootSizeChanged;
+            }
+            popupRoot.SizeChanged     += HandleBuddyPopupRootSizeChanged;
+            ConfigureDecorator(popupRoot);
+        }
+        _popupHost = popupHost;
     }
 
     private void ConfigureDecorator(IPopupHost popupHost)
@@ -88,6 +95,14 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
             {
                 _decoratorControl.Content = BuildDecoratorControlContent(content);
             }
+        }
+    }
+    
+    private void HandleBuddyPopupRootSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        if (sender is PopupRoot popupRoot)
+        {
+            ConfigureDecorator(popupRoot);
         }
     }
     
