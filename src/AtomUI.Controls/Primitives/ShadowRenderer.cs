@@ -52,9 +52,16 @@ internal class ShadowRenderer : Control
         MaskContentBackgroundProperty.OverrideDefaultValue<ShadowRenderer>(new SolidColorBrush(Colors.Transparent));
     }
 
-    public sealed override void ApplyTemplate()
+    public ShadowRenderer()
     {
-        base.ApplyTemplate();
+        HorizontalAlignment = HorizontalAlignment.Stretch;
+        VerticalAlignment   = VerticalAlignment.Stretch;
+        IsHitTestVisible    = false;
+    }
+    
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         if (_layout is not null)
         {
             return;
@@ -66,14 +73,6 @@ internal class ShadowRenderer : Control
         _maskContent = CreateMaskContent();
         SetupContentSizeAndPos();
         _layout.Children.Add(_maskContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        HorizontalAlignment = HorizontalAlignment.Stretch;
-        VerticalAlignment   = VerticalAlignment.Stretch;
-        IsHitTestVisible    = false;
     }
 
     private Border CreateMaskContent()

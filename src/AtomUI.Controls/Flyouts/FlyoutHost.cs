@@ -179,21 +179,10 @@ public class FlyoutHost : Control,
         this.BindMotionProperties();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
         BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
         BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
@@ -210,6 +199,7 @@ public class FlyoutHost : Control,
     {
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
+        this.DisposeTokenBindings();
     }
 
     protected virtual void SetupFlyoutProperties()

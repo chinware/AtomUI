@@ -139,6 +139,7 @@ internal class RibbonBadgeAdorner : Control
 
     private void BuildStyles()
     {
+        // TODO 需要优化
         var commonStyle = new Style(selector => selector.OfType<RibbonBadgeAdorner>());
         commonStyle.Add(RibbonColorProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);

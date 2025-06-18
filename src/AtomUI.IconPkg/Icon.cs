@@ -197,14 +197,6 @@ public class Icon : Control,
         this.BindMotionProperties();
     }
 
-    public override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        BuildSourceRenderData();
-        SetupFilledBrush();
-        ConfigureTransitions();
-    }
-
     private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
@@ -440,6 +432,9 @@ public class Icon : Control,
             _animationCancellationTokenSource = new CancellationTokenSource();
             _animation.RunAsync(this, _animationCancellationTokenSource.Token);
         }
+        BuildSourceRenderData();
+        SetupFilledBrush();
+        ConfigureTransitions();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

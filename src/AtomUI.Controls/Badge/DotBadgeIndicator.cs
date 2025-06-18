@@ -52,25 +52,20 @@ internal class DotBadgeIndicator : Control,
         AffectsRender<DotBadgeIndicator>(BadgeDotColorProperty, BadgeShadowSizeProperty);
     }
 
-    public sealed override void ApplyTemplate()
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.ApplyTemplate();
-        BuildBoxShadow();
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty,
             BadgeTokenKey.BadgeShadowColor));
+        BuildBoxShadow();
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
+        base.OnDetachedFromVisualTree(e);
         this.DisposeTokenBindings();
     }
 

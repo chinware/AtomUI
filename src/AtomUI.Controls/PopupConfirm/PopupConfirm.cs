@@ -1,5 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.PopupConfirmLang;
+﻿using AtomUI.Controls.PopupConfirmLang;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -8,7 +7,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -20,8 +18,7 @@ public enum PopupConfirmStatus
 }
 
 public class PopupConfirm : FlyoutHost,
-                            IControlSharedTokenResourcesHost,
-                            IResourceBindingManager
+                            IControlSharedTokenResourcesHost
 {
     #region 公共属性属性
 
@@ -140,37 +137,21 @@ public class PopupConfirm : FlyoutHost,
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => PopupConfirmToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
 
     #endregion
-    
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     public PopupConfirm()
     {
         this.RegisterResources();
     }
 
-    public sealed override void ApplyTemplate()
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        Flyout ??= new PopupConfirmFlyout(this);
+        base.OnAttachedToVisualTree(e);
+        Flyout                      ??= new PopupConfirmFlyout(this);
         this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText));
         this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText));
-        base.ApplyTemplate();
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-    
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
 }
 
 public class PopupConfirmClickEventArgs : RoutedEventArgs

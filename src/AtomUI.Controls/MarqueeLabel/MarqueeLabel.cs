@@ -79,6 +79,7 @@ public class MarqueeLabel : TextBlock,
     public MarqueeLabel()
     {
         this.RegisterResources();
+        HorizontalAlignment = HorizontalAlignment.Stretch;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -134,7 +135,7 @@ public class MarqueeLabel : TextBlock,
     {
         base.ApplyTemplate();
         // 为了强制
-        HorizontalAlignment = HorizontalAlignment.Stretch;
+
     }
 
     protected override Size MeasureOverride(Size availableSize)
