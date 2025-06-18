@@ -1,0 +1,144 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:OptionButton}" TargetType="atom:OptionButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <atom:TextBlock Padding="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{TemplateBinding Content}" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+            <Setter Property="FontSize"
+                    Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ContentFontSizeLG}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.PaddingLG}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ContentFontSize}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.Padding}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="FontSize"
+                    Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ContentFontSizeSM}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.PaddingSM}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        </Style>
+
+        <Setter Property="Cursor" Value="Hand" />
+
+        <Style Selector="^[ButtonStyle=Solid]">
+            <Style Selector="^[IsEnabled=True]">
+                <Style Selector="^:checked">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonSolidCheckedColor}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonSolidCheckedBackground}}" />
+
+                    <Style Selector="^:pointerover">
+                        <Setter Property="Background"
+                                Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonSolidCheckedHoverBackground}}" />
+                    </Style>
+
+                    <Style Selector="^:pressed">
+                        <Setter Property="Background"
+                                Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonSolidCheckedActiveBackground}}" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^:unchecked">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+                    <Setter Property="Background" Value="Transparent" />
+
+                    <Style Selector="^:pointerover">
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
+                    </Style>
+
+                    <Style Selector="^:pressed">
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
+                    </Style>
+                </Style>
+            </Style>
+
+            <Style Selector="^[IsEnabled=False]">
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+
+                <Style Selector="^:checked">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonCheckedColorDisabled}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonCheckedColorDisabled}}" />
+                </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[ButtonStyle=Outline]">
+            <Style Selector="^[IsEnabled=True]">
+                <Setter Property="Background" Value="Transparent" />
+                <Style Selector="^:checked">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+                </Style>
+                
+                <Style Selector="^:unchecked">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonColor}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                </Style>
+                
+                <Style Selector="^:pointerover">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
+                </Style>
+            </Style>
+            
+            <Style Selector="^[IsEnabled=False]">
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+
+                <Style Selector="^:checked">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonCheckedColorDisabled}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ButtonCheckedBgDisabled}}" />
+                </Style>
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>
