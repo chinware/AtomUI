@@ -1,6 +1,7 @@
 using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Controls.Utils;
 
@@ -8,6 +9,7 @@ internal class StringToTextBlockConverter : IValueConverter
 {
     public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Stretch;
     public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Stretch;
+    public TextWrapping TextWrapping { get; set; } =  TextWrapping.NoWrap;
     
     public double Width { get; set; } = double.NaN;
     public double Height { get; set; } = double.NaN;

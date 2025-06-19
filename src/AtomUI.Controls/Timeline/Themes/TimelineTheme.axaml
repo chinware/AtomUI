@@ -1,0 +1,35 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:Timeline}" TargetType="atom:Timeline">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:TimelineThemeConstants.FramePart}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                    <ScrollViewer Name="{x:Static atom:TimelineThemeConstants.ScrollViewerPart}"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto"
+                                  IsScrollChainingEnabled="True">
+                        <ItemsPresenter Name="{x:Static atom:TimelineThemeConstants.ItemsPresenterPart}">
+                            <ItemsPresenter.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <atom:TimelineStackPanel IsReverse="{Binding IsReverse, RelativeSource={RelativeSource AncestorType=atom:Timeline}}"/>
+                                </ItemsPanelTemplate>
+                            </ItemsPresenter.ItemsPanel>
+                        </ItemsPresenter>
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="TemplatedControl.BorderBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="TemplatedControl.Background"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        
+    </ControlTheme>
+</ResourceDictionary>

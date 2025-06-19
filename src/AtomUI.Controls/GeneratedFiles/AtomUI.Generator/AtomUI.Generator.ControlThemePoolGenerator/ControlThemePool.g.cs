@@ -18,8 +18,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.TabItemTheme());
             themes.Add(new AtomUI.Controls.TabStripItemTheme());
             themes.Add(new AtomUI.Controls.TabStripTheme());
-            themes.Add(new AtomUI.Controls.TimelineItemTheme());
-            themes.Add(new AtomUI.Controls.TimelineTheme());
             return themes;
         }
     }

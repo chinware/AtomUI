@@ -1,0 +1,95 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
+                                     VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type atom:TimelineItem}" TargetType="atom:TimelineItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:TimelineItemPanel Name="{x:Static atom:TimelineItemThemeConstants.RootLayoutPart}"
+                                        IsOdd="{TemplateBinding IsOdd}"
+                                        Mode="{TemplateBinding Mode}"
+                                        IsLabelLayout="{TemplateBinding IsLabelLayout}">
+                    <atom:TextBlock Name="{x:Static atom:TimelineItemThemeConstants.LabelPart}"
+                                    VerticalAlignment="Center"
+                                    TextWrapping="Wrap"
+                                    Text="{TemplateBinding Label}" />
+                    <atom:TimelineIndicator Name="{x:Static atom:TimelineItemThemeConstants.IndicatorPart}"
+                                            VerticalAlignment="Stretch"
+                                            IsFirst="{TemplateBinding IsFirst}"
+                                            IsLast="{TemplateBinding IsLast}"
+                                            IndicatorColor="{TemplateBinding IndicatorColor}"
+                                            IndicatorIcon="{TemplateBinding IndicatorIcon}"
+                                            NextIsPending="{TemplateBinding NextIsPending}" />
+                    <ContentPresenter Name="{x:Static atom:TimelineItemThemeConstants.ContentPresenterPart}"
+                                      Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                </atom:TimelineItemPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorWidth}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|TextBlock#PART_Label">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TimelineTokenKey.ItemPaddingBottom}}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TimelineTokenKey.ItemPaddingBottom}}" />
+        </Style>
+
+        <!-- 非 Reverse 状态下，下一个是 pending item 设置大内间距 -->
+        <Style Selector="^[NextIsPending=True][IsReverse=False]">
+            <Style Selector="^ /template/ atom|TextBlock#PART_Label">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:TimelineTokenKey.ItemPaddingBottomLG}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:TimelineTokenKey.ItemPaddingBottomLG}}" />
+            </Style>
+        </Style>
+
+        <!-- 在 Reverse 下，pending item 自己设置大内间距 -->
+        <Style Selector="^[IsPending=True][IsReverse=True]">
+            <Style Selector="^ /template/ atom|TextBlock#PART_Label">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:TimelineTokenKey.ItemPaddingBottomLG}}" />
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:TimelineTokenKey.ItemPaddingBottomLG}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[Mode=Left]">
+            <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorLeftModeMargin}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[Mode=Right]">
+            <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorRightModeMargin}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[Mode=Alternate]">
+            <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorMiddleModeMargin}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsLabelLayout=True]">
+            <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorMiddleModeMargin}}" />
+            </Style>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

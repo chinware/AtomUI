@@ -41,6 +41,7 @@
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
         <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
         <ResourceInclude Source="TimePicker/Themes/TimePickerThemes.axaml" />
+        <ResourceInclude Source="Timeline/Themes/TimelineThemes.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchTheme.axaml" />
         <ResourceInclude Source="Input/Themes/InputThemes.axaml" />
         <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
