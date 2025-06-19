@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Animations;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using Avalonia;
@@ -108,6 +108,7 @@ public class TabStripItem : AvaloniaTabStripItem,
     
     private IconButton? _closeButton;
     private CompositeDisposable? _resourceBindingsDisposable;
+    private Border? _decorator;
     
     private void SetupDefaultCloseIcon()
     {
@@ -117,34 +118,48 @@ public class TabStripItem : AvaloniaTabStripItem,
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
         Debug.Assert(CloseIcon is not null);
-        CloseIcon.SetTemplatedParent(this);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         SetupDefaultCloseIcon();
-        ConfigureTransitions();
+
         base.OnApplyTemplate(e);
-        _closeButton   = e.NameScope.Find<IconButton>(BaseTabStripItemTheme.ItemCloseButtonPart);
+        _closeButton   = e.NameScope.Find<IconButton>(TabStripItemThemeConstants.ItemCloseButtonPart);
         
         if (_closeButton is not null)
         {
             _closeButton.Click += HandleCloseRequest;
         }
+
+        _decorator = e.NameScope.Find<Border>(TabStripItemThemeConstants.DecoratorPart);
+        ConfigureTransitions();
     }
 
     private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            Transitions = new Transitions
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
             };
+            if (_decorator != null)
+            {
+                _decorator.Transitions = new Transitions()
+                {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                };
+            }
         }
         else
         {
             Transitions = null;
+            if (_decorator != null)
+            {
+                _decorator.Transitions?.Clear();
+                _decorator.Transitions = null;
+            }
         }
     }
     
@@ -196,15 +211,6 @@ public class TabStripItem : AvaloniaTabStripItem,
         if (change.Property == IconProperty ||
             change.Property == CloseIconProperty)
         {
-            if (change.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-            if (change.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-
             if (change.Property == CloseIconProperty)
             {
                 SetupDefaultCloseIcon();
@@ -230,12 +236,12 @@ public class TabStripItem : AvaloniaTabStripItem,
         if (Shape == TabSharp.Line)
         {
             this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabStripItemTheme.ID));
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabStripThemeConstants.TabStripItemThemeId));
         }
         else
         {
             this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, CardTabStripItemTheme.ID));
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabStripThemeConstants.CardTabStripItemThemeId));
         }
     }
 

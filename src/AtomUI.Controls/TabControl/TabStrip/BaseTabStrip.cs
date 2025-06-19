@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -9,7 +10,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -22,11 +22,6 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
                                      IControlSharedTokenResourcesHost,
                                      IResourceBindingManager
 {
-    public const string TopPC = ":top";
-    public const string RightPC = ":right";
-    public const string BottomPC = ":bottom";
-    public const string LeftPC = ":left";
-
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
 
@@ -41,8 +36,8 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
         AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(TabAlignmentCenter));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabStrip>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabStrip>();
     
     public SizeType SizeType
     {
@@ -84,6 +79,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     static BaseTabStrip()
     {
         ItemsPanelProperty.OverrideDefaultValue<BaseTabStrip>(DefaultPanel);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabStrip>(false);
         AffectsRender<BaseTabStrip>(TabStripPlacementProperty);
     }
 
@@ -96,7 +92,8 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _frame = e.NameScope.Find<Border>(BaseTabStripTheme.FramePart);
+        _frame        = e.NameScope.Find<Border>(TabStripThemeConstants.FramePart);
+        UpdatePseudoClasses();
     }
 
     private void SetupBorderBinding()
@@ -119,24 +116,18 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             BindUtils.RelayBind(this, IsMotionEnabledProperty, tabStripItem, TabStripItem.IsMotionEnabledProperty);
         }
     }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        UpdatePseudoClasses();
+        _resourceBindingsDisposable = new CompositeDisposable();
         SetupBorderBinding();
+    }
+    
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -158,10 +149,10 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(TopPC, TabStripPlacement == Dock.Top);
-        PseudoClasses.Set(RightPC, TabStripPlacement == Dock.Right);
-        PseudoClasses.Set(BottomPC, TabStripPlacement == Dock.Bottom);
-        PseudoClasses.Set(LeftPC, TabStripPlacement == Dock.Left);
+        PseudoClasses.Set(TabPseudoClass.Top, TabStripPlacement == Dock.Top);
+        PseudoClasses.Set(TabPseudoClass.Right, TabStripPlacement == Dock.Right);
+        PseudoClasses.Set(TabPseudoClass.Bottom, TabStripPlacement == Dock.Bottom);
+        PseudoClasses.Set(TabPseudoClass.Left, TabStripPlacement == Dock.Left);
     }
 
     public override void Render(DrawingContext context)

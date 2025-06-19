@@ -8,16 +8,7 @@ namespace AtomUI.Theme
         internal static IList<BaseControlTheme> GetControlThemes()
         {
             List<BaseControlTheme> themes = new List<BaseControlTheme>();
-            themes.Add(new AtomUI.Controls.BaseOverflowMenuItemTheme());
             themes.Add(new AtomUI.Controls.BaseTabScrollViewerTheme());
-            themes.Add(new AtomUI.Controls.CardTabControlTheme());
-            themes.Add(new AtomUI.Controls.CardTabItemTheme());
-            themes.Add(new AtomUI.Controls.CardTabStripItemTheme());
-            themes.Add(new AtomUI.Controls.CardTabStripTheme());
-            themes.Add(new AtomUI.Controls.TabControlTheme());
-            themes.Add(new AtomUI.Controls.TabItemTheme());
-            themes.Add(new AtomUI.Controls.TabStripItemTheme());
-            themes.Add(new AtomUI.Controls.TabStripTheme());
             return themes;
         }
     }

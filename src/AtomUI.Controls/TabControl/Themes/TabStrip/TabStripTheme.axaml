@@ -1,0 +1,116 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ControlTheme x:Key="{x:Type atom:TabStrip}" TargetType="atom:TabStrip">
+        <ControlTheme.BasedOn>
+            <themes:BaseTabStripTheme TargetType="atom:TabStrip" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:TabStripThemeConstants.FramePart}">
+                    <Panel Name="{x:Static atom:TabStripThemeConstants.AlignWrapperPart}">
+                        <Border>
+                            <atom:TabStripScrollViewer Name="{x:Static atom:TabStripThemeConstants.TabsContainerPart}"
+                                                       IsScrollChainingEnabled="False"
+                                                       TabStripPlacement="{TemplateBinding TabStripPlacement}"
+                                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                                <Panel>
+                                    <ItemsPresenter Name="{x:Static atom:TabStripThemeConstants.ItemsPresenterPart}"
+                                                    ItemsPanel="{TemplateBinding ItemsPanel}" />
+                                    <Border Name="{x:Static atom:TabStripThemeConstants.SelectedItemIndicatorPart}" />
+                                </Panel>
+                            </atom:TabStripScrollViewer>
+                        </Border>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:TabControlTokenKey.InkBarColor}}" />
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Top]">
+
+            <!-- tabs 是否居中 -->
+            <Style Selector="^[TabAlignmentCenter=True]">
+                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemGutter}}" />
+                <Setter Property="Orientation" Value="Horizontal" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Right]">
+            <!-- tabs 是否居中 -->
+            <Style Selector="^[TabAlignmentCenter=True]">
+                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemGutter}}" />
+                <Setter Property="Orientation" Value="Vertical" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Bottom]">
+            <!-- tabs 是否居中 -->
+            <Style Selector="^[TabAlignmentCenter=True]">
+                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemGutter}}" />
+                <Setter Property="Orientation" Value="Horizontal" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Left]">
+            <!-- tabs 是否居中 -->
+            <Style Selector="^[TabAlignmentCenter=True]">
+                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemGutter}}" />
+                <Setter Property="Orientation" Value="Vertical" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

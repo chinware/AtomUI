@@ -1,0 +1,130 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Controls.Themes.BaseTabStripItemTheme"
+              xmlns:themes="using:AtomUI.Controls.Themes"
+              TargetType="atom:TabStripItem">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:TabStripItem">
+            <Border Name="{x:Static atom:TabStripItemThemeConstants.DecoratorPart}">
+                <StackPanel Name="{x:Static atom:TabStripItemThemeConstants.ContentLayoutPart}"
+                            Orientation="Horizontal">
+                    <atom:IconPresenter Name="{x:Static atom:TabStripItemThemeConstants.ItemIconPresenterPart}"
+                                        Icon="{TemplateBinding Icon}"
+                                        IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <ContentPresenter Name="{x:Static atom:TabStripItemThemeConstants.ContentPresenterPart}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static themes:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
+                    <atom:IconButton Name="{x:Static atom:TabStripItemThemeConstants.ItemCloseButtonPart}"
+                                     Icon="{TemplateBinding CloseIcon}"
+                                     IsVisible="{TemplateBinding IsClosable}" />
+                </StackPanel>
+            </Border>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|TabStripItem)">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
+
+        <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CloseIconMargin}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+            <Setter Property="DisabledIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemIconMargin}}" />
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
+            <Setter Property="ActiveFilledBrush"
+                    Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
+            <Setter Property="SelectedFilledBrush"
+                    Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
+            <Setter Property="DisabledFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="IconMode" Value="Active" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="IconMode" Value="Selected" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TabControlTokenKey.TitleFontSizeLG}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TabControlTokenKey.TitleFontSize}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TabControlTokenKey.TitleFontSizeSM}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="IconWidth"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+                <Setter Property="IconHeight"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            </Style>
+        </Style>
+        
+        <!-- BuildPlacementStyle begin -->
+        <!-- 设置 items presenter 面板样式 -->
+        <!-- 分为上、右、下、左 -->
+        <Style Selector="^[TabStripPlacement=Top]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TabStripPlacement=Right]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TabStripPlacement=Bottom]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TabStripPlacement=Left]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Style>
+        <!-- BuildPlacementStyle end -->
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+    </Style>
+</ControlTheme>

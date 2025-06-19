@@ -1,0 +1,52 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Static themes:TabItemThemeConstants.TabItemThemeId}" TargetType="atom:TabItem">
+        <ControlTheme.BasedOn>
+            <themes:BaseTabItemTheme TargetType="atom:TabItem" />
+        </ControlTheme.BasedOn>
+    
+          <Style Selector="^[TabStripPlacement=Top], ^[TabStripPlacement=Bottom]">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemMargin}}" />
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemPaddingLG}}"/>
+                </Style>
+            </Style>
+            
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemPadding}}"/>
+                </Style>
+            </Style>
+            
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemPaddingSM}}"/>
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Left], ^[TabStripPlacement=Right]">
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
+                </Style>
+            </Style>
+            
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
+                </Style>
+            </Style>
+            
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
+                </Style>
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

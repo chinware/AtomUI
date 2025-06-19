@@ -23,11 +23,6 @@ namespace AtomUI.Controls
                     themeManagerBuilder.AddControlToken(controlType);
                 }
                 themeManagerBuilder.AddControlThemesProvider(new AtomUIOSSControlThemesProvider());
-                var controlThemes = ControlThemePool.GetControlThemes();
-                foreach (var controlTheme in controlThemes)
-                {
-                    themeManagerBuilder.AddControlTheme(controlTheme);
-                }
 
                 var languageProviders = LanguageProviderPool.GetLanguageProviders();
                 foreach (var languageProvider in languageProviders)

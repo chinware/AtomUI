@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Animations;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -91,7 +92,7 @@ public class TabItem : AvaloniaTabItem,
 
     private IconButton? _closeButton;
     private CompositeDisposable? _resourceBindingsDisposable;
-    
+    private Border? _decorator;
 
     private void SetupDefaultCloseIcon()
     {
@@ -107,12 +108,13 @@ public class TabItem : AvaloniaTabItem,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _closeButton   = e.NameScope.Find<IconButton>(BaseTabItemTheme.ItemCloseButtonPart);
+        _closeButton   = e.NameScope.Find<IconButton>(TabItemThemeConstants.ItemCloseButtonPart);
 
         if (_closeButton is not null)
         {
             _closeButton.Click += HandleCloseRequest;
         }
+        _decorator = e.NameScope.Find<Border>(TabStripItemThemeConstants.DecoratorPart);
         ConfigureTransitions();
         SetupDefaultCloseIcon();
     }
@@ -121,14 +123,26 @@ public class TabItem : AvaloniaTabItem,
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions()
+            Transitions = new Transitions
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
             };
+            if (_decorator != null)
+            {
+                _decorator.Transitions = new Transitions()
+                {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                };
+            }
         }
         else
         {
             Transitions = null;
+            if (_decorator != null)
+            {
+                _decorator.Transitions?.Clear();
+                _decorator.Transitions = null;
+            }
         }
     }
 
@@ -214,12 +228,12 @@ public class TabItem : AvaloniaTabItem,
         if (Shape == TabSharp.Line)
         {
             this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabItemTheme.ID));
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabItemThemeConstants.TabItemThemeId));
         }
         else
         {
             this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, CardTabItemTheme.ID));
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabItemThemeConstants.CardTabItemThemeId));
         }
     }
 

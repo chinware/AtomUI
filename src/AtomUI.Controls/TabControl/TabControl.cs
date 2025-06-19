@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -9,7 +10,6 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 
@@ -36,11 +36,11 @@ public class TabControl : BaseTabControl
 
     private Border? _selectedIndicator;
     private ItemsPresenter? _itemsPresenter;
+    private TabControlScrollViewer? _scrollViewer;
 
     public TabControl()
     {
         SelectionChanged += HandleSelectionChanged;
-        LayoutUpdated    += HandleLayoutUpdated;
     }
 
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -49,13 +49,6 @@ public class TabControl : BaseTabControl
         {
             SetupSelectedIndicator();
         }
-    }
-
-    private void HandleLayoutUpdated(object? sender, EventArgs args)
-    {
-        ConfigureTransitions();
-        // 只需要执行一次
-        LayoutUpdated -= HandleLayoutUpdated;
     }
 
     private void ConfigureTransitions()
@@ -147,8 +140,14 @@ public class TabControl : BaseTabControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _selectedIndicator = e.NameScope.Find<Border>(TabControlTheme.SelectedItemIndicatorPart);
-        _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(BaseTabControlTheme.ItemsPresenterPart);
+        _selectedIndicator = e.NameScope.Find<Border>(TabControlThemeConstants.SelectedItemIndicatorPart);
+        _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(TabControlThemeConstants.ItemsPresenterPart);
+        _scrollViewer      = e.NameScope.Find<TabControlScrollViewer>(TabControlThemeConstants.TabsContainerPart);
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.TabControl = this;
+        }
+        ConfigureTransitions();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

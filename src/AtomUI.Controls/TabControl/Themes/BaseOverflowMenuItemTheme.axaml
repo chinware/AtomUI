@@ -1,0 +1,66 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type atom:BaseOverflowMenuItem}" TargetType="atom:BaseOverflowMenuItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:OverflowMenuItemThemeConstants.ItemDecoratorPart}">
+                    <Grid Name="{x:Static atom:OverflowMenuItemThemeConstants.MainContainerPart}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="MenuCloseIcon" />
+                        </Grid.ColumnDefinitions>
+
+                        <ContentPresenter Name="{x:Static atom:OverflowMenuItemThemeConstants.ItemTextPresenterPart}"
+                                          Grid.Column="0"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True"
+                                          IsHitTestVisible="False"
+                                          Content="{TemplateBinding Header, Converter={StaticResource StringToTextBlockConverter}}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        <atom:IconButton Name="{x:Static atom:OverflowMenuItemThemeConstants.ItemCloseButtonPart}"
+                                         Grid.Column="1"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Center"
+                                         Icon="{atom:IconProvider CloseOutlined}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
+
+        <Style Selector="^ /template/ Border#PART_ItemDecorator">
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemPaddingInline}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBg}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBorderRadius}}" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverColor}}" />
+            <Style Selector="^ /template/ Border#PART_ItemDecorator">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverBg}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_ItemTextPresenter">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseIcon">
+            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

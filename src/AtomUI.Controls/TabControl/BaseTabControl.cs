@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -22,11 +23,6 @@ public class BaseTabControl : AvaloniaTabControl,
                               IControlSharedTokenResourcesHost,
                               IResourceBindingManager
 {
-    public const string TopPC = ":top";
-    public const string RightPC = ":right";
-    public const string BottomPC = ":bottom";
-    public const string LeftPC = ":left";
-
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
 
@@ -104,6 +100,7 @@ public class BaseTabControl : AvaloniaTabControl,
 
     static BaseTabControl()
     {
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabControl>(false);
         ItemsPanelProperty.OverrideDefaultValue<BaseTabControl>(DefaultPanel);
     }
 
@@ -116,8 +113,8 @@ public class BaseTabControl : AvaloniaTabControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _frame = e.NameScope.Find<Border>(BaseTabControlTheme.FramePart);
-        _alignWrapper   = e.NameScope.Find<Panel>(BaseTabControlTheme.AlignWrapperPart);
+        _frame = e.NameScope.Find<Border>(TabControlThemeConstants.FramePart);
+        _alignWrapper   = e.NameScope.Find<Panel>(TabControlThemeConstants.AlignWrapperPart);
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -171,10 +168,10 @@ public class BaseTabControl : AvaloniaTabControl,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(TopPC, TabStripPlacement == Dock.Top);
-        PseudoClasses.Set(RightPC, TabStripPlacement == Dock.Right);
-        PseudoClasses.Set(BottomPC, TabStripPlacement == Dock.Bottom);
-        PseudoClasses.Set(LeftPC, TabStripPlacement == Dock.Left);
+        PseudoClasses.Set(TabPseudoClass.Top, TabStripPlacement == Dock.Top);
+        PseudoClasses.Set(TabPseudoClass.Right, TabStripPlacement == Dock.Right);
+        PseudoClasses.Set(TabPseudoClass.Bottom, TabStripPlacement == Dock.Bottom);
+        PseudoClasses.Set(TabPseudoClass.Left, TabStripPlacement == Dock.Left);
     }
 
     private void HandlePlacementChanged()

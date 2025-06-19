@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -11,17 +12,16 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input.Raw;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Colors = Avalonia.Media.Colors;
 using GradientStop = Avalonia.Media.GradientStop;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(BaseTabScrollViewerTheme.ScrollStartEdgeIndicatorPart, typeof(Control))]
-[TemplatePart(BaseTabScrollViewerTheme.ScrollEndEdgeIndicatorPart, typeof(Control))]
-[TemplatePart(BaseTabScrollViewerTheme.ScrollMenuIndicatorPart, typeof(IconButton))]
-[TemplatePart(BaseTabScrollViewerTheme.ScrollViewContentPart, typeof(ScrollContentPresenter))]
+[TemplatePart(TabScrollViewerThemeConstants.ScrollStartEdgeIndicatorPart, typeof(Control))]
+[TemplatePart(TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart, typeof(Control))]
+[TemplatePart(TabScrollViewerThemeConstants.ScrollMenuIndicatorPart, typeof(IconButton))]
+[TemplatePart(TabScrollViewerThemeConstants.ScrollViewContentPart, typeof(ScrollContentPresenter))]
 internal abstract class BaseTabScrollViewer : ScrollViewer,
                                               IResourceBindingManager
 {
@@ -202,16 +202,16 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _menuIndicator      = e.NameScope.Find<IconButton>(BaseTabScrollViewerTheme.ScrollMenuIndicatorPart);
-        _startEdgeIndicator = e.NameScope.Find<Border>(BaseTabScrollViewerTheme.ScrollStartEdgeIndicatorPart);
-        _endEdgeIndicator   = e.NameScope.Find<Border>(BaseTabScrollViewerTheme.ScrollEndEdgeIndicatorPart);
+        _menuIndicator      = e.NameScope.Find<IconButton>(TabScrollViewerThemeConstants.ScrollMenuIndicatorPart);
+        _startEdgeIndicator = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollStartEdgeIndicatorPart);
+        _endEdgeIndicator   = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart);
 
         SetupIndicatorsVisibility();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty,
             SharedTokenKey.ColorFillSecondary));
@@ -219,9 +219,9 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
             TabControlTokenKey.MenuEdgeThickness));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
+        base.OnDetachedFromVisualTree(e);
         this.DisposeTokenBindings();
     }
 

@@ -15,7 +15,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
     internal BaseTabStrip? TabStrip { get; set; }
 
     #endregion
-
+    
     protected override Type StyleKeyOverride => typeof(BaseTabScrollViewer);
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

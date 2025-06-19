@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -10,7 +10,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -91,6 +90,7 @@ public class CardTabStrip : BaseTabStrip
 
     private IconButton? _addTabButton;
     private ItemsPresenter? _itemsPresenter;
+    private TabStripScrollViewer? _scrollViewer;
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -114,24 +114,24 @@ public class CardTabStrip : BaseTabStrip
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _addTabButton   = e.NameScope.Find<IconButton>(CardTabStripTheme.AddTabButtonPart);
-        _itemsPresenter = e.NameScope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
+        _addTabButton   = e.NameScope.Find<IconButton>(TabStripThemeConstants.AddTabButtonPart);
+        _itemsPresenter = e.NameScope.Find<ItemsPresenter>(TabStripThemeConstants.ItemsPresenterPart);
         if (_addTabButton is not null)
         {
             _addTabButton.Click += HandleAddButtonClicked;
         }
+        _scrollViewer      = e.NameScope.Find<TabStripScrollViewer>(TabStripThemeConstants.CardTabStripScrollViewerPart);
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.TabStrip = this;
+        }
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        this.AddResourceBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));

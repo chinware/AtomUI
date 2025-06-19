@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Themes;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -38,7 +39,7 @@ internal class BaseOverflowMenuItem : MenuItem
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _iconButton = e.NameScope.Find<IconButton>(BaseOverflowMenuItemTheme.ItemCloseButtonPart);
+        _iconButton = e.NameScope.Find<IconButton>(OverflowMenuItemThemeConstants.ItemCloseButtonPart);
         if (_iconButton is not null)
         {
             _iconButton.Click += (sender, args) => { NotifyCloseRequest(); };

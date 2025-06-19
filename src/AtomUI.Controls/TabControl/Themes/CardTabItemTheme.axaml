@@ -1,0 +1,118 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ControlTheme x:Key="{x:Static themes:TabItemThemeConstants.CardTabItemThemeId}" TargetType="atom:TabItem">
+        <ControlTheme.BasedOn>
+            <themes:BaseTabItemTheme TargetType="atom:TabItem" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:TabItemThemeConstants.FramePart}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <StackPanel Name="{x:Static atom:TabItemThemeConstants.ContentLayoutPart}"
+                                Orientation="Horizontal">
+                        <atom:IconPresenter Name="{x:Static atom:TabItemThemeConstants.ItemIconPresenterPart}"
+                                            Icon="{TemplateBinding Icon}"
+                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <ContentPresenter Name="{x:Static atom:TabItemThemeConstants.ContentPresenterPart}"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate, Converter={x:Static themes:BaseTabItemTheme.StringToTextBlockConverter}}" />
+                        <atom:IconButton Name="{x:Static atom:TabItemThemeConstants.ItemCloseButtonPart}"
+                                         Icon="{TemplateBinding CloseIcon}"
+                                         IsVisible="{TemplateBinding IsClosable}" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+         <Style Selector="^ /template/ Border#PART_Decorator">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemMargin}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardBg}}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}"/>
+        </Style>
+        
+        <Style Selector="^:selected">
+            <Style Selector="^ /template/ Border#PART_Decorator">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TabStripPlacement=Top], ^[TabStripPlacement=Bottom]">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemMargin}}" />
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPaddingLG}}"/>
+                </Style>
+            </Style>
+        
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPadding}}"/>
+                </Style>
+            </Style>
+        
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPaddingSM}}"/>
+                </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TabStripPlacement=Left], ^[TabStripPlacement=Right]">
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
+                </Style>
+            </Style>
+        
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
+                </Style>
+            </Style>
+        
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ Border#PART_Decorator">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
+                </Style>
+            </Style>
+        </Style>
+        
+        <!-- BuildPlacementStyle begin -->
+        <!-- 设置 items presenter 面板样式 -->
+        <!-- 分为上、右、下、左 -->
+        <Style Selector="^[TabStripPlacement=Top]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TabStripPlacement=Right]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TabStripPlacement=Bottom]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[TabStripPlacement=Left]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+        </Style>
+        <!-- BuildPlacementStyle end -->
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ Border#PART_Decorator">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}"/>
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

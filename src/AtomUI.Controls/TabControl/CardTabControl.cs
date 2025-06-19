@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -91,6 +92,7 @@ public class CardTabControl : BaseTabControl
 
     private IconButton? _addTabButton;
     private ItemsPresenter? _itemsPresenter;
+    private TabControlScrollViewer? _scrollViewer;
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -115,11 +117,16 @@ public class CardTabControl : BaseTabControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _addTabButton   = e.NameScope.Find<IconButton>(CardTabControlTheme.AddTabButtonPart);
-        _itemsPresenter = e.NameScope.Find<ItemsPresenter>(BaseTabControlTheme.ItemsPresenterPart);
+        _addTabButton   = e.NameScope.Find<IconButton>(TabControlThemeConstants.AddTabButtonPart);
+        _itemsPresenter = e.NameScope.Find<ItemsPresenter>(TabControlThemeConstants.ItemsPresenterPart);
         if (_addTabButton is not null)
         {
             _addTabButton.Click += HandleAddButtonClicked;
+        }
+        _scrollViewer      = e.NameScope.Find<TabControlScrollViewer>(TabControlThemeConstants.CardTabStripScrollViewerPart);
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.TabControl = this;
         }
     }
 

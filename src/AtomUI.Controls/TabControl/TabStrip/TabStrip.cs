@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -8,7 +9,6 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 
@@ -35,11 +35,11 @@ public class TabStrip : BaseTabStrip
 
     private Border? _selectedIndicator;
     private ItemsPresenter? _itemsPresenter;
+    private TabStripScrollViewer? _scrollViewer;
 
     public TabStrip()
     {
         SelectionChanged += HandleSelectionChanged;
-        LayoutUpdated    += HandleLayoutUpdated;
     }
 
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -48,13 +48,6 @@ public class TabStrip : BaseTabStrip
         {
             SetupSelectedIndicator();
         }
-    }
-
-    private void HandleLayoutUpdated(object? sender, EventArgs args)
-    {
-        ConfigureTransitions();
-        // 只需要执行一次
-        LayoutUpdated -= HandleLayoutUpdated;
     }
 
     private void ConfigureTransitions()
@@ -145,14 +138,29 @@ public class TabStrip : BaseTabStrip
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _selectedIndicator = e.NameScope.Find<Border>(TabStripTheme.SelectedItemIndicatorPart);
-        _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(BaseTabStripTheme.ItemsPresenterPart);
+        _selectedIndicator = e.NameScope.Find<Border>(TabStripThemeConstants.SelectedItemIndicatorPart);
+        _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(TabStripThemeConstants.ItemsPresenterPart);
+        _scrollViewer      = e.NameScope.Find<TabStripScrollViewer>(TabStripThemeConstants.TabsContainerPart);
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.TabStrip = this;
+        }
+        ConfigureTransitions();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectedIndicatorThicknessProperty,
             SharedTokenKey.LineWidthBold));
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsMotionEnabledProperty)
+        {
+            ConfigureTransitions();
+        }
     }
 }
