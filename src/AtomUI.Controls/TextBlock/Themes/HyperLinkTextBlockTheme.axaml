@@ -1,0 +1,38 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:HyperLinkTextBlock}" TargetType="atom:HyperLinkTextBlock">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <TextBlock Name="{x:Static atom:HyperLinkTextBlockThemeConstants.TextPart}"
+                           FontWeight="{TemplateBinding FontWeight}"
+                           FontStyle="{TemplateBinding FontStyle}"
+                           FontSize="{TemplateBinding FontSize}"
+                           Text="{TemplateBinding Text}">
+                    
+                </TextBlock>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        
+        <Style Selector="^[IsEnabled=True]">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
+            
+            <Style Selector="^:pointerover">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkHover}}" />
+            </Style>
+            
+            <Style Selector="^:pressed">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkActive}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

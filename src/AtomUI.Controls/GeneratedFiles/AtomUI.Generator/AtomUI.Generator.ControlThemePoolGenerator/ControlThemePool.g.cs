@@ -14,7 +14,6 @@ namespace AtomUI.Theme
             themes.Add(new AtomUI.Controls.CardTabItemTheme());
             themes.Add(new AtomUI.Controls.CardTabStripItemTheme());
             themes.Add(new AtomUI.Controls.CardTabStripTheme());
-            themes.Add(new AtomUI.Controls.HyperLinkTextBlockTheme());
             themes.Add(new AtomUI.Controls.TabControlTheme());
             themes.Add(new AtomUI.Controls.TabItemTheme());
             themes.Add(new AtomUI.Controls.TabStripItemTheme());

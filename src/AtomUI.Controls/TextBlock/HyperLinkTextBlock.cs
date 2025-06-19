@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -283,7 +282,7 @@ public class HyperLinkTextBlock : TemplatedControl, ICustomHitTest, IMotionAware
             var e = new RoutedEventArgs(ClickEvent);
             RaiseEvent(e);
 
-            (var command, var parameter) = (Command, CommandParameter);
+            var (command, parameter) = (Command, CommandParameter);
             if (!e.Handled && command is not null && command.CanExecute(parameter))
             {
                 command.Execute(parameter);
