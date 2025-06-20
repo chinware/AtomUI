@@ -10,7 +10,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
@@ -231,23 +230,11 @@ internal class SwitchKnob : Control,
             KnobRenderWidth = KnobSize.Width;
         }
     }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-  
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         if (_isLoading)
         {
             StartLoadingAnimation();
@@ -272,6 +259,7 @@ internal class SwitchKnob : Control,
         {
             _cancellationTokenSource?.Cancel();
         }
+        this.DisposeTokenBindings();
     }
 
     public sealed override void Render(DrawingContext context)

@@ -10,7 +10,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -223,9 +222,9 @@ public class Drawer : Control,
         return null;
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         _resourceBindingsDisposable = new CompositeDisposable();
         var parentDrawer = FindParentDrawer();
         if (parentDrawer != null)
@@ -246,20 +245,15 @@ public class Drawer : Control,
                 }
             }));
         }
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty,
             DrawerTokenKey.PushOffsetPercent));
         SetupDialogSizeTypeBindings();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
     }
 
     private void SetupDialogSizeTypeBindings()

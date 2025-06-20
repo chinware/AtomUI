@@ -14,7 +14,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using AvaloniaButton = Avalonia.Controls.Button;
 
@@ -1375,17 +1374,16 @@ internal class CalendarItem : TemplatedControl,
     {
         PseudoClasses.Set(CalendarDisabledPC, !isEnabled);
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
+        base.OnAttachedToVisualTree(e);
         _resourceBindingsDisposable = new CompositeDisposable();
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
+        base.OnDetachedFromVisualTree(e);
         this.DisposeTokenBindings();
     }
-    
 }

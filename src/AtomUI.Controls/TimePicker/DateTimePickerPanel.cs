@@ -12,7 +12,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
@@ -450,11 +449,12 @@ internal class DateTimePickerPanel : Panel,
 
         return finalSize;
     }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _parentScroller = this.GetVisualParent() as ScrollContentPresenter;
+        _resourceBindingsDisposable = new CompositeDisposable();
+        _parentScroller             = this.GetVisualParent() as ScrollContentPresenter;
         _parentScroller?.AddHandler(Gestures.ScrollGestureEndedEvent, OnScrollGestureEnded);
     }
 
@@ -463,6 +463,7 @@ internal class DateTimePickerPanel : Panel,
         base.OnDetachedFromVisualTree(e);
         _parentScroller?.RemoveHandler(Gestures.ScrollGestureEndedEvent, OnScrollGestureEnded);
         _parentScroller = null;
+        this.DisposeTokenBindings();
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -767,18 +768,5 @@ internal class DateTimePickerPanel : Panel,
                 EnableCellHoverAnimation();
             }
         }
-    }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }

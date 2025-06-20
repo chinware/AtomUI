@@ -400,7 +400,7 @@ public abstract class AbstractProgressBar : RangeBase,
                     SharedTokenKey.MotionDurationFast)
             };
 
-            NotifySetupTransitions(ref transitions);
+            NotifyConfigureTransitions(ref transitions);
             Transitions = transitions;
         }
         else
@@ -439,7 +439,7 @@ public abstract class AbstractProgressBar : RangeBase,
         NotifyPropertyChanged(e);
     }
 
-    protected virtual void NotifySetupTransitions(ref Transitions transitions)
+    protected virtual void NotifyConfigureTransitions(ref Transitions transitions)
     {
     }
 

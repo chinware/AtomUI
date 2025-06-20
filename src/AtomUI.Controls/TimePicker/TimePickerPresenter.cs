@@ -11,7 +11,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -288,6 +287,7 @@ internal class TimePickerPresenter : PickerPresenterBase,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
@@ -305,17 +305,6 @@ internal class TimePickerPresenter : PickerPresenterBase,
         base.OnDetachedFromVisualTree(e);
         _choosingStateDisposable?.Dispose();
         _choosingStateDisposable = null;
-    }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 }

@@ -7,7 +7,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
@@ -112,12 +111,6 @@ internal sealed class CalendarButton : AvaloniaButton
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        SetupTransitions();
-    }
-
     /// <summary>
     /// Builds the visual tree for the
     /// <see cref="T:System.Windows.Controls.Primitives.CalendarButton" />
@@ -126,9 +119,10 @@ internal sealed class CalendarButton : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         UpdatePseudoClasses();
+        ConfigureTransitions();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -229,7 +223,7 @@ internal sealed class CalendarButton : AvaloniaButton
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

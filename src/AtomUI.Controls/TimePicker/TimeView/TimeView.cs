@@ -12,7 +12,6 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -229,6 +228,7 @@ internal class TimeView : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
@@ -241,17 +241,6 @@ internal class TimeView : TemplatedControl,
     {
         base.OnDetachedFromVisualTree(e);
         _pointerPositionDisposable?.Dispose();
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 

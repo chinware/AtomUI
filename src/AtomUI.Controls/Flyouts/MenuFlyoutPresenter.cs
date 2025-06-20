@@ -8,7 +8,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -173,6 +172,12 @@ public class MenuFlyoutPresenter : MenuBase,
         _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutThemeConstants.RootContainerPart);
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -184,20 +189,9 @@ public class MenuFlyoutPresenter : MenuBase,
                 menuItem.IsSubMenuOpen = false;
             }
         }
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
-
+    
     public CornerRadius GetMaskCornerRadius()
     {
         if (_arrowDecoratedBox is not null)

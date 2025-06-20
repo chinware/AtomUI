@@ -372,6 +372,7 @@ public class TreeViewItem : AvaloniaTreeItem,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
@@ -387,15 +388,9 @@ public class TreeViewItem : AvaloniaTreeItem,
         SetupCheckBoxEnabled();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
+        base.OnDetachedFromVisualTree(e);
         this.DisposeTokenBindings();
     }
 

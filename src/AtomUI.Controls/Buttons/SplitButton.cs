@@ -410,11 +410,13 @@ public class SplitButton : ContentControl,
     {
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
@@ -472,7 +474,6 @@ public class SplitButton : ContentControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         
         // Control attached again, set Hotkey to create a hotkey manager for this control
         SetCurrentValue(HotKeyProperty, _hotkey);
@@ -503,7 +504,7 @@ public class SplitButton : ContentControl,
         {
             Command.CanExecuteChanged -= CanExecuteChanged;
         }
-        this.DisposeTokenBindings();
+ 
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

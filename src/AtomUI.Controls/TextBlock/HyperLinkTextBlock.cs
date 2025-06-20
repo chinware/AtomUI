@@ -295,7 +295,7 @@ public class HyperLinkTextBlock : TemplatedControl, ICustomHitTest, IMotionAware
     {
         base.OnAttachedToLogicalTree(e);
 
-        (var command, var parameter) = (Command, CommandParameter);
+        var (command, parameter) = (Command, CommandParameter);
         if (command is not null)
         {
             command.CanExecuteChanged += CanExecuteChangedHandler;

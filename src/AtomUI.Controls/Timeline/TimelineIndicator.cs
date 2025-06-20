@@ -7,7 +7,6 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -185,21 +184,10 @@ internal class TimelineIndicator : Control,
         });
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, LineHeightRatioProperty, SharedTokenKey.LineHeightRatio));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorDotBorderWidthProperty,
@@ -213,6 +201,12 @@ internal class TimelineIndicator : Control,
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, IndicatorTailColorProperty,
             TimelineTokenKey.IndicatorTailColor));
         SetupIndicatorIcon();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

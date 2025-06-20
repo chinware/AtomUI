@@ -162,10 +162,6 @@ public class IconButton : AvaloniaButton,
             {
                 ConfigureTransitions();
             }
-            else if (e.Property == BackgroundProperty)
-            {
-                Console.WriteLine(Background);
-            }
         }
     }
 

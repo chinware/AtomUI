@@ -12,7 +12,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
@@ -193,9 +192,10 @@ internal sealed class CalendarDayButton : AvaloniaButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         UpdatePseudoClasses();
+        ConfigureTransitions();
     }
 
-    private void SetupTransitions()
+    private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
@@ -297,25 +297,19 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         }
     }
     
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        SetupTransitions();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -325,7 +319,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions();
             }
         }
     }

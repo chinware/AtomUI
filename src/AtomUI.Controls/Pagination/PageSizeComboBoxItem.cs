@@ -12,12 +12,18 @@ internal class PageSizeComboBoxItem : ComboBoxItem,
     
     private CompositeDisposable? _resourceBindingsDisposable;
     CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
-    
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
+        base.OnAttachedToLogicalTree(e);
         _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, typeof(ComboBoxItem)));
-        base.OnAttachedToLogicalTree(e);
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 }

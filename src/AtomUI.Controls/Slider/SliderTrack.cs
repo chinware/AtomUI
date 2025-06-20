@@ -422,6 +422,18 @@ public class SliderTrack : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
+        this.AddResourceBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, SliderTrackSizeProperty, SliderTokenKey.SliderTrackSize));
+        this.AddResourceBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, SliderMarkSizeProperty, SliderTokenKey.MarkSize));
+        this.AddResourceBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, SliderRailSizeProperty, SliderTokenKey.RailSize));
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBackgroundBrushProperty,
+            SharedTokenKey.ColorBgElevated));
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBorderThicknessProperty,
+            SliderTokenKey.ThumbCircleBorderThickness));
+        
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _focusProcessDisposable = inputManager.Process.Subscribe(args =>
         {
@@ -446,25 +458,10 @@ public class SliderTrack : Control,
         ConfigureTransitions();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, SliderTrackSizeProperty, SliderTokenKey.SliderTrackSize));
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, SliderMarkSizeProperty, SliderTokenKey.MarkSize));
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, SliderRailSizeProperty, SliderTokenKey.RailSize));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBackgroundBrushProperty,
-            SharedTokenKey.ColorBgElevated));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBorderThicknessProperty,
-            SliderTokenKey.ThumbCircleBorderThickness));
-    }
-    
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
+        base.OnDetachedFromVisualTree(e);
+        _focusProcessDisposable?.Dispose();
         this.DisposeTokenBindings();
     }
 
@@ -531,12 +528,6 @@ public class SliderTrack : Control,
         {
             topLevel.FocusManager?.ClearFocus();
         }
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _focusProcessDisposable?.Dispose();
     }
 
     /// <summary>

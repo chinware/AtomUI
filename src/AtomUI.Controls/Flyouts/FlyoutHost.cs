@@ -8,7 +8,6 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
-using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;

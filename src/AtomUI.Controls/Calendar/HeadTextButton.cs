@@ -4,7 +4,6 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;

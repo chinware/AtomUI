@@ -3,8 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
-using Avalonia.Markup.Xaml.Templates;
 
 namespace AtomUI.Controls;
 
