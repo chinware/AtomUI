@@ -315,12 +315,9 @@ internal sealed class CalendarDayButton : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == IsMotionEnabledProperty)
         {
-            if (change.Property == IsMotionEnabledProperty)
-            {
-                ConfigureTransitions();
-            }
+            ConfigureTransitions();
         }
     }
 }

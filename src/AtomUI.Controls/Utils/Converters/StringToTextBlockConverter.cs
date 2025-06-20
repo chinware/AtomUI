@@ -26,6 +26,7 @@ internal class StringToTextBlockConverter : IValueConverter
                 HorizontalAlignment = HorizontalAlignment,
                 Height = Height,
                 Width = Width,
+                TextWrapping = TextWrapping,
                 LineHeight = LineHeight,
             };
         }
