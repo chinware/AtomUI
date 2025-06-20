@@ -13,12 +13,7 @@ public static class OSSDataGridThemeManagerBuilderExtensions
             {
                 themeManagerBuilder.AddControlToken(controlType);
             }
-                
-            // var controlThemes = ControlThemePool.GetControlThemes();
-            // foreach (var controlTheme in controlThemes)
-            // {
-            //     themeManagerBuilder.AddControlTheme(controlTheme);
-            // }
+            themeManagerBuilder.AddControlThemesProvider(new AtomUIDataGridThemesProvider());
 
             var languageProviders = LanguageProviderPool.GetLanguageProviders();
             foreach (var languageProvider in languageProviders)
