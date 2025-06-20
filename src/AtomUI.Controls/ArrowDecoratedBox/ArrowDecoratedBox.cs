@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -256,9 +257,9 @@ public class ArrowDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _contentDecorator     = e.NameScope.Get<Border>(ArrowDecoratedBoxTheme.ContentDecoratorPart);
-        _arrowIndicatorLayout = e.NameScope.Get<Control>(ArrowDecoratedBoxTheme.ArrowIndicatorLayoutPart);
-        _arrowIndicator       = e.NameScope.Get<ArrowIndicator>(ArrowDecoratedBoxTheme.ArrowIndicatorPart);
+        _contentDecorator     = e.NameScope.Get<Border>(ArrowDecoratedBoxThemeConstants.ContentDecoratorPart);
+        _arrowIndicatorLayout = e.NameScope.Get<Control>(ArrowDecoratedBoxThemeConstants.ArrowIndicatorLayoutPart);
+        _arrowIndicator       = e.NameScope.Get<ArrowIndicator>(ArrowDecoratedBoxThemeConstants.ArrowIndicatorPart);
         ArrowDirection        = GetDirection(ArrowPosition);
     }
 

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Globalization;
 using AtomUI.Utils;
 using Avalonia;
@@ -18,7 +17,6 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
     public AppBuilder AppBuilder { get; private set; }
 
     private HashSet<string> _registeredTokenTypes;
-    private HashSet<string> _registeredControlThemes;
     private HashSet<string> _registeredControlThemesProviders;
     private HashSet<string> _registeredLanguageProviders;
 
@@ -32,7 +30,6 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
         CultureInfo                       = new CultureInfo(LanguageCode.en_US);
         ThemeId                           = ThemeManager.DEFAULT_THEME_ID;
         _registeredTokenTypes             = new HashSet<string>();
-        _registeredControlThemes          = new HashSet<string>();
         _registeredLanguageProviders      = new HashSet<string>();
         _registeredControlThemesProviders = new HashSet<string>();
         AppBuilder                        = builder;
@@ -48,29 +45,6 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
 
         ControlDesignTokens.Add(tokenType);
         _registeredTokenTypes.Add(typeStr);
-    }
-
-    public void AddControlTheme(BaseControlTheme controlTheme)
-    {
-        var     resourceKey    = controlTheme.ThemeResourceKey();
-        string? resourceKeyStr = null;
-        if (resourceKey is Type typeKey)
-        {
-            resourceKeyStr = typeKey.FullName;
-        }
-        else
-        {
-            resourceKeyStr = resourceKey.ToString();
-        }
-
-        Debug.Assert(resourceKeyStr != null);
-        if (_registeredControlThemes.Contains(resourceKeyStr))
-        {
-            throw new ThemeResourceRegisterException($"Control theme '{resourceKeyStr}' is already registered.");
-        }
-
-        ControlThemes.Add(controlTheme);
-        _registeredControlThemes.Add(resourceKeyStr);
     }
 
     public void AddControlThemesProvider(IControlThemesProvider controlThemesProvider)
@@ -116,11 +90,6 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
         foreach (var controlThemesProvider in ControlThemesProviders)
         {
             themeManager.RegisterControlThemesProvider(controlThemesProvider);
-        }
-        
-        foreach (var controlTheme in ControlThemes)
-        {
-            themeManager.RegisterControlTheme(controlTheme);
         }
 
         foreach (var tokenType in ControlDesignTokens)

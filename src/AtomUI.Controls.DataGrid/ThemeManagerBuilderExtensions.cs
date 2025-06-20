@@ -14,11 +14,11 @@ public static class OSSDataGridThemeManagerBuilderExtensions
                 themeManagerBuilder.AddControlToken(controlType);
             }
                 
-            var controlThemes = ControlThemePool.GetControlThemes();
-            foreach (var controlTheme in controlThemes)
-            {
-                themeManagerBuilder.AddControlTheme(controlTheme);
-            }
+            // var controlThemes = ControlThemePool.GetControlThemes();
+            // foreach (var controlTheme in controlThemes)
+            // {
+            //     themeManagerBuilder.AddControlTheme(controlTheme);
+            // }
 
             var languageProviders = LanguageProviderPool.GetLanguageProviders();
             foreach (var languageProvider in languageProviders)

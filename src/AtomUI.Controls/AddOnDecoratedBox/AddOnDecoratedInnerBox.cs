@@ -207,10 +207,10 @@ public class AddOnDecoratedInnerBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _leftAddOnLayout  = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.LeftAddOnLayoutPart);
-        _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxTheme.RightAddOnLayoutPart);
-        _clearButton      = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxTheme.ClearButtonPart);
-        _decorator        = e.NameScope.Find<Border>(AddOnDecoratedInnerBoxTheme.InnerBoxDecoratorPart);
+        _leftAddOnLayout  = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart);
+        _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxThemeConstants.RightAddOnLayoutPart);
+        _clearButton      = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart);
+        _decorator        = e.NameScope.Find<Border>(AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart);
 
         if (_leftAddOnLayout is not null)
         {

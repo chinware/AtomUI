@@ -10,7 +10,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -125,22 +124,11 @@ public class BaseTabControl : AvaloniaTabControl,
             BindUtils.RelayBind(this, SizeTypeProperty, tabItem, TabItem.SizeTypeProperty);
         }
     }
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         if (_frame is not null)
         {
             this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
@@ -152,6 +140,13 @@ public class BaseTabControl : AvaloniaTabControl,
         UpdatePseudoClasses();
         HandlePlacementChanged();
     }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
+    }
+
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {

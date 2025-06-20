@@ -22,7 +22,6 @@ public class ThemeManager : Styles, IThemeManager
     private readonly Dictionary<string, Theme> _themePool;
     private readonly List<string> _customThemeDirs;
     private readonly List<string> _builtInThemeDirs;
-    private ResourceDictionary? _controlThemeResources;
     private IList<IControlThemesProvider> _controlThemesProviders;
     
     private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
@@ -79,7 +78,6 @@ public class ThemeManager : Styles, IThemeManager
         };
         DefaultThemeId          = DEFAULT_THEME_ID;
         _controlThemesProviders = new List<IControlThemesProvider>();
-        _controlThemeResources  = new ResourceDictionary();
         ControlTokenTypes       = new List<Type>();
         _languageProviders      = new List<ILanguageProvider>();
         _languages              = new Dictionary<CultureInfo, ResourceDictionary>();
@@ -191,13 +189,6 @@ public class ThemeManager : Styles, IThemeManager
         ThemeChanged?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
     }
     
-    public void RegisterControlTheme(BaseControlTheme controlTheme)
-    {
-        controlTheme.Build();
-        var resourceKey = controlTheme.ThemeResourceKey();
-        _controlThemeResources?.Add(resourceKey, controlTheme);
-    }
-
     public void RegisterControlThemesProvider(IControlThemesProvider controlThemesProvider)
     {
         _controlThemesProviders.Add(controlThemesProvider);
@@ -293,7 +284,6 @@ public class ThemeManager : Styles, IThemeManager
 
     internal void Configure()
     {
-        RegisterControlThemes();
         foreach (var provider in _controlThemesProviders)
         {
             Resources.MergedDictionaries.AddRange(provider.ControlThemes);
@@ -319,15 +309,6 @@ public class ThemeManager : Styles, IThemeManager
             }
 
             _languageProviders = null;
-        }
-    }
-
-    internal void RegisterControlThemes()
-    {
-        if (_controlThemeResources is not null)
-        {
-            Resources.MergedDictionaries.Add(_controlThemeResources);
-            _controlThemeResources = null;
         }
     }
 
