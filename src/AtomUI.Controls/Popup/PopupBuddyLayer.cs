@@ -122,7 +122,19 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     public void Attach()
     {
-        Show();
+        if (OperatingSystem.IsMacOS())
+        {
+            PlatformImpl?.SetTopmost(true);
+            var popupRoot = _popupHost as PopupRoot;
+            popupRoot?.PlatformImpl?.SetTopmost(true);
+            Show();
+            popupRoot?.Activate();
+        }
+        else
+        {
+            Show();
+        }
+       
         SetupPopupHost();
         _buddyDecorator.HideDecoratorContent();
     }

@@ -55,7 +55,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 
         _layout   = new Canvas();
         Content   = _layout;
-        Focusable = true;
+        Focusable = false;
     }
 
     /// <summary>
