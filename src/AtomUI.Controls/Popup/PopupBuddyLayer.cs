@@ -113,10 +113,32 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         {
             scaling = windowBase.DesktopScaling;
         }
-        var offset = new Point(popupOffset.X, popupOffset.Y);
+        var offset         = new Point(popupOffset.X, popupOffset.Y);
+        
         var maskShadowsThickness = MaskShadows.Thickness();
         var layerOffset = new Point(offset.X - maskShadowsThickness.Left * scaling,
             offset.Y - maskShadowsThickness.Top * scaling);
+        if (OperatingSystem.IsMacOS())
+        {
+            var topOffsetMark = 0d;
+            if (ManagedPopupPositionerPopup != null)
+            {
+                var screens        = ManagedPopupPositionerPopup.Screens;
+                foreach (var screen in screens)
+                {
+                    topOffsetMark = Math.Max(topOffsetMark, screen.WorkingArea.Top);
+                }
+            }
+            var delta = layerOffset.Y - topOffsetMark;
+            if (delta < 0)
+            {
+                RenderTransform = new TranslateTransform(0, delta);
+            }
+            else
+            {
+                RenderTransform = null;
+            }
+        }
         MoveAndResize(layerOffset, popupRoot.ClientSize.Inflate(MaskShadows.Thickness()));
     }
 

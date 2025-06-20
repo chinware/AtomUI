@@ -34,13 +34,7 @@ public class TextBlock : AvaloniaTextBlock, IResourceBindingManager
         base.OnDetachedFromVisualTree(e);
         this.DisposeTokenBindings();
     }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size = base.MeasureOverride(availableSize);
-        return new Size(size.Width, size.Height + Math.Abs(_deltaOffsetY));
-    }
-
+    
     protected override void RenderTextLayout(DrawingContext context, Point origin)
     {
         base.RenderTextLayout(context, new Point(origin.X, origin.Y + _deltaOffsetY));

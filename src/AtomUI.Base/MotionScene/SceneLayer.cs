@@ -11,7 +11,7 @@ namespace AtomUI.MotionScene;
 
 internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
-    private readonly IManagedPopupPositionerPopup? _managedPopupPositionerPopup;
+    protected readonly IManagedPopupPositionerPopup? ManagedPopupPositionerPopup;
     private readonly Canvas _layout;
     private SceneMotionActorControl? _motionActorControl;
 
@@ -49,7 +49,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
         this.SetWindowIgnoreMouseEvents(true);
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
         {
-            _managedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
+            ManagedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
         }
 
         _layout   = new Canvas();
@@ -155,7 +155,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     {
         Width  = size.Width;
         Height = size.Height;
-        _managedPopupPositionerPopup?.MoveAndResize(new Point(Math.Round(point.X), Math.Floor(point.Y + 0.5)), size);
+        ManagedPopupPositionerPopup?.MoveAndResize(new Point(Math.Round(point.X), Math.Floor(point.Y + 0.5)), size);
     }
 
     protected override void OnOpened(EventArgs e)
