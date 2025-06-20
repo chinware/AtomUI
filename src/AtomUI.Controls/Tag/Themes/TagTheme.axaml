@@ -17,7 +17,7 @@
                         <atom:IconPresenter Name="{x:Static atom:TagThemeConstants.IconPresenterPart}"
                                             Grid.Column="0"
                                             Icon="{TemplateBinding Icon}" />
-                        <TextBlock Name="{x:Static atom:TagThemeConstants.TagTextLabelPart}"
+                        <atom:TextBlock Name="{x:Static atom:TagThemeConstants.TagTextLabelPart}"
                                    Grid.Column="1"
                                    VerticalAlignment="Center"
                                    Text="{TemplateBinding TagText}"
@@ -40,7 +40,7 @@
         <Setter Property="TagTextPaddingInline"
                 Value="{DynamicResource {x:Static atom:TagTokenKey.TagTextPaddingInline}}" />
 
-        <Style Selector="^ /template/ TextBlock#PART_TagTextLabel">
+        <Style Selector="^ /template/ atom|TextBlock#PART_TagTextLabel">
             <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:TagTokenKey.TagLineHeight}}" />
         </Style>
 

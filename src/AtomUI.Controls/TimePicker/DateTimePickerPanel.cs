@@ -150,6 +150,7 @@ internal class DateTimePickerPanel : Panel,
         FormatDate = DateTime.Now;
         AddHandler(TappedEvent, HandleItemTapped, RoutingStrategies.Bubble);
         AddHandler(DoubleTappedEvent, HandleItemDoubleTapped, RoutingStrategies.Bubble);
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     static DateTimePickerPanel()
@@ -453,7 +454,6 @@ internal class DateTimePickerPanel : Panel,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         _parentScroller             = this.GetVisualParent() as ScrollContentPresenter;
         _parentScroller?.AddHandler(Gestures.ScrollGestureEndedEvent, OnScrollGestureEnded);
     }

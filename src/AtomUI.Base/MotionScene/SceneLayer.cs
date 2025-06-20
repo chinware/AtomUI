@@ -41,11 +41,10 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     {
         ParentTopLevel   = parent;
         IsHitTestVisible = false;
-        impl.SetWindowManagerAddShadowHint(false);
         if (PlatformImpl is not null)
         {
             PlatformImpl.SetTransparencyLevelHint([WindowTransparencyLevel.Transparent]);
-            PlatformImpl!.SetWindowManagerAddShadowHint(false);
+            PlatformImpl.SetWindowManagerAddShadowHint(false);
         }
         this.SetWindowIgnoreMouseEvents(true);
         if (PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)

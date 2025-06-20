@@ -3,6 +3,9 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Media;
+using Avalonia.Media.TextFormatting;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -17,6 +20,7 @@ public class TextBlock : AvaloniaTextBlock, IResourceBindingManager
     #endregion
     
     private CompositeDisposable? _resourceBindingsDisposable;
+    private double _deltaOffsetY;
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -30,5 +34,45 @@ public class TextBlock : AvaloniaTextBlock, IResourceBindingManager
         base.OnDetachedFromVisualTree(e);
         this.DisposeTokenBindings();
     }
-    
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size = base.MeasureOverride(availableSize);
+        return new Size(size.Width, size.Height + Math.Abs(_deltaOffsetY));
+    }
+
+    protected override void RenderTextLayout(DrawingContext context, Point origin)
+    {
+        base.RenderTextLayout(context, new Point(origin.X, origin.Y + _deltaOffsetY));
+    }
+
+    private void CalculateDeltaOffsetY()
+    {
+        if (!this.IsAttachedToVisualTree() || !OperatingSystem.IsMacOS())
+        {
+            return;
+        }
+        var typeface = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
+        var textLayout = new TextLayout(Text, typeface, null, FontSize, Foreground, textWrapping: TextWrapping, textAlignment: TextAlignment);
+        double baseLine = textLayout.Baseline;
+        double height = textLayout.Height;
+        double offset = (height - baseLine) * 0.35;
+        _deltaOffsetY = offset;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == TextProperty || 
+            change.Property == TextAlignmentProperty ||
+            change.Property == TextWrappingProperty ||
+            change.Property == FontSizeProperty ||
+            change.Property == FontFamilyProperty ||
+            change.Property == FontStyleProperty ||
+            change.Property == FontWeightProperty ||
+            change.Property == FontStretchProperty)
+        {
+            CalculateDeltaOffsetY();
+        }
+    }
 }
