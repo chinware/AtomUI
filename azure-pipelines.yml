@@ -29,10 +29,22 @@ stages:
                vmImage: 'macOS-latest'
             steps:
                -  pwsh: |
-                     brew install ninja
-                     cmake -B $(buildDir) -S $(nativeLibSrcDir) -DCMAKE_INSTALL_PREFIX="$(macOutputDir)" -DCMAKE_OSX_ARCHITECTURES:STRING="x86_64;arm64" -DCMAKE_BUILD_TYPE="${{ parameters.BuildConfiguration }}" -G "Ninja"
-                     ninja -C $(buildDir)
-                     ninja -C $(buildDir) install
+                     brew install xmake
+                     xmake --version
+                     clang --version
+                     xmake config --project=$(nativeLibSrcDir) --builddir=$(buildDir) -p macosx -a arm64 -m ${{ parameters.BuildConfiguration }}
+                     xmake build
+                     xmake install --installdir=$(macOutputDir)
+                     xmake config --project=$(nativeLibSrcDir) --builddir=$(buildDir) -p macosx -a x86_64 -m ${{ parameters.BuildConfiguration }}
+                     xmake build
+                     xmake install --installdir=$(macOutputDir)
+                     Write-Output "generate universal binary"
+                     New-Item -Path "$(macOutputDir)/lib" -ItemType Directory -Force
+                     lipo -create $(macOutputDir)/arm64/lib/libAtomUINative.dylib $(macOutputDir)/x86_64/lib/libAtomUINative.dylib -output $(macOutputDir)/lib/libAtomUINative.dylib
+                     dir "$(macOutputDir)" -File
+                     lipo -info $(macOutputDir)/lib/libAtomUINative.dylib
+                     Remove-Item -Path "$(macOutputDir)/arm64/lib/libAtomUINative.dylib"
+                     Remove-Item -Path "$(macOutputDir)/x86_64/lib/libAtomUINative.dylib"
                   displayName: "Build AtomUINative"
                -  task: PublishPipelineArtifact@1
                   inputs:
@@ -49,10 +61,33 @@ stages:
                      artifact: AtomUINativeMac
                   displayName: "Download libAtomUINative.dylib to pipeline"
                -  pwsh: |
+                     $msysPath = "C:/msys64"
+                     $env:MSYSTEM = "CLANG64"
+                     $env:MSYSTEM_CARCH = "x86_64"
+                     $env:MSYSTEM_CHOST = "x86_64-w64-mingw32"
+                     $env:MSYSTEM_PREFIX = "/clang64"
+                     $env:CHERE_INVOKING = "1"
+                     $env:PATH = "$msysPath/clang64/bin;$msysPath/usr/bin;$env:PATH"
+                     Write-Host "##vso[task.setvariable variable=MSYSTEM]CLANG64"
+                     Write-Host "##vso[task.setvariable variable=MSYSTEM_CARCH]x86_64"
+                     Write-Host "##vso[task.setvariable variable=MSYSTEM_CHOST]x86_64-w64-mingw32"
+                     Write-Host "##vso[task.setvariable variable=MSYSTEM_PREFIX]/clang64"
+                     Write-Host "##vso[task.prependpath]$msysPath/clang64/bin"
+                     Write-Host "##vso[task.prependpath]$msysPath/usr/bin"
+                     C:/msys64/usr/bin/bash.exe -lc @"
+                        pacman -Sy --noconfirm
+                        pacman -S mingw-w64-clang-x86_64-xmake --noconfirm
+                        pacman -S mingw-w64-clang-x86_64-clang --noconfirm
+                     "@
+                     xmake --version
+                     clang --version
+                  displayName: "Prepare Build environment"
+               -  pwsh: |
+                    dotnet build --configuration ${{ parameters.BuildConfiguration }} /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
                      $osxNativeLibDir = "$(SourceDir)/output/Bin/Release/runtimes/osx/native"
                      New-Item -ItemType Directory -Force -Path $osxNativeLibDir
                      Copy-Item -Path $(Pipeline.Workspace)/lib/libAtomUINative.dylib -Destination $osxNativeLibDir
-                     dotnet build --verbosity normal --configuration ${{ parameters.BuildConfiguration }} /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
+                     dotnet build --configuration ${{ parameters.BuildConfiguration }} /p:IsNightlyBuild=${{ parameters.IsNightlyBuild }} $(SourceDir)/packages/AtomUI/AtomUI.csproj
                   displayName: "Build AtomUI projects"
                -  pwsh: |
                      $buildTimestamp = Get-Date -Format 'yyyyMMddHHmm'

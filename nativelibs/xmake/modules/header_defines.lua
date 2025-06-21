@@ -8,7 +8,7 @@
 -- Created by chinboy on 2025/05/19.
 
 function main()
-    set_configdir("$(buildir)/include/atomui")
+    set_configdir("$(builddir)/include/atomui")
     add_configfiles(path.join(ATOMUI_INCLUDE_DIR, "Config.h.in"))
 
     ATOMUI_PACKAGE_NAME = "atomui"

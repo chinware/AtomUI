@@ -30,10 +30,10 @@ includes("xmake/options.lua")
 includes("xmake/toolchains/atomui")
 
 add_includedirs("include", {public = true})
-add_includedirs("$(buildir)/include", {public = true})
+add_includedirs("$(builddir)/include", {public = true})
 
 -- global config header generator
-set_configdir("$(buildir)/include/atomui")
+set_configdir("$(builddir)/include/atomui")
 add_configfiles(path.join(ATOMUI_INCLUDE_DIR, "Config.h.in"))
 
 ATOMUI_PACKAGE_NAME = "atomui"
