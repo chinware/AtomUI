@@ -1,0 +1,27 @@
+name: AtomUI Release Pipeline
+on:
+   workflow_dispatch:
+      inputs:
+         IsNightlyBuild:
+            description: 'Is it a nightly build'
+            type: boolean
+            default: false
+         BuildConfiguration:
+            description: 'Build configuration'
+            type: string
+            default: 'Release'
+env:
+   SOURCE_DIR: ${{ github.workspace }}
+   NATIVE_LIB_SRC_DIR: ${{ github.workspace }}/nativelibs
+   BUILD_DIR: ${{ github.workspace }}/build
+   BASE_OUTPUT_DIR: ${{ github.workspace }}/output
+   MAC_OUTPUT_DIR: ${{ env.BASE_OUTPUT_DIR }}/osx
+   WIN_OUTPUT_DIR: ${{ env.BASE_OUTPUT_DIR }}/windows
+
+jobs:
+   BuildAtomUINativeMacOS:
+      name: Build AtomUINative for macOS
+      runs-on: macos-latest
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
