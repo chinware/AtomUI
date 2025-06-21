@@ -43,10 +43,10 @@ if ($IsWindows) {
      xmake install --installdir=$installPrefix
      Copy-Item -Path $installPrefix/x86_64/lib/$libName -Destination $deployDir
 } else {
-    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a arm64 -m $buildType --toolchain=atomui --sdk=/opt/homebrew/opt/llvm@19
+    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a arm64 -m $buildType
     xmake build
     xmake install --installdir=$installPrefix
-    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a x86_64 -m $buildType --toolchain=atomui --sdk=/opt/homebrew/opt/llvm@19
+    xmake config --project=$sourceDir --buildir=$buildDir -p macosx -a x86_64 -m $buildType
     xmake build
     xmake install --installdir=$installPrefix
     Write-Output "generate universal binary"
