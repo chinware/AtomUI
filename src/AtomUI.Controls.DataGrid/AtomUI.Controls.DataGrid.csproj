@@ -15,11 +15,9 @@
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
         <Compile Remove="DataGridValueConverter.cs" />
-        <Compile Remove="EventArgs/DataGridRowClipboardEventArgs.cs" />
-        <Compile Remove="Theme\DataGridTopLeftColumnHeaderTheme.cs" />
     </ItemGroup>
-
-    <ItemGroup>
+    
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
         <ProjectReference Include="../AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj"/>
         <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj"/>
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
@@ -27,6 +25,12 @@
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all"/>
         <ProjectReference Include="../AtomUI.Controls/AtomUI.Controls.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PackageReference Include="AtomUI"/>
+        <PackageReference Include="AtomUI.Generator" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
+                          PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -6,18 +6,25 @@ on:
             description: 'Is it a nightly build'
             type: boolean
             default: false
+         TargetBranch:
+            description: 'Target branch to build'
+            type: string
+            default: 'develop'
          BuildConfiguration:
             description: 'Build configuration'
             type: string
             default: 'Release'
+         PublishToNuget:
+            description: 'Publish to nuget.org'
+            type: boolean
+            default: false
 env:
    SOURCE_DIR: ${{ github.workspace }}
    NATIVE_LIB_SRC_DIR: ${{ github.workspace }}/nativelibs
    BUILD_DIR: ${{ github.workspace }}/build
    BASE_OUTPUT_DIR: ${{ github.workspace }}/output
-   MAC_OUTPUT_DIR: ${{ env.BASE_OUTPUT_DIR }}/osx
-   WIN_OUTPUT_DIR: ${{ env.BASE_OUTPUT_DIR }}/windows
-
+   MAC_OUTPUT_DIR: ${{ github.workspace }}/osx
+   LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
 jobs:
    BuildAtomUINativeMacOS:
       name: Build AtomUINative for macOS
@@ -25,3 +32,151 @@ jobs:
       steps:
          -  name: Checkout code
             uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Install dependencies
+            run: |
+               brew install xmake
+               xmake --version
+         -  name: Build for ARM64
+            run: |
+               xmake config --project=$NATIVE_LIB_SRC_DIR --builddir=$BUILD_DIR -p macosx -a arm64 -m ${{ inputs.BuildConfiguration }}
+               xmake build
+               xmake install --installdir=$MAC_OUTPUT_DIR
+         -  name: Build for x86_64
+            run: |
+               xmake config --project=$NATIVE_LIB_SRC_DIR --builddir=$BUILD_DIR -p macosx -a x86_64 -m ${{ inputs.BuildConfiguration }}
+               xmake build
+               xmake install --installdir=$MAC_OUTPUT_DIR
+         -  name: Create universal binary
+            run: |
+               mkdir -p $MAC_OUTPUT_DIR/lib
+               lipo -create \
+               $MAC_OUTPUT_DIR/arm64/lib/libAtomUINative.dylib \
+               $MAC_OUTPUT_DIR/x86_64/lib/libAtomUINative.dylib \
+               -output $MAC_OUTPUT_DIR/lib/libAtomUINative.dylib
+               lipo -info $MAC_OUTPUT_DIR/lib/libAtomUINative.dylib
+               rm -rf $MAC_OUTPUT_DIR/arm64 $MAC_OUTPUT_DIR/x86_64
+         -  name: Upload macOS artifact
+            id: artifact
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: AtomUINativeMac
+               path: ${{ env.MAC_OUTPUT_DIR }}
+   
+   BuildAtomUINuget:
+      name: Build AtomUI NuGet packages
+      runs-on: windows-latest
+      needs: BuildAtomUINativeMacOS
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Download macOS artifact
+            uses: actions/download-artifact@v4.3.0
+            with:
+               name: AtomUINativeMac
+               path: ${{ env.MAC_OUTPUT_DIR }}
+         -  name: Setup MSYS2 environment
+            shell: pwsh
+            run: |
+               $msysPath = "C:/msys64"
+               $env:MSYSTEM = "CLANG64"
+               $env:MSYSTEM_CARCH = "x86_64"
+               $env:MSYSTEM_CHOST = "x86_64-w64-mingw32"
+               $env:MSYSTEM_PREFIX = "/clang64"
+               $env:CHERE_INVOKING = "1"
+               $env:PATH = "$msysPath/clang64/bin;$msysPath/usr/bin;$env:PATH"
+               
+               # Update PATH for subsequent steps
+               Add-Content $env:GITHUB_PATH "$msysPath/clang64/bin"
+               Add-Content $env:GITHUB_PATH "$msysPath/usr/bin"
+               
+               # Install required packages
+               & "$msysPath/usr/bin/bash.exe" -lc @"
+                 pacman -Sy --noconfirm
+                 pacman -S mingw-w64-clang-x86_64-xmake --noconfirm
+                 pacman -S mingw-w64-clang-x86_64-clang --noconfirm
+               "@
+               
+               # Verify installations
+               xmake --version
+               clang --version
+         -  name: Create local NuGet feed
+            run: |
+               $localFeedPath = $env:LOCAL_NUGET_DIR
+               New-Item -Path $localFeedPath -ItemType Directory -Force | Out-Null
+               Write-Output "Local NuGet feed created at: $localFeedPath"
+               dotnet nuget add source $localFeedPath --name local-feed
+               $sources = dotnet nuget list source
+               if ($sources -match "local-feed") {
+                  Write-Output "Local feed added successfully"
+               } else {
+                  Write-Error "Failed to add local feed"
+                  exit 1
+               }
+         -  name: Build AtomUI projects
+            shell: pwsh
+            run: |
+               # Build AtomUI project
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} /p:IsNightlyBuild=${{ inputs.IsNightlyBuild }} ./packages/AtomUI/AtomUI.csproj
+               # Copy native library to runtime directory
+               $osxNativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/osx/native"
+               New-Item -ItemType Directory -Force -Path $osxNativeLibDir
+               Copy-Item -Path $env:MAC_OUTPUT_DIR/lib/libAtomUINative.dylib -Destination $osxNativeLibDir
+         -  name: Create AtomUI NuGet packages
+            shell: pwsh
+            run: |
+               $buildTimestamp = (Get-Date).ToString("yyyyMMddHHmm")
+               $projects = @(
+                  "./packages/AtomUI/AtomUI.csproj",
+                  "./src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj",
+                  "./src/AtomUI.Generator/AtomUI.Generator.csproj"
+               )
+               foreach ($project in $projects) {
+                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} /p:BuildTimestamp=$buildTimestamp /p:IsNightlyBuild=${{ inputs.IsNightlyBuild }} $project
+               }
+               $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
+               foreach ($pkg in $packages) {
+                  try {
+                     dotnet nuget push $pkg.FullName --source $env:LOCAL_NUGET_DIR
+                     if ($LASTEXITCODE -ne 0) {
+                        Write-Warning "pushed nuget package: $($pkg.Name)"
+                     }
+                  }
+                  catch {
+                      Write-Error "push $($pkg.Name) error: $_"
+                  }
+               }
+         -  name: Build AtomUI.Controls.DataGrid projects
+            shell: pwsh
+            run: |
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} /p:IsNightlyBuild=${{ inputs.IsNightlyBuild }} ./src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+         -  name: Create AtomUI.Controls.DataGrid NuGet packages
+            shell: pwsh
+            run: |
+               $buildTimestamp = (Get-Date).ToString("yyyyMMddHHmm")
+               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} /p:BuildTimestamp=$buildTimestamp /p:IsNightlyBuild=${{ inputs.IsNightlyBuild }} ./src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+         -  name: Upload NuGet artifacts
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: NuGetPackages
+               path: ${{ env.BASE_OUTPUT_DIR }}/*.nupkg
+         -  name: Publish to nuget.org
+            if: ${{ inputs.PublishToNuget == true }}
+            shell: pwsh
+            run: |
+               $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
+               foreach ($pkg in $packages) {
+                  try {
+                     dotnet nuget push $pkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+                     if ($LASTEXITCODE -ne 0) {
+                        Write-Warning "pushed nuget package: $($pkg.Name)"
+                     }
+                  }
+                  catch {
+                      Write-Error "push $($pkg.Name) error: $_"
+                  }
+               }
+               
