@@ -28,6 +28,7 @@
             <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
             <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinHeight}}" />
             <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupContentPadding}}" />
         </Style>
         
     </ControlTheme>
