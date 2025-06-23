@@ -38,7 +38,7 @@ $env:XMAKE_COLORTERM = 'nocolor'
 $buildType = $buildType.ToLower()
 
 if ($IsWindows) {
-     xmake config --project=$sourceDir --builddir=$buildDir -p msys -a x86_64 -m $buildType
+     xmake config --toolchain=clang --project=$sourceDir --builddir=$buildDir -p msys -a x86_64 -m $buildType -v
      xmake build
      xmake install --installdir=$installPrefix
      Copy-Item -Path $installPrefix/x86_64/lib/$libName -Destination $deployDir
@@ -51,5 +51,6 @@ if ($IsWindows) {
     xmake install --installdir=$installPrefix
     Write-Output "generate universal binary"
     lipo -create $installPrefix/arm64/lib/$libName $installPrefix/x86_64/lib/$libName -output $deployDir/$libName
-    Write-Output "generate success, saved to ${deployDir}"
 }
+
+Write-Output "generate success, saved to ${deployDir}"
