@@ -2,7 +2,7 @@
     <PropertyGroup>
         <NoWarn>$(NoWarn);CS7035</NoWarn>
         <AvaloniaVersion>11.3.1</AvaloniaVersion>
-        <AtomUIVersion>0.0.3</AtomUIVersion>
+        <AtomUIVersion>0.0.4</AtomUIVersion>
         <IsNightlyBuild Condition="'$(IsNightlyBuild)' == ''">false</IsNightlyBuild>
         <BuildTimestamp Condition="'$(BuildTimestamp)' == ''">$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</BuildTimestamp>
         <CanAppendBuildInfo>false</CanAppendBuildInfo>
