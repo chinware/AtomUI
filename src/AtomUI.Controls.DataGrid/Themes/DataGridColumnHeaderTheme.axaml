@@ -36,7 +36,8 @@
                                         IsVisible="{TemplateBinding CanUserSort}" />
                                     <atom:DataGridFilterIndicator
                                         Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FilterIndicatorPart}"
-                                        VerticalAlignment="Center" />
+                                        VerticalAlignment="Center" 
+                                        IsVisible="{TemplateBinding AreSeparatorsVisible}"/>
                                 </StackPanel>
                             </Grid>
                         </Decorator>
