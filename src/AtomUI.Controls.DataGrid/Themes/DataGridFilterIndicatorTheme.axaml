@@ -1,48 +1,37 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes">
     <ControlTheme x:Key="{x:Type atom:DataGridFilterIndicator}" TargetType="atom:DataGridFilterIndicator">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Name="{x:Static atom:DataGridFilterIndicatorThemeConstants.FramePart}">
-                    <atom:IconButton Name="{x:Static atom:DataGridFilterIndicatorThemeConstants.IconPresenterPart}"
-                                     IsEnableHoverEffect="True"
-                                     Icon="{TemplateBinding Icon}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
+        <ControlTheme.BasedOn>
+            <themes:IconButtonTheme TargetType="atom:DataGridFilterIndicator" />
+        </ControlTheme.BasedOn>
 
-        <Style Selector="^ /template/ atom|IconButton#PART_IconPresenter">
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-            <Setter Property="Padding"
-                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.FilterIndicatorPadding}}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
-            <Setter Property="DisabledIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-        </Style>
+        <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+        <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+        <Setter Property="Padding"
+                Value="{DynamicResource {x:Static atom:DataGridTokenKey.FilterIndicatorPadding}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        <Setter Property="DisabledIconBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
 
         <Style Selector="^[IsFilterActivated=True]">
-            <Style Selector="^ /template/ atom|IconButton#PART_IconPresenter">
-                <Setter Property="NormalIconBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-                <Setter Property="ActiveIconBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-                <Setter Property="SelectedIconBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-            </Style>
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+            <Setter Property="ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+            <Setter Property="SelectedIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
         </Style>
 
         <Style Selector="^[IsFilterActivated=False]">
-            <Style Selector="^ /template/ atom|IconButton#PART_IconPresenter">
-                <Setter Property="NormalIconBrush"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconColor}}" />
-                <Setter Property="ActiveIconBrush"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
-                <Setter Property="SelectedIconBrush"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
-            </Style>
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconColor}}" />
+            <Setter Property="ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
+            <Setter Property="SelectedIconBrush"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
         </Style>
 
     </ControlTheme>

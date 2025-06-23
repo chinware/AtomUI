@@ -29,6 +29,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     internal bool? CanUserReorderInternal { get; set; }
     internal bool? CanUserResizeInternal { get; set; }
     internal bool? CanUserSortInternal { get; set; }
+    internal bool? CanUserFilterInternal { get; set; }
     
     internal bool ActualCanUserResize
     {

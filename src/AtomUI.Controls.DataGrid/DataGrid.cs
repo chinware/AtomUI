@@ -66,6 +66,12 @@ public partial class DataGrid : TemplatedControl,
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserSortColumns), false);
     
     /// <summary>
+    /// Identifies the CanUserFilterColumns dependency property.
+    /// </summary>
+    public static readonly StyledProperty<bool> CanUserFilterColumnsProperty =
+        AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserFilterColumns), false);
+    
+    /// <summary>
     /// Identifies the ColumnHeaderHeight dependency property.
     /// </summary>
     public static readonly StyledProperty<double> ColumnHeaderHeightProperty =
@@ -228,6 +234,15 @@ public partial class DataGrid : TemplatedControl,
     {
         get => GetValue(CanUserSortColumnsProperty);
         set => SetValue(CanUserSortColumnsProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets a value that indicates whether the user can filter columns by clicking the column filter indicator.
+    /// </summary>
+    public bool CanUserFilterColumns
+    {
+        get => GetValue(CanUserFilterColumnsProperty);
+        set => SetValue(CanUserFilterColumnsProperty, value);
     }
     
     /// <summary>

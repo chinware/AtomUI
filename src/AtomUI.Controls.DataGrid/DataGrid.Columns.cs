@@ -1528,6 +1528,7 @@ public partial class DataGrid
             dataGridColumn.HeaderCell.IsVisible = dataGridColumn.IsVisible;
             Debug.Assert(!_columnHeadersPresenter.Children.Contains(dataGridColumn.HeaderCell));
             dataGridColumn.HeaderCell.CanUserSort = dataGridColumn.CanUserSort;
+            dataGridColumn.HeaderCell.CanUserFilter = dataGridColumn.CanUserFilter;
             _columnHeadersPresenter.Children.Insert(dataGridColumn.DisplayIndexWithFiller, dataGridColumn.HeaderCell);
         }
     }

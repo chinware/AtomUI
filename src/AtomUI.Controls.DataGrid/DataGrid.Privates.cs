@@ -29,6 +29,7 @@ public partial class DataGrid
     internal const bool DefaultCanUserReorderColumns = true;
     internal const bool DefaultCanUserResizeColumns = true;
     internal const bool DefaultCanUserSortColumns = false;
+    internal const bool DefaultCanUserFilterColumns = false;
 
     #region 内部属性定义
     
@@ -1338,7 +1339,8 @@ public partial class DataGrid
                 column.HeaderCell.IsMiddleVisible = true;
             }
 
-            column.HeaderCell.CanUserSort = column.CanUserSort;
+            column.HeaderCell.CanUserSort   = column.CanUserSort;
+            column.HeaderCell.CanUserFilter = column.CanUserFilter;
         }
         PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !visibleColumns.Any());
         PseudoClasses.Set(DataGridPseudoClass.EmptyRows, !DataConnection.Any());

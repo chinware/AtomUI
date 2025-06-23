@@ -94,6 +94,12 @@ internal class DataGridColumnHeader : ContentControl
             o => o.CanUserSort,
             (o, v) => o.CanUserSort = v);
     
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> CanUserFilterProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(CanUserFilter),
+            o => o.CanUserFilter,
+            (o, v) => o.CanUserFilter = v);
+    
     internal static readonly DirectProperty<DataGridColumnHeader, ListSortDirection?> CurrentSortingStateProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, ListSortDirection?>(
             nameof(CurrentSortingState),
@@ -160,6 +166,13 @@ internal class DataGridColumnHeader : ContentControl
     {
         get => GetValue(SupportedDirectionsProperty);
         set => SetValue(SupportedDirectionsProperty, value);
+    }
+    
+    private bool _canUserFilter = false;
+    internal bool CanUserFilter
+    {
+        get => _canUserFilter;
+        set => SetAndRaise(CanUserFilterProperty, ref _canUserFilter, value);
     }
     
     internal DataGridColumn? OwningColumn { get; set; }

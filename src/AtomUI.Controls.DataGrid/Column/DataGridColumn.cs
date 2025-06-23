@@ -246,6 +246,21 @@ public abstract partial class DataGridColumn : AvaloniaObject
         }
     }
 
+    public bool CanUserFilter
+    {
+        get => CanUserResizeInternal ??
+               OwningGrid?.CanUserResizeColumns ??
+               DataGrid.DefaultCanUserResizeColumns;
+        set
+        {
+            CanUserFilterInternal = value;
+            if (HasHeaderCell)
+            {
+                HeaderCell.CanUserFilter = value;
+            }
+        }
+    }
+
     /// <summary>
     /// Gets or sets a value that indicates whether the user can sort the column by clicking the column header.
     /// </summary>
