@@ -1,27 +1,27 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <ControlTheme x:Key="{x:Type atom:TreeView}" TargetType="atom:TreeView">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Name="{x:Static atom:TreeViewThemeConstants.FramePart}">
-                    <ScrollViewer
-                        AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
-                        HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                        VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                        IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
-                        IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                        >
-                        <ItemsPresenter Name="{x:Static atom:TreeViewThemeConstants.ItemsPresenterPart}"
-                                        ItemsPanel="{TemplateBinding ItemsPanel}"
-                                        />
-                    </ScrollViewer>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-        
-        <Setter Property="DragIndicatorLineWidth" Value="{DynamicResource {x:Static atom:TreeViewTokenKey.DragIndicatorLineWidth}}"/>
-        <Setter Property="DragIndicatorBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"/>
-    </ControlTheme>
-</ResourceDictionary>
+<ControlTheme TargetType="atom:TreeView"
+              xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Controls.Themes.TreeViewTheme">
+    <Setter Property="Template">
+        <ControlTemplate>
+            <Border Name="{x:Static atom:TreeViewThemeConstants.FramePart}">
+                <ScrollViewer
+                    AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                    IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
+                    IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                    <ItemsPresenter Name="{x:Static atom:TreeViewThemeConstants.ItemsPresenterPart}"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}" />
+                </ScrollViewer>
+            </Border>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|TreeView)">
+        <Setter Property="DragIndicatorLineWidth"
+                Value="{DynamicResource {x:Static atom:TreeViewTokenKey.DragIndicatorLineWidth}}" />
+        <Setter Property="DragIndicatorBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+    </Style>
+</ControlTheme>

@@ -4,16 +4,17 @@
     xmlns:atom="https://atomui.net"
     xmlns:themes="using:AtomUI.Controls.Themes"
     xmlns:localization="clr-namespace:AtomUI.Controls.Localization;assembly=AtomUI.Controls">
-    <ControlTheme x:Key="{x:Type atom:DataGridMenuFilterFlyoutPresenter}"
-                  TargetType="atom:DataGridMenuFilterFlyoutPresenter">
+    <ControlTheme x:Key="{x:Type atom:DataGridTreeFilterFlyoutPresenter}" TargetType="atom:DataGridTreeFilterFlyoutPresenter">
         <ControlTheme.BasedOn>
-            <themes:MenuFlyoutPresenterTheme TargetType="atom:DataGridMenuFilterFlyoutPresenter" />
+            <themes:TreeViewTheme TargetType="atom:DataGridTreeFilterFlyoutPresenter" />
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:ArrowDecoratedBox Name="{x:Static atom:MenuFlyoutThemeConstants.ArrowDecoratorPart}"
-                                        IsShowArrow="{TemplateBinding IsShowArrow}"
-                                        ArrowPosition="{TemplateBinding ArrowPosition}">
+                <Border Name="{x:Static atom:TreeViewThemeConstants.FramePart}"
+                        BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True">
                         <StackPanel
                             Name="{x:Static atom:DataGridFilterFlyoutPresenterThemeConstants.ButtonLayoutPart}"
@@ -26,7 +27,7 @@
                                 SizeType="Small"
                                 Margin="0"
                                 Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Reset}}" />
-                            
+
                             <atom:Button
                                 Name="{x:Static atom:DataGridFilterFlyoutPresenterThemeConstants.OkButtonPart}"
                                 SizeType="Small"
@@ -34,30 +35,21 @@
                                 Margin="0"
                                 Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Ok}}" />
                         </StackPanel>
-                        
+
                         <Rectangle Name="{x:Static atom:DataGridFilterFlyoutPresenterThemeConstants.ButtonLayoutSeparatorPart}"
                                    Height="1.0"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Stretch" 
                                    DockPanel.Dock="Bottom"/>
                         
-                        <atom:MenuScrollViewer HorizontalAlignment="Stretch"
-                                               VerticalAlignment="Stretch">
-                            <ItemsPresenter Name="{x:Static atom:MenuFlyoutThemeConstants.ItemsPresenterPart}"
-                                            ItemsPanel="{TemplateBinding ItemsPanel}"
-                                            KeyboardNavigation.TabNavigation="Continue"
-                                            Grid.IsSharedSizeScope="True" />
-                        </atom:MenuScrollViewer>
+                        <ItemsPresenter Name="{x:Static atom:TreeViewThemeConstants.ItemsPresenterPart}"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </DockPanel>
-                </atom:ArrowDecoratedBox>
+
+                </Border>
             </ControlTemplate>
         </Setter>
-        
-        <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
-            <Setter Property="Background"
-                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownBg}}" /> 
-        </Style>
-        
+        <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownWidth}}" />
         <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
             <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonSpacing}}" />
             <Setter Property="Margin"
@@ -69,6 +61,11 @@
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonLayoutSeparatorMargin}}" /> 
         </Style>
+        
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownPadding}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        
     </ControlTheme>
-    
 </ResourceDictionary>

@@ -116,7 +116,7 @@ internal static class DataGridTopLeftColumnHeaderThemeConstants
     
 }
 
-internal static class DataGridMenuFilterFlyoutPresenterThemeConstants
+internal static class DataGridFilterFlyoutPresenterThemeConstants
 {
     public const string ButtonLayoutPart = "PART_ButtonLayout";
     public const string OkButtonPart = "PART_OkButton";

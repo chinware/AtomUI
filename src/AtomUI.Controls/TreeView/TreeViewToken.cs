@@ -43,6 +43,11 @@ internal class TreeViewToken : AbstractControlDesignToken
     /// 树节点的外边距
     /// </summary>
     public Thickness TreeItemMargin { get; set; }
+    
+    /// <summary>
+    /// 树节点的内边距
+    /// </summary>
+    public Thickness TreeItemPadding { get; set; }
 
     /// <summary>
     /// 树节点标题的内间距
@@ -79,11 +84,12 @@ internal class TreeViewToken : AbstractControlDesignToken
         DirectoryNodeSelectedColor = SharedToken.ColorTextLightSolid;
         DirectoryNodeSelectedBg = SharedToken.ColorPrimary;
 
-        TreeItemMargin = new Thickness(0, 0, 0, SharedToken.PaddingXS / 2);
-        TreeItemHeaderPadding = new Thickness(SharedToken.PaddingXS / 2, 0);
-        TreeItemHeaderMargin = new Thickness(SharedToken.MarginXS / 2, 0, 0, 0);
+        TreeItemMargin         = new Thickness(0, 0, 0, SharedToken.PaddingXS / 2);
+        TreeItemPadding        = new Thickness(SharedToken.PaddingXXS, 0);
+        TreeItemHeaderPadding  = new Thickness(SharedToken.PaddingXS / 2, 0);
+        TreeItemHeaderMargin   = new Thickness(SharedToken.MarginXS / 2, 0, 0, 0);
         TreeNodeSwitcherMargin = new Thickness(0, 0, SharedToken.PaddingXS / 2, 0);
-        TreeNodeIconMargin = new Thickness(SharedToken.PaddingXS / 2, 0, 0, 0);
+        TreeNodeIconMargin     = new Thickness(SharedToken.PaddingXS / 2, 0, 0, 0);
 
         DragIndicatorLineWidth = SharedToken.LineWidthFocus;
     }

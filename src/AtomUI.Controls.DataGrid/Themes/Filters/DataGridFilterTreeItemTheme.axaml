@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes">
+    <ControlTheme x:Key="{x:Type atom:DataGridFilterTreeItem}" TargetType="atom:DataGridFilterTreeItem">
+        <ControlTheme.BasedOn>
+            <themes:TreeViewItemTheme TargetType="atom:DataGridFilterTreeItem"/>
+        </ControlTheme.BasedOn>
+    </ControlTheme>
+</ResourceDictionary>

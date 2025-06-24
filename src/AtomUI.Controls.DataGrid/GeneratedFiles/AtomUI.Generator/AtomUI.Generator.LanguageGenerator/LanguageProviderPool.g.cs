@@ -8,6 +8,8 @@ namespace AtomUI.Theme
         internal static IList<AbstractLanguageProvider> GetLanguageProviders()
         {
             List<AbstractLanguageProvider> languageProviders = new List<AbstractLanguageProvider>();
+            languageProviders.Add(new AtomUI.Controls.DataGridLang.en_US());
+            languageProviders.Add(new AtomUI.Controls.DataGridLang.zh_CN());
             return languageProviders;
         }
     }

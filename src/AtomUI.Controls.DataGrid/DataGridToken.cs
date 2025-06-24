@@ -223,6 +223,7 @@ internal class DataGridToken : AbstractControlDesignToken
 
     public double TableFilterDropdownHeight { get; set; }
     public double TableFilterDropdownWidth { get; set; }
+    public Thickness TableFilterDropdownPadding { get; set; }
     public double TableFilterDropdownSearchWidth { get; set; }
     
     public Color TableRowHoverBg { get; set; }
@@ -349,8 +350,9 @@ internal class DataGridToken : AbstractControlDesignToken
         TableFilterDropdownHeight              = 264;
         TableFilterDropdownSearchWidth         = 140;
         TableFilterButtonSpacing               = SharedToken.MarginXS;
-        TableFilterButtonContainerMargin       = new Thickness(0, SharedToken.MarginXS, 0, SharedToken.MarginXXS);
+        TableFilterButtonContainerMargin       = new Thickness(0, SharedToken.MarginXS, 0, 0);
         TableFilterButtonLayoutSeparatorMargin = new  Thickness(0, SharedToken.MarginXXS, 0, 0);
+        TableFilterDropdownPadding             = new Thickness(SharedToken.PaddingXS);
         // Virtual Scroll Bar
         TableScrollThumbSize    = 8;
         TableScrollThumbBg      = StickyScrollBarBg;

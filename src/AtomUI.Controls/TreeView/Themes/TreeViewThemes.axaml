@@ -1,8 +1,10 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:themes="using:AtomUI.Controls.Themes"
+                    xmlns:atom="https://atomui.net">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="NodeSwitcherButtonTheme.axaml" />
-        <ResourceInclude Source="TreeViewItemTheme.axaml" />
-        <ResourceInclude Source="TreeViewTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
+    <themes:TreeViewTheme x:Key="{x:Type atom:TreeView}" TargetType="atom:TreeView"/>
+    <themes:TreeViewItemTheme x:Key="{x:Type atom:TreeViewItem}" TargetType="atom:TreeViewItem"/>
 </ResourceDictionary>
