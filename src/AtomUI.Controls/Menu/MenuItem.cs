@@ -124,7 +124,7 @@ public class MenuItem : AvaloniaMenuItem
             {
                 if (_headerPresenterPart != null)
                 {
-                    _headerPresenterPart.Transitions = new Transitions()
+                    _headerPresenterPart.Transitions = new Transitions
                     {
                         TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty),
                         TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)

@@ -1,0 +1,69 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    xmlns:localization="clr-namespace:AtomUI.Controls.Localization;assembly=AtomUI.Controls">
+    <ControlTheme x:Key="{x:Type atom:DataGridMenuFilterFlyoutPresenter}"
+                  TargetType="atom:DataGridMenuFilterFlyoutPresenter">
+        <ControlTheme.BasedOn>
+            <themes:MenuFlyoutPresenterTheme TargetType="atom:DataGridMenuFilterFlyoutPresenter" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:ArrowDecoratedBox Name="{x:Static atom:MenuFlyoutThemeConstants.ArrowDecoratorPart}"
+                                        IsShowArrow="{TemplateBinding IsShowArrow}"
+                                        ArrowPosition="{TemplateBinding ArrowPosition}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel
+                            Name="{x:Static atom:DataGridMenuFilterFlyoutPresenterThemeConstants.ButtonLayoutPart}"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            DockPanel.Dock="Bottom">
+                            <atom:Button
+                                Name="{x:Static atom:DataGridMenuFilterFlyoutPresenterThemeConstants.ResetButtonPart}"
+                                SizeType="Small"
+                                Margin="0"
+                                Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Reset}}" />
+                            
+                            <atom:Button
+                                Name="{x:Static atom:DataGridMenuFilterFlyoutPresenterThemeConstants.OkButtonPart}"
+                                SizeType="Small"
+                                ButtonType="Primary"
+                                Margin="0"
+                                Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Ok}}" />
+                        </StackPanel>
+                        
+                        <Rectangle Name="{x:Static atom:DataGridMenuFilterFlyoutPresenterThemeConstants.ButtonLayoutSeparatorPart}"
+                                   Height="1.0"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Stretch" 
+                                   DockPanel.Dock="Bottom"/>
+                        
+                        <atom:MenuScrollViewer HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch">
+                            <ItemsPresenter Name="{x:Static atom:MenuFlyoutThemeConstants.ItemsPresenterPart}"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}"
+                                            KeyboardNavigation.TabNavigation="Continue"
+                                            Grid.IsSharedSizeScope="True" />
+                        </atom:MenuScrollViewer>
+                    </DockPanel>
+                </atom:ArrowDecoratedBox>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonSpacing}}" />
+            <Setter Property="Margin"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonContainerMargin}}" /> 
+        </Style>
+        
+        <Style Selector="^ /template/ Rectangle#PART_ButtonLayoutSeparator">
+            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />
+            <Setter Property="Margin"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonLayoutSeparatorMargin}}" /> 
+        </Style>
+    </ControlTheme>
+    
+</ResourceDictionary>

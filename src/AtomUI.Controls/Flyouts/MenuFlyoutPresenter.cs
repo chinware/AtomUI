@@ -63,7 +63,7 @@ public class MenuFlyoutPresenter : MenuBase,
         remove => RemoveHandler(MenuItemClickedEvent, value);
     }
 
-    public WeakReference<MenuFlyout>? MenuFlyout { get; set; }
+    public MenuFlyout? MenuFlyout { get; set; }
 
     #endregion
 
@@ -98,11 +98,8 @@ public class MenuFlyoutPresenter : MenuBase,
         // DefaultMenuInteractionHandler calls this
         if (MenuFlyout is not null)
         {
-            if (MenuFlyout.TryGetTarget(out var menuFlyout))
-            {
-                SelectedIndex = -1;
-                menuFlyout.Hide();
-            }
+            SelectedIndex = -1;
+            MenuFlyout.Hide();
         }
     }
 
@@ -169,7 +166,7 @@ public class MenuFlyoutPresenter : MenuBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutThemeConstants.RootContainerPart);
+        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutThemeConstants.ArrowDecoratorPart);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

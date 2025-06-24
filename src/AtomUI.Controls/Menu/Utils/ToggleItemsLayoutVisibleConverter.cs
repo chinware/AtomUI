@@ -4,14 +4,17 @@ using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Utils;
 
-internal class ToggleItemsLayoutVisibleConverter : IMultiValueConverter
+public class ToggleItemsLayoutVisibleConverter : IMultiValueConverter
 {
-    public object? Convert(IList<object?> objects, Type targetType, object? parameter, CultureInfo culture)
+    public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
-        var items      = objects.ToList();
-        if (items[0] is bool isTopLevel && items[1] is MenuItemToggleType toggleType)
+        if (values.Count != 3)
         {
-            return !isTopLevel && toggleType != MenuItemToggleType.None;
+            return false;
+        }
+        if (values[0] is bool isTopLevel && values[1] is MenuItemToggleType toggleType && values[2] is int itemCount)
+        {
+            return !isTopLevel && toggleType != MenuItemToggleType.None && itemCount == 0;
         }
 
         return false;

@@ -63,7 +63,7 @@ public class MenuFlyout : Flyout
             ItemsSource                                = Items,
             [!ItemsControl.ItemTemplateProperty]       = this[!ItemTemplateProperty],
             [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
-            MenuFlyout                                 = new WeakReference<MenuFlyout>(this)
+            MenuFlyout                                 = this
         };
         BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty);
         BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
@@ -73,7 +73,7 @@ public class MenuFlyout : Flyout
         return presenter;
     }
 
-    private void SetupArrowPosition(Popup popup, MenuFlyoutPresenter? flyoutPresenter = null)
+    protected void SetupArrowPosition(Popup popup, MenuFlyoutPresenter? flyoutPresenter = null)
     {
         if (flyoutPresenter is null)
         {

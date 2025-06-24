@@ -1,0 +1,6 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:themes="using:AtomUI.Controls.Themes"
+                    xmlns:atom="https://atomui.net">
+    <themes:MenuFlyoutPresenterTheme x:Key="{x:Type atom:MenuFlyoutPresenter}" TargetType="atom:MenuFlyoutPresenter"/>
+</ResourceDictionary>

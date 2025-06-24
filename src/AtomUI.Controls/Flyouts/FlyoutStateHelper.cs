@@ -170,7 +170,7 @@ internal class FlyoutStateHelper : AvaloniaObject
                 {
                     return;
                 }
-
+        
                 FlyoutAboutToClose?.Invoke(this, EventArgs.Empty);
                 Flyout.Hide();
             }

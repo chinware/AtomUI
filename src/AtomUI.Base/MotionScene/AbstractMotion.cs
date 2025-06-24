@@ -114,16 +114,14 @@ internal class AbstractMotion : IMotion
             }
             else
             {
-                observables.Zip()
-                           .LastAsync()
-                           .ObserveOn(AvaloniaScheduler.Instance)
-                           .Subscribe(_ =>
-                           {
-                               Dispatcher.UIThread.Post(() =>
-                               {
-                                   FinishedCallback();
-                               });
-                           });
+                Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    await observables.Zip()
+                               .LastAsync()
+                               .ObserveOn(AvaloniaScheduler.Instance)
+                               .ToTask();
+                    FinishedCallback();
+                });
             }
         });
     }

@@ -133,8 +133,8 @@ public class Popup : AvaloniaPopup,
     public Popup()
     {
         this.BindWaveSpiritProperties();
-        Closed += HandleClosed;
-        Opened += HandleOpened;
+        Closed                         += HandleClosed;
+        Opened                         += HandleOpened; 
     }
     
     // Popup 好像不加入视觉树，所以我们放在逻辑树

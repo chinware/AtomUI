@@ -47,6 +47,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TableExpandColumnWidth = new TokenResourceKey("DataGrid.TableExpandColumnWidth");
         public static readonly TokenResourceKey TableExpandedRowBg = new TokenResourceKey("DataGrid.TableExpandedRowBg");
         public static readonly TokenResourceKey TableExpandIconBg = new TokenResourceKey("DataGrid.TableExpandIconBg");
+        public static readonly TokenResourceKey TableFilterButtonContainerMargin = new TokenResourceKey("DataGrid.TableFilterButtonContainerMargin");
+        public static readonly TokenResourceKey TableFilterButtonLayoutSeparatorMargin = new TokenResourceKey("DataGrid.TableFilterButtonLayoutSeparatorMargin");
+        public static readonly TokenResourceKey TableFilterButtonSpacing = new TokenResourceKey("DataGrid.TableFilterButtonSpacing");
         public static readonly TokenResourceKey TableFilterDropdownBg = new TokenResourceKey("DataGrid.TableFilterDropdownBg");
         public static readonly TokenResourceKey TableFilterDropdownHeight = new TokenResourceKey("DataGrid.TableFilterDropdownHeight");
         public static readonly TokenResourceKey TableFilterDropdownSearchWidth = new TokenResourceKey("DataGrid.TableFilterDropdownSearchWidth");

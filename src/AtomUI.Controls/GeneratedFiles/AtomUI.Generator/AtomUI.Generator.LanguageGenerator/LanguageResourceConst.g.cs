@@ -13,8 +13,9 @@ namespace AtomUI.Controls.Localization
 {
     public static class CommonLangResourceKey
     {
-        public static readonly LanguageResourceKey CancelText = new LanguageResourceKey("Common.CancelText", "AtomUI.Lang");
-        public static readonly LanguageResourceKey OkText = new LanguageResourceKey("Common.OkText", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Cancel = new LanguageResourceKey("Common.Cancel", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Ok = new LanguageResourceKey("Common.Ok", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Reset = new LanguageResourceKey("Common.Reset", "AtomUI.Lang");
     }
 }
 
@@ -32,8 +33,8 @@ namespace AtomUI.Controls.PopupConfirmLang
 {
     public static class PopupConfirmLangResourceKey
     {
-        public static readonly LanguageResourceKey CancelText = new LanguageResourceKey("PopupConfirm.CancelText", "AtomUI.Lang");
-        public static readonly LanguageResourceKey OkText = new LanguageResourceKey("PopupConfirm.OkText", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Cancel = new LanguageResourceKey("PopupConfirm.Cancel", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Ok = new LanguageResourceKey("PopupConfirm.Ok", "AtomUI.Lang");
     }
 }
 

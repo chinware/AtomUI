@@ -9,6 +9,13 @@ internal class DataGridFilterIndicatorVisibleConvert : IMultiValueConverter
     
     public object Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
-        return values.All(v => v is bool && (bool)v);
+        if (values.Count != 3)
+        {
+            return false;
+        }
+        bool areSeparatorsVisible = values[0] is bool b0 && b0;
+        bool canUserFilter        = values[1] is bool b1 && b1;
+        int  filterCount          = values[2] is int count ? count : 0;
+        return areSeparatorsVisible && canUserFilter && filterCount > 0;
     }
 }

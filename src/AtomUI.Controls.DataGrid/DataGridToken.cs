@@ -217,7 +217,14 @@ internal class DataGridToken : AbstractControlDesignToken
     public Color TableFixedHeaderSortActiveBg { get; set; }
     public Color TableHeaderFilterActiveBg { get; set; }
     public Color TableFilterDropdownBg { get; set; }
+    public double TableFilterButtonSpacing  { get; set; }
+    public Thickness TableFilterButtonContainerMargin { get; set; }
+    public Thickness TableFilterButtonLayoutSeparatorMargin { get; set; }
+
     public double TableFilterDropdownHeight { get; set; }
+    public double TableFilterDropdownWidth { get; set; }
+    public double TableFilterDropdownSearchWidth { get; set; }
+    
     public Color TableRowHoverBg { get; set; }
     public Color TableSelectedRowBg { get; set; }
     public Color TableSelectedRowHoverBg { get; set; }
@@ -227,8 +234,7 @@ internal class DataGridToken : AbstractControlDesignToken
     public Color TableExpandIconBg { get; set; }
     public double TableExpandColumnWidth { get; set; }
     public Color TableExpandedRowBg { get; set; }
-    public double TableFilterDropdownWidth { get; set; }
-    public double TableFilterDropdownSearchWidth { get; set; }
+
     public int ZIndexTableFixed { get; set; }
     public int ZIndexTableSticky { get; set; }
     
@@ -338,10 +344,13 @@ internal class DataGridToken : AbstractControlDesignToken
         TableExpandedRowBg        = RowExpandedBg;
         
         // Dropdown
-        TableFilterDropdownWidth       = 120;
-        TableFilterDropdownHeight      = 264;
-        TableFilterDropdownSearchWidth = 140;
-        
+        // TODO 暂未使用
+        TableFilterDropdownWidth               = 120;
+        TableFilterDropdownHeight              = 264;
+        TableFilterDropdownSearchWidth         = 140;
+        TableFilterButtonSpacing               = SharedToken.MarginXS;
+        TableFilterButtonContainerMargin       = new Thickness(0, SharedToken.MarginXS, 0, SharedToken.MarginXXS);
+        TableFilterButtonLayoutSeparatorMargin = new  Thickness(0, SharedToken.MarginXXS, 0, 0);
         // Virtual Scroll Bar
         TableScrollThumbSize    = 8;
         TableScrollThumbBg      = StickyScrollBarBg;

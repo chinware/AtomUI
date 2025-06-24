@@ -115,3 +115,11 @@ internal static class DataGridTopLeftColumnHeaderThemeConstants
 {
     
 }
+
+internal static class DataGridMenuFilterFlyoutPresenterThemeConstants
+{
+    public const string ButtonLayoutPart = "PART_ButtonLayout";
+    public const string OkButtonPart = "PART_OkButton";
+    public const string ResetButtonPart = "PART_ResetButton";
+    public const string ButtonLayoutSeparatorPart = "PART_ButtonLayoutSeparator";
+}

@@ -88,8 +88,10 @@ public abstract class PopupFlyoutBase : FlyoutBase,
     public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
+    
+    public static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
+        AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
 
     public double MarginToAnchor
     {
@@ -164,19 +166,12 @@ public abstract class PopupFlyoutBase : FlyoutBase,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    #endregion
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
-        AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
-    
-    internal bool IsDetectMouseClickEnabled
+    public bool IsDetectMouseClickEnabled
     {
         get => GetValue(IsDetectMouseClickEnabledProperty);
         set => SetValue(IsDetectMouseClickEnabledProperty, value);
     }
-
+    
     #endregion
 
     #region 公共事件定义

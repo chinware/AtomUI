@@ -210,6 +210,7 @@ public class Flyout : PopupFlyoutBase
 
     protected override void OnClosed()
     {
+        base.OnClosed();
         CompositeDisposable?.Dispose();
     }
 
@@ -340,10 +341,13 @@ public class Flyout : PopupFlyoutBase
             return false;
         }
 
-        IsOpen = true;
+        IsOpen         = true;
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            Popup.MotionAwareOpen(() => { HandlePopupOpened(placementTarget); });
+            Popup.MotionAwareOpen(() =>
+            {
+                HandlePopupOpened(placementTarget);
+            });
         });
         return true;
     }
@@ -368,8 +372,14 @@ public class Flyout : PopupFlyoutBase
             return base.HideCore(false);
         }
 
-        IsOpen = false;
-        Dispatcher.UIThread.InvokeAsync(() => { Popup.MotionAwareClose(HandlePopupClosed); });
+        IsOpen          = false;
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            Popup.MotionAwareClose(() =>
+            {
+                HandlePopupClosed();
+            });
+        });
         return true;
     }
 

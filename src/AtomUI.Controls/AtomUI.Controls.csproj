@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI" />
+        <InternalsVisibleTo Include="AtomUI.Controls.DataGrid" />
     </ItemGroup>
 
     <ItemGroup>

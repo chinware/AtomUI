@@ -36,8 +36,15 @@
                                         IsVisible="{TemplateBinding CanUserSort}" />
                                     <atom:DataGridFilterIndicator
                                         Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FilterIndicatorPart}"
-                                        VerticalAlignment="Center" 
-                                        IsVisible="{TemplateBinding AreSeparatorsVisible}"/>
+                                        VerticalAlignment="Center">
+                                        <atom:DataGridFilterIndicator.IsVisible>
+                                            <MultiBinding Converter="{x:Static converters:DataGridFilterIndicatorVisibleConvert.Default}">
+                                                <Binding Path="AreSeparatorsVisible" RelativeSource="{RelativeSource TemplatedParent}" />
+                                                <Binding Path="CanUserFilter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                                <Binding Path="OwningColumn?.Filters.Count" RelativeSource="{RelativeSource TemplatedParent}" />
+                                            </MultiBinding>
+                                        </atom:DataGridFilterIndicator.IsVisible>
+                                    </atom:DataGridFilterIndicator>
                                 </StackPanel>
                             </Grid>
                         </Decorator>

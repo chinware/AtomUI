@@ -16,5 +16,7 @@
         <ResourceInclude Source="Themes/DataGridSortIndicatorTheme.axaml"/>
         <ResourceInclude Source="Themes/DataGridTheme.axaml"/>
         <ResourceInclude Source="Themes/DataGridTopLeftColumnHeaderTheme.axaml"/>
+        <ResourceInclude Source="Themes/Filters/DataGridFilterMenuItemTheme.axaml"/>
+        <ResourceInclude Source="Themes/Filters/DataGridMenuFilterFlyoutPresenterTheme.axaml"/>
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

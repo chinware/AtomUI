@@ -1,11 +1,13 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:themes="using:AtomUI.Controls.Themes"
+                    xmlns:atom="https://atomui.net">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="ContextMenuTheme.axaml"/>
-        <ResourceInclude Source="MenuItemTheme.axaml"/>
         <ResourceInclude Source="MenuScrollViewerTheme.axaml"/>
         <ResourceInclude Source="MenuSeparatorTheme.axaml"/>
         <ResourceInclude Source="TopLevelMenuItemTheme.axaml"/>
         <ResourceInclude Source="MenuTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
+    <themes:MenuItemTheme x:Key="{x:Type atom:MenuItem}" TargetType="atom:MenuItem"/>
 </ResourceDictionary>

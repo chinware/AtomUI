@@ -25,7 +25,7 @@
                                 ButtonType="Primary"
                                 HorizontalAlignment="Right"
                                 SizeType="Small"
-                                Content="{DynamicResource {x:Static localization:CommonLangResourceKey.OkText}}" />
+                                Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Ok}}" />
                         </Panel>
                     </Border>
                     <atom:TimeView Name="{x:Static atom:TimePickerPresenterThemeConstants.TimeViewPart}"

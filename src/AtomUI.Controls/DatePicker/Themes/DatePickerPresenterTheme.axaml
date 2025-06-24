@@ -32,7 +32,7 @@
                             ButtonType="Primary"
                             HorizontalAlignment="Right"
                             SizeType="Small"
-                            Content="{DynamicResource {x:Static localization:CommonLangResourceKey.OkText}}" />
+                            Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Ok}}" />
                     </Panel>
                 </Border>
                 <StackPanel Orientation="Horizontal">

@@ -174,9 +174,21 @@ internal class DataGridColumnHeader : ContentControl
         get => _canUserFilter;
         set => SetAndRaise(CanUserFilterProperty, ref _canUserFilter, value);
     }
-    
-    internal DataGridColumn? OwningColumn { get; set; }
-    
+
+    private DataGridColumn? _owningColumn;
+    internal DataGridColumn? OwningColumn
+    {
+        get => _owningColumn;
+        set
+        {
+            _owningColumn = value;
+            if (_filterIndicator != null)
+            {
+                _filterIndicator.OwningColumn = OwningColumn;
+            }
+        }
+    }
+
     internal DataGrid? OwningGrid => OwningColumn?.OwningGrid;
 
     internal int ColumnIndex
@@ -212,6 +224,7 @@ internal class DataGridColumnHeader : ContentControl
     private bool _desiredSeparatorVisibility = true;
     private StackPanel? _indicatorsLayout;
     private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
+    private DataGridFilterIndicator? _filterIndicator;
     
     static DataGridColumnHeader()
     {
@@ -971,6 +984,11 @@ internal class DataGridColumnHeader : ContentControl
     {
         base.OnApplyTemplate(e);
         _indicatorsLayout = e.NameScope.Find<StackPanel>(DataGridColumnHeaderThemeConstants.IndicatorsLayoutPart);
+        _filterIndicator = e.NameScope.Find<DataGridFilterIndicator>(DataGridColumnHeaderThemeConstants.FilterIndicatorPart);
+        if (_filterIndicator != null && OwningColumn != null)
+        {
+            _filterIndicator.OwningColumn = OwningColumn;
+        }
         if (_indicatorsLayout != null)
         {
             _indicatorsLayout.Children.CollectionChanged += HandleIndicatorLayoutChildrenChanged;

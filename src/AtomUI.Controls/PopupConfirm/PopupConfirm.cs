@@ -149,8 +149,8 @@ public class PopupConfirm : FlyoutHost,
     {
         base.OnAttachedToVisualTree(e);
         Flyout                      ??= new PopupConfirmFlyout(this);
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.OkText));
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.CancelText));
+        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.Ok));
+        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.Cancel));
     }
 }
 

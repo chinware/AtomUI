@@ -1,6 +1,5 @@
 namespace AtomUI.Controls;
 
-public class DataGridTreeFilterFlyout
+public class DataGridTreeFilterFlyout : Flyout
 {
-    
 }

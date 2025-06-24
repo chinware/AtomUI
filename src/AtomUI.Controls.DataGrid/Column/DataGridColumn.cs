@@ -249,7 +249,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     public bool CanUserFilter
     {
         get => CanUserResizeInternal ??
-               OwningGrid?.CanUserResizeColumns ??
+               OwningGrid?.CanUserFilterColumns ??
                DataGrid.DefaultCanUserResizeColumns;
         set
         {
@@ -423,6 +423,11 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// Whether multiple filters can be selected
     /// </summary>
     public DataGridFilterMode FilterMode { get; set; }
+    
+    /// <summary>
+    /// Whether multiple filters can be selected
+    /// </summary>
+    public bool FilterMultiple { get; set; } = true;
     
     /// <summary>
     /// Whether to trigger filter when the filter menu closes

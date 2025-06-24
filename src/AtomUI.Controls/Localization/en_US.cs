@@ -8,6 +8,7 @@ namespace AtomUI.Controls.Localization;
 [LanguageProvider(LanguageCode.en_US, Constants.CommonLangID)]
 internal class en_US : AbstractLanguageProvider
 {
-    public const string OkText = "Ok";
-    public const string CancelText = "Cancel";
+    public const string Ok = "Ok";
+    public const string Cancel = "Cancel";
+    public const string Reset = "Reset";
 }

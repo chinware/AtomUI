@@ -1,13 +1,18 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
@@ -139,6 +144,13 @@ public class IconButton : AvaloniaButton,
 
     #endregion
     
+    #region 反射信息定义
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields, typeof(AvaloniaButton))]
+    private static readonly Lazy<FieldInfo> IsFlyoutOpenFieldInfo = new Lazy<FieldInfo>(() => 
+        typeof(AvaloniaButton).GetFieldInfoOrThrow("_isFlyoutOpen",
+            BindingFlags.Instance | BindingFlags.NonPublic));
+    #endregion
+    
     private Border? _frame;
 
     static IconButton()
@@ -197,5 +209,10 @@ public class IconButton : AvaloniaButton,
     public bool HitTest(Point point)
     {
         return true;
+    }
+
+    protected bool IsFlyoutOpen()
+    {
+        return IsFlyoutOpenFieldInfo.Value.GetValue(this) as bool? ?? false;
     }
 }
