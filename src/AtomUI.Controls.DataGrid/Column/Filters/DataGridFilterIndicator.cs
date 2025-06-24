@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using AtomUI.Controls.DataGridLang;
 using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
+using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -12,38 +14,39 @@ namespace AtomUI.Controls;
 internal class DataGridFilterIndicator : IconButton
 {
     #region 公共属性定义
-    
-    public static readonly StyledProperty<bool> IsFilterActivatedProperty
-        = AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(IsFilterActivated));
-    
+
+    public static readonly StyledProperty<bool> IsFilterActivatedProperty =
+        AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(IsFilterActivated));
+
     public static readonly DirectProperty<DataGridFilterIndicator, DataGridFilterMode> FilterModeProperty =
         AvaloniaProperty.RegisterDirect<DataGridFilterIndicator, DataGridFilterMode>(
             nameof(FilterMode),
             o => o.FilterMode,
             (o, v) => o.FilterMode = v);
-    
+
     public static readonly StyledProperty<MenuItemToggleType> ToggleTypeProperty =
         MenuItem.ToggleTypeProperty.AddOwner<DataGridFilterIndicator>();
-    
+
     public bool IsFilterActivated
     {
         get => GetValue(IsFilterActivatedProperty);
         set => SetValue(IsFilterActivatedProperty, value);
     }
-    
+
     private DataGridFilterMode _filterMode;
+
     public DataGridFilterMode FilterMode
     {
         get => _filterMode;
         set => SetAndRaise(FilterModeProperty, ref _filterMode, value);
     }
-    
+
     public MenuItemToggleType ToggleType
     {
         get => GetValue(ToggleTypeProperty);
         set => SetValue(ToggleTypeProperty, value);
     }
-    
+
     #endregion
     
     private DataGridColumn? _owningColumn;
@@ -63,6 +66,7 @@ internal class DataGridFilterIndicator : IconButton
             }
         }
     }
+
     private readonly FlyoutStateHelper _flyoutStateHelper;
 
     public DataGridFilterIndicator()
@@ -86,8 +90,10 @@ internal class DataGridFilterIndicator : IconButton
                             }
                         }
                     }
+
                     return true;
                 }
+
                 return false;
             }
         };
@@ -113,7 +119,7 @@ internal class DataGridFilterIndicator : IconButton
             CreateFlyout();
         }
     }
-    
+
     private void CreateFlyout()
     {
         Debug.Assert(OwningColumn is not null);
@@ -127,12 +133,14 @@ internal class DataGridFilterIndicator : IconButton
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
                 IsDetectMouseClickEnabled = false
             };
-            BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, menuFlyout, MotionAwareControlProperty.IsMotionEnabledProperty);
+            BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, menuFlyout,
+                MotionAwareControlProperty.IsMotionEnabledProperty);
             var menuItems = BuildMenuItems(OwningColumn.Filters.ToList());
             foreach (var menuItem in menuItems)
             {
                 menuFlyout.Items.Add(menuItem);
             }
+
             Flyout                    = menuFlyout;
             _flyoutStateHelper.Flyout = menuFlyout;
         }
@@ -144,12 +152,18 @@ internal class DataGridFilterIndicator : IconButton
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
                 IsDetectMouseClickEnabled = false
             };
-            BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, treeFlyout, MotionAwareControlProperty.IsMotionEnabledProperty);
-            var treeItems = BuildTreeItems(OwningColumn.Filters.ToList());
+            BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, treeFlyout,
+                MotionAwareControlProperty.IsMotionEnabledProperty);
+            var selectAllTreeItem = new DataGridFilterTreeItem();
+            LanguageResourceBinder.CreateBinding(selectAllTreeItem, DataGridFilterTreeItem.HeaderProperty,
+                DataGridLangResourceKey.SelectAllFilterItems);
+            var treeItems         = BuildTreeItems(OwningColumn.Filters.ToList());
             foreach (var menuItem in treeItems)
             {
-                treeFlyout.Items.Add(menuItem);
+                selectAllTreeItem.Items.Add(menuItem);
             }
+
+            treeFlyout.Items.Add(selectAllTreeItem);
             Flyout                    = treeFlyout;
             _flyoutStateHelper.Flyout = treeFlyout;
         }
@@ -178,6 +192,7 @@ internal class DataGridFilterIndicator : IconButton
                 }
             }
         }
+
         return menuItems;
     }
 
@@ -188,8 +203,8 @@ internal class DataGridFilterIndicator : IconButton
         {
             var treeItem = new DataGridFilterTreeItem()
             {
-                Header           = item.Text,
-                FilterValue      = item.Value
+                Header      = item.Text,
+                FilterValue = item.Value
             };
             treeItems.Add(treeItem);
             if (item.Children.Count > 0)
@@ -201,9 +216,10 @@ internal class DataGridFilterIndicator : IconButton
                 }
             }
         }
+
         return treeItems;
     }
-    
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -215,14 +231,14 @@ internal class DataGridFilterIndicator : IconButton
         base.OnAttachedToVisualTree(e);
         _flyoutStateHelper.NotifyAttachedToVisualTree();
     }
-    
+
     protected override void OnClick()
     {
         if (IsEffectivelyEnabled)
         {
             var e = new RoutedEventArgs(ClickEvent);
             RaiseEvent(e);
-            var ( command, parameter) = (Command, CommandParameter);
+            var (command, parameter) = (Command, CommandParameter);
             if (!e.Handled && command is not null && command.CanExecute(parameter))
             {
                 command.Execute(parameter);
@@ -230,5 +246,7 @@ internal class DataGridFilterIndicator : IconButton
             }
         }
     }
-
+    
+    
+    
 }

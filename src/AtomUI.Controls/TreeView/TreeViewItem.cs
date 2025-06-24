@@ -63,8 +63,8 @@ public class TreeViewItem : AvaloniaTreeItem,
     public static readonly StyledProperty<bool> IsShowLeafIconProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsShowLeafIcon));
     
-    public static readonly StyledProperty<bool> IsLoadingProperty
-        = AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsLoading), false);
+    public static readonly StyledProperty<bool> IsLoadingProperty =
+        AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsLoading), false);
 
     public bool IsCheckable
     {
@@ -870,5 +870,20 @@ public class TreeViewItem : AvaloniaTreeItem,
     internal DragPreviewAdorner BuildPreviewAdorner()
     {
         return new DragPreviewAdorner(_frame!);
+    }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        var bounds = new Rect(new Point(0, 0), _headerPresenter?.DesiredSize ?? default);
+        var point  = e.GetPosition(_headerPresenter);
+        if (bounds.Contains(point))
+        {
+            NotifyHeaderClick();
+        }
+    }
+
+    protected virtual void NotifyHeaderClick()
+    {
     }
 }

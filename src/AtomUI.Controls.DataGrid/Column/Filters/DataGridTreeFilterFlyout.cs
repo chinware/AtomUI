@@ -1,5 +1,6 @@
 using AtomUI.Data;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
@@ -30,4 +31,24 @@ public class DataGridTreeFilterFlyout : Flyout
 internal class DataGridFilterTreeItem : TreeViewItem
 {
     public string? FilterValue { get; set; }
+
+    protected override void NotifyHeaderClick()
+    {
+        if (IsChecked is null)
+        {
+            IsChecked =  true;
+        }
+        else
+        {
+            IsChecked = !IsChecked;
+        }
+    }
+    
+    protected override void OnHeaderDoubleTapped(TappedEventArgs e)
+    {
+        if (ItemCount > 0)
+        {
+            e.Handled = true;
+        }
+    }
 }
