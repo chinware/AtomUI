@@ -262,7 +262,8 @@ public sealed class DataGridSelectionColumn : DataGridColumn
 
         var result = new DataGridColumnHeader
         {
-            OwningColumn = this
+            OwningColumn = this,
+            IndicatorLayoutVisible = false
         };
         result[!DataGridColumnHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
         result[!DataGridColumnHeader.SupportedDirectionsProperty]        = this[!SupportedDirectionsProperty];

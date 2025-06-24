@@ -29,7 +29,8 @@
                                     Orientation="Horizontal"
                                     Margin="{Binding (ContentPresenter.Padding),
                                      ElementName={x:Static atom:DataGridColumnHeaderThemeConstants.ContentPresenterPart},
-                                     Converter={StaticResource DataGridHeaderIndicatorLayoutMarginsConverter}}">
+                                     Converter={StaticResource DataGridHeaderIndicatorLayoutMarginsConverter}}"
+                                    IsVisible="{TemplateBinding IndicatorLayoutVisible}">
                                     <atom:DataGridSortIndicator
                                         Name="{x:Static atom:DataGridColumnHeaderThemeConstants.SortIndicatorPart}"
                                         VerticalAlignment="Center"
@@ -38,10 +39,14 @@
                                         Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FilterIndicatorPart}"
                                         VerticalAlignment="Center">
                                         <atom:DataGridFilterIndicator.IsVisible>
-                                            <MultiBinding Converter="{x:Static converters:DataGridFilterIndicatorVisibleConvert.Default}">
-                                                <Binding Path="AreSeparatorsVisible" RelativeSource="{RelativeSource TemplatedParent}" />
-                                                <Binding Path="CanUserFilter" RelativeSource="{RelativeSource TemplatedParent}" />
-                                                <Binding Path="OwningColumn?.Filters.Count" RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <MultiBinding
+                                                Converter="{x:Static converters:DataGridFilterIndicatorVisibleConvert.Default}">
+                                                <Binding Path="AreSeparatorsVisible"
+                                                         RelativeSource="{RelativeSource TemplatedParent}" />
+                                                <Binding Path="CanUserFilter"
+                                                         RelativeSource="{RelativeSource TemplatedParent}" />
+                                                <Binding Path="OwningColumn?.Filters.Count"
+                                                         RelativeSource="{RelativeSource TemplatedParent}" />
                                             </MultiBinding>
                                         </atom:DataGridFilterIndicator.IsVisible>
                                     </atom:DataGridFilterIndicator>

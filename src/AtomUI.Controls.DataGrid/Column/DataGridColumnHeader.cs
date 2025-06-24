@@ -109,6 +109,12 @@ internal class DataGridColumnHeader : ContentControl
     internal static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
         DataGridColumn.SupportedDirectionsProperty.AddOwner<DataGridColumnHeader>();
     
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> IndicatorLayoutVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(IndicatorLayoutVisible),
+            o => o.IndicatorLayoutVisible,
+            (o, v) => o.IndicatorLayoutVisible = v);
+    
     private bool _isFirstVisible = false;
     internal bool IsFirstVisible
     {
@@ -187,6 +193,13 @@ internal class DataGridColumnHeader : ContentControl
                 _filterIndicator.OwningColumn = OwningColumn;
             }
         }
+    }
+    
+    private bool _indicatorLayoutVisible = true;
+    internal bool IndicatorLayoutVisible
+    {
+        get => _indicatorLayoutVisible;
+        set => SetAndRaise(IndicatorLayoutVisibleProperty, ref _indicatorLayoutVisible, value);
     }
 
     internal DataGrid? OwningGrid => OwningColumn?.OwningGrid;
