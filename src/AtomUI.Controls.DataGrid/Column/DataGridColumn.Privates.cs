@@ -20,7 +20,9 @@ namespace AtomUI.Controls;
 public abstract partial class DataGridColumn : IDataGridColumnGroupItem
 {
     #region 常量定义
+
     internal const bool DefaultIsReadOnly = false;
+
     #endregion
 
     #region 属性定义
@@ -30,7 +32,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     internal bool? CanUserResizeInternal { get; set; }
     internal bool? CanUserSortInternal { get; set; }
     internal bool? CanUserFilterInternal { get; set; }
-    
+
     internal bool ActualCanUserResize
     {
         get
@@ -39,13 +41,14 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
             {
                 return false;
             }
+
             return CanUserResizeInternal ?? true;
         }
     }
-    
+
     // MaxWidth from local setting or DataGrid setting
     internal double ActualMaxWidth => _maxWidth ?? OwningGrid?.MaxColumnWidth ?? double.PositiveInfinity;
-    
+
     // MinWidth from local setting or DataGrid setting
     internal double ActualMinWidth
     {
@@ -56,10 +59,11 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
             {
                 return Math.Max(DataGrid.MinimumStarColumnWidth, minWidth);
             }
+
             return minWidth;
         }
     }
-    
+
     internal bool DisplayIndexHasChanged { get; set; }
 
     internal int DisplayIndexWithFiller
@@ -94,15 +98,18 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     internal double LayoutRoundedWidth { get; private set; }
 
     internal ICellEditBinding? CellEditBinding => _editBinding;
-    
+
     IDataGridColumnGroupItem? IDataGridColumnGroupItem.GroupParent { get; set; }
     ObservableCollection<IDataGridColumnGroupItem> IDataGridColumnGroupItem.GroupChildren { get; } = new();
+
     event EventHandler<DataGridColumnGroupChangedArgs>? IDataGridColumnGroupItem.GroupChanged
     {
         add => _groupChanged += value;
         remove => _groupChanged -= value;
     }
+
     private EventHandler<DataGridColumnGroupChangedArgs>? _groupChanged;
+
     #endregion
 
     private bool? _isReadOnly;
@@ -119,7 +126,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     private ControlTheme? _cellTheme;
     private Classes? _cellStyleClasses;
     private bool _setWidthInternalNoCallback;
-    
+
     /// <summary>
     /// Gets the value of a cell according to the specified binding.
     /// </summary>
@@ -129,7 +136,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     internal object? GetCellValue(object item, IBinding? binding)
     {
         Debug.Assert(OwningGrid != null);
-    
+
         object? content = null;
         if (binding != null)
         {
@@ -138,6 +145,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
             content = OwningGrid.ClipboardContentControl.GetValue(ContentControl.ContentProperty);
             sub.Dispose();
         }
+
         return content;
     }
 
@@ -153,19 +161,18 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     private static DataGridLength CoerceWidth(AvaloniaObject source, DataGridLength width)
     {
         var target = (DataGridColumn)source;
-        
+
         if (target._setWidthInternalNoCallback)
         {
             return width;
         }
-        
+
         if (!target.IsSet(WidthProperty))
         {
-        
             return target.OwningGrid?.ColumnWidth ??
                    DataGridLength.Auto;
         }
-        
+
         double desiredValue = width.DesiredValue;
         if (double.IsNaN(desiredValue))
         {
@@ -174,7 +181,8 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
                 double totalStarValues           = 0;
                 double totalStarDesiredValues    = 0;
                 double totalNonStarDisplayWidths = 0;
-                foreach (DataGridColumn column in target.OwningGrid.ColumnsInternal.GetDisplayedColumns(c => c.IsVisible && c != target && !double.IsNaN(c.Width.DesiredValue)))
+                foreach (DataGridColumn column in target.OwningGrid.ColumnsInternal.GetDisplayedColumns(c =>
+                             c.IsVisible && c != target && !double.IsNaN(c.Width.DesiredValue)))
                 {
                     if (column.Width.IsStar)
                     {
@@ -186,10 +194,12 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
                         totalNonStarDisplayWidths += column.ActualWidth;
                     }
                 }
+
                 if (totalStarValues == 0)
                 {
                     // Compute the new star column's desired value based on the available space if there are no other visible star columns
-                    desiredValue = Math.Max(target.ActualMinWidth, target.OwningGrid.CellsWidth - totalNonStarDisplayWidths);
+                    desiredValue = Math.Max(target.ActualMinWidth,
+                        target.OwningGrid.CellsWidth - totalNonStarDisplayWidths);
                 }
                 else
                 {
@@ -206,17 +216,18 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
                 desiredValue = target.ActualMinWidth;
             }
         }
-        
+
         double displayValue = width.DisplayValue;
         if (double.IsNaN(displayValue))
         {
             displayValue = desiredValue;
         }
+
         displayValue = Math.Max(target.ActualMinWidth, Math.Min(target.ActualMaxWidth, displayValue));
 
         return new DataGridLength(width.Value, width.UnitType, desiredValue, displayValue);
     }
-     
+
     internal void CancelCellEditInternal(Control editingElement, object uneditedValue)
     {
         CancelCellEdit(editingElement, uneditedValue);
@@ -226,7 +237,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     {
         EndCellEdit();
     }
-    
+
     /// <summary>
     /// If the DataGrid is using layout rounding, the pixel snapping will force all widths to
     /// whole numbers. Since the column widths aren't visual elements, they don't go through the normal
@@ -255,14 +266,14 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
             OwningColumn = this
         };
         Debug.Assert(OwningGrid != null);
-        result[!ContentControl.ContentProperty]                          = this[!HeaderProperty];
-        result[!ContentControl.ContentTemplateProperty]                  = this[!HeaderTemplateProperty];
-        result[!DataGridColumnHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
-        result[!DataGridColumnHeader.IsMotionEnabledProperty]                   = OwningGrid[!DataGrid.IsMotionEnabledProperty];
-        result[!DataGridColumnHeader.SupportedDirectionsProperty]        = this[!SupportedDirectionsProperty];
+        result[!ContentControl.ContentProperty] = this[!HeaderProperty];
+        result[!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty];
+        result[!DataGridColumnHeader.SizeTypeProperty] = OwningGrid[!DataGrid.SizeTypeProperty];
+        result[!DataGridColumnHeader.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
+        result[!DataGridColumnHeader.SupportedSortDirectionsProperty] = this[!SupportedSortDirectionsProperty];
         result[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
-        result[!DataGridColumnHeader.VerticalContentAlignmentProperty]   = this[!VerticalAlignmentProperty];
-        
+        result[!DataGridColumnHeader.VerticalContentAlignmentProperty] = this[!VerticalAlignmentProperty];
+
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
         return result;
@@ -307,7 +318,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
         double newDesiredValue = newWidth.DesiredValue;
         double newDisplayValue = Math.Max(ActualMinWidth, Math.Min(ActualMaxWidth, newWidth.DisplayValue));
         DataGridLengthUnitType newUnitType = newWidth.UnitType;
-        
+
         int    starColumnsCount  = 0;
         double totalDisplayWidth = 0;
         foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
@@ -316,11 +327,15 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
             totalDisplayWidth += column.ActualWidth;
             starColumnsCount  += (column != this && column.Width.IsStar) ? 1 : 0;
         }
-        bool hasInfiniteAvailableWidth = !OwningGrid.RowsPresenterAvailableSize.HasValue || double.IsPositiveInfinity(OwningGrid.RowsPresenterAvailableSize.Value.Width);
-        
+
+        bool hasInfiniteAvailableWidth = !OwningGrid.RowsPresenterAvailableSize.HasValue ||
+                                         double.IsPositiveInfinity(OwningGrid.RowsPresenterAvailableSize.Value.Width);
+
         // If we're using star sizing, we can only resize the column as much as the columns to the
         // right will allow (i.e. until they hit their max or min widths).
-        if (!hasInfiniteAvailableWidth && (starColumnsCount > 0 || (newUnitType == DataGridLengthUnitType.Star && newWidth.IsStar && userInitiated)))
+        if (!hasInfiniteAvailableWidth && (starColumnsCount > 0 ||
+                                           (newUnitType == DataGridLengthUnitType.Star && newWidth.IsStar &&
+                                            userInitiated)))
         {
             double limitedDisplayValue = oldWidth.DisplayValue;
             double availableIncrease   = Math.Max(0, OwningGrid.CellsWidth - totalDisplayWidth);
@@ -330,7 +345,8 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
                 // The desired change is greater than the amount of available space,
                 // so we need to decrease the widths of columns to the right to make room.
                 desiredChange -= availableIncrease;
-                double actualChange = desiredChange + OwningGrid.DecreaseColumnWidths(DisplayIndex + 1, -desiredChange, userInitiated);
+                double actualChange = desiredChange +
+                                      OwningGrid.DecreaseColumnWidths(DisplayIndex + 1, -desiredChange, userInitiated);
                 limitedDisplayValue += availableIncrease + actualChange;
             }
             else if (desiredChange > 0)
@@ -342,14 +358,16 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
             else
             {
                 // The desired change is negative, so we need to increase the widths of columns to the right.
-                limitedDisplayValue += desiredChange + OwningGrid.IncreaseColumnWidths(DisplayIndex + 1, -desiredChange, userInitiated);
+                limitedDisplayValue += desiredChange +
+                                       OwningGrid.IncreaseColumnWidths(DisplayIndex + 1, -desiredChange, userInitiated);
             }
+
             if (ActualCanUserResize || (oldWidth.IsStar && !userInitiated))
             {
                 newDisplayValue = limitedDisplayValue;
             }
         }
-        
+
         if (userInitiated)
         {
             newDesiredValue = newDisplayValue;
@@ -366,7 +384,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
                 newValue      = Width.Value * newDisplayValue / ActualWidth;
             }
         }
-        
+
         newDisplayValue = Math.Min(double.MaxValue, newValue);
         newWidth        = new DataGridLength(newDisplayValue, newUnitType, newDesiredValue, newDisplayValue);
         SetWidthInternalNoCallback(newWidth);
@@ -428,7 +446,6 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
         {
             _setWidthInternalNoCallback = originalValue;
         }
-
     }
 
     /// <summary>
@@ -448,7 +465,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
         {
             _editingElement = GenerateEditingElement(cell, dataItem, out _editBinding);
         }
-        
+
         return _editingElement;
     }
 
@@ -460,7 +477,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     {
         _editingElement = null;
     }
-        
+
     /// <summary>
     /// We get the sort description from the data source.  We don't worry whether we can modify sort -- perhaps the sort description
     /// describes an unchangeable sort that exists on the data.
@@ -476,17 +493,19 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
                               .OfType<DataGridComparerSortDescription>()
                               .FirstOrDefault(s => s.SourceComparer == CustomSortComparer);
             }
-        
+
             var propertyName = GetSortPropertyName();
-            return OwningGrid.DataConnection.SortDescriptions.FirstOrDefault(s => s.HasPropertyPath && s.PropertyPath == propertyName);
+            return OwningGrid.DataConnection.SortDescriptions.FirstOrDefault(s =>
+                s.HasPropertyPath && s.PropertyPath == propertyName);
         }
+
         return null;
     }
 
     internal string? GetSortPropertyName()
     {
         string? result = SortMemberPath;
-        
+
         if (string.IsNullOrEmpty(result))
         {
             if (this is DataGridBoundColumn boundColumn)
@@ -501,7 +520,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
                 }
             }
         }
-        
+
         return result;
     }
 }

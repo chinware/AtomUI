@@ -63,8 +63,8 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <summary>
     /// Supported sorting directions
     /// </summary>
-    public static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
-        AvaloniaProperty.Register<DataGridColumn, DataGridSupportedDirections>(nameof(SupportedDirections), DataGridSupportedDirections.All);
+    public static readonly StyledProperty<DataGridSortDirections> SupportedSortDirectionsProperty =
+        AvaloniaProperty.Register<DataGridColumn, DataGridSortDirections>(nameof(SupportedSortDirections), DataGridSortDirections.All);
     
     /// <summary>
     /// Horizontal alignment method for Header content
@@ -121,10 +121,10 @@ public abstract partial class DataGridColumn : AvaloniaObject
         set => SetAndRaise(HeaderTemplateProperty, ref _headerTemplate, value);
     }
     
-    public DataGridSupportedDirections SupportedDirections
+    public DataGridSortDirections SupportedSortDirections
     {
-        get => GetValue(SupportedDirectionsProperty);
-        set => SetValue(SupportedDirectionsProperty, value);
+        get => GetValue(SupportedSortDirectionsProperty);
+        set => SetValue(SupportedSortDirectionsProperty, value);
     }
     
     public HorizontalAlignment HorizontalAlignment

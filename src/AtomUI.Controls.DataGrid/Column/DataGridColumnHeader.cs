@@ -109,8 +109,8 @@ internal class DataGridColumnHeader : ContentControl
             o => o.CurrentSortingState,
             (o, v) => o.CurrentSortingState = v);
     
-    internal static readonly StyledProperty<DataGridSupportedDirections> SupportedDirectionsProperty =
-        DataGridColumn.SupportedDirectionsProperty.AddOwner<DataGridColumnHeader>();
+    internal static readonly StyledProperty<DataGridSortDirections> SupportedSortDirectionsProperty =
+        DataGridColumn.SupportedSortDirectionsProperty.AddOwner<DataGridColumnHeader>();
     
     internal static readonly DirectProperty<DataGridColumnHeader, bool> IndicatorLayoutVisibleProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
@@ -174,10 +174,10 @@ internal class DataGridColumnHeader : ContentControl
         set => SetAndRaise(CurrentSortingStateProperty, ref _currentSortingState, value);
     }
     
-    public DataGridSupportedDirections SupportedDirections
+    public DataGridSortDirections SupportedSortDirections
     {
-        get => GetValue(SupportedDirectionsProperty);
-        set => SetValue(SupportedDirectionsProperty, value);
+        get => GetValue(SupportedSortDirectionsProperty);
+        set => SetValue(SupportedSortDirectionsProperty, value);
     }
     
     private bool _canUserFilter = false;

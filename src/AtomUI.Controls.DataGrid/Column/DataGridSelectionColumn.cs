@@ -262,17 +262,17 @@ public sealed class DataGridSelectionColumn : DataGridColumn
 
         var result = new DataGridColumnHeader
         {
-            OwningColumn = this,
+            OwningColumn           = this,
             IndicatorLayoutVisible = false
         };
         result[!DataGridColumnHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
-        result[!DataGridColumnHeader.SupportedDirectionsProperty]        = this[!SupportedDirectionsProperty];
+        result[!DataGridColumnHeader.SupportedSortDirectionsProperty]    = this[!SupportedSortDirectionsProperty];
         result[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
         result[!DataGridColumnHeader.VerticalContentAlignmentProperty]   = this[!VerticalAlignmentProperty];
 
-        _headerCheckBox                  =  new CheckBox();
+        _headerCheckBox       =  new CheckBox();
         _headerCheckBox.Click += HandleSelectedAllChanged;
-        result.Content                   =  _headerCheckBox;
+        result.Content        =  _headerCheckBox;
         return result;
     }
 

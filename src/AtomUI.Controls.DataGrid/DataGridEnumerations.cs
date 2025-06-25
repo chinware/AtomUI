@@ -75,7 +75,7 @@ public enum DataGridHeadersVisibility
 }
 
 [Flags]
-public enum DataGridSupportedDirections
+public enum DataGridSortDirections
 {
     None = 0x00,
     Ascending = 0x01,

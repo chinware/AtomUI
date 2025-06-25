@@ -5,8 +5,8 @@
     <ControlTheme x:Key="{x:Type atom:DataGridSortIndicator}" TargetType="atom:DataGridSortIndicator">
         <Setter Property="Template">
             <ControlTemplate>
-                <UniformGrid Rows="2">
-                    <Border>
+                <StackPanel Orientation="Vertical">
+                    <Border IsVisible="{TemplateBinding AscendingIndicatorVisible}">
                         <Border.RenderTransform>
                             <TranslateTransform Y="1" />
                         </Border.RenderTransform>
@@ -14,7 +14,7 @@
                             Name="{x:Static atom:DataGridSortIndicatorThemeConstants.AscendingPart}"
                             IconInfo="{atom:IconInfoProvider CaretUpOutlined}" />
                     </Border>
-                    <Border>
+                    <Border IsVisible="{TemplateBinding DescendingIndicatorVisible}">
                         <Border.RenderTransform>
                             <TranslateTransform Y="-1" />
                         </Border.RenderTransform>
@@ -22,7 +22,7 @@
                             Name="{x:Static atom:DataGridSortIndicatorThemeConstants.DescendingPart}"
                             IconInfo="{atom:IconInfoProvider CaretDownOutlined}" />
                     </Border>
-                </UniformGrid>
+                </StackPanel>
             </ControlTemplate>
         </Setter>
 

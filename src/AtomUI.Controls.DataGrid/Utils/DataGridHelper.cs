@@ -27,22 +27,22 @@ internal static class DataGridHelper
         }
     }
 
-    public static ListSortDirection FromSupportedDirections(DataGridSupportedDirections supportedDirections)
+    public static ListSortDirection FromSupportedDirections(DataGridSortDirections supportedDirections)
     {
         return supportedDirections switch
         {
-            DataGridSupportedDirections.Ascending => ListSortDirection.Ascending,
-            DataGridSupportedDirections.Descending => ListSortDirection.Descending,
+            DataGridSortDirections.Ascending => ListSortDirection.Ascending,
+            DataGridSortDirections.Descending => ListSortDirection.Descending,
             _ => throw new ArgumentOutOfRangeException($"unsupported SupportedDirections: {supportedDirections}."),
         };
     }
 
-    public static DataGridSupportedDirections FromListSortDirection(ListSortDirection sortDirection)
+    public static DataGridSortDirections FromListSortDirection(ListSortDirection sortDirection)
     {
         return sortDirection switch
         {
-            ListSortDirection.Ascending => DataGridSupportedDirections.Ascending,
-            ListSortDirection.Descending => DataGridSupportedDirections.Descending,
+            ListSortDirection.Ascending => DataGridSortDirections.Ascending,
+            ListSortDirection.Descending => DataGridSortDirections.Descending,
             _ => throw new ArgumentOutOfRangeException($"unsupported ListSortDirection: {sortDirection}."),
         };
     }
