@@ -141,7 +141,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
         return content;
     }
 
-     /// <summary>
+    /// <summary>
     /// Coerces a DataGridLength to a valid value.  If any value components are double.NaN, this method
     /// coerces them to a proper initial value.  For star columns, the desired width is calculated based
     /// on the rest of the star columns.  For pixel widths, the desired value is based on the pixel value.
@@ -258,6 +258,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
         result[!ContentControl.ContentProperty]                          = this[!HeaderProperty];
         result[!ContentControl.ContentTemplateProperty]                  = this[!HeaderTemplateProperty];
         result[!DataGridColumnHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
+        result[!DataGridColumnHeader.IsMotionEnabledProperty]                   = OwningGrid[!DataGrid.IsMotionEnabledProperty];
         result[!DataGridColumnHeader.SupportedDirectionsProperty]        = this[!SupportedDirectionsProperty];
         result[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
         result[!DataGridColumnHeader.VerticalContentAlignmentProperty]   = this[!VerticalAlignmentProperty];

@@ -36,6 +36,7 @@
                                         VerticalAlignment="Center"
                                         IsVisible="{TemplateBinding CanUserSort}" />
                                     <atom:DataGridFilterIndicator
+                                        IsEnableHoverEffect="True"
                                         Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FilterIndicatorPart}"
                                         VerticalAlignment="Center">
                                         <atom:DataGridFilterIndicator.IsVisible>
@@ -142,17 +143,17 @@
         <!-- BuildSortableColumnStyle 开始 -->
         <Style Selector="^[CanUserSort=True]">
             <Style Selector="^:sort-ascending, ^:sort-descending">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="Cursor" Value="Hand" />
             </Style>
 
             <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
             </Style>
         </Style>
 

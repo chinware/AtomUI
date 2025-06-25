@@ -6,9 +6,11 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using AtomUI.Animations;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -20,6 +22,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Utilities;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -115,6 +118,9 @@ internal class DataGridColumnHeader : ContentControl
             o => o.IndicatorLayoutVisible,
             (o, v) => o.IndicatorLayoutVisible = v);
     
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridColumnHeader>();
+    
     private bool _isFirstVisible = false;
     internal bool IsFirstVisible
     {
@@ -201,6 +207,12 @@ internal class DataGridColumnHeader : ContentControl
         get => _indicatorLayoutVisible;
         set => SetAndRaise(IndicatorLayoutVisibleProperty, ref _indicatorLayoutVisible, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
 
     internal DataGrid? OwningGrid => OwningColumn?.OwningGrid;
 
@@ -238,6 +250,7 @@ internal class DataGridColumnHeader : ContentControl
     private StackPanel? _indicatorsLayout;
     private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
     private DataGridFilterIndicator? _filterIndicator;
+    private Border? _frame;
     
     static DataGridColumnHeader()
     {
@@ -998,6 +1011,7 @@ internal class DataGridColumnHeader : ContentControl
         base.OnApplyTemplate(e);
         _indicatorsLayout = e.NameScope.Find<StackPanel>(DataGridColumnHeaderThemeConstants.IndicatorsLayoutPart);
         _filterIndicator = e.NameScope.Find<DataGridFilterIndicator>(DataGridColumnHeaderThemeConstants.FilterIndicatorPart);
+        _frame = e.NameScope.Find<Border>(DataGridColumnHeaderThemeConstants.FramePart);
         if (_filterIndicator != null && OwningColumn != null)
         {
             _filterIndicator.OwningColumn = OwningColumn;
@@ -1006,11 +1020,47 @@ internal class DataGridColumnHeader : ContentControl
         {
             _indicatorsLayout.Children.CollectionChanged += HandleIndicatorLayoutChildrenChanged;
         }
+
+        ConfigureTransitions();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
+        }
     }
 
     private void HandleIndicatorLayoutChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         Debug.Assert(_indicatorsLayout != null);
         _indicatorsLayout.IsVisible = _indicatorsLayout.Children.Count > 0;
+    }
+    
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            if (_frame != null)
+            {
+                _frame.Transitions = new Transitions()
+                {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                };
+            }
+        }
+        else
+        {
+            if (_frame != null)
+            {
+                _frame.Transitions?.Clear();
+                _frame.Transitions = null;
+            }
+        }
     }
 }
