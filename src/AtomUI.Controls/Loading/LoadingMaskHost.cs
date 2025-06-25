@@ -24,8 +24,8 @@ public class LoadingMaskHost : Control
     public static readonly StyledProperty<Icon?> CustomIndicatorIconProperty =
         LoadingIndicator.CustomIndicatorIconProperty.AddOwner<LoadingMaskHost>();
 
-    public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
-        LoadingIndicator.MotionDurationProperty.AddOwner<LoadingMaskHost>();
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+       MotionAwareControlProperty.MotionDurationProperty.AddOwner<LoadingMaskHost>();
 
     public static readonly StyledProperty<Easing?> MotionEasingCurveProperty =
         LoadingIndicator.MotionEasingCurveProperty.AddOwner<LoadingMaskHost>();
@@ -60,7 +60,7 @@ public class LoadingMaskHost : Control
         set => SetValue(CustomIndicatorIconProperty, value);
     }
 
-    public TimeSpan? MotionDuration
+    public TimeSpan MotionDuration
     {
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);

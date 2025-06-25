@@ -33,8 +33,8 @@ public class LoadingIndicator : TemplatedControl,
     public static readonly StyledProperty<Icon?> CustomIndicatorIconProperty =
         AvaloniaProperty.Register<LoadingIndicator, Icon?>(nameof(CustomIndicatorIcon));
 
-    public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
-        AvaloniaProperty.Register<LoadingIndicator, TimeSpan?>(nameof(MotionDuration));
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+       MotionAwareControlProperty.MotionDurationProperty.AddOwner<LoadingIndicator>();
 
     public static readonly StyledProperty<Easing?> MotionEasingCurveProperty =
         AvaloniaProperty.Register<LoadingIndicator, Easing?>(nameof(MotionEasingCurve));
@@ -63,7 +63,7 @@ public class LoadingIndicator : TemplatedControl,
         set => SetValue(CustomIndicatorIconProperty, value);
     }
 
-    public TimeSpan? MotionDuration
+    public TimeSpan MotionDuration
     {
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);
@@ -274,7 +274,7 @@ public class LoadingIndicator : TemplatedControl,
             {
                 IterationCount = IterationCount.Infinite,
                 Easing         = MotionEasingCurve ?? new LinearEasing(),
-                Duration       = MotionDuration ?? TimeSpan.FromMilliseconds(300),
+                Duration       = MotionDuration,
                 Children =
                 {
                     new KeyFrame
@@ -317,17 +317,6 @@ public class LoadingIndicator : TemplatedControl,
         offsetX -= (_loadingText!.DesiredSize.Width - indicatorRect.Width) / 2;
         return new Rect(new Point(offsetX, offsetY), _loadingText.DesiredSize);
     }
-
-    // private static double GetIndicatorSize(SizeType sizeType)
-    // {
-    //     return sizeType switch
-    //     {
-    //         SizeType.Small => SMALL_INDICATOR_SIZE,
-    //         SizeType.Middle => MIDDLE_INDICATOR_SIZE,
-    //         SizeType.Large => LARGE_INDICATOR_SIZE,
-    //         _ => throw new ArgumentOutOfRangeException(nameof(sizeType), sizeType, "Invalid value for SizeType")
-    //     };
-    // }
 
     private static double GetOpacityForAngle(double degree)
     {

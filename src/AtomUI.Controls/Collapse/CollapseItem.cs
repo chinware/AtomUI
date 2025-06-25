@@ -107,10 +107,8 @@ public class CollapseItem : HeaderedContentControl,
             o => o.ContentBorderThickness,
             (o, v) => o.ContentBorderThickness = v);
 
-    internal static readonly DirectProperty<CollapseItem, TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.RegisterDirect<CollapseItem, TimeSpan>(nameof(MotionDuration),
-            o => o.MotionDuration,
-            (o, v) => o.MotionDuration = v);
+    internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<CollapseItem>();
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CollapseItem>();
@@ -169,12 +167,10 @@ public class CollapseItem : HeaderedContentControl,
         set => SetAndRaise(ContentBorderThicknessProperty, ref _contentBorderThickness, value);
     }
 
-    private TimeSpan _motionDuration;
-
     internal TimeSpan MotionDuration
     {
-        get => _motionDuration;
-        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
     }
 
     internal bool IsMotionEnabled

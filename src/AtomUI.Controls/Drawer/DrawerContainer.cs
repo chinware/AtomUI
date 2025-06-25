@@ -75,11 +75,9 @@ internal class DrawerContainer : ContentControl
         = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(CloseWhenClickOnMask),
             o => o.CloseWhenClickOnMask,
             (o, v) => o.CloseWhenClickOnMask = v);
-
-    internal static readonly DirectProperty<DrawerContainer, TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.RegisterDirect<DrawerContainer, TimeSpan>(nameof(MotionDuration),
-            o => o.MotionDuration,
-            (o, v) => o.MotionDuration = v);
+    
+    internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<DrawerContainer>();
     
     internal static readonly DirectProperty<DrawerContainer, double> PushOffsetPercentProperty =
         AvaloniaProperty.RegisterDirect<DrawerContainer, double>(nameof(PushOffsetPercent),
@@ -176,13 +174,11 @@ internal class DrawerContainer : ContentControl
         get => _closeWhenClickOnMask;
         set => SetAndRaise(CloseWhenClickOnMaskProperty, ref _closeWhenClickOnMask, value);
     }
-
-    private TimeSpan _motionDuration;
-
+    
     internal TimeSpan MotionDuration
     {
-        get => _motionDuration;
-        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
     }
 
     private double _pushOffsetPercent;

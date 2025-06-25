@@ -25,8 +25,8 @@ internal class LoadingMask : AvaloniaObject, IDisposable
     public static readonly StyledProperty<Icon?> CustomIndicatorIconProperty =
         LoadingIndicator.CustomIndicatorIconProperty.AddOwner<LoadingMask>();
 
-    public static readonly StyledProperty<TimeSpan?> MotionDurationProperty =
-        LoadingIndicator.MotionDurationProperty.AddOwner<LoadingMask>();
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<LoadingMask>();
 
     public static readonly StyledProperty<Easing?> MotionEasingCurveProperty =
         LoadingIndicator.MotionEasingCurveProperty.AddOwner<LoadingMask>();
@@ -55,7 +55,7 @@ internal class LoadingMask : AvaloniaObject, IDisposable
         set => SetValue(CustomIndicatorIconProperty, value);
     }
 
-    public TimeSpan? MotionDuration
+    public TimeSpan MotionDuration
     {
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);

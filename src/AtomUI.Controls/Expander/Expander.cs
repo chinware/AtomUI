@@ -147,12 +147,10 @@ public class Expander : AvaloniaExpander,
         AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(HeaderBorderThickness),
             o => o.HeaderBorderThickness,
             (o, v) => o.HeaderBorderThickness = v);
-
-    internal static readonly DirectProperty<Expander, TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.RegisterDirect<Expander, TimeSpan>(nameof(MotionDuration),
-            o => o.MotionDuration,
-            (o, v) => o.MotionDuration = v);
-
+    
+    internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<Expander>();
+    
     internal static readonly DirectProperty<Expander, Thickness> EffectiveBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(EffectiveBorderThickness),
             o => o.EffectiveBorderThickness,
@@ -166,12 +164,10 @@ public class Expander : AvaloniaExpander,
         set => SetAndRaise(HeaderBorderThicknessProperty, ref _headerBorderThickness, value);
     }
 
-    private TimeSpan _motionDuration;
-
     internal TimeSpan MotionDuration
     {
-        get => _motionDuration;
-        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
     }
 
     private Thickness _effectiveBorderThickness;

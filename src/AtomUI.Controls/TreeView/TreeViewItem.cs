@@ -552,7 +552,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             _switcherButton.IsNodeAnimating = true;
         }
 
-        var motion = OwnerTreeView.OpenMotion ?? new ExpandMotion(Direction.Top, null, new CubicEaseIn());
+        var motion = OwnerTreeView.OpenMotion ?? new CollapseMotion(Direction.Top, null, new CubicEaseIn());
         motion.Duration = OwnerTreeView.MotionDuration;
 
         MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, null, () =>

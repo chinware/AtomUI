@@ -37,8 +37,8 @@ public class Popup : AvaloniaPopup,
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor), 4);
 
-    public static readonly StyledProperty<TimeSpan> MotionDurationProperty = 
-        AvaloniaProperty.Register<Popup, TimeSpan>(nameof(MotionDuration), TimeSpan.Zero);
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<Popup>();
     
     public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
         AvaloniaProperty.Register<Popup, AbstractMotion?>(nameof(OpenMotion));

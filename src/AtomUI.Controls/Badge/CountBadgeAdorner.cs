@@ -18,7 +18,7 @@ internal class CountBadgeAdorner : TemplatedControl
         AvaloniaProperty.Register<CountBadgeAdorner, IBrush?>(
             nameof(BadgeColor));
 
-    internal static readonly StyledProperty<Point> OffsetProperty =
+    public static readonly StyledProperty<Point> OffsetProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, Point>(
             nameof(Offset));
 
@@ -28,6 +28,9 @@ internal class CountBadgeAdorner : TemplatedControl
     public static readonly StyledProperty<CountBadgeSize> SizeProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, CountBadgeSize>(
             nameof(Size));
+    
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<CountBadgeAdorner>();
 
     public IBrush? BadgeColor
     {
@@ -58,6 +61,12 @@ internal class CountBadgeAdorner : TemplatedControl
         get => GetValue(CountProperty);
         set => SetValue(CountProperty, value);
     }
+    
+    public TimeSpan MotionDuration
+    {
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
+    }
 
     #endregion
 
@@ -80,12 +89,6 @@ internal class CountBadgeAdorner : TemplatedControl
             nameof(CountText),
             o => o.CountText,
             (o, v) => o.CountText = v);
-
-    internal static readonly DirectProperty<CountBadgeAdorner, TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.RegisterDirect<CountBadgeAdorner, TimeSpan>(
-            nameof(MotionDuration),
-            o => o.MotionDuration,
-            (o, v) => o.MotionDuration = v);
 
     internal static readonly StyledProperty<int> CountProperty =
         AvaloniaProperty.Register<CountBadgeAdorner, int>(
@@ -124,14 +127,6 @@ internal class CountBadgeAdorner : TemplatedControl
     {
         get => _countText;
         set => SetAndRaise(CountTextProperty, ref _countText, value);
-    }
-
-    private TimeSpan _motionDuration;
-
-    internal TimeSpan MotionDuration
-    {
-        get => _motionDuration;
-        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
 
     internal IBrush? BadgeShadowColor

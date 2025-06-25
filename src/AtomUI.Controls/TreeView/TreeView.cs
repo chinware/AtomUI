@@ -148,10 +148,8 @@ public class TreeView : AvaloniaTreeView,
             o => o.DragIndicatorBrush,
             (o, v) => o.DragIndicatorBrush = v);
     
-    internal static readonly DirectProperty<TreeView, TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.RegisterDirect<TreeView, TimeSpan>(nameof(MotionDuration),
-            o => o.MotionDuration,
-            (o, v) => o.MotionDuration = v);
+    internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<TreeView>();
 
     private DragIndicatorRenderInfo? _dragIndicatorRenderInfo;
 
@@ -185,12 +183,10 @@ public class TreeView : AvaloniaTreeView,
         set => SetAndRaise(DragIndicatorBrushProperty, ref _dragIndicatorBrush, value);
     }
     
-    private TimeSpan _motionDuration;
-
-    internal TimeSpan MotionDuration
+    public TimeSpan MotionDuration
     {
-        get => _motionDuration;
-        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;

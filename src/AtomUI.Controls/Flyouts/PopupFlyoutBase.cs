@@ -92,7 +92,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
     
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
-        Popup.MotionDurationProperty.AddOwner<PopupFlyoutBase>();
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<PopupFlyoutBase>();
     
     public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
         Popup.OpenMotionProperty.AddOwner<PopupFlyoutBase>();

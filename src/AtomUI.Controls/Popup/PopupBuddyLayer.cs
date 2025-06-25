@@ -18,7 +18,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         Border.BoxShadowProperty.AddOwner<PopupBuddyLayer>();
     
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
-        Popup.MotionDurationProperty.AddOwner<PopupBuddyLayer>();
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<PopupBuddyLayer>();
     
     public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
         Popup.OpenMotionProperty.AddOwner<PopupBuddyLayer>();

@@ -67,7 +67,7 @@ public class FlyoutHost : Control,
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<FlyoutHost>();
     
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
-        Popup.MotionDurationProperty.AddOwner<FlyoutHost>();
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<FlyoutHost>();
     
     public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
         Popup.OpenMotionProperty.AddOwner<FlyoutHost>();

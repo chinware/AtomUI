@@ -15,10 +15,14 @@ public interface IMotionAwareControl
 public abstract class MotionAwareControlProperty : AvaloniaObject
 {
     public const string IsMotionEnabledPropertyName = "IsMotionEnabled";
+    public const string MotionDurationPropertyName = "MotionDuration";
     public const string TokenResourceBindingDisposablePropertyName = "TokenResourceBindingDisposable";
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = AvaloniaProperty.Register<MotionAwareControlProperty, bool>(IsMotionEnabledPropertyName);
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        AvaloniaProperty.Register<MotionAwareControlProperty, bool>(IsMotionEnabledPropertyName);
+    
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty = 
+        AvaloniaProperty.Register<MotionAwareControlProperty, TimeSpan>(MotionDurationPropertyName, TimeSpan.FromMilliseconds(200));
 
     internal static readonly AttachedProperty<CompositeDisposable?> TokenResourceBindingDisposablesProperty =
         AvaloniaProperty.RegisterAttached<MotionAwareControlProperty, Control, CompositeDisposable?>(

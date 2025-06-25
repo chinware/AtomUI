@@ -80,11 +80,10 @@ internal class DotBadgeAdorner : TemplatedControl
     #region 内部属性定义
 
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.Register<DotBadgeAdorner, TimeSpan>(
-            nameof(MotionDuration));
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<DotBadgeAdorner>();
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadgeAdorner>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DotBadgeAdorner>();
     
     internal TimeSpan MotionDuration
     {
