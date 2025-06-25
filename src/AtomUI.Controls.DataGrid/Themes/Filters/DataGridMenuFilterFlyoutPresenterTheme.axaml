@@ -56,6 +56,8 @@
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
             <Setter Property="Background"
                     Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownBg}}" /> 
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownPadding}}" /> 
         </Style>
         
         <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">

@@ -35,44 +35,46 @@
         </ControlTemplate>
     </Setter>
 
-    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-    <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
-    <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
-    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.Padding}}" />
-    <Setter Property="ArrowSize" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.ArrowSize}}" />
-    <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
-
-    <Style Selector="^ /template/ atom|ArrowIndicator#PART_ArrowIndicator">
+    <Style Selector="^:is(atom|ArrowDecoratedBox)">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.Padding}}" />
         <Setter Property="ArrowSize" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.ArrowSize}}" />
-    </Style>
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
 
-    <Style Selector="^[ArrowDirection=Top]">
-        <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
-            <Setter Property="DockPanel.Dock" Value="Top" />
+        <Style Selector="^ /template/ atom|ArrowIndicator#PART_ArrowIndicator">
+            <Setter Property="ArrowSize" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.ArrowSize}}" />
         </Style>
-    </Style>
-    <Style Selector="^[ArrowDirection=Right]">
-        <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
-            <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+
+        <Style Selector="^[ArrowDirection=Top]">
+            <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
+                <Setter Property="DockPanel.Dock" Value="Top" />
+            </Style>
         </Style>
-        <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
-            <Setter Property="DockPanel.Dock" Value="Right" />
+        <Style Selector="^[ArrowDirection=Right]">
+            <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+                <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+            </Style>
+            <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
+                <Setter Property="DockPanel.Dock" Value="Right" />
+            </Style>
         </Style>
-    </Style>
-    <Style Selector="^[ArrowDirection=Bottom]">
-        <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
-            <Setter Property="LayoutTransform" Value="rotate(180deg)" />
+        <Style Selector="^[ArrowDirection=Bottom]">
+            <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+                <Setter Property="LayoutTransform" Value="rotate(180deg)" />
+            </Style>
+            <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
+                <Setter Property="DockPanel.Dock" Value="Bottom" />
+            </Style>
         </Style>
-        <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
-            <Setter Property="DockPanel.Dock" Value="Bottom" />
-        </Style>
-    </Style>
-    <Style Selector="^[ArrowDirection=Left]">
-        <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
-            <Setter Property="LayoutTransform" Value="rotate(-90deg)" />
-        </Style>
-        <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
-            <Setter Property="DockPanel.Dock" Value="Left" />
+        <Style Selector="^[ArrowDirection=Left]">
+            <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+                <Setter Property="LayoutTransform" Value="rotate(-90deg)" />
+            </Style>
+            <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">
+                <Setter Property="DockPanel.Dock" Value="Left" />
+            </Style>
         </Style>
     </Style>
 
