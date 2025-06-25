@@ -192,6 +192,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
                                  Action? completedAction = null)
     {
         Attach();
+        _buddyDecorator.CaptureContentControl();
         _buddyDecorator.Opacity = 0.0d;
         _buddyDecorator.NotifySceneShowed();
         aboutToStart?.Invoke();
@@ -217,6 +218,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         {
             motion.Duration = MotionDuration;
         }
+        _buddyDecorator.CaptureContentControl();
         NotifyAboutToRunDetachMotion();
         motion.Run(_buddyDecorator, null, () =>
         {

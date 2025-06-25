@@ -91,10 +91,7 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
                 _decoratorControl.MaskCornerRadius = templatedControl.CornerRadius;
                 _decoratorControl.MaskSize         = templatedControl.Bounds.Size;
             }
-            if (content != null)
-            {
-                _decoratorControl.Content = BuildDecoratorControlContent(content);
-            }
+            CaptureContentControl();
         }
     }
     
@@ -111,14 +108,21 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
         var thickness = MaskShadows.Thickness();
         return new Point(thickness.Left, thickness.Top);
     }
-
-    private Control BuildDecoratorControlContent(Control control)
+    
+    internal void CaptureContentControl()
     {
-        return new MotionTargetBitmapControl(control.CaptureCurrentBitmap())
+        if (_popupHost != null && _popupHost.Presenter != null)
         {
-            Width  = control.Bounds.Width,
-            Height = control.Bounds.Height,
-        };
+            var content   = _popupHost.Presenter.Child;
+            if (content != null)
+            {
+                _decoratorControl.Content = new MotionTargetBitmapControl(content.CaptureCurrentBitmap())
+                {
+                    Width  = content.Bounds.Width,
+                    Height = content.Bounds.Height,
+                };
+            }
+        }
     }
 
     internal void HideDecoratorContent()
