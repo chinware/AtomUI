@@ -1,4 +1,5 @@
 using AtomUI.Data;
+using AtomUI.MotionScene;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Metadata;
@@ -12,7 +13,9 @@ public class DataGridTreeFilterFlyout : Flyout
     public DataGridTreeFilterFlyout()
     {
         var itemCollectionType = typeof(ItemCollection);
-        Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
+        Items      = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
+        OpenMotion = new SlideUpInMotion();
+        CloseMotion = new SlideUpOutMotion();
     }
     
     protected override Control CreatePresenter()

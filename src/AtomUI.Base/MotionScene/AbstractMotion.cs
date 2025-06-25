@@ -131,6 +131,7 @@ public class AbstractMotion : IMotion
 
     protected virtual void ConfigureTransitions()
     {
+        Transitions.Clear();
         var opacityTransition             = new NotifiableDoubleTransition()
         {
             Duration = Duration,

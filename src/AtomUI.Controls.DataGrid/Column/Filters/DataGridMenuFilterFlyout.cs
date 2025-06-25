@@ -1,10 +1,17 @@
 using AtomUI.Data;
+using AtomUI.MotionScene;
 using Avalonia.Controls;
 
 namespace AtomUI.Controls;
 
 internal class DataGridMenuFilterFlyout : MenuFlyout
 {
+    public DataGridMenuFilterFlyout()
+    {
+        OpenMotion  = new SlideUpInMotion();
+        CloseMotion = new SlideUpOutMotion();
+    }
+    
     protected override Control CreatePresenter()
     {
         var presenter = new DataGridMenuFilterFlyoutPresenter
