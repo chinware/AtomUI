@@ -45,24 +45,24 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     public static readonly StyledProperty<Icon?> SwitcherCollapseIconProperty
         = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherCollapseIcon));
-    
+
     public static readonly StyledProperty<Icon?> SwitcherRotationIconProperty
         = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
-    
+
     public static readonly StyledProperty<Icon?> SwitcherLoadingIconProperty
         = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
-    
+
     public static readonly StyledProperty<Icon?> SwitcherLeafIconProperty
         = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherLeafIcon));
-    
+
     public static readonly DirectProperty<TreeViewItem, bool> IsLeafProperty
         = AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsLeaf),
             o => o.IsLeaf,
             (o, v) => o.IsLeaf = v);
-    
+
     public static readonly StyledProperty<bool> IsShowLeafIconProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsShowLeafIcon));
-    
+
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsLoading), false);
 
@@ -95,19 +95,19 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => GetValue(SwitcherRotationIconProperty);
         set => SetValue(SwitcherRotationIconProperty, value);
     }
-    
+
     public Icon? SwitcherLoadingIcon
     {
         get => GetValue(SwitcherLoadingIconProperty);
         set => SetValue(SwitcherLoadingIconProperty, value);
     }
-    
+
     public Icon? SwitcherLeafIcon
     {
         get => GetValue(SwitcherLeafIconProperty);
         set => SetValue(SwitcherLeafIconProperty, value);
     }
-    
+
     internal bool IsShowLeafIcon
     {
         get => GetValue(IsShowLeafIconProperty);
@@ -127,7 +127,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => _isLeaf;
         internal set => SetAndRaise(IsLeafProperty, ref _isLeaf, value);
     }
-    
+
     public bool IsLoading
     {
         get => GetValue(IsLoadingProperty);
@@ -195,21 +195,16 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     internal static readonly StyledProperty<CornerRadius> EffectiveNodeCornerRadiusProperty
         = AvaloniaProperty.Register<TreeViewItem, CornerRadius>(nameof(EffectiveNodeCornerRadius));
-    
+
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeViewItem>();
-    
-    internal static readonly DirectProperty<TreeViewItem, TimeSpan> MotionDurationProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, TimeSpan>(nameof(MotionDuration),
-            o => o.MotionDuration,
-            (o, v) => o.MotionDuration = v);
-    
+
     internal static readonly DirectProperty<TreeViewItem, NodeSwitcherButtonIconMode> SwitcherModeProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, NodeSwitcherButtonIconMode>(
             nameof(SwitcherMode),
             o => o.SwitcherMode,
             (o, v) => o.SwitcherMode = v);
-    
+
     internal static readonly DirectProperty<TreeViewItem, bool> IsSwitcherRotationProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(
             nameof(IsSwitcherRotation),
@@ -307,21 +302,13 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => GetValue(EffectiveNodeCornerRadiusProperty);
         set => SetValue(EffectiveNodeCornerRadiusProperty, value);
     }
-    
+
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
-    private TimeSpan _motionDuration;
 
-    internal TimeSpan MotionDuration
-    {
-        get => _motionDuration;
-        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
-    }
-    
     private NodeSwitcherButtonIconMode _switcherMode;
 
     internal NodeSwitcherButtonIconMode SwitcherMode
@@ -329,7 +316,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => _switcherMode;
         set => SetAndRaise(SwitcherModeProperty, ref _switcherMode, value);
     }
-    
+
     private bool _isSwitcherRotation;
 
     internal bool IsSwitcherRotation
@@ -337,11 +324,12 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => _isSwitcherRotation;
         set => SetAndRaise(IsSwitcherRotationProperty, ref _isSwitcherRotation, value);
     }
-    
+
     internal TreeView? OwnerTreeView { get; set; }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;private bool _tempAnimationDisabled = false;
-    
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    private bool _tempAnimationDisabled = false;
+
     #endregion
 
     private CompositeDisposable? _resourceBindingsDisposable;
@@ -418,8 +406,8 @@ public class TreeViewItem : AvaloniaTreeItem,
             {
                 newIcon.SetTemplatedParent(this);
             }
-        } 
-        else if (change.Property == IsLoadingProperty || 
+        }
+        else if (change.Property == IsLoadingProperty ||
                  change.Property == IsLeafProperty ||
                  change.Property == IsSwitcherRotationProperty)
         {
@@ -481,7 +469,7 @@ public class TreeViewItem : AvaloniaTreeItem,
                 if (IsSwitcherRotation)
                 {
                     SwitcherMode = NodeSwitcherButtonIconMode.Rotation;
-                } 
+                }
                 else
                 {
                     SwitcherMode = NodeSwitcherButtonIconMode.Default;
@@ -493,7 +481,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             SwitcherMode = NodeSwitcherButtonIconMode.Leaf;
         }
     }
-    
+
     private void HandleExpandedChanged()
     {
         if (IsExpanded)
@@ -505,19 +493,19 @@ public class TreeViewItem : AvaloniaTreeItem,
             CollapseChildren();
         }
     }
-    
+
     private void ExpandChildren()
     {
-        
-        if (_itemsPresenterMotionActor is null || 
-            _animating || 
+        if (_itemsPresenterMotionActor is null ||
+            _animating ||
             OwnerTreeView is null)
         {
             return;
         }
-        
+
         if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || _tempAnimationDisabled)
         {
+            _itemsPresenterMotionActor.Opacity   = 1.0;
             _itemsPresenterMotionActor.IsVisible = true;
             return;
         }
@@ -527,18 +515,14 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             _switcherButton.IsNodeAnimating = true;
         }
-        
-        var motion = new ExpandMotion(Direction.Top,
-            MotionDuration,
-            new CubicEaseOut());
 
-        MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, () =>
-            {
-                _itemsPresenterMotionActor.IsVisible = true;
-            },
+        var motion = OwnerTreeView.OpenMotion ?? new ExpandMotion(Direction.Top, null, new CubicEaseOut());
+        motion.Duration = OwnerTreeView.MotionDuration;
+
+        MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, () => { _itemsPresenterMotionActor.IsVisible = true; },
             () =>
             {
-                _animating                           = false;
+                _animating = false;
                 if (_switcherButton != null)
                 {
                     _switcherButton.IsNodeAnimating = false;
@@ -548,8 +532,8 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     private void CollapseChildren()
     {
-        if (_itemsPresenterMotionActor is null || 
-            _animating || 
+        if (_itemsPresenterMotionActor is null ||
+            _animating ||
             OwnerTreeView is null)
         {
             return;
@@ -557,6 +541,7 @@ public class TreeViewItem : AvaloniaTreeItem,
 
         if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || _tempAnimationDisabled)
         {
+            _itemsPresenterMotionActor.Opacity   = 0.0;
             _itemsPresenterMotionActor.IsVisible = false;
             return;
         }
@@ -566,13 +551,14 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             _switcherButton.IsNodeAnimating = true;
         }
-        var motion = new CollapseMotion(Direction.Top,
-            MotionDuration,
-            new CubicEaseIn());
+
+        var motion = OwnerTreeView.OpenMotion ?? new ExpandMotion(Direction.Top, null, new CubicEaseIn());
+        motion.Duration = OwnerTreeView.MotionDuration;
+
         MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, null, () =>
         {
             _itemsPresenterMotionActor.IsVisible = false;
-            _animating = false;
+            _animating                           = false;
             if (_switcherButton != null)
             {
                 _switcherButton.IsNodeAnimating = false;
@@ -592,9 +578,10 @@ public class TreeViewItem : AvaloniaTreeItem,
         base.OnApplyTemplate(e);
         _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemThemeConstants.HeaderPresenterPart);
         _iconPresenter   = e.NameScope.Find<IconPresenter>(TreeViewItemThemeConstants.IconPresenterPart);
-        _frame  = e.NameScope.Find<Border>(TreeViewItemThemeConstants.FramePart);
+        _frame           = e.NameScope.Find<Border>(TreeViewItemThemeConstants.FramePart);
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemThemeConstants.NodeSwitcherButtonPart);
-        _itemsPresenterMotionActor = e.NameScope.Find<MotionActorControl>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
+        _itemsPresenterMotionActor =
+            e.NameScope.Find<MotionActorControl>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
         ConfigureTransitions();
         if (_frame is not null)
         {
@@ -613,7 +600,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             _iconPresenter.PointerEntered += HandleHeaderPresenterEntered;
             _iconPresenter.PointerExited  += HandleHeaderPresenterExited;
         }
-        
+
         IsLeaf                 = ItemCount == 0;
         _tempAnimationDisabled = true;
         HandleExpandedChanged();
@@ -696,7 +683,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             EdgeMode = EdgeMode.Aliased
         });
-        
+
         var isLastChild = false;
         if (Parent is ItemsControl parentTreeItem)
         {
@@ -876,7 +863,7 @@ public class TreeViewItem : AvaloniaTreeItem,
     {
         return new DragPreviewAdorner(_frame!);
     }
-    
+
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);

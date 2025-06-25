@@ -20,6 +20,7 @@
     </Setter>
 
     <Style Selector="^:is(atom|TreeView)">
+        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}" />
         <Setter Property="DragIndicatorLineWidth"
                 Value="{DynamicResource {x:Static atom:TreeViewTokenKey.DragIndicatorLineWidth}}" />
         <Setter Property="DragIndicatorBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />

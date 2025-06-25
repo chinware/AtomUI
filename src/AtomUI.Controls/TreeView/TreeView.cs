@@ -1,5 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -49,11 +50,17 @@ public class TreeView : AvaloniaTreeView,
     public static readonly StyledProperty<bool> IsShowLeafIconProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowLeafIcon));
     
-    public static readonly StyledProperty<bool> IsSwitcherRotationProperty
-        = AvaloniaProperty.Register<TreeView, bool>(nameof(IsSwitcherRotation), true);
+    public static readonly StyledProperty<bool> IsSwitcherRotationProperty = 
+        AvaloniaProperty.Register<TreeView, bool>(nameof(IsSwitcherRotation), true);
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeView>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeView>();
+    
+    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
+        Popup.OpenMotionProperty.AddOwner<TreeView>();
+        
+    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
+        Popup.CloseMotionProperty.AddOwner<TreeView>();
 
     public bool IsDraggable
     {
@@ -103,6 +110,18 @@ public class TreeView : AvaloniaTreeView,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
+    public AbstractMotion? OpenMotion
+    {
+        get => GetValue(OpenMotionProperty);
+        set => SetValue(OpenMotionProperty, value);
+    }
+    
+    public AbstractMotion? CloseMotion
+    {
+        get => GetValue(CloseMotionProperty);
+        set => SetValue(CloseMotionProperty, value);
+    }
+    
     public bool IsDefaultExpandAll { get; set; } = false;
 
     #endregion
@@ -128,6 +147,11 @@ public class TreeView : AvaloniaTreeView,
         AvaloniaProperty.RegisterDirect<TreeView, IBrush?>(nameof(DragIndicatorBrush),
             o => o.DragIndicatorBrush,
             (o, v) => o.DragIndicatorBrush = v);
+    
+    internal static readonly DirectProperty<TreeView, TimeSpan> MotionDurationProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, TimeSpan>(nameof(MotionDuration),
+            o => o.MotionDuration,
+            (o, v) => o.MotionDuration = v);
 
     private DragIndicatorRenderInfo? _dragIndicatorRenderInfo;
 
@@ -159,6 +183,14 @@ public class TreeView : AvaloniaTreeView,
     {
         get => _dragIndicatorBrush;
         set => SetAndRaise(DragIndicatorBrushProperty, ref _dragIndicatorBrush, value);
+    }
+    
+    private TimeSpan _motionDuration;
+
+    internal TimeSpan MotionDuration
+    {
+        get => _motionDuration;
+        set => SetAndRaise(MotionDurationProperty, ref _motionDuration, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;

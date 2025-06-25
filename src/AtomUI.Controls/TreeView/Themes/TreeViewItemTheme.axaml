@@ -65,7 +65,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Setter Property="EffectiveNodeBg" Value="Transparent" />
-        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}" />
+
         <Setter Property="TitleHeight" Value="{DynamicResource {x:Static atom:TreeViewTokenKey.TitleHeight}}" />
         <Style Selector="^ /template/ Border#PART_Frame">
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:TreeViewTokenKey.TitleHeight}}" />
