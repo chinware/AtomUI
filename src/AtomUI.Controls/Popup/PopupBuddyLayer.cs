@@ -20,6 +20,12 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         Popup.MotionDurationProperty.AddOwner<PopupBuddyLayer>();
     
+    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
+        Popup.OpenMotionProperty.AddOwner<PopupBuddyLayer>();
+        
+    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
+        Popup.CloseMotionProperty.AddOwner<PopupBuddyLayer>();
+    
     public BoxShadows MaskShadows
     {
         get => GetValue(MaskShadowsProperty);
@@ -30,6 +36,18 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     {
         get => GetValue(MotionDurationProperty);
         set => SetValue(MotionDurationProperty, value);
+    }
+    
+    public AbstractMotion? OpenMotion
+    {
+        get => GetValue(OpenMotionProperty);
+        set => SetValue(OpenMotionProperty, value);
+    }
+
+    public AbstractMotion? CloseMotion
+    {
+        get => GetValue(CloseMotionProperty);
+        set => SetValue(CloseMotionProperty, value);
     }
     
     #endregion
@@ -177,7 +195,11 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         _buddyDecorator.Opacity = 0.0d;
         _buddyDecorator.NotifySceneShowed();
         aboutToStart?.Invoke();
-        var motion       = new ZoomBigInMotion(MotionDuration);
+        var motion       = OpenMotion ?? new ZoomBigInMotion();
+        if (MotionDuration != TimeSpan.Zero)
+        {
+            motion.Duration = MotionDuration;
+        }
         NotifyAboutToRunAttachMotion();
         motion.Run(_buddyDecorator, null, () =>
         {
@@ -190,7 +212,11 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
                                  Action? completedAction = null)
     {
         aboutToStart?.Invoke();
-        var motion = new ZoomBigOutMotion(MotionDuration);
+        var motion       = CloseMotion ?? new ZoomBigOutMotion();
+        if (MotionDuration != TimeSpan.Zero)
+        {
+            motion.Duration = MotionDuration;
+        }
         NotifyAboutToRunDetachMotion();
         motion.Run(_buddyDecorator, null, () =>
         {

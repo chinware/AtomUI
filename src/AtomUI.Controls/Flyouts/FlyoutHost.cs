@@ -1,6 +1,7 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -62,8 +63,17 @@ public class FlyoutHost : Control,
     public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
         Popup.PlacementGravityProperty.AddOwner<FlyoutHost>();
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<FlyoutHost>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<FlyoutHost>();
+    
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        Popup.MotionDurationProperty.AddOwner<FlyoutHost>();
+    
+    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
+        Popup.OpenMotionProperty.AddOwner<FlyoutHost>();
+        
+    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
+        Popup.CloseMotionProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
     /// 距离 anchor 的边距，根据垂直和水平进行设置
@@ -154,6 +164,24 @@ public class FlyoutHost : Control,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    public TimeSpan MotionDuration
+    {
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
+    }
+    
+    public AbstractMotion? OpenMotion
+    {
+        get => GetValue(OpenMotionProperty);
+        set => SetValue(OpenMotionProperty, value);
+    }
+
+    public AbstractMotion? CloseMotion
+    {
+        get => GetValue(CloseMotionProperty);
+        set => SetValue(CloseMotionProperty, value);
+    }
 
     #endregion
 
@@ -212,6 +240,9 @@ public class FlyoutHost : Control,
             BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout, FlyoutControl.IsPointAtCenterProperty);
             BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout, PopupFlyoutBase.MarginToAnchorProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, PopupFlyoutBase.IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, MotionDurationProperty, Flyout, PopupFlyoutBase.MotionDurationProperty);
+            BindUtils.RelayBind(this, OpenMotionProperty, Flyout, PopupFlyoutBase.OpenMotionProperty);
+            BindUtils.RelayBind(this, CloseMotionProperty, Flyout, PopupFlyoutBase.CloseMotionProperty);
             Flyout.IsDetectMouseClickEnabled = false;
         }
     }

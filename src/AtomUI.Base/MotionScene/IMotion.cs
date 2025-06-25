@@ -5,13 +5,13 @@ using Avalonia.Animation.Easings;
 
 namespace AtomUI.MotionScene;
 
-internal enum MotionSpiritType
+public enum MotionSpiritType
 {
     Animation,
     Transition
 }
 
-internal interface IMotion
+public interface IMotion
 {
     RelativePoint RenderTransformOrigin { get; }
     IList<Animation> Animations { get; }

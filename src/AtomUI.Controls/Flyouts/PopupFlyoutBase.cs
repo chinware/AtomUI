@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -37,8 +38,7 @@ public class FlyoutPopupCreatedEventArgs : EventArgs
 /// <summary>
 /// 最基本得弹窗 Flyout，在这里不处理那种带箭头得
 /// </summary>
-public abstract class PopupFlyoutBase : FlyoutBase,
-                                        IPopupHostProvider
+public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 {
     #region 公共属性定义
 
@@ -88,7 +88,17 @@ public abstract class PopupFlyoutBase : FlyoutBase,
     public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PopupFlyoutBase>();
+    
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        Popup.MotionDurationProperty.AddOwner<PopupFlyoutBase>();
+    
+    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
+        Popup.OpenMotionProperty.AddOwner<PopupFlyoutBase>();
+        
+    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
+        Popup.CloseMotionProperty.AddOwner<PopupFlyoutBase>();
     
     public static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
         AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
@@ -166,6 +176,24 @@ public abstract class PopupFlyoutBase : FlyoutBase,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
+    public TimeSpan MotionDuration
+    {
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
+    }
+    
+    public AbstractMotion? OpenMotion
+    {
+        get => GetValue(OpenMotionProperty);
+        set => SetValue(OpenMotionProperty, value);
+    }
+
+    public AbstractMotion? CloseMotion
+    {
+        get => GetValue(CloseMotionProperty);
+        set => SetValue(CloseMotionProperty, value);
+    }
+    
     public bool IsDetectMouseClickEnabled
     {
         get => GetValue(IsDetectMouseClickEnabledProperty);
@@ -214,6 +242,9 @@ public abstract class PopupFlyoutBase : FlyoutBase,
         BindUtils.RelayBind(this, MarginToAnchorProperty, popup);
         BindUtils.RelayBind(this, IsDetectMouseClickEnabledProperty, popup, Popup.IsDetectMouseClickEnabledProperty);
         BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, MotionDurationProperty, popup, Popup.MotionDurationProperty);
+        BindUtils.RelayBind(this, OpenMotionProperty, popup, Popup.OpenMotionProperty);
+        BindUtils.RelayBind(this, CloseMotionProperty, popup, Popup.CloseMotionProperty);
         PopupCreated?.Invoke(this, new FlyoutPopupCreatedEventArgs(popup));
     }
 

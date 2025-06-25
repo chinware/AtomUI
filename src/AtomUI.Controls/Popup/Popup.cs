@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Data;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -36,19 +37,25 @@ public class Popup : AvaloniaPopup,
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor), 4);
 
-    public static readonly StyledProperty<TimeSpan> MotionDurationProperty
-        = AvaloniaProperty.Register<Popup, TimeSpan>(nameof(MotionDuration));
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty = 
+        AvaloniaProperty.Register<Popup, TimeSpan>(nameof(MotionDuration), TimeSpan.Zero);
+    
+    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
+        AvaloniaProperty.Register<Popup, AbstractMotion?>(nameof(OpenMotion));
+        
+    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
+        AvaloniaProperty.Register<Popup, AbstractMotion?>(nameof(CloseMotion));
 
     public static readonly DirectProperty<Popup, bool> IsFlippedProperty =
         AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsFlipped),
             o => o.IsFlipped,
             (o, v) => o.IsFlipped = v);
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Popup>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Popup>();
 
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Popup>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty = 
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Popup>();
 
     public BoxShadows MaskShadows
     {
@@ -87,7 +94,18 @@ public class Popup : AvaloniaPopup,
         get => GetValue(IsWaveSpiritEnabledProperty);
         set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
+    
+    public AbstractMotion? OpenMotion
+    {
+        get => GetValue(OpenMotionProperty);
+        set => SetValue(OpenMotionProperty, value);
+    }
 
+    public AbstractMotion? CloseMotion
+    {
+        get => GetValue(CloseMotionProperty);
+        set => SetValue(CloseMotionProperty, value);
+    }
     #endregion
 
     #region 内部属性定义
@@ -126,7 +144,6 @@ public class Popup : AvaloniaPopup,
         AffectsMeasure<Popup>(PlacementProperty);
         AffectsMeasure<Popup>(PlacementAnchorProperty);
         AffectsMeasure<Popup>(PlacementGravityProperty);
-
         IsLightDismissEnabledProperty.OverrideDefaultValue<Popup>(false);
     }
 
@@ -264,6 +281,8 @@ public class Popup : AvaloniaPopup,
         _buddyLayer = new PopupBuddyLayer(this, topLevel);
         BindUtils.RelayBind(this, MaskShadowsProperty, _buddyLayer, PopupBuddyLayer.MaskShadowsProperty);
         BindUtils.RelayBind(this, MotionDurationProperty, _buddyLayer, PopupBuddyLayer.MotionDurationProperty);
+        BindUtils.RelayBind(this, OpenMotionProperty, _buddyLayer, PopupBuddyLayer.OpenMotionProperty);
+        BindUtils.RelayBind(this, CloseMotionProperty, _buddyLayer, PopupBuddyLayer.CloseMotionProperty);
     }
 
     internal (bool, bool) CalculateFlipInfo(Size translatedSize, Rect anchorRect, PopupAnchor anchor,

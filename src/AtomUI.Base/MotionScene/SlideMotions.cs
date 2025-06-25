@@ -7,7 +7,7 @@ namespace AtomUI.MotionScene;
 
 internal class SlideUpInMotion : AbstractMotion
 {
-    public SlideUpInMotion(TimeSpan duration,
+    public SlideUpInMotion(TimeSpan? duration = null,
                            Easing? easing = null,
                            FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseOut(), fillMode)
@@ -35,7 +35,7 @@ internal class SlideUpInMotion : AbstractMotion
 
 internal class SlideUpOutMotion : AbstractMotion
 {
-    public SlideUpOutMotion(TimeSpan duration,
+    public SlideUpOutMotion(TimeSpan? duration = null,
                             Easing? easing = null,
                             FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseIn(), fillMode)
@@ -63,7 +63,7 @@ internal class SlideUpOutMotion : AbstractMotion
 
 internal class SlideDownInMotion : AbstractMotion
 {
-    public SlideDownInMotion(TimeSpan duration,
+    public SlideDownInMotion(TimeSpan? duration = null,
                              Easing? easing = null,
                              FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseOut(), fillMode)
@@ -91,7 +91,7 @@ internal class SlideDownInMotion : AbstractMotion
 
 internal class SlideDownOutMotion : AbstractMotion
 {
-    public SlideDownOutMotion(TimeSpan duration,
+    public SlideDownOutMotion(TimeSpan? duration = null,
                               Easing? easing = null,
                               FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseIn(), fillMode)
@@ -119,7 +119,7 @@ internal class SlideDownOutMotion : AbstractMotion
 
 internal class SlideLeftInMotion : AbstractMotion
 {
-    public SlideLeftInMotion(TimeSpan duration,
+    public SlideLeftInMotion(TimeSpan? duration = null,
                              Easing? easing = null,
                              FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseOut(), fillMode)
@@ -147,7 +147,7 @@ internal class SlideLeftInMotion : AbstractMotion
 
 internal class SlideLeftOutMotion : AbstractMotion
 {
-    public SlideLeftOutMotion(TimeSpan duration,
+    public SlideLeftOutMotion(TimeSpan? duration = null,
                               Easing? easing = null,
                               FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseIn(), fillMode)
@@ -175,7 +175,7 @@ internal class SlideLeftOutMotion : AbstractMotion
 
 internal class SlideRightInMotion : AbstractMotion
 {
-    public SlideRightInMotion(TimeSpan duration,
+    public SlideRightInMotion(TimeSpan? duration = null,
                               Easing? easing = null,
                               FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseOut(), fillMode)
@@ -203,7 +203,7 @@ internal class SlideRightInMotion : AbstractMotion
 
 internal class SlideRightOutMotion : AbstractMotion
 {
-    public SlideRightOutMotion(TimeSpan duration,
+    public SlideRightOutMotion(TimeSpan? duration = null,
                                Easing? easing = null,
                                FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new CubicEaseIn(), fillMode)

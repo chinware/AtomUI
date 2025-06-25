@@ -4,7 +4,6 @@ using AtomUI.Animations;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.ReactiveUI;
@@ -12,20 +11,20 @@ using Avalonia.Threading;
 
 namespace AtomUI.MotionScene;
 
-internal class AbstractMotion : IMotion
+public class AbstractMotion : IMotion
 {
     public RelativePoint RenderTransformOrigin { get; protected set; }
     public IList<Animation> Animations { get; }
     public IList<INotifyTransitionCompleted> Transitions { get; }
-    public TimeSpan Duration { get; }
-    public Easing Easing { get; }
-    public FillMode PropertyValueFillMode { get; }
+    public TimeSpan Duration { get; set; }
+    public Easing Easing { get; set; }
+    public FillMode PropertyValueFillMode { get; set; }
     public MotionSpiritType SpiritType { get; set; } = MotionSpiritType.Transition;
 
-    public AbstractMotion(TimeSpan duration, Easing? easing = null, FillMode fillMode = FillMode.Forward)
+    public AbstractMotion(TimeSpan? duration = null, Easing? easing = null, FillMode fillMode = FillMode.Forward)
     {
         Animations            = new List<Animation>();
-        Duration              = duration;
+        Duration              = duration ?? TimeSpan.FromMilliseconds(300);
         Easing                = easing ?? new LinearEasing();
         PropertyValueFillMode = fillMode;
         Transitions           = new List<INotifyTransitionCompleted>();

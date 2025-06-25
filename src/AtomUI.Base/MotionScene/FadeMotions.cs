@@ -7,7 +7,7 @@ namespace AtomUI.MotionScene;
 
 internal class FadeInMotion : AbstractMotion
 {
-    public FadeInMotion(TimeSpan duration,
+    public FadeInMotion(TimeSpan? duration = null,
                         Easing? easing = null,
                         FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new LinearEasing(), fillMode)
@@ -33,7 +33,7 @@ internal class FadeInMotion : AbstractMotion
 
 internal class FadeOutMotion : AbstractMotion
 {
-    public FadeOutMotion(TimeSpan duration,
+    public FadeOutMotion(TimeSpan? duration = null,
                          Easing? easing = null,
                          FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new LinearEasing(), fillMode)
