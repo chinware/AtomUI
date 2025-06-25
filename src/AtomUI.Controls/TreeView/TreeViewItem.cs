@@ -366,13 +366,13 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     public TreeViewItem()
     {
-        _borderRenderHelper = new BorderRenderHelper();
+        _borderRenderHelper         = new BorderRenderHelper();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
@@ -454,6 +454,11 @@ public class TreeViewItem : AvaloniaTreeItem,
                     {
                         OwnerTreeView?.UnCheckedSubTree(this);
                     }
+                }
+
+                if (IsChecked != true)
+                {
+                    OwnerTreeView?.DefaultCheckedItems.Remove(this);
                 }
             }
             else if (change.Property == IsExpandedProperty)
@@ -619,7 +624,7 @@ public class TreeViewItem : AvaloniaTreeItem,
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            Transitions = new Transitions
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
             };

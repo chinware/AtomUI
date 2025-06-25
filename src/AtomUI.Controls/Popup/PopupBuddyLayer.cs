@@ -162,6 +162,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     public void Attach()
     {
+        _buddyDecorator.CaptureContentControl();
         if (OperatingSystem.IsMacOS())
         {
             PlatformImpl?.SetTopmost(true);
@@ -181,6 +182,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     public void Detach()
     {
+        _buddyDecorator.CaptureContentControl();
         if (this is IDisposable disposable)
         {
             disposable.Dispose();

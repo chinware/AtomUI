@@ -65,6 +65,7 @@ public static class StyledElementTokenBindingsExtensions
         var consumer = control as IResourceBindingManager;
         Debug.Assert(consumer != null, $"{control.GetType()} is not IResourceBindingManager");
         consumer.ResourceBindingsDisposable?.Dispose();
+        consumer.ResourceBindingsDisposable?.Clear();
     }
 }
 

@@ -1499,13 +1499,4 @@ public partial class DataGrid : TemplatedControl,
     {
         AutoGeneratingColumn?.Invoke(this, e);
     }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == SelectionModeProperty)
-        {
-            Console.WriteLine(SelectionMode);
-        }
-    }
 }
