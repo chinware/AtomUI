@@ -5,14 +5,24 @@
     <ControlTheme x:Key="{x:Type atom:DataGridSortIndicator}" TargetType="atom:DataGridSortIndicator">
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel>
-                    <atom:Icon
-                        Name="{x:Static atom:DataGridSortIndicatorThemeConstants.AscendingPart}"
-                        IconInfo="{atom:IconInfoProvider CaretUpOutlined}" />
-                    <atom:Icon
-                        Name="{x:Static atom:DataGridSortIndicatorThemeConstants.DescendingPart}"
-                        IconInfo="{atom:IconInfoProvider CaretDownOutlined}" />
-                </StackPanel>
+                <UniformGrid Rows="2">
+                    <Border>
+                        <Border.RenderTransform>
+                            <TranslateTransform Y="1" />
+                        </Border.RenderTransform>
+                        <atom:Icon
+                            Name="{x:Static atom:DataGridSortIndicatorThemeConstants.AscendingPart}"
+                            IconInfo="{atom:IconInfoProvider CaretUpOutlined}" />
+                    </Border>
+                    <Border>
+                        <Border.RenderTransform>
+                            <TranslateTransform Y="-1" />
+                        </Border.RenderTransform>
+                        <atom:Icon
+                            Name="{x:Static atom:DataGridSortIndicatorThemeConstants.DescendingPart}"
+                            IconInfo="{atom:IconInfoProvider CaretDownOutlined}" />
+                    </Border>
+                </UniformGrid>
             </ControlTemplate>
         </Setter>
 
@@ -28,7 +38,7 @@
             <Setter Property="DisabledFilledBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
-
+        
         <Style Selector="^[CurrentSortDirection=Ascending]">
             <Style Selector="^ /template/ atom|Icon#PART_Ascending">
                 <Setter Property="IconMode" Value="Selected" />
@@ -44,7 +54,7 @@
                 </Style>
             </Style>
         </Style>
-        
+
         <Style Selector="^[CurrentSortDirection=Descending]">
             <Style Selector="^ /template/ atom|Icon#PART_Descending">
                 <Setter Property="IconMode" Value="Selected" />
