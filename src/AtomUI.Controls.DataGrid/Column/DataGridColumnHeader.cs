@@ -306,13 +306,16 @@ internal class DataGridColumnHeader : ContentControl
 
     internal void UpdatePseudoClasses()
     {
-        CurrentSortingState = null;
         if (OwningGrid != null && OwningGrid.DataConnection.AllowSort)
         {
             var sort = OwningColumn?.GetSortDescription();
             if (sort != null)
             {
                 CurrentSortingState = sort.Direction;
+            }
+            else
+            {
+                CurrentSortingState = null;
             }
         }
         PseudoClasses.Set(StdPseudoClass.SortAscending, CurrentSortingState == ListSortDirection.Ascending);

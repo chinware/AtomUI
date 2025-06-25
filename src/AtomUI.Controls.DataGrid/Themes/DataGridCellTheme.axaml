@@ -5,7 +5,8 @@
     <ControlTheme x:Key="{x:Type atom:DataGridCell}" TargetType="atom:DataGridCell">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:DataGridCellThemeConstants.CellFramePart}">
+                <Border Name="{x:Static atom:DataGridCellThemeConstants.CellFramePart}"
+                        Background="{TemplateBinding Background}">
                     <Grid Name="{x:Static atom:DataGridCellThemeConstants.CellRootLayoutPart}"
                           ColumnDefinitions="*, Auto">
                         <Rectangle Name="{x:Static atom:DataGridCellThemeConstants.CurrencyVisualPart}"
@@ -48,7 +49,6 @@
                         <Rectangle Name="{x:Static atom:DataGridCellThemeConstants.RightGridLinePart}"
                                    Grid.Column="1"
                                    VerticalAlignment="Stretch" />
-
                     </Grid>
                 </Border>
             </ControlTemplate>
@@ -73,6 +73,10 @@
         <Style Selector="^[SizeType=Small]">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingSmall}}"/>
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeSmall}}"/>
+        </Style>
+        
+        <Style Selector="^[IsSorting=True]">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.BodySortBg}}"/>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

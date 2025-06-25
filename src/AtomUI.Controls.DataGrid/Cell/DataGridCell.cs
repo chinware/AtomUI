@@ -3,13 +3,17 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Rendering;
@@ -17,7 +21,8 @@ using Avalonia.Rendering;
 namespace AtomUI.Controls;
 
 [TemplatePart(DataGridCellThemeConstants.RightGridLinePart, typeof(Rectangle))]
-[PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Current, StdPseudoClass.Edited, StdPseudoClass.Invalid, StdPseudoClass.Focus)]
+[PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Current, StdPseudoClass.Edited, StdPseudoClass.Invalid,
+    StdPseudoClass.Focus)]
 public class DataGridCell : ContentControl, ICustomHitTest
 {
     #region 公共属性定义
@@ -26,8 +31,9 @@ public class DataGridCell : ContentControl, ICustomHitTest
         AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
             nameof(IsValid),
             o => o.IsValid);
-    
+
     bool _isValid = true;
+
     public bool IsValid
     {
         get => _isValid;
@@ -37,19 +43,34 @@ public class DataGridCell : ContentControl, ICustomHitTest
     #endregion
 
     #region 内部属性定义
-    
+
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridCell>();
-    
+
+    public static readonly DirectProperty<DataGridCell, bool> IsSortingProperty =
+        AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
+            nameof(IsSorting),
+            o => o.IsSorting, 
+            (o, v) => o.IsSorting = v);
+
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
 
-    internal DataGridRow? OwningRow { get; set; }
+    bool _isSorting = false;
+
+    public bool IsSorting
+    {
+        get => _isSorting;
+        internal set => SetAndRaise(IsSortingProperty, ref _isSorting, value);
+    }
     
+    internal DataGridRow? OwningRow { get; set; }
+
     private DataGridColumn? _owningColumn;
+
     internal DataGridColumn? OwningColumn
     {
         get => _owningColumn;
@@ -62,24 +83,24 @@ public class DataGridCell : ContentControl, ICustomHitTest
             }
         }
     }
-    
+
     internal DataGrid? OwningGrid => OwningRow?.OwningGrid ?? OwningColumn?.OwningGrid;
-    
+
     internal double ActualRightGridLineWidth => _rightGridLine?.Bounds.Width ?? 0;
-    
+
     internal int ColumnIndex => OwningColumn?.Index ?? -1;
     internal int RowIndex => OwningRow?.Index ?? -1;
-    
-    internal bool IsCurrent => OwningGrid != null && 
+
+    internal bool IsCurrent => OwningGrid != null &&
                                OwningColumn != null &&
                                OwningRow != null &&
                                OwningGrid.CurrentColumnIndex == OwningColumn.Index &&
                                OwningGrid.CurrentSlot == OwningRow.Slot;
-    
-    private bool IsEdited => OwningGrid != null && 
+
+    private bool IsEdited => OwningGrid != null &&
                              OwningGrid.EditingRow == OwningRow &&
                              OwningGrid.EditingColumnIndex == ColumnIndex;
-    
+
     private bool IsMouseOver
     {
         get => OwningRow != null && OwningRow.MouseOverColumnIndex == ColumnIndex;
@@ -99,21 +120,28 @@ public class DataGridCell : ContentControl, ICustomHitTest
             }
         }
     }
-    
+
     #endregion
-    
+
     private Rectangle? _rightGridLine;
+    private CompositeDisposable _compositeDisposable;
 
     static DataGridCell()
     {
         HorizontalContentAlignmentProperty.OverrideDefaultValue<DataGridCell>(HorizontalAlignment.Left);
         VerticalContentAlignmentProperty.OverrideDefaultValue<DataGridCell>(VerticalAlignment.Center);
-        
+
         PointerPressedEvent.AddClassHandler<DataGridCell>(
-            (x,e) => x.HandlePointerPressed(e), handledEventsToo: true);
+            (x, e) => x.HandlePointerPressed(e), handledEventsToo: true);
         FocusableProperty.OverrideDefaultValue<DataGridCell>(true);
         IsTabStopProperty.OverrideDefaultValue<DataGridCell>(false);
-        AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridCell>(IsOffscreenBehavior.FromClip);
+        AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridCell>(
+            IsOffscreenBehavior.FromClip);
+    }
+
+    public DataGridCell()
+    {
+        _compositeDisposable = new CompositeDisposable(3);
     }
 
     /// <summary>
@@ -133,6 +161,7 @@ public class DataGridCell : ContentControl, ICustomHitTest
             EnsureGridLine(null);
         }
     }
+
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);
@@ -142,6 +171,7 @@ public class DataGridCell : ContentControl, ICustomHitTest
             IsMouseOver = true;
         }
     }
+
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
@@ -160,17 +190,20 @@ public class DataGridCell : ContentControl, ICustomHitTest
         {
             return;
         }
+
         OwningGrid.NotifyCellPointerPressed(new DataGridCellPointerPressedEventArgs(this, OwningRow, OwningColumn, e));
         if (e.Handled)
         {
             return;
         }
+
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             if (OwningGrid.IsTabStop)
             {
                 OwningGrid.Focus();
             }
+
             if (OwningRow != null)
             {
                 var handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, ColumnIndex, OwningRow.Slot, !e.Handled);
@@ -189,6 +222,7 @@ public class DataGridCell : ContentControl, ICustomHitTest
             {
                 OwningGrid.Focus();
             }
+
             if (OwningRow != null)
             {
                 e.Handled = OwningGrid.UpdateStateOnMouseRightButtonDown(e, ColumnIndex, OwningRow.Slot, !e.Handled);
@@ -198,7 +232,8 @@ public class DataGridCell : ContentControl, ICustomHitTest
 
     internal void UpdatePseudoClasses()
     {
-        if (OwningGrid == null || OwningColumn == null || OwningRow == null || !OwningRow.IsVisible || OwningRow.Slot == -1)
+        if (OwningGrid == null || OwningColumn == null || OwningRow == null || !OwningRow.IsVisible ||
+            OwningRow.Slot == -1)
         {
             return;
         }
@@ -217,13 +252,16 @@ public class DataGridCell : ContentControl, ICustomHitTest
         if (OwningGrid != null && _rightGridLine != null)
         {
             bool newVisibility =
-                (OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.Vertical || OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.All)
-                && ((OwningGrid.ColumnsInternal.FillerColumn != null && OwningGrid.ColumnsInternal.FillerColumn.IsActive) || OwningColumn != lastVisibleColumn);
+                (OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.Vertical ||
+                 OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.All)
+                && ((OwningGrid.ColumnsInternal.FillerColumn != null &&
+                     OwningGrid.ColumnsInternal.FillerColumn.IsActive) || OwningColumn != lastVisibleColumn);
 
             if (newVisibility != _rightGridLine.IsVisible)
             {
                 _rightGridLine.IsVisible = newVisibility;
             }
+
             _rightGridLine.Width = OwningGrid.BorderThickness.Left;
         }
     }
@@ -241,9 +279,39 @@ public class DataGridCell : ContentControl, ICustomHitTest
             {
                 Theme = column.CellTheme;
             }
-                
+
             Classes.Replace(column.CellStyleClasses);
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        // 可能会影响性能
+        if (OwningGrid != null && OwningColumn != null && OwningGrid.DataConnection.AllowSort)
+        {
+            _compositeDisposable.Add(BindUtils.RelayBind(OwningColumn.HeaderCell,
+                DataGridColumnHeader.CurrentSortingStateProperty,
+                this,
+                IsSortingProperty,
+                (v) =>
+                {
+                    if (v is not null && OwningColumn is not DataGridFillerColumn)
+                    {
+                        return v == ListSortDirection.Ascending || v == ListSortDirection.Descending;
+                    }
+
+                    return false;
+                },
+                BindingPriority.Template));
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _compositeDisposable.Dispose();
+        _compositeDisposable.Clear();
     }
 
     public bool HitTest(Point point)
