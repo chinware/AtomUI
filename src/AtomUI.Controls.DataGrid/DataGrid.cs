@@ -153,7 +153,7 @@ public partial class DataGrid : TemplatedControl,
             validate: IsValidRowHeaderWidth);
     
     public static readonly StyledProperty<DataGridSelectionMode> SelectionModeProperty =
-        AvaloniaProperty.Register<DataGrid, DataGridSelectionMode>(nameof(SelectionMode));
+        AvaloniaProperty.Register<DataGrid, DataGridSelectionMode>(nameof(SelectionMode), DataGridSelectionMode.None);
     
     public static readonly StyledProperty<ScrollBarVisibility> VerticalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(VerticalScrollBarVisibility));
@@ -1498,5 +1498,14 @@ public partial class DataGrid : TemplatedControl,
     protected virtual void OnAutoGeneratingColumn(DataGridAutoGeneratingColumnEventArgs e)
     {
         AutoGeneratingColumn?.Invoke(this, e);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SelectionModeProperty)
+        {
+            Console.WriteLine(SelectionMode);
+        }
     }
 }

@@ -105,7 +105,7 @@
         <Setter Property="HeadersVisibility" Value="Column"/>
         <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
         <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="SelectionMode" Value="Extended"/>
+        <Setter Property="SelectionMode" Value="None"/>
         <Setter Property="FocusAdorner" Value="{x:Null}"/>
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRadius}}"/>
         

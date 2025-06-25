@@ -4144,57 +4144,60 @@ public partial class DataGrid
                         !GetColumnEffectiveReadOnlyState(ColumnsItemsInternal[columnIndex]);
 
             DataGridSelectionAction action;
-            if (SelectionMode == DataGridSelectionMode.Extended && shift)
+            if (SelectionMode != DataGridSelectionMode.None)
             {
-                // Shift select multiple rows
-                action = DataGridSelectionAction.SelectFromAnchorToCurrent;
-            }
-            else if (GetRowSelection(slot)) // Unselecting single row or Selecting a previously multi-selected row
-            {
-                if (!ctrl && SelectionMode == DataGridSelectionMode.Extended && _selectedItems.Count != 0)
+                if (SelectionMode == DataGridSelectionMode.Extended && shift)
                 {
-                    // Unselect everything except the row that was clicked on
-                    action = DataGridSelectionAction.SelectCurrent;
+                    // Shift select multiple rows
+                    action = DataGridSelectionAction.SelectFromAnchorToCurrent;
                 }
-                else if (ctrl && EditingRow == null)
+                else if (GetRowSelection(slot)) // Unselecting single row or Selecting a previously multi-selected row
                 {
-                    action = DataGridSelectionAction.RemoveCurrentFromSelection;
+                    if (!ctrl && SelectionMode == DataGridSelectionMode.Extended && _selectedItems.Count != 0)
+                    {
+                        // Unselect everything except the row that was clicked on
+                        action = DataGridSelectionAction.SelectCurrent;
+                    }
+                    else if (ctrl && EditingRow == null)
+                    {
+                        action = DataGridSelectionAction.RemoveCurrentFromSelection;
+                    }
+                    else
+                    {
+                        action = DataGridSelectionAction.None;
+                    }
                 }
-                else
+                else // Selecting a single row or multi-selecting with Ctrl
                 {
-                    action = DataGridSelectionAction.None;
+                    if (SelectionMode == DataGridSelectionMode.Single || !ctrl)
+                    {
+                        // Unselect the currently selected rows except the new selected row
+                        action = DataGridSelectionAction.SelectCurrent;
+                    }
+                    else
+                    {
+                        action = DataGridSelectionAction.AddCurrentToSelection;
+                    }
                 }
-            }
-            else // Selecting a single row or multi-selecting with Ctrl
-            {
-                if (SelectionMode == DataGridSelectionMode.Single || !ctrl)
-                {
-                    // Unselect the currently selected rows except the new selected row
-                    action = DataGridSelectionAction.SelectCurrent;
-                }
-                else
-                {
-                    action = DataGridSelectionAction.AddCurrentToSelection;
-                }
-            }
 
-            var updateSelection = true;
-            var column          = ColumnsInternal[columnIndex];
-            if (column is DataGridSelectionColumn selectionColumn)
-            {
-                var row = DisplayData.GetDisplayedElement(slot) as DataGridRow;
-                Debug.Assert(row != null);
-                var dataGridCell = row.Cells[columnIndex];
-                updateSelection = selectionColumn.NotifyAboutToUpdateSelection(pointerPressedEventArgs, dataGridCell);
+                var updateSelection = true;
+                var column          = ColumnsInternal[columnIndex];
+                if (column is DataGridSelectionColumn selectionColumn)
+                {
+                    var row = DisplayData.GetDisplayedElement(slot) as DataGridRow;
+                    Debug.Assert(row != null);
+                    var dataGridCell = row.Cells[columnIndex];
+                    updateSelection = selectionColumn.NotifyAboutToUpdateSelection(pointerPressedEventArgs, dataGridCell);
+                    if (updateSelection)
+                    {
+                        action = selectionColumn.GetSelectionAction(dataGridCell);
+                    }
+                }
+
                 if (updateSelection)
                 {
-                    action = selectionColumn.GetSelectionAction(dataGridCell);
+                    UpdateSelectionAndCurrency(columnIndex, slot, action, scrollIntoView: false);
                 }
-            }
-
-            if (updateSelection)
-            {
-                UpdateSelectionAndCurrency(columnIndex, slot, action, scrollIntoView: false);
             }
         }
         finally

@@ -107,8 +107,9 @@ internal enum DataGridSelectionAction
 /// </summary>
 public enum DataGridSelectionMode
 {
-    Extended = 0,
-    Single = 1
+    None = 0,
+    Extended = 1,
+    Single = 2
 }
 
 /// <summary>

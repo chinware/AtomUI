@@ -630,29 +630,32 @@ public partial class DataGrid
         _noSelectionChangeCount++;
         try
         {
-            if (SelectionMode == DataGridSelectionMode.Single && isSelected)
+            if (SelectionMode != DataGridSelectionMode.None)
             {
-                Debug.Assert(_selectedItems.Count <= 1);
-                if (_selectedItems.Count > 0)
+                if (SelectionMode == DataGridSelectionMode.Single && isSelected)
                 {
-                    int currentlySelectedSlot = _selectedItems.GetIndexes().First();
-                    if (currentlySelectedSlot != slot)
+                    Debug.Assert(_selectedItems.Count <= 1);
+                    if (_selectedItems.Count > 0)
                     {
-                        SelectSlot(currentlySelectedSlot, false);
-                        SelectionHasChanged = true;
+                        int currentlySelectedSlot = _selectedItems.GetIndexes().First();
+                        if (currentlySelectedSlot != slot)
+                        {
+                            SelectSlot(currentlySelectedSlot, false);
+                            SelectionHasChanged = true;
+                        }
                     }
                 }
-            }
 
-            if (_selectedItems.ContainsSlot(slot) != isSelected)
-            {
-                SelectSlot(slot, isSelected);
-                SelectionHasChanged = true;
-            }
+                if (_selectedItems.ContainsSlot(slot) != isSelected)
+                {
+                    SelectSlot(slot, isSelected);
+                    SelectionHasChanged = true;
+                }
 
-            if (setAnchorSlot)
-            {
-                AnchorSlot = slot;
+                if (setAnchorSlot)
+                {
+                    AnchorSlot = slot;
+                }
             }
         }
         finally

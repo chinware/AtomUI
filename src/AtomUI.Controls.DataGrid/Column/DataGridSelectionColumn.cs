@@ -290,4 +290,16 @@ public sealed class DataGridSelectionColumn : DataGridColumn
             }
         }
     }
+
+    protected override void NotifyOwningGridAttached(DataGrid? owningGrid)
+    {
+        base.NotifyOwningGridAttached(owningGrid);
+        if (owningGrid != null)
+        {
+            if (owningGrid.SelectionMode == DataGridSelectionMode.None)
+            {
+                throw DataGridError.DataGridColumn.SelectionModeException();
+            }
+        }
+    }
 }

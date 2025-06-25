@@ -68,7 +68,7 @@ internal class DataGridSelectedItemsCollection : IList
 
     public int Add(object? dataItem)
     {
-        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
+        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single || OwningGrid.SelectionMode == DataGridSelectionMode.None)
         {
             throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
         }
@@ -96,7 +96,7 @@ internal class DataGridSelectedItemsCollection : IList
 
     public void Clear()
     {
-        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
+        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single || OwningGrid.SelectionMode == DataGridSelectionMode.None)
         {
             throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
         }
@@ -147,7 +147,7 @@ internal class DataGridSelectedItemsCollection : IList
 
     public void Remove(object? dataItem)
     {
-        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
+        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single || OwningGrid.SelectionMode == DataGridSelectionMode.None)
         {
             throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
         }
@@ -173,7 +173,7 @@ internal class DataGridSelectedItemsCollection : IList
 
     public void RemoveAt(int index)
     {
-        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single)
+        if (OwningGrid.SelectionMode == DataGridSelectionMode.Single || OwningGrid.SelectionMode == DataGridSelectionMode.None)
         {
             throw DataGridError.DataGridSelectedItemsCollection.CannotChangeSelectedItemsCollectionInSingleMode();
         }

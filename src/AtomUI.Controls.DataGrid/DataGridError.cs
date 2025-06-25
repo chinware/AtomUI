@@ -130,6 +130,14 @@ internal static class DataGridError
         }
     }
 
+    public static class DataGridColumn
+    {
+        public static NotSupportedException SelectionModeException()
+        {
+            return new NotSupportedException("SelectionColumn is used but the selection mode is not single selection or multiple selection");
+        }
+    }
+    
     public static class DataGridLength
     {
         public static ArgumentException InvalidUnitType(string paramName)

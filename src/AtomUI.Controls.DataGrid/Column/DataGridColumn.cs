@@ -478,10 +478,16 @@ public abstract partial class DataGridColumn : AvaloniaObject
     #endregion
     
     #region 继承属性定义
+    
+    private DataGrid? _owningGrid;
     protected internal DataGrid? OwningGrid
     {
-        get;
-        internal set;
+        get => _owningGrid;
+        internal set
+        {
+            _owningGrid = value;
+            NotifyOwningGridAttached(_owningGrid);
+        }
     }
     #endregion
 
@@ -500,6 +506,10 @@ public abstract partial class DataGridColumn : AvaloniaObject
         IsInitialDesiredWidthDetermined = false;
         InheritsWidth                   = true;
         OnFilter                        = (value, record) => true;
+    }
+
+    protected virtual void NotifyOwningGridAttached(DataGrid? owningGrid)
+    {
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
