@@ -17,6 +17,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
@@ -154,6 +155,20 @@ public class TreeViewItem : AvaloniaTreeItem,
     
     public TreeNodeKey? Key { get; set; }
 
+    #endregion
+
+    #region 公共事件定义
+
+    public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
+        RoutedEvent.Register<MenuItem, RoutedEventArgs>(
+            nameof(Click),
+            RoutingStrategies.Bubble);
+    
+    public event EventHandler<RoutedEventArgs>? Click
+    {
+        add => AddHandler(ClickEvent, value);
+        remove => RemoveHandler(ClickEvent, value);
+    }
     #endregion
 
     #region 内部属性定义
@@ -896,4 +911,6 @@ public class TreeViewItem : AvaloniaTreeItem,
     protected virtual void NotifyHeaderClick()
     {
     }
+    
+    internal void RaiseClick() => RaiseEvent(new RoutedEventArgs(ClickEvent));
 }

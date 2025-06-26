@@ -6,16 +6,12 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-internal class DataGridTreeFilterFlyout : Flyout
+internal class DataGridTreeFilterFlyout : TreeViewFlyout
 {
     public event EventHandler<DataGridFilterValuesSelectedEventArgs>? FilterValuesSelected;
     
-    [Content] public ItemCollection Items { get; }
-    
     public DataGridTreeFilterFlyout()
     {
-        var itemCollectionType = typeof(ItemCollection);
-        Items      = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
         OpenMotion = new SlideUpInMotion();
         CloseMotion = new SlideUpOutMotion();
     }
@@ -28,6 +24,7 @@ internal class DataGridTreeFilterFlyout : Flyout
             ItemsSource        = Items,
             IsCheckable        = true
         };
+        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty);
         BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
         return presenter;
     }

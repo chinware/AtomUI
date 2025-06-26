@@ -9,7 +9,7 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-public class TreeViewFlyoutPresenter : TreeView,
+public class TreeViewFlyoutPresenter : FloatableTreeView,
                                        IShadowMaskInfoProvider,
                                        IMotionAwareControl,
                                        IControlSharedTokenResourcesHost
@@ -39,8 +39,6 @@ public class TreeViewFlyoutPresenter : TreeView,
         get => GetValue(ArrowPositionProperty);
         set => SetValue(ArrowPositionProperty, value);
     }
-    
-    public TreeViewFlyout? TreeViewFlyout { get; set; }
 
     #endregion
 

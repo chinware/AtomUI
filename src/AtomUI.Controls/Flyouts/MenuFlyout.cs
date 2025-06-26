@@ -27,7 +27,6 @@ public class MenuFlyout : Flyout
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
         ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
     
-    
     /// <summary>
     /// Gets or sets the items of the MenuFlyout
     /// </summary>
