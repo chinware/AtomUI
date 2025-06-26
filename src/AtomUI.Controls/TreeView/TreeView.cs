@@ -35,9 +35,6 @@ public class TreeView : AvaloniaTreeView,
     public static readonly StyledProperty<bool> IsDraggableProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsDraggable));
 
-    public static readonly StyledProperty<bool> IsCheckableProperty =
-        AvaloniaProperty.Register<TreeView, bool>(nameof(IsCheckable));
-
     public static readonly StyledProperty<bool> IsShowIconProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsShowIcon));
 
@@ -61,19 +58,16 @@ public class TreeView : AvaloniaTreeView,
         
     public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
         Popup.CloseMotionProperty.AddOwner<TreeView>();
+    
+    public static readonly StyledProperty<ItemToggleType> ToggleTypeProperty =
+        AvaloniaProperty.Register<TreeView, ItemToggleType>(nameof(ToggleType), ItemToggleType.None);
 
     public bool IsDraggable
     {
         get => GetValue(IsDraggableProperty);
         set => SetValue(IsDraggableProperty, value);
     }
-
-    public bool IsCheckable
-    {
-        get => GetValue(IsCheckableProperty);
-        set => SetValue(IsCheckableProperty, value);
-    }
-
+    
     public bool IsShowIcon
     {
         get => GetValue(IsShowIconProperty);
@@ -120,6 +114,12 @@ public class TreeView : AvaloniaTreeView,
     {
         get => GetValue(CloseMotionProperty);
         set => SetValue(CloseMotionProperty, value);
+    }
+    
+    public ItemToggleType ToggleType
+    {
+        get => GetValue(ToggleTypeProperty);
+        set => SetValue(ToggleTypeProperty, value);
     }
     
     public bool IsDefaultExpandAll { get; set; } = false;
@@ -239,12 +239,7 @@ public class TreeView : AvaloniaTreeView,
 
     public void CheckedSubTree(TreeViewItem item)
     {
-        if (!IsCheckable)
-        {
-            return;
-        }
-
-        if (!item.IsEnabled || !item.IsCheckable)
+        if (!item.IsEnabled || item.ToggleType == ItemToggleType.None)
         {
             return;
         }
@@ -272,12 +267,7 @@ public class TreeView : AvaloniaTreeView,
 
     public void UnCheckedSubTree(TreeViewItem item)
     {
-        if (!IsCheckable)
-        {
-            return;
-        }
-
-        if (!item.IsEnabled || !item.IsCheckable)
+        if (!item.IsEnabled || item.ToggleType == ItemToggleType.None)
         {
             return;
         }
@@ -339,8 +329,8 @@ public class TreeView : AvaloniaTreeView,
             BindUtils.RelayBind(this, IsShowIconProperty, treeViewItem, TreeViewItem.IsShowIconProperty);
             BindUtils.RelayBind(this, IsShowLeafIconProperty, treeViewItem,
                 TreeViewItem.IsShowLeafIconProperty);
-            BindUtils.RelayBind(this, IsCheckableProperty, treeViewItem, TreeViewItem.IsCheckboxVisibleProperty);
             BindUtils.RelayBind(this, IsSwitcherRotationProperty, treeViewItem, TreeViewItem.IsSwitcherRotationProperty);
+            BindUtils.RelayBind(this, ToggleTypeProperty, treeViewItem, TreeViewItem.ToggleTypeProperty);
         }
     }
 

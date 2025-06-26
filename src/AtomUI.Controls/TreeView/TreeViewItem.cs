@@ -28,13 +28,9 @@ using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
 [PseudoClasses(TreeViewPseudoClass.NodeToggleTypeCheckBox, TreeViewPseudoClass.NodeToggleTypeRadio, TreeViewPseudoClass.TreeNodeHover)]
 public class TreeViewItem : AvaloniaTreeItem,
-                            IResourceBindingManager,
-                            IRadioButton
+                            IResourceBindingManager
 {
     #region 公共属性定义
-    public static readonly StyledProperty<bool> IsCheckableProperty =
-        AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsCheckable), true);
-
     public static readonly StyledProperty<Icon?> IconProperty
         = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(Icon));
 
@@ -67,17 +63,8 @@ public class TreeViewItem : AvaloniaTreeItem,
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsLoading), false);
     
-    public static readonly StyledProperty<ItemToggleType> ToggleTypeProperty =
-        AvaloniaProperty.Register<TreeViewItem, ItemToggleType>(nameof(ToggleType));
-    
     public static readonly StyledProperty<string?> GroupNameProperty =
         RadioButton.GroupNameProperty.AddOwner<TreeViewItem>();
-
-    public bool IsCheckable
-    {
-        get => GetValue(IsCheckableProperty);
-        set => SetValue(IsCheckableProperty, value);
-    }
 
     public Icon? Icon
     {
@@ -140,12 +127,6 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => GetValue(IsLoadingProperty);
         set => SetValue(IsLoadingProperty, value);
     }
-    
-    public ItemToggleType ToggleType
-    {
-        get => GetValue(ToggleTypeProperty);
-        set => SetValue(ToggleTypeProperty, value);
-    }
 
     public string? GroupName
     {
@@ -198,16 +179,6 @@ public class TreeViewItem : AvaloniaTreeItem,
             o => o.IconEffectiveVisible,
             (o, v) => o.IconEffectiveVisible = v);
 
-    internal static readonly DirectProperty<TreeViewItem, bool> IsCheckboxVisibleProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsCheckboxVisible),
-            o => o.IsCheckboxVisible,
-            (o, v) => o.IsCheckboxVisible = v);
-
-    internal static readonly DirectProperty<TreeViewItem, bool> IsCheckboxEnableProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsCheckboxEnable),
-            o => o.IsCheckboxEnable,
-            (o, v) => o.IsCheckboxEnable = v);
-
     internal static readonly DirectProperty<TreeViewItem, bool> IsDraggingProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsDragging),
             o => o.IsDragging,
@@ -243,6 +214,9 @@ public class TreeViewItem : AvaloniaTreeItem,
             nameof(IsSwitcherRotation),
             o => o.IsSwitcherRotation,
             (o, v) => o.IsSwitcherRotation = v);
+    
+    internal static readonly StyledProperty<ItemToggleType> ToggleTypeProperty =
+        TreeView.ToggleTypeProperty.AddOwner<TreeViewItem>();
 
     private double _titleHeight;
 
@@ -282,22 +256,6 @@ public class TreeViewItem : AvaloniaTreeItem,
     {
         get => _iconEffectiveVisible;
         set => SetAndRaise(IconEffectiveVisibleProperty, ref _iconEffectiveVisible, value);
-    }
-
-    private bool _isCheckboxVisible;
-
-    internal bool IsCheckboxVisible
-    {
-        get => _isCheckboxVisible;
-        set => SetAndRaise(IsCheckboxVisibleProperty, ref _isCheckboxVisible, value);
-    }
-
-    private bool _isCheckboxEnable;
-
-    internal bool IsCheckboxEnable
-    {
-        get => _isCheckboxEnable;
-        set => SetAndRaise(IsCheckboxEnableProperty, ref _isCheckboxEnable, value);
     }
 
     private bool _isDragging;
@@ -357,6 +315,12 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => _isSwitcherRotation;
         set => SetAndRaise(IsSwitcherRotationProperty, ref _isSwitcherRotation, value);
     }
+    
+    internal ItemToggleType ToggleType
+    {
+        get => GetValue(ToggleTypeProperty);
+        set => SetValue(ToggleTypeProperty, value);
+    }
 
     internal TreeView? OwnerTreeView { get; set; }
 
@@ -406,7 +370,6 @@ public class TreeViewItem : AvaloniaTreeItem,
         }
 
         SetupSwitcherButtonIconMode();
-        SetupCheckBoxEnabled();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -456,11 +419,6 @@ public class TreeViewItem : AvaloniaTreeItem,
             else if (change.Property == NodeHoverModeProperty)
             {
                 CalculateEffectiveBgRect();
-            }
-            else if (change.Property == IsEnabledProperty ||
-                     change.Property == IsCheckableProperty)
-            {
-                SetupCheckBoxEnabled();
             }
             else if (change.Property == IsCheckedProperty)
             {
@@ -585,7 +543,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             _switcherButton.IsNodeAnimating = true;
         }
 
-        var motion = OwnerTreeView.OpenMotion ?? new CollapseMotion(Direction.Top, null, new CubicEaseIn());
+        var motion = OwnerTreeView.CloseMotion ?? new CollapseMotion(Direction.Top, null, new CubicEaseIn());
         motion.Duration = OwnerTreeView.MotionDuration;
 
         MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, null, () =>
@@ -775,19 +733,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             }
         }
     }
-
-    private void SetupCheckBoxEnabled()
-    {
-        if (!IsEnabled)
-        {
-            IsCheckboxEnable = false;
-        }
-        else
-        {
-            IsCheckboxEnable = IsCheckable;
-        }
-    }
-
+    
     private void HandleFrameEntered(object? sender, PointerEventArgs? args)
     {
         if (NodeHoverMode != TreeItemHoverMode.WholeLine)

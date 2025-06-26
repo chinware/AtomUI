@@ -9,6 +9,8 @@ internal static class TreeViewItemThemeConstants
     public const string HeaderPresenterPart = "PART_HeaderPresenter";
     public const string IconPresenterPart = "PART_IconPresenter";
     public const string NodeSwitcherButtonPart = "PART_NodeSwitcherButton";
+    public const string ToggleCheckboxPart = "PART_ToggleCheckbox";
+    public const string ToggleRadioPart = "PART_ToggleRadio";
 }
 
 internal static class NodeSwitcherButtonThemeConstants
