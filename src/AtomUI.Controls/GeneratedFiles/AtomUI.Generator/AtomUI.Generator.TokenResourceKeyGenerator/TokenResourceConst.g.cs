@@ -260,6 +260,18 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightExpandButtonVMargin = new TokenResourceKey("Expander.RightExpandButtonVMargin");
     }
 
+    public static class TreeFlyoutTokenKey
+    {
+        public static readonly TokenResourceKey PopupBgColor = new TokenResourceKey("TreeFlyout.PopupBgColor");
+        public static readonly TokenResourceKey PopupBorderRadius = new TokenResourceKey("TreeFlyout.PopupBorderRadius");
+        public static readonly TokenResourceKey PopupBoxShadows = new TokenResourceKey("TreeFlyout.PopupBoxShadows");
+        public static readonly TokenResourceKey PopupContentPadding = new TokenResourceKey("TreeFlyout.PopupContentPadding");
+        public static readonly TokenResourceKey PopupMaxHeight = new TokenResourceKey("TreeFlyout.PopupMaxHeight");
+        public static readonly TokenResourceKey PopupMaxWidth = new TokenResourceKey("TreeFlyout.PopupMaxWidth");
+        public static readonly TokenResourceKey PopupMinHeight = new TokenResourceKey("TreeFlyout.PopupMinHeight");
+        public static readonly TokenResourceKey PopupMinWidth = new TokenResourceKey("TreeFlyout.PopupMinWidth");
+    }
+
     public static class GroupBoxTokenKey
     {
         public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("GroupBox.ContentPadding");

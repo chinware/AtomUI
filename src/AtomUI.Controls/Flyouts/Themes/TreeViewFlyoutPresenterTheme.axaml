@@ -1,0 +1,34 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Controls.Themes.TreeViewFlyoutPresenterTheme"
+              TargetType="atom:TreeViewFlyoutPresenter">
+    <Setter Property="Template">
+        <ControlTemplate>
+            <atom:ArrowDecoratedBox Name="{x:Static atom:TreeViewFlyoutThemeConstants.ArrowDecoratorPart}"
+                                    IsShowArrow="{TemplateBinding IsShowArrow}"
+                                    ArrowPosition="{TemplateBinding ArrowPosition}"
+                                    BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    Padding="{TemplateBinding Padding}">
+                <ItemsPresenter Name="{x:Static atom:TreeViewThemeConstants.ItemsPresenterPart}"
+                                ItemsPanel="{TemplateBinding ItemsPanel}" />
+            </atom:ArrowDecoratedBox>
+        </ControlTemplate>
+    </Setter>
+    
+    <Style Selector="^:is(atom|TreeViewFlyoutPresenter)">
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupBgColor}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupContentPadding}}" />
+        
+        <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupMinWidth}}" />
+            <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupMaxWidth}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupMinHeight}}" />
+            <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupMaxHeight}}" />
+        </Style>
+    </Style>
+
+</ControlTheme>

@@ -193,6 +193,8 @@ public class TreeView : AvaloniaTreeView,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TreeViewToken.ID;
     
+    protected internal ITreeViewInteractionHandler InteractionHandler { get; }
+    
     #endregion
     
     internal List<TreeViewItem> DefaultCheckedItems { get; set; }
@@ -210,7 +212,13 @@ public class TreeView : AvaloniaTreeView,
     }
 
     public TreeView()
+        : this(new DefaultTreeViewInteractionHandler(false))
     {
+    }
+    
+    protected TreeView(ITreeViewInteractionHandler interactionHandler)
+    {
+        InteractionHandler = interactionHandler ?? throw new ArgumentNullException(nameof(interactionHandler));
         this.RegisterResources();
         this.BindMotionProperties();
         DefaultCheckedItems = new List<TreeViewItem>();
@@ -339,13 +347,20 @@ public class TreeView : AvaloniaTreeView,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        InteractionHandler.Attach(this);
         if (IsDefaultExpandAll)
         {
-            Dispatcher.UIThread.Post(() => ExpandAll());
+            Dispatcher.UIThread.Post(ExpandAll);
         }
 
         ApplyDefaultChecked();
         UpdatePseudoClasses();
+    }
+    
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        InteractionHandler.Detach(this);
     }
 
     private void ApplyDefaultChecked()
@@ -667,11 +682,11 @@ public class TreeView : AvaloniaTreeView,
             effectiveDragHeaderLocalBounds.Size);
 
         var   effectiveDragHeaderOffset = effectiveDragHeaderBounds.Position;
-        var   dropTargetHalfOffsetY = effectiveDragHeaderOffset.Y + effectiveDragHeaderBounds.Height / 2;
-        var   offsetY = position.Y;
-        Point startPoint = default;
-        Point endPoint = default;
-        var   offsetYDelta = effectiveDropTarget.FrameMargin().Bottom + DragIndicatorLineWidth / 3;
+        var   dropTargetHalfOffsetY     = effectiveDragHeaderOffset.Y + effectiveDragHeaderBounds.Height / 2;
+        var   offsetY                   = position.Y;
+        Point startPoint                = default;
+        Point endPoint                  = default;
+        var   offsetYDelta              = effectiveDropTarget.FrameMargin().Bottom + DragIndicatorLineWidth / 3;
 
         var minOffsetY = DragIndicatorLineWidth / 2;
         var maxOffsetY = Bounds.Height - DragIndicatorLineWidth / 2;
@@ -871,7 +886,7 @@ public class TreeView : AvaloniaTreeView,
         // 先判断是否展开
         if (item.Level > 0)
         {
-            var isExpanded   = true;
+            var isExpanded  = true;
             var currentItem = item.Parent as TreeViewItem;
             while (currentItem is not null)
             {

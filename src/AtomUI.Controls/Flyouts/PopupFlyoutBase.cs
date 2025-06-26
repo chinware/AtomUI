@@ -535,7 +535,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         return popup;
     }
 
-    private void OnPopupOpened(object? sender, EventArgs e)
+    protected virtual void OnPopupOpened(object? sender, EventArgs e)
     {
         IsOpen = true;
 
@@ -550,7 +550,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         }
     }
 
-    private void OnPopupClosed(object? sender, EventArgs e)
+    protected virtual void OnPopupClosed(object? sender, EventArgs e)
     {
         HideCore(false);
 

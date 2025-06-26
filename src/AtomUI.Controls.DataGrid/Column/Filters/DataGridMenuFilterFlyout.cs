@@ -6,6 +6,8 @@ namespace AtomUI.Controls;
 
 internal class DataGridMenuFilterFlyout : MenuFlyout
 {
+    public event EventHandler<DataGridFilterValuesSelectedEventArgs>? FilterValuesSelected;
+    
     public DataGridMenuFilterFlyout()
     {
         OpenMotion  = new SlideUpInMotion();
@@ -26,6 +28,12 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
         SetupArrowPosition(Popup, presenter);
         CalculateShowArrowEffective();
         return presenter;
+    }
+    
+    protected override void OnPopupClosed(object? sender, EventArgs e)
+    {
+        base.OnPopupClosed(sender, e);
+        Console.WriteLine("OnPopupClosed");
     }
 }
 

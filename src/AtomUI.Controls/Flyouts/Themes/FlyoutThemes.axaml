@@ -3,4 +3,5 @@
                     xmlns:themes="using:AtomUI.Controls.Themes"
                     xmlns:atom="https://atomui.net">
     <themes:MenuFlyoutPresenterTheme x:Key="{x:Type atom:MenuFlyoutPresenter}" TargetType="atom:MenuFlyoutPresenter"/>
+    <themes:TreeViewFlyoutPresenterTheme x:Key="{x:Type atom:TreeViewFlyoutPresenter}" TargetType="atom:TreeViewFlyoutPresenter"/>
 </ResourceDictionary>

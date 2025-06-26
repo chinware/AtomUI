@@ -111,13 +111,6 @@ public class Flyout : PopupFlyoutBase
     /// </summary>
     public Classes FlyoutPresenterClasses => _classes ??= new Classes();
 
-    private TimeSpan _motionDuration;
-
-    private static readonly DirectProperty<Flyout, TimeSpan> MotionDurationTokenProperty
-        = AvaloniaProperty.RegisterDirect<Flyout, TimeSpan>(nameof(_motionDuration),
-            o => o._motionDuration,
-            (o, v) => o._motionDuration = v);
-
     protected CompositeDisposable? CompositeDisposable;
 
     static Flyout()
@@ -202,7 +195,7 @@ public class Flyout : PopupFlyoutBase
             CompositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
         }
 
-        CompositeDisposable.Add(TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationTokenProperty,
+        CompositeDisposable.Add(TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationMid));
         CompositeDisposable.Add(TokenResourceBinder.CreateGlobalTokenBinding(this, MaskShadowsProperty,
             SharedTokenKey.BoxShadowsSecondary));

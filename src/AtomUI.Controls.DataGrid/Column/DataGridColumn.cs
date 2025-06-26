@@ -24,8 +24,8 @@ public abstract partial class DataGridColumn : AvaloniaObject
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<DataGridLength> WidthProperty = AvaloniaProperty
-        .Register<DataGridColumn, DataGridLength>(nameof(Width), coerce: CoerceWidth);
+    public static readonly StyledProperty<DataGridLength> WidthProperty = 
+        AvaloniaProperty.Register<DataGridColumn, DataGridLength>(nameof(Width), coerce: CoerceWidth);
     
     /// <summary>
     /// Defines the <see cref="IsVisible"/> property.

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.ComponentModel;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -13,21 +13,20 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public class MenuFlyout : Flyout
+public class TreeViewFlyout : Flyout
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
-        AvaloniaProperty.Register<MenuFlyout, IEnumerable?>(
+        AvaloniaProperty.Register<TreeViewFlyout, IEnumerable?>(
             nameof(ItemsSource));
-    
+
     public static readonly StyledProperty<IDataTemplate?> ItemTemplateProperty =
-        AvaloniaProperty.Register<MenuFlyout, IDataTemplate?>(nameof(ItemTemplate));
-    
+        AvaloniaProperty.Register<TreeViewFlyout, IDataTemplate?>(nameof(ItemTemplate));
+
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
-        ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
-    
-    
+        ItemsControl.ItemContainerThemeProperty.AddOwner<TreeViewFlyout>();
+
     /// <summary>
     /// Gets or sets the items of the MenuFlyout
     /// </summary>
@@ -47,43 +46,42 @@ public class MenuFlyout : Flyout
     }
 
     #endregion
-    
+
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
-    
+
     private IDisposable? _detectMouseClickDisposable;
-    
-    [Content] 
-    public ItemCollection Items { get; }
-    
-    public MenuFlyout()
+
+    [Content] public ItemCollection Items { get; }
+
+    public TreeViewFlyout()
     {
         var itemCollectionType = typeof(ItemCollection);
         Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
     }
-    
+
     protected override Control CreatePresenter()
     {
-        var presenter = new MenuFlyoutPresenter
+        var presenter = new TreeViewFlyoutPresenter
         {
             ItemsSource                                = Items,
             [!ItemsControl.ItemTemplateProperty]       = this[!ItemTemplateProperty],
             [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
-            MenuFlyout                                 = this
+            TreeViewFlyout                             = this
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, TreeViewFlyoutPresenter.IsShowArrowProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TreeViewFlyoutPresenter.IsMotionEnabledProperty);
         SetupArrowPosition(Popup, presenter);
         CalculateShowArrowEffective();
 
         return presenter;
     }
 
-    protected void SetupArrowPosition(Popup popup, MenuFlyoutPresenter? flyoutPresenter = null)
+    protected void SetupArrowPosition(Popup popup, TreeViewFlyoutPresenter? flyoutPresenter = null)
     {
         if (flyoutPresenter is null)
         {
             var child = popup.Child;
-            if (child is MenuFlyoutPresenter childPresenter)
+            if (child is TreeViewFlyoutPresenter childPresenter)
             {
                 flyoutPresenter = childPresenter;
             }
@@ -133,6 +131,7 @@ public class MenuFlyout : Flyout
         {
             return;
         }
+
         if (args is RawPointerEventArgs pointerEventArgs)
         {
             if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
@@ -164,13 +163,13 @@ public class MenuFlyout : Flyout
 
         if (change.Property == ItemsSourceProperty)
         {
-            Items.SetItemsSource(change.GetNewValue<IEnumerable?>());   
+            Items.SetItemsSource(change.GetNewValue<IEnumerable?>());
         }
         else if (change.Property == IsDetectMouseClickEnabledProperty && IsOpen)
         {
             if (IsDetectMouseClickEnabled)
             {
-                if (_detectMouseClickDisposable is not null) 
+                if (_detectMouseClickDisposable is not null)
                 {
                     CompositeDisposable?.Remove(_detectMouseClickDisposable);
                 }
@@ -181,7 +180,7 @@ public class MenuFlyout : Flyout
             }
             else
             {
-                if (_detectMouseClickDisposable is not null) 
+                if (_detectMouseClickDisposable is not null)
                 {
                     CompositeDisposable?.Remove(_detectMouseClickDisposable);
                 }

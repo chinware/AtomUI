@@ -6,8 +6,10 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-public class DataGridTreeFilterFlyout : Flyout
+internal class DataGridTreeFilterFlyout : Flyout
 {
+    public event EventHandler<DataGridFilterValuesSelectedEventArgs>? FilterValuesSelected;
+    
     [Content] public ItemCollection Items { get; }
     
     public DataGridTreeFilterFlyout()
@@ -28,6 +30,12 @@ public class DataGridTreeFilterFlyout : Flyout
         };
         BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
         return presenter;
+    }
+    
+    protected override void OnPopupClosed(object? sender, EventArgs e)
+    {
+        base.OnPopupClosed(sender, e);
+        Console.WriteLine("OnPopupClosed");
     }
 }
 

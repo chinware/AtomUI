@@ -12,6 +12,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -24,13 +25,12 @@ namespace AtomUI.Controls;
 
 using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
+[PseudoClasses(TreeViewPseudoClass.NodeToggleTypeCheckBox, TreeViewPseudoClass.NodeToggleTypeRadio, TreeViewPseudoClass.TreeNodeHover)]
 public class TreeViewItem : AvaloniaTreeItem,
-                            IResourceBindingManager
+                            IResourceBindingManager,
+                            IRadioButton
 {
-    public const string TreeNodeHoverPC = ":treenode-hover";
-
     #region 公共属性定义
-
     public static readonly StyledProperty<bool> IsCheckableProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsCheckable), true);
 
@@ -65,6 +65,12 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsLoading), false);
+    
+    public static readonly StyledProperty<ItemToggleType> ToggleTypeProperty =
+        AvaloniaProperty.Register<TreeViewItem, ItemToggleType>(nameof(ToggleType));
+    
+    public static readonly StyledProperty<string?> GroupNameProperty =
+        RadioButton.GroupNameProperty.AddOwner<TreeViewItem>();
 
     public bool IsCheckable
     {
@@ -133,7 +139,19 @@ public class TreeViewItem : AvaloniaTreeItem,
         get => GetValue(IsLoadingProperty);
         set => SetValue(IsLoadingProperty, value);
     }
+    
+    public ItemToggleType ToggleType
+    {
+        get => GetValue(ToggleTypeProperty);
+        set => SetValue(ToggleTypeProperty, value);
+    }
 
+    public string? GroupName
+    {
+        get => GetValue(GroupNameProperty);
+        set => SetValue(GroupNameProperty, value);
+    }
+    
     public TreeNodeKey? Key { get; set; }
 
     #endregion
@@ -762,7 +780,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             return;
         }
 
-        PseudoClasses.Set(TreeNodeHoverPC, true);
+        PseudoClasses.Set(TreeViewPseudoClass.TreeNodeHover, true);
     }
 
     private void HandleFrameExited(object? sender, PointerEventArgs args)
@@ -772,7 +790,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             return;
         }
 
-        PseudoClasses.Set(TreeNodeHoverPC, false);
+        PseudoClasses.Set(TreeViewPseudoClass.TreeNodeHover, false);
     }
 
     private void HandleHeaderPresenterEntered(object? sender, PointerEventArgs? args)
@@ -782,7 +800,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             return;
         }
 
-        PseudoClasses.Set(TreeNodeHoverPC, true);
+        PseudoClasses.Set(TreeViewPseudoClass.TreeNodeHover, true);
     }
 
     private void HandleHeaderPresenterExited(object? sender, PointerEventArgs args)
@@ -792,7 +810,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             return;
         }
 
-        PseudoClasses.Set(TreeNodeHoverPC, false);
+        PseudoClasses.Set(TreeViewPseudoClass.TreeNodeHover, false);
     }
 
     internal Rect GetDragBounds(bool includeChildren = false)

@@ -50,6 +50,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.TimePickerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ToggleSwitchToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ToolTipToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.TreeFlyoutToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TreeViewToken));
             tokenTypes.Add(typeof(AtomUI.Controls.WindowToken));
             return tokenTypes;

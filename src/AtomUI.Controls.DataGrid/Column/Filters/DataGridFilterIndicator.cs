@@ -23,9 +23,9 @@ internal class DataGridFilterIndicator : IconButton
             nameof(FilterMode),
             o => o.FilterMode,
             (o, v) => o.FilterMode = v);
-
-    public static readonly StyledProperty<MenuItemToggleType> ToggleTypeProperty =
-        MenuItem.ToggleTypeProperty.AddOwner<DataGridFilterIndicator>();
+    
+    public static readonly StyledProperty<bool> FilterMultipleProperty =
+        AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(FilterMultiple));
 
     public bool IsFilterActivated
     {
@@ -40,13 +40,12 @@ internal class DataGridFilterIndicator : IconButton
         get => _filterMode;
         set => SetAndRaise(FilterModeProperty, ref _filterMode, value);
     }
-
-    public MenuItemToggleType ToggleType
+    
+    public bool FilterMultiple
     {
-        get => GetValue(ToggleTypeProperty);
-        set => SetValue(ToggleTypeProperty, value);
+        get => GetValue(FilterMultipleProperty);
+        set => SetValue(FilterMultipleProperty, value);
     }
-
     #endregion
     
     private DataGridColumn? _owningColumn;
@@ -61,8 +60,8 @@ internal class DataGridFilterIndicator : IconButton
             _owningColumn = value;
             if (_owningColumn != null)
             {
-                FilterMode = _owningColumn.FilterMode;
-                ToggleType = _owningColumn.FilterMultiple ? MenuItemToggleType.CheckBox : MenuItemToggleType.Radio;
+                FilterMode     = _owningColumn.FilterMode;
+                FilterMultiple = _owningColumn.FilterMultiple;
             }
         }
     }
@@ -179,9 +178,12 @@ internal class DataGridFilterIndicator : IconButton
                 Header           = item.Text,
                 FilterValue      = item.Value,
                 StaysOpenOnClick = true,
-                GroupName        = _radioCheckGroupName
+                GroupName        = _radioCheckGroupName,
             };
-            BindUtils.RelayBind(this, ToggleTypeProperty, menuItem, ToggleTypeProperty);
+            BindUtils.RelayBind(this, FilterMultipleProperty, menuItem, MenuItem.ToggleTypeProperty, (v) =>
+            {
+                return v ? MenuItemToggleType.CheckBox : MenuItemToggleType.Radio;
+            }, BindingPriority.Template);
             menuItems.Add(menuItem);
             if (item.Children.Count > 0)
             {
@@ -206,6 +208,7 @@ internal class DataGridFilterIndicator : IconButton
                 Header      = item.Text,
                 FilterValue = item.Value
             };
+            // BindUtils.RelayBind(this, ToggleTypeProperty, treeItem, TreeViewItem.ToggleTypeProperty);
             treeItems.Add(treeItem);
             if (item.Children.Count > 0)
             {
@@ -246,7 +249,4 @@ internal class DataGridFilterIndicator : IconButton
             }
         }
     }
-    
-    
-    
 }

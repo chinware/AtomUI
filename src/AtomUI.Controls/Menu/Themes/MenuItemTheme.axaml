@@ -35,6 +35,7 @@
                             <atom:RadioButton Name="{x:Static atom:MenuItemThemeConstants.ToggleRadioPart}"
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center"
+                                              IsChecked="{TemplateBinding IsChecked}"
                                               GroupName="{TemplateBinding GroupName}"
                                               IsVisible="False" />
                         </Panel>
