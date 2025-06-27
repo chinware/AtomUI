@@ -28,7 +28,8 @@ using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
 [PseudoClasses(TreeViewPseudoClass.NodeToggleTypeCheckBox, TreeViewPseudoClass.NodeToggleTypeRadio, TreeViewPseudoClass.TreeNodeHover)]
 public class TreeViewItem : AvaloniaTreeItem,
-                            IResourceBindingManager
+                            IResourceBindingManager,
+                            IRadioButton
 {
     #region 公共属性定义
     public static readonly StyledProperty<Icon?> IconProperty
@@ -316,7 +317,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         set => SetAndRaise(IsSwitcherRotationProperty, ref _isSwitcherRotation, value);
     }
     
-    internal ItemToggleType ToggleType
+    public ItemToggleType ToggleType
     {
         get => GetValue(ToggleTypeProperty);
         set => SetValue(ToggleTypeProperty, value);
@@ -326,7 +327,8 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
     private bool _tempAnimationDisabled = false;
-
+    private ITreeViewInteractionHandler? TreeViewInteractionHandler => this.FindLogicalAncestorOfType<TreeView>()?.InteractionHandler;
+    
     #endregion
 
     private CompositeDisposable? _resourceBindingsDisposable;
@@ -409,6 +411,18 @@ public class TreeViewItem : AvaloniaTreeItem,
         {
             SetupSwitcherButtonIconMode();
         }
+        else if (change.Property == GroupNameProperty)
+        {
+            HandleGroupNameChanged(change);
+        }
+        else if (change.Property == IsCheckedProperty)
+        {
+            HandleIsCheckedChanged(change);
+        }
+        else if (change.Property == ToggleTypeProperty)
+        {
+            HandleToggleTypeChanged(change);
+        }
 
         if (this.IsAttachedToVisualTree())
         {
@@ -482,6 +496,31 @@ public class TreeViewItem : AvaloniaTreeItem,
         else
         {
             CollapseChildren();
+        }
+    }
+
+    private void HandleGroupNameChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnGroupOrTypeChanged(this, e.GetOldValue<string>());
+    }
+    
+    private void HandleToggleTypeChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var newValue = e.GetNewValue<ItemToggleType>();
+        PseudoClasses.Set(TreeViewPseudoClass.NodeToggleTypeRadio, newValue == ItemToggleType.Radio);
+        PseudoClasses.Set(TreeViewPseudoClass.NodeToggleTypeCheckBox, newValue == ItemToggleType.CheckBox);
+
+        (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnGroupOrTypeChanged(this, GroupName);
+    }
+    
+    private void HandleIsCheckedChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var newValue = e.GetNewValue<bool?>();
+        PseudoClasses.Set(StdPseudoClass.Checked, newValue == true);
+
+        if (newValue == true)
+        {
+            (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnCheckedChanged(this);
         }
     }
 
