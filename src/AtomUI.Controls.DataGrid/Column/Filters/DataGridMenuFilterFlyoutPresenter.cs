@@ -26,6 +26,13 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
         }
     }
 
+    internal List<String> GetFilterValues()
+    {
+        var values =  new List<String>();
+        CollectFilterValues(values, this);
+        return values;
+    }
+
     private void HandleResetButtonClick(object? sender, RoutedEventArgs e)
     {
         ClearCheckStateRecursive(this);
@@ -33,7 +40,12 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
 
     private void HandleOkButtonClick(object? sender, RoutedEventArgs e)
     {
-        Console.WriteLine("HandleOkButtonClick");
+        if (MenuFlyout is DataGridMenuFilterFlyout dataGridMenuFlyout)
+        {
+            dataGridMenuFlyout.IsActiveShutdown = true;
+        }
+        
+        MenuFlyout?.Hide();
     }
 
     private void ClearCheckStateRecursive(SelectingItemsControl itemsControl)
@@ -50,6 +62,35 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
         if (itemsControl is MenuItem menuItem && itemsControl.ItemCount == 0)
         {
             menuItem.IsChecked = false;
+        }
+    }
+
+    private void CollectFilterValues(List<string> filterValues, SelectingItemsControl itemsControl)
+    {
+        for (var i = 0; i < itemsControl.ItemCount; i++)
+        {
+            var item = itemsControl.ContainerFromIndex(i);
+            if (item is DataGridFilterMenuItem filterMenuItem)
+            {
+                CollectFilterValues(filterValues, filterMenuItem);
+            }
+        }
+        
+        if (itemsControl is DataGridFilterMenuItem menuItem && itemsControl.ItemCount == 0)
+        {
+            if (menuItem.IsChecked && menuItem.FilterValue != null)
+            {
+                filterValues.Add(menuItem.FilterValue);
+            }
+        }
+    }
+
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (container is DataGridFilterMenuItem menuItem)
+        {
+            menuItem.OwningPresenter = this;
         }
     }
 }

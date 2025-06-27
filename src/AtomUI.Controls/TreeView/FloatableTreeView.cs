@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -45,9 +44,9 @@ public class FloatableTreeView : TreeView
 
     #endregion
 
-    private Flyout? _flyout;
+    private TreeViewFlyout? _flyout;
 
-    internal Flyout? Flyout
+    public TreeViewFlyout? TreeViewFlyout
     {
         get => _flyout;
         set
@@ -68,10 +67,9 @@ public class FloatableTreeView : TreeView
 
     public void Close()
     {
-        var host = this.FindLogicalAncestorOfType<Popup>();
-        if (host != null)
+        if (TreeViewFlyout is not null)
         {
-            host.IsOpen = false;
+            TreeViewFlyout.Hide();
         }
     }
 

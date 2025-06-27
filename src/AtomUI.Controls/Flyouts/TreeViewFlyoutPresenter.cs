@@ -39,7 +39,7 @@ public class TreeViewFlyoutPresenter : FloatableTreeView,
         get => GetValue(ArrowPositionProperty);
         set => SetValue(ArrowPositionProperty, value);
     }
-
+    
     #endregion
 
     #region 公共事件定义

@@ -35,8 +35,8 @@ public class MenuItem : AvaloniaMenuItem
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuItem>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuItem>();
 
     internal bool IsMotionEnabled
     {
@@ -48,6 +48,8 @@ public class MenuItem : AvaloniaMenuItem
 
     private Border? _itemDecorator;
     private ContentPresenter? _headerPresenterPart;
+    private RadioButton? _radioButton;
+    private CheckBox? _checkBox;
     
     static MenuItem()
     {
@@ -104,6 +106,29 @@ public class MenuItem : AvaloniaMenuItem
         base.OnApplyTemplate(e);
         _itemDecorator       = e.NameScope.Find<Border>(MenuItemThemeConstants.ItemDecoratorPart);
         _headerPresenterPart = e.NameScope.Find<ContentPresenter>(TopLevelMenuItemThemeConstants.HeaderPresenterPart);
+        _radioButton         = e.NameScope.Find<RadioButton>(MenuItemThemeConstants.ToggleRadioPart);
+        _checkBox            = e.NameScope.Find<CheckBox>(MenuItemThemeConstants.ToggleCheckboxPart);
+        if (_radioButton != null)
+        {
+            _radioButton.IsCheckedChanged += (sender, args) =>
+            {
+                if (_radioButton.IsVisible)
+                {
+                    IsChecked = _radioButton.IsChecked == true;
+                }
+            };
+        }
+
+        if (_checkBox != null)
+        {
+            _checkBox.IsCheckedChanged += (sender, args) =>
+            {
+                if (_checkBox.IsVisible)
+                {
+                    IsChecked = _checkBox.IsChecked == true;
+                }
+            };
+        }
         UpdatePseudoClasses();
         ConfigureTransitions();
     }

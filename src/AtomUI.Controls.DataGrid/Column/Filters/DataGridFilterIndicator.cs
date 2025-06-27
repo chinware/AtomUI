@@ -50,7 +50,7 @@ internal class DataGridFilterIndicator : IconButton
     
     private DataGridColumn? _owningColumn;
     private static int _indicatorSeed = 0;
-    private string _radioCheckGroupName;
+    private string _treeRadioCheckGroupName;
 
     internal DataGridColumn? OwningColumn
     {
@@ -96,7 +96,7 @@ internal class DataGridFilterIndicator : IconButton
                 return false;
             }
         };
-        _radioCheckGroupName = $"{nameof(DataGridFilterIndicator)}-{_indicatorSeed++}";
+        _treeRadioCheckGroupName = $"tree-{nameof(DataGridFilterIndicator)}-{_indicatorSeed++}";
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -192,8 +192,7 @@ internal class DataGridFilterIndicator : IconButton
             {
                 Header           = item.Text,
                 FilterValue      = item.Value,
-                StaysOpenOnClick = true,
-                GroupName        = _radioCheckGroupName,
+                StaysOpenOnClick = true
             };
             BindUtils.RelayBind(this, FilterMultipleProperty, menuItem, MenuItem.ToggleTypeProperty, (v) =>
             {
@@ -222,7 +221,7 @@ internal class DataGridFilterIndicator : IconButton
             {
                 Header      = item.Text,
                 FilterValue = item.Value,
-                GroupName   = _radioCheckGroupName,
+                GroupName   = _treeRadioCheckGroupName,
             };
   
             treeItems.Add(treeItem);

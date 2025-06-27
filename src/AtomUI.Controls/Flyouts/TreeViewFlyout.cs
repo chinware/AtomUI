@@ -68,7 +68,7 @@ public class TreeViewFlyout : Flyout
             [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
       
         };
-        presenter.Flyout = this;
+        presenter.TreeViewFlyout = this;
         BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, TreeViewFlyoutPresenter.IsShowArrowProperty);
         BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TreeViewFlyoutPresenter.IsMotionEnabledProperty);
         SetupArrowPosition(Popup, presenter);
