@@ -96,15 +96,11 @@ public class AbstractMotion : IMotion
         void FinishedCallback () {
             actor.DisableTransitions();
             actor.NotifyMotionCompleted();
+            NotifyCompleted(actor);
+            completedAction?.Invoke();
             actor.RenderTransformOrigin = originRenderTransformOrigin;
             actor.MotionTransform       = null;
-            
-            Dispatcher.UIThread.Post(() =>
-            {
-                NotifyCompleted(actor);
-                completedAction?.Invoke();
-            });
-        };
+        }
 
         Dispatcher.UIThread.Post(() =>
         {
