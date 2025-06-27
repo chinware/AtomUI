@@ -220,6 +220,7 @@ public class FlyoutHost : Control,
         SetupFlyoutProperties();
         _flyoutStateHelper.NotifyAttachedToVisualTree();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

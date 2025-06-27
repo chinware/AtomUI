@@ -314,7 +314,6 @@ public class ToolTip : ContentControl,
 
     private Popup? _popup;
     private Action<IPopupHost?>? _popupHostChangedHandler;
-    private CompositeDisposable? _subscriptions;
     private ArrowDecoratedBox? _arrowDecoratedBox;
 
     static ToolTip()
@@ -357,24 +356,19 @@ public class ToolTip : ContentControl,
             _popup.Opened          += HandlePopupOpened;
             _popup.Closed          += HandlePopupClosed;
             _popup.PositionFlipped += HandlePopupPositionFlipped;
+
+            _popup.Bind(Popup.HorizontalOffsetProperty, control.GetBindingObservable(HorizontalOffsetProperty));
+            _popup.Bind(Popup.VerticalOffsetProperty, control.GetBindingObservable(VerticalOffsetProperty));
+            _popup.Bind(Popup.PlacementProperty, control.GetBindingObservable(PlacementProperty));
+            _popup.Bind(Popup.MarginToAnchorProperty, control.GetBindingObservable(MarginToAnchorProperty));
+            _popup.Bind(Popup.CustomPopupPlacementCallbackProperty,
+                control.GetBindingObservable(CustomPopupPlacementCallbackProperty));
         }
 
         if (_popup is IPopupHostProvider popupHostProvider)
         {
             popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
         }
-
-        // 这里评估是 tooltip 会多次复用，所以这里把绑定管理起来，关闭的时候释放
-        // 不知道对不对
-        _subscriptions = new CompositeDisposable(new[]
-        {
-            _popup.Bind(Popup.HorizontalOffsetProperty, control.GetBindingObservable(HorizontalOffsetProperty)),
-            _popup.Bind(Popup.VerticalOffsetProperty, control.GetBindingObservable(VerticalOffsetProperty)),
-            _popup.Bind(Popup.PlacementProperty, control.GetBindingObservable(PlacementProperty)),
-            _popup.Bind(Popup.MarginToAnchorProperty, control.GetBindingObservable(MarginToAnchorProperty)),
-            _popup.Bind(Popup.CustomPopupPlacementCallbackProperty,
-                control.GetBindingObservable(CustomPopupPlacementCallbackProperty)),
-        });
 
         var placement        = GetPlacement(control);
         var anchorAndGravity = PopupUtils.GetAnchorAndGravity(placement);
@@ -409,7 +403,7 @@ public class ToolTip : ContentControl,
         if (_arrowDecoratedBox is not null)
         {
             SetToolTipColor(control);
-            _subscriptions?.Add(_arrowDecoratedBox.Bind(ArrowDecoratedBox.IsShowArrowProperty,
+            _arrowDecoratedBox.Bind(ArrowDecoratedBox.IsShowArrowProperty,
                 control.GetBindingObservable(IsShowArrowProperty, flag =>
                 {
                     // 有些条件下是不能开启箭头指针的
@@ -420,7 +414,7 @@ public class ToolTip : ContentControl,
                     }
 
                     return flag;
-                })));
+                }));
             if (_popup is not null)
             {
                 SetupArrowPosition(_popup.Placement, _popup.PlacementAnchor,
@@ -459,14 +453,10 @@ public class ToolTip : ContentControl,
         {
             _popup.MotionAwareClose(() =>
             {
-                _popup.SetPopupParent(null);
-                _popup.PlacementTarget = null;
                 if (_popup is IPopupHostProvider popupHostProvider)
                 {
                     popupHostProvider.PopupHostChanged -= HandlePopupHostChanged;
                 }
-
-                _subscriptions?.Dispose();
             });
         }
     }

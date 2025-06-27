@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using AtomUI.Animations;
 using Avalonia;
 using Avalonia.Animation;
@@ -79,7 +78,7 @@ public class AbstractMotion : IMotion
         NotifyPreStart(actor);
         aboutToStart?.Invoke();
   
-        actor.RenderTransformOrigin = RenderTransformOrigin;
+        actor.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
         var observables = new List<IObservable<bool>>();
 
         // 暂时先不保存 actor 原有的 transitions
@@ -97,10 +96,14 @@ public class AbstractMotion : IMotion
         void FinishedCallback () {
             actor.DisableTransitions();
             actor.NotifyMotionCompleted();
-            NotifyCompleted(actor);
-            completedAction?.Invoke();
-            actor.RenderTransformOrigin = originRenderTransformOrigin;
+            //actor.RenderTransformOrigin = originRenderTransformOrigin;
             actor.MotionTransform       = null;
+            
+            Dispatcher.UIThread.Post(() =>
+            {
+                NotifyCompleted(actor);
+                completedAction?.Invoke();
+            });
         };
 
         Dispatcher.UIThread.Post(() =>
@@ -113,14 +116,10 @@ public class AbstractMotion : IMotion
             }
             else
             {
-                Dispatcher.UIThread.InvokeAsync(async () =>
-                {
-                    await observables.Zip()
-                               .LastAsync()
-                               .ObserveOn(AvaloniaScheduler.Instance)
-                               .ToTask();
-                    FinishedCallback();
-                });
+                observables.Zip()
+                           .LastAsync()
+                           .ObserveOn(AvaloniaScheduler.Instance)
+                           .Subscribe(list => FinishedCallback());
             }
         });
     }

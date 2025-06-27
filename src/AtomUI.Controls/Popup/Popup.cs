@@ -162,7 +162,7 @@ public class Popup : AvaloniaPopup,
         this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
-            SharedTokenKey.MotionDurationFast));
+            SharedTokenKey.MotionDurationMid));
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -544,16 +544,16 @@ public class Popup : AvaloniaPopup,
         Debug.Assert(popupRoot != null);
         _buddyLayer.AttachWithMotion(null, () =>
         {
+            opened?.Invoke();
+            popupRoot.Opacity = 1.0;
+            popupRoot.PlatformImpl?.SetTopmost(true);
             _isNeedWaitFlipSync = false;
             _openAnimating      = false;
-            opened?.Invoke();
             if (RequestCloseWhereAnimationCompleted)
             {
                 RequestCloseWhereAnimationCompleted = false;
                 Dispatcher.UIThread.Post(() => { MotionAwareClose(); });
             }
-            popupRoot.Opacity = 1.0;
-            popupRoot.PlatformImpl?.SetTopmost(true);
         });
     }
 
@@ -591,10 +591,10 @@ public class Popup : AvaloniaPopup,
         popupRoot.Opacity = 0d;
         _buddyLayer.DetachWithMotion(null, () =>
         {
-            _closeAnimating   = false;
-            _isNeedDetectFlip = true;
             closed?.Invoke();
             Close();
+            _closeAnimating   = false;
+            _isNeedDetectFlip = true;
         });
     }
 

@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
@@ -79,7 +78,7 @@ internal class ZoomBigInMotion : AbstractMotion
     protected override void ConfigureTransitions()
     {
         base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
+        RenderTransformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
     }
 
     protected override void ConfigureMotionStartValue(MotionActorControl actor)
@@ -107,7 +106,7 @@ internal class ZoomBigOutMotion : AbstractMotion
     protected override void ConfigureTransitions()
     {
         base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
+        RenderTransformOrigin = RelativePoint.Center;
     }
 
     protected override void ConfigureMotionStartValue(MotionActorControl actor)
