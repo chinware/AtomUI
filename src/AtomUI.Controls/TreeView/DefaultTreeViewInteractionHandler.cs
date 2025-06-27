@@ -4,108 +4,84 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Rendering;
-using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 public class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
 {
-    protected Action<Action, TimeSpan> DelayRun { get; }
-
     protected IInputManager? InputManager { get; }
-    internal TreeView? Menu { get; private set; }
-    
-    private readonly bool _isContextMenu;
+    internal TreeView? TreeView { get; private set; }
+
+    private readonly bool _isFloatingTreeView;
     private IDisposable? _inputManagerSubscription;
     private IRenderRoot? _root;
     private RadioButtonGroupManager? _groupManager;
-    
-    private static void DefaultDelayRun(Action action, TimeSpan timeSpan)
-    {
-        DispatcherTimer.RunOnce(action, timeSpan);
-    }
-    
-    public static TimeSpan MenuShowDelay { get; set;} = TimeSpan.FromMilliseconds(400);
-    
-    public DefaultTreeViewInteractionHandler(bool isContextMenu)
-        : this(isContextMenu, DefaultDelayRun)
-    {
-    }
-    
-    public DefaultTreeViewInteractionHandler(
-        bool isContextMenu,
-        Action<Action, TimeSpan> delayRun)
-    {
-        delayRun = delayRun ?? throw new ArgumentNullException(nameof(delayRun));
 
-        _isContextMenu = isContextMenu;
-        InputManager   = AvaloniaLocator.Current.GetService<IInputManager>()!;
-        DelayRun       = delayRun;
+
+    public DefaultTreeViewInteractionHandler(bool isFloatingTreeView)
+    {
+        _isFloatingTreeView = isFloatingTreeView;
+        InputManager        = AvaloniaLocator.Current.GetService<IInputManager>()!;
     }
 
     public void Attach(TreeView treeView)
     {
-        
+        TreeView                 =  treeView;
+        TreeView.PointerPressed  += PointerPressed;
+        TreeView.PointerReleased += PointerReleased;
+        _root                    =  TreeView.GetVisualRoot();
+        if (_root is not null)
+        {
+            _groupManager = RadioButtonGroupManager.GetOrCreateForRoot(_root);
+            for (var i = 0; i < TreeView.ItemCount; i++)
+            {
+                if (TreeView.ContainerFromIndex(i) is TreeViewItem item)
+                {
+                    AddTreeViewItemToRadioGroup(_groupManager, item);
+                }
+            }
+        }
+        if (_root is InputElement inputRoot)
+        {
+            inputRoot.AddHandler(InputElement.PointerPressedEvent, RootPointerPressed, RoutingStrategies.Tunnel);
+        }
+        _inputManagerSubscription = InputManager?.Process.Subscribe(RawInput);
     }
 
     public void Detach(TreeView treeView)
     {
+        if (TreeView != treeView)
+        {
+            throw new NotSupportedException("DefaultTreeViewInteractionHandler is not attached to the TreeView.");
+        }
+        TreeView.PointerPressed  -= PointerPressed;
+        TreeView.PointerReleased -= PointerReleased;
         
-    }
-    
-    protected internal virtual void GotFocus(object? sender, GotFocusEventArgs e)
-    {
-        var item = GetTreeViewItemCore(e.Source as Control);
-
-        if (item?.Parent != null)
+        if (_root is not null && _groupManager is { } oldManager)
         {
-           // item.SelectedItem = item;
+            _groupManager = null;
+            for (var i = 0; i < TreeView.ItemCount; i++)
+            {
+                if (TreeView.ContainerFromIndex(i) is TreeViewItem item)
+                {
+                    RemoveTreeViewItemToRadioGroup(oldManager, item);
+                }
+            }
         }
-    }
-    
-    protected internal virtual void LostFocus(object? sender, RoutedEventArgs e)
-    {
-        var item = GetTreeViewItemCore(e.Source as Control);
-
-        if (item != null)
+        if (_root is InputElement inputRoot)
         {
-           // item.SelectedItem = null;
+            inputRoot.RemoveHandler(InputElement.PointerPressedEvent, RootPointerPressed);
         }
-    }
-    
-    protected internal virtual void KeyDown(object? sender, KeyEventArgs e)
-    {
-        KeyDown(GetTreeViewItemCore(e.Source as Control), e);
-    }
-    
-    protected internal virtual void AccessKeyPressed(object? sender, RoutedEventArgs e)
-    {
-        var item = GetTreeViewItemCore(e.Source as Control);
-        if (item is null)
-        {
-            return;
-        }
-        
-        // if (e is AccessKeyEventArgs { IsMultiple: true })
-        // {
-        //     // in case we have multiple matches, only focus item and bail
-        //     item.Focus(NavigationMethod.Tab);
-        //     return;
-        // }
-        //     
-        // if (item.HasSubMenu && item.IsEffectivelyEnabled)
-        // {
-        //     Open(item, true);
-        // }
-        // else
-        // {
-        //     Click(item);
-        // }
 
-        e.Handled = true;
+        _inputManagerSubscription?.Dispose();
+
+        TreeView  = null;
+        _root = null;
     }
-    
+
     internal static TreeViewItem? GetTreeViewItemCore(StyledElement? item)
     {
         while (true)
@@ -119,183 +95,105 @@ public class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
             {
                 return treeViewItem;
             }
-                
+
             item = item.Parent;
         }
     }
-    
-    protected internal virtual void PointerEntered(object? sender, RoutedEventArgs e)
+
+    protected internal virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var item = GetTreeViewItemCore(e.Source as Control);
 
-        if (item?.Parent == null)
+        if (sender is Visual visual &&
+            e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed && item?.ItemCount > 0)
         {
-            return;
+            e.Handled = true;
         }
-
-        // if (item.IsTopLevel)
-        // {
-        //     if (item != item.Parent.SelectedItem &&
-        //         item.Parent.SelectedItem?.IsSubMenuOpen == true)
-        //     {
-        //         item.Parent.SelectedItem.Close();
-        //         SelectItemAndAncestors(item);
-        //         if (item.HasSubMenu)
-        //             Open(item, false);
-        //     }
-        //     else
-        //     {
-        //         SelectItemAndAncestors(item);
-        //     }
-        // }
-        // else
-        // {
-        //     SelectItemAndAncestors(item);
-        //
-        //     if (item.HasSubMenu)
-        //     {
-        //         OpenWithDelay(item);
-        //     }
-        //     else if (item.Parent != null)
-        //     {
-        //         foreach (var sibling in item.Parent.SubItems)
-        //         {
-        //             if (sibling.IsSubMenuOpen)
-        //             {
-        //                 CloseWithDelay(sibling);
-        //             }
-        //         }
-        //     }
-        // }
-    }
-    
-    protected internal virtual void PointerMoved(object? sender, PointerEventArgs e)
-    {
-        // HACK: #8179 needs to be addressed to correctly implement it in the PointerPressed method.
-        // var item = GetTreeViewItemCore(e.Source as Control) as MenuItem;
-        //
-        // if (item == null)
-        //     return;
-        //
-        // var transformedBounds = item.GetTransformedBounds();
-        // if (transformedBounds == null)
-        //     return;
-        //
-        // var point = e.GetCurrentPoint(null);
-        //
-        // if (point.Properties.IsLeftButtonPressed
-        //     && transformedBounds.Value.Contains(point.Position) == false)
-        // {
-        //     e.Pointer.Capture(null);
-        // }
-    }
-    
-    protected internal virtual void PointerExited(object? sender, RoutedEventArgs e)
-    {
-        // var item = GetMenuItemCore(e.Source as Control);
-        //
-        // if (item?.Parent == null)
-        // {
-        //     return;
-        // }
-        //
-        // if (item.Parent.SelectedItem == item)
-        // {
-        //     if (item.IsTopLevel)
-        //     {
-        //         if (!((IMenu)item.Parent).IsOpen)
-        //         {
-        //             item.Parent.SelectedItem = null;
-        //         }
-        //     }
-        //     else if (!item.HasSubMenu)
-        //     {
-        //         item.Parent.SelectedItem = null;
-        //     }
-        //     else if (!item.IsPointerOverSubMenu)
-        //     {
-        //         DelayRun(() =>
-        //         {
-        //             if (!item.IsPointerOverSubMenu)
-        //             {
-        //                 item.IsSubMenuOpen = false;
-        //             }
-        //         }, MenuShowDelay);
-        //     }
-        // }
-    }
-    
-    protected internal virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        // var item = GetMenuItemCore(e.Source as Control);
-        //
-        // if (sender is Visual visual &&
-        //     e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed && item?.HasSubMenu == true)
-        // {
-        //     if (item.IsSubMenuOpen)
-        //     {
-        //         // PointerPressed events may bubble from disabled items in sub-menus. In this case,
-        //         // keep the sub-menu open.
-        //         var popup = (e.Source as ILogical)?.FindLogicalAncestorOfType<Popup>();
-        //         if (item.IsTopLevel && popup == null)
-        //         {
-        //             CloseMenu(item);
-        //         }
-        //     }
-        //     else
-        //     {
-        //         if (item.IsTopLevel && item.Parent is IMainMenu mainMenu)
-        //         {
-        //             mainMenu.Open();
-        //         }
-        //
-        //         Open(item, false);
-        //     }
-        //
-        //     e.Handled = true;
-        // }
     }
 
     protected internal virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        // var item = GetMenuItemCore(e.Source as Control);
-        //
-        // if (e.InitialPressMouseButton == MouseButton.Left && item?.HasSubMenu == false)
-        // {
-        //     Click(item);
-        //     e.Handled = true;
-        // }
+        var item = GetTreeViewItemCore(e.Source as Control);
+
+        if (e.InitialPressMouseButton == MouseButton.Left && item?.ItemCount == 0)
+        {
+            Click(item);
+            e.Handled = true;
+        }
     }
-    
-    protected internal virtual void MenuOpened(object? sender, RoutedEventArgs e)
+
+    internal void Click(TreeViewItem item)
     {
-        // if (e.Source is Menu)
-        // {
-        //     Menu?.MoveSelection(NavigationDirection.First, true);
-        // }
+        if (item.ItemCount == 0)
+        {
+            if (item.ToggleType == ItemToggleType.CheckBox)
+            {
+                if (item.IsChecked != true)
+                {
+                    item.IsChecked = false;
+                }
+                else
+                {
+                    item.IsChecked = true;
+                }
+            }
+            else if (item.ToggleType == ItemToggleType.Radio && item.IsChecked != true)
+            {
+                item.IsChecked = true;
+            }
+        }
+
+        item.RaiseClick();
     }
-    
+
     protected internal virtual void RawInput(RawInputEventArgs e)
     {
-        // var mouse = e as RawPointerEventArgs;
-        //
-        // if (mouse?.Type == RawPointerEventType.NonClientLeftButtonDown)
-        // {
-        //     Menu?.Close();
-        // }
+        var mouse = e as RawPointerEventArgs;
+
+        if (mouse?.Type == RawPointerEventType.NonClientLeftButtonDown && _isFloatingTreeView)
+        {
+            if (TreeView is FloatableTreeView floatableTreeView)
+            {
+                floatableTreeView.Close();
+            }
+        }
     }
-    
+
     protected internal virtual void RootPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        // if (Menu?.IsOpen == true)
-        // {
-        //     if (e.Source is ILogical control && !Menu.IsLogicalAncestorOf(control))
-        //     {
-        //         Menu.Close();
-        //     }
-        // }
+        if (TreeView is FloatableTreeView floatableTreeView)
+        {
+            if (floatableTreeView.IsOpen)
+            {
+                if (e.Source is ILogical control && !floatableTreeView.IsLogicalAncestorOf(control))
+                {
+                    floatableTreeView.Close();
+                } 
+            }
+        }
     }
-    
+
+    internal void OnCheckedChanged(TreeViewItem item)
+    {
+        if (item is IRadioButton radioButton)
+        {
+            _groupManager?.OnCheckedChanged(radioButton);
+        }
+    }
+
+    internal void OnGroupOrTypeChanged(IRadioButton button, string? oldGroupName)
+    {
+        if (!string.IsNullOrEmpty(oldGroupName))
+        {
+            _groupManager?.Remove(button, oldGroupName);
+        }
+
+        if (!string.IsNullOrEmpty(button.GroupName))
+        {
+            _groupManager?.Add(button);
+        }
+    }
+
     private static void AddTreeViewItemToRadioGroup(RadioButtonGroupManager manager, TreeViewItem element)
     {
         // Instead add menu item to the group on attached/detached + ensure checked stated on attached.
@@ -313,20 +211,20 @@ public class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
             }
         }
     }
-    
-    private static void RemoveMenuItemFromRadioGroup(RadioButtonGroupManager manager, TreeViewItem element)
+
+    private static void RemoveTreeViewItemToRadioGroup(RadioButtonGroupManager manager, TreeViewItem element)
     {
         if (element is IRadioButton button)
         {
             manager.Remove(button, button.GroupName);
         }
-        
+
         for (var i = 0; i < element.ItemCount; i++)
         {
             var item = element.ContainerFromIndex(i);
             if (item is TreeViewItem treeViewItem)
             {
-                RemoveMenuItemFromRadioGroup(manager, treeViewItem);
+                RemoveTreeViewItemToRadioGroup(manager, treeViewItem);
             }
         }
     }

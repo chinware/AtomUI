@@ -1,21 +1,26 @@
 using AtomUI.Data;
 using AtomUI.MotionScene;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-internal class DataGridTreeFilterFlyout : Flyout
+internal class DataGridTreeFilterFlyout : TreeViewFlyout
 {
-    public event EventHandler<DataGridFilterValuesSelectedEventArgs>? FilterValuesSelected;
+    internal static readonly StyledProperty<ItemToggleType> ToggleTypeProperty =
+        TreeView.ToggleTypeProperty.AddOwner<DataGridTreeFilterFlyout>();
     
-    [Content] public ItemCollection Items { get; }
+    public ItemToggleType ToggleType
+    {
+        get => GetValue(ToggleTypeProperty);
+        set => SetValue(ToggleTypeProperty, value);
+    }
+    
+    public event EventHandler<DataGridFilterValuesSelectedEventArgs>? FilterValuesSelected;
     
     public DataGridTreeFilterFlyout()
     {
-        var itemCollectionType = typeof(ItemCollection);
-        Items      = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
         OpenMotion = new SlideUpInMotion();
         CloseMotion = new SlideUpOutMotion();
     }
@@ -25,10 +30,11 @@ internal class DataGridTreeFilterFlyout : Flyout
         var presenter = new DataGridTreeFilterFlyoutPresenter
         {
             IsDefaultExpandAll = true,
-            ItemsSource        = Items,
-            IsCheckable        = true
+            ItemsSource        = Items
         };
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, DataGridTreeFilterFlyoutPresenter.IsShowArrowProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, DataGridTreeFilterFlyoutPresenter.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, ToggleTypeProperty, presenter, DataGridTreeFilterFlyoutPresenter.ToggleTypeProperty);
         return presenter;
     }
     
@@ -42,18 +48,6 @@ internal class DataGridTreeFilterFlyout : Flyout
 internal class DataGridFilterTreeItem : TreeViewItem
 {
     public string? FilterValue { get; set; }
-
-    protected override void NotifyHeaderClick()
-    {
-        if (IsChecked is null)
-        {
-            IsChecked =  true;
-        }
-        else
-        {
-            IsChecked = !IsChecked;
-        }
-    }
     
     protected override void OnHeaderDoubleTapped(TappedEventArgs e)
     {

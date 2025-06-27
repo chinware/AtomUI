@@ -13,7 +13,10 @@
             <ControlTemplate>
                 <atom:ArrowDecoratedBox Name="{x:Static atom:MenuFlyoutThemeConstants.ArrowDecoratorPart}"
                                         IsShowArrow="{TemplateBinding IsShowArrow}"
-                                        ArrowPosition="{TemplateBinding ArrowPosition}">
+                                        ArrowPosition="{TemplateBinding ArrowPosition}"
+                                        Background="{TemplateBinding Background}"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True">
                         <StackPanel
                             Name="{x:Static atom:DataGridFilterFlyoutPresenterThemeConstants.ButtonLayoutPart}"
@@ -53,13 +56,6 @@
             </ControlTemplate>
         </Setter>
         
-        <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
-            <Setter Property="Background"
-                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownBg}}" /> 
-            <Setter Property="Padding"
-                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownPadding}}" /> 
-        </Style>
-        
         <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
             <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonSpacing}}" />
             <Setter Property="Margin"
@@ -71,6 +67,11 @@
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonLayoutSeparatorMargin}}" /> 
         </Style>
+        
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownBg}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterDropdownPadding}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
     </ControlTheme>
     
 </ResourceDictionary>

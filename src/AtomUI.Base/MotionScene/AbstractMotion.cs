@@ -77,8 +77,8 @@ public class AbstractMotion : IMotion
         actor.NotifyMotionPreStart();
         NotifyPreStart(actor);
         aboutToStart?.Invoke();
-  
-        actor.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
+
+        actor.RenderTransformOrigin = RenderTransformOrigin;
         var observables = new List<IObservable<bool>>();
 
         // 暂时先不保存 actor 原有的 transitions
@@ -96,7 +96,7 @@ public class AbstractMotion : IMotion
         void FinishedCallback () {
             actor.DisableTransitions();
             actor.NotifyMotionCompleted();
-            //actor.RenderTransformOrigin = originRenderTransformOrigin;
+            actor.RenderTransformOrigin = originRenderTransformOrigin;
             actor.MotionTransform       = null;
             
             Dispatcher.UIThread.Post(() =>

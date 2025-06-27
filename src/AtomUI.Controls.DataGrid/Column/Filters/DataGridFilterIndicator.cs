@@ -151,6 +151,10 @@ internal class DataGridFilterIndicator : IconButton
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
                 IsDetectMouseClickEnabled = false
             };
+            BindUtils.RelayBind(this, FilterMultipleProperty, treeFlyout, DataGridTreeFilterFlyout.ToggleTypeProperty, (v) =>
+            {
+                return v ? ItemToggleType.CheckBox : ItemToggleType.Radio;
+            });
             BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, treeFlyout,
                 MotionAwareControlProperty.IsMotionEnabledProperty);
             var selectAllTreeItem = new DataGridFilterTreeItem();
@@ -208,7 +212,7 @@ internal class DataGridFilterIndicator : IconButton
                 Header      = item.Text,
                 FilterValue = item.Value
             };
-            // BindUtils.RelayBind(this, ToggleTypeProperty, treeItem, TreeViewItem.ToggleTypeProperty);
+  
             treeItems.Add(treeItem);
             if (item.Children.Count > 0)
             {

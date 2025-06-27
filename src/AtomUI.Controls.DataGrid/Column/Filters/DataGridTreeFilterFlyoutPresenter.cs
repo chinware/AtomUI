@@ -4,7 +4,7 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-internal class DataGridTreeFilterFlyoutPresenter : TreeView
+internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
 {
     private Button? _resetButton;
     private Button? _okButton;
