@@ -7,12 +7,14 @@ namespace AtomUI.Controls.Themes;
 
 public class TreeViewItemTheme : ControlTheme
 {
-    public static readonly MarginMultiplierConverter MarginMultiplierConverter = new MarginMultiplierConverter()
+    public static readonly MarginMultiplierConverter MarginMultiplierConverter = new ()
     {
         Left   = true,
         Indent = 16
     };
 
+    public static readonly TreeViewItemRadioVisible TreeViewItemRadioVisible = new ();
+    
     public static readonly StringToTextBlockConverter StringToTextBlockConverter = new()
     {
         VerticalAlignment = VerticalAlignment.Center

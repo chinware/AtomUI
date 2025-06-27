@@ -29,7 +29,7 @@
                                        HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
                                        Grid.Column="1"
-                                       IsChecked="{TemplateBinding IsChecked}"
+                                       IsChecked="{TemplateBinding IsChecked, Mode=TwoWay}"
                                        IsEnabled="{TemplateBinding IsEnabled}"
                                        IsVisible="False" />
                         <atom:RadioButton Name="{x:Static atom:TreeViewItemThemeConstants.ToggleRadioPart}"
@@ -37,8 +37,15 @@
                                           VerticalAlignment="Center"
                                           Grid.Column="1"
                                           IsChecked="{TemplateBinding IsChecked}"
-                                          GroupName="{TemplateBinding GroupName}"
-                                          IsVisible="False" />
+                                          GroupName="{TemplateBinding GroupName}">
+                            <atom:RadioButton.IsVisible>
+                                <MultiBinding
+                                    Converter="{x:Static atom:TreeViewItemTheme.TreeViewItemRadioVisible}">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ToggleType" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ItemCount" />
+                                </MultiBinding>
+                            </atom:RadioButton.IsVisible>
+                        </atom:RadioButton>
                         
                         <atom:IconPresenter Name="{x:Static atom:TreeViewItemThemeConstants.IconPresenterPart}"
                                             Grid.Column="2"
@@ -114,12 +121,6 @@
         
         <Style Selector="^[ToggleType=CheckBox]">
             <Style Selector="^ /template/ atom|CheckBox#PART_ToggleCheckbox">
-                <Setter Property="IsVisible" Value="True" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[ToggleType=Radio]">
-            <Style Selector="^ /template/ atom|RadioButton#PART_ToggleRadio">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>

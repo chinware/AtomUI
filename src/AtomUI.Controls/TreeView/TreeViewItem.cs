@@ -434,26 +434,6 @@ public class TreeViewItem : AvaloniaTreeItem,
             {
                 CalculateEffectiveBgRect();
             }
-            else if (change.Property == IsCheckedProperty)
-            {
-                // 我们处理某个节点的点击只有 true 或者 false
-                if (IsChecked.HasValue)
-                {
-                    if (IsChecked.Value)
-                    {
-                        OwnerTreeView?.CheckedSubTree(this);
-                    }
-                    else
-                    {
-                        OwnerTreeView?.UnCheckedSubTree(this);
-                    }
-                }
-
-                if (IsChecked != true)
-                {
-                    OwnerTreeView?.DefaultCheckedItems.Remove(this);
-                }
-            }
             else if (change.Property == IsExpandedProperty)
             {
                 HandleExpandedChanged();
@@ -518,10 +498,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         var newValue = e.GetNewValue<bool?>();
         PseudoClasses.Set(StdPseudoClass.Checked, newValue == true);
 
-        if (newValue == true)
-        {
-            (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnCheckedChanged(this);
-        }
+        (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnCheckedChanged(this);
     }
 
     private void ExpandChildren()
@@ -885,12 +862,17 @@ public class TreeViewItem : AvaloniaTreeItem,
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
-        var bounds = new Rect(new Point(0, 0), _headerPresenter?.DesiredSize ?? default);
-        var point  = e.GetPosition(_headerPresenter);
-        if (bounds.Contains(point))
+        if (PointInHeaderBounds(e))
         {
             NotifyHeaderClick();
         }
+    }
+
+    internal bool PointInHeaderBounds(PointerReleasedEventArgs e)
+    {
+        var bounds = new Rect(new Point(0, 0), _headerPresenter?.DesiredSize ?? default);
+        var point  = e.GetPosition(_headerPresenter);
+        return bounds.Contains(point);
     }
 
     protected virtual void NotifyHeaderClick()

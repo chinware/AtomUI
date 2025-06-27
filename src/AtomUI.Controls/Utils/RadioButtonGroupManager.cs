@@ -100,13 +100,6 @@ internal class RadioButtonGroupManager
                     {
                         _registeredGroups.Remove(groupName);
                     }
-
-                    var parent = radioButton.LogicalParent as IRadioButton;
-                    while (parent is not null && parent.GroupName == groupName)
-                    {
-                        parent.IsChecked = true;
-                        parent = parent.LogicalParent as IRadioButton;
-                    }
                 }
             }
             else

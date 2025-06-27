@@ -157,16 +157,27 @@ internal class DataGridFilterIndicator : IconButton
             });
             BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, treeFlyout,
                 MotionAwareControlProperty.IsMotionEnabledProperty);
-            var selectAllTreeItem = new DataGridFilterTreeItem();
-            LanguageResourceBinder.CreateBinding(selectAllTreeItem, DataGridFilterTreeItem.HeaderProperty,
-                DataGridLangResourceKey.SelectAllFilterItems);
             var treeItems         = BuildTreeItems(OwningColumn.Filters.ToList());
-            foreach (var menuItem in treeItems)
+            if (FilterMultiple)
             {
-                selectAllTreeItem.Items.Add(menuItem);
+                var selectAllTreeItem = new DataGridFilterTreeItem();
+                LanguageResourceBinder.CreateBinding(selectAllTreeItem, DataGridFilterTreeItem.HeaderProperty,
+                    DataGridLangResourceKey.SelectAllFilterItems);
+              
+                foreach (var treeItem in treeItems)
+                {
+                    selectAllTreeItem.Items.Add(treeItem);
+                }
+                treeFlyout.Items.Add(selectAllTreeItem);
             }
-
-            treeFlyout.Items.Add(selectAllTreeItem);
+            else
+            {
+                foreach (var treeItem in treeItems)
+                {
+                    treeFlyout.Items.Add(treeItem);
+                }
+            }
+            
             Flyout                    = treeFlyout;
             _flyoutStateHelper.Flyout = treeFlyout;
         }
@@ -210,7 +221,8 @@ internal class DataGridFilterIndicator : IconButton
             var treeItem = new DataGridFilterTreeItem()
             {
                 Header      = item.Text,
-                FilterValue = item.Value
+                FilterValue = item.Value,
+                GroupName   = _radioCheckGroupName,
             };
   
             treeItems.Add(treeItem);

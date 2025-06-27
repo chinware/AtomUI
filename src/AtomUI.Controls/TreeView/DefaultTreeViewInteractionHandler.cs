@@ -115,34 +115,36 @@ public class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
     {
         var item = GetTreeViewItemCore(e.Source as Control);
 
-        if (e.InitialPressMouseButton == MouseButton.Left && item?.ItemCount == 0)
+        if (e.InitialPressMouseButton == MouseButton.Left && item != null)
         {
-            Click(item);
-            e.Handled = true;
+            if (item.PointInHeaderBounds(e))
+            {
+                Click(item);
+                e.Handled = true;
+            }
         }
     }
 
     internal void Click(TreeViewItem item)
     {
-        if (item.ItemCount == 0)
+        if (item.ToggleType == ItemToggleType.CheckBox)
         {
-            if (item.ToggleType == ItemToggleType.CheckBox)
+            if (item.IsChecked == true)
             {
-                if (item.IsChecked != true)
-                {
-                    item.IsChecked = false;
-                }
-                else
-                {
-                    item.IsChecked = true;
-                }
+                item.IsChecked = false;
             }
-            else if (item.ToggleType == ItemToggleType.Radio && item.IsChecked != true)
+            else
             {
                 item.IsChecked = true;
             }
         }
-
+        else if (item.ToggleType == ItemToggleType.Radio)
+        {
+            if (item.ItemCount == 0)
+            {
+                item.IsChecked = true;
+            }
+        }
         item.RaiseClick();
     }
 
@@ -175,9 +177,27 @@ public class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
 
     internal void OnCheckedChanged(TreeViewItem item)
     {
-        if (item is IRadioButton radioButton)
+        if (TreeView?.ToggleType == ItemToggleType.Radio && item is IRadioButton radioButton)
         {
             _groupManager?.OnCheckedChanged(radioButton);
+        }
+        else if (TreeView?.ToggleType == ItemToggleType.CheckBox)
+        {
+            if (item.IsChecked.HasValue)
+            {
+                if (item.IsChecked.Value)
+                {
+                    TreeView.CheckedSubTree(item);
+                }
+                else
+                {
+                    TreeView.UnCheckedSubTree(item);
+                }
+            }
+        }
+        if (item.IsChecked != true)
+        {
+            TreeView?.DefaultCheckedItems.Remove(item);
         }
     }
 
