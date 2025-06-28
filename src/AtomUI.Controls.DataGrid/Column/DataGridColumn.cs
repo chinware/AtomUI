@@ -248,9 +248,17 @@ public abstract partial class DataGridColumn : AvaloniaObject
 
     public bool CanUserFilter
     {
-        get => CanUserResizeInternal ??
-               OwningGrid?.CanUserFilterColumns ??
-               DataGrid.DefaultCanUserResizeColumns;
+        get
+        {
+            var canUserFilter = CanUserResizeInternal ??
+                OwningGrid?.CanUserFilterColumns ??
+                DataGrid.DefaultCanUserFilterColumns;
+            if (HasHeaderCell)
+            {
+                HeaderCell.CanUserFilter = canUserFilter;
+            }
+            return canUserFilter;
+        }
         set
         {
             CanUserFilterInternal = value;

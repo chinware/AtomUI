@@ -201,7 +201,6 @@ internal partial class DataGridColumnHeader : ContentControl
     private bool _desiredSeparatorVisibility = true;
     private StackPanel? _indicatorsLayout;
     private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
-    private DataGridFilterIndicator? _filterIndicator;
     private Border? _frame;
     
     static DataGridColumnHeader()
@@ -863,6 +862,8 @@ internal partial class DataGridColumnHeader : ContentControl
         {
             _filterIndicator.OwningColumn = OwningColumn;
         }
+
+        ConfigureFilterIndicator();
         if (_indicatorsLayout != null)
         {
             _indicatorsLayout.Children.CollectionChanged += HandleIndicatorLayoutChildrenChanged;

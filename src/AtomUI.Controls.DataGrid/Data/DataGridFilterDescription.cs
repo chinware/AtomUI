@@ -8,8 +8,7 @@ public class DataGridFilterDescription
     public string? PropertyPath { get; set; }
     public bool HasPropertyPath => !string.IsNullOrEmpty(PropertyPath);
     public StringComparison ComparisonType { get; } = StringComparison.InvariantCultureIgnoreCase;
-    public bool IsEnabled { get; set; }
-    public int ColumnIndex { get; set; }
+    
     public List<object> FilterConditions { get; set; } = new List<object>();
     public Func<object, object, bool>? Filter { get; set; }
     

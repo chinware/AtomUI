@@ -119,6 +119,11 @@ public partial class DataGrid
     {
         Sorting?.Invoke(this, e);
     }
+
+    protected internal virtual void HandleColumnFiltering(DataGridColumnEventArgs e)
+    {
+        Filtering?.Invoke(this, e);
+    }
     
     /// <summary>
     /// Adjusts the widths of all columns with DisplayIndex >= displayIndex such that the total

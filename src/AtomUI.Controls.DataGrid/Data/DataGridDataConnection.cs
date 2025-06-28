@@ -101,6 +101,22 @@ internal class DataGridDataConnection
             return CollectionView.CanSort;
         }
     }
+
+    /// <summary>
+    /// True if the collection view says it can filter.
+    /// </summary>
+    public bool AllowFilter
+    {
+        get
+        {
+            if (CollectionView == null ||
+                (EditableCollectionView != null && (EditableCollectionView.IsAddingNew || EditableCollectionView.IsEditingItem)))
+            {
+                return false;
+            }
+            return CollectionView.CanFilter;
+        }
+    }
     
     public bool CommittingEdit { get; private set; }
     

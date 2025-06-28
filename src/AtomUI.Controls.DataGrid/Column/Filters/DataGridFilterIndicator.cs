@@ -26,6 +26,8 @@ internal class DataGridFilterIndicator : IconButton
     
     public static readonly StyledProperty<bool> FilterMultipleProperty =
         AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(FilterMultiple));
+    
+    public event EventHandler<DataGridColumnFilterEventArgs>? FilterRequest;
 
     public bool IsFilterActivated
     {
@@ -242,6 +244,11 @@ internal class DataGridFilterIndicator : IconButton
 
     private void HandleFilterValuesSelected(object? sender, DataGridFilterValuesSelectedEventArgs args)
     {
+        Debug.Assert(OwningColumn != null);
+        if (OwningColumn.FilterOnClose || args.IsConfirmed)
+        {
+            FilterRequest?.Invoke(this, new DataGridColumnFilterEventArgs(OwningColumn, args.Values));
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

@@ -718,6 +718,11 @@ public partial class DataGrid : TemplatedControl,
     /// Occurs when the <see cref="DataGridColumn"/> sorting request is triggered.
     /// </summary>
     public event EventHandler<DataGridColumnEventArgs>? Sorting;
+    
+    /// <summary>
+    /// Occurs when the <see cref="DataGridColumn"/> filtering request is triggered.
+    /// </summary>
+    public event EventHandler<DataGridColumnEventArgs>? Filtering;
 
     /// <summary>
     /// Occurs when a <see cref="T:AtomUI.Controls.DataGridRow" />
