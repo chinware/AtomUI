@@ -37,6 +37,10 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     /// <returns>A collection of values that describe how the items in the collection are sorted in the view.</returns>
     DataGridSortDescriptionCollection? SortDescriptions { get; }
     
+    /// <summary>Gets a collection of DataGridFilterDescription instances that describe how the items in the collection are filtered in the view.</summary>
+    /// <returns>A collection of values that describe how the items in the collection are filtered in the view.</returns>
+    DataGridFilterDescriptionCollection? FilterDescriptions { get; }
+    
     /// <summary>Gets a value that indicates whether this view supports sorting by way of the <see cref="P:System.ComponentModel.ICollectionView.SortDescriptions" /> property.</summary>
     /// <returns>true if this view supports sorting; otherwise, false.</returns>
     bool CanSort { get; }

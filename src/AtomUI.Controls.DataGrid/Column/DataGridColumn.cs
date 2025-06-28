@@ -409,6 +409,12 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// </summary>
     public IComparer? CustomSortComparer { get; set; }
     
+        
+    /// <summary>
+    /// Holds the name of the member to use for filter, if not using the default.
+    /// </summary>
+    public string? FilterMemberPath { get; set; }
+    
     /// <summary>
     /// Filter menu config
     /// </summary>

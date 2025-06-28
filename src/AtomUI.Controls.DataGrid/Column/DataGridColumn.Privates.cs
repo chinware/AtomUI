@@ -523,4 +523,38 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
 
         return result;
     }
+    
+    internal DataGridFilterDescription? GetFilterDescription()
+    {
+        if (OwningGrid != null && OwningGrid.DataConnection.FilterDescriptions != null)
+        {
+            var propertyName = GetFilterPropertyName();
+            return OwningGrid.DataConnection.FilterDescriptions.FirstOrDefault(s =>
+                s.HasPropertyPath && s.PropertyPath == propertyName);
+        }
+
+        return null;
+    }
+
+    internal string? GetFilterPropertyName()
+    {
+        string? result = FilterMemberPath;
+
+        if (string.IsNullOrEmpty(result))
+        {
+            if (this is DataGridBoundColumn boundColumn)
+            {
+                if (boundColumn.Binding is Binding binding)
+                {
+                    result = binding.Path;
+                }
+                else if (boundColumn.Binding is CompiledBindingExtension compiledBinding)
+                {
+                    result = compiledBinding.Path.ToString();
+                }
+            }
+        }
+
+        return result;
+    }
 }

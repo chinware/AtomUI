@@ -144,6 +144,18 @@ internal class DataGridDataConnection
             return null;
         }
     }
+
+    public DataGridFilterDescriptionCollection? FilterDescriptions
+    {
+        get
+        {
+            if (CollectionView != null && CollectionView.CanFilter)
+            {
+                return CollectionView.FilterDescriptions;
+            }
+            return null;
+        }
+    }
     
     /// <summary>Try get number of DataSource items.</summary>
     /// <param name="allowSlow">When "allowSlow" is false, method will not use Linq.Count() method and will return 0 or 1 instead.</param>
@@ -475,6 +487,11 @@ internal class DataGridDataConnection
             notifyingDataSource.CollectionChanged -= HandleDataSourceCollectionChanged;
         }
 
+        if (FilterDescriptions != null)
+        {
+            FilterDescriptions.CollectionChanged -= HandleFilterDescriptionsCollectionChanged;
+        }
+        
         if (SortDescriptions != null)
         {
             SortDescriptions.CollectionChanged -= HandleSortDescriptionsCollectionChanged;
@@ -499,6 +516,11 @@ internal class DataGridDataConnection
         if (SortDescriptions != null)
         {
             SortDescriptions.CollectionChanged += HandleSortDescriptionsCollectionChanged;
+        }
+
+        if (FilterDescriptions != null)
+        {
+            FilterDescriptions.CollectionChanged += HandleFilterDescriptionsCollectionChanged;
         }
 
         if (CollectionView != null)
@@ -572,6 +594,20 @@ internal class DataGridDataConnection
     }
 
     private void HandleSortDescriptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_owner.ColumnsItemsInternal.Count == 0)
+        {
+            return;
+        }
+        
+        // refresh sort description
+        foreach (DataGridColumn column in _owner.ColumnsItemsInternal)
+        {
+            column.HeaderCell.UpdatePseudoClasses();
+        }
+    }
+
+    private void HandleFilterDescriptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (_owner.ColumnsItemsInternal.Count == 0)
         {
