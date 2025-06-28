@@ -140,8 +140,9 @@ internal class DataGridFilterIndicator : IconButton
                 menuFlyout.Items.Add(menuItem);
             }
 
-            Flyout                    = menuFlyout;
-            _flyoutStateHelper.Flyout = menuFlyout;
+            Flyout                          =  menuFlyout;
+            _flyoutStateHelper.Flyout       =  menuFlyout;
+            menuFlyout.FilterValuesSelected += HandleFilterValuesSelected;
         }
         else if (FilterMode == DataGridFilterMode.Tree && Flyout is not DataGridTreeFilterFlyout)
         {
@@ -180,6 +181,7 @@ internal class DataGridFilterIndicator : IconButton
             
             Flyout                    = treeFlyout;
             _flyoutStateHelper.Flyout = treeFlyout;
+            treeFlyout.FilterValuesSelected += HandleFilterValuesSelected;
         }
     }
 
@@ -236,6 +238,10 @@ internal class DataGridFilterIndicator : IconButton
         }
 
         return treeItems;
+    }
+
+    private void HandleFilterValuesSelected(object? sender, DataGridFilterValuesSelectedEventArgs args)
+    {
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

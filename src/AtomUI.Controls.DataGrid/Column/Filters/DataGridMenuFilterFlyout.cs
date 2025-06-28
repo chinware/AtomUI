@@ -47,11 +47,6 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
         {
             selectedItems = presenter.GetFilterValues();
         }
-
-        foreach (string item in selectedItems)
-        {
-            Console.WriteLine(item);
-        }
         NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(IsActiveShutdown, selectedItems));
     }
 

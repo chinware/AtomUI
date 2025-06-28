@@ -57,12 +57,7 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
         {
             selectedItems = presenter.GetFilterValues();
         }
-
-        foreach (string item in selectedItems)
-        {
-            Console.WriteLine(item);
-        }
-
+        
         NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(IsActiveShutdown, selectedItems));
     }
 

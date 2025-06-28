@@ -275,7 +275,8 @@ public partial class DataGrid
     // set as the rows were scrolled off.
     private double _verticalOffset;
     private byte _verticalScrollChangesIgnored;
-
+    private DataGridDefaultFilter? _defaultFilter;
+    
     private void FlushCurrentCellChanged()
     {
         if (_makeFirstDisplayedCellCurrentCellPending)
@@ -1266,6 +1267,14 @@ public partial class DataGrid
                 newCollectionView = newItemsSource is not null
                     ? DataGridDataConnection.CreateView(newItemsSource)
                     : default;
+            }
+
+            Debug.Assert(newCollectionView != null);
+            
+            if (newCollectionView.Filter == null)
+            {
+                _defaultFilter = new DataGridDefaultFilter();
+                newCollectionView.Filter = _defaultFilter;
             }
 
             DataConnection.DataSource = newCollectionView;
