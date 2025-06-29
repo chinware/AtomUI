@@ -3934,7 +3934,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         Debug.Assert(list != null, "Input list to sort should not be null");
 
         IEnumerable<object> seq      = list;
-        IComparer<object>   comparer = new CultureSensitiveComparer(Culture);
         var                 itemType = ItemType;
         Debug.Assert(itemType != null);
 

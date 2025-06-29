@@ -246,11 +246,6 @@ internal partial class DataGridColumnHeader
                         nextDirection = forcedDirection.Value;
                     }
 
-                    if (nextDirection == null || owningGrid.DataConnection.SortDescriptions.Count == 0)
-                    {
-                        owningGrid.DataConnection.SortDescriptions.Clear();
-                    }
-
                     if (nextDirection != null)
                     {
                         newSort = BuildSortDescription(nextDirection);
@@ -274,6 +269,10 @@ internal partial class DataGridColumnHeader
                     else if (newSort != null)
                     {
                         owningGrid.DataConnection.SortDescriptions.Add(newSort);
+                    }
+                    else if (sort != null)
+                    {
+                        owningGrid.DataConnection.SortDescriptions.Remove(sort);
                     }
                 }
             }

@@ -166,7 +166,7 @@ public abstract class DataGridSortDescription
             _cultureSensitiveComparer = new Lazy<CultureSensitiveComparer>(() =>
                 new CultureSensitiveComparer(culture ?? CultureInfo.CurrentCulture));
             _internalComparer = internalComparer;
-            _comparer         = new Lazy<IComparer<object>>(() => Comparer<object>.Create((x, y) => Compare(x, y)));
+            _comparer         = new Lazy<IComparer<object>>(() => Comparer<object>.Create(Compare));
         }
 
         private DataGridPathSortDescription(DataGridPathSortDescription inner, ListSortDirection direction)
@@ -178,7 +178,7 @@ public abstract class DataGridSortDescription
             _internalComparer         = inner._internalComparer;
             _internalComparerTyped    = inner._internalComparerTyped;
 
-            _comparer = new Lazy<IComparer<object>>(() => Comparer<object>.Create((x, y) => Compare(x, y)));
+            _comparer = new Lazy<IComparer<object>>(() => Comparer<object>.Create(Compare));
         }
 
         private object? GetValue(object? o)
@@ -288,18 +288,18 @@ public abstract class DataGridSortDescription
         {
             if (Direction == ListSortDirection.Descending)
             {
-                return seq.OrderByDescending(o => GetValue(o), InternalComparer);
+                return seq.OrderByDescending(GetValue, InternalComparer);
             }
-            return seq.OrderBy(o => GetValue(o), InternalComparer);
+            return seq.OrderBy(GetValue, InternalComparer);
         }
 
         public override IOrderedEnumerable<object> ThenBy(IOrderedEnumerable<object> seq)
         {
             if (Direction == ListSortDirection.Descending)
             {
-                return seq.ThenByDescending(o => GetValue(o), InternalComparer);
+                return seq.ThenByDescending(GetValue, InternalComparer);
             }
-            return seq.ThenBy(o => GetValue(o), InternalComparer);
+            return seq.ThenBy(GetValue, InternalComparer);
         }
 
         public override DataGridSortDescription SwitchSortDirection()
