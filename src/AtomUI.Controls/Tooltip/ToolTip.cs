@@ -72,8 +72,8 @@ public class ToolTip : ContentControl,
         AvaloniaProperty.RegisterAttached<ToolTip, Control, CustomPopupPlacementCallback?>(
             "CustomPopupPlacementCallback");
 
-    public static readonly AttachedProperty<bool> IsCustomHideProperty =
-        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomHide");
+    public static readonly AttachedProperty<bool> IsCustomShowAndHideProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomShowAndHide");
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToolTip>();
@@ -247,14 +247,14 @@ public class ToolTip : ContentControl,
         element.SetValue(CustomPopupPlacementCallbackProperty, value);
     }
 
-    public static bool GetIsCustomHide(Control element)
+    public static bool GetIsCustomShowAndHide(Control element)
     {
-        return element.GetValue(IsCustomHideProperty);
+        return element.GetValue(IsCustomShowAndHideProperty);
     }
 
-    public static void SetIsCustomHide(Control element, bool flag)
+    public static void SetIsCustomShowAndHide(Control element, bool flag)
     {
-        element.SetValue(IsCustomHideProperty, flag);
+        element.SetValue(IsCustomShowAndHideProperty, flag);
     }
 
     #endregion

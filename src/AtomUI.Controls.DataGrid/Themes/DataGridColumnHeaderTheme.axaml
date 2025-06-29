@@ -87,9 +87,9 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
         <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
         <Setter Property="atom:ToolTip.Placement" Value="Top" />
-        <Setter Property="atom:ToolTip.ShowDelay" Value="100" />
+        <Setter Property="atom:ToolTip.ShowDelay" Value="300" />
         <Setter Property="atom:ToolTip.ServiceEnabled" Value="False" />
-        <Setter Property="atom:ToolTip.IsCustomHide" Value="True" />
+        <Setter Property="atom:ToolTip.IsCustomShowAndHide" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         

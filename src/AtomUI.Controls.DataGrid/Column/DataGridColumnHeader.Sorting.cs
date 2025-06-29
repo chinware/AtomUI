@@ -138,13 +138,19 @@ internal partial class DataGridColumnHeader
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);
-        ToolTip.SetIsOpen(this, true);
+        if (CanUserSort)
+        {
+            ToolTip.SetIsOpen(this, true);  
+        }
     }
 
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
-        ToolTip.SetIsOpen(this, false);
+        if (CanUserSort)
+        {
+            ToolTip.SetIsOpen(this, false);  
+        }
     }
 
     internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)

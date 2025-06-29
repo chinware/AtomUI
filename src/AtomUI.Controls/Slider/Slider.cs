@@ -448,7 +448,7 @@ public class Slider : RangeBase,
     {
         if (_graspedThumb is not null)
         {
-            ToolTip.SetIsCustomHide(_graspedThumb, false);
+            ToolTip.SetIsCustomShowAndHide(_graspedThumb, false);
             if (!_graspedThumb.Bounds.Contains(e.GetPosition(SliderTrack)))
             {
                 ToolTip.SetIsOpen(_graspedThumb, false);
@@ -503,7 +503,7 @@ public class Slider : RangeBase,
             MoveToPoint(posOnTrack);
             if (_graspedThumb is not null)
             {
-                ToolTip.SetIsCustomHide(_graspedThumb, true);
+                ToolTip.SetIsCustomShowAndHide(_graspedThumb, true);
             }
 
             IsDragging = true;

@@ -75,7 +75,7 @@ internal sealed class ToolTipService : IDisposable
                 case RawPointerEventType.MiddleButtonDown:
                 case RawPointerEventType.XButton1Down:
                 case RawPointerEventType.XButton2Down:
-                    if (_tipControl is not null && ToolTip.GetIsCustomHide(_tipControl))
+                    if (_tipControl is not null && ToolTip.GetIsCustomShowAndHide(_tipControl))
                     {
                         break;
                     }
@@ -116,7 +116,7 @@ internal sealed class ToolTipService : IDisposable
 
             if (candidateToolTipHost is Control control)
             {
-                if (!ToolTip.GetServiceEnabled(control))
+                if (!ToolTip.GetServiceEnabled(control) || ToolTip.GetIsCustomShowAndHide(control))
                 {
                     return;
                 }
@@ -138,7 +138,7 @@ internal sealed class ToolTipService : IDisposable
             return;
         }
 
-        OnTipControlChanged(_tipControl, newControl);
+        HandleTipControlChanged(_tipControl, newControl);
         _tipControl = newControl;
     }
 
@@ -174,7 +174,7 @@ internal sealed class ToolTipService : IDisposable
         }
     }
 
-    private void OnTipControlChanged(Control? oldValue, Control? newValue)
+    private void HandleTipControlChanged(Control? oldValue, Control? newValue)
     {
         StopTimer();
 
@@ -264,7 +264,7 @@ internal sealed class ToolTipService : IDisposable
 
     private void Close(Control control)
     {
-        if (!ToolTip.GetIsCustomHide(control))
+        if (!ToolTip.GetIsCustomShowAndHide(control))
         {
             ToolTip.SetIsOpen(control, false);
         }
