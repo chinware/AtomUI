@@ -72,6 +72,12 @@ public partial class DataGrid : TemplatedControl,
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserFilterColumns), false);
     
     /// <summary>
+    /// If header show next sorter direction tooltip
+    /// </summary>
+    public static readonly StyledProperty<bool> ShowSorterTooltipProperty =
+        AvaloniaProperty.Register<DataGrid, bool>(nameof(ShowSorterTooltip), true);
+    
+    /// <summary>
     /// Identifies the ColumnHeaderHeight dependency property.
     /// </summary>
     public static readonly StyledProperty<double> ColumnHeaderHeightProperty =
@@ -243,6 +249,15 @@ public partial class DataGrid : TemplatedControl,
     {
         get => GetValue(CanUserFilterColumnsProperty);
         set => SetValue(CanUserFilterColumnsProperty, value);
+    }
+    
+    /// <summary>
+    /// If header show next sorter direction tooltip
+    /// </summary>
+    public bool ShowSorterTooltip
+    {
+        get => GetValue(ShowSorterTooltipProperty);
+        set => SetValue(ShowSorterTooltipProperty, value);
     }
     
     /// <summary>

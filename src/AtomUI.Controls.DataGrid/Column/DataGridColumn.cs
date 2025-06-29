@@ -250,9 +250,9 @@ public abstract partial class DataGridColumn : AvaloniaObject
     {
         get
         {
-            var canUserFilter = CanUserResizeInternal ??
-                OwningGrid?.CanUserFilterColumns ??
-                DataGrid.DefaultCanUserFilterColumns;
+            var canUserFilter = CanUserFilterInternal ??
+                                OwningGrid?.CanUserFilterColumns ??
+                                DataGrid.DefaultCanUserFilterColumns;
             if (HasHeaderCell)
             {
                 HeaderCell.CanUserFilter = canUserFilter;
@@ -265,6 +265,30 @@ public abstract partial class DataGridColumn : AvaloniaObject
             if (HasHeaderCell)
             {
                 HeaderCell.CanUserFilter = value;
+            }
+        }
+    }
+
+    public bool ShowSorterTooltip
+    {
+        get
+        {
+            var showSorterTooltip = ShowSorterTooltipInternal ??
+                                    OwningGrid?.ShowSorterTooltip ??
+                                    DataGrid.DefaultShowSorterTooltip;
+            if (HasHeaderCell)
+            {
+                HeaderCell.ShowSorterTooltip = showSorterTooltip;
+            }
+            return showSorterTooltip;
+        }
+        
+        set
+        {
+            ShowSorterTooltipInternal = value;
+            if (HasHeaderCell)
+            {
+                HeaderCell.ShowSorterTooltip = value;
             }
         }
     }

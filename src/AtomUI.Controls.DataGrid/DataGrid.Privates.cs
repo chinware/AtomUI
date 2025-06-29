@@ -30,6 +30,7 @@ public partial class DataGrid
     internal const bool DefaultCanUserResizeColumns = true;
     internal const bool DefaultCanUserSortColumns = false;
     internal const bool DefaultCanUserFilterColumns = false;
+    internal const bool DefaultShowSorterTooltip = false;
 
     #region 内部属性定义
     

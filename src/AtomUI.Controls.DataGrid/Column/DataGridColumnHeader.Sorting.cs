@@ -29,6 +29,12 @@ internal partial class DataGridColumnHeader
     internal static readonly StyledProperty<DataGridSortDirections> SupportedSortDirectionsProperty =
         DataGridColumn.SupportedSortDirectionsProperty.AddOwner<DataGridColumnHeader>();
     
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> ShowSorterTooltipProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(ShowSorterTooltip),
+            o => o.ShowSorterTooltip,
+            (o, v) => o.ShowSorterTooltip = v);
+    
     private bool _canUserSort = false;
     internal bool CanUserSort
     {
@@ -49,6 +55,13 @@ internal partial class DataGridColumnHeader
         set => SetValue(SupportedSortDirectionsProperty, value);
     }
     
+    private bool _showSorterTooltip;
+    internal bool ShowSorterTooltip
+    {
+        get => _showSorterTooltip;
+        set => SetAndRaise(ShowSorterTooltipProperty, ref _showSorterTooltip, value);
+    }
+    
     internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
     {
         Debug.Assert(OwningGrid != null);
@@ -58,12 +71,12 @@ internal partial class DataGridColumnHeader
         }
         if (OwningGrid.CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
         {
-            Avalonia.Threading.Dispatcher.UIThread.Post(() => ProcessSort(keyModifiers, forcedDirection));
+            Avalonia.Threading.Dispatcher.UIThread.Post(() => ProcessSort1(keyModifiers, forcedDirection));
         }
     }
-    
+
     //TODO GroupSorting
-    internal void ProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
+    internal void ProcessSort1(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
     {
         // if we can sort:
         //  - AllowUserToSortColumns and CanSort are true, and
@@ -75,85 +88,135 @@ internal partial class DataGridColumnHeader
             OwningColumn != OwningGrid.ColumnsInternal.FillerColumn &&
             (OwningColumn.CanUserSort || OwningGrid.CanUserSortColumns))
         {
-            
+
             var ea = new DataGridColumnEventArgs(OwningColumn);
             OwningGrid.HandleColumnSorting(ea);
-
-            if (!ea.Handled && OwningGrid.DataConnection.AllowSort && OwningGrid.DataConnection.SortDescriptions != null)
+            if (!ea.Handled && OwningGrid.DataConnection.AllowSort &&
+                OwningGrid.DataConnection.SortDescriptions != null)
             {
                 // - DataConnection.AllowSort is true, and
                 // - SortDescriptionsCollection exists, and
                 // - the column's data type is comparable
 
                 DataGrid                 owningGrid = OwningGrid;
-                DataGridSortDescription? newSort;
+                DataGridSortDescription? newSort = null;
 
                 KeyboardHelper.GetMetaKeyState(this, keyModifiers, out bool ctrl, out bool shift);
-
                 DataGridSortDescription? sort           = OwningColumn.GetSortDescription();
                 IDataGridCollectionView? collectionView = owningGrid.DataConnection.CollectionView;
                 Debug.Assert(collectionView != null);
+                var supportedSortDirections = OwningColumn.SupportedSortDirections;
 
                 using (collectionView.DeferRefresh())
                 {
-                    // if shift is held down, we multi-sort, therefore if it isn't, we'll clear the sorts beforehand
-                    if (!shift || owningGrid.DataConnection.SortDescriptions.Count == 0)
+                    // 获取下一个方向
+                    ListSortDirection? nextDirection = null;
+                    
+                    if (sort != null)
+                    {
+                        var currentDirection = sort.Direction;
+                        if ((supportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
+                        {
+                            if (currentDirection == ListSortDirection.Ascending)
+                            {
+                                nextDirection =  ListSortDirection.Descending;
+                            } 
+                            else if (currentDirection == ListSortDirection.Descending)
+                            {
+                                nextDirection = null;
+                            }
+                        }
+                        else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==  DataGridSortDirections.Ascending)
+                        {
+                            nextDirection = null;
+                        }
+                        else if ((supportedSortDirections & DataGridSortDirections.Descending) ==
+                                 DataGridSortDirections.Descending)
+                        {
+                            nextDirection = null;
+                        }
+                    }
+                    else
+                    {
+                        if ((supportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
+                        {
+                            nextDirection =  ListSortDirection.Ascending;
+                        }
+                        else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==  DataGridSortDirections.Ascending)
+                        {
+                            nextDirection = ListSortDirection.Ascending;
+                        }
+                        else if ((supportedSortDirections & DataGridSortDirections.Descending) ==
+                                 DataGridSortDirections.Descending)
+                        {
+                            nextDirection = ListSortDirection.Descending;
+                        }
+                    }
+
+                    if (forcedDirection != null)
+                    {
+                        nextDirection = forcedDirection.Value;
+                    }
+
+                    if (nextDirection == null || owningGrid.DataConnection.SortDescriptions.Count == 0)
                     {
                         owningGrid.DataConnection.SortDescriptions.Clear();
                     }
-                    // if ctrl is held down, we only clear the sort directions
-                    if (!ctrl)
-                    {
-                        if (sort != null)
-                        {
-                            if (forcedDirection == null || sort.Direction != forcedDirection)
-                            {
-                                newSort = sort.SwitchSortDirection();
-                            }
-                            else
-                            {
-                                newSort = sort;
-                            }
 
-                            // changing direction should not affect sort order, so we replace this column's
-                            // sort description instead of just adding it to the end of the collection
-                            int oldIndex = owningGrid.DataConnection.SortDescriptions.IndexOf(sort);
-                            if (oldIndex >= 0)
-                            {
-                                owningGrid.DataConnection.SortDescriptions.Remove(sort);
-                                owningGrid.DataConnection.SortDescriptions.Insert(oldIndex, newSort);
-                            }
-                            else
-                            {
-                                owningGrid.DataConnection.SortDescriptions.Add(newSort);
-                            }
-                        }
-                        else if (OwningColumn.CustomSortComparer != null)
+                    if (nextDirection != null)
+                    {
+                        newSort = BuildSortDescription(nextDirection);
+                    }
+
+                    if (sort != null && newSort != null)
+                    {
+                        // changing direction should not affect sort order, so we replace this column's
+                        // sort description instead of just adding it to the end of the collection
+                        int oldIndex = owningGrid.DataConnection.SortDescriptions.IndexOf(sort);
+                        if (oldIndex >= 0)
                         {
-                            newSort = forcedDirection != null ?
-                                DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer, forcedDirection.Value) :
-                                DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer);
-                            owningGrid.DataConnection.SortDescriptions.Add(newSort);
+                            owningGrid.DataConnection.SortDescriptions.Remove(sort);
+                            owningGrid.DataConnection.SortDescriptions.Insert(oldIndex, newSort);
                         }
                         else
                         {
-                            string? propertyName = OwningColumn.GetSortPropertyName();
-                            // no-opt if we couldn't find a property to sort on
-                            if (string.IsNullOrEmpty(propertyName))
-                            {
-                                return;
-                            }
-
-                            newSort = DataGridSortDescription.FromPath(propertyName, culture: collectionView.Culture);
-                            if (forcedDirection != null && newSort.Direction != forcedDirection)
-                            {
-                                newSort = newSort.SwitchSortDirection();
-                            }
                             owningGrid.DataConnection.SortDescriptions.Add(newSort);
                         }
+                    }
+                    else if (newSort != null)
+                    {
+                        owningGrid.DataConnection.SortDescriptions.Add(newSort);
                     }
                 }
             }
         }
+    }
+
+    private DataGridSortDescription? BuildSortDescription(ListSortDirection? direction)
+    {
+        Debug.Assert(OwningGrid != null);
+        Debug.Assert(OwningColumn != null);
+        DataGrid                 owningGrid     = OwningGrid;
+        IDataGridCollectionView? collectionView = owningGrid.DataConnection.CollectionView;
+        Debug.Assert(collectionView != null);
+        if (OwningColumn.CustomSortComparer != null)
+        {
+            return direction != null ?
+                DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer, direction.Value) :
+                DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer);
+        }
+        string? propertyName = OwningColumn.GetSortPropertyName();
+        // no-opt if we couldn't find a property to sort on
+        if (string.IsNullOrEmpty(propertyName))
+        {
+            return null;
+        }
+
+        var newSort = DataGridSortDescription.FromPath(propertyName, culture: collectionView.Culture);
+        if (direction != null && newSort.Direction != direction)
+        {
+            newSort = newSort.SwitchSortDirection();
+        }
+        return newSort;
     }
 }
