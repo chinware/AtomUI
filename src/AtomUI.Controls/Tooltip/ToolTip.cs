@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Utils;
@@ -348,7 +347,8 @@ public class ToolTip : ContentControl,
             {
                 WindowManagerAddShadowHint     = false,
                 IsLightDismissEnabled          = false,
-                OverlayDismissEventPassThrough = false
+                OverlayDismissEventPassThrough = false,
+                IsDetectMouseClickEnabled      = false
             };
             _popup.Child                       = this;
             _popup.TakesFocusFromNativeControl = false;

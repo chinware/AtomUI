@@ -86,8 +86,16 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderTextColor}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
         <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
+        <Setter Property="atom:ToolTip.Placement" Value="Top" />
+        <Setter Property="atom:ToolTip.ShowDelay" Value="100" />
+        <Setter Property="atom:ToolTip.ServiceEnabled" Value="False" />
+        <Setter Property="atom:ToolTip.IsCustomHide" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        
+        <Style Selector="^[ShowSorterTooltip=True]">
+            <Setter Property="atom:ToolTip.ServiceEnabled" Value="True" />
+        </Style>
 
         <Style Selector="^ /template/ Border#PART_Frame">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />

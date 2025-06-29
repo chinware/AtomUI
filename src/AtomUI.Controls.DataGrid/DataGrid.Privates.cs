@@ -1348,8 +1348,9 @@ public partial class DataGrid
                 column.HeaderCell.IsMiddleVisible = true;
             }
 
-            column.HeaderCell.CanUserSort   = column.CanUserSort;
-            column.HeaderCell.CanUserFilter = column.CanUserFilter;
+            column.HeaderCell.CanUserSort       = column.CanUserSort;
+            column.HeaderCell.CanUserFilter     = column.CanUserFilter;
+            column.HeaderCell.ShowSorterTooltip = column.ShowSorterTooltip;
         }
         PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !visibleColumns.Any());
         PseudoClasses.Set(DataGridPseudoClass.EmptyRows, !DataConnection.Any());

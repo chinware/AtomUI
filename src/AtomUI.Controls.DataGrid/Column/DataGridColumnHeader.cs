@@ -881,6 +881,8 @@ internal partial class DataGridColumnHeader : ContentControl
                 ConfigureTransitions();
             }
         }
+
+        NotifyPropertyChangedForSorting(change);
     }
 
     private void HandleIndicatorLayoutChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)

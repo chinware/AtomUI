@@ -6,7 +6,9 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
+using AtomUI.Controls.DataGridLang;
 using AtomUI.Controls.Utils;
+using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Input;
 
@@ -61,7 +63,90 @@ internal partial class DataGridColumnHeader
         get => _showSorterTooltip;
         set => SetAndRaise(ShowSorterTooltipProperty, ref _showSorterTooltip, value);
     }
-    
+
+    private IDisposable? _showSorterTooltipDisposable;
+
+    private void NotifyPropertyChangedForSorting(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.Property == ShowSorterTooltipProperty || change.Property == CurrentSortingStateProperty)
+        {
+            ConfigureShowSorterTooltip();
+        }
+    }
+
+    private void ConfigureShowSorterTooltip()
+    {
+        if (!ShowSorterTooltip || SupportedSortDirections == DataGridSortDirections.None)
+        {
+            return;
+        }
+        ListSortDirection? nextDirection = null;
+        if (CurrentSortingState != null)
+        {
+            if ((SupportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
+            {
+                if (CurrentSortingState == ListSortDirection.Ascending)
+                {
+                    nextDirection =  ListSortDirection.Descending;
+                } 
+                else if (CurrentSortingState == ListSortDirection.Descending)
+                {
+                    nextDirection = null;
+                }
+            }
+            else if ((SupportedSortDirections & DataGridSortDirections.Ascending) ==  DataGridSortDirections.Ascending)
+            {
+                nextDirection = null;
+            }
+            else if ((SupportedSortDirections & DataGridSortDirections.Descending) ==
+                     DataGridSortDirections.Descending)
+            {
+                nextDirection = null;
+            }
+        }
+        else
+        {
+            if ((SupportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
+            {
+                nextDirection =  ListSortDirection.Ascending;
+            }
+            else if ((SupportedSortDirections & DataGridSortDirections.Ascending) ==  DataGridSortDirections.Ascending)
+            {
+                nextDirection = ListSortDirection.Ascending;
+            }
+            else if ((SupportedSortDirections & DataGridSortDirections.Descending) ==
+                     DataGridSortDirections.Descending)
+            {
+                nextDirection = ListSortDirection.Descending;
+            }
+        }
+        _showSorterTooltipDisposable?.Dispose();
+        if (nextDirection == null)
+        {
+            _showSorterTooltipDisposable = LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.CancelTooltip);
+        }
+        else if (nextDirection == ListSortDirection.Ascending)
+        {
+            _showSorterTooltipDisposable = LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.AscendTooltip);
+        }
+        else if (nextDirection == ListSortDirection.Descending)
+        {
+            _showSorterTooltipDisposable = LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.DescendTooltip);
+        }
+    }
+
+    protected override void OnPointerEntered(PointerEventArgs e)
+    {
+        base.OnPointerEntered(e);
+        ToolTip.SetIsOpen(this, true);
+    }
+
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        ToolTip.SetIsOpen(this, false);
+    }
+
     internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
     {
         Debug.Assert(OwningGrid != null);
@@ -71,12 +156,12 @@ internal partial class DataGridColumnHeader
         }
         if (OwningGrid.CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
         {
-            Avalonia.Threading.Dispatcher.UIThread.Post(() => ProcessSort1(keyModifiers, forcedDirection));
+            Avalonia.Threading.Dispatcher.UIThread.Post(() => ProcessSort(keyModifiers, forcedDirection));
         }
     }
 
     //TODO GroupSorting
-    internal void ProcessSort1(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
+    internal void ProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)
     {
         // if we can sort:
         //  - AllowUserToSortColumns and CanSort are true, and
@@ -111,7 +196,10 @@ internal partial class DataGridColumnHeader
                 {
                     // 获取下一个方向
                     ListSortDirection? nextDirection = null;
-                    
+                    if (!shift || owningGrid.DataConnection.SortDescriptions.Count == 0)
+                    {
+                        owningGrid.DataConnection.SortDescriptions.Clear();
+                    }
                     if (sort != null)
                     {
                         var currentDirection = sort.Direction;

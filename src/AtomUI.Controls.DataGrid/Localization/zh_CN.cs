@@ -7,4 +7,7 @@ namespace AtomUI.Controls.DataGridLang;
 internal class zh_CN : AbstractLanguageProvider
 {
     public const string SelectAllFilterItems = "选择所有";
+    public const string AscendTooltip = "点击升序";
+    public const string DescendTooltip = "点击降序";
+    public const string CancelTooltip = "取消排序";
 }

@@ -7,4 +7,7 @@ namespace AtomUI.Controls.DataGridLang;
 internal class en_US : AbstractLanguageProvider
 {
     public const string SelectAllFilterItems = "Select all items";
+    public const string AscendTooltip = "Click to sort ascending";
+    public const string DescendTooltip = "Click to sort descending";
+    public const string CancelTooltip = "Click to cancel sorting";
 }
