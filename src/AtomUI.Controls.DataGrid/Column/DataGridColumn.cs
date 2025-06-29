@@ -431,7 +431,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <summary>
     /// Custom filter, the first parameter is the filter condition, the second parameter is the data record
     /// </summary>
-    public Func<object, object, bool> OnFilter { get; set; }
+    public Func<object, object, bool>? OnFilter { get; set; }
     
     /// <summary>
     /// Whether multiple filters can be selected
@@ -519,7 +519,6 @@ public abstract partial class DataGridColumn : AvaloniaObject
         _displayIndexWithFiller         = -1;
         IsInitialDesiredWidthDetermined = false;
         InheritsWidth                   = true;
-        OnFilter                        = (value, record) => true;
     }
 
     protected virtual void NotifyOwningGridAttached(DataGrid? owningGrid)

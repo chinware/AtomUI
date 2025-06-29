@@ -71,7 +71,7 @@ internal partial class DataGridColumnHeader
                         // 比较一下值，如果过滤的值不相等就重新添加
                         var oldFilterValues = filter.FilterConditions.ToHashSet();
                         var newFilterValues = filterValues.ToHashSet();
-                        if (!oldFilterValues.SetEquals(newFilterValues))
+                        if (newFilterValues.Count > 0 && !oldFilterValues.SetEquals(newFilterValues))
                         {
                             newFilter = new DataGridFilterDescription()
                             {
@@ -90,8 +90,12 @@ internal partial class DataGridColumnHeader
                                 owningGrid.DataConnection.FilterDescriptions.Add(newFilter);
                             }
                         }
+                        else if (newFilterValues.Count == 0)
+                        {
+                            owningGrid.DataConnection.FilterDescriptions.Remove(filter);
+                        }
                     }
-                    else
+                    else if (filterValues.Count > 0)
                     {
                         string? propertyName = OwningColumn.GetFilterPropertyName();
                         if (string.IsNullOrEmpty(propertyName))

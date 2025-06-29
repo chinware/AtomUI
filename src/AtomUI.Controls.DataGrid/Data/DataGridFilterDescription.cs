@@ -12,30 +12,28 @@ public class DataGridFilterDescription
     public List<object> FilterConditions { get; set; } = new List<object>();
     public Func<object, object, bool>? Filter { get; set; }
     
-    public virtual IEnumerable<object> FilterBy(IEnumerable<object> seq)
+    public virtual bool FilterBy(object record)
     {
-        return seq.Where(record =>
+        foreach (var filterValue in FilterConditions)
         {
-            foreach (var filterValue in FilterConditions)
+            var value = GetValue(record);
+            // 为空就不比较
+            if (value != null)
             {
-                var value = GetValue(record);
-                // 为空就不比较
-                if (value != null)
+                if (Filter != null && Filter(value, filterValue))
                 {
-                    if (Filter != null && Filter(value, filterValue))
-                    {
-                        return true;
-                    }
-                    // 默认按照字符串来比较
-                    var stringValue = record.ToString();
-                    if (!string.IsNullOrEmpty(stringValue) && filterValue is string stringFilterValue)
-                    {
-                        return stringValue.Contains(stringFilterValue, ComparisonType);
-                    }
+                    return true;
+                }
+                // 默认按照字符串来比较
+                var stringValue = value.ToString();
+                if (!string.IsNullOrEmpty(stringValue) && filterValue is string stringFilterValue)
+                {
+                    return stringValue.Contains(stringFilterValue, ComparisonType);
                 }
             }
-            return false;
-        });
+        }
+
+        return false;
     }
     
     private Type? GetPropertyType(object o)

@@ -1273,7 +1273,8 @@ public partial class DataGrid
             
             if (newCollectionView.Filter == null)
             {
-                _defaultFilter = new DataGridDefaultFilter();
+                // TODO 不知道这样循环会不会有内存泄露的风险
+                _defaultFilter           = new DataGridDefaultFilter(newCollectionView);
                 newCollectionView.Filter = _defaultFilter;
             }
 
@@ -1281,9 +1282,7 @@ public partial class DataGrid
 
             if (oldCollectionView != DataConnection.CollectionView)
             {
-                RaisePropertyChanged(CollectionViewProperty,
-                    oldCollectionView,
-                    newCollectionView);
+                RaisePropertyChanged(CollectionViewProperty, oldCollectionView, newCollectionView);
             }
 
             if (DataConnection.DataSource != null)

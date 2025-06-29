@@ -1,4 +1,6 @@
+using System.Collections.Specialized;
 using System.Diagnostics;
+using AtomUI.Controls.Data;
 using AtomUI.Controls.DataGridLang;
 using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
@@ -59,6 +61,7 @@ internal class DataGridFilterIndicator : IconButton
         get => _owningColumn;
         set
         {
+            HandleOwningColumnAssigned(value);
             _owningColumn = value;
             if (_owningColumn != null)
             {
@@ -275,6 +278,47 @@ internal class DataGridFilterIndicator : IconButton
                 command.Execute(parameter);
                 e.Handled = true;
             }
+        }
+    }
+
+    private void HandleOwningColumnAssigned(DataGridColumn? column)
+    {
+        if (column?.OwningGrid is not null)
+        {
+            var grid =  column.OwningGrid;
+            grid.PropertyChanged -= HandleOwningPropertyChanged;
+            grid.PropertyChanged += HandleOwningPropertyChanged;
+        }
+    }
+
+    private void HandleOwningPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == DataGrid.CollectionViewProperty)
+        {
+            if (e.OldValue is DataGridCollectionView oldCollectionView)
+            {
+                oldCollectionView.FilterDescriptions.CollectionChanged -= HandleFilterDescriptionsChanged;
+            }
+
+            if (e.NewValue is DataGridCollectionView newCollectionView)
+            {
+                newCollectionView.FilterDescriptions.CollectionChanged += HandleFilterDescriptionsChanged;
+            }
+        }
+    }
+
+    private void HandleFilterDescriptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        Debug.Assert(OwningColumn != null);
+        var collectionView = OwningColumn.OwningGrid?.CollectionView;
+        if (collectionView is not null)
+        {
+            var filterDescription = OwningColumn.GetFilterDescription();
+            IsFilterActivated = filterDescription != null;
+        }
+        else
+        {
+            IsFilterActivated = false;
         }
     }
 }

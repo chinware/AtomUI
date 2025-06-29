@@ -7,7 +7,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Animations;
-using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Animation;
