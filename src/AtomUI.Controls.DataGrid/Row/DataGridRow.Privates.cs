@@ -10,6 +10,7 @@ using Avalonia.Input;
 using Avalonia.Utilities;
 using System.Diagnostics;
 using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -67,6 +68,7 @@ public partial class DataGridRow
                     IsVisible = false,
                     OwningRow = this
                 };
+                BindUtils.RelayBind(OwningGrid, DataGrid.SizeTypeProperty, _fillerCell, DataGridCell.SizeTypeProperty);
                 if (OwningGrid.CellTheme is {} cellTheme)
                 {
                     _fillerCell.SetValue(ThemeProperty, cellTheme, BindingPriority.Template);

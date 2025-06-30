@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -1476,6 +1477,7 @@ public partial class DataGrid
         {
             newCell.OwningColumn = column;
             newCell.IsVisible    = column.IsVisible;
+            BindUtils.RelayBind(this, SizeTypeProperty, newCell, DataGridCell.SizeTypeProperty);
             if (row.OwningGrid.CellTheme is { } cellTheme)
             {
                 newCell.SetValue(ThemeProperty, cellTheme, BindingPriority.Template);
