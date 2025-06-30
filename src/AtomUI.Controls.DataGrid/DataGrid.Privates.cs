@@ -35,32 +35,45 @@ public partial class DataGrid
 
     #region 内部属性定义
     
-    public static readonly DirectProperty<DataGrid, bool> IsGroupHeaderModeProperty =
+    internal static readonly DirectProperty<DataGrid, bool> IsGroupHeaderModeProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, bool>(
             nameof(IsGroupHeaderMode),
             o => o.IsGroupHeaderMode,
             (o, v) => o.IsGroupHeaderMode = v);
     
-    public static readonly DirectProperty<DataGrid, Thickness> FrameBorderThicknessProperty =
+    internal static readonly DirectProperty<DataGrid, Thickness> FrameBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, Thickness>(
             nameof(FrameBorderThickness),
             o => o.FrameBorderThickness,
             (o, v) => o.FrameBorderThickness = v);
     
-    public bool IsGroupHeaderMode
+    internal static readonly DirectProperty<DataGrid, CornerRadius> HeaderCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, CornerRadius>(
+            nameof(HeaderCornerRadius),
+            o => o.HeaderCornerRadius,
+            (o, v) => o.HeaderCornerRadius = v);
+    
+    internal bool IsGroupHeaderMode
     {
         get => _isGroupHeaderMode;
         set => SetAndRaise(IsGroupHeaderModeProperty, ref _isGroupHeaderMode, value);
     }
     private bool _isGroupHeaderMode;
     
-    public Thickness FrameBorderThickness
+    internal Thickness FrameBorderThickness
     {
         get => _frameBorderThickness;
         set => SetAndRaise(FrameBorderThicknessProperty, ref _frameBorderThickness, value);
     }
     private Thickness _frameBorderThickness;
-
+    
+    internal CornerRadius HeaderCornerRadius
+    {
+        get => _headerCornerRadius;
+        set => SetAndRaise(HeaderCornerRadiusProperty, ref _headerCornerRadius, value);
+    }
+    private CornerRadius _headerCornerRadius;
+    
     internal IndexToValueTable<DataGridRowGroupInfo> RowGroupHeadersTable { get; private set; }
 
     internal DataGridDisplayData DisplayData { get; private set; }
@@ -4579,8 +4592,8 @@ public partial class DataGrid
         }
         else
         {
-            if (GridLinesVisibility == DataGridGridLinesVisibility.All ||
-                GridLinesVisibility == DataGridGridLinesVisibility.Horizontal)
+            if (Footer == null && (GridLinesVisibility == DataGridGridLinesVisibility.All ||
+                                     GridLinesVisibility == DataGridGridLinesVisibility.Horizontal))
             {
                 SetValue(FrameBorderThicknessProperty, new Thickness(BorderThickness.Left, BorderThickness.Top, BorderThickness.Right, 0));
             }
@@ -4588,6 +4601,18 @@ public partial class DataGrid
             {
                 SetValue(FrameBorderThicknessProperty, BorderThickness);
             }
+        }
+    }
+
+    private void ConfigureHeaderCornerRadius()
+    {
+        if (Title == null)
+        {
+            HeaderCornerRadius = new CornerRadius(CornerRadius.TopLeft, CornerRadius.TopRight, 0, 0);
+        }
+        else
+        {
+            HeaderCornerRadius = new CornerRadius(0);
         }
     }
 }

@@ -109,6 +109,8 @@ internal static class DataGridThemeConstants
     public const string ColumnHeadersPresenterFramePart = "PART_ColumnHeadersPresenterFrame";
     public const string RootLayoutPart = "PART_RootLayout";
     public const string DisabledVisualElementPart = "PART_DisabledVisualElement";
+    public const string TitlePart = "PART_Title";
+    public const string FooterPart = "PART_Footer";
 }
 
 internal static class DataGridTopLeftColumnHeaderThemeConstants

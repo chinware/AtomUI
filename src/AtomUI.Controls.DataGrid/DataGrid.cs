@@ -22,6 +22,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Utilities;
 
@@ -207,6 +208,18 @@ public partial class DataGrid : TemplatedControl,
     public static readonly DirectProperty<DataGrid, IDataGridCollectionView?> CollectionViewProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, IDataGridCollectionView?>(nameof(CollectionView),
             o => o.CollectionView);
+    
+    public static readonly StyledProperty<object?> TitleProperty =
+        AvaloniaProperty.Register<DataGrid, object?>(nameof(Title));
+    
+    public static readonly StyledProperty<IDataTemplate?> TitleTemplateProperty =
+        AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(TitleTemplate));
+    
+    public static readonly StyledProperty<object?> FooterProperty =
+        AvaloniaProperty.Register<DataGrid, object?>(nameof(Footer));
+    
+    public static readonly StyledProperty<IDataTemplate?> FooterTemplateProperty =
+        AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(FooterTemplate));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
@@ -528,6 +541,32 @@ public partial class DataGrid : TemplatedControl,
     /// </summary>
     public IDataGridCollectionView? CollectionView =>
         DataConnection.CollectionView;
+    
+    [DependsOn(nameof(TitleTemplateProperty))]
+    public object? Title
+    {
+        get => GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
+    }
+    
+    public IDataTemplate? TitleTemplate
+    {
+        get => GetValue(TitleTemplateProperty);
+        set => SetValue(TitleTemplateProperty, value);
+    }
+    
+    [DependsOn(nameof(FooterTemplateProperty))]
+    public object? Footer
+    {
+        get => GetValue(FooterProperty);
+        set => SetValue(FooterProperty, value);
+    }
+    
+    public IDataTemplate? FooterTemplate
+    {
+        get => GetValue(FooterTemplateProperty);
+        set => SetValue(FooterTemplateProperty, value);
+    }
     
     /// <summary>
     /// Gets or sets the column that contains the current cell.
@@ -1429,6 +1468,8 @@ public partial class DataGrid : TemplatedControl,
         {
             ConfigureFrameBorderThickness();
         }
+
+        ConfigureHeaderCornerRadius();
     }
 
     /// <summary>
@@ -1540,9 +1581,15 @@ public partial class DataGrid : TemplatedControl,
 
         if (change.Property == BorderThicknessProperty || 
             change.Property == GridLinesVisibilityProperty ||
-            change.Property == IsShowFrameBorderProperty)
+            change.Property == IsShowFrameBorderProperty ||
+            change.Property == FooterProperty)
         {
             ConfigureFrameBorderThickness();
+        }
+
+        if (change.Property == TitleProperty)
+        {
+            ConfigureHeaderCornerRadius();
         }
     }
 }
