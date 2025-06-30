@@ -21,43 +21,46 @@ internal partial class DataGridColumnHeader
             nameof(CanUserSort),
             o => o.CanUserSort,
             (o, v) => o.CanUserSort = v);
-    
+
     internal static readonly DirectProperty<DataGridColumnHeader, ListSortDirection?> CurrentSortingStateProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, ListSortDirection?>(
             nameof(CurrentSortingState),
             o => o.CurrentSortingState,
             (o, v) => o.CurrentSortingState = v);
-    
+
     internal static readonly StyledProperty<DataGridSortDirections> SupportedSortDirectionsProperty =
         DataGridColumn.SupportedSortDirectionsProperty.AddOwner<DataGridColumnHeader>();
-    
+
     internal static readonly DirectProperty<DataGridColumnHeader, bool> ShowSorterTooltipProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
             nameof(ShowSorterTooltip),
             o => o.ShowSorterTooltip,
             (o, v) => o.ShowSorterTooltip = v);
-    
+
     private bool _canUserSort = false;
+
     internal bool CanUserSort
     {
         get => _canUserSort;
         set => SetAndRaise(CanUserSortProperty, ref _canUserSort, value);
     }
-    
+
     private ListSortDirection? _currentSortingState;
+
     internal ListSortDirection? CurrentSortingState
     {
         get => _currentSortingState;
         set => SetAndRaise(CurrentSortingStateProperty, ref _currentSortingState, value);
     }
-    
+
     public DataGridSortDirections SupportedSortDirections
     {
         get => GetValue(SupportedSortDirectionsProperty);
         set => SetValue(SupportedSortDirectionsProperty, value);
     }
-    
+
     private bool _showSorterTooltip;
+
     internal bool ShowSorterTooltip
     {
         get => _showSorterTooltip;
@@ -80,6 +83,7 @@ internal partial class DataGridColumnHeader
         {
             return;
         }
+
         ListSortDirection? nextDirection = null;
         if (CurrentSortingState != null)
         {
@@ -87,14 +91,14 @@ internal partial class DataGridColumnHeader
             {
                 if (CurrentSortingState == ListSortDirection.Ascending)
                 {
-                    nextDirection =  ListSortDirection.Descending;
-                } 
+                    nextDirection = ListSortDirection.Descending;
+                }
                 else if (CurrentSortingState == ListSortDirection.Descending)
                 {
                     nextDirection = null;
                 }
             }
-            else if ((SupportedSortDirections & DataGridSortDirections.Ascending) ==  DataGridSortDirections.Ascending)
+            else if ((SupportedSortDirections & DataGridSortDirections.Ascending) == DataGridSortDirections.Ascending)
             {
                 nextDirection = null;
             }
@@ -108,9 +112,9 @@ internal partial class DataGridColumnHeader
         {
             if ((SupportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
             {
-                nextDirection =  ListSortDirection.Ascending;
+                nextDirection = ListSortDirection.Ascending;
             }
-            else if ((SupportedSortDirections & DataGridSortDirections.Ascending) ==  DataGridSortDirections.Ascending)
+            else if ((SupportedSortDirections & DataGridSortDirections.Ascending) == DataGridSortDirections.Ascending)
             {
                 nextDirection = ListSortDirection.Ascending;
             }
@@ -120,18 +124,22 @@ internal partial class DataGridColumnHeader
                 nextDirection = ListSortDirection.Descending;
             }
         }
+
         _showSorterTooltipDisposable?.Dispose();
         if (nextDirection == null)
         {
-            _showSorterTooltipDisposable = LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.CancelTooltip);
+            _showSorterTooltipDisposable =
+                LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.CancelTooltip);
         }
         else if (nextDirection == ListSortDirection.Ascending)
         {
-            _showSorterTooltipDisposable = LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.AscendTooltip);
+            _showSorterTooltipDisposable =
+                LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.AscendTooltip);
         }
         else if (nextDirection == ListSortDirection.Descending)
         {
-            _showSorterTooltipDisposable = LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.DescendTooltip);
+            _showSorterTooltipDisposable =
+                LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKey.DescendTooltip);
         }
     }
 
@@ -140,7 +148,7 @@ internal partial class DataGridColumnHeader
         base.OnPointerEntered(e);
         if (CanUserSort)
         {
-            ToolTip.SetIsOpen(this, true);  
+            ToolTip.SetIsOpen(this, true);
         }
     }
 
@@ -149,7 +157,7 @@ internal partial class DataGridColumnHeader
         base.OnPointerExited(e);
         if (CanUserSort)
         {
-            ToolTip.SetIsOpen(this, false);  
+            ToolTip.SetIsOpen(this, false);
         }
     }
 
@@ -160,6 +168,7 @@ internal partial class DataGridColumnHeader
         {
             return;
         }
+
         if (OwningGrid.CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
         {
             Avalonia.Threading.Dispatcher.UIThread.Post(() => ProcessSort(keyModifiers, forcedDirection));
@@ -179,7 +188,6 @@ internal partial class DataGridColumnHeader
             OwningColumn != OwningGrid.ColumnsInternal.FillerColumn &&
             (OwningColumn.CanUserSort || OwningGrid.CanUserSortColumns))
         {
-
             var ea = new DataGridColumnEventArgs(OwningColumn);
             OwningGrid.HandleColumnSorting(ea);
             if (!ea.Handled && OwningGrid.DataConnection.AllowSort &&
@@ -190,7 +198,7 @@ internal partial class DataGridColumnHeader
                 // - the column's data type is comparable
 
                 DataGrid                 owningGrid = OwningGrid;
-                DataGridSortDescription? newSort = null;
+                DataGridSortDescription? newSort    = null;
 
                 KeyboardHelper.GetMetaKeyState(this, keyModifiers, out bool ctrl, out bool shift);
                 DataGridSortDescription? sort           = OwningColumn.GetSortDescription();
@@ -206,6 +214,7 @@ internal partial class DataGridColumnHeader
                     {
                         owningGrid.DataConnection.SortDescriptions.Clear();
                     }
+
                     if (sort != null)
                     {
                         var currentDirection = sort.Direction;
@@ -213,14 +222,15 @@ internal partial class DataGridColumnHeader
                         {
                             if (currentDirection == ListSortDirection.Ascending)
                             {
-                                nextDirection =  ListSortDirection.Descending;
-                            } 
+                                nextDirection = ListSortDirection.Descending;
+                            }
                             else if (currentDirection == ListSortDirection.Descending)
                             {
                                 nextDirection = null;
                             }
                         }
-                        else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==  DataGridSortDirections.Ascending)
+                        else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==
+                                 DataGridSortDirections.Ascending)
                         {
                             nextDirection = null;
                         }
@@ -234,9 +244,10 @@ internal partial class DataGridColumnHeader
                     {
                         if ((supportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
                         {
-                            nextDirection =  ListSortDirection.Ascending;
+                            nextDirection = ListSortDirection.Ascending;
                         }
-                        else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==  DataGridSortDirections.Ascending)
+                        else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==
+                                 DataGridSortDirections.Ascending)
                         {
                             nextDirection = ListSortDirection.Ascending;
                         }
@@ -294,10 +305,11 @@ internal partial class DataGridColumnHeader
         Debug.Assert(collectionView != null);
         if (OwningColumn.CustomSortComparer != null)
         {
-            return direction != null ?
-                DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer, direction.Value) :
-                DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer);
+            return direction != null
+                ? DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer, direction.Value)
+                : DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer);
         }
+
         string? propertyName = OwningColumn.GetSortPropertyName();
         // no-opt if we couldn't find a property to sort on
         if (string.IsNullOrEmpty(propertyName))
@@ -310,6 +322,50 @@ internal partial class DataGridColumnHeader
         {
             newSort = newSort.SwitchSortDirection();
         }
+
         return newSort;
+    }
+
+    internal void InvokeClearSort()
+    {
+        Debug.Assert(OwningGrid != null);
+        if (OwningGrid.WaitForLostFocus(InvokeClearSort))
+        {
+            return;
+        }
+
+        if (OwningGrid.CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(ProcessClearSort);
+        }
+    }
+
+    internal void ProcessClearSort()
+    {
+        if (OwningColumn != null &&
+            OwningGrid != null &&
+            OwningGrid.EditingRow == null &&
+            OwningColumn != OwningGrid.ColumnsInternal.FillerColumn &&
+            (OwningColumn.CanUserSort || OwningGrid.CanUserSortColumns))
+        {
+            var ea = new DataGridColumnEventArgs(OwningColumn);
+            OwningGrid.HandleColumnSorting(ea);
+            if (!ea.Handled && OwningGrid.DataConnection.AllowSort &&
+                OwningGrid.DataConnection.SortDescriptions != null)
+            {
+                DataGrid                 owningGrid     = OwningGrid;
+                DataGridSortDescription? sort           = OwningColumn.GetSortDescription();
+                IDataGridCollectionView? collectionView = owningGrid.DataConnection.CollectionView;
+                Debug.Assert(collectionView != null);
+
+                using (collectionView.DeferRefresh())
+                {
+                    if (sort != null)
+                    {
+                        owningGrid.DataConnection.SortDescriptions.Remove(sort);
+                    }
+                }
+            }
+        }
     }
 }

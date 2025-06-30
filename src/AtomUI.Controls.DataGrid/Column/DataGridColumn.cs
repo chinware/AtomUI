@@ -663,23 +663,14 @@ public abstract partial class DataGridColumn : AvaloniaObject
     public void ClearSort()
     {
         //InvokeProcessSort is already validating if sorting is possible
-        _headerCell?.InvokeProcessSort(KeyboardHelper.GetPlatformCtrlOrCmdKeyModifier(OwningGrid));
+        _headerCell?.InvokeClearSort();
     }
-
-    /// <summary>
-    /// Switches the current state of sort direction
-    /// </summary>
-    public void Sort()
-    {
-        //InvokeProcessSort is already validating if sorting is possible
-        _headerCell?.InvokeProcessSort(KeyModifiers.None);
-    }
-
+    
     /// <summary>
     /// Changes the sort direction of this column
     /// </summary>
     /// <param name="direction">New sort direction</param>
-    public void Sort(ListSortDirection direction)
+    public void Sort(ListSortDirection? direction = null)
     {
         //InvokeProcessSort is already validating if sorting is possible
         _headerCell?.InvokeProcessSort(KeyModifiers.None, direction);

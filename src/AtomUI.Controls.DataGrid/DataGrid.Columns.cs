@@ -5,15 +5,18 @@
 
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
+using AtomUI.Controls.Data;
 using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Utilities;
+using DynamicData.Binding;
 
 namespace AtomUI.Controls;
 
@@ -123,6 +126,73 @@ public partial class DataGrid
     protected internal virtual void HandleColumnFiltering(DataGridColumnEventArgs e)
     {
         Filtering?.Invoke(this, e);
+    }
+
+    public void Sort(int columnIndex, ListSortDirection? direction = null)
+    {
+        if (columnIndex < 0 || columnIndex >= ColumnsInternal.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(columnIndex));
+        }
+
+        var column = ColumnsInternal[columnIndex];
+        if (column is DataGridFillerColumn)
+        {
+            throw new ArgumentOutOfRangeException(nameof(columnIndex), "Column cannot be filled column.");
+        }
+        column.Sort(direction);
+    }
+
+    public void ClearSort(int columnIndex)
+    {
+        
+        if (columnIndex < 0 || columnIndex >= ColumnsInternal.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(columnIndex));
+        }
+
+        var column = ColumnsInternal[columnIndex];
+        if (column is DataGridFillerColumn)
+        {
+            throw new ArgumentOutOfRangeException(nameof(columnIndex), "Column cannot be filled column.");
+        }
+        column.ClearSort();
+    }
+
+    public void ClearSort()
+    {
+        if (WaitForLostFocus(ClearSort))
+        {
+            return;
+        }
+
+        if (CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(ProcessClearSort);
+        }
+    }
+
+    internal void ProcessClearSort()
+    {
+        if (EditingRow == null && CanUserSortColumns)
+        {
+            foreach (var column in ColumnsInternal)
+            {
+                var ea = new DataGridColumnEventArgs(column);
+                HandleColumnSorting(ea);
+            }
+            // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合力
+            if (DataConnection.AllowSort && DataConnection.SortDescriptions != null)
+            {
+                IDataGridCollectionView? collectionView = DataConnection.CollectionView;
+                Debug.Assert(collectionView != null);
+                
+                using (collectionView.DeferRefresh())
+                {
+                    DataConnection.SortDescriptions.Clear();
+                }
+            }
+        }
     }
     
     /// <summary>
