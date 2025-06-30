@@ -3,115 +3,122 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:AtomUI.Controls.Converters"
     xmlns:atom="https://atomui.net">
-    <converters:DataGridHeaderCornerRadiusConverter x:Key="DataGridHeaderCornerRadiusConverter"/>
-    <converters:DataGridUniformBorderThicknessToScalarConverter x:Key="DataGridUniformBorderThicknessToScalarConverter"/>
+    <converters:DataGridHeaderCornerRadiusConverter x:Key="DataGridHeaderCornerRadiusConverter" />
+    <converters:DataGridUniformBorderThicknessToScalarConverter x:Key="DataGridUniformBorderThicknessToScalarConverter" />
     <ControlTheme x:Key="{x:Type atom:DataGrid}" TargetType="atom:DataGrid">
         <Setter Property="Template">
             <ControlTemplate>
                 <Border
-                    Name="{x:Static atom:DataGridThemeConstants.FramePart}">
-                    <Grid 
-                        Name="{x:Static atom:DataGridThemeConstants.RootLayoutPart}"
-                        RowDefinitions="Auto, *, Auto, Auto"
-                        ColumnDefinitions="Auto, *, Auto"
-                        ClipToBounds="True">
-                        
-                        <atom:DataGridTopLeftColumnHeader
-                            Name="{x:Static atom:DataGridThemeConstants.TopLeftCornerPart}"
-                            Grid.Row="0"
-                            Grid.Column="0"/>
-                        <atom:DataGridHeaderView 
-                            Name="{x:Static atom:DataGridThemeConstants.ColumnHeaderViewPart}"
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            ClipToBounds="True"
-                            IsVisible="{TemplateBinding IsGroupHeaderMode}"
-                            CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource DataGridHeaderCornerRadiusConverter}}"
-                            />
-                        
-                        <Border
-                            Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterFramePart}"
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            IsVisible="{TemplateBinding IsGroupHeaderMode, Converter={x:Static BoolConverters.Not}}"
-                            ClipToBounds="True"
-                            CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource DataGridHeaderCornerRadiusConverter}}">
-                            <atom:DataGridColumnHeadersPresenter
-                                Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterPart}"/>
-                        </Border>
-                        <Rectangle 
-                            Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersAndRowsSeparatorPart}"
-                            VerticalAlignment="Bottom"
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="3"
-                            Height="{TemplateBinding BorderThickness, Converter={StaticResource DataGridUniformBorderThicknessToScalarConverter}}"/>
-                        
-                        <atom:DataGridRowsPresenter
-                            Name="{x:Static atom:DataGridThemeConstants.RowsPresenterPart}"
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Grid.RowSpan="2"
-                            Grid.ColumnSpan="3"
-                            ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
-                            <atom:DataGridRowsPresenter.GestureRecognizers>
-                                <ScrollGestureRecognizer
-                                    CanHorizontallyScroll="True"
-                                    CanVerticallyScroll="True"
-                                    IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_RowPresenter}"/>
-                            </atom:DataGridRowsPresenter.GestureRecognizers>
-                        </atom:DataGridRowsPresenter>
-                        <Rectangle
-                            Name="{x:Static atom:DataGridThemeConstants.BottomRightCornerPart}"
-                            Grid.Row="2"
-                            Grid.Column="2"/>
-                        
-                        <ScrollBar
-                            Name="{x:Static atom:DataGridThemeConstants.VerticalScrollbarPart}"
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            Orientation="Vertical"/>
-                        
-                        <Grid ColumnDefinitions="Auto, *"
-                              Grid.Row="2"
-                              Grid.Column="1">
-                            <Rectangle
-                                Name="{x:Static atom:DataGridThemeConstants.FrozenColumnScrollBarSpacerPart}" 
-                                Grid.Column="0"/>
-                            <ScrollBar
-                                Name="{x:Static atom:DataGridThemeConstants.HorizontalScrollbarPart}"
+                    Name="{x:Static atom:DataGridThemeConstants.FramePart}"
+                    BorderThickness="{TemplateBinding FrameBorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource DataGridHeaderCornerRadiusConverter}}">
+                    <DockPanel LastChildFill="True">
+                        <Grid
+                            Name="{x:Static atom:DataGridThemeConstants.RootLayoutPart}"
+                            RowDefinitions="Auto, *, Auto, Auto"
+                            ColumnDefinitions="Auto, *, Auto"
+                            ClipToBounds="True">
+
+                            <atom:DataGridTopLeftColumnHeader
+                                Name="{x:Static atom:DataGridThemeConstants.TopLeftCornerPart}"
+                                Grid.Row="0"
+                                Grid.Column="0" />
+                            <atom:DataGridHeaderView
+                                Name="{x:Static atom:DataGridThemeConstants.ColumnHeaderViewPart}"
+                                Grid.Row="0"
                                 Grid.Column="1"
-                                Orientation="Horizontal"/>
+                                Grid.ColumnSpan="2"
+                                ClipToBounds="True"
+                                IsVisible="{TemplateBinding IsGroupHeaderMode}"
+                                CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource DataGridHeaderCornerRadiusConverter}}" />
+
+                            <Border
+                                Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterFramePart}"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                IsVisible="{TemplateBinding IsGroupHeaderMode, Converter={x:Static BoolConverters.Not}}"
+                                ClipToBounds="True"
+                                CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource DataGridHeaderCornerRadiusConverter}}">
+                                <atom:DataGridColumnHeadersPresenter
+                                    Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterPart}" />
+                            </Border>
+                            <Rectangle
+                                Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersAndRowsSeparatorPart}"
+                                VerticalAlignment="Bottom"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Height="{TemplateBinding BorderThickness, Converter={StaticResource DataGridUniformBorderThicknessToScalarConverter}}" />
+
+                            <atom:DataGridRowsPresenter
+                                Name="{x:Static atom:DataGridThemeConstants.RowsPresenterPart}"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.RowSpan="2"
+                                Grid.ColumnSpan="3"
+                                ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                                <atom:DataGridRowsPresenter.GestureRecognizers>
+                                    <ScrollGestureRecognizer
+                                        CanHorizontallyScroll="True"
+                                        CanVerticallyScroll="True"
+                                        IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_RowPresenter}" />
+                                </atom:DataGridRowsPresenter.GestureRecognizers>
+                            </atom:DataGridRowsPresenter>
+                            <Rectangle
+                                Name="{x:Static atom:DataGridThemeConstants.BottomRightCornerPart}"
+                                Grid.Row="2"
+                                Grid.Column="2" />
+
+                            <ScrollBar
+                                Name="{x:Static atom:DataGridThemeConstants.VerticalScrollbarPart}"
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Orientation="Vertical" />
+
+                            <Grid ColumnDefinitions="Auto, *"
+                                  Grid.Row="2"
+                                  Grid.Column="1">
+                                <Rectangle
+                                    Name="{x:Static atom:DataGridThemeConstants.FrozenColumnScrollBarSpacerPart}"
+                                    Grid.Column="0" />
+                                <ScrollBar
+                                    Name="{x:Static atom:DataGridThemeConstants.HorizontalScrollbarPart}"
+                                    Grid.Column="1"
+                                    Orientation="Horizontal" />
+                            </Grid>
+
+                            <Border
+                                Name="{x:Static atom:DataGridThemeConstants.DisabledVisualElementPart}"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.RowSpan="4"
+                                Grid.ColumnSpan="3"
+                                IsHitTestVisible="False"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                CornerRadius="2"
+                                IsEnabled="{TemplateBinding IsEnabled}" />
                         </Grid>
-                        
-                        <Border
-                            Name="{x:Static atom:DataGridThemeConstants.DisabledVisualElementPart}"
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Grid.RowSpan="4"
-                            Grid.ColumnSpan="3"
-                            IsHitTestVisible="False"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            CornerRadius="2"
-                            IsEnabled="{TemplateBinding IsEnabled}"/>
-                    </Grid>
+                    </DockPanel>
+
                 </Border>
             </ControlTemplate>
         </Setter>
-        
-        <Setter Property="HeadersVisibility" Value="Column"/>
-        <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="SelectionMode" Value="None"/>
-        <Setter Property="FocusAdorner" Value="{x:Null}"/>
-        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRadius}}"/>
-        
+
+        <Setter Property="HeadersVisibility" Value="Column" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="SelectionMode" Value="None" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRadius}}" />
+
         <Style Selector="^ /template/ Rectangle#PART_ColumnHeadersAndRowsSeparator">
-            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
+            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />
         </Style>
-        
+
+        <Style Selector="^ /template/ Border#PART_Frame">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

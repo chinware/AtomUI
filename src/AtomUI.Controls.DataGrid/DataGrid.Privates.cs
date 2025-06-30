@@ -41,12 +41,25 @@ public partial class DataGrid
             o => o.IsGroupHeaderMode,
             (o, v) => o.IsGroupHeaderMode = v);
     
+    public static readonly DirectProperty<DataGrid, Thickness> FrameBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, Thickness>(
+            nameof(FrameBorderThickness),
+            o => o.FrameBorderThickness,
+            (o, v) => o.FrameBorderThickness = v);
+    
     public bool IsGroupHeaderMode
     {
         get => _isGroupHeaderMode;
         set => SetAndRaise(IsGroupHeaderModeProperty, ref _isGroupHeaderMode, value);
     }
     private bool _isGroupHeaderMode;
+    
+    public Thickness FrameBorderThickness
+    {
+        get => _frameBorderThickness;
+        set => SetAndRaise(FrameBorderThicknessProperty, ref _frameBorderThickness, value);
+    }
+    private Thickness _frameBorderThickness;
 
     internal IndexToValueTable<DataGridRowGroupInfo> RowGroupHeadersTable { get; private set; }
 
@@ -4556,5 +4569,25 @@ public partial class DataGrid
 
         _validationSubscription?.Dispose();
         _validationSubscription = null;
+    }
+
+    private void ConfigureFrameBorderThickness()
+    {
+        if (!IsShowFrameBorder)
+        {
+            SetValue(FrameBorderThicknessProperty, new Thickness(0), BindingPriority.Template);
+        }
+        else
+        {
+            if (GridLinesVisibility == DataGridGridLinesVisibility.All ||
+                GridLinesVisibility == DataGridGridLinesVisibility.Horizontal)
+            {
+                SetValue(FrameBorderThicknessProperty, new Thickness(BorderThickness.Left, BorderThickness.Top, BorderThickness.Right, 0));
+            }
+            else
+            {
+                SetValue(FrameBorderThicknessProperty, BorderThickness);
+            }
+        }
     }
 }

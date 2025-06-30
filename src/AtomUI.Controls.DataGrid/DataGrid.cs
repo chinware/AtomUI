@@ -47,6 +47,9 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGrid>();
     
+    public static readonly StyledProperty<bool> IsShowFrameBorderProperty =
+        AvaloniaProperty.Register<DataGrid, bool>(nameof(IsShowFrameBorder), false);
+    
     /// <summary>
     /// Identifies the CanUserReorderColumns dependency property.
     /// </summary>
@@ -212,6 +215,12 @@ public partial class DataGrid : TemplatedControl,
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+    
+    public bool IsShowFrameBorder
+    {
+        get => GetValue(IsShowFrameBorderProperty);
+        set => SetValue(IsShowFrameBorderProperty, value);
     }
     
     /// <summary>
@@ -1415,6 +1424,11 @@ public partial class DataGrid : TemplatedControl,
         EnsureTopLeftCornerHeader(); // EnsureTopLeftCornerHeader checks for a null _topLeftCornerHeader;
         _topRightCornerHeader = e.NameScope.Find<ContentControl>(DataGridThemeConstants.TopRightCornerPart);
         _bottomRightCorner    = e.NameScope.Find<Visual>(DataGridThemeConstants.BottomRightCornerPart);
+
+        if (IsShowFrameBorder)
+        {
+            ConfigureFrameBorderThickness();
+        }
     }
 
     /// <summary>
@@ -1518,5 +1532,17 @@ public partial class DataGrid : TemplatedControl,
     protected virtual void OnAutoGeneratingColumn(DataGridAutoGeneratingColumnEventArgs e)
     {
         AutoGeneratingColumn?.Invoke(this, e);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == BorderThicknessProperty || 
+            change.Property == GridLinesVisibilityProperty ||
+            change.Property == IsShowFrameBorderProperty)
+        {
+            ConfigureFrameBorderThickness();
+        }
     }
 }
