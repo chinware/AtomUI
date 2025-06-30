@@ -10,6 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -314,6 +315,7 @@ public class ToolTip : ContentControl,
     private Popup? _popup;
     private Action<IPopupHost?>? _popupHostChangedHandler;
     private ArrowDecoratedBox? _arrowDecoratedBox;
+    private DispatcherTimer? _timer;
 
     static ToolTip()
     {
@@ -339,6 +341,7 @@ public class ToolTip : ContentControl,
 
     private void Open(Control control)
     {
+        StopTimer();
         Close();
 
         if (_popup is null)
@@ -513,14 +516,43 @@ public class ToolTip : ContentControl,
                 control.SetValue(ToolTipProperty, toolTip);
             }
 
+            var showDelay = GetShowDelay(control);
             toolTip.AdornedControl = control;
-            toolTip.Open(control);
+            
+            if (showDelay == 0)
+            {
+                toolTip.Open(control);
+            }
+            else
+            {
+                toolTip.StartShowTimer(showDelay, control);
+            }
         }
         else if (control.GetValue(ToolTipProperty) is { } toolTip)
         {
+            toolTip.StopTimer();
             toolTip.AdornedControl = null;
             toolTip.Close();
         }
+    }
+    
+    private void StartShowTimer(int showDelay, Control control)
+    {
+        _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(showDelay), Tag = (this, control) };
+        _timer.Tick += (o, e) =>
+        {
+            if (_timer != null)
+            {
+                Open(control);
+            }
+        };
+        _timer.Start();
+    }
+    
+    private void StopTimer()
+    {
+        _timer?.Stop();
+        _timer = null;
     }
 
     private void HandlePopupHostChanged(IPopupHost? host)
