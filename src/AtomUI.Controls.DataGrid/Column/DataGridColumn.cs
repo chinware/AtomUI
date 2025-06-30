@@ -677,6 +677,19 @@ public abstract partial class DataGridColumn : AvaloniaObject
     }
 
     /// <summary>
+    /// Clears the current filter
+    /// </summary>
+    public void ClearFilter()
+    {
+        _headerCell?.InvokeClearFilter();
+    }
+
+    public void Filter(List<object> filterValues)
+    {
+        _headerCell?.InvokeProcessFilter(filterValues);
+    }
+
+    /// <summary>
     /// When overridden in a derived class, causes the column cell being edited to revert to the unedited value.
     /// </summary>
     /// <param name="editingElement">

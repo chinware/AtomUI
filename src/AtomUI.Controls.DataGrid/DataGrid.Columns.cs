@@ -171,17 +171,17 @@ public partial class DataGrid
             Avalonia.Threading.Dispatcher.UIThread.Post(ProcessClearSort);
         }
     }
-
+    
     internal void ProcessClearSort()
     {
-        if (EditingRow == null && CanUserSortColumns)
+        if (EditingRow == null)
         {
             foreach (var column in ColumnsInternal)
             {
                 var ea = new DataGridColumnEventArgs(column);
                 HandleColumnSorting(ea);
             }
-            // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合力
+            // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
             if (DataConnection.AllowSort && DataConnection.SortDescriptions != null)
             {
                 IDataGridCollectionView? collectionView = DataConnection.CollectionView;
@@ -190,6 +190,72 @@ public partial class DataGrid
                 using (collectionView.DeferRefresh())
                 {
                     DataConnection.SortDescriptions.Clear();
+                }
+            }
+        }
+    }
+
+    public void Filter(int columnIndex, List<object> filterValues)
+    {
+        if (columnIndex < 0 || columnIndex >= ColumnsInternal.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(columnIndex));
+        }
+
+        var column = ColumnsInternal[columnIndex];
+        if (column is DataGridFillerColumn)
+        {
+            throw new ArgumentOutOfRangeException(nameof(columnIndex), "Column cannot be filled column.");
+        }
+        column.Filter(filterValues);
+    }
+    
+    public void ClearFilter(int columnIndex)
+    {
+        if (columnIndex < 0 || columnIndex >= ColumnsInternal.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(columnIndex));
+        }
+
+        var column = ColumnsInternal[columnIndex];
+        if (column is DataGridFillerColumn)
+        {
+            throw new ArgumentOutOfRangeException(nameof(columnIndex), "Column cannot be filled column.");
+        }
+        column.ClearFilter();
+    }
+    
+    public void ClearFilters()
+    {
+        if (WaitForLostFocus(ClearFilters))
+        {
+            return;
+        }
+
+        if (CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(ProcessClearFilters);
+        }
+    }
+    
+    internal void ProcessClearFilters()
+    {
+        if (EditingRow == null)
+        {
+            foreach (var column in ColumnsInternal)
+            {
+                var ea = new DataGridColumnEventArgs(column);
+                HandleColumnFiltering(ea);
+            }
+            // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
+            if (DataConnection.AllowFilter && DataConnection.FilterDescriptions != null)
+            {
+                IDataGridCollectionView? collectionView = DataConnection.CollectionView;
+                Debug.Assert(collectionView != null);
+                
+                using (collectionView.DeferRefresh())
+                {
+                    DataConnection.FilterDescriptions.Clear();
                 }
             }
         }

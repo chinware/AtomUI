@@ -215,54 +215,56 @@ internal partial class DataGridColumnHeader
                         owningGrid.DataConnection.SortDescriptions.Clear();
                     }
 
-                    if (sort != null)
-                    {
-                        var currentDirection = sort.Direction;
-                        if ((supportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
-                        {
-                            if (currentDirection == ListSortDirection.Ascending)
-                            {
-                                nextDirection = ListSortDirection.Descending;
-                            }
-                            else if (currentDirection == ListSortDirection.Descending)
-                            {
-                                nextDirection = null;
-                            }
-                        }
-                        else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==
-                                 DataGridSortDirections.Ascending)
-                        {
-                            nextDirection = null;
-                        }
-                        else if ((supportedSortDirections & DataGridSortDirections.Descending) ==
-                                 DataGridSortDirections.Descending)
-                        {
-                            nextDirection = null;
-                        }
-                    }
-                    else
-                    {
-                        if ((supportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
-                        {
-                            nextDirection = ListSortDirection.Ascending;
-                        }
-                        else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==
-                                 DataGridSortDirections.Ascending)
-                        {
-                            nextDirection = ListSortDirection.Ascending;
-                        }
-                        else if ((supportedSortDirections & DataGridSortDirections.Descending) ==
-                                 DataGridSortDirections.Descending)
-                        {
-                            nextDirection = ListSortDirection.Descending;
-                        }
-                    }
-
                     if (forcedDirection != null)
                     {
                         nextDirection = forcedDirection.Value;
                     }
-
+                    else
+                    {
+                        if (sort != null)
+                        {
+                            var currentDirection = sort.Direction;
+                            if ((supportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
+                            {
+                                if (currentDirection == ListSortDirection.Ascending)
+                                {
+                                    nextDirection = ListSortDirection.Descending;
+                                }
+                                else if (currentDirection == ListSortDirection.Descending)
+                                {
+                                    nextDirection = null;
+                                }
+                            }
+                            else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==
+                                     DataGridSortDirections.Ascending)
+                            {
+                                nextDirection = null;
+                            }
+                            else if ((supportedSortDirections & DataGridSortDirections.Descending) ==
+                                     DataGridSortDirections.Descending)
+                            {
+                                nextDirection = null;
+                            }
+                        }
+                        else
+                        {
+                            if ((supportedSortDirections & DataGridSortDirections.All) == DataGridSortDirections.All)
+                            {
+                                nextDirection = ListSortDirection.Ascending;
+                            }
+                            else if ((supportedSortDirections & DataGridSortDirections.Ascending) ==
+                                     DataGridSortDirections.Ascending)
+                            {
+                                nextDirection = ListSortDirection.Ascending;
+                            }
+                            else if ((supportedSortDirections & DataGridSortDirections.Descending) ==
+                                     DataGridSortDirections.Descending)
+                            {
+                                nextDirection = ListSortDirection.Descending;
+                            }
+                        }
+                    }
+                    
                     if (nextDirection != null)
                     {
                         newSort = BuildSortDescription(nextDirection);

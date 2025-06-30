@@ -27,7 +27,7 @@ internal partial class DataGridColumnHeader
 
     private DataGridFilterIndicator? _filterIndicator;
 
-    internal void InvokeProcessFilter(List<string> filterValues)
+    internal void InvokeProcessFilter(List<object> filterValues)
     {
         Debug.Assert(OwningGrid != null);
         if (OwningGrid.WaitForLostFocus(() => InvokeProcessFilter(filterValues)))
@@ -41,7 +41,7 @@ internal partial class DataGridColumnHeader
         }
     }
 
-    internal void ProcessFilter(List<string> filterValues)
+    internal void ProcessFilter(List<object> filterValues)
     {
         if (OwningColumn != null &&
             OwningGrid != null &&
@@ -55,12 +55,12 @@ internal partial class DataGridColumnHeader
                 OwningGrid.DataConnection.FilterDescriptions != null)
             {
                 DataGrid                   owningGrid = OwningGrid;
-                DataGridFilterDescription? newFilter;
                 DataGridFilterDescription? filter         = OwningColumn.GetFilterDescription();
                 IDataGridCollectionView?   collectionView = owningGrid.DataConnection.CollectionView;
                 Debug.Assert(collectionView != null);
                 using (collectionView.DeferRefresh())
                 {
+                    DataGridFilterDescription? newFilter;
                     if (owningGrid.DataConnection.FilterDescriptions.Count == 0)
                     {
                         owningGrid.DataConnection.FilterDescriptions.Clear();
@@ -77,7 +77,7 @@ internal partial class DataGridColumnHeader
                             {
                                 PropertyPath = filter.PropertyPath,
                                 Filter =  filter.Filter,
-                                FilterConditions = filterValues.Cast<object>().ToList(),
+                                FilterConditions = filterValues.ToList(),
                             };
                             int oldIndex = owningGrid.DataConnection.FilterDescriptions.IndexOf(filter);
                             if (oldIndex >= 0)
@@ -106,7 +106,7 @@ internal partial class DataGridColumnHeader
                         {
                             PropertyPath = propertyName,
                             Filter       =  OwningColumn.OnFilter,
-                            FilterConditions = filterValues.Cast<object>().ToList(),
+                            FilterConditions = filterValues,
                         };
                         owningGrid.DataConnection.FilterDescriptions.Add(newFilter);
                     }
@@ -125,6 +125,49 @@ internal partial class DataGridColumnHeader
 
     private void HandleFilterRequest(object? sender, DataGridColumnFilterEventArgs args)
     {
-        InvokeProcessFilter(args.FilterValues);
+        InvokeProcessFilter(args.FilterValues.Cast<object>().ToList());
+    }
+
+    internal void InvokeClearFilter()
+    {
+        Debug.Assert(OwningGrid != null);
+        if (OwningGrid.WaitForLostFocus(InvokeClearFilter))
+        {
+            return;
+        }
+
+        if (OwningGrid.CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(ProcessClearFilter);
+        }
+    }
+
+    internal void ProcessClearFilter()
+    {
+        if (OwningColumn != null &&
+            OwningGrid != null &&
+            OwningGrid.EditingRow == null &&
+            OwningColumn != OwningGrid.ColumnsInternal.FillerColumn &&
+            (OwningColumn.CanUserFilter || OwningGrid.CanUserFilterColumns))
+        {
+            var ea = new DataGridColumnEventArgs(OwningColumn);
+            OwningGrid.HandleColumnFiltering(ea);
+            if (!ea.Handled && OwningGrid.DataConnection.AllowFilter &&
+                OwningGrid.DataConnection.FilterDescriptions != null)
+            {
+                DataGrid                   owningGrid     = OwningGrid;
+                DataGridFilterDescription? filter         = OwningColumn.GetFilterDescription();
+                IDataGridCollectionView?   collectionView = owningGrid.DataConnection.CollectionView;
+                Debug.Assert(collectionView != null);
+
+                using (collectionView.DeferRefresh())
+                {
+                    if (filter != null)
+                    {
+                        owningGrid.DataConnection.FilterDescriptions.Remove(filter);
+                    }
+                }
+            }
+        }
     }
 }
