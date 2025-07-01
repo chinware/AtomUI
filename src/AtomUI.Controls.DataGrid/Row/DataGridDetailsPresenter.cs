@@ -65,7 +65,7 @@ public sealed class DataGridDetailsPresenter : Panel
         double leftEdge            = rowGroupSpacerWidth;
         double xClip               = OwningGrid.AreRowGroupHeadersFrozen ? rowGroupSpacerWidth : 0;
         double width;
-        if (OwningGrid.AreRowDetailsFrozen)
+        if (OwningGrid.IsRowDetailsFrozen)
         {
             leftEdge += OwningGrid.HorizontalOffset;
             width    =  OwningGrid.CellsWidth;
@@ -84,7 +84,7 @@ public sealed class DataGridDetailsPresenter : Panel
             child.Arrange(new Rect(leftEdge, 0, width, height));
         }
         
-        if (OwningGrid.AreRowDetailsFrozen)
+        if (OwningGrid.IsRowDetailsFrozen)
         {
             // Frozen Details should not be clipped, similar to frozen cells
             Clip = null;
@@ -119,7 +119,7 @@ public sealed class DataGridDetailsPresenter : Panel
         }
         Debug.Assert(OwningGrid.ColumnsInternal.RowGroupSpacerColumn != null);
 
-        double desiredWidth = OwningGrid.AreRowDetailsFrozen ?
+        double desiredWidth = OwningGrid.IsRowDetailsFrozen ?
             OwningGrid.CellsWidth :
             Math.Max(OwningGrid.CellsWidth, OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth);
         

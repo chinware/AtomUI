@@ -1442,55 +1442,6 @@ public partial class DataGrid
         }
     }
 
-    private void UpdateRowDetailsVisibilityMode(DataGridRowDetailsVisibilityMode newDetailsMode)
-    {
-        int itemCount = DataConnection.Count;
-        if (_rowsPresenter != null && itemCount > 0)
-        {
-            bool newDetailsVisibility = false;
-            switch (newDetailsMode)
-            {
-                case DataGridRowDetailsVisibilityMode.Visible:
-                    newDetailsVisibility = true;
-                    _showDetailsTable.AddValues(0, itemCount, true);
-                    break;
-                case DataGridRowDetailsVisibilityMode.Collapsed:
-                    newDetailsVisibility = false;
-                    _showDetailsTable.AddValues(0, itemCount, false);
-                    break;
-                case DataGridRowDetailsVisibilityMode.VisibleWhenSelected:
-                    _showDetailsTable.Clear();
-                    break;
-            }
-
-            bool updated = false;
-            foreach (DataGridRow row in GetAllRows())
-            {
-                if (row.IsVisible)
-                {
-                    if (newDetailsMode == DataGridRowDetailsVisibilityMode.VisibleWhenSelected)
-                    {
-                        // For VisibleWhenSelected, we need to calculate the value for each individual row
-                        newDetailsVisibility = _selectedItems.ContainsSlot(row.Slot);
-                    }
-
-                    if (row.AreDetailsVisible != newDetailsVisibility)
-                    {
-                        updated = true;
-
-                        row.SetDetailsVisibilityInternal(newDetailsVisibility, raiseNotification: true, animate: false);
-                    }
-                }
-            }
-
-            if (updated)
-            {
-                UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
-                InvalidateRowsMeasure(invalidateIndividualElements: false);
-            }
-        }
-    }
-
     private void AddNewCellPrivate(DataGridRow row, DataGridColumn column)
     {
         DataGridCell newCell = new DataGridCell();
@@ -4470,52 +4421,6 @@ public partial class DataGrid
         }
     }
     
-    private void HandleAreRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var value = (bool)(e.NewValue ?? false);
-        ProcessFrozenColumnCount();
-
-        // Update elements in the RowGroupHeader that were previously frozen
-        if (value)
-        {
-            if (_rowsPresenter != null)
-            {
-                foreach (Control element in _rowsPresenter.Children)
-                {
-                    if (element is DataGridRowGroupHeader groupHeader)
-                    {
-                        groupHeader.ClearFrozenStates();
-                    }
-                }
-            }
-        }
-    }
-    
-    private void HandleRowDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-
-        // Update the RowDetails templates if necessary
-        if (_rowsPresenter != null)
-        {
-            foreach (DataGridRow row in GetAllRows())
-            {
-                if (GetRowDetailsVisibility(row.Index))
-                {
-                    // DetailsPreferredHeight is initialized when the DetailsElement's size changes.
-                    row.ApplyDetailsTemplate(initializeDetailsPreferredHeight: false);
-                }
-            }
-        }
-
-        UpdateRowDetailsHeightEstimate();
-        InvalidateMeasure();
-    }
-    
-    private void HandleRowDetailsVisibilityModeChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        UpdateRowDetailsVisibilityMode((DataGridRowDetailsVisibilityMode)(e.NewValue ?? DataGridRowDetailsVisibilityMode.Collapsed));
-    }
-
     private void HandleAutoGenerateColumnsChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var value = (bool)(e.NewValue ?? false);

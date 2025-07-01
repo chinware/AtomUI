@@ -196,8 +196,8 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
         AvaloniaProperty.Register<DataGrid, IEnumerable?>(nameof(ItemsSource));
     
-    public static readonly StyledProperty<bool> AreRowDetailsFrozenProperty =
-        AvaloniaProperty.Register<DataGrid, bool>(nameof(AreRowDetailsFrozen));
+    public static readonly StyledProperty<bool> IsRowDetailsFrozenProperty =
+        AvaloniaProperty.Register<DataGrid, bool>(nameof(IsRowDetailsFrozen));
     
     public static readonly StyledProperty<IDataTemplate?> RowDetailsTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(RowDetailsTemplate));
@@ -512,10 +512,10 @@ public partial class DataGrid : TemplatedControl,
     /// Gets or sets a value that indicates whether the row details sections remain
     /// fixed at the width of the display area or can scroll horizontally.
     /// </summary>
-    public bool AreRowDetailsFrozen
+    public bool IsRowDetailsFrozen
     {
-        get => GetValue(AreRowDetailsFrozenProperty);
-        set => SetValue(AreRowDetailsFrozenProperty, value);
+        get => GetValue(IsRowDetailsFrozenProperty);
+        set => SetValue(IsRowDetailsFrozenProperty, value);
     }
     
     /// <summary>
@@ -1407,10 +1407,6 @@ public partial class DataGrid : TemplatedControl,
                 foreach (DataGridColumn column in sortedInternal)
                 {
                     InsertDisplayedColumnHeader(column);
-                }
-                if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
-                {
-                    Columns.Insert(0, new DataGridDetailExpanderColumn());
                 }
             }
         }

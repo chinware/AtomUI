@@ -82,6 +82,7 @@ internal static class DataGridRowThemeConstants
     public const string BottomGridLinePart = "PART_BottomGridLine";
     public const string CellsPresenterPart = "PART_CellsPresenter";
     public const string DetailsPresenterPart = "PART_DetailsPresenter";
+    public const string DetailsPresenterFramePart = "PART_DetailsPresenterFrame";
     public const string RootLayoutPart = "PART_RootLayout";
     public const string RowHeaderPart = "PART_RowHeader";
     public const string InvalidVisualElementPart = "PART_InvalidVisualElement";

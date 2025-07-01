@@ -265,7 +265,7 @@ public partial class DataGridRow
     internal void ApplyDetailsTemplate(bool initializeDetailsPreferredHeight)
     {
         Debug.Assert(OwningGrid != null);
-        if (_detailsElement != null && AreDetailsVisible)
+        if (_detailsElement != null && IsDetailsVisible)
         {
             IDataTemplate? oldDetailsTemplate = _appliedDetailsTemplate;
             if (ActualDetailsTemplate != null && ActualDetailsTemplate != _appliedDetailsTemplate)
@@ -331,7 +331,7 @@ public partial class DataGridRow
         }
     }
      
-    private void HandleAreDetailsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsDetailsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {
@@ -525,7 +525,7 @@ public partial class DataGridRow
 
         _detailsLoaded            = false;
         _appliedDetailsVisibility = null;
-        SetValueNoCallback(AreDetailsVisibleProperty, false);
+        SetValueNoCallback(IsDetailsVisibleProperty, false);
     }
 
     //TODO Animation
@@ -534,7 +534,7 @@ public partial class DataGridRow
         if ((_detailsElement != null)
             && (_detailsContent != null)
             && (double.IsNaN(_detailsContent.Height))
-            && (AreDetailsVisible)
+            && (IsDetailsVisible)
             && (!double.IsNaN(_detailsDesiredHeight))
             && !MathUtilities.AreClose(_detailsContent.Bounds.Inflate(_detailsContent.Margin).Height, _detailsDesiredHeight)
             && Slot != -1)
@@ -580,7 +580,7 @@ public partial class DataGridRow
             if (!MathUtils.AreClose(newValue, oldValue) && !MathUtils.AreClose(newValue, _detailsDesiredHeight))
             {
 
-                if (AreDetailsVisible && _appliedDetailsTemplate != null)
+                if (IsDetailsVisible && _appliedDetailsTemplate != null)
                 {
                     Debug.Assert(_detailsElement != null);
                     // Update the new desired height for RowDetails
@@ -631,7 +631,7 @@ public partial class DataGridRow
     }
 
     //TODO Animation
-    // Sets AreDetailsVisible on the row and animates if necessary
+    // Sets IsDetailsVisible on the row and animates if necessary
     internal void SetDetailsVisibilityInternal(bool isVisible, bool raiseNotification, bool animate)
     {
         Debug.Assert(OwningGrid != null);
@@ -649,7 +649,7 @@ public partial class DataGridRow
             }
 
             _appliedDetailsVisibility = isVisible;
-            SetValueNoCallback(AreDetailsVisibleProperty, isVisible);
+            SetValueNoCallback(IsDetailsVisibleProperty, isVisible);
 
             // Applies a new DetailsTemplate only if it has changed either here or at the DataGrid level
             ApplyDetailsTemplate(initializeDetailsPreferredHeight: true);
@@ -664,7 +664,7 @@ public partial class DataGridRow
                 return;
             }
 
-            if (AreDetailsVisible)
+            if (IsDetailsVisible)
             {
                 // Set the details height directly
                 _detailsElement.ContentHeight = _detailsDesiredHeight;

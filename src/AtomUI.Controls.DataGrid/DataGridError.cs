@@ -136,6 +136,11 @@ internal static class DataGridError
         {
             return new NotSupportedException("SelectionColumn is used but the selection mode is not single selection or multiple selection");
         }
+        
+        public static NotSupportedException RowDetailsVisibilityModeException()
+        {
+            return new NotSupportedException("DataGridDetailExpanderColumn is used but the RowDetailsVisibilityMode mode is not RowDetailsVisibilityMode.Collapsed");
+        }
     }
     
     public static class DataGridLength

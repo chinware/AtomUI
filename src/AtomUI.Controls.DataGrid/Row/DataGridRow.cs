@@ -51,8 +51,8 @@ public partial class DataGridRow : TemplatedControl
     public static readonly StyledProperty<IDataTemplate?> DetailsTemplateProperty =
         AvaloniaProperty.Register<DataGridRow, IDataTemplate?>(nameof(DetailsTemplate));
     
-    public static readonly StyledProperty<bool> AreDetailsVisibleProperty =
-        AvaloniaProperty.Register<DataGridRow, bool>(nameof(AreDetailsVisible));
+    public static readonly StyledProperty<bool> IsDetailsVisibleProperty =
+        AvaloniaProperty.Register<DataGridRow, bool>(nameof(IsDetailsVisible));
     
     public static readonly DirectProperty<DataGridRow, int> IndexProperty = AvaloniaProperty.RegisterDirect<DataGridRow, int>(
         nameof(Index), o => o.Index, (o, v) => o.Index = v);
@@ -95,10 +95,10 @@ public partial class DataGridRow : TemplatedControl
     /// <summary>
     /// Gets or sets a value that indicates when the details section of the row is displayed.
     /// </summary>
-    public bool AreDetailsVisible
+    public bool IsDetailsVisible
     {
-        get => GetValue(AreDetailsVisibleProperty);
-        set => SetValue(AreDetailsVisibleProperty, value);
+        get => GetValue(IsDetailsVisibleProperty);
+        set => SetValue(IsDetailsVisibleProperty, value);
     }
     
     /// <summary>
@@ -114,6 +114,9 @@ public partial class DataGridRow : TemplatedControl
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridRow>();
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridRow>();
@@ -123,6 +126,12 @@ public partial class DataGridRow : TemplatedControl
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    internal SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
 
     #endregion
 
@@ -130,7 +139,7 @@ public partial class DataGridRow : TemplatedControl
     {
         HeaderProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleHeaderChanged(e));
         DetailsTemplateProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleDetailsTemplateChanged(e));
-        AreDetailsVisibleProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleAreDetailsVisibleChanged(e));
+        IsDetailsVisibleProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleIsDetailsVisibleChanged(e));
         PointerPressedEvent.AddClassHandler<DataGridRow>((x, e) => x.HandlePointerPressed(e), handledEventsToo: true);
         IsTabStopProperty.OverrideDefaultValue<DataGridRow>(false);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridRow>(IsOffscreenBehavior.FromClip);

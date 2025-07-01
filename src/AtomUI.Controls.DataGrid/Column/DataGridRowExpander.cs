@@ -1,6 +1,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -48,6 +49,7 @@ internal class DataGridRowExpander : ToggleButton,
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;
     private Border? _frame;
+    private IDisposable? _disposable;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -169,5 +171,15 @@ internal class DataGridRowExpander : ToggleButton,
                 _horizontalIndicator.Transitions = null;
             }
         }
+    }
+
+    internal void NotifyLoadingRow(DataGridRow row)
+    {
+        _disposable = BindUtils.RelayBind(this, IsCheckedProperty, row, DataGridRow.IsDetailsVisibleProperty, BindingMode.TwoWay);
+    }
+    
+    internal void NotifyUnLoadingRow(DataGridRow row)
+    {
+        _disposable?.Dispose();
     }
 }
