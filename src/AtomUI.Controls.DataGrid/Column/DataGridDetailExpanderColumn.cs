@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
@@ -18,7 +19,10 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
 
     protected override Control GenerateElement(DataGridCell cell, object dataItem)
     {
-        return new DataGridRowExpander();
+        Debug.Assert(OwningGrid != null);
+        var expander = new DataGridRowExpander();
+        expander[!DataGridColumnHeader.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
+        return expander;
     }
     
     protected override object? PrepareCellForEdit(Control editingElement, RoutedEventArgs editingEventArgs)
