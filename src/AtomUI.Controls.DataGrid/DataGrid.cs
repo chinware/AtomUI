@@ -203,7 +203,7 @@ public partial class DataGrid : TemplatedControl,
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(RowDetailsTemplate));
     
     public static readonly StyledProperty<DataGridRowDetailsVisibilityMode> RowDetailsVisibilityModeProperty =
-        AvaloniaProperty.Register<DataGrid, DataGridRowDetailsVisibilityMode>(nameof(RowDetailsVisibilityMode));
+        AvaloniaProperty.Register<DataGrid, DataGridRowDetailsVisibilityMode>(nameof(RowDetailsVisibilityMode), DataGridRowDetailsVisibilityMode.Collapsed);
     
     public static readonly DirectProperty<DataGrid, IDataGridCollectionView?> CollectionViewProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, IDataGridCollectionView?>(nameof(CollectionView),
@@ -1403,9 +1403,14 @@ public partial class DataGrid : TemplatedControl,
                 // Columns were added before our Template was applied, add the ColumnHeaders now
                 var sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
                 sortedInternal.Sort(new DisplayIndexComparer());
+              
                 foreach (DataGridColumn column in sortedInternal)
                 {
                     InsertDisplayedColumnHeader(column);
+                }
+                if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
+                {
+                    Columns.Insert(0, new DataGridDetailExpanderColumn());
                 }
             }
         }

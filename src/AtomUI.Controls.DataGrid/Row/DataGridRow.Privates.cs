@@ -337,7 +337,7 @@ public partial class DataGridRow
         {
             if (OwningGrid == null)
             {
-                throw DataGridError.DataGrid.NoOwningGrid(this.GetType());
+                throw DataGridError.DataGrid.NoOwningGrid(GetType());
             }
             if (Index == -1)
             {

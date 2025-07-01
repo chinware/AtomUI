@@ -115,7 +115,6 @@ internal static class DataGridThemeConstants
 
 internal static class DataGridTopLeftColumnHeaderThemeConstants
 {
-    
 }
 
 internal static class DataGridFilterFlyoutPresenterThemeConstants
@@ -124,4 +123,11 @@ internal static class DataGridFilterFlyoutPresenterThemeConstants
     public const string OkButtonPart = "PART_OkButton";
     public const string ResetButtonPart = "PART_ResetButton";
     public const string ButtonLayoutSeparatorPart = "PART_ButtonLayoutSeparator";
+}
+
+internal static class DataGridRowExpanderThemeConstants
+{
+    public const string FramePart = "PART_Frame";
+    public const string VerticalIndicatorPart = "PART_VerticalIndicator";
+    public const string HorizontalIndicatorPart = "PART_HorizontalIndicator";
 }

@@ -255,25 +255,30 @@ public sealed class DataGridSelectionColumn : DataGridColumn
     
     internal override DataGridColumnHeader CreateHeader()
     {
+        DataGridColumnHeader? header = null;
         if (OwningGrid == null || OwningGrid.SelectionMode == DataGridSelectionMode.Single)
         {
-            return base.CreateHeader();
+            header                        = base.CreateHeader();
+            header.IndicatorLayoutVisible = false;
         }
-
-        var result = new DataGridColumnHeader
+        else
         {
-            OwningColumn           = this,
-            IndicatorLayoutVisible = false
-        };
-        result[!DataGridColumnHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
-        result[!DataGridColumnHeader.SupportedSortDirectionsProperty]    = this[!SupportedSortDirectionsProperty];
-        result[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
-        result[!DataGridColumnHeader.VerticalContentAlignmentProperty]   = this[!VerticalAlignmentProperty];
-
-        _headerCheckBox       =  new CheckBox();
-        _headerCheckBox.Click += HandleSelectedAllChanged;
-        result.Content        =  _headerCheckBox;
-        return result;
+            header = new DataGridColumnHeader
+            {
+                OwningColumn           = this,
+                IndicatorLayoutVisible = false
+            };
+            header[!DataGridColumnHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
+            header[!DataGridColumnHeader.SupportedSortDirectionsProperty]    = this[!SupportedSortDirectionsProperty];
+            header[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
+            header[!DataGridColumnHeader.VerticalContentAlignmentProperty]   = this[!VerticalAlignmentProperty];
+            header[!DataGridColumnHeader.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
+            
+            _headerCheckBox       =  new CheckBox();
+            _headerCheckBox.Click += HandleSelectedAllChanged;
+            header.Content        =  _headerCheckBox;
+        }
+        return header;
     }
 
     private void HandleSelectedAllChanged(object? sender, EventArgs e)
