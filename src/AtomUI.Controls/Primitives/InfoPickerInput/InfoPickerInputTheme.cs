@@ -141,7 +141,7 @@ internal class InfoPickerInputTheme : BaseControlTheme
 
         commonStyle.Add(InfoPickerInput.HorizontalAlignmentProperty, HorizontalAlignment.Left);
         commonStyle.Add(InfoPickerInput.VerticalAlignmentProperty, VerticalAlignment.Top);
-        commonStyle.Add(InfoPickerInput.MarginToAnchorProperty, SharedTokenKey.MarginXXS);
+        commonStyle.Add(InfoPickerInput.MarginToAnchorProperty, SharedTokenKey.UniformlyMarginXXS);
         
         BuildFontSizeStyle(commonStyle);
         

@@ -123,7 +123,7 @@ public class OptionButtonToken : AbstractControlDesignToken
         ButtonColor                        = SharedToken.ColorText;
         ButtonCheckedBgDisabled            = SharedToken.ControlItemBgActiveDisabled;
         ButtonCheckedColorDisabled         = SharedToken.ColorTextDisabled;
-        ButtonPadding                      = new Thickness(SharedToken.Padding, 0);
+        ButtonPadding                      = new Thickness(SharedToken.UniformlyPadding, 0);
 
         var fontSize   = SharedToken.FontSize;
         var fontSizeLG = SharedToken.FontSizeLG;

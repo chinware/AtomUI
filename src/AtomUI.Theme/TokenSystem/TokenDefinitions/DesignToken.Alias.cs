@@ -1,4 +1,5 @@
-﻿using Avalonia.Media;
+﻿using Avalonia;
+using Avalonia.Media;
 
 namespace AtomUI.Theme.TokenSystem;
 
@@ -210,43 +211,87 @@ public partial class DesignToken
     /// 极小内间距
     /// 控制元素的极小内间距。
     /// </summary>
-    public double PaddingXXS { get; set; }
+    public double UniformlyPaddingXXS { get; set; }
+    
+    // Padding
+    /// <summary>
+    /// 极小内间距
+    /// 控制元素的极小内间距。
+    /// </summary>
+    public Thickness PaddingXXS { get; set; }
 
     /// <summary>
     /// 特小内间距
     /// 控制元素的特小内间距。
     /// </summary>
-    public double PaddingXS { get; set; }
+    public double UniformlyPaddingXS { get; set; }
+    
+    /// <summary>
+    /// 特小内间距
+    /// 控制元素的特小内间距。
+    /// </summary>
+    public Thickness PaddingXS { get; set; }
 
     /// <summary>
     /// 小内间距
     /// 控制元素的小内间距。
     /// </summary>
-    public double PaddingSM { get; set; }
+    public double UniformlyPaddingSM { get; set; }
+    
+    /// <summary>
+    /// 小内间距
+    /// 控制元素的小内间距。
+    /// </summary>
+    public Thickness PaddingSM { get; set; }
+
 
     /// <summary>
     /// 内间距
     /// 控制元素的内间距。
     /// </summary>
-    public double Padding { get; set; }
+    public double UniformlyPadding { get; set; }
+    
+    /// <summary>
+    /// 内间距
+    /// 控制元素的内间距。
+    /// </summary>
+    public Thickness Padding { get; set; }
 
     /// <summary>
     /// 中等内间距
     /// 控制元素的中等内间距。
     /// </summary>
-    public double PaddingMD { get; set; }
+    public double UniformlyPaddingMD { get; set; }
+    
+    /// <summary>
+    /// 中等内间距
+    /// 控制元素的中等内间距。
+    /// </summary>
+    public Thickness PaddingMD { get; set; }
 
     /// <summary>
     /// 大内间距
     /// 控制元素的大内间距。
     /// </summary>
-    public double PaddingLG { get; set; }
+    public double UniformlyPaddingLG { get; set; }
+    
+    /// <summary>
+    /// 大内间距
+    /// 控制元素的大内间距。
+    /// </summary>
+    public Thickness PaddingLG { get; set; }
 
     /// <summary>
     /// 特大内间距
     /// 控制元素的特大内间距。
     /// </summary>
-    public double PaddingXL { get; set; }
+    public double UniformlyPaddingXL { get; set; }
+    
+    /// <summary>
+    /// 特大内间距
+    /// 控制元素的特大内间距。
+    /// </summary>
+    public Thickness PaddingXL { get; set; }
 
     // Padding Content
     /// <summary>
@@ -295,49 +340,97 @@ public partial class DesignToken
     /// 外边距 XXS
     /// 控制元素外边距，最小尺寸。
     /// </summary>
-    public double MarginXXS { get; set; }
+    public double UniformlyMarginXXS { get; set; }
+    
+    /// <summary>
+    /// 外边距 XXS
+    /// 控制元素外边距，最小尺寸。
+    /// </summary>
+    public Thickness MarginXXS { get; set; }
 
     /// <summary>
     /// 外边距 XS
     /// 控制元素外边距，小尺寸。
     /// </summary>
-    public double MarginXS { get; set; }
+    public double UniformlyMarginXS { get; set; }
+    
+    /// <summary>
+    /// 外边距 XS
+    /// 控制元素外边距，小尺寸。
+    /// </summary>
+    public Thickness MarginXS { get; set; }
 
     /// <summary>
     /// 外边距 SM
     /// 控制元素外边距，中小尺寸。
     /// </summary>
-    public double MarginSM { get; set; }
+    public double UniformlyMarginSM { get; set; }
+    
+    /// <summary>
+    /// 外边距 SM
+    /// 控制元素外边距，中小尺寸。
+    /// </summary>
+    public Thickness MarginSM { get; set; }
 
     /// <summary>
     /// 外边距
     /// 控制元素外边距，中等尺寸。
     /// </summary>
-    public double Margin { get; set; }
+    public double UniformlyMargin { get; set; }
+    
+    /// <summary>
+    /// 外边距
+    /// 控制元素外边距，中等尺寸。
+    /// </summary>
+    public Thickness Margin { get; set; }
 
     /// <summary>
     /// 外边距 MD
     /// 控制元素外边距，中大尺寸。
     /// </summary>
-    public double MarginMD { get; set; }
+    public double UniformlyMarginMD { get; set; }
+    
+    /// <summary>
+    /// 外边距 MD
+    /// 控制元素外边距，中大尺寸。
+    /// </summary>
+    public Thickness MarginMD { get; set; }
 
     /// <summary>
     /// 外边距 LG
     /// 控制元素外边距，大尺寸。
     /// </summary>
-    public double MarginLG { get; set; }
+    public double UniformlyMarginLG { get; set; }
+    
+    /// <summary>
+    /// 外边距 LG
+    /// 控制元素外边距，大尺寸。
+    /// </summary>
+    public Thickness MarginLG { get; set; }
 
     /// <summary>
     /// 外边距 XL
     /// 控制元素外边距，超大尺寸。
     /// </summary>
-    public double MarginXL { get; set; }
+    public double UniformlyMarginXL { get; set; }
 
+    /// <summary>
+    /// 外边距 XL
+    /// 控制元素外边距，超大尺寸。
+    /// </summary>
+    public Thickness MarginXL { get; set; }
+    
     /// <summary>
     /// 外边距 XXL
     /// 控制元素外边距，最大尺寸。
     /// </summary>
-    public double MarginXXL { get; set; }
+    public double UniformlyMarginXXL { get; set; }
+    
+    /// <summary>
+    /// 外边距 XXL
+    /// 控制元素外边距，最大尺寸。
+    /// </summary>
+    public Thickness MarginXXL { get; set; }
 
     // =============== Legacy: should be remove ===============
     /// <summary>

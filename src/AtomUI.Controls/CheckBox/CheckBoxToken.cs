@@ -24,6 +24,6 @@ internal class CheckBoxToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         CheckIndicatorSize        = SharedToken.ControlInteractiveSize;
         IndicatorTristateMarkSize = SharedToken.FontSizeLG / 2;
-        TextMargin                = new Thickness(SharedToken.MarginXXS, 0, 0, 0);
+        TextMargin                = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
     }
 }

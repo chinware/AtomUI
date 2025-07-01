@@ -219,7 +219,7 @@ public class FlyoutHost : Control,
         BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
         SetupFlyoutProperties();
         _flyoutStateHelper.NotifyAttachedToVisualTree();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.MarginXXS));
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.UniformlyMarginXXS));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid));
     }
 

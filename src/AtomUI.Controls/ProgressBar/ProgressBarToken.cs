@@ -67,6 +67,6 @@ internal class ProgressBarToken : AbstractControlDesignToken
         LineInfoIconSize          = SharedToken.IconSize;
         LineInfoIconSizeSM        = SharedToken.IconSizeSM;
         LineExtraInfoMargin       = SharedToken.ControlPaddingSM;
-        LineProgressPadding       = SharedToken.PaddingXXS / 2;
+        LineProgressPadding       = SharedToken.UniformlyPaddingXXS / 2;
     }
 }

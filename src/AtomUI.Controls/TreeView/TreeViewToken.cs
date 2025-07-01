@@ -84,12 +84,12 @@ internal class TreeViewToken : AbstractControlDesignToken
         DirectoryNodeSelectedColor = SharedToken.ColorTextLightSolid;
         DirectoryNodeSelectedBg = SharedToken.ColorPrimary;
 
-        TreeItemMargin         = new Thickness(0, 0, 0, SharedToken.PaddingXS / 2);
-        TreeItemPadding        = new Thickness(SharedToken.PaddingXXS, 0);
-        TreeItemHeaderPadding  = new Thickness(SharedToken.PaddingXS / 2, 0);
-        TreeItemHeaderMargin   = new Thickness(SharedToken.MarginXS / 2, 0, 0, 0);
-        TreeNodeSwitcherMargin = new Thickness(0, 0, SharedToken.PaddingXS / 2, 0);
-        TreeNodeIconMargin     = new Thickness(SharedToken.PaddingXS / 2, 0, 0, 0);
+        TreeItemMargin         = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingXS / 2);
+        TreeItemPadding        = new Thickness(SharedToken.UniformlyPaddingXXS, 0);
+        TreeItemHeaderPadding  = new Thickness(SharedToken.UniformlyPaddingXS / 2, 0);
+        TreeItemHeaderMargin   = new Thickness(SharedToken.UniformlyMarginXS / 2, 0, 0, 0);
+        TreeNodeSwitcherMargin = new Thickness(0, 0, SharedToken.UniformlyPaddingXS / 2, 0);
+        TreeNodeIconMargin     = new Thickness(SharedToken.UniformlyPaddingXS / 2, 0, 0, 0);
 
         DragIndicatorLineWidth = SharedToken.LineWidthFocus;
     }

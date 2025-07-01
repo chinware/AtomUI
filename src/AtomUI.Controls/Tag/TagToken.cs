@@ -45,6 +45,6 @@ internal class TagToken : AbstractControlDesignToken
         DefaultBg            = ColorUtils.OnBackground(SharedToken.ColorFillQuaternary, SharedToken.ColorBgContainer);
         TagBorderlessBg      = DefaultBg;
         DefaultColor         = SharedToken.ColorText;
-        TagTextPaddingInline = new Thickness(SharedToken.PaddingXXS, 0);
+        TagTextPaddingInline = new Thickness(SharedToken.UniformlyPaddingXXS, 0);
     }
 }

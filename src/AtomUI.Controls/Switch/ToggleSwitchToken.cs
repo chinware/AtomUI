@@ -148,7 +148,7 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         };
 
         IconSize                 = TrackHeightSM;
-        IconSizeSM               = TrackHeightSM - SharedToken.PaddingXXS;
+        IconSizeSM               = TrackHeightSM - SharedToken.UniformlyPaddingXXS;
         LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200); // 毫秒
     }
 }

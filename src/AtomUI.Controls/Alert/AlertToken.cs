@@ -69,13 +69,13 @@ internal class AlertToken : AbstractControlDesignToken
         const double paddingHorizontal = 12; // Fixed value here.
         WithDescriptionIconSize = SharedToken.FontSizeHeading3;
         DefaultPadding          = new Thickness(paddingHorizontal, SharedToken.PaddingContentVerticalSM);
-        WithDescriptionPadding  = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.PaddingMD);
+        WithDescriptionPadding  = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingMD);
 
-        MessageWithDescriptionMargin = new Thickness(0, 0, 0, SharedToken.MarginXS);
-        IconDefaultMargin            = new Thickness(0, 0, SharedToken.MarginXS, 0);
-        IconWithDescriptionMargin    = new Thickness(0, 0, SharedToken.MarginSM, 0);
-        ExtraElementMargin           = new Thickness(SharedToken.MarginXS, 0, 0, 0);
-        DescriptionLabelMargin       = new Thickness(0, SharedToken.MarginXS, 0, 0);
+        MessageWithDescriptionMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
+        IconDefaultMargin            = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
+        IconWithDescriptionMargin    = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
+        ExtraElementMargin           = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
+        DescriptionLabelMargin       = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
 
         CloseIconSize = SharedToken.FontSizeIcon + 2;
         IconSize      = SharedToken.FontSizeLG;

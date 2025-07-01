@@ -111,11 +111,11 @@ internal class PaginationToken : AbstractControlDesignToken
         ItemInputBg               = SharedToken.ColorBgContainer;
 
         InputOutlineOffset                  = new Thickness(0);
-        PaginationLayoutSpacing             = SharedToken.MarginXS;
-        PaginationLayoutMiniSpacing         = SharedToken.MarginXXS / 2;
+        PaginationLayoutSpacing             = SharedToken.UniformlyMarginXS;
+        PaginationLayoutMiniSpacing         = SharedToken.UniformlyMarginXXS / 2;
         
         PaginationQuickJumperInputWidth     = SharedToken.ControlHeightLG * 1.25;
         PaginationMiniQuickJumperInputWidth = SharedToken.ControlHeightLG * 1.1;
-        PaginationItemPaddingInline         = new Thickness(SharedToken.MarginXXS * 1.5);
+        PaginationItemPaddingInline         = new Thickness(SharedToken.UniformlyMarginXXS * 1.5);
     }
 }

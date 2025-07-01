@@ -269,9 +269,9 @@ internal class DataGridToken : AbstractControlDesignToken
         RowSelectedBg               = SharedToken.ControlItemBgActive;
         RowSelectedHoverBg          = SharedToken.ControlItemBgActiveHover;
         RowExpandedBg               = SharedToken.ColorFillAlter;
-        CellPadding                 = new Thickness(SharedToken.Padding);
-        CellPaddingMD               = new Thickness(SharedToken.PaddingSM);
-        CellPaddingSM               = new Thickness(SharedToken.PaddingXS);
+        CellPadding                 = SharedToken.Padding;
+        CellPaddingMD               = SharedToken.PaddingSM;
+        CellPaddingSM               = SharedToken.PaddingXS;
         BorderColor                 = SharedToken.ColorBorderSecondary;
         HeaderBorderRadius          = SharedToken.BorderRadiusLG;
         FooterBg                    = colorFillAlterSolid;
@@ -307,8 +307,8 @@ internal class DataGridToken : AbstractControlDesignToken
         ExpandIconSize            = expandIconSize;
         ExpandIconScale           = SharedToken.ControlInteractiveSize / expandIconSize;
         SortIconSize              = SharedToken.FontHeight / 2.5;
-        SortIndicatorLayoutMargin = new Thickness(SharedToken.MarginXS, 0, 0, 0);
-        FilterIndicatorPadding    = new Thickness(SharedToken.PaddingXXS, SharedToken.PaddingXS);
+        SortIndicatorLayoutMargin = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
+        FilterIndicatorPadding    = new Thickness(SharedToken.UniformlyPaddingXXS, SharedToken.UniformlyPaddingXS);
         
         // 别名控件初始化
         TableFontSize = CellFontSize;
@@ -341,7 +341,7 @@ internal class DataGridToken : AbstractControlDesignToken
         TableFontSizeSmall        = CellFontSizeSM;
         TableSelectionColumnWidth = SelectionColumnWidth;
         TableExpandIconBg         = ExpandIconBg;
-        TableExpandColumnWidth    = SharedToken.ControlInteractiveSize + SharedToken.Padding * 2;
+        TableExpandColumnWidth    = SharedToken.ControlInteractiveSize + SharedToken.UniformlyPadding * 2;
         TableExpandedRowBg        = RowExpandedBg;
         
         // Dropdown
@@ -349,10 +349,10 @@ internal class DataGridToken : AbstractControlDesignToken
         TableFilterDropdownWidth               = 120;
         TableFilterDropdownHeight              = 264;
         TableFilterDropdownSearchWidth         = 140;
-        TableFilterButtonSpacing               = SharedToken.MarginXS;
-        TableFilterButtonContainerMargin       = new Thickness(0, SharedToken.MarginXS, 0, 0);
-        TableFilterButtonLayoutSeparatorMargin = new  Thickness(0, SharedToken.MarginXXS, 0, 0);
-        TableFilterDropdownPadding             = new Thickness(SharedToken.PaddingXS);
+        TableFilterButtonSpacing               = SharedToken.UniformlyMarginXS;
+        TableFilterButtonContainerMargin       = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
+        TableFilterButtonLayoutSeparatorMargin = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
+        TableFilterDropdownPadding             = SharedToken.PaddingXS;
         // Virtual Scroll Bar
         TableScrollThumbSize    = 8;
         TableScrollThumbBg      = StickyScrollBarBg;

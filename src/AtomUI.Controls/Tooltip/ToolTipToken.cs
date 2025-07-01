@@ -65,7 +65,7 @@ internal class ToolTipToken : AbstractControlDesignToken
             Math.Max(BorderRadiusOuter.TopRight, 4),
             Math.Max(BorderRadiusOuter.BottomLeft, 4),
             Math.Max(BorderRadiusOuter.BottomRight, 4));
-        ToolTipPadding        = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingSM / 2 + 2);
+        ToolTipPadding        = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingSM / 2 + 2);
         ToolTipShadows        = SharedToken.BoxShadowsSecondary;
         ToolTipMotionDuration = SharedToken.MotionDurationMid;
     }

@@ -191,11 +191,11 @@ internal class DrawerToken : AbstractControlDesignToken
         SmallSize         = 378;
         MiddleSize        = 520;
         LargeSize         = 736;
-        HeaderMargin      = new Thickness(SharedToken.MarginLG, SharedToken.Margin);
-        FooterPadding     = new Thickness(SharedToken.Padding, SharedToken.PaddingXS);
-        CloseIconPadding  = new Thickness(SharedToken.PaddingXXS);
-        CloseIconMargin   = new Thickness(0, 0, SharedToken.MarginXS, 0);
-        ContentPadding    = new Thickness(SharedToken.PaddingLG);
+        HeaderMargin      = new Thickness(SharedToken.UniformlyMarginLG, SharedToken.UniformlyMargin);
+        FooterPadding     = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingXS);
+        CloseIconPadding  = SharedToken.PaddingXXS;
+        CloseIconMargin   = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
+        ContentPadding    = SharedToken.PaddingLG;
         PushOffsetPercent = 0.4;
     }
 }

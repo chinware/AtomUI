@@ -154,13 +154,21 @@ public partial class DesignToken : AbstractDesignToken
         ControlPadding   = 12;
         ControlPaddingSM = 8;
 
-        PaddingXXS = SizeXXS;
-        PaddingXS  = SizeXS;
-        PaddingSM  = SizeSM;
-        Padding    = Size;
-        PaddingMD  = SizeMD;
-        PaddingLG  = SizeLG;
-        PaddingXL  = SizeXL;
+        UniformlyPaddingXXS = SizeXXS;
+        UniformlyPaddingXS  = SizeXS;
+        UniformlyPaddingSM  = SizeSM;
+        UniformlyPadding    = Size;
+        UniformlyPaddingMD  = SizeMD;
+        UniformlyPaddingLG  = SizeLG;
+        UniformlyPaddingXL  = SizeXL;
+        
+        PaddingXXS = new Thickness(SizeXXS);
+        PaddingXS  = new Thickness(SizeXS);
+        PaddingSM  = new Thickness(SizeSM);
+        Padding    = new Thickness(Size);
+        PaddingMD  = new Thickness(SizeMD);
+        PaddingLG  = new Thickness(SizeLG);
+        PaddingXL  = new Thickness(SizeXL);
 
         PaddingContentHorizontalLG = SizeLG;
         PaddingContentVerticalLG   = SizeMS;
@@ -170,14 +178,23 @@ public partial class DesignToken : AbstractDesignToken
         PaddingContentHorizontalXS = SizeXS;
         PaddingContentVerticalSM   = SizeXS;
 
-        MarginXXS = SizeXXS;
-        MarginXS  = SizeXS;
-        MarginSM  = SizeSM;
-        Margin    = Size;
-        MarginMD  = SizeMD;
-        MarginLG  = SizeLG;
-        MarginXL  = SizeXL;
-        MarginXXL = SizeXXL;
+        UniformlyMarginXXS = SizeXXS;
+        UniformlyMarginXS  = SizeXS;
+        UniformlyMarginSM  = SizeSM;
+        UniformlyMargin    = Size;
+        UniformlyMarginMD  = SizeMD;
+        UniformlyMarginLG  = SizeLG;
+        UniformlyMarginXL  = SizeXL;
+        UniformlyMarginXXL = SizeXXL;
+        
+        MarginXXS = new Thickness(SizeXXS);
+        MarginXS  = new Thickness(SizeXS);
+        MarginSM  = new Thickness(SizeSM);
+        Margin    = new Thickness(Size);
+        MarginMD  = new Thickness(SizeMD);
+        MarginLG  = new Thickness(SizeLG);
+        MarginXL  = new Thickness(SizeXL);
+        MarginXXL = new Thickness(SizeXXL);
 
         ScreenXS     = screenXS;
         ScreenXSMin  = screenXS;

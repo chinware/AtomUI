@@ -166,7 +166,7 @@ internal class NavItemsPresenter : ItemsPresenter,
             if (IsEnabledSpacing)
             {
                 this.AddResourceBindingDisposable(
-                    TokenResourceBinder.CreateTokenBinding(panel, StackPanel.SpacingProperty, SharedTokenKey.MarginXS));
+                    TokenResourceBinder.CreateTokenBinding(panel, StackPanel.SpacingProperty, SharedTokenKey.UniformlyMarginXS));
             }
             return panel;
         });
@@ -182,7 +182,7 @@ internal class NavItemsPresenter : ItemsPresenter,
                 if (IsEnabledSpacing)
                 {
                     this.AddResourceBindingDisposable(
-                        TokenResourceBinder.CreateTokenBinding(stackPanel, StackPanel.SpacingProperty, SharedTokenKey.MarginXS));
+                        TokenResourceBinder.CreateTokenBinding(stackPanel, StackPanel.SpacingProperty, SharedTokenKey.UniformlyMarginXS));
                 }
                 else
                 {

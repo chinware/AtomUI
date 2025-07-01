@@ -27,6 +27,6 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         ArrowSize = SharedToken.SizePopupArrow / 1.3;
-        Padding   = new Thickness(SharedToken.PaddingXS);
+        Padding   = SharedToken.PaddingXS;
     }
 }

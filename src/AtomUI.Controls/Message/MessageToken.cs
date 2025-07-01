@@ -51,9 +51,9 @@ internal class MessageToken : AbstractControlDesignToken
         ContentPadding = new Thickness(
             (SharedToken.ControlHeightLG -
              SharedToken.FontSize * SharedToken.LineHeightRatio) / 2,
-            SharedToken.PaddingXS);
-        MessageIconMargin = new Thickness(0, 0, SharedToken.MarginXS, 0);
-        MessageTopMargin  = new Thickness(SharedToken.Margin, SharedToken.Margin, SharedToken.Margin, 0);
+            SharedToken.UniformlyPaddingXS);
+        MessageIconMargin = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
+        MessageTopMargin  = new Thickness(SharedToken.UniformlyMargin, SharedToken.UniformlyMargin, SharedToken.UniformlyMargin, 0);
         MessageIconSize   = SharedToken.FontSizeSM * SharedToken.LineHeightRatioSM;
     }
 }

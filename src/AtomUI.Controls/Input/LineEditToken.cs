@@ -122,14 +122,14 @@ internal class LineEditToken : AbstractControlDesignToken
         var lineHeight   = SharedToken.LineHeightRatio;
         var lineHeightLG = SharedToken.LineHeightRatioLG;
         var lineWidth    = SharedToken.LineWidth;
-        Padding = new Thickness(SharedToken.PaddingSM - lineWidth,
+        Padding = new Thickness(SharedToken.UniformlyPaddingSM - lineWidth,
             Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
         PaddingSM = new Thickness(SharedToken.ControlPaddingSM - lineWidth,
             Math.Round((SharedToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
         PaddingLG = new Thickness(SharedToken.ControlPadding - lineWidth,
             Math.Ceiling((SharedToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
             lineWidth);
-        AddOnPadding   = new Thickness(SharedToken.PaddingSM, 0);
+        AddOnPadding   = new Thickness(SharedToken.UniformlyPaddingSM, 0);
         AddOnPaddingSM = new Thickness(SharedToken.ControlPaddingSM, 0);
         AddOnPaddingLG = new Thickness(SharedToken.ControlPadding, 0);
 
@@ -157,7 +157,7 @@ internal class LineEditToken : AbstractControlDesignToken
         InputFontSizeLG = SharedToken.FontSizeLG;
         InputFontSizeSM = SharedToken.FontSizeSM;
 
-        LeftInnerAddOnMargin  = new Thickness(0, 0, SharedToken.MarginXXS, 0);
-        RightInnerAddOnMargin = new Thickness(SharedToken.MarginXXS, 0, 0, 0);
+        LeftInnerAddOnMargin  = new Thickness(0, 0, SharedToken.UniformlyMarginXXS, 0);
+        RightInnerAddOnMargin = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
     }
 }

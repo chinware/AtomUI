@@ -370,7 +370,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         var activeBarHeight = !double.IsNaN(ActiveBarHeight)
             ? ActiveBarHeight
             : SharedToken.LineWidthBold;
-        var itemContentMargin    = ItemContentMargin != default ? ItemContentMargin : new Thickness(SharedToken.MarginXXS, SharedToken.MarginXXS);
+        var itemContentMargin    = ItemContentMargin != default ? ItemContentMargin : new Thickness(SharedToken.UniformlyMarginXXS, SharedToken.UniformlyMarginXXS);
         var colorTextDark = ColorUtils.FromRgbF(
             0.65d,
             colorTextLightSolid.GetRedF(),
@@ -407,8 +407,8 @@ internal class NavMenuToken : AbstractControlDesignToken
         KeyGestureColor = SharedToken.ColorTextSecondary;
         
         ItemContentMargin    = itemContentMargin;
-        ItemContentPadding   = new Thickness(SharedToken.Padding, SharedToken.PaddingXXS);
-        ItemMargin           = new Thickness(0, 0, SharedToken.MarginXS, 0);
+        ItemContentPadding   = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingXXS);
+        ItemMargin           = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
         ItemHeight           = SharedToken.ControlHeight;
         GroupTitleLineHeight = SharedToken.ControlHeight;
         CollapsedWidth       = SharedToken.ControlHeight * 2;
@@ -441,7 +441,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         DarkDangerItemActiveBg      = SharedToken.ColorError;
 
         MenuHorizontalHeight       = SharedToken.ControlHeightLG * 1.15;
-        HorizontalItemMargin       = new Thickness(SharedToken.Padding, 0);
+        HorizontalItemMargin       = new Thickness(SharedToken.UniformlyPadding, 0);
         HorizontalLineHeight       = SharedToken.ControlHeightLG * 1.15;
         HorizontalItemBorderRadius = new CornerRadius(0);
         HorizontalItemHoverBg      = Colors.Transparent;
@@ -454,16 +454,16 @@ internal class NavMenuToken : AbstractControlDesignToken
         MenuPopupMinWidth               = 160d;
         MenuPopupMaxWidth               = 800d;
         MenuPopupMaxHeight              = ItemHeight * 30;
-        TopLevelItemPopupMarginToAnchor = SharedToken.MarginXS;
+        TopLevelItemPopupMarginToAnchor = SharedToken.UniformlyMarginXS;
         
         MenuPopupBg               = SharedToken.ColorBgElevated;
         MenuPopupBorderRadius     = SharedToken.BorderRadiusLG;
-        MenuPopupContentPadding   = new Thickness(SharedToken.PaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
+        MenuPopupContentPadding   = new Thickness(SharedToken.UniformlyPaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
         MenuPopupBoxShadows       = SharedToken.BoxShadowsSecondary;
-        VerticalItemsPanelSpacing = SharedToken.MarginXXS;
-        VerticalChildItemsMargin = new Thickness(0, SharedToken.MarginXXS, 0, 0);
+        VerticalItemsPanelSpacing = SharedToken.UniformlyMarginXXS;
+        VerticalChildItemsMargin = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
 
         InlineItemIndentUnit       = ItemHeight / 2;
-        VerticalMenuContentPadding = new Thickness(SharedToken.PaddingXXS);
+        VerticalMenuContentPadding = SharedToken.PaddingXXS;
     }
 }

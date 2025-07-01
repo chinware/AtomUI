@@ -89,9 +89,9 @@ internal class ComboBoxToken : ButtonSpinnerToken
         base.CalculateFromAlias();
         OpenIndicatorWidth  = SharedToken.IconSizeSM * 2.5;
         PopupBorderRadius   = SharedToken.BorderRadiusLG;
-        PopupContentPadding = new Thickness(SharedToken.PaddingXXS, PopupBorderRadius.TopLeft / 2);
+        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, PopupBorderRadius.TopLeft / 2);
         PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
-        PopupMarginToAnchor = SharedToken.MarginXXS;
+        PopupMarginToAnchor = SharedToken.UniformlyMarginXXS;
         
         var colorTextDisabled  = SharedToken.ColorTextDisabled;
         var colorTextSecondary = SharedToken.ColorTextSecondary;
@@ -108,7 +108,7 @@ internal class ComboBoxToken : ButtonSpinnerToken
 
         ItemDisabledColor = colorTextDisabled;
 
-        ItemPadding = new Thickness(SharedToken.PaddingSM, 0);
+        ItemPadding = new Thickness(SharedToken.UniformlyPaddingSM, 0);
         ItemMargin  = new Thickness(0, 0.5);
     }
 }

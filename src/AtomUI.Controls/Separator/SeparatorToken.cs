@@ -32,6 +32,6 @@ public class SeparatorToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         TextPaddingInline        = 1.0;
         OrientationMarginPercent = 0.05;
-        VerticalMarginInline     = SharedToken.MarginXS;
+        VerticalMarginInline     = SharedToken.UniformlyMarginXS;
     }
 }

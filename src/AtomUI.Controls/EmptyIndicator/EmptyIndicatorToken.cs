@@ -31,7 +31,7 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
         EmptyImgHeight      = controlHeightLG * 2.5;
         EmptyImgHeightMD    = controlHeightLG;
         EmptyImgHeightSM    = controlHeightLG * 0.875;
-        DescriptionMargin   = new Thickness(0, SharedToken.MarginSM, 0, 0);
-        DescriptionMarginSM = new Thickness(0, SharedToken.MarginXS, 0, 0);
+        DescriptionMargin   = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
+        DescriptionMarginSM = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
     }
 }

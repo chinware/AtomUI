@@ -84,12 +84,12 @@ internal class TimelineToken : AbstractControlDesignToken
         IndicatorDotBorderWidth = SharedToken.Wireframe
             ? SharedToken.LineWidthBold
             : SharedToken.LineWidth * 3;
-        ItemPaddingBottom   = new Thickness(0, 0, 0, SharedToken.Padding * 1.25);
+        ItemPaddingBottom   = new Thickness(0, 0, 0, SharedToken.UniformlyPadding * 1.25);
         ItemPaddingBottomLG = ItemPaddingBottom * 2;
         
-        IndicatorLeftModeMargin  = new Thickness(0, 0, SharedToken.Margin, 0);
-        IndicatorRightModeMargin = new Thickness(SharedToken.Margin, 0, 0, 0);
-        IndicatorMiddleModeMargin = new Thickness(SharedToken.Margin, 0);
+        IndicatorLeftModeMargin  = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
+        IndicatorRightModeMargin = new Thickness(SharedToken.UniformlyMargin, 0, 0, 0);
+        IndicatorMiddleModeMargin = new Thickness(SharedToken.UniformlyMargin, 0);
 
         LastItemContentMinHeight = SharedToken.ControlHeightLG * 1.2;
         IndicatorWidth           = SharedToken.SizeMS;

@@ -96,7 +96,7 @@ internal class SegmentedToken : AbstractControlDesignToken
             0,
             Math.Max(SharedToken.ControlPaddingSM - lineWidth, 0),
             0);
-        SegmentedItemContentMargin = new Thickness(SharedToken.PaddingXXS, 0, 0, 0);
+        SegmentedItemContentMargin = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
 
         ItemMinHeightLG = SharedToken.ControlHeightLG - TrackPadding.Top - TrackPadding.Bottom;
         ItemMinHeight   = SharedToken.ControlHeight - TrackPadding.Top - TrackPadding.Bottom;

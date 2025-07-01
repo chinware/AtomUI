@@ -132,7 +132,7 @@
 
         <!-- BuildIndicatorsStyle 开始 -->
         <Style Selector="^ /template/ StackPanel#PART_IndicatorsLayout">
-            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.MarginXXS}}" />
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXXS}}" />
         </Style>
         <Style Selector="^:sort-ascending">
             <Style Selector="^ /template/ atom|DataGridSortIndicator#PART_SortIndicator">

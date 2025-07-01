@@ -94,15 +94,15 @@ internal class NotificationToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         NotificationProgressHeight = 2;
         NotificationProgressMargin = new Thickness(0, 0, 0, 1);
-        NotificationContentMargin = new Thickness(0, 0, 0, SharedToken.PaddingMD);
-        NotificationPadding = new Thickness(SharedToken.PaddingLG, SharedToken.PaddingMD, SharedToken.PaddingLG, 0);
+        NotificationContentMargin = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingMD);
+        NotificationPadding = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPaddingMD, SharedToken.UniformlyPaddingLG, 0);
         NotificationBg = SharedToken.ColorBgElevated;
         NotificationIconSize = SharedToken.FontSizeLG * SharedToken.LineHeightRatioLG;
         NotificationCloseButtonSize = SharedToken.ControlHeightLG * 0.55;
-        NotificationMarginBottom = new Thickness(0, 0, 0, SharedToken.Margin);
-        NotificationTopMargin = new Thickness(SharedToken.MarginLG, SharedToken.MarginLG, SharedToken.MarginLG, 0);
+        NotificationMarginBottom = new Thickness(0, 0, 0, SharedToken.UniformlyMargin);
+        NotificationTopMargin = new Thickness(SharedToken.UniformlyMarginLG, SharedToken.UniformlyMarginLG, SharedToken.UniformlyMarginLG, 0);
         NotificationBottomMargin =
-            new Thickness(SharedToken.MarginLG, 0, SharedToken.MarginLG, SharedToken.MarginLG);
+            new Thickness(SharedToken.UniformlyMarginLG, 0, SharedToken.UniformlyMarginLG, SharedToken.UniformlyMarginLG);
 
         NotificationProgressBg = new LinearGradientBrush
         {
@@ -115,8 +115,8 @@ internal class NotificationToken : AbstractControlDesignToken
             }
         }.ToImmutable();
         NotificationWidth              = 384;
-        HeaderMargin                   = new Thickness(0, 0, 0, SharedToken.MarginXS);
-        NotificationIconMargin         = new Thickness(0, 0, SharedToken.MarginSM, 0);
-        NotificationCloseButtonPadding = new Thickness(SharedToken.PaddingXXS);
+        HeaderMargin                   = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
+        NotificationIconMargin         = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
+        NotificationCloseButtonPadding = SharedToken.PaddingXXS;
     }
 }

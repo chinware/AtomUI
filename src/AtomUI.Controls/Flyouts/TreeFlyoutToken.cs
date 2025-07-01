@@ -63,7 +63,7 @@ internal class TreeFlyoutToken : AbstractControlDesignToken
         PopupMinHeight = SharedToken.ControlHeightSM * 3;
         PopupMaxHeight = SharedToken.ControlHeightSM * 30;
         
-        PopupContentPadding = new Thickness(SharedToken.PaddingXXS, PopupBorderRadius.TopLeft / 2);
+        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, PopupBorderRadius.TopLeft / 2);
         PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
         PopupBgColor        = SharedToken.ColorBgElevated;
     }

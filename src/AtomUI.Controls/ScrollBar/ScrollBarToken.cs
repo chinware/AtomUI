@@ -59,7 +59,7 @@ internal class ScrollBarToken : AbstractControlDesignToken
         ThumbThickness     = SharedToken.SizeXS;
         ScrollBarThickness = SharedToken.SizeSM;
         ThumbCornerRadius  = new CornerRadius(SharedToken.SizeXS / 2.0);
-        ContentHPadding    = new Thickness(SharedToken.PaddingXXS, 0d);
-        ContentVPadding    = new Thickness(0d, SharedToken.PaddingXXS);
+        ContentHPadding    = new Thickness(SharedToken.UniformlyPaddingXXS, 0d);
+        ContentVPadding    = new Thickness(0d, SharedToken.UniformlyPaddingXXS);
     }
 }

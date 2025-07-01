@@ -97,11 +97,11 @@ internal class ListBoxToken : AbstractControlDesignToken
 
         ItemDisabledColor = colorTextDisabled;
 
-        ItemPaddingLG = new Thickness(SharedToken.Padding);
-        ItemPaddingSM = new Thickness(SharedToken.PaddingXS, SharedToken.PaddingXS);
-        ItemPadding   = new Thickness(SharedToken.PaddingSM, SharedToken.PaddingXS);
+        ItemPaddingLG = SharedToken.Padding;
+        ItemPaddingSM = new Thickness(SharedToken.UniformlyPaddingXS, SharedToken.UniformlyPaddingXS);
+        ItemPadding   = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingXS);
 
-        ContentPadding = new Thickness(SharedToken.PaddingXXS / 2);
+        ContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
         ItemMargin     = new Thickness(0, 0.5);
     }
 }

@@ -90,13 +90,13 @@ internal class BadgeToken : AbstractControlDesignToken
         BadgeColorHover         = SharedToken.ColorErrorHover;
         BadgeShadowColor        = SharedToken.ColorBorderBg;
         BadgeProcessingDuration = TimeSpan.FromMilliseconds(1200);
-        BadgeRibbonOffset       = new Point(SharedToken.MarginXS, SharedToken.MarginXS);
+        BadgeRibbonOffset       = new Point(SharedToken.UniformlyMarginXS, SharedToken.UniformlyMarginXS);
 
         BadgeRibbonCornerTransform    = new ScaleTransform(1, 0.75).ToImmutable();
         BadgeRibbonCornerDarkenAmount = 15;
-        BadgeRibbonTextPadding        = new Thickness(SharedToken.PaddingXS, 0);
-        DotBadgeLabelMargin           = new Thickness(SharedToken.MarginXS, 0, 0, 0);
-        CountBadgeTextPadding         = new Thickness(SharedToken.PaddingXXS, 0);
+        BadgeRibbonTextPadding        = new Thickness(SharedToken.UniformlyPaddingXS, 0);
+        DotBadgeLabelMargin           = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
+        CountBadgeTextPadding         = new Thickness(SharedToken.UniformlyPaddingXXS, 0);
         CountBadgeCornerRadius        = new CornerRadius(IndicatorHeight);
         CountBadgeCornerRadiusSM      = new CornerRadius(IndicatorHeightSM);
     }

@@ -116,12 +116,12 @@ internal class CalendarToken : AbstractControlDesignToken
         CellHeight            = SharedToken.ControlHeightSM;
         TextHeight            = SharedToken.ControlHeightLG;
         WithoutTimeCellHeight = SharedToken.ControlHeightLG * 1.65;
-        CellMargin            = new Thickness(SharedToken.MarginXXS);
-        PanelContentPadding   = new Thickness(SharedToken.PaddingSM);
+        CellMargin            = SharedToken.MarginXXS;
+        PanelContentPadding   = SharedToken.PaddingSM;
         ItemPanelMinWidth     = 260;
         ItemPanelMinHeight    = 290;
         DayTitleHeight        = SharedToken.ControlHeightSM;
-        HeaderMargin          = new Thickness(0, 0, 0, SharedToken.MarginXS);
+        HeaderMargin          = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
         CellLineHeight        = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
         RangeCalendarSpacing  = 20;
     }
