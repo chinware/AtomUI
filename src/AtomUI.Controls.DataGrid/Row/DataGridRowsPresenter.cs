@@ -97,7 +97,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             }
             else if (element is DataGridRowGroupHeader groupHeader)
             {
-                double leftEdge = (OwningGrid.AreRowGroupHeadersFrozen) ? 0 : -OwningGrid.HorizontalOffset;
+                double leftEdge = (OwningGrid.IsRowGroupHeadersFrozen) ? 0 : -OwningGrid.HorizontalOffset;
                 groupHeader.Arrange(new Rect(leftEdge, topEdge, rowDesiredWidth - leftEdge, element.DesiredSize.Height));
             }
 

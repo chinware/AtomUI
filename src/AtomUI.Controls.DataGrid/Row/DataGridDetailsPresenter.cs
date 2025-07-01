@@ -63,7 +63,7 @@ public sealed class DataGridDetailsPresenter : Panel
         Debug.Assert(OwningGrid.ColumnsInternal.RowGroupSpacerColumn != null);
         double rowGroupSpacerWidth = OwningGrid.ColumnsInternal.RowGroupSpacerColumn.Width.Value;
         double leftEdge            = rowGroupSpacerWidth;
-        double xClip               = OwningGrid.AreRowGroupHeadersFrozen ? rowGroupSpacerWidth : 0;
+        double xClip               = OwningGrid.IsRowGroupHeadersFrozen ? rowGroupSpacerWidth : 0;
         double width;
         if (OwningGrid.IsRowDetailsFrozen)
         {

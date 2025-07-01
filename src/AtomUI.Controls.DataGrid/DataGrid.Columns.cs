@@ -29,7 +29,7 @@ public partial class DataGrid
     
     internal List<DataGridColumn> ColumnsItemsInternal => ColumnsInternal.ItemsInternal;
     internal bool InDisplayIndexAdjustments { get; set; }
-    internal bool AreColumnHeadersVisible => (HeadersVisibility & DataGridHeadersVisibility.Column) == DataGridHeadersVisibility.Column;
+    internal bool IsColumnHeadersVisible => (HeadersVisibility & DataGridHeadersVisibility.Column) == DataGridHeadersVisibility.Column;
     
     internal int CurrentColumnIndex
     {

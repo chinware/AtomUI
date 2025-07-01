@@ -235,9 +235,8 @@ internal class DataGridToken : AbstractControlDesignToken
     public Color TableExpandIconBg { get; set; }
     public double TableExpandColumnWidth { get; set; }
     public Color TableExpandedRowBg { get; set; }
-
-    public int ZIndexTableFixed { get; set; }
-    public int ZIndexTableSticky { get; set; }
+    
+    public CornerRadius TableTopLeftColumnCornerRadius { get; set; }
     
     // Virtual Scroll Bar
     public double TableScrollThumbSize { get; set; }
@@ -315,27 +314,25 @@ internal class DataGridToken : AbstractControlDesignToken
         TableBg       = SharedToken.ColorBgContainer;
         TableRadius   = HeaderBorderRadius;
         
-        TablePadding                 = CellPadding;
-        TablePaddingMiddle           = CellPaddingMD;
-        TablePaddingSmall            = CellPaddingSM;
-        TableBorderColor             = BorderColor;
-        TableHeaderTextColor         = HeaderColor;
-        TableHeaderBg                = HeaderBg;
-        TableFooterTextColor         = FooterColor;
-        TableFooterBg                = FooterBg;
-        TableHeaderCellSplitColor    = HeaderSplitColor;
-        TableHeaderSortBg            = HeaderSortActiveBg;
-        TableHeaderSortHoverBg       = HeaderSortHoverBg;
-        TableBodySortBg              = BodySortBg;
-        TableFixedHeaderSortActiveBg = FixedHeaderSortActiveBg;
-        TableHeaderFilterActiveBg    = HeaderFilterHoverBg;
-        TableFilterDropdownBg        = FilterDropdownBg;
-        TableRowHoverBg              = RowHoverBg;
-        TableSelectedRowBg           = RowSelectedBg;
-        TableSelectedRowHoverBg      = RowSelectedHoverBg;
-
-        ZIndexTableFixed  = 2;
-        ZIndexTableSticky = ZIndexTableFixed + 1;
+        TablePadding                   = CellPadding;
+        TablePaddingMiddle             = CellPaddingMD;
+        TablePaddingSmall              = CellPaddingSM;
+        TableBorderColor               = BorderColor;
+        TableHeaderTextColor           = HeaderColor;
+        TableHeaderBg                  = HeaderBg;
+        TableFooterTextColor           = FooterColor;
+        TableFooterBg                  = FooterBg;
+        TableHeaderCellSplitColor      = HeaderSplitColor;
+        TableHeaderSortBg              = HeaderSortActiveBg;
+        TableHeaderSortHoverBg         = HeaderSortHoverBg;
+        TableBodySortBg                = BodySortBg;
+        TableFixedHeaderSortActiveBg   = FixedHeaderSortActiveBg;
+        TableHeaderFilterActiveBg      = HeaderFilterHoverBg;
+        TableFilterDropdownBg          = FilterDropdownBg;
+        TableRowHoverBg                = RowHoverBg;
+        TableSelectedRowBg             = RowSelectedBg;
+        TableSelectedRowHoverBg        = RowSelectedHoverBg;
+        TableTopLeftColumnCornerRadius = new CornerRadius(SharedToken.BorderRadiusLG.TopLeft, 0, 0, 0);
 
         TableFontSizeMiddle       = CellFontSizeMD;
         TableFontSizeSmall        = CellFontSizeSM;

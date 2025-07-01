@@ -64,7 +64,7 @@ public partial class DataGrid
     {
         get
         {
-            if (!AreRowHeadersVisible)
+            if (!IsRowHeadersVisible)
             {
                 return 0;
             }
@@ -73,7 +73,7 @@ public partial class DataGrid
         }
     }
 
-    internal bool AreRowHeadersVisible =>
+    internal bool IsRowHeadersVisible =>
         (HeadersVisibility & DataGridHeadersVisibility.Row) == DataGridHeadersVisibility.Row;
 
     internal double RowHeadersDesiredWidth
@@ -107,7 +107,7 @@ public partial class DataGrid
             int count = FrozenColumnCount;
             if (ColumnsInternal.RowGroupSpacerColumn != null && 
                 ColumnsInternal.RowGroupSpacerColumn.IsRepresented && 
-                (AreRowGroupHeadersFrozen || count > 0))
+                (IsRowGroupHeadersFrozen || count > 0))
             {
                 // Either the RowGroupHeaders are frozen by default or the user set a frozen column count.  In both cases, we need to freeze
                 // one more column than the what the public value says
@@ -3269,7 +3269,7 @@ public partial class DataGrid
     }
 #endif
     
-    private void HandleAreRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var value = (bool)(e.NewValue ?? false);
         ProcessFrozenColumnCount();

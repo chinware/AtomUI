@@ -79,7 +79,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TableSelectedRowBg = new TokenResourceKey("DataGrid.TableSelectedRowBg");
         public static readonly TokenResourceKey TableSelectedRowHoverBg = new TokenResourceKey("DataGrid.TableSelectedRowHoverBg");
         public static readonly TokenResourceKey TableSelectionColumnWidth = new TokenResourceKey("DataGrid.TableSelectionColumnWidth");
-        public static readonly TokenResourceKey ZIndexTableFixed = new TokenResourceKey("DataGrid.ZIndexTableFixed");
-        public static readonly TokenResourceKey ZIndexTableSticky = new TokenResourceKey("DataGrid.ZIndexTableSticky");
+        public static readonly TokenResourceKey TableTopLeftColumnCornerRadius = new TokenResourceKey("DataGrid.TableTopLeftColumnCornerRadius");
     }
 }

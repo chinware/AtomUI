@@ -1,11 +1,56 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:themes="using:AtomUI.Controls.Themes"
     xmlns:atom="https://atomui.net">
     <ControlTheme x:Key="{x:Type atom:DataGridTopLeftColumnHeader}" TargetType="atom:DataGridTopLeftColumnHeader">
+        <ControlTheme.BasedOn>
+            <themes:DataGridColumnHeaderTheme TargetType="atom:DataGridTopLeftColumnHeader" />
+        </ControlTheme.BasedOn>
+
         <Setter Property="Template">
-            <ControlTemplate>
+            <ControlTemplate TargetType="atom:DataGridColumnHeader">
+                <Border Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FramePart}"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.HeaderRootLayoutPart}">
+                        <Decorator Name="{x:Static atom:DataGridColumnHeaderThemeConstants.ContentDecoratorPart}">
+                            <ContentPresenter
+                                Name="{x:Static atom:DataGridColumnHeaderThemeConstants.ContentPresenterPart}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Decorator>
+                        <Rectangle Name="{x:Static atom:DataGridColumnHeaderThemeConstants.VerticalSeparatorPart}"
+                                   Width="1.0"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+                        <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualPart}"
+                               IsVisible="False"
+                               IsHitTestVisible="False">
+                            <Rectangle Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualPrimaryPart}"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Fill="Transparent"
+                                       IsHitTestVisible="False"
+                                       StrokeThickness="2" />
+                            <Rectangle
+                                Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualSecondaryPart}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Transparent"
+                                IsHitTestVisible="False"
+                                StrokeThickness="1" />
+                        </Panel>
+                    </Panel>
+                </Border>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableTopLeftColumnCornerRadius}}"/>
     </ControlTheme>
 </ResourceDictionary>

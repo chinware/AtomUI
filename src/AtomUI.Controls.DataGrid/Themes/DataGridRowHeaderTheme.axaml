@@ -25,12 +25,20 @@
                                Grid.Row="2"
                                Grid.Column="0"
                                Grid.ColumnSpan="2"
-                               HorizontalAlignment="Stretch" />
+                               HorizontalAlignment="Stretch" 
+                               Fill="{TemplateBinding SeparatorBrush}"
+                               IsVisible="{TemplateBinding IsSeparatorsVisible}"/>
+                    
                     <ContentPresenter Grid.Row="0"
                                       Grid.Column="1"
-                                      Grid.RowSpan="2" />
+                                      Grid.RowSpan="2" 
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Content="{TemplateBinding Content}" />
                 </Grid>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="SeparatorBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />
     </ControlTheme>
 </ResourceDictionary>

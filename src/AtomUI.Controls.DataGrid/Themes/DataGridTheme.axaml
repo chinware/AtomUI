@@ -11,7 +11,8 @@
                 <Border
                     Name="{x:Static atom:DataGridThemeConstants.FramePart}"
                     BorderThickness="{TemplateBinding FrameBorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource DataGridHeaderCornerRadiusConverter}}">
+                    CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource DataGridHeaderCornerRadiusConverter}}"
+                    ClipToBounds="True">
                     <DockPanel LastChildFill="True">
                         <ContentPresenter Name="{x:Static atom:DataGridThemeConstants.TitlePart}"
                                           Content="{TemplateBinding Title}"
@@ -34,6 +35,7 @@
                                 Name="{x:Static atom:DataGridThemeConstants.TopLeftCornerPart}"
                                 Grid.Row="0"
                                 Grid.Column="0" />
+                            <!-- 实现树形 header 头 -->
                             <atom:DataGridHeaderView
                                 Name="{x:Static atom:DataGridThemeConstants.ColumnHeaderViewPart}"
                                 Grid.Row="0"
@@ -53,6 +55,7 @@
                                 CornerRadius="{TemplateBinding HeaderCornerRadius}">
                                 <atom:DataGridColumnHeadersPresenter
                                     Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterPart}" />
+                                
                             </Border>
                             <Rectangle
                                 Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersAndRowsSeparatorPart}"
@@ -108,7 +111,7 @@
                                 IsHitTestVisible="False"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
-                                CornerRadius="2"
+                                CornerRadius="{TemplateBinding HeaderCornerRadius}"
                                 IsEnabled="{TemplateBinding IsEnabled}" />
                         </Grid>
                     </DockPanel>
@@ -123,6 +126,10 @@
         <Setter Property="SelectionMode" Value="None" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRadius}}" />
+        
+        <Style Selector="^ /template/ Border#PART_ColumnHeadersPresenterFrame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
+        </Style>
 
         <Style Selector="^ /template/ Rectangle#PART_ColumnHeadersAndRowsSeparator">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />

@@ -28,14 +28,14 @@ using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridThemeConstants.BottomRightCornerPart,           typeof(Visual))]
-[TemplatePart(DataGridThemeConstants.ColumnHeadersPresenterPart,      typeof(DataGridColumnHeadersPresenter))]
+[TemplatePart(DataGridThemeConstants.BottomRightCornerPart, typeof(Visual))]
+[TemplatePart(DataGridThemeConstants.ColumnHeadersPresenterPart, typeof(DataGridColumnHeadersPresenter))]
 [TemplatePart(DataGridThemeConstants.FrozenColumnScrollBarSpacerPart, typeof(Control))]
-[TemplatePart(DataGridThemeConstants.HorizontalScrollbarPart,         typeof(ScrollBar))]
-[TemplatePart(DataGridThemeConstants.RowsPresenterPart,               typeof(DataGridRowsPresenter))]
-[TemplatePart(DataGridThemeConstants.TopLeftCornerPart,               typeof(ContentControl))]
-[TemplatePart(DataGridThemeConstants.TopRightCornerPart,              typeof(ContentControl))]
-[TemplatePart(DataGridThemeConstants.VerticalScrollbarPart,           typeof(ScrollBar))]
+[TemplatePart(DataGridThemeConstants.HorizontalScrollbarPart, typeof(ScrollBar))]
+[TemplatePart(DataGridThemeConstants.RowsPresenterPart, typeof(DataGridRowsPresenter))]
+[TemplatePart(DataGridThemeConstants.TopLeftCornerPart, typeof(ContentControl))]
+[TemplatePart(DataGridThemeConstants.TopRightCornerPart, typeof(ContentControl))]
+[TemplatePart(DataGridThemeConstants.VerticalScrollbarPart, typeof(ScrollBar))]
 [PseudoClasses(StdPseudoClass.Invalid, DataGridPseudoClass.EmptyRows, DataGridPseudoClass.EmptyColumns)]
 public partial class DataGrid : TemplatedControl,
                                 ISizeTypeAware,
@@ -47,40 +47,40 @@ public partial class DataGrid : TemplatedControl,
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGrid>();
-    
+
     public static readonly StyledProperty<bool> IsShowFrameBorderProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(IsShowFrameBorder), false);
-    
+
     /// <summary>
     /// Identifies the CanUserReorderColumns dependency property.
     /// </summary>
     public static readonly StyledProperty<bool> CanUserReorderColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserReorderColumns));
-    
+
     /// <summary>
     /// Identifies the CanUserResizeColumns dependency property.
     /// </summary>
     public static readonly StyledProperty<bool> CanUserResizeColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserResizeColumns));
-    
+
     /// <summary>
     /// Identifies the CanUserSortColumns dependency property.
     /// </summary>
     public static readonly StyledProperty<bool> CanUserSortColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserSortColumns), false);
-    
+
     /// <summary>
     /// Identifies the CanUserFilterColumns dependency property.
     /// </summary>
     public static readonly StyledProperty<bool> CanUserFilterColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserFilterColumns), false);
-    
+
     /// <summary>
     /// If header show next sorter direction tooltip
     /// </summary>
     public static readonly StyledProperty<bool> ShowSorterTooltipProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(ShowSorterTooltip), true);
-    
+
     /// <summary>
     /// Identifies the ColumnHeaderHeight dependency property.
     /// </summary>
@@ -89,52 +89,48 @@ public partial class DataGrid : TemplatedControl,
             nameof(ColumnHeaderHeight),
             defaultValue: double.NaN,
             validate: IsValidColumnHeaderHeight);
-    
+
     /// <summary>
     /// Identifies the ColumnWidth dependency property.
     /// </summary>
     public static readonly StyledProperty<DataGridLength> ColumnWidthProperty =
         AvaloniaProperty.Register<DataGrid, DataGridLength>(nameof(ColumnWidth), defaultValue: DataGridLength.Auto);
-    
-    /// <summary>
-    /// Identifies the <see cref="CellTheme"/> dependency property.
-    /// </summary>
-    public static readonly StyledProperty<ControlTheme> CellThemeProperty =
-        AvaloniaProperty.Register<DataGrid, ControlTheme>(nameof(CellTheme));
-    
+
     /// <summary>
     /// Identifies the <see cref="RowGroupTheme"/> dependency property.
     /// </summary>
     public static readonly StyledProperty<ControlTheme> RowGroupThemeProperty =
         AvaloniaProperty.Register<DataGrid, ControlTheme>(nameof(RowGroupTheme));
-    
+
     public static readonly StyledProperty<int> FrozenColumnCountProperty =
         AvaloniaProperty.Register<DataGrid, int>(
             nameof(FrozenColumnCount),
             validate: ValidateFrozenColumnCount);
-    
+
     public static readonly StyledProperty<DataGridGridLinesVisibility> GridLinesVisibilityProperty =
-        AvaloniaProperty.Register<DataGrid, DataGridGridLinesVisibility>(nameof(GridLinesVisibility), DataGridGridLinesVisibility.Horizontal);
-    
+        AvaloniaProperty.Register<DataGrid, DataGridGridLinesVisibility>(nameof(GridLinesVisibility),
+            DataGridGridLinesVisibility.Horizontal);
+
     public static readonly StyledProperty<DataGridHeadersVisibility> HeadersVisibilityProperty =
-        AvaloniaProperty.Register<DataGrid, DataGridHeadersVisibility>(nameof(HeadersVisibility));
-    
+        AvaloniaProperty.Register<DataGrid, DataGridHeadersVisibility>(nameof(HeadersVisibility),
+            DataGridHeadersVisibility.Column);
+
     public static readonly StyledProperty<ScrollBarVisibility> HorizontalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(HorizontalScrollBarVisibility));
-    
+
     public static readonly StyledProperty<bool> IsReadOnlyProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(IsReadOnly));
-    
-    public static readonly StyledProperty<bool> AreRowGroupHeadersFrozenProperty =
+
+    public static readonly StyledProperty<bool> IsRowGroupHeadersFrozenProperty =
         AvaloniaProperty.Register<DataGrid, bool>(
-            nameof(AreRowGroupHeadersFrozen),
+            nameof(IsRowGroupHeadersFrozen),
             defaultValue: true);
-    
+
     public static readonly DirectProperty<DataGrid, bool> IsValidProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, bool>(
             nameof(IsValid),
             o => o.IsValid);
-    
+
     public static readonly StyledProperty<double> MaxColumnWidthProperty =
         AvaloniaProperty.Register<DataGrid, double>(
             nameof(MaxColumnWidth),
@@ -146,96 +142,97 @@ public partial class DataGrid : TemplatedControl,
             nameof(MinColumnWidth),
             defaultValue: DefaultMinColumnWidth,
             validate: IsValidMinColumnWidth);
-    
+
     public static readonly AttachedProperty<bool> IsScrollInertiaEnabledProperty =
         ScrollViewer.IsScrollInertiaEnabledProperty.AddOwner<DataGrid>();
-    
+
     public static readonly StyledProperty<double> RowHeightProperty =
         AvaloniaProperty.Register<DataGrid, double>(
             nameof(RowHeight),
             defaultValue: double.NaN,
             validate: IsValidRowHeight);
-    
+
     public static readonly StyledProperty<double> RowHeaderWidthProperty =
         AvaloniaProperty.Register<DataGrid, double>(
             nameof(RowHeaderWidth),
             defaultValue: double.NaN,
             validate: IsValidRowHeaderWidth);
-    
+
     public static readonly StyledProperty<DataGridSelectionMode> SelectionModeProperty =
         AvaloniaProperty.Register<DataGrid, DataGridSelectionMode>(nameof(SelectionMode), DataGridSelectionMode.None);
-    
+
     public static readonly StyledProperty<ScrollBarVisibility> VerticalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(VerticalScrollBarVisibility));
-    
+
     public static readonly StyledProperty<ITemplate<Control>> DropLocationIndicatorTemplateProperty =
         AvaloniaProperty.Register<DataGrid, ITemplate<Control>>(nameof(DropLocationIndicatorTemplate));
-    
+
     public static readonly DirectProperty<DataGrid, int> SelectedIndexProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, int>(
             nameof(SelectedIndex),
             o => o.SelectedIndex,
             (o, v) => o.SelectedIndex = v,
             defaultBindingMode: BindingMode.TwoWay);
-    
+
     public static readonly DirectProperty<DataGrid, object?> SelectedItemProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, object?>(
             nameof(SelectedItem),
             o => o.SelectedItem,
             (o, v) => o.SelectedItem = v,
             defaultBindingMode: BindingMode.TwoWay);
-    
+
     public static readonly StyledProperty<DataGridClipboardCopyMode> ClipboardCopyModeProperty =
         AvaloniaProperty.Register<DataGrid, DataGridClipboardCopyMode>(
             nameof(ClipboardCopyMode),
             defaultValue: DataGridClipboardCopyMode.ExcludeHeader);
-    
+
     public static readonly StyledProperty<bool> AutoGenerateColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(AutoGenerateColumns));
 
     public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
         AvaloniaProperty.Register<DataGrid, IEnumerable?>(nameof(ItemsSource));
-    
+
     public static readonly StyledProperty<bool> IsRowDetailsFrozenProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(IsRowDetailsFrozen));
-    
+
     public static readonly StyledProperty<IDataTemplate?> RowDetailsTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(RowDetailsTemplate));
-    
+
     public static readonly StyledProperty<DataGridRowDetailsVisibilityMode> RowDetailsVisibilityModeProperty =
-        AvaloniaProperty.Register<DataGrid, DataGridRowDetailsVisibilityMode>(nameof(RowDetailsVisibilityMode), DataGridRowDetailsVisibilityMode.Collapsed);
-    
+        AvaloniaProperty.Register<DataGrid, DataGridRowDetailsVisibilityMode>(nameof(RowDetailsVisibilityMode),
+            DataGridRowDetailsVisibilityMode.Collapsed);
+
     public static readonly DirectProperty<DataGrid, IDataGridCollectionView?> CollectionViewProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, IDataGridCollectionView?>(nameof(CollectionView),
             o => o.CollectionView);
-    
+
     public static readonly StyledProperty<object?> TitleProperty =
         AvaloniaProperty.Register<DataGrid, object?>(nameof(Title));
-    
+
     public static readonly StyledProperty<IDataTemplate?> TitleTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(TitleTemplate));
-    
+
     public static readonly StyledProperty<object?> FooterProperty =
         AvaloniaProperty.Register<DataGrid, object?>(nameof(Footer));
-    
+
     public static readonly StyledProperty<IDataTemplate?> FooterTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(FooterTemplate));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
-    
+
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-    
+
     public bool IsShowFrameBorder
     {
         get => GetValue(IsShowFrameBorderProperty);
         set => SetValue(IsShowFrameBorderProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates whether the user can change
     /// the column display order by dragging column headers with the mouse.
@@ -254,7 +251,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(CanUserResizeColumnsProperty);
         set => SetValue(CanUserResizeColumnsProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates whether the user can sort columns by clicking the column header.
     /// </summary>
@@ -272,7 +269,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(CanUserFilterColumnsProperty);
         set => SetValue(CanUserFilterColumnsProperty, value);
     }
-    
+
     /// <summary>
     /// If header show next sorter direction tooltip
     /// </summary>
@@ -281,7 +278,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(ShowSorterTooltipProperty);
         set => SetValue(ShowSorterTooltipProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the height of the column headers row.
     /// </summary>
@@ -299,16 +296,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(ColumnWidthProperty);
         set => SetValue(ColumnWidthProperty, value);
     }
-    
-    /// <summary>
-    /// Gets or sets the theme applied to all cells.
-    /// </summary>
-    public ControlTheme CellTheme
-    {
-        get => GetValue(CellThemeProperty);
-        set => SetValue(CellThemeProperty, value);
-    }
-    
+
     /// <summary>
     /// Gets or sets the theme applied to all row groups.
     /// </summary>
@@ -317,7 +305,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(RowGroupThemeProperty);
         set => SetValue(RowGroupThemeProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the number of columns that the user cannot scroll horizontally.
     /// </summary>
@@ -326,7 +314,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(FrozenColumnCountProperty);
         set => SetValue(FrozenColumnCountProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates which grid lines separating inner cells are shown.
     /// </summary>
@@ -335,7 +323,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(GridLinesVisibilityProperty);
         set => SetValue(GridLinesVisibilityProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates the visibility of row and column headers.
     /// </summary>
@@ -344,7 +332,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(HeadersVisibilityProperty);
         set => SetValue(HeadersVisibilityProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates how the horizontal scroll bar is displayed.
     /// </summary>
@@ -353,7 +341,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(HorizontalScrollBarVisibilityProperty);
         set => SetValue(HorizontalScrollBarVisibilityProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates whether the user can edit the values in the control.
     /// </summary>
@@ -362,17 +350,17 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(IsReadOnlyProperty);
         set => SetValue(IsReadOnlyProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates whether the row group header sections
     /// remain fixed at the width of the display area or can scroll horizontally.
     /// </summary>
-    public bool AreRowGroupHeadersFrozen
+    public bool IsRowGroupHeadersFrozen
     {
-        get => GetValue(AreRowGroupHeadersFrozenProperty);
-        set => SetValue(AreRowGroupHeadersFrozenProperty, value);
+        get => GetValue(IsRowGroupHeadersFrozenProperty);
+        set => SetValue(IsRowGroupHeadersFrozenProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets whether scroll gestures should include inertia in their behavior and value.
     /// </summary>
@@ -381,8 +369,9 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(IsScrollInertiaEnabledProperty);
         set => SetValue(IsScrollInertiaEnabledProperty, value);
     }
-    
+
     private bool _isValid = true;
+
     public bool IsValid
     {
         get => _isValid;
@@ -392,7 +381,7 @@ public partial class DataGrid : TemplatedControl,
             PseudoClasses.Set(StdPseudoClass.Invalid, !value);
         }
     }
-    
+
     /// <summary>
     /// Gets or sets the maximum width of columns in the <see cref="T:AtomUI.Controls.DataGrid" /> .
     /// </summary>
@@ -401,7 +390,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(MaxColumnWidthProperty);
         set => SetValue(MaxColumnWidthProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the minimum width of columns in the <see cref="T:AtomUI.Controls.DataGrid" />.
     /// </summary>
@@ -410,7 +399,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(MinColumnWidthProperty);
         set => SetValue(MinColumnWidthProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the standard height of rows in the control.
     /// </summary>
@@ -419,7 +408,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(RowHeightProperty);
         set => SetValue(RowHeightProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the width of the row header column.
     /// </summary>
@@ -428,7 +417,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(RowHeaderWidthProperty);
         set => SetValue(RowHeaderWidthProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates how the vertical scroll bar is displayed.
     /// </summary>
@@ -446,7 +435,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(SelectionModeProperty);
         set => SetValue(SelectionModeProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the template that is used when rendering the column headers.
     /// </summary>
@@ -455,7 +444,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(DropLocationIndicatorTemplateProperty);
         set => SetValue(DropLocationIndicatorTemplateProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the index of the current selection.
     /// </summary>
@@ -467,8 +456,9 @@ public partial class DataGrid : TemplatedControl,
         get => _selectedIndex;
         set => SetAndRaise(SelectedIndexProperty, ref _selectedIndex, value);
     }
+
     private int _selectedIndex = -1;
-    
+
     /// <summary>
     /// Gets or sets the data item corresponding to the selected row.
     /// </summary>
@@ -477,9 +467,9 @@ public partial class DataGrid : TemplatedControl,
         get => _selectedItem;
         set => SetAndRaise(SelectedItemProperty, ref _selectedItem, value);
     }
-    
+
     private object? _selectedItem;
-    
+
     /// <summary>
     /// The property which determines how DataGrid content is copied to the Clipboard.
     /// </summary>
@@ -488,7 +478,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(ClipboardCopyModeProperty);
         set => SetValue(ClipboardCopyModeProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates whether columns are created
     /// automatically when the <see cref="P:AtomUI.Controls.DataGrid.ItemsSource" /> property is set.
@@ -498,7 +488,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(AutoGenerateColumnsProperty);
         set => SetValue(AutoGenerateColumnsProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a collection that is used to generate the content of the control.
     /// </summary>
@@ -507,7 +497,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates whether the row details sections remain
     /// fixed at the width of the display area or can scroll horizontally.
@@ -517,7 +507,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(IsRowDetailsFrozenProperty);
         set => SetValue(IsRowDetailsFrozenProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the template that is used to display the content of the details section of rows.
     /// </summary>
@@ -526,7 +516,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(RowDetailsTemplateProperty);
         set => SetValue(RowDetailsTemplateProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value that indicates when the details sections of rows are displayed.
     /// </summary>
@@ -535,39 +525,39 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(RowDetailsVisibilityModeProperty);
         set => SetValue(RowDetailsVisibilityModeProperty, value);
     }
-    
+
     /// <summary>
     /// Gets current <see cref="IDataGridCollectionView"/>.
     /// </summary>
     public IDataGridCollectionView? CollectionView =>
         DataConnection.CollectionView;
-    
+
     [DependsOn(nameof(TitleTemplateProperty))]
     public object? Title
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
-    
+
     public IDataTemplate? TitleTemplate
     {
         get => GetValue(TitleTemplateProperty);
         set => SetValue(TitleTemplateProperty, value);
     }
-    
+
     [DependsOn(nameof(FooterTemplateProperty))]
     public object? Footer
     {
         get => GetValue(FooterProperty);
         set => SetValue(FooterProperty, value);
     }
-    
+
     public IDataTemplate? FooterTemplate
     {
         get => GetValue(FooterTemplateProperty);
         set => SetValue(FooterTemplateProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets the column that contains the current cell.
     /// </summary>
@@ -579,6 +569,7 @@ public partial class DataGrid : TemplatedControl,
             {
                 return null;
             }
+
             Debug.Assert(CurrentColumnIndex < ColumnsItemsInternal.Count);
             return ColumnsItemsInternal[CurrentColumnIndex];
         }
@@ -589,6 +580,7 @@ public partial class DataGrid : TemplatedControl,
             {
                 throw DataGridError.DataGrid.ValueCannotBeSetToNull("value", "CurrentColumn");
             }
+
             if (CurrentColumn != dataGridColumn)
             {
                 if (dataGridColumn.OwningGrid != this)
@@ -596,16 +588,19 @@ public partial class DataGrid : TemplatedControl,
                     // Provided column does not belong to this DataGrid
                     throw DataGridError.DataGrid.ColumnNotInThisDataGrid();
                 }
+
                 if (!dataGridColumn.IsVisible)
                 {
                     // CurrentColumn cannot be set to an invisible column
                     throw DataGridError.DataGrid.ColumnCannotBeCollapsed();
                 }
+
                 if (CurrentSlot == -1)
                 {
                     // There is no current row so the current column cannot be set
                     throw DataGridError.DataGrid.NoCurrentRow();
                 }
+
                 bool beginEdit = _editingColumnIndex != -1;
 
                 //exitEditingMode, keepFocus, raiseEvents
@@ -615,7 +610,8 @@ public partial class DataGrid : TemplatedControl,
                     return;
                 }
 
-                UpdateSelectionAndCurrency(dataGridColumn.Index, CurrentSlot, DataGridSelectionAction.None, false); //scrollIntoView
+                UpdateSelectionAndCurrency(dataGridColumn.Index, CurrentSlot, DataGridSelectionAction.None,
+                    false); //scrollIntoView
                 Debug.Assert(_successfullyUpdatedSelection);
 
                 if (beginEdit &&
@@ -639,20 +635,20 @@ public partial class DataGrid : TemplatedControl,
     /// is a subclass of the property's
     /// </summary>
     public ObservableCollection<DataGridColumn> Columns => ColumnsInternal;
-    
+
     public ObservableCollection<IDataGridColumnGroupItem> ColumnGroups => ColumnGroupsInternal;
-    
+
     /// <summary>
     /// Gets a list that contains the data items corresponding to the selected rows.
     /// </summary>
     public IList SelectedItems => _selectedItems;
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
+
     #endregion
 
     #region 属性验证方法
@@ -662,36 +658,37 @@ public partial class DataGrid : TemplatedControl,
         return double.IsNaN(value) ||
                (value >= MinimumColumnHeaderHeight && value <= MaxHeadersThickness);
     }
-    
+
     private static bool ValidateFrozenColumnCount(int value) => value >= 0;
-    
+
     private static bool IsValidColumnWidth(double value)
     {
         return !double.IsNaN(value) && value > 0;
     }
-    
+
     private static bool IsValidMinColumnWidth(double value)
     {
         return !double.IsNaN(value) && !double.IsPositiveInfinity(value) && value >= 0;
     }
-    
+
     private static bool IsValidRowHeight(double value)
     {
         return double.IsNaN(value) ||
                (value >= DataGridRow.MinimumHeight &&
                 value <= DataGridRow.MaximumHeight);
     }
-    
+
     private static bool IsValidRowHeaderWidth(double value)
     {
         return double.IsNaN(value) ||
                (value >= MinimumRowHeaderWidth &&
                 value <= MaxHeadersThickness);
     }
+
     #endregion
 
     #region 公共事件定义
-    
+
     public static readonly RoutedEvent<SelectionChangedEventArgs> SelectionChangedEvent =
         RoutedEvent.Register<DataGrid, SelectionChangedEventArgs>(nameof(SelectionChanged), RoutingStrategies.Bubble);
 
@@ -776,12 +773,12 @@ public partial class DataGrid : TemplatedControl,
         add => AddHandler(SelectionChangedEvent, value);
         remove => RemoveHandler(SelectionChangedEvent, value);
     }
-    
+
     /// <summary>
     /// Occurs when the <see cref="DataGridColumn"/> sorting request is triggered.
     /// </summary>
     public event EventHandler<DataGridColumnEventArgs>? Sorting;
-    
+
     /// <summary>
     /// Occurs when the <see cref="DataGridColumn"/> filtering request is triggered.
     /// </summary>
@@ -809,10 +806,10 @@ public partial class DataGrid : TemplatedControl,
     /// Occurs when a row details element becomes available for reuse.
     /// </summary>
     public event EventHandler<DataGridRowDetailsEventArgs>? UnloadingRowDetails;
-    
+
     public event EventHandler<ScrollEventArgs>? HorizontalScroll;
     public event EventHandler<ScrollEventArgs>? VerticalScroll;
-    
+
     /// <summary>
     /// Occurs before a DataGridRowGroupHeader header is used.
     /// </summary>
@@ -822,7 +819,7 @@ public partial class DataGrid : TemplatedControl,
     /// Occurs when the DataGridRowGroupHeader is available for reuse.
     /// </summary>
     public event EventHandler<DataGridRowGroupHeaderEventArgs>? UnloadingRowGroup;
-    
+
     /// <summary>
     /// This event is raised by OnCopyingRowClipboardContent method after the default row content is prepared.
     /// Event listeners can modify or add to the row clipboard content.
@@ -830,7 +827,7 @@ public partial class DataGrid : TemplatedControl,
     public event EventHandler<DataGridRowClipboardEventArgs>? CopyingRowClipboardContent;
 
     #endregion
-    
+
     /// <summary>
     /// Gets the data item bound to the row that contains the current cell.
     /// </summary>
@@ -842,6 +839,7 @@ public partial class DataGrid : TemplatedControl,
             {
                 return null;
             }
+
             return DataConnection.GetDataItem(RowIndexFromSlot(CurrentSlot));
         }
     }
@@ -852,11 +850,12 @@ public partial class DataGrid : TemplatedControl,
             ColumnHeaderHeightProperty,
             HorizontalScrollBarVisibilityProperty,
             VerticalScrollBarVisibilityProperty);
-        
+
         SizeTypeProperty.OverrideDefaultValue<DataGrid>(SizeType.Large);
-        
+
         ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
-        CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleCanUserResizeColumnsChanged(e));
+        CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
+            x.HandleCanUserResizeColumnsChanged(e));
         ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleColumnWidthChanged(e));
         FrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleFrozenColumnCountChanged(e));
         GridLinesVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleGridLinesVisibilityChanged(e));
@@ -870,9 +869,11 @@ public partial class DataGrid : TemplatedControl,
         SelectedIndexProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedIndexChanged(e));
         SelectedItemProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedItemChanged(e));
         IsEnabledProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleIsEnabledChanged(e));
-        AreRowGroupHeadersFrozenProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleAreRowGroupHeadersFrozenChanged(e));
+        IsRowGroupHeadersFrozenProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
+            x.HandleIsRowGroupHeadersFrozenChanged(e));
         RowDetailsTemplateProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowDetailsTemplateChanged(e));
-        RowDetailsVisibilityModeProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowDetailsVisibilityModeChanged(e));
+        RowDetailsVisibilityModeProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
+            x.HandleRowDetailsVisibilityModeChanged(e));
         AutoGenerateColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleAutoGenerateColumnsChanged(e));
 
         FocusableProperty.OverrideDefaultValue<DataGrid>(true);
@@ -888,7 +889,7 @@ public partial class DataGrid : TemplatedControl,
         //TODO: Check if override works
         GotFocus  += HandleGotFocus;
         LostFocus += HandleLostFocus;
-        
+
         CurrentCellCoordinates   = new DataGridCellCoordinates(-1, -1);
         _loadedRows              = new List<DataGridRow>();
         _lostFocusActions        = new Queue<Action>();
@@ -909,10 +910,10 @@ public partial class DataGrid : TemplatedControl,
         _showDetailsTable    = new IndexToValueTable<bool>();
         _collapsedSlotsTable = new IndexToValueTable<bool>();
 
-        AnchorSlot             = -1;
-        _lastEstimatedRow      = -1;
-        _editingColumnIndex    = -1;
-        _mouseOverRowIndex     = null;
+        AnchorSlot          = -1;
+        _lastEstimatedRow   = -1;
+        _editingColumnIndex = -1;
+        _mouseOverRowIndex  = null;
 
         RowGroupHeaderHeightEstimate = DefaultRowHeight;
         RowGroupSublevelIndents      = [];
@@ -944,6 +945,7 @@ public partial class DataGrid : TemplatedControl,
             // Current column is read-only
             return false;
         }
+
         return BeginCellEdit(editingEventArgs);
     }
 
@@ -982,10 +984,12 @@ public partial class DataGrid : TemplatedControl,
         {
             return false;
         }
+
         if (editingUnit == DataGridEditingUnit.Row)
         {
             return EndRowEdit(DataGridEditAction.Commit, exitEditingMode, raiseEvents: true);
         }
+
         return true;
     }
 
@@ -1005,6 +1009,7 @@ public partial class DataGrid : TemplatedControl,
             // no-op
             return;
         }
+
         if (item == null && column != null)
         {
             // scroll column into view
@@ -1016,7 +1021,7 @@ public partial class DataGrid : TemplatedControl,
         }
         else
         {
-            int                  slot         = -1;
+            int                   slot         = -1;
             DataGridRowGroupInfo? rowGroupInfo = null;
             if (item is DataGridCollectionViewGroup collectionViewGroup)
             {
@@ -1026,6 +1031,7 @@ public partial class DataGrid : TemplatedControl,
                     Debug.Assert(false);
                     return;
                 }
+
                 slot = rowGroupInfo.Slot;
             }
             else
@@ -1036,6 +1042,7 @@ public partial class DataGrid : TemplatedControl,
                 {
                     return;
                 }
+
                 slot = SlotFromRowIndex(rowIndex);
             }
 
@@ -1092,6 +1099,7 @@ public partial class DataGrid : TemplatedControl,
         {
             DataConnection.UnWireEvents(DataConnection.DataSource);
         }
+
         this.DisposeTokenBindings();
     }
 
@@ -1162,10 +1170,12 @@ public partial class DataGrid : TemplatedControl,
             {
                 _hScrollBar.IsVisible = false;
             }
+
             if (_vScrollBar != null && _vScrollBar.IsVisible)
             {
                 _vScrollBar.IsVisible = false;
             }
+
             desiredSize = base.MeasureOverride(availableSize);
         }
         else
@@ -1265,15 +1275,15 @@ public partial class DataGrid : TemplatedControl,
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
     {
         var delta = e.Delta;
-            
+
         // KeyModifiers.Shift should scroll in horizontal direction. This does not work on every platform. 
         // If Shift-Key is pressed and X is close to 0 we swap the Vector.
         if (e.KeyModifiers == KeyModifiers.Shift && MathUtilities.IsZero(delta.X))
         {
             delta = new Vector(delta.Y, delta.X);
         }
-            
-        if(UpdateScroll(delta * MouseWheelDelta))
+
+        if (UpdateScroll(delta * MouseWheelDelta))
         {
             e.Handled = true;
         }
@@ -1340,7 +1350,8 @@ public partial class DataGrid : TemplatedControl,
             if (x == null && y == null)
             {
                 return 0;
-            } 
+            }
+
             if (x == null && y != null)
             {
                 return -1;
@@ -1350,7 +1361,7 @@ public partial class DataGrid : TemplatedControl,
             {
                 return 1;
             }
-            
+
             Debug.Assert(x != null && y != null);
             return (x.DisplayIndexWithFiller < y.DisplayIndexWithFiller) ? -1 : 1;
         }
@@ -1371,7 +1382,8 @@ public partial class DataGrid : TemplatedControl,
             _columnHeadersPresenter.Children.Clear();
         }
 
-        _columnHeadersPresenter = e.NameScope.Find<DataGridColumnHeadersPresenter>(DataGridThemeConstants.ColumnHeadersPresenterPart);
+        _columnHeadersPresenter =
+            e.NameScope.Find<DataGridColumnHeadersPresenter>(DataGridThemeConstants.ColumnHeadersPresenterPart);
         _groupHeaderView = e.NameScope.Find<DataGridHeaderView>(DataGridThemeConstants.ColumnHeaderViewPart);
         if (_groupHeaderView != null)
         {
@@ -1398,12 +1410,13 @@ public partial class DataGrid : TemplatedControl,
                 {
                     ColumnsInternal.FillerColumn.IsRepresented = false;
                 }
+
                 _columnHeadersPresenter.OwningGrid = this;
 
                 // Columns were added before our Template was applied, add the ColumnHeaders now
                 var sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
                 sortedInternal.Sort(new DisplayIndexComparer());
-              
+
                 foreach (DataGridColumn column in sortedInternal)
                 {
                     InsertDisplayedColumnHeader(column);
@@ -1426,7 +1439,8 @@ public partial class DataGrid : TemplatedControl,
             UpdateRowDetailsHeightEstimate();
         }
 
-        _frozenColumnScrollBarSpacer = e.NameScope.Find<Control>(DataGridThemeConstants.FrozenColumnScrollBarSpacerPart);
+        _frozenColumnScrollBarSpacer =
+            e.NameScope.Find<Control>(DataGridThemeConstants.FrozenColumnScrollBarSpacerPart);
 
         if (_hScrollBar != null)
         {
@@ -1505,7 +1519,7 @@ public partial class DataGrid : TemplatedControl,
     {
         SetRowsSelection(0, SlotCount - 1);
     }
-    
+
     /// <summary>
     /// Returns the Group at the indicated level or null if the item is not in the ItemsSource
     /// </summary>
@@ -1519,13 +1533,15 @@ public partial class DataGrid : TemplatedControl,
         {
             return null;
         }
-        int                  groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(SlotFromRowIndex(itemIndex));
+
+        int                   groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(SlotFromRowIndex(itemIndex));
         DataGridRowGroupInfo? rowGroupInfo    = RowGroupHeadersTable.GetValueAt(groupHeaderSlot);
         while (rowGroupInfo != null && rowGroupInfo.Level != groupLevel)
         {
             groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(rowGroupInfo.Slot);
             rowGroupInfo    = RowGroupHeadersTable.GetValueAt(groupHeaderSlot);
         }
+
         return rowGroupInfo?.CollectionViewGroup;
     }
 
@@ -1558,7 +1574,7 @@ public partial class DataGrid : TemplatedControl,
             LoadingOrUnloadingRow = false;
         }
     }
-    
+
     /// <summary>
     /// This method raises the CopyingRowClipboardContent event.
     /// </summary>
@@ -1580,7 +1596,7 @@ public partial class DataGrid : TemplatedControl,
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == BorderThicknessProperty || 
+        if (change.Property == BorderThicknessProperty ||
             change.Property == GridLinesVisibilityProperty ||
             change.Property == IsShowFrameBorderProperty ||
             change.Property == FooterProperty)
@@ -1588,7 +1604,8 @@ public partial class DataGrid : TemplatedControl,
             ConfigureFrameBorderThickness();
         }
 
-        if (change.Property == TitleProperty)
+        if (change.Property == TitleProperty ||
+            change.Property == HeadersVisibilityProperty)
         {
             ConfigureHeaderCornerRadius();
         }

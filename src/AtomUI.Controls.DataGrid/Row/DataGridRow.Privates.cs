@@ -69,10 +69,6 @@ public partial class DataGridRow
                     OwningRow = this
                 };
                 BindUtils.RelayBind(OwningGrid, DataGrid.SizeTypeProperty, _fillerCell, DataGridCell.SizeTypeProperty);
-                if (OwningGrid.CellTheme is {} cellTheme)
-                {
-                    _fillerCell.SetValue(ThemeProperty, cellTheme, BindingPriority.Template);
-                }
                 if (_cellsElement != null)
                 {
                     _cellsElement.Children.Add(_fillerCell);
@@ -374,7 +370,7 @@ public partial class DataGridRow
     internal void ApplyHeaderStatus()
     {
         Debug.Assert(OwningGrid != null);
-        if (_headerElement != null && OwningGrid.AreRowHeadersVisible)
+        if (_headerElement != null && OwningGrid.IsRowHeadersVisible)
         {
             _headerElement.UpdatePseudoClasses();
         }
@@ -457,7 +453,7 @@ public partial class DataGridRow
     {
         if (_headerElement != null && OwningGrid != null)
         {
-            _headerElement.IsVisible = OwningGrid.AreRowHeadersVisible;
+            _headerElement.IsVisible = OwningGrid.IsRowHeadersVisible;
         }
     }
 
@@ -465,7 +461,7 @@ public partial class DataGridRow
     {
         if (_headerElement != null && OwningGrid != null)
         {
-            _headerElement.IsVisible = OwningGrid.AreRowHeadersVisible;
+            _headerElement.IsVisible = OwningGrid.IsRowHeadersVisible;
         }
     }
 

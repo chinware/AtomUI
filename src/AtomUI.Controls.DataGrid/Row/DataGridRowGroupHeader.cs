@@ -205,7 +205,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     internal void ApplyHeaderStatus()
     {
         Debug.Assert(OwningGrid != null);
-        if (_headerElement != null && OwningGrid.AreRowHeadersVisible)
+        if (_headerElement != null && OwningGrid.IsRowHeadersVisible)
         {
             _headerElement.UpdatePseudoClasses();
         }
@@ -231,7 +231,7 @@ public class DataGridRowGroupHeader : TemplatedControl
         Size size = base.ArrangeOverride(finalSize);
         if (_rootElement != null)
         {
-            if (OwningGrid.AreRowGroupHeadersFrozen)
+            if (OwningGrid.IsRowGroupHeadersFrozen)
             {
                 foreach (Control child in _rootElement.Children)
                 {
@@ -346,7 +346,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     {
         if (_headerElement != null && OwningGrid != null)
         {
-            _headerElement.IsVisible = OwningGrid.AreRowHeadersVisible;
+            _headerElement.IsVisible = OwningGrid.IsRowHeadersVisible;
         }
     }
 

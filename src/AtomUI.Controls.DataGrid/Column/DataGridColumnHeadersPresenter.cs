@@ -293,7 +293,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         {
             return base.MeasureOverride(availableSize);
         }
-        if (!OwningGrid.AreColumnHeadersVisible)
+        if (!OwningGrid.IsColumnHeadersVisible)
         {
             return default;
         }

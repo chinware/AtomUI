@@ -1399,7 +1399,7 @@ public partial class DataGrid
 
     private void EnsureVerticalGridLines()
     {
-        if (AreColumnHeadersVisible)
+        if (IsColumnHeadersVisible)
         {
             double totalColumnsWidth = 0;
             foreach (DataGridColumn column in ColumnsInternal)
@@ -1455,10 +1455,6 @@ public partial class DataGrid
             newCell.OwningColumn = column;
             newCell.IsVisible    = column.IsVisible;
             BindUtils.RelayBind(this, SizeTypeProperty, newCell, DataGridCell.SizeTypeProperty);
-            if (row.OwningGrid.CellTheme is { } cellTheme)
-            {
-                newCell.SetValue(ThemeProperty, cellTheme, BindingPriority.Template);
-            }
         }
 
         row.Cells.Insert(column.Index, newCell);
@@ -1893,7 +1889,7 @@ public partial class DataGrid
         if (_topRightCornerHeader != null)
         {
             // Show the TopRightHeaderCell based on vertical ScrollBar visibility
-            if (AreColumnHeadersVisible &&
+            if (IsColumnHeadersVisible &&
                 _vScrollBar != null && _vScrollBar.IsVisible)
             {
                 _topRightCornerHeader.IsVisible = true;
@@ -1963,9 +1959,9 @@ public partial class DataGrid
 
     private void EnsureRowHeaderWidth()
     {
-        if (AreRowHeadersVisible)
+        if (IsRowHeadersVisible)
         {
-            if (AreColumnHeadersVisible)
+            if (IsColumnHeadersVisible)
             {
                 EnsureTopLeftCornerHeader();
             }
@@ -1980,7 +1976,7 @@ public partial class DataGrid
                     {
                         // If the RowHeader resulted in a different width the last time it was measured, we need
                         // to re-measure it
-                        if (row.HeaderCell != null && row.HeaderCell.DesiredSize.Width != ActualRowHeaderWidth)
+                        if (row.HeaderCell != null && !MathUtils.AreClose(row.HeaderCell.DesiredSize.Width, ActualRowHeaderWidth))
                         {
                             row.HeaderCell.InvalidateMeasure();
                             updated = true;
@@ -2508,7 +2504,7 @@ public partial class DataGrid
     {
         if (_columnHeadersPresenter != null)
         {
-            _columnHeadersPresenter.IsVisible = AreColumnHeadersVisible;
+            _columnHeadersPresenter.IsVisible = IsColumnHeadersVisible;
         }
     }
 
@@ -3890,7 +3886,7 @@ public partial class DataGrid
     {
         if (displayedElement is DataGridRow row)
         {
-            if (AreRowHeadersVisible)
+            if (IsRowHeadersVisible)
             {
                 row.ApplyHeaderStatus();
             }
@@ -3904,7 +3900,7 @@ public partial class DataGrid
         else if (displayedElement is DataGridRowGroupHeader groupHeader)
         {
             groupHeader.UpdatePseudoClasses();
-            if (AreRowHeadersVisible)
+            if (IsRowHeadersVisible)
             {
                 groupHeader.ApplyHeaderStatus();
             }
@@ -4513,7 +4509,14 @@ public partial class DataGrid
     {
         if (Title == null)
         {
-            HeaderCornerRadius = new CornerRadius(CornerRadius.TopLeft, CornerRadius.TopRight, 0, 0);
+            if (!IsRowHeadersVisible)
+            {
+                HeaderCornerRadius = new CornerRadius(CornerRadius.TopLeft, CornerRadius.TopRight, 0, 0);
+            }
+            else
+            {
+                HeaderCornerRadius = new CornerRadius(0, CornerRadius.TopRight, 0, 0);
+            }
         }
         else
         {

@@ -9,6 +9,7 @@ using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Media;
 
@@ -23,9 +24,9 @@ public class DataGridRowHeader : ContentControl
     public static readonly StyledProperty<IBrush?> SeparatorBrushProperty =
         AvaloniaProperty.Register<DataGridRowHeader, IBrush?>(nameof(SeparatorBrush));
     
-    public static readonly StyledProperty<bool> AreSeparatorsVisibleProperty =
+    public static readonly StyledProperty<bool> IsSeparatorsVisibleProperty =
         AvaloniaProperty.Register<DataGridRowHeader, bool>(
-            nameof(AreSeparatorsVisible));
+            nameof(IsSeparatorsVisible));
 
     public IBrush? SeparatorBrush
     {
@@ -36,10 +37,10 @@ public class DataGridRowHeader : ContentControl
     /// <summary>
     /// Gets or sets a value indicating whether the row header separator lines are visible.
     /// </summary>
-    public bool AreSeparatorsVisible
+    public bool IsSeparatorsVisible
     {
-        get => GetValue(AreSeparatorsVisibleProperty);
-        set => SetValue(AreSeparatorsVisibleProperty, value);
+        get => GetValue(IsSeparatorsVisibleProperty);
+        set => SetValue(IsSeparatorsVisibleProperty, value);
     }
 
     #endregion
@@ -49,6 +50,7 @@ public class DataGridRowHeader : ContentControl
     internal Control? Owner { get; set; }
     private DataGridRow? OwningRow => Owner as DataGridRow;
     private DataGridRowGroupHeader? OwningRowGroupHeader => Owner as DataGridRowGroupHeader;
+    private Rectangle? _horizontalSeparator;
     
     private DataGrid? OwningGrid
     {
@@ -84,7 +86,6 @@ public class DataGridRowHeader : ContentControl
     
     #endregion
     
-    
     /// <summary>
     /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridRowHeader" /> class. 
     /// </summary>
@@ -103,12 +104,32 @@ public class DataGridRowHeader : ContentControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _rootElement = e.NameScope.Find<Control>(DataGridRowHeaderThemeConstants.RootLayoutPart);
+        _rootElement         = e.NameScope.Find<Control>(DataGridRowHeaderThemeConstants.RootLayoutPart);
+        _horizontalSeparator = e.NameScope.Find<Rectangle>(DataGridRowHeaderThemeConstants.HorizontalSeparatorPart);
         if (_rootElement != null)
         {
             UpdatePseudoClasses();
         }
-    } 
+
+        Debug.Assert(OwningGrid != null);
+        if (_horizontalSeparator != null)
+        {
+            _horizontalSeparator.Height = OwningGrid.BorderThickness.Left;
+        }
+
+        ConfigureSeparatorVisible();
+    }
+
+    private void ConfigureSeparatorVisible()
+    {
+        Debug.Assert(OwningGrid != null);
+        bool newVisibility = OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.Horizontal || OwningGrid.GridLinesVisibility == DataGridGridLinesVisibility.All;
+
+        if (newVisibility != IsSeparatorsVisible)
+        {
+            IsSeparatorsVisible = newVisibility;
+        }
+    }
 
     /// <summary>
     /// Measures the children of a <see cref="T:AtomUI.Controls.DataGridRowHeader" /> to prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.
