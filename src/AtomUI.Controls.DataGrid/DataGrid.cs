@@ -157,6 +157,9 @@ public partial class DataGrid : TemplatedControl,
             nameof(RowHeaderWidth),
             defaultValue: double.NaN,
             validate: IsValidRowHeaderWidth);
+    
+    public static readonly StyledProperty<IDataTemplate?> RowHeaderContentTemplateProperty =
+        AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(RowHeaderContentTemplate));
 
     public static readonly StyledProperty<DataGridSelectionMode> SelectionModeProperty =
         AvaloniaProperty.Register<DataGrid, DataGridSelectionMode>(nameof(SelectionMode), DataGridSelectionMode.None);
@@ -417,6 +420,15 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(RowHeaderWidthProperty);
         set => SetValue(RowHeaderWidthProperty, value);
     }
+    
+    /// <summary>
+    /// Gets or sets the template that is used to display the content of the row header.
+    /// </summary>
+    public IDataTemplate? RowHeaderContentTemplate
+    {
+        get => GetValue(RowHeaderContentTemplateProperty);
+        set => SetValue(RowHeaderContentTemplateProperty, value);
+    }
 
     /// <summary>
     /// Gets or sets a value that indicates how the vertical scroll bar is displayed.
@@ -559,9 +571,9 @@ public partial class DataGrid : TemplatedControl,
     }
 
     /// <summary>
-    /// Gets or sets the column that contains the current cell.
-    /// </summary>
-    public DataGridColumn? CurrentColumn
+                                            /// Gets or sets the column that contains the current cell.
+                                            /// </summary>
+                                            public DataGridColumn? CurrentColumn
     {
         get
         {
@@ -872,6 +884,7 @@ public partial class DataGrid : TemplatedControl,
         IsRowGroupHeadersFrozenProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleIsRowGroupHeadersFrozenChanged(e));
         RowDetailsTemplateProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowDetailsTemplateChanged(e));
+        RowHeaderContentTemplateProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeaderContentTemplateChanged(e));
         RowDetailsVisibilityModeProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleRowDetailsVisibilityModeChanged(e));
         AutoGenerateColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleAutoGenerateColumnsChanged(e));

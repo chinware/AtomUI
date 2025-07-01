@@ -34,11 +34,28 @@
                                       Grid.RowSpan="2" 
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
-                                      Content="{TemplateBinding Content}" />
+                                      Content="{TemplateBinding Content}"
+                                      Padding="{TemplateBinding Padding}"
+                                      Background="{TemplateBinding Background}"/>
                 </Grid>
             </ControlTemplate>
         </Setter>
         
         <Setter Property="SeparatorBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePadding}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSize}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingMiddle}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeMiddle}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingSmall}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeSmall}}"/>
+        </Style>
+        
     </ControlTheme>
 </ResourceDictionary>

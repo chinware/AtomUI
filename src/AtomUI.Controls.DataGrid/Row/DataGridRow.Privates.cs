@@ -24,11 +24,31 @@ public partial class DataGridRow
     private const byte DefaultMinHeight = 0;
     internal const int MaximumHeight = 65536;
     internal const double MinimumHeight = 0;
-
+    
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridRow>();
 
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridRow>();
+    
+    internal bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    internal SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+    
     internal int Slot { get; set; }
+    
     internal DataGridCellCollection Cells { get; private set; }
+    
     internal DataGrid? OwningGrid { get; set; }
     
     // Returns the actual template that should be sued for Details: either explicity set on this row
@@ -39,6 +59,17 @@ public partial class DataGridRow
         {
             Debug.Assert(OwningGrid != null);
             return DetailsTemplate ?? OwningGrid.RowDetailsTemplate;
+        }
+    }
+    
+    // Returns the actual template that should be sued for header content: either explicity set on this row
+    // or inherited from the DataGrid
+    private IDataTemplate? ActualHeaderContentTemplate
+    {
+        get
+        {
+            Debug.Assert(OwningGrid != null);
+            return HeaderContentTemplate ?? OwningGrid.RowHeaderContentTemplate;
         }
     }
     
@@ -83,7 +114,9 @@ public partial class DataGridRow
     internal bool HasHeaderCell => _headerElement != null;
 
     internal DataGridRowHeader? HeaderCell => _headerElement;
+    
     internal bool IsEditing => OwningGrid != null && OwningGrid.EditingRow == this;
+    
     /// <summary>
     /// Layout when template is applied
     /// </summary>
@@ -210,8 +243,11 @@ public partial class DataGridRow
     private double _detailsDesiredHeight;
 
     private bool _detailsLoaded;
+    private bool _headerContentLoaded;
     private bool _detailsVisibilityNotificationPending;
     private Control? _detailsContent;
+    private Control? _headerContent;
+    private IDisposable? _headerContentSizeSubscription;
     private IDisposable? _detailsContentSizeSubscription;
     private DataGridDetailsPresenter? _detailsElement;
     private Border? _rowFrame;
@@ -219,8 +255,9 @@ public partial class DataGridRow
     // Locally cache whether or not details are visible so we don't run redundant storyboards
     // The Details Template that is actually applied to the Row
     private IDataTemplate? _appliedDetailsTemplate;
-
+    
     private bool? _appliedDetailsVisibility;
+    private IDataTemplate? _appliedHeaderContentTemplate;
     
     private void HandleCellAdded(object? sender, DataGridCellEventArgs e)
     {
@@ -257,7 +294,7 @@ public partial class DataGridRow
             }
         }
     }
-    
+
     internal void ApplyDetailsTemplate(bool initializeDetailsPreferredHeight)
     {
         Debug.Assert(OwningGrid != null);
@@ -292,8 +329,6 @@ public partial class DataGridRow
                             Disposable.Create(() => layoutableContent.LayoutUpdated -= HandleLayoutUpdated),
                             _detailsContent.GetObservable(MarginProperty).Subscribe(NotifyMarginChanged)
                         };
-
-
                     }
                     else
                     {
@@ -323,6 +358,61 @@ public partial class DataGridRow
                 _detailsDesiredHeight = double.NaN;
                 EnsureDetailsDesiredHeight();
                 _detailsElement.ContentHeight = _detailsDesiredHeight;
+            }
+        }
+    }
+    
+    private void HandleHeaderContentTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var oldValue = (IDataTemplate?)e.OldValue;
+        var newValue = (IDataTemplate?)e.NewValue;
+
+        if (!_areHandlersSuspended && OwningGrid != null)
+        {
+            IDataTemplate? ActualHeaderContentTemplate(IDataTemplate? template) => (template ?? OwningGrid.RowHeaderContentTemplate);
+
+            // We don't always want to apply the new Template because they might have set the same one
+            // we inherited from the DataGrid
+            if (ActualHeaderContentTemplate(newValue) != ActualHeaderContentTemplate(oldValue))
+            {
+                ApplyHeaderContentTemplate();
+            }
+        }
+    }
+    
+    internal void ApplyHeaderContentTemplate()
+    {
+        Debug.Assert(OwningGrid != null);
+        if (HeaderCell != null && OwningGrid.IsRowHeadersVisible)
+        {
+            if (ActualHeaderContentTemplate != null && ActualHeaderContentTemplate != _appliedHeaderContentTemplate)
+            {
+                if (_headerContent != null)
+                {
+                    _headerContentSizeSubscription?.Dispose();
+                    _headerContentSizeSubscription = null;
+                    if (_detailsLoaded)
+                    {
+                        OwningGrid.NotifyUnloadingRowDetails(this, _headerContent);
+                        _detailsLoaded = false;
+                    }
+                }
+
+                HeaderCell.Content = null;
+
+                _headerContent                = ActualHeaderContentTemplate.Build(DataContext);
+                _appliedHeaderContentTemplate = ActualHeaderContentTemplate;
+
+                if (_headerContent != null)
+                {
+                    Header = _headerContent;
+                }
+            }
+
+            if (_headerContent != null && !_headerContentLoaded)
+            {
+                _headerContentLoaded       = true;
+                _headerContent.DataContext = DataContext;
             }
         }
     }
@@ -543,7 +633,7 @@ public partial class DataGridRow
             }
         }
     }
-
+    
     // Makes sure the _detailsDesiredHeight is initialized.  We need to measure it to know what
     // height we want to animate to.  Subsequently, we just update that height in response to SizeChanged
     private void EnsureDetailsDesiredHeight()
@@ -575,7 +665,6 @@ public partial class DataGridRow
             _previousDetailsHeight = newValue;
             if (!MathUtils.AreClose(newValue, oldValue) && !MathUtils.AreClose(newValue, _detailsDesiredHeight))
             {
-
                 if (IsDetailsVisible && _appliedDetailsTemplate != null)
                 {
                     Debug.Assert(_detailsElement != null);
@@ -612,7 +701,6 @@ public partial class DataGridRow
         {
             NotifySizeChanged(_detailsContent.Bounds.Inflate(newValue));
         }
-        
     }
     
     private void HandleLayoutUpdated(object? sender, EventArgs e)

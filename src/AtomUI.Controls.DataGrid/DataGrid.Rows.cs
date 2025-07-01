@@ -3292,7 +3292,6 @@ public partial class DataGrid
     
     private void HandleRowDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs e)
     {
-
         // Update the RowDetails templates if necessary
         if (_rowsPresenter != null)
         {
@@ -3307,6 +3306,21 @@ public partial class DataGrid
         }
 
         UpdateRowDetailsHeightEstimate();
+        InvalidateMeasure();
+    }
+
+    private void HandleRowHeaderContentTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (_rowsPresenter != null)
+        {
+            foreach (DataGridRow row in GetAllRows())
+            {
+                if (GetRowDetailsVisibility(row.Index))
+                {
+                    row.ApplyHeaderContentTemplate();
+                }
+            }
+        }
         InvalidateMeasure();
     }
     

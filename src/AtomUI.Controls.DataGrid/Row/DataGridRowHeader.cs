@@ -46,6 +46,16 @@ public class DataGridRowHeader : ContentControl
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridRowHeader>();
+    
+    internal SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+    
     private Control? _rootElement;
     internal Control? Owner { get; set; }
     private DataGridRow? OwningRow => Owner as DataGridRow;

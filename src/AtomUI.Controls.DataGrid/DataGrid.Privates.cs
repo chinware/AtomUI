@@ -2127,12 +2127,12 @@ public partial class DataGrid
         // TODO 需要审查
         var oldValue = (DataGridHeadersVisibility)(e.OldValue ?? DataGridHeadersVisibility.All);
         var newValue = (DataGridHeadersVisibility)(e.NewValue ?? DataGridHeadersVisibility.All);
-        bool hasFlags(DataGridHeadersVisibility value, DataGridHeadersVisibility flags) => ((value & flags) == flags);
+        bool HasFlags(DataGridHeadersVisibility value, DataGridHeadersVisibility flags) => ((value & flags) == flags);
 
-        bool newValueCols = hasFlags(newValue, DataGridHeadersVisibility.Column);
-        bool newValueRows = hasFlags(newValue, DataGridHeadersVisibility.Row);
-        bool oldValueCols = hasFlags(oldValue, DataGridHeadersVisibility.Column);
-        bool oldValueRows = hasFlags(oldValue, DataGridHeadersVisibility.Row);
+        bool newValueCols = HasFlags(newValue, DataGridHeadersVisibility.Column);
+        bool newValueRows = HasFlags(newValue, DataGridHeadersVisibility.Row);
+        bool oldValueCols = HasFlags(oldValue, DataGridHeadersVisibility.Column);
+        bool oldValueRows = HasFlags(oldValue, DataGridHeadersVisibility.Row);
 
         // Columns
         if (newValueCols != oldValueCols)
@@ -2166,6 +2166,10 @@ public partial class DataGrid
                         {
                             row.ApplyState();
                             row.EnsureHeaderVisibility();
+                            if (IsRowHeadersVisible)
+                            {
+                                row.ApplyHeaderContentTemplate();
+                            }
                         }
                     }
                     else if (element is DataGridRowGroupHeader rowGroupHeader)

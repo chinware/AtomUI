@@ -51,11 +51,21 @@ public partial class DataGridRow : TemplatedControl
     public static readonly StyledProperty<IDataTemplate?> DetailsTemplateProperty =
         AvaloniaProperty.Register<DataGridRow, IDataTemplate?>(nameof(DetailsTemplate));
     
+    public static readonly StyledProperty<IDataTemplate?> HeaderContentTemplateProperty =
+        AvaloniaProperty.Register<DataGridRow, IDataTemplate?>(nameof(HeaderContentTemplate));
+    
     public static readonly StyledProperty<bool> IsDetailsVisibleProperty =
         AvaloniaProperty.Register<DataGridRow, bool>(nameof(IsDetailsVisible));
     
-    public static readonly DirectProperty<DataGridRow, int> IndexProperty = AvaloniaProperty.RegisterDirect<DataGridRow, int>(
-        nameof(Index), o => o.Index, (o, v) => o.Index = v);
+    public static readonly DirectProperty<DataGridRow, int> IndexProperty =
+        AvaloniaProperty.RegisterDirect<DataGridRow, int>(nameof(Index), 
+            o => o.Index, 
+            (o, v) => o.Index = v);
+    
+    public static readonly DirectProperty<DataGridRow, int> LogicIndexProperty =
+        AvaloniaProperty.RegisterDirect<DataGridRow, int>(nameof(LogicIndex), 
+            o => o.LogicIndex,
+            (o, v) => o.LogicIndex = v);
     
     /// <summary>
     /// Gets or sets the row header.
@@ -93,6 +103,15 @@ public partial class DataGridRow : TemplatedControl
     }
     
     /// <summary>
+    /// Gets or sets the template that is used to display the header content of the row.
+    /// </summary>
+    public IDataTemplate? HeaderContentTemplate
+    {
+        get => GetValue(HeaderContentTemplateProperty);
+        set => SetValue(HeaderContentTemplateProperty, value);
+    }
+    
+    /// <summary>
     /// Gets or sets a value that indicates when the details section of the row is displayed.
     /// </summary>
     public bool IsDetailsVisible
@@ -110,35 +129,21 @@ public partial class DataGridRow : TemplatedControl
         internal set => SetAndRaise(IndexProperty, ref _index, value);
     }
     private int _index;
-
-    #endregion
-
-    #region 内部属性定义
     
-    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridRow>();
-
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridRow>();
-    
-    internal bool IsMotionEnabled
+    public int LogicIndex
     {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
+        get => _logicIndex;
+        internal set => SetAndRaise(LogicIndexProperty, ref _logicIndex, value);
     }
+    private int _logicIndex;
     
-    internal SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
     #endregion
 
     static DataGridRow()
     {
         HeaderProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleHeaderChanged(e));
         DetailsTemplateProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleDetailsTemplateChanged(e));
+        HeaderContentTemplateProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleHeaderContentTemplateChanged(e));
         IsDetailsVisibleProperty.Changed.AddClassHandler<DataGridRow>((x, e) => x.HandleIsDetailsVisibleChanged(e));
         PointerPressedEvent.AddClassHandler<DataGridRow>((x, e) => x.HandlePointerPressed(e), handledEventsToo: true);
         IsTabStopProperty.OverrideDefaultValue<DataGridRow>(false);
@@ -336,6 +341,11 @@ public partial class DataGridRow : TemplatedControl
             OwningGrid.UpdateVerticalScrollBar();
         }
         
+        if (OwningGrid != null && OwningGrid.IsRowHeadersVisible)
+        {
+            ApplyHeaderContentTemplate();
+        }
+        
         _rowFrame = e.NameScope.Find<Border>(DataGridRowThemeConstants.FramePart);
         SetupTransitions();
     }
@@ -385,7 +395,11 @@ public partial class DataGridRow : TemplatedControl
 
             PseudoClasses.Set(StdPseudoClass.Selected, value);
         }
-
+        else if (change.Property == IndexProperty)
+        {
+            LogicIndex = Index + 1;
+        }
+        
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsMotionEnabledProperty)
