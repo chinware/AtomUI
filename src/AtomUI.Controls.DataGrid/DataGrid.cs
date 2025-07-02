@@ -1397,15 +1397,16 @@ public partial class DataGrid : TemplatedControl,
 
         _columnHeadersPresenter =
             e.NameScope.Find<DataGridColumnHeadersPresenter>(DataGridThemeConstants.ColumnHeadersPresenterPart);
-        _groupHeaderView = e.NameScope.Find<DataGridHeaderView>(DataGridThemeConstants.ColumnHeaderViewPart);
-        if (_groupHeaderView != null)
+        _groupColumnHeadersPresenter = e.NameScope.Find<DataGridGroupColumnHeadersPresenter>(DataGridThemeConstants.GroupColumnHeadersPresenterPart);
+
+        if (_groupColumnHeadersPresenter != null)
         {
-            _groupHeaderView.OwningGrid = this;
+            _groupColumnHeadersPresenter.OwningGrid = this;
         }
 
         if (ColumnGroups.Count > 0)
         {
-            if (_groupHeaderView != null)
+            if (_groupColumnHeadersPresenter != null)
             {
                 if (ColumnsInternal.FillerColumn != null)
                 {
@@ -1562,7 +1563,7 @@ public partial class DataGrid : TemplatedControl,
     /// Raises the LoadingRowGroup event
     /// </summary>
     /// <param name="e">EventArgs</param>
-    protected virtual void OnLoadingRowGroup(DataGridRowGroupHeaderEventArgs e)
+    protected virtual void NotifyLoadingRowGroup(DataGridRowGroupHeaderEventArgs e)
     {
         EventHandler<DataGridRowGroupHeaderEventArgs>? handler = LoadingRowGroup;
         if (handler != null)

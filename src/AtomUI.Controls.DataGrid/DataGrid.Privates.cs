@@ -1406,7 +1406,7 @@ public partial class DataGrid
             {
                 totalColumnsWidth += column.ActualWidth;
 
-                column.HeaderCell.AreSeparatorsVisible =
+                column.HeaderCell.IsSeparatorsVisible =
                     (column != ColumnsInternal.LastVisibleColumn || totalColumnsWidth < CellsWidth);
             }
         }
@@ -2040,18 +2040,43 @@ public partial class DataGrid
 
     private void InvalidateColumnHeadersArrange()
     {
-        if (_columnHeadersPresenter != null)
+        if (IsGroupHeaderMode)
         {
-            _columnHeadersPresenter.InvalidateArrange();
+            if (_groupColumnHeadersPresenter != null)
+            {
+                _groupColumnHeadersPresenter.InvalidateArrange();
+            }
+        }
+        else
+        {
+            if (_columnHeadersPresenter != null)
+            {
+                _columnHeadersPresenter.InvalidateArrange();
+            }
         }
     }
 
     private void InvalidateColumnHeadersMeasure()
     {
-        if (_columnHeadersPresenter != null)
+        if (IsGroupHeaderMode)
         {
-            EnsureColumnHeadersVisibility();
-            _columnHeadersPresenter.InvalidateMeasure();
+            
+            if (_groupColumnHeadersPresenter != null)
+            {
+                EnsureColumnHeadersVisibility();
+                Console.WriteLine($"IsGroupHeaderMode=true-{_groupColumnHeadersPresenter}-{_groupColumnHeadersPresenter.IsMeasureValid}");
+                _groupColumnHeadersPresenter.InvalidateMeasure();
+            }
+        }
+        else
+        {
+        
+            if (_columnHeadersPresenter != null)
+            {
+                Console.WriteLine($"IsGroupHeaderMode=false-{_columnHeadersPresenter}-{_columnHeadersPresenter.IsMeasureValid}");
+                EnsureColumnHeadersVisibility();
+                _columnHeadersPresenter.InvalidateMeasure();
+            }
         }
     }
 
@@ -2137,18 +2162,36 @@ public partial class DataGrid
         // Columns
         if (newValueCols != oldValueCols)
         {
-            if (_columnHeadersPresenter != null)
+            if (IsGroupHeaderMode)
             {
-                EnsureColumnHeadersVisibility();
-                if (!newValueCols)
+                if (_groupColumnHeadersPresenter != null)
                 {
-                    _columnHeadersPresenter.Measure(default);
+                    if (!newValueCols)
+                    {
+                        _groupColumnHeadersPresenter.Measure(default);
+                    }
+                    else
+                    {
+                        EnsureVerticalGridLines();
+                    }
+                    InvalidateMeasure();
                 }
-                else
+            }
+            else
+            {
+                if (_columnHeadersPresenter != null)
                 {
-                    EnsureVerticalGridLines();
+                    EnsureColumnHeadersVisibility();
+                    if (!newValueCols)
+                    {
+                        _columnHeadersPresenter.Measure(default);
+                    }
+                    else
+                    {
+                        EnsureVerticalGridLines();
+                    }
+                    InvalidateMeasure();
                 }
-                InvalidateMeasure();
             }
         }
 
@@ -2506,9 +2549,20 @@ public partial class DataGrid
 
     private void EnsureColumnHeadersVisibility()
     {
-        if (_columnHeadersPresenter != null)
+        if (IsGroupHeaderMode)
         {
-            _columnHeadersPresenter.IsVisible = IsColumnHeadersVisible;
+            if (_groupColumnHeadersPresenter != null)
+            {
+                _groupColumnHeadersPresenter.IsVisible = IsColumnHeadersVisible;
+            }
+        }
+        else
+        {
+            if (_columnHeadersPresenter != null)
+            {
+                _columnHeadersPresenter.IsVisible = IsColumnHeadersVisible;
+            }
+
         }
     }
 

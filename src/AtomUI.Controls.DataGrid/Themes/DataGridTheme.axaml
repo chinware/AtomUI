@@ -35,27 +35,23 @@
                                 Name="{x:Static atom:DataGridThemeConstants.TopLeftCornerPart}"
                                 Grid.Row="0"
                                 Grid.Column="0" />
-                            <!-- 实现树形 header 头 -->
-                            <atom:DataGridHeaderView
-                                Name="{x:Static atom:DataGridThemeConstants.ColumnHeaderViewPart}"
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Grid.ColumnSpan="2"
-                                ClipToBounds="True"
-                                IsVisible="{TemplateBinding IsGroupHeaderMode}"
-                                CornerRadius="{TemplateBinding HeaderCornerRadius}" />
 
                             <Border
                                 Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterFramePart}"
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 Grid.ColumnSpan="2"
-                                IsVisible="{TemplateBinding IsGroupHeaderMode, Converter={x:Static BoolConverters.Not}}"
                                 ClipToBounds="True"
                                 CornerRadius="{TemplateBinding HeaderCornerRadius}">
-                                <atom:DataGridColumnHeadersPresenter
-                                    Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterPart}" />
-                                
+                                <Panel>
+                                    <atom:DataGridColumnHeadersPresenter
+                                        Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersPresenterPart}" 
+                                        IsVisible="{TemplateBinding IsGroupHeaderMode, Converter={x:Static BoolConverters.Not}}"/>
+                                    <atom:DataGridGroupColumnHeadersPresenter
+                                        Name="{x:Static atom:DataGridThemeConstants.GroupColumnHeadersPresenterPart}"
+                                        IsVisible="{TemplateBinding IsGroupHeaderMode}"/>
+                                </Panel>
+
                             </Border>
                             <Rectangle
                                 Name="{x:Static atom:DataGridThemeConstants.ColumnHeadersAndRowsSeparatorPart}"
@@ -126,7 +122,7 @@
         <Setter Property="SelectionMode" Value="None" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRadius}}" />
-        
+
         <Style Selector="^ /template/ Border#PART_ColumnHeadersPresenterFrame">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
         </Style>
@@ -140,10 +136,11 @@
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#PART_Footer">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFooterTextColor}}" />
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFooterTextColor}}" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFooterBg}}" />
         </Style>
-        
+
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ ContentPresenter#PART_Title">
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePadding}}" />

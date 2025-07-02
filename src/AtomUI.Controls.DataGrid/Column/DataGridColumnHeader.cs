@@ -42,9 +42,9 @@ internal partial class DataGridColumnHeader : ContentControl
     public static readonly StyledProperty<IBrush?> SeparatorBrushProperty =
         AvaloniaProperty.Register<DataGridColumnHeader, IBrush?>(nameof(SeparatorBrush));
     
-    public static readonly StyledProperty<bool> AreSeparatorsVisibleProperty =
+    public static readonly StyledProperty<bool> IsSeparatorsVisibleProperty =
         AvaloniaProperty.Register<DataGridColumnHeader, bool>(
-            nameof(AreSeparatorsVisible),
+            nameof(IsSeparatorsVisible),
             defaultValue: true);
     
     public IBrush? SeparatorBrush
@@ -53,10 +53,10 @@ internal partial class DataGridColumnHeader : ContentControl
         set => SetValue(SeparatorBrushProperty, value);
     }
     
-    public bool AreSeparatorsVisible
+    public bool IsSeparatorsVisible
     {
-        get => GetValue(AreSeparatorsVisibleProperty);
-        set => SetValue(AreSeparatorsVisibleProperty, value);
+        get => GetValue(IsSeparatorsVisibleProperty);
+        set => SetValue(IsSeparatorsVisibleProperty, value);
     }
 
     #endregion
@@ -205,7 +205,7 @@ internal partial class DataGridColumnHeader : ContentControl
     static DataGridColumnHeader()
     {
         AffectsMeasure<DataGridColumnHeader>(CanUserSortProperty);
-        AreSeparatorsVisibleProperty.Changed.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandleAreSeparatorsVisibleChanged(e));
+        IsSeparatorsVisibleProperty.Changed.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandleIsSeparatorsVisibleChanged(e));
         PressedMixin.Attach<DataGridColumnHeader>();
         IsTabStopProperty.OverrideDefaultValue<DataGridColumnHeader>(false);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridColumnHeader>(IsOffscreenBehavior.FromClip);
@@ -240,9 +240,9 @@ internal partial class DataGridColumnHeader : ContentControl
             newVisibility = false;
         }
         // Update the public property if it has changed
-        if (AreSeparatorsVisible != newVisibility)
+        if (IsSeparatorsVisible != newVisibility)
         {
-            SetValueNoCallback(AreSeparatorsVisibleProperty, newVisibility);
+            SetValueNoCallback(IsSeparatorsVisibleProperty, newVisibility);
         }
     }
     
@@ -368,7 +368,7 @@ internal partial class DataGridColumnHeader : ContentControl
         SetDragCursor(mousePosition);
     }
     
-    private void HandleAreSeparatorsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsSeparatorsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
         {

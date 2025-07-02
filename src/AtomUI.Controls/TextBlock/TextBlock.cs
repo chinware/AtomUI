@@ -21,6 +21,11 @@ public class TextBlock : AvaloniaTextBlock, IResourceBindingManager
     
     private CompositeDisposable? _resourceBindingsDisposable;
     private double _deltaOffsetY;
+
+    static TextBlock()
+    {
+        FontStyleProperty.OverrideDefaultValue<TextBlock>(FontStyle.Normal);
+    }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {

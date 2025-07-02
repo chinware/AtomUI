@@ -1,14 +1,11 @@
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
-using Avalonia.Layout;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class DataGridHeaderViewItem : HeaderedItemsControl
+public class DataGridHeaderViewItem : ContentControl
 {
     #region 公共属性定义
 
@@ -52,23 +49,13 @@ public class DataGridHeaderViewItem : HeaderedItemsControl
     }
     private Thickness _effectiveBorderThickness;
     
-    private static readonly FuncTemplate<Panel?> DefaultPanel =
-        new(() => new StackPanel()
-        {
-            Orientation = Orientation.Horizontal
-        });
-    
-    internal DataGridHeaderView? OwningHeaderView { get; set; }
+    internal DataGridColumn? OwningColumn { get; set; }
     internal DataGrid OwningGrid { get; set; }
     
     #endregion
     
     private Border? _headerFrame;
     
-    static DataGridHeaderViewItem()
-    {
-        ItemsPanelProperty.OverrideDefaultValue<DataGridHeaderViewItem>(DefaultPanel);
-    }
 
     public DataGridHeaderViewItem(DataGrid owningGrid)
     {
@@ -94,35 +81,6 @@ public class DataGridHeaderViewItem : HeaderedItemsControl
             {
                 ApplyEffectiveBorder();
             }
-        }
-    }
-    
-    protected override Control CreateContainerForItemOverride(
-        object? item,
-        int index,
-        object? recycleKey)
-    {
-        return new DataGridHeaderViewItem(OwningGrid);
-    }
-    
-    protected override bool NeedsContainerOverride(
-        object? item,
-        int index,
-        out object? recycleKey)
-    {
-        return NeedsContainer<DataGridHeaderViewItem>(item, out recycleKey);
-    }
-    
-    protected override void ContainerForItemPreparedOverride(
-        Control container,
-        object? item,
-        int index)
-    {
-        base.ContainerForItemPreparedOverride(container, item, index);
-        if (container is DataGridHeaderViewItem headerViewItem)
-        {
-            headerViewItem.OwningHeaderView = OwningHeaderView;
-            BindUtils.RelayBind(OwningGrid, DataGrid.BorderThicknessProperty, headerViewItem, BorderThicknessProperty);
         }
     }
 
@@ -161,11 +119,11 @@ public class DataGridHeaderViewItem : HeaderedItemsControl
         }
         else
         {
-            if (Header is DataGridColumnGroupHeader columnGroupHeader)
+            if (Content is DataGridColumnGroupHeader columnGroupHeader)
             {
                 columnGroupHeader.BorderThickness = EffectiveBorderThickness;
             }
-            else if (Header is DataGridColumnHeader columnHeader)
+            else if (Content is DataGridColumnHeader columnHeader)
             {
                 columnHeader.BorderThickness = EffectiveBorderThickness;
             }

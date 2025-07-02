@@ -64,7 +64,7 @@ internal class DataGridRowExpander : ToggleButton,
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size  = base.ArrangeOverride(finalSize);
-        var delta = IndicatorThickness / 2;
+        var delta = IndicatorThickness;
         if (_verticalIndicator != null)
         {
             var indicatorSize = _verticalIndicator.DesiredSize;

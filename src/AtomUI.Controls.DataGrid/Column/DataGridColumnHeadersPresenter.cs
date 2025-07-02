@@ -145,7 +145,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         {
             DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
             Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
-
+           // Console.WriteLine($"DataGridColumnHeadersPresenter-{dataGridColumn.Header}-{dataGridColumn.LayoutRoundedWidth}-ArrangeOverride");
             if (dataGridColumn.IsFrozen)
             {
                 columnHeader.Arrange(new Rect(frozenLeftEdge, 0, dataGridColumn.LayoutRoundedWidth, finalSize.Height));
@@ -354,6 +354,8 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 height = Math.Max(height, columnHeader.DesiredSize.Height);
             }
             totalDisplayWidth += column.ActualWidth;
+           
+            Console.WriteLine($"DataGridColumnHeadersPresenter-{column.Header}-{column.LayoutRoundedWidth}-MeasureOverride");
         }
 
         // If we're using star sizing (and we're not waiting for an auto-column to finish growing)
@@ -384,7 +386,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         if (!fillerColumn.IsRepresented)
         {
             Debug.Assert(!Children.Contains(fillerColumn.HeaderCell));
-            fillerColumn.HeaderCell.AreSeparatorsVisible = false;
+            fillerColumn.HeaderCell.IsSeparatorsVisible = false;
             Children.Insert(OwningGrid.ColumnsInternal.Count, fillerColumn.HeaderCell);
             fillerColumn.IsRepresented = true;
             // Optimize for the case where we don't need the filler cell 

@@ -42,7 +42,7 @@
                                     <atom:DataGridFilterIndicator.IsVisible>
                                         <MultiBinding
                                             Converter="{x:Static converters:DataGridFilterIndicatorVisibleConvert.Default}">
-                                            <Binding Path="AreSeparatorsVisible"
+                                            <Binding Path="IsSeparatorsVisible"
                                                      RelativeSource="{RelativeSource TemplatedParent}" />
                                             <Binding Path="CanUserFilter"
                                                      RelativeSource="{RelativeSource TemplatedParent}" />
@@ -58,7 +58,7 @@
                                Width="1.0"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Right"
-                               IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+                               IsVisible="{TemplateBinding IsSeparatorsVisible}" />
                     <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualPart}"
                            IsVisible="False"
                            IsHitTestVisible="False">

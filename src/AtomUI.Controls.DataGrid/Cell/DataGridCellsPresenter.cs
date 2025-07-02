@@ -252,6 +252,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
                 if (autoGrowWidth)
                 {
                     cell.Measure(new Size(column.ActualMaxWidth, measureHeight));
+          
                     OwningGrid.AutoSizeColumn(column, cell.DesiredSize.Width);
                     column.ComputeLayoutRoundedWidth(totalDisplayWidth);
                 }
@@ -280,9 +281,6 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         // then we will resize all the columns to fit the available space.
         if (OwningGrid.UsesStarSizing && !OwningGrid.AutoSizingColumns)
         {
-            double adjustment = OwningGrid.CellsWidth - totalDisplayWidth;
-            totalDisplayWidth += adjustment - OwningGrid.AdjustColumnWidths(0, adjustment, false);
-
             // Since we didn't know the final widths of the columns until we resized,
             // we waited until now to measure each cell
             double leftEdge = 0;

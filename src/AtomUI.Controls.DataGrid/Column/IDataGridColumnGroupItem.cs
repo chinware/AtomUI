@@ -11,3 +11,8 @@ public interface IDataGridColumnGroupItem
     ObservableCollection<IDataGridColumnGroupItem> GroupChildren { get; }
     event EventHandler<DataGridColumnGroupChangedArgs>? GroupChanged;
 }
+
+internal interface IDataGridColumnGroupItemInternal : IDataGridColumnGroupItem
+{
+    DataGridHeaderViewItem? GroupHeaderViewItem { get; internal set; }
+}

@@ -17,7 +17,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-public abstract partial class DataGridColumn : IDataGridColumnGroupItem
+public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
 {
     #region 常量定义
 
@@ -33,6 +33,8 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     internal bool? CanUserSortInternal { get; set; }
     internal bool? CanUserFilterInternal { get; set; }
     internal bool? ShowSorterTooltipInternal { get; set; }
+    
+    DataGridHeaderViewItem? IDataGridColumnGroupItemInternal.GroupHeaderViewItem { get; set; }
 
     internal bool ActualCanUserResize
     {
@@ -95,7 +97,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItem
     /// not the column has been fully measured.
     /// </summary>
     internal bool IsInitialDesiredWidthDetermined { get; set; }
-
+    
     internal double LayoutRoundedWidth { get; private set; }
 
     internal ICellEditBinding? CellEditBinding => _editBinding;

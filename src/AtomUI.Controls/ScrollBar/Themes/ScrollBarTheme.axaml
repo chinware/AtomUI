@@ -53,7 +53,6 @@
                         <Grid Name="{x:Static atom:ScrollBarThemeConstants.LayoutRootPart}"
                               ColumnDefinitions="*">
                             <Track Name="{x:Static atom:ScrollBarThemeConstants.TrackPart}"
-                                   IsDirectionReversed="True"
                                    Minimum="{TemplateBinding Minimum}"
                                    Maximum="{TemplateBinding Maximum}"
                                    Value="{TemplateBinding RangeBase.Value, Mode=TwoWay}"

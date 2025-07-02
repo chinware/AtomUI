@@ -98,7 +98,7 @@ internal static class DataGridThemeConstants
 {
     public const string RowsPresenterPart = "PART_RowPresenter";
     public const string ColumnHeadersPresenterPart = "PART_ColumnHeadersPresenter";
-    public const string ColumnHeaderViewPart = "PART_ColumnHeaderView";
+    public const string GroupColumnHeadersPresenterPart = "PART_GroupColumnHeadersPresenter";
     public const string FrozenColumnScrollBarSpacerPart = "PART_FrozenColumnScrollBarSpacer";
     public const string HorizontalScrollbarPart = "PART_HorizontalScrollbar";
     public const string VerticalScrollbarPart = "PART_VerticalScrollbar";

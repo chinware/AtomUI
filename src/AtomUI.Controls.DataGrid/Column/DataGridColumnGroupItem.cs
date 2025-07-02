@@ -9,7 +9,9 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem, IDataGridColumnGroupChanged
+public class DataGridColumnGroupItem : AvaloniaObject,
+                                       IDataGridColumnGroupItemInternal, 
+                                       IDataGridColumnGroupChanged
 {
     #region 公共属性定义
 
@@ -72,6 +74,8 @@ public class DataGridColumnGroupItem : AvaloniaObject, IDataGridColumnGroupItem,
     #endregion
     
     #region 内部属性定义
+    
+    DataGridHeaderViewItem? IDataGridColumnGroupItemInternal.GroupHeaderViewItem { get; set; }
     
     internal bool HasHeaderCell => _headerCell != null;
 

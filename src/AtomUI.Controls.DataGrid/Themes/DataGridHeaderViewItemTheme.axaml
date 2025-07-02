@@ -6,31 +6,15 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.FramePart}">
-                    <atom:DataGridHeaderViewItemPanel
-                        Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.RootLayoutPart}">
-                        <atom:DataGridHeaderViewItemPanel.Header>
-                            <ContentPresenter Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.HeaderPart}"
-                                              Content="{TemplateBinding Header}"
-                                              ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                        </atom:DataGridHeaderViewItemPanel.Header>
-                        <atom:DataGridHeaderViewItemPanel.ItemsPresenter>
-                            <ItemsPresenter
-                                Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.ItemsPresenterPart}"
-                                ItemsPanel="{TemplateBinding ItemsPanel}" />
-                        </atom:DataGridHeaderViewItemPanel.ItemsPresenter>
-                    </atom:DataGridHeaderViewItemPanel>
+                    <ContentPresenter Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.HeaderPart}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
                 </Border>
             </ControlTemplate>
         </Setter>
 
         <Style Selector="^ /template/ Border#PART_Frame">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
-        </Style>
-
-        <Style Selector="^[IsLeaf=True]">
-            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter">
-                <Setter Property="IsVisible" Value="False"/>
-            </Style>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

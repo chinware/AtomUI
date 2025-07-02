@@ -2993,7 +2993,7 @@ public partial class DataGrid
 
         groupHeader.UpdateTitleElements();
 
-        OnLoadingRowGroup(new DataGridRowGroupHeaderEventArgs(groupHeader));
+        NotifyLoadingRowGroup(new DataGridRowGroupHeaderEventArgs(groupHeader));
 
         return groupHeader;
     }

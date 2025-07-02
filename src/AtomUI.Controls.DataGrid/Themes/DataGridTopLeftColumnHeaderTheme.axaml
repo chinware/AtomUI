@@ -27,7 +27,7 @@
                                    Width="1.0"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
-                                   IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+                                   IsVisible="{TemplateBinding IsSeparatorsVisible}" />
                         <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualPart}"
                                IsVisible="False"
                                IsHitTestVisible="False">

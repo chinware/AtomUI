@@ -50,8 +50,8 @@ public class DataGridHeaderView : ItemsControl
         Debug.Assert(OwningGrid is not null);
         if (container is DataGridHeaderViewItem headerViewItem)
         {
-            headerViewItem.OwningHeaderView = this;
-            BindUtils.RelayBind(OwningGrid, DataGrid.BorderThicknessProperty, headerViewItem, DataGridHeaderViewItem.BorderThicknessProperty);
+            // headerViewItem.OwningHeaderView = this;
+            BindUtils.RelayBind(OwningGrid, BorderThicknessProperty, headerViewItem, BorderThicknessProperty);
         }
     }
 }

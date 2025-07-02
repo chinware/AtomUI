@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
@@ -40,6 +41,8 @@ internal class DataGridHeaderViewItemPanel : Control
     }
 
     #endregion
+    
+    internal DataGrid? OwningGrid { get; set; }
     
     static DataGridHeaderViewItemPanel()
     {
@@ -99,19 +102,83 @@ internal class DataGridHeaderViewItemPanel : Control
         var accumulatedHeight = 0d;
         
         Debug.Assert(Header != null && ItemsPresenter != null);
-
+        Debug.Assert(OwningGrid != null);
         if (!ItemsPresenter.IsVisible)
         {
-            var childConstraint = new Size(
-                Math.Max(0, availableSize.Width - accumulatedWidth),
-                Math.Max(0, availableSize.Height - accumulatedHeight));
-    
-            Header.Measure(childConstraint);
-            var childDesiredSize = Header.DesiredSize;
-            parentHeight      =  Math.Max(parentHeight, accumulatedHeight + childDesiredSize.Height);
-            parentWidth       =  Math.Max(parentWidth, accumulatedWidth + childDesiredSize.Width);
-            accumulatedHeight += childDesiredSize.Height;
-            accumulatedWidth  += childDesiredSize.Width;
+            if (!OwningGrid.IsColumnHeadersVisible)
+            {
+                return default;
+            }
+            double height = OwningGrid.ColumnHeaderHeight;
+            bool   autoSizeHeight;
+            if (double.IsNaN(height))
+            {
+                // No explicit height values were set so we can autosize
+                height         = 0;
+                autoSizeHeight = true;
+            }
+            else
+            {
+                autoSizeHeight = false;
+            }
+            double totalDisplayWidth = 0;
+            OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+            DataGridColumn? lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
+
+            DataGridColumn? column = null;
+            if (Header is ContentPresenter headerContentPresenter)
+            {
+                if (headerContentPresenter.Content is DataGridColumnHeader header)
+                {
+                    column = header.OwningColumn;
+                }
+            }
+            
+            Debug.Assert(column != null);
+             // Measure each column header
+            bool                 autoGrowWidth = column.Width.IsAuto || column.Width.IsSizeToHeader;
+            DataGridColumnHeader columnHeader  = column.HeaderCell;
+            if (column != lastVisibleColumn)
+            {
+                columnHeader.UpdateSeparatorVisibility(lastVisibleColumn);
+            }
+
+            // If we're not using star sizing or the current column can't be resized,
+            // then just set the display width according to the column's desired width
+            if (!OwningGrid.UsesStarSizing || (!column.ActualCanUserResize && !column.Width.IsStar))
+            {
+                // In the edge-case where we're given infinite width and we have star columns, the 
+                // star columns grow to their predefined limit of 10,000 (or their MaxWidth)
+                double newDisplayWidth = column.Width.IsStar ?
+                    Math.Min(column.ActualMaxWidth, DataGrid.MaximumStarColumnWidth) :
+                    Math.Max(column.ActualMinWidth, Math.Min(column.ActualMaxWidth, column.Width.DesiredValue));
+                column.SetWidthDisplayValue(newDisplayWidth);
+            }
+
+            // If we're auto-growing the column based on the header content, we want to measure it at its maximum value
+            if (autoGrowWidth)
+            {
+                columnHeader.Measure(new Size(column.ActualMaxWidth, double.PositiveInfinity));
+                OwningGrid.AutoSizeColumn(column, columnHeader.DesiredSize.Width);
+                column.ComputeLayoutRoundedWidth(totalDisplayWidth);
+            }
+            else if (!OwningGrid.UsesStarSizing)
+            {
+                column.ComputeLayoutRoundedWidth(totalDisplayWidth);
+                columnHeader.Measure(new Size(column.LayoutRoundedWidth, double.PositiveInfinity));
+            }
+
+            // We need to track the largest height in order to auto-size
+            if (autoSizeHeight)
+            {
+                height = Math.Max(height, columnHeader.DesiredSize.Height);
+            }
+            
+            parentHeight      =  Math.Max(parentHeight, accumulatedHeight + height);
+            parentWidth       =  Math.Max(parentWidth, accumulatedWidth + column.LayoutRoundedWidth);
+            accumulatedHeight += height;
+            accumulatedWidth  += column.LayoutRoundedWidth;
+            Console.WriteLine($"DataGridHeaderViewItemPanel-{column.Header}-{column.LayoutRoundedWidth}-MeasureOverride");
         }
         else
         {
