@@ -2064,7 +2064,6 @@ public partial class DataGrid
             if (_groupColumnHeadersPresenter != null)
             {
                 EnsureColumnHeadersVisibility();
-                Console.WriteLine($"IsGroupHeaderMode=true-{_groupColumnHeadersPresenter}-{_groupColumnHeadersPresenter.IsMeasureValid}");
                 _groupColumnHeadersPresenter.InvalidateMeasure();
             }
         }
@@ -2072,8 +2071,7 @@ public partial class DataGrid
         {
         
             if (_columnHeadersPresenter != null)
-            {
-                Console.WriteLine($"IsGroupHeaderMode=false-{_columnHeadersPresenter}-{_columnHeadersPresenter.IsMeasureValid}");
+            {   
                 EnsureColumnHeadersVisibility();
                 _columnHeadersPresenter.InvalidateMeasure();
             }

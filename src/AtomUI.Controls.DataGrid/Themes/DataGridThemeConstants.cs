@@ -40,16 +40,7 @@ internal static class DataGridFilterIndicatorThemeConstants
 
 internal static class DataGridHeaderViewItemThemeConstants
 {
-    public const string FramePart = "PART_Frame";
-    public const string ItemsPresenterPart = "PART_ItemsPresenter";
-    public const string RootLayoutPart = "PART_RootLayout";
-    public const string HeaderPart = "PART_Header";
-}
-
-internal static class DataGridHeaderViewThemeConstants
-{
-    public const string ItemsPresenterPart = "PART_ItemsPresenter";
-    public const string FramePart = "PART_Frame";
+    public const string ContentPresenterPart = "PART_ContentPresenter";
 }
 
 internal static class DataGridRowGroupHeaderThemeConstants

@@ -9,7 +9,6 @@
         <ResourceInclude Source="Themes/DataGridColumnGroupHeaderTheme.axaml" />
         <ResourceInclude Source="Themes/DataGridFilterIndicatorTheme.axaml" />
         <ResourceInclude Source="Themes/DataGridHeaderViewItemTheme.axaml" />
-        <ResourceInclude Source="Themes/DataGridHeaderViewTheme.axaml" />
         <ResourceInclude Source="Themes/DataGridRowGroupHeaderTheme.axaml" />
         <ResourceInclude Source="Themes/DataGridRowHeaderTheme.axaml" />
         <ResourceInclude Source="Themes/DataGridRowTheme.axaml" />

@@ -1,7 +1,6 @@
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -54,12 +53,10 @@ public class DataGridHeaderViewItem : ContentControl
     
     #endregion
     
-    private Border? _headerFrame;
-    
-
     public DataGridHeaderViewItem(DataGrid owningGrid)
     {
         OwningGrid = owningGrid;
+        BindUtils.RelayBind(OwningGrid, BorderThicknessProperty, this, BorderThicknessProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -74,21 +71,6 @@ public class DataGridHeaderViewItem : ContentControl
         {
             CalculateEffectiveBorderThickness();
         }
-
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == EffectiveBorderThicknessProperty)
-            {
-                ApplyEffectiveBorder();
-            }
-        }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _headerFrame = e.NameScope.Find<Border>(DataGridHeaderViewItemThemeConstants.FramePart);
-        ApplyEffectiveBorder();
     }
 
     private void UpdatePseudoClasses()
@@ -107,26 +89,5 @@ public class DataGridHeaderViewItem : ContentControl
             EffectiveBorderThickness = new Thickness(0, 0, BorderThickness.Right, BorderThickness.Bottom);
         }
     }
-
-    private void ApplyEffectiveBorder()
-    {
-        if (IsLeaf)
-        {
-            if (_headerFrame != null)
-            {
-                _headerFrame.BorderThickness = EffectiveBorderThickness;
-            }
-        }
-        else
-        {
-            if (Content is DataGridColumnGroupHeader columnGroupHeader)
-            {
-                columnGroupHeader.BorderThickness = EffectiveBorderThickness;
-            }
-            else if (Content is DataGridColumnHeader columnHeader)
-            {
-                columnHeader.BorderThickness = EffectiveBorderThickness;
-            }
-        }
-    }
+    
 }

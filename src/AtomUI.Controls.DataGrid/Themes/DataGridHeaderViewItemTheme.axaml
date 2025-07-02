@@ -5,15 +5,14 @@
     <ControlTheme x:Key="{x:Type atom:DataGridHeaderViewItem}" TargetType="atom:DataGridHeaderViewItem">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.FramePart}">
-                    <ContentPresenter Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.HeaderPart}"
-                                      Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
-                </Border>
+                <ContentPresenter Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.ContentPresenterPart}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  BorderThickness="{TemplateBinding EffectiveBorderThickness}"/>
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ Border#PART_Frame">
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
         </Style>
     </ControlTheme>

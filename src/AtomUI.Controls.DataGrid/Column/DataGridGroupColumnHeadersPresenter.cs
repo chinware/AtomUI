@@ -112,6 +112,8 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         _childIndexChanged?.Invoke(this, ChildIndexChangedEventArgs.ChildIndexesReset);
     }
 
+    private double _columnHeight;
+
     protected override Size MeasureOverride(Size availableSize)
     {
         if (OwningGrid == null)
@@ -124,12 +126,12 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             return default;
         }
 
-        double height = OwningGrid.ColumnHeaderHeight;
-        bool   autoSizeHeight;
-        if (double.IsNaN(height))
+        _columnHeight = OwningGrid.ColumnHeaderHeight;
+        bool          autoSizeHeight;
+        if (double.IsNaN(_columnHeight))
         {
             // No explicit height values were set so we can autosize
-            height         = 0;
+            _columnHeight  = 0;
             autoSizeHeight = true;
         }
         else
@@ -186,7 +188,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             // We need to track the largest height in order to auto-size
             if (autoSizeHeight)
             {
-                height = Math.Max(height, headerViewItem.DesiredSize.Height);
+                _columnHeight = Math.Max(_columnHeight, headerViewItem.DesiredSize.Height);
             }
 
             totalDisplayWidth += column.ActualWidth;
@@ -205,7 +207,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
                 column.HeaderCell.Measure(new Size(column.LayoutRoundedWidth, double.PositiveInfinity));
                 if (autoSizeHeight)
                 {
-                    height = Math.Max(height, column.HeaderCell.DesiredSize.Height);
+                    _columnHeight = Math.Max(_columnHeight, column.HeaderCell.DesiredSize.Height);
                 }
 
                 leftEdge += column.ActualWidth;
@@ -254,10 +256,11 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
     {
         totalHeight = 0.0;
         var height = 0.0;
-        var width = 0.0;
+        var width = double.NaN;
         if (item is IDataGridColumnGroupItemInternal groupItem)
         {
-            if (groupItem.GroupChildren.Count > 0)
+            var hasChildren = groupItem.GroupChildren.Count > 0;
+            if (hasChildren)
             {
                 var childHeight = 0.0;
                 var childWidth = 0.0;
@@ -269,13 +272,26 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
                     totalHeight = Math.Max(totalHeight, childTotalHeight);
                 }
                 
-                width = Math.Max(width, childWidth);
+                width = Math.Max(double.IsNaN(width) ? 0.0 : width, childWidth);
             }
             
             if (groupItem.GroupHeaderViewItem != null)
             {
-                height = groupItem.GroupHeaderViewItem.DesiredSize.Height;
-                width  = Math.Max(width, groupItem.GroupHeaderViewItem.DesiredSize.Width);
+                if (hasChildren)
+                {
+                    groupItem.GroupHeaderViewItem.MinWidth = width;
+                    groupItem.GroupHeaderViewItem.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    height = groupItem.GroupHeaderViewItem.DesiredSize.Height;
+                    width  = groupItem.GroupHeaderViewItem.DesiredSize.Width;
+                }
+                else
+                {
+                    if (groupItem is DataGridColumn column)
+                    {
+                        height = _columnHeight;
+                        width  = column.ActualWidth;
+                    }
+                }
             }
         }
 
@@ -283,13 +299,58 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         return new Size(width, height);
     }
 
-    protected Size ArrangeOverride1(Size finalSize)
+    private Size ArrangeLeafItem(DataGridColumn dataGridColumn, Rect rect)
+    {
+        DataGridHeaderViewItem? headerViewItem = null;
+        if (dataGridColumn is IDataGridColumnGroupItemInternal groupItem)
+        {
+            headerViewItem = groupItem.GroupHeaderViewItem;
+        }
+
+        Debug.Assert(headerViewItem != null);
+        DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
+        Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
+            
+        if (dataGridColumn.IsFrozen)
+        {
+            headerViewItem.Arrange(new Rect(_frozenLeftEdge, rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
+            headerViewItem.Clip =
+                null; // The layout system could have clipped this because it's not aware of our render transform
+            if (DragColumn == dataGridColumn && DragIndicator != null)
+            {
+                _dragIndicatorLeftEdge = _frozenLeftEdge + DragIndicatorOffset;
+            }
+        
+            _frozenLeftEdge += dataGridColumn.ActualWidth;
+        }
+        else
+        {
+            headerViewItem.Arrange(
+                new Rect(_scrollingLeftEdge, rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
+            EnsureColumnHeaderClip(headerViewItem, dataGridColumn.ActualWidth, rect.Height, _frozenLeftEdge,
+                _scrollingLeftEdge);
+            if (DragColumn == dataGridColumn && DragIndicator != null)
+            {
+                _dragIndicatorLeftEdge = _scrollingLeftEdge + DragIndicatorOffset;
+            }
+        }
+        
+        _scrollingLeftEdge += dataGridColumn.ActualWidth;
+        return headerViewItem.Bounds.Size;
+    }
+    
+    private double _leafHeight = 0.0;
+    private double _dragIndicatorLeftEdge;
+    private double _frozenLeftEdge;
+    private double _scrollingLeftEdge;
+    
+    protected override Size ArrangeOverride(Size finalSize)
     {
         if (OwningGrid == null)
         {
             return base.ArrangeOverride(finalSize);
         }
-
+    
         if (OwningGrid.AutoSizingColumns)
         {
             // When we initially load an auto-column, we have to wait for all the rows to be measured
@@ -299,12 +360,12 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             return base.ArrangeOverride(finalSize);
         }
         
-        double leafHeight = OwningGrid.ColumnHeaderHeight;
+        _leafHeight = OwningGrid.ColumnHeaderHeight;
         bool   autoSizeHeight;
-        if (double.IsNaN(leafHeight))
+        if (double.IsNaN(_leafHeight))
         {
             // No explicit height values were set so we can autosize
-            leafHeight     = 0;
+            _leafHeight    = 0;
             autoSizeHeight = true;
         }
         else
@@ -325,7 +386,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             // We need to track the largest height in order to auto-size
             if (autoSizeHeight)
             {
-                leafHeight = Math.Max(leafHeight, headerViewItem.DesiredSize.Height);
+                _leafHeight = Math.Max(_leafHeight, headerViewItem.DesiredSize.Height);
             }
         }
 
@@ -339,211 +400,135 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             {
                 if (autoSizeHeight)
                 {
-                    leafHeight = Math.Max(leafHeight, column.HeaderCell.DesiredSize.Height);
+                    _leafHeight = Math.Max(_leafHeight, column.HeaderCell.DesiredSize.Height);
                 }
             }
         }
-
-        double dragIndicatorLeftEdge = 0;
-        double frozenLeftEdge        = 0;
-        double scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
-        double arrangeLeafY = finalSize.Height - leafHeight;
-        foreach (DataGridColumn dataGridColumn in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        
+        _dragIndicatorLeftEdge = 0;
+        _frozenLeftEdge        = 0;
+        _scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
+    
+        var offsetX     = 0.0d;
+        var remainWidth = finalSize.Width;
+        foreach (IDataGridColumnGroupItem item in OwningGrid.ColumnGroups)
         {
-            DataGridHeaderViewItem? headerViewItem = null;
-            if (dataGridColumn is IDataGridColumnGroupItemInternal groupItem)
+            if (item is IDataGridColumnGroupItemInternal groupItem)
             {
-                headerViewItem = groupItem.GroupHeaderViewItem;
-            }
-
-            Debug.Assert(headerViewItem != null);
-            DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
-            Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
-            
-            if (dataGridColumn.IsFrozen)
-            {
-                headerViewItem.Arrange(new Rect(frozenLeftEdge, arrangeLeafY, dataGridColumn.LayoutRoundedWidth, leafHeight));
-                headerViewItem.Clip =
-                    null; // The layout system could have clipped this because it's not aware of our render transform
-                if (DragColumn == dataGridColumn && DragIndicator != null)
+                if (groupItem.GroupHeaderViewItem != null)
                 {
-                    dragIndicatorLeftEdge = frozenLeftEdge + DragIndicatorOffset;
-                }
-
-                frozenLeftEdge += dataGridColumn.ActualWidth;
-            }
-            else
-            {
-                headerViewItem.Arrange(
-                    new Rect(scrollingLeftEdge, arrangeLeafY, dataGridColumn.LayoutRoundedWidth, leafHeight));
-                EnsureColumnHeaderClip(headerViewItem, dataGridColumn.ActualWidth, leafHeight, frozenLeftEdge,
-                    scrollingLeftEdge);
-                if (DragColumn == dataGridColumn && DragIndicator != null)
-                {
-                    dragIndicatorLeftEdge = scrollingLeftEdge + DragIndicatorOffset;
+                    ArrangeGroupRecursive(item, new Rect(offsetX, 0, remainWidth, finalSize.Height));
+                    if (groupItem is DataGridColumn column)
+                    {
+                        offsetX += column.ActualWidth;
+                        remainWidth -= column.ActualWidth;
+                    }
+                    else
+                    {
+                        var size = groupItem.GroupHeaderViewItem.DesiredSize;
+                        offsetX += size.Width;
+                        remainWidth -= size.Width;
+                    }
                 }
             }
-
-            scrollingLeftEdge += dataGridColumn.ActualWidth;
         }
-
+    
+        var arrangeLeafY = finalSize.Height - _leafHeight;
         if (DragColumn != null)
         {
             if (DragIndicator != null)
             {
-                EnsureColumnReorderingClip(DragIndicator, leafHeight, frozenLeftEdge, dragIndicatorLeftEdge);
-
+                EnsureColumnReorderingClip(DragIndicator, _leafHeight, _frozenLeftEdge, _dragIndicatorLeftEdge);
+        
                 var height = DragIndicator.Bounds.Height;
                 if (height <= 0)
                     height = DragIndicator.DesiredSize.Height;
-
-                DragIndicator.Arrange(new Rect(dragIndicatorLeftEdge, arrangeLeafY, DragIndicator.Bounds.Width, height));
+        
+                DragIndicator.Arrange(new Rect(_dragIndicatorLeftEdge, arrangeLeafY, DragIndicator.Bounds.Width, height));
             }
-
+        
             if (DropLocationIndicator != null)
             {
                 if (DropLocationIndicator is Control element)
                 {
-                    EnsureColumnReorderingClip(element, leafHeight, frozenLeftEdge, DropLocationIndicatorOffset);
+                    EnsureColumnReorderingClip(element, _leafHeight, _frozenLeftEdge, DropLocationIndicatorOffset);
                 }
-
+        
                 DropLocationIndicator.Arrange(new Rect(DropLocationIndicatorOffset, arrangeLeafY,
                     DropLocationIndicator.Bounds.Width, DropLocationIndicator.Bounds.Height));
             }
         }
-
-        // Arrange filler
+        
         OwningGrid.HandleFillerColumnWidthNeeded(finalSize.Width);
         DataGridFillerColumn? fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
         Debug.Assert(fillerColumn != null);
         if (fillerColumn.FillerWidth > 0)
         {
             fillerColumn.HeaderCell.IsVisible = true;
-            fillerColumn.HeaderCell.Arrange(new Rect(scrollingLeftEdge, arrangeLeafY, fillerColumn.FillerWidth, leafHeight));
+            fillerColumn.HeaderCell.Arrange(new Rect(_scrollingLeftEdge, arrangeLeafY, fillerColumn.FillerWidth, _leafHeight));
         }
         else
         {
             fillerColumn.HeaderCell.IsVisible = false;
         }
-
+        
         // This needs to be updated after the filler column is configured
         DataGridColumn? lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
         if (lastVisibleColumn != null)
         {
             lastVisibleColumn.HeaderCell.UpdateSeparatorVisibility(lastVisibleColumn);
         }
-
+    
         return finalSize;
     }
-    
-    // protected override Size ArrangeOverride(Size finalSize)
-    // {
-    //     if (OwningGrid == null)
-    //     {
-    //         return base.ArrangeOverride(finalSize);
-    //     }
-    //
-    //     if (OwningGrid.AutoSizingColumns)
-    //     {
-    //         // When we initially load an auto-column, we have to wait for all the rows to be measured
-    //         // before we know its final desired size.  We need to trigger a new round of measures now
-    //         // that the final sizes have been calculated.
-    //         OwningGrid.AutoSizingColumns = false;
-    //         return base.ArrangeOverride(finalSize);
-    //     }
-    //     
-    //     double dragIndicatorLeftEdge = 0;
-    //     double frozenLeftEdge        = 0;
-    //     double scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
-    //
-    //     var offsetX = 0.0d;
-    //     foreach (IDataGridColumnGroupItem item in OwningGrid.ColumnGroups)
-    //     {
-    //         if (item is IDataGridColumnGroupItemInternal groupItem)
-    //         {
-    //             if (groupItem.GroupHeaderViewItem != null)
-    //             {
-    //                 var size = groupItem.GroupHeaderViewItem.DesiredSize;
-    //                 ArrangeGroupRecursive(item, new Rect(offsetX, 0, size.Width, finalSize.Height));
-    //                 offsetX += size.Width;
-    //             }
-    //         }
-    //     }
-
-        // if (DragColumn != null)
-        // {
-        //     if (DragIndicator != null)
-        //     {
-        //         EnsureColumnReorderingClip(DragIndicator, leafHeight, frozenLeftEdge, dragIndicatorLeftEdge);
-        //
-        //         var height = DragIndicator.Bounds.Height;
-        //         if (height <= 0)
-        //             height = DragIndicator.DesiredSize.Height;
-        //
-        //         DragIndicator.Arrange(new Rect(dragIndicatorLeftEdge, arrangeLeafY, DragIndicator.Bounds.Width, height));
-        //     }
-        //
-        //     if (DropLocationIndicator != null)
-        //     {
-        //         if (DropLocationIndicator is Control element)
-        //         {
-        //             EnsureColumnReorderingClip(element, leafHeight, frozenLeftEdge, DropLocationIndicatorOffset);
-        //         }
-        //
-        //         DropLocationIndicator.Arrange(new Rect(DropLocationIndicatorOffset, arrangeLeafY,
-        //             DropLocationIndicator.Bounds.Width, DropLocationIndicator.Bounds.Height));
-        //     }
-        // }
-
-        // // Arrange filler
-        // OwningGrid.HandleFillerColumnWidthNeeded(finalSize.Width);
-        // DataGridFillerColumn? fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
-        // Debug.Assert(fillerColumn != null);
-        // if (fillerColumn.FillerWidth > 0)
-        // {
-        //     fillerColumn.HeaderCell.IsVisible = true;
-        //     fillerColumn.HeaderCell.Arrange(new Rect(scrollingLeftEdge, arrangeLeafY, fillerColumn.FillerWidth, leafHeight));
-        // }
-        // else
-        // {
-        //     fillerColumn.HeaderCell.IsVisible = false;
-        // }
-        //
-        // // This needs to be updated after the filler column is configured
-        // DataGridColumn? lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
-        // if (lastVisibleColumn != null)
-        // {
-        //     lastVisibleColumn.HeaderCell.UpdateSeparatorVisibility(lastVisibleColumn);
-        // }
-
-    //     return finalSize;
-    // }
 
     private void ArrangeGroupRecursive(IDataGridColumnGroupItem item, Rect rect)
     {
         if (item is IDataGridColumnGroupItemInternal groupItem)
         {
-            var selfHeight = 0.0d;
+            var selfHeight  = 0.0d;
+            var hasChildren = groupItem.GroupChildren.Count > 0;
             if (groupItem.GroupHeaderViewItem != null)
             {
-                var size = groupItem.GroupHeaderViewItem.DesiredSize;
-                selfHeight = size.Height;
                 // 安排自己
-                groupItem.GroupHeaderViewItem.Arrange(new Rect(rect.X, rect.Y, size.Width, rect.Height));
+                if (hasChildren)
+                {
+                    var size = groupItem.GroupHeaderViewItem.DesiredSize;
+                    selfHeight = size.Height;
+                    groupItem.GroupHeaderViewItem.Arrange(new Rect(rect.X, rect.Y, size.Width, hasChildren ? selfHeight : rect.Height));
+                }
+                else
+                {
+                    if (groupItem is DataGridColumn dataGridColumn)
+                    {
+                        var size = ArrangeLeafItem(dataGridColumn, rect);
+                        selfHeight = size.Height;
+                    }
+                }
             }
-            if (groupItem.GroupChildren.Count > 0)
+            if (hasChildren)
             {
-                var offsetX = rect.X;
-                var offsetY = rect.Y + selfHeight;
+                var offsetX     = rect.X;
+                var offsetY     = rect.Y + selfHeight;
+                var remainWidth = rect.Width;
                 foreach (var child in groupItem.GroupChildren)
                 {
                     if (child is IDataGridColumnGroupItemInternal childGroupItem)
                     {
                         if (childGroupItem.GroupHeaderViewItem != null)
                         {
-                            var size = childGroupItem.GroupHeaderViewItem.DesiredSize;
-                            ArrangeGroupRecursive(childGroupItem, new Rect(offsetX, offsetY, size.Width, rect.Height - selfHeight));
-                            offsetY += size.Width;
+                            ArrangeGroupRecursive(childGroupItem, new Rect(offsetX, offsetY, remainWidth, rect.Height - selfHeight));
+                            if (childGroupItem is DataGridColumn column)
+                            {
+                                offsetX     += column.ActualWidth;
+                                remainWidth -= column.ActualWidth;
+                            }
+                            else
+                            {
+                                var size = childGroupItem.GroupHeaderViewItem.DesiredSize;
+                                offsetX     += size.Width;
+                                remainWidth -= size.Width;
+                            }
                         }
                     }
                 }
