@@ -22,20 +22,23 @@ namespace AtomUI.Controls;
 public partial class DataGrid
 {
     #region 内部属性定义
+
     internal DataGridColumnHeadersPresenter? ColumnHeaders => _columnHeadersPresenter;
     internal DataGridColumnCollection ColumnsInternal { get; }
     internal ObservableCollection<IDataGridColumnGroupItem> ColumnGroupsInternal { get; }
-    
+
     internal List<DataGridColumn> ColumnsItemsInternal => ColumnsInternal.ItemsInternal;
     internal bool InDisplayIndexAdjustments { get; set; }
-    internal bool IsColumnHeadersVisible => (HeadersVisibility & DataGridHeadersVisibility.Column) == DataGridHeadersVisibility.Column;
-    
+
+    internal bool IsColumnHeadersVisible =>
+        (HeadersVisibility & DataGridHeadersVisibility.Column) == DataGridHeadersVisibility.Column;
+
     internal int CurrentColumnIndex
     {
         get => CurrentCellCoordinates.ColumnIndex;
         private set => CurrentCellCoordinates.ColumnIndex = value;
     }
-    
+
     // the sum of the widths in pixels of the scrolling columns preceding
     // the first displayed scrolling column
     internal double HorizontalOffset
@@ -47,11 +50,13 @@ public partial class DataGrid
             {
                 value = 0;
             }
+
             double widthNotVisible = Math.Max(0, ColumnsInternal.VisibleEdgedColumnsWidth - CellsWidth);
             if (value > widthNotVisible)
             {
                 value = widthNotVisible;
             }
+
             if (MathUtilities.AreClose(value, _horizontalOffset))
             {
                 return;
@@ -61,6 +66,7 @@ public partial class DataGrid
             {
                 _hScrollBar.Value = value;
             }
+
             _horizontalOffset = value;
 
             DisplayData.FirstDisplayedScrollingCol = ComputeFirstVisibleScrollingColumn();
@@ -68,7 +74,7 @@ public partial class DataGrid
             ComputeDisplayedColumns();
         }
     }
-    
+
     private int FirstDisplayedNonFillerColumnIndex
     {
         get
@@ -80,43 +86,42 @@ public partial class DataGrid
                 {
                     return column.Index;
                 }
+
                 if (DisplayData.FirstDisplayedScrollingCol >= column.Index)
                 {
                     return DisplayData.FirstDisplayedScrollingCol;
                 }
+
                 return column.Index;
             }
+
             return -1;
         }
     }
-    
-    internal int EditingColumnIndex
-    {
-        get;
-        private set;
-    }
-    
+
+    internal int EditingColumnIndex { get; private set; }
+
     #endregion
-    
+
     private DataGridColumnHeadersPresenter? _columnHeadersPresenter;
     private DataGridGroupColumnHeadersPresenter? _groupColumnHeadersPresenter;
-    
+
     protected virtual void NotifyColumnDisplayIndexChanged(DataGridColumnEventArgs e)
     {
         ColumnDisplayIndexChanged?.Invoke(this, e);
     }
-    
+
     protected internal virtual void NotifyColumnReordered(DataGridColumnEventArgs e)
     {
         EnsureVerticalGridLines();
         ColumnReordered?.Invoke(this, e);
     }
-    
+
     protected internal virtual void HandleColumnReordering(DataGridColumnReorderingEventArgs e)
     {
         ColumnReordering?.Invoke(this, e);
     }
-    
+
     protected internal virtual void HandleColumnSorting(DataGridColumnEventArgs e)
     {
         Sorting?.Invoke(this, e);
@@ -139,12 +144,12 @@ public partial class DataGrid
         {
             throw new ArgumentOutOfRangeException(nameof(columnIndex), "Column cannot be filled column.");
         }
+
         column.Sort(direction);
     }
 
     public void ClearSort(int columnIndex)
     {
-        
         if (columnIndex < 0 || columnIndex >= ColumnsInternal.Count)
         {
             throw new ArgumentOutOfRangeException(nameof(columnIndex));
@@ -155,6 +160,7 @@ public partial class DataGrid
         {
             throw new ArgumentOutOfRangeException(nameof(columnIndex), "Column cannot be filled column.");
         }
+
         column.ClearSort();
     }
 
@@ -170,7 +176,7 @@ public partial class DataGrid
             Avalonia.Threading.Dispatcher.UIThread.Post(ProcessClearSort);
         }
     }
-    
+
     internal void ProcessClearSort()
     {
         if (EditingRow == null)
@@ -180,12 +186,13 @@ public partial class DataGrid
                 var ea = new DataGridColumnEventArgs(column);
                 HandleColumnSorting(ea);
             }
+
             // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
             if (DataConnection.AllowSort && DataConnection.SortDescriptions != null)
             {
                 IDataGridCollectionView? collectionView = DataConnection.CollectionView;
                 Debug.Assert(collectionView != null);
-                
+
                 using (collectionView.DeferRefresh())
                 {
                     DataConnection.SortDescriptions.Clear();
@@ -206,9 +213,10 @@ public partial class DataGrid
         {
             throw new ArgumentOutOfRangeException(nameof(columnIndex), "Column cannot be filled column.");
         }
+
         column.Filter(filterValues);
     }
-    
+
     public void ClearFilter(int columnIndex)
     {
         if (columnIndex < 0 || columnIndex >= ColumnsInternal.Count)
@@ -221,9 +229,10 @@ public partial class DataGrid
         {
             throw new ArgumentOutOfRangeException(nameof(columnIndex), "Column cannot be filled column.");
         }
+
         column.ClearFilter();
     }
-    
+
     public void ClearFilters()
     {
         if (WaitForLostFocus(ClearFilters))
@@ -236,7 +245,7 @@ public partial class DataGrid
             Avalonia.Threading.Dispatcher.UIThread.Post(ProcessClearFilters);
         }
     }
-    
+
     internal void ProcessClearFilters()
     {
         if (EditingRow == null)
@@ -246,12 +255,13 @@ public partial class DataGrid
                 var ea = new DataGridColumnEventArgs(column);
                 HandleColumnFiltering(ea);
             }
+
             // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
             if (DataConnection.AllowFilter && DataConnection.FilterDescriptions != null)
             {
                 IDataGridCollectionView? collectionView = DataConnection.CollectionView;
                 Debug.Assert(collectionView != null);
-                
+
                 using (collectionView.DeferRefresh())
                 {
                     DataConnection.FilterDescriptions.Clear();
@@ -259,7 +269,7 @@ public partial class DataGrid
             }
         }
     }
-    
+
     /// <summary>
     /// Adjusts the widths of all columns with DisplayIndex >= displayIndex such that the total
     /// width is adjusted by the given amount, if possible.  If the total desired adjustment amount
@@ -282,6 +292,7 @@ public partial class DataGrid
                 amount = IncreaseColumnWidths(displayIndex, amount, userInitiated);
             }
         }
+
         return amount;
     }
 
@@ -292,7 +303,8 @@ public partial class DataGrid
     /// <param name="desiredWidth">The new desired width of the column.</param>
     internal void AutoSizeColumn(DataGridColumn column, double desiredWidth)
     {
-        Debug.Assert(column.Width.IsAuto || column.Width.IsSizeToCells || column.Width.IsSizeToHeader || (!UsesStarSizing && column.Width.IsStar));
+        Debug.Assert(column.Width.IsAuto || column.Width.IsSizeToCells || column.Width.IsSizeToHeader ||
+                     (!UsesStarSizing && column.Width.IsStar));
 
         // If we're using star sizing and this is the first time we've measured this particular auto-column,
         // we want to allow all rows to get measured before we setup the star widths.  We won't know the final
@@ -318,7 +330,8 @@ public partial class DataGrid
             }
             else
             {
-                column.SetWidthInternalNoCallback(new DataGridLength(column.Width.Value, column.Width.UnitType, desiredWidth, desiredWidth));
+                column.SetWidthInternalNoCallback(new DataGridLength(column.Width.Value, column.Width.UnitType,
+                    desiredWidth, desiredWidth));
                 HandleColumnWidthChanged(column);
             }
         }
@@ -326,10 +339,11 @@ public partial class DataGrid
 
     internal bool ColumnRequiresRightGridLine(DataGridColumn dataGridColumn, bool includeLastRightGridLineWhenPresent)
     {
-        return (GridLinesVisibility == DataGridGridLinesVisibility.Vertical || GridLinesVisibility == DataGridGridLinesVisibility.All) &&
-               (dataGridColumn != ColumnsInternal.LastVisibleColumn || 
-                (includeLastRightGridLineWhenPresent && 
-                 ColumnsInternal.FillerColumn != null && 
+        return (GridLinesVisibility == DataGridGridLinesVisibility.Vertical ||
+                GridLinesVisibility == DataGridGridLinesVisibility.All) &&
+               (dataGridColumn != ColumnsInternal.LastVisibleColumn ||
+                (includeLastRightGridLineWhenPresent &&
+                 ColumnsInternal.FillerColumn != null &&
                  ColumnsInternal.FillerColumn.IsActive));
     }
 
@@ -377,6 +391,7 @@ public partial class DataGrid
             {
                 return true;
             }
+
             return DataConnection.GetPropertyIsReadOnly(path) || isReadOnly;
         }
 
@@ -522,7 +537,7 @@ public partial class DataGrid
                 // get their DisplayIndex incremented.
                 for (int i = newDisplayIndex; i < targetColumn.DisplayIndexWithFiller; i++)
                 {
-                    column                        = ColumnsInternal.GetColumnAtDisplayIndex(i);
+                    column = ColumnsInternal.GetColumnAtDisplayIndex(i);
                     Debug.Assert(column != null);
                     column.DisplayIndexWithFiller += 1;
                     if (trackChange)
@@ -537,7 +552,7 @@ public partial class DataGrid
                 // get their DisplayIndex decremented.
                 for (int i = newDisplayIndex; i > targetColumn.DisplayIndexWithFiller; i--)
                 {
-                    column                        = ColumnsInternal.GetColumnAtDisplayIndex(i);
+                    column = ColumnsInternal.GetColumnAtDisplayIndex(i);
                     Debug.Assert(column != null);
                     column.DisplayIndexWithFiller -= 1;
                     if (trackChange)
@@ -546,11 +561,13 @@ public partial class DataGrid
                     }
                 }
             }
+
             // Now let's actually change the order of the DisplayIndexMap
             if (targetColumn.DisplayIndexWithFiller != -1)
             {
                 ColumnsInternal.DisplayIndexMap.Remove(targetColumn.Index);
             }
+
             ColumnsInternal.DisplayIndexMap.Insert(newDisplayIndex, targetColumn.Index);
         }
         finally
@@ -584,7 +601,8 @@ public partial class DataGrid
 
         if (column.IsVisible && !MathUtils.AreClose(oldValue, column.ActualMaxWidth))
         {
-            DataGridLength oldWitdh = new(oldValue, column.Width.UnitType, column.Width.DesiredValue, column.Width.DesiredValue);
+            DataGridLength oldWitdh = new(oldValue, column.Width.UnitType, column.Width.DesiredValue,
+                column.Width.DesiredValue);
             if (column.ActualMaxWidth < column.Width.DisplayValue)
             {
                 // If the maximum width has caused the column to decrease in size, try first to resize
@@ -593,14 +611,17 @@ public partial class DataGrid
                 AdjustColumnWidths(column.DisplayIndex + 1, column.Width.DisplayValue - column.ActualMaxWidth, false);
                 column.SetWidthDisplayValue(column.ActualMaxWidth);
             }
-            else if (MathUtils.AreClose(column.Width.DisplayValue, oldValue) && column.Width.DesiredValue > column.Width.DisplayValue)
+            else if (MathUtils.AreClose(column.Width.DisplayValue, oldValue) &&
+                     column.Width.DesiredValue > column.Width.DisplayValue)
             {
                 // If the column was previously limited by its maximum value but has more room now, 
                 // attempt to resize the column to its desired width.
                 column.Resize(oldWitdh,
-                    new (column.Width.Value, column.Width.UnitType, column.Width.DesiredValue, column.Width.DesiredValue),
+                    new(column.Width.Value, column.Width.UnitType, column.Width.DesiredValue,
+                        column.Width.DesiredValue),
                     false);
             }
+
             HandleColumnWidthChanged(column);
         }
     }
@@ -616,7 +637,8 @@ public partial class DataGrid
 
         if (column.IsVisible && !MathUtils.AreClose(oldValue, column.ActualMinWidth))
         {
-            DataGridLength oldWitdh = new(oldValue, column.Width.UnitType, column.Width.DesiredValue, column.Width.DesiredValue);
+            DataGridLength oldWitdh = new(oldValue, column.Width.UnitType, column.Width.DesiredValue,
+                column.Width.DesiredValue);
             if (column.ActualMinWidth > column.Width.DisplayValue)
             {
                 // If the minimum width has caused the column to increase in size, try first to resize
@@ -625,14 +647,17 @@ public partial class DataGrid
                 AdjustColumnWidths(column.DisplayIndex + 1, column.Width.DisplayValue - column.ActualMinWidth, false);
                 column.SetWidthDisplayValue(column.ActualMinWidth);
             }
-            else if (MathUtils.AreClose(column.Width.DisplayValue, oldValue) && column.Width.DesiredValue < column.Width.DisplayValue)
+            else if (MathUtils.AreClose(column.Width.DisplayValue, oldValue) &&
+                     column.Width.DesiredValue < column.Width.DisplayValue)
             {
                 // If the column was previously limited by its minimum value but but can be smaller now, 
                 // attempt to resize the column to its desired width.
                 column.Resize(oldWitdh,
-                    new(column.Width.Value, column.Width.UnitType, column.Width.DesiredValue, column.Width.DesiredValue),
+                    new(column.Width.Value, column.Width.UnitType, column.Width.DesiredValue,
+                        column.Width.DesiredValue),
                     false);
             }
+
             HandleColumnWidthChanged(column);
         }
     }
@@ -643,9 +668,11 @@ public partial class DataGrid
         if (isReadOnly && CurrentColumnIndex == dataGridColumn.Index)
         {
             // Edited column becomes read-only. Exit editing mode.
-            if (!EndCellEdit(DataGridEditAction.Commit, true /*exitEditingMode*/, ContainsFocus /*keepFocus*/, true /*raiseEvents*/))
+            if (!EndCellEdit(DataGridEditAction.Commit, true /*exitEditingMode*/, ContainsFocus /*keepFocus*/,
+                    true /*raiseEvents*/))
             {
-                EndCellEdit(DataGridEditAction.Cancel, true /*exitEditingMode*/, ContainsFocus /*keepFocus*/, false /*raiseEvents*/);
+                EndCellEdit(DataGridEditAction.Cancel, true /*exitEditingMode*/, ContainsFocus /*keepFocus*/,
+                    false /*raiseEvents*/);
             }
         }
     }
@@ -697,6 +724,7 @@ public partial class DataGrid
             {
                 dataGridColumn = ColumnsInternal.GetPreviousVisibleNonFillerColumn(targetColumn);
             }
+
             if (dataGridColumn == null)
             {
                 SetCurrentCellCore(-1, -1);
@@ -720,7 +748,7 @@ public partial class DataGrid
     internal void HandleFillerColumnWidthNeeded(double finalWidth)
     {
         DataGridFillerColumn? fillerColumn      = ColumnsInternal.FillerColumn;
-        double               totalColumnsWidth = ColumnsInternal.VisibleEdgedColumnsWidth + ActualRowHeaderWidth;
+        double                totalColumnsWidth = ColumnsInternal.VisibleEdgedColumnsWidth + ActualRowHeaderWidth;
         Debug.Assert(fillerColumn != null);
         if (finalWidth - totalColumnsWidth > LayoutHelper.LayoutEpsilon)
         {
@@ -732,7 +760,8 @@ public partial class DataGrid
         }
     }
 
-    internal void HandleInsertedColumnPostNotification(DataGridCellCoordinates newCurrentCellCoordinates, int newDisplayIndex)
+    internal void HandleInsertedColumnPostNotification(DataGridCellCoordinates newCurrentCellCoordinates,
+                                                       int newDisplayIndex)
     {
         // Update current cell if needed
         if (newCurrentCellCoordinates.ColumnIndex != -1)
@@ -801,7 +830,8 @@ public partial class DataGrid
         if (CurrentColumnIndex != -1)
         {
             _temporarilyResetCurrentCell = true;
-            newCurrentCellCoordinates = new DataGridCellCoordinates(columnIndexInserted <= CurrentColumnIndex ? CurrentColumnIndex + 1 : CurrentColumnIndex,
+            newCurrentCellCoordinates = new DataGridCellCoordinates(
+                columnIndexInserted <= CurrentColumnIndex ? CurrentColumnIndex + 1 : CurrentColumnIndex,
                 CurrentSlot);
             ResetCurrentCellCore();
         }
@@ -809,6 +839,7 @@ public partial class DataGrid
         {
             newCurrentCellCoordinates = new DataGridCellCoordinates(-1, -1);
         }
+
         return newCurrentCellCoordinates;
     }
 
@@ -818,7 +849,8 @@ public partial class DataGrid
         if (newCurrentCellCoordinates.ColumnIndex != -1)
         {
             Debug.Assert(CurrentColumnIndex == -1);
-            SetAndSelectCurrentCell(newCurrentCellCoordinates.ColumnIndex, newCurrentCellCoordinates.Slot, false /*forceCurrentCellSelection*/);
+            SetAndSelectCurrentCell(newCurrentCellCoordinates.ColumnIndex, newCurrentCellCoordinates.Slot,
+                false /*forceCurrentCellSelection*/);
         }
     }
 
@@ -853,6 +885,7 @@ public partial class DataGrid
                     row.Cells.RemoveAt(removedColumn.Index);
                 }
             }
+
             _rowsPresenter.InvalidateArrange();
         }
 
@@ -875,7 +908,8 @@ public partial class DataGrid
             int newCurrentColumnIndex = CurrentColumnIndex;
             if (columnIndex == newCurrentColumnIndex)
             {
-                DataGridColumn? dataGridColumnNext = ColumnsInternal.GetNextVisibleColumn(ColumnsItemsInternal[columnIndex]);
+                DataGridColumn? dataGridColumnNext =
+                    ColumnsInternal.GetNextVisibleColumn(ColumnsItemsInternal[columnIndex]);
                 if (dataGridColumnNext != null)
                 {
                     if (dataGridColumnNext.Index > columnIndex)
@@ -889,7 +923,8 @@ public partial class DataGrid
                 }
                 else
                 {
-                    DataGridColumn? dataGridColumnPrevious = ColumnsInternal.GetPreviousVisibleNonFillerColumn(ColumnsItemsInternal[columnIndex]);
+                    DataGridColumn? dataGridColumnPrevious =
+                        ColumnsInternal.GetPreviousVisibleNonFillerColumn(ColumnsItemsInternal[columnIndex]);
                     if (dataGridColumnPrevious != null)
                     {
                         if (dataGridColumnPrevious.Index > columnIndex)
@@ -911,7 +946,9 @@ public partial class DataGrid
             {
                 newCurrentColumnIndex--;
             }
-            newCurrentCellCoordinates = new DataGridCellCoordinates(newCurrentColumnIndex, (newCurrentColumnIndex == -1) ? -1 : CurrentSlot);
+
+            newCurrentCellCoordinates = new DataGridCellCoordinates(newCurrentColumnIndex,
+                (newCurrentColumnIndex == -1) ? -1 : CurrentSlot);
             if (columnIndex == CurrentColumnIndex)
             {
                 // If the commit fails, force a cancel edit
@@ -919,6 +956,7 @@ public partial class DataGrid
                 {
                     CancelEdit(DataGridEditingUnit.Row, false /*raiseEvents*/);
                 }
+
                 bool success = SetCurrentCellCore(-1, -1);
                 Debug.Assert(success);
             }
@@ -987,6 +1025,7 @@ public partial class DataGrid
             {
                 RefreshCellElement(dataGridColumn, dataGridRow, propertyName);
             }
+
             index++;
         }
 
@@ -997,6 +1036,7 @@ public partial class DataGrid
             {
                 RefreshCellElement(dataGridColumn, row, propertyName);
             }
+
             // This update could change layout so we need to update our estimate and invalidate
             InvalidateRowHeightEstimate();
             InvalidateMeasure();
@@ -1019,6 +1059,7 @@ public partial class DataGrid
         {
             return remainingAdjustment;
         }
+
         bool increase = remainingAdjustment > 0;
 
         // Make an initial pass through the star columns to total up some values.
@@ -1027,13 +1068,15 @@ public partial class DataGrid
         double               totalStarColumnsWidthLimit = 0;
         double               totalStarWeights           = 0;
         List<DataGridColumn> starColumns                = new List<DataGridColumn>();
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(c => c.Width.IsStar && c.IsVisible && (c.ActualCanUserResize || !userInitiated)))
+        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(c =>
+                     c.Width.IsStar && c.IsVisible && (c.ActualCanUserResize || !userInitiated)))
         {
             if (column.DisplayIndex < displayIndex)
             {
                 scaleStarWeights = true;
                 continue;
             }
+
             starColumns.Add(column);
             totalStarWeights           += column.Width.Value;
             totalStarColumnsWidth      += column.Width.DisplayValue;
@@ -1046,12 +1089,15 @@ public partial class DataGrid
         adjustmentLimit = increase ? Math.Min(adjustmentLimit, adjustment) : Math.Max(adjustmentLimit, adjustment);
         foreach (DataGridColumn starColumn in starColumns)
         {
-            starColumn.SetWidthDesiredValue((totalStarColumnsWidth + adjustmentLimit) * starColumn.Width.Value / totalStarWeights);
+            starColumn.SetWidthDesiredValue((totalStarColumnsWidth + adjustmentLimit) * starColumn.Width.Value /
+                                            totalStarWeights);
         }
 
         // Adjust the star column widths first towards their desired values, and then towards their limits.
-        remainingAdjustment = AdjustStarColumnWidths(displayIndex, remainingAdjustment, userInitiated, c => c.Width.DesiredValue);
-        remainingAdjustment = AdjustStarColumnWidths(displayIndex, remainingAdjustment, userInitiated, c => increase ? c.ActualMaxWidth : c.ActualMinWidth);
+        remainingAdjustment =
+            AdjustStarColumnWidths(displayIndex, remainingAdjustment, userInitiated, c => c.Width.DesiredValue);
+        remainingAdjustment = AdjustStarColumnWidths(displayIndex, remainingAdjustment, userInitiated,
+            c => increase ? c.ActualMaxWidth : c.ActualMinWidth);
 
         // Set the new star value weights according to how much the total column widths have changed.
         // Only do this if there were other star columns to the left, though.  If there weren't any then that means
@@ -1079,12 +1125,14 @@ public partial class DataGrid
     /// <param name="userInitiated">Whether or not this adjustment was initiated by a user action.</param>
     /// <param name="targetWidth">The target width of the column.</param>
     /// <returns>The remaining amount of adjustment.</returns>
-    private double AdjustStarColumnWidths(int displayIndex, double remainingAdjustment, bool userInitiated, Func<DataGridColumn, double> targetWidth)
+    private double AdjustStarColumnWidths(int displayIndex, double remainingAdjustment, bool userInitiated,
+                                          Func<DataGridColumn, double> targetWidth)
     {
         if (MathUtilities.IsZero(remainingAdjustment))
         {
             return remainingAdjustment;
         }
+
         bool increase = remainingAdjustment > 0;
 
         double totalStarWeights      = 0d;
@@ -1096,20 +1144,26 @@ public partial class DataGrid
         // could have different star ratios, though, this distance is then adjusted according to its star value.  A column with
         // a larger star value, for example, will change size more rapidly than a column with a lower star value.
         List<KeyValuePair<DataGridColumn, double>> starColumnPairs = new List<KeyValuePair<DataGridColumn, double>>();
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(
-                     c => c.Width.IsStar && c.DisplayIndex >= displayIndex && c.IsVisible && c.Width.Value > 0 && (c.ActualCanUserResize || !userInitiated)))
+        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(c =>
+                     c.Width.IsStar && c.DisplayIndex >= displayIndex && c.IsVisible && c.Width.Value > 0 &&
+                     (c.ActualCanUserResize || !userInitiated)))
         {
             int insertIndex = 0;
-            double distanceToTarget = Math.Min(column.ActualMaxWidth, Math.Max(targetWidth(column), column.ActualMinWidth)) - column.Width.DisplayValue;
-            double factor = (increase ? Math.Max(0, distanceToTarget) : Math.Min(0, distanceToTarget)) / column.Width.Value;
+            double distanceToTarget =
+                Math.Min(column.ActualMaxWidth, Math.Max(targetWidth(column), column.ActualMinWidth)) -
+                column.Width.DisplayValue;
+            double factor = (increase ? Math.Max(0, distanceToTarget) : Math.Min(0, distanceToTarget)) /
+                            column.Width.Value;
             foreach (KeyValuePair<DataGridColumn, double> starColumnPair in starColumnPairs)
             {
                 if (increase ? factor <= starColumnPair.Value : factor >= starColumnPair.Value)
                 {
                     break;
                 }
+
                 insertIndex++;
             }
+
             starColumnPairs.Insert(insertIndex, new KeyValuePair<DataGridColumn, double>(column, factor));
             totalStarWeights      += column.Width.Value;
             totalStarColumnsWidth += column.Width.DisplayValue;
@@ -1119,13 +1173,16 @@ public partial class DataGrid
         // or the total remaining amount to adjust has been depleted.
         foreach (KeyValuePair<DataGridColumn, double> starColumnPair in starColumnPairs)
         {
-            double distanceToTarget = starColumnPair.Value * starColumnPair.Key.Width.Value;
+            double distanceToTarget  = starColumnPair.Value * starColumnPair.Key.Width.Value;
             double distanceAvailable = (starColumnPair.Key.Width.Value * remainingAdjustment) / totalStarWeights;
-            double adjustment = increase ? Math.Min(distanceToTarget, distanceAvailable) : Math.Max(distanceToTarget, distanceAvailable);
+            double adjustment = increase
+                ? Math.Min(distanceToTarget, distanceAvailable)
+                : Math.Max(distanceToTarget, distanceAvailable);
 
             remainingAdjustment -= adjustment;
             totalStarWeights    -= starColumnPair.Key.Width.Value;
-            starColumnPair.Key.SetWidthDisplayValue(Math.Max(MinimumStarColumnWidth, starColumnPair.Key.Width.DisplayValue + adjustment));
+            starColumnPair.Key.SetWidthDisplayValue(Math.Max(MinimumStarColumnWidth,
+                starColumnPair.Key.Width.DisplayValue + adjustment));
         }
 
         return remainingAdjustment;
@@ -1156,6 +1213,7 @@ public partial class DataGrid
             {
                 firstDisplayedFrozenCol = dataGridColumn.Index;
             }
+
             cx += GetEdgedColumnWidth(dataGridColumn);
             if (cx >= displayWidth)
             {
@@ -1190,6 +1248,7 @@ public partial class DataGrid
                 visibleScrollingColumnsTmp++;
                 dataGridColumn = ColumnsInternal.GetNextVisibleColumn(dataGridColumn);
             }
+
             numVisibleScrollingCols = visibleScrollingColumnsTmp;
 
             // if we inflate the data area then we paint columns to the left of firstDisplayedScrollingCol
@@ -1224,11 +1283,14 @@ public partial class DataGrid
                     // called by DataGridCellsPresenter.MeasureOverride.
                     HorizontalAdjustment = Math.Min(HorizontalAdjustment, _horizontalOffset);
                 }
+
                 // second try to scroll entire columns
                 if (cx < displayWidth && _horizontalOffset > 0)
                 {
                     Debug.Assert(_negHorizontalOffset == 0);
-                    dataGridColumn = ColumnsInternal.GetPreviousVisibleScrollingColumn(ColumnsItemsInternal[firstDisplayedScrollingCol]);
+                    dataGridColumn =
+                        ColumnsInternal.GetPreviousVisibleScrollingColumn(
+                            ColumnsItemsInternal[firstDisplayedScrollingCol]);
                     while (dataGridColumn != null && cx + GetEdgedColumnWidth(dataGridColumn) <= displayWidth)
                     {
                         cx += GetEdgedColumnWidth(dataGridColumn);
@@ -1239,11 +1301,14 @@ public partial class DataGrid
                         dataGridColumn             =  ColumnsInternal.GetPreviousVisibleScrollingColumn(dataGridColumn);
                     }
                 }
+
                 // third try to partially scroll in first scrolled off column
                 if (cx < displayWidth && _horizontalOffset > 0)
                 {
                     Debug.Assert(_negHorizontalOffset == 0);
-                    dataGridColumn = ColumnsInternal.GetPreviousVisibleScrollingColumn(ColumnsItemsInternal[firstDisplayedScrollingCol]);
+                    dataGridColumn =
+                        ColumnsInternal.GetPreviousVisibleScrollingColumn(
+                            ColumnsItemsInternal[firstDisplayedScrollingCol]);
                     Debug.Assert(dataGridColumn != null);
                     Debug.Assert(GetEdgedColumnWidth(dataGridColumn) > displayWidth - cx);
                     firstDisplayedScrollingCol =  dataGridColumn.Index;
@@ -1252,11 +1317,13 @@ public partial class DataGrid
                     visibleScrollingColumnsTmp++;
                     invalidate = true;
                     cx         = displayWidth;
-                    Debug.Assert(_negHorizontalOffset == GetNegHorizontalOffsetFromHorizontalOffset(_horizontalOffset));
+                    Debug.Assert(MathUtils.AreClose(_negHorizontalOffset,
+                        GetNegHorizontalOffsetFromHorizontalOffset(_horizontalOffset)));
                 }
 
                 // update the number of visible columns to the new reality
-                Debug.Assert(numVisibleScrollingCols <= visibleScrollingColumnsTmp, "the number of displayed columns can only grow");
+                Debug.Assert(numVisibleScrollingCols <= visibleScrollingColumnsTmp,
+                    "the number of displayed columns can only grow");
                 numVisibleScrollingCols = visibleScrollingColumnsTmp;
             }
 
@@ -1281,6 +1348,7 @@ public partial class DataGrid
                     dataGridColumn = ColumnsInternal.GetNextVisibleColumn(dataGridColumn);
                     Debug.Assert(dataGridColumn != null);
                 }
+
                 DisplayData.LastTotallyDisplayedScrollingCol = dataGridColumn.Index;
             }
         }
@@ -1288,6 +1356,7 @@ public partial class DataGrid
         {
             DisplayData.LastTotallyDisplayedScrollingCol = -1;
         }
+
         DisplayData.FirstDisplayedScrollingCol = firstDisplayedScrollingCol;
 
         return invalidate;
@@ -1318,6 +1387,7 @@ public partial class DataGrid
             {
                 break;
             }
+
             dataGridColumn = ColumnsInternal.GetNextVisibleColumn(dataGridColumn);
         }
 
@@ -1330,12 +1400,15 @@ public partial class DataGrid
                 _negHorizontalOffset = 0;
                 return -1;
             }
+
             if (!MathUtils.AreClose(_negHorizontalOffset, _horizontalOffset))
             {
                 _negHorizontalOffset = 0;
             }
+
             return dataGridColumn.Index;
         }
+
         _negHorizontalOffset = GetEdgedColumnWidth(dataGridColumn) - (cx - _horizontalOffset);
         return dataGridColumn.Index;
     }
@@ -1364,12 +1437,13 @@ public partial class DataGrid
                 {
                     ColumnsInternal.DisplayIndexMap[displayIndex]--;
                 }
+
                 if (displayIndex >= deletedColumn.DisplayIndexWithFiller)
                 {
-                    column                        = ColumnsInternal.GetColumnAtDisplayIndex(displayIndex);
+                    column = ColumnsInternal.GetColumnAtDisplayIndex(displayIndex);
                     Debug.Assert(column != null);
                     column.DisplayIndexWithFiller -= 1;
-                    column.DisplayIndexHasChanged = true; // OnColumnDisplayIndexChanged needs to be raised later on
+                    column.DisplayIndexHasChanged =  true; // OnColumnDisplayIndexChanged needs to be raised later on
                 }
             }
 
@@ -1387,7 +1461,8 @@ public partial class DataGrid
     {
         Debug.Assert(insertedColumn != null);
         Debug.Assert(insertedColumn.OwningGrid == this);
-        if (insertedColumn.DisplayIndexWithFiller == -1 || insertedColumn.DisplayIndexWithFiller >= ColumnsItemsInternal.Count)
+        if (insertedColumn.DisplayIndexWithFiller == -1 ||
+            insertedColumn.DisplayIndexWithFiller >= ColumnsItemsInternal.Count)
         {
             // Developer did not assign a DisplayIndex or picked a large number.
             // Choose the Index as the DisplayIndex.
@@ -1407,6 +1482,7 @@ public partial class DataGrid
                 {
                     ColumnsInternal.DisplayIndexMap[displayIndex]++;
                 }
+
                 if (displayIndex >= insertedColumn.DisplayIndexWithFiller)
                 {
                     column = ColumnsInternal.GetColumnAtDisplayIndex(displayIndex);
@@ -1415,6 +1491,7 @@ public partial class DataGrid
                     column.DisplayIndexHasChanged = true; // OnColumnDisplayIndexChanged needs to be raised later on
                 }
             }
+
             ColumnsInternal.DisplayIndexMap.Insert(insertedColumn.DisplayIndexWithFiller, insertedColumn.Index);
 
             // Now raise all the OnColumnDisplayIndexChanged events
@@ -1438,13 +1515,16 @@ public partial class DataGrid
             {
                 oldFrozenColumnWidth += column.ActualWidth;
             }
+
             column.IsFrozen = index < FrozenColumnCountWithFiller;
             if (column.IsFrozen)
             {
                 frozenColumnWidth += column.ActualWidth;
             }
+
             index++;
         }
+
         if (HorizontalOffset > Math.Max(0, frozenColumnWidth - oldFrozenColumnWidth))
         {
             UpdateHorizontalOffset(HorizontalOffset - frozenColumnWidth + oldFrozenColumnWidth);
@@ -1469,7 +1549,9 @@ public partial class DataGrid
     {
         Debug.Assert(insertedColumn != null);
         Debug.Assert(insertionCount > 0);
-        for (int columnIndex = insertedColumn.Index + insertionCount; columnIndex < ColumnsItemsInternal.Count; columnIndex++)
+        for (int columnIndex = insertedColumn.Index + insertionCount;
+             columnIndex < ColumnsItemsInternal.Count;
+             columnIndex++)
         {
             ColumnsItemsInternal[columnIndex].Index = columnIndex;
         }
@@ -1514,7 +1596,8 @@ public partial class DataGrid
     /// <param name="reverse">Whether or not to reverse the order in which the columns are traversed.</param>
     /// <param name="affectNewColumns">Whether or not to adjust widths of columns that do not yet have their initial desired width.</param>
     /// <returns>The remaining amount of adjustment.</returns>
-    private double DecreaseNonStarColumnWidths(int displayIndex, Func<DataGridColumn, double> targetWidth, double amount, bool reverse, bool affectNewColumns)
+    private double DecreaseNonStarColumnWidths(int displayIndex, Func<DataGridColumn, double> targetWidth,
+                                               double amount, bool reverse, bool affectNewColumns)
     {
         if (MathUtilities.GreaterThanOrClose(amount, 0))
         {
@@ -1535,6 +1618,7 @@ public partial class DataGrid
                 break;
             }
         }
+
         return amount;
     }
 
@@ -1578,8 +1662,10 @@ public partial class DataGrid
             {
                 break;
             }
+
             x += GetEdgedColumnWidth(column);
         }
+
         return x;
     }
 
@@ -1591,8 +1677,10 @@ public partial class DataGrid
             {
                 break;
             }
+
             horizontalOffset -= GetEdgedColumnWidth(column);
         }
+
         return horizontalOffset;
     }
 
@@ -1635,7 +1723,8 @@ public partial class DataGrid
     /// <param name="reverse">Whether or not to reverse the order in which the columns are traversed.</param>
     /// <param name="affectNewColumns">Whether or not to adjust widths of columns that do not yet have their initial desired width.</param>
     /// <returns>The remaining amount of adjustment.</returns>
-    private double IncreaseNonStarColumnWidths(int displayIndex, Func<DataGridColumn, double> targetWidth, double amount, bool reverse, bool affectNewColumns)
+    private double IncreaseNonStarColumnWidths(int displayIndex, Func<DataGridColumn, double> targetWidth,
+                                               double amount, bool reverse, bool affectNewColumns)
     {
         if (MathUtilities.LessThanOrClose(amount, 0))
         {
@@ -1656,6 +1745,7 @@ public partial class DataGrid
                 break;
             }
         }
+
         return amount;
     }
 
@@ -1709,6 +1799,7 @@ public partial class DataGrid
                     {
                         headerViewItem.IsLeaf = true;
                     }
+
                     _groupColumnHeadersPresenter?.Children.Add(headerViewItem);
                 }
             }
@@ -1721,7 +1812,7 @@ public partial class DataGrid
         columnGroupItem.GroupHeaderViewItem = childHeaderViewItem;
         if (columnGroupItem is DataGridColumn column)
         {
-            childHeaderViewItem.Content             = column.HeaderCell;
+            childHeaderViewItem.Content           = column.HeaderCell;
             column.HeaderCell.IsSeparatorsVisible = false;
         }
         else if (columnGroupItem is DataGridColumnGroupItem groupItem)
@@ -1744,6 +1835,7 @@ public partial class DataGrid
         {
             childHeaderViewItem.IsLeaf = true;
         }
+
         _groupColumnHeadersPresenter?.Children.Add(childHeaderViewItem);
     }
 
@@ -1773,12 +1865,14 @@ public partial class DataGrid
                 {
                     index++;
                 }
+
                 // Remove the autogenerated columns
                 while (index < ColumnsInternal.Count && ColumnsInternal[index].IsAutoGenerated)
                 {
                     ColumnsInternal.RemoveAt(index);
                 }
             }
+
             ColumnsInternal.AutogeneratedColumnCount = 0;
         }
         finally
@@ -1798,11 +1892,13 @@ public partial class DataGrid
             int columnsToScroll;
             if (ColumnsInternal.DisplayInOrder(columnIndex, DisplayData.FirstDisplayedScrollingCol))
             {
-                columnsToScroll = ColumnsInternal.GetColumnCount(true /* isVisible */, false /* isFrozen */, columnIndex, DisplayData.FirstDisplayedScrollingCol);
+                columnsToScroll = ColumnsInternal.GetColumnCount(true /* isVisible */, false /* isFrozen */,
+                    columnIndex, DisplayData.FirstDisplayedScrollingCol);
                 if (_negHorizontalOffset > 0)
                 {
                     columnsToScroll++;
                 }
+
                 ScrollColumns(-columnsToScroll);
             }
             else if (columnIndex == DisplayData.FirstDisplayedScrollingCol && _negHorizontalOffset > 0)
@@ -1818,7 +1914,8 @@ public partial class DataGrid
                 double change           = xColumnRightEdge - HorizontalOffset - CellsWidth;
                 double widthRemaining   = change;
 
-                DataGridColumn newFirstDisplayedScrollingCol = ColumnsItemsInternal[DisplayData.FirstDisplayedScrollingCol];
+                DataGridColumn newFirstDisplayedScrollingCol =
+                    ColumnsItemsInternal[DisplayData.FirstDisplayedScrollingCol];
                 DataGridColumn? nextColumn = ColumnsInternal.GetNextVisibleColumn(newFirstDisplayedScrollingCol);
                 double newColumnWidth = GetEdgedColumnWidth(newFirstDisplayedScrollingCol) - _negHorizontalOffset;
                 while (nextColumn != null && widthRemaining >= newColumnWidth)
@@ -1829,6 +1926,7 @@ public partial class DataGrid
                     nextColumn                    = ColumnsInternal.GetNextVisibleColumn(newFirstDisplayedScrollingCol);
                     _negHorizontalOffset          = 0;
                 }
+
                 _negHorizontalOffset                         += widthRemaining;
                 DisplayData.LastTotallyDisplayedScrollingCol =  columnIndex;
                 if (newFirstDisplayedScrollingCol.Index == columnIndex)
@@ -1842,6 +1940,7 @@ public partial class DataGrid
                         change = xColumnLeftEdge - HorizontalOffset - frozenColumnWidth;
                     }
                 }
+
                 DisplayData.FirstDisplayedScrollingCol = newFirstDisplayedScrollingCol.Index;
 
                 // At this point DisplayData.FirstDisplayedScrollingColumn and LastDisplayedScrollingColumn 
@@ -1852,6 +1951,7 @@ public partial class DataGrid
                 }
             }
         }
+
         return true;
     }
 
@@ -1859,7 +1959,7 @@ public partial class DataGrid
     {
         DataGridColumn? newFirstVisibleScrollingCol = null;
         DataGridColumn? dataGridColumnTmp;
-        int            colCount = 0;
+        int             colCount = 0;
         if (columns > 0)
         {
             if (DisplayData.LastTotallyDisplayedScrollingCol >= 0)
@@ -1877,6 +1977,7 @@ public partial class DataGrid
                     return;
                 }
             }
+
             Debug.Assert(DisplayData.FirstDisplayedScrollingCol >= 0);
             dataGridColumnTmp = ColumnsItemsInternal[DisplayData.FirstDisplayedScrollingCol];
             colCount          = 0;
@@ -1885,6 +1986,7 @@ public partial class DataGrid
                 dataGridColumnTmp = ColumnsInternal.GetNextVisibleColumn(dataGridColumnTmp);
                 colCount++;
             }
+
             newFirstVisibleScrollingCol = dataGridColumnTmp;
         }
 
@@ -1896,11 +1998,13 @@ public partial class DataGrid
             {
                 colCount++;
             }
+
             while (colCount < -columns && dataGridColumnTmp != null)
             {
                 dataGridColumnTmp = ColumnsInternal.GetPreviousVisibleScrollingColumn(dataGridColumnTmp);
                 colCount++;
             }
+
             newFirstVisibleScrollingCol = dataGridColumnTmp;
             if (newFirstVisibleScrollingCol == null)
             {
@@ -1909,6 +2013,7 @@ public partial class DataGrid
                     // no more column to display on the left of the first seen column
                     return;
                 }
+
                 newFirstVisibleScrollingCol = ColumnsItemsInternal[DisplayData.FirstDisplayedScrollingCol];
             }
         }
@@ -1920,6 +2025,7 @@ public partial class DataGrid
             {
                 break;
             }
+
             newColOffset += GetEdgedColumnWidth(dataGridColumn);
         }
 
@@ -1939,6 +2045,7 @@ public partial class DataGrid
         {
             return new DataGridCheckBoxColumn();
         }
+
         if (type == typeof(bool?))
         {
             return new DataGridCheckBoxColumn()
@@ -1946,6 +2053,7 @@ public partial class DataGrid
                 IsThreeState = true
             };
         }
+
         return new DataGridTextColumn();
     }
 
@@ -1978,7 +2086,8 @@ public partial class DataGrid
         // Autogenerated Columns are added at the end so the user columns appear first
         if (DataConnection.DataProperties.Length > 0)
         {
-            List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>> columnOrderPairs = new List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>>();
+            List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>> columnOrderPairs =
+                new List<KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>>();
 
             // Generate the columns
             foreach (PropertyInfo propertyInfo in DataConnection.DataProperties)
@@ -2021,17 +2130,22 @@ public partial class DataGrid
                 }
                 else
                 {
-                    foreach (KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs> columnOrderPair in columnOrderPairs)
+                    foreach (KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs> columnOrderPair in
+                             columnOrderPairs)
                     {
                         if (columnOrderPair.Key > columnOrder)
                         {
                             break;
                         }
+
                         insertIndex++;
                     }
                 }
-                DataGridAutoGeneratingColumnEventArgs columnArgs = GenerateColumn(propertyInfo.PropertyType, propertyInfo.Name, columnHeader, this);
-                columnOrderPairs.Insert(insertIndex, new KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>(columnOrder, columnArgs));
+
+                DataGridAutoGeneratingColumnEventArgs columnArgs =
+                    GenerateColumn(propertyInfo.PropertyType, propertyInfo.Name, columnHeader, this);
+                columnOrderPairs.Insert(insertIndex,
+                    new KeyValuePair<int, DataGridAutoGeneratingColumnEventArgs>(columnOrder, columnArgs));
             }
 
             // Add the columns to the DataGrid in the correct order
@@ -2043,11 +2157,13 @@ public partial class DataGrid
         else if (DataConnection.DataIsPrimitive)
         {
             Debug.Assert(DataConnection.DataType != null);
-            AddGeneratedColumn(GenerateColumn(DataConnection.DataType, string.Empty, DataConnection.DataType.Name, this));
+            AddGeneratedColumn(
+                GenerateColumn(DataConnection.DataType, string.Empty, DataConnection.DataType.Name, this));
         }
     }
 
-    private static DataGridAutoGeneratingColumnEventArgs GenerateColumn(Type propertyType, string propertyName, string header,
+    private static DataGridAutoGeneratingColumnEventArgs GenerateColumn(Type propertyType, string propertyName,
+                                                                        string header,
                                                                         DataGrid ownerGrid)
     {
         // Create a new DataBoundColumn for the Property
@@ -2067,6 +2183,7 @@ public partial class DataGrid
         {
             return false;
         }
+
         if (e.Column != null)
         {
             // Set the IsAutoGenerated flag here in case the user provides a custom autogenerated column
@@ -2078,7 +2195,7 @@ public partial class DataGrid
 
         return true;
     }
-    
+
     private void ProcessFrozenColumnCount()
     {
         CorrectColumnFrozenStates();
@@ -2087,7 +2204,7 @@ public partial class DataGrid
         InvalidateColumnHeadersArrange();
         InvalidateCellsArrange();
     }
-    
+
     private void HandleGroupColumnsInternalCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -2095,6 +2212,7 @@ public partial class DataGrid
             ColumnsInternal.Clear();
             return;
         }
+
         if (e.Action == NotifyCollectionChangedAction.Remove)
         {
             if (e.OldItems != null)
@@ -2139,6 +2257,7 @@ public partial class DataGrid
                         addedColumns.AddRange(columns);
                     }
                 }
+
                 foreach (var column in addedColumns)
                 {
                     ColumnsInternal.Add(column);
@@ -2201,13 +2320,15 @@ public partial class DataGrid
         }
         else if (groupItem is DataGridColumnGroupItem gridColumnGroup)
         {
-            gridColumnGroup.OwningGrid = this;    
+            gridColumnGroup.OwningGrid = this;
         }
+
         foreach (var child in groupItem.GroupChildren)
         {
             var childColumns = CollectColumnsFromGroupTree(child);
             columns.AddRange(childColumns);
         }
+
         return columns;
     }
 }
