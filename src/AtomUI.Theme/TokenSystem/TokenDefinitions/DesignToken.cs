@@ -33,30 +33,7 @@ public partial class DesignToken : AbstractDesignToken
         ColorWarning = Color.Parse("#faad14");
         ColorError   = Color.Parse("#ff4d4f");
         ColorInfo    = Color.Parse("#1677ff");
-        FontFamily = new List<string>
-        {
-            "-apple-system",
-            "BlinkMacSystemFont",
-            "Segoe UI",
-            "Roboto",
-            "Helvetica Neue",
-            "Arial",
-            "Noto Sans",
-            "sans-serif",
-            "Apple Color Emoji",
-            "Segoe UI Emoji",
-            "Segoe UI Symbol",
-            "Microsoft YaHei"
-        };
-        FontFamilyCode = new List<string>
-        {
-            "SFMono-Regular",
-            "Consolas",
-            "Liberation Mono",
-            "Menlo",
-            "Courier",
-            "monospace"
-        };
+        FontFamily = "fonts:Inter#Inter, $Default";
         BorderRadius     = new CornerRadius(6);
         ColorTransparent = Colors.Transparent;
     }
@@ -129,9 +106,11 @@ public partial class DesignToken : AbstractDesignToken
         IconSizeLG = (int)FontSizeLG;
 
         // Line
-        LineWidthFocus     = LineWidth * 2;
-        WaveAnimationRange = LineWidth * 6;
-        WaveStartOpacity   = 0.4;
+        LineWidthFocus             = LineWidth * 2;
+        FocusVisualBorderThickness = new Thickness(LineWidthFocus);
+        ColorFocusBorder           = ColorPrimaryBorder;
+        WaveAnimationRange         = LineWidth * 6;
+        WaveStartOpacity           = 0.4;
 
         // Control
         ControlOutlineWidth = LineWidth * 2;

@@ -9,6 +9,7 @@ namespace AtomUI.Theme
         {
             List<Type> tokenTypes = new List<Type>();
             tokenTypes.Add(typeof(AtomUI.Controls.AddOnDecoratedBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.AdornerLayerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.AlertToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ArrowDecoratedBoxToken));
             tokenTypes.Add(typeof(AtomUI.Controls.BadgeToken));

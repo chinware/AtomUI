@@ -22,6 +22,11 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey WarningActiveShadow = new TokenResourceKey("AddOnDecoratedBox.WarningActiveShadow");
     }
 
+    public static class AdornerLayerTokenKey
+    {
+        public static readonly TokenResourceKey FocusVisualMargin = new TokenResourceKey("AdornerLayer.FocusVisualMargin");
+    }
+
     public static class AlertTokenKey
     {
         public static readonly TokenResourceKey CloseIconSize = new TokenResourceKey("Alert.CloseIconSize");

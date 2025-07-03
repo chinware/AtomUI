@@ -195,6 +195,16 @@ public partial class DesignToken
     /// 线条宽度(聚焦态)
     /// </summary>
     public double LineWidthFocus { get; set; }
+    
+    /// <summary>
+    /// 聚焦态边框厚度
+    /// </summary>
+    public Thickness FocusVisualBorderThickness {  get; set; }
+    
+    /// <summary>
+    /// 聚焦态边框颜色
+    /// </summary>
+    public Color ColorFocusBorder { get; set; }
 
     /// <summary>
     /// 波浪动画的波动范围

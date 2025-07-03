@@ -1,0 +1,14 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type AdornerLayer}" TargetType="AdornerLayer">
+        <Setter Property="DefaultFocusAdorner">
+            <FocusAdornerTemplate>
+                <Border BorderThickness="{DynamicResource {x:Static atom:SharedTokenKey.FocusVisualBorderThickness}}"
+                        BorderBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorFocusBorder}}"
+                        Margin="{DynamicResource {x:Static atom:AdornerLayerTokenKey.FocusVisualMargin}}" />
+            </FocusAdornerTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

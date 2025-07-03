@@ -47,6 +47,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ColorFillQuaternary = new TokenResourceKey("ColorFillQuaternary");
         public static readonly TokenResourceKey ColorFillSecondary = new TokenResourceKey("ColorFillSecondary");
         public static readonly TokenResourceKey ColorFillTertiary = new TokenResourceKey("ColorFillTertiary");
+        public static readonly TokenResourceKey ColorFocusBorder = new TokenResourceKey("ColorFocusBorder");
         public static readonly TokenResourceKey ColorHighlight = new TokenResourceKey("ColorHighlight");
         public static readonly TokenResourceKey ColorIcon = new TokenResourceKey("ColorIcon");
         public static readonly TokenResourceKey ColorIconHover = new TokenResourceKey("ColorIconHover");
@@ -122,8 +123,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ControlPaddingSM = new TokenResourceKey("ControlPaddingSM");
         public static readonly TokenResourceKey EnableMotion = new TokenResourceKey("EnableMotion");
         public static readonly TokenResourceKey EnableWaveSpirit = new TokenResourceKey("EnableWaveSpirit");
+        public static readonly TokenResourceKey FocusVisualBorderThickness = new TokenResourceKey("FocusVisualBorderThickness");
         public static readonly TokenResourceKey FontFamily = new TokenResourceKey("FontFamily");
-        public static readonly TokenResourceKey FontFamilyCode = new TokenResourceKey("FontFamilyCode");
         public static readonly TokenResourceKey FontHeight = new TokenResourceKey("FontHeight");
         public static readonly TokenResourceKey FontHeightLG = new TokenResourceKey("FontHeightLG");
         public static readonly TokenResourceKey FontHeightSM = new TokenResourceKey("FontHeightSM");

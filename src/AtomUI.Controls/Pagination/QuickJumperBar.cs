@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.PaginationLang;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using Avalonia;
