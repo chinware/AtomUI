@@ -9,4 +9,5 @@ public static class ButtonPseudoClass
     public const string PrimaryType = ":primary";
     public const string LinkType = ":link";
     public const string TextType = ":text";
+    public const string Visited = ":visited";
 }

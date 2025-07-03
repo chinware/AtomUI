@@ -13,7 +13,7 @@ public class TreeViewItemTheme : ControlTheme
         Indent = 16
     };
 
-    public static readonly TreeViewItemRadioVisible TreeViewItemRadioVisible = new ();
+    public static readonly TreeViewItemRadioVisibleConverter TreeViewItemRadioVisibleConverter = new ();
     
     public static readonly StringToTextBlockConverter StringToTextBlockConverter = new()
     {

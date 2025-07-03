@@ -82,6 +82,11 @@
                         Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalItemsPanelSpacing}}" />
             </Style>
             
+            <Style Selector="^ /template/ atom|MotionActorControl#PART_ChildItemsLayoutTransform">
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalChildItemsMargin}}" />
+            </Style>
+            
             <!-- BuildMenuIndicatorStyle begin -->
             <Style Selector="^ /template/ Border#PART_MenuIndicatorIconFrame">
                 <Setter Property="RenderTransform" Value="rotate(90deg)" />

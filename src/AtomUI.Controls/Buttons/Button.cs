@@ -14,7 +14,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
@@ -77,13 +76,10 @@ public class Button : AvaloniaButton,
     public static readonly StyledProperty<Icon?> IconProperty = 
         AvaloniaProperty.Register<Button, Icon?>(nameof(Icon));
 
-    public static readonly StyledProperty<bool> IsIconVisibleProperty = 
-        AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
-
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
 
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty = 
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Button>();
 
     public ButtonType ButtonType
@@ -127,13 +123,7 @@ public class Button : AvaloniaButton,
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
-
-    public bool IsIconVisible
-    {
-        get => GetValue(IsIconVisibleProperty);
-        set => SetValue(IsIconVisibleProperty, value);
-    }
-
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -161,6 +151,9 @@ public class Button : AvaloniaButton,
     internal static readonly StyledProperty<BoxShadow> DangerShadowProperty =
         AvaloniaProperty.Register<Button, BoxShadow>(
             nameof(DangerShadow));
+    
+    internal static readonly StyledProperty<bool> IsIconVisibleProperty = 
+        AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
 
     internal static readonly StyledProperty<object?> RightExtraContentProperty =
         AvaloniaProperty.Register<Button, object?>(nameof(RightExtraContent));
@@ -188,6 +181,12 @@ public class Button : AvaloniaButton,
     {
         get => GetValue(DangerShadowProperty);
         set => SetValue(DangerShadowProperty, value);
+    }
+    
+    internal bool IsIconVisible
+    {
+        get => GetValue(IsIconVisibleProperty);
+        set => SetValue(IsIconVisibleProperty, value);
     }
 
     public object? RightExtraContent
@@ -222,17 +221,10 @@ public class Button : AvaloniaButton,
     {
         AffectsMeasure<Button>(SizeTypeProperty,
             ShapeProperty,
-            IconProperty,
-            WidthProperty,
-            HeightProperty,
-            PaddingProperty);
+            IconProperty);
         AffectsRender<Button>(ButtonTypeProperty,
             IsDangerProperty,
-            IsGhostProperty,
-            BackgroundProperty,
-            ForegroundProperty);
-        HorizontalAlignmentProperty.OverrideDefaultValue<Button>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<Button>(VerticalAlignment.Center);
+            IsGhostProperty);
     }
 
     public Button()

@@ -1,9 +1,10 @@
 using System.Globalization;
+using AtomUI.IconPkg;
 using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Utils;
 
-public class TreeViewItemRadioVisible : IMultiValueConverter
+public class ButtonIconVisibleConverter : IMultiValueConverter
 {
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
@@ -11,8 +12,8 @@ public class TreeViewItemRadioVisible : IMultiValueConverter
         {
             return false;
         }
-        var itemToggleType = values[0] as ItemToggleType?;
-        var itemCount = values[1] as int?;
-        return itemToggleType == ItemToggleType.Radio && itemCount == 0;
+        var icon = values[0] as Icon;
+        var iconVisible      = values[1] as bool?;
+        return icon != null && iconVisible == true;
     }
 }

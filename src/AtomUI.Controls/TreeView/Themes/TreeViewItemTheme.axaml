@@ -40,7 +40,7 @@
                                           GroupName="{TemplateBinding GroupName}">
                             <atom:RadioButton.IsVisible>
                                 <MultiBinding
-                                    Converter="{x:Static atom:TreeViewItemTheme.TreeViewItemRadioVisible}">
+                                    Converter="{x:Static atom:TreeViewItemTheme.TreeViewItemRadioVisibleConverter}">
                                     <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ToggleType" />
                                     <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ItemCount" />
                                 </MultiBinding>

@@ -232,7 +232,7 @@
 
         <Style Selector="^:icon">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
-                <Setter Property="IsVisible" Value="False" />
+                <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>
         <!-- BuildMenuIconStyle end -->
