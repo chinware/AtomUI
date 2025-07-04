@@ -93,6 +93,7 @@ jobs:
                Add-Content $env:GITHUB_PATH "$msysPath/clang64/bin"
                Add-Content $env:GITHUB_PATH "$msysPath/usr/bin"
                
+               
                # Install required packages
                & "$msysPath/usr/bin/bash.exe" -lc @"
                  pacman -Sy --noconfirm
