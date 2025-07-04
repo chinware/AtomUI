@@ -31,7 +31,7 @@
                                Orientation="Vertical"
                                Grid.Row="0"
                                Grid.Column="1" />
-                    <Panel x:Name="{x:Static atom:ScrollViewerThemeConstants.ScrollBarsSeparatorPart}"
+                    <Panel Name="{x:Static atom:ScrollViewerThemeConstants.ScrollBarsSeparatorPart}"
                            Grid.Row="1"
                            Grid.Column="1"
                            Background="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"
