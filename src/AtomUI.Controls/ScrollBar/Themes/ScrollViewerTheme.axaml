@@ -46,6 +46,8 @@
             </ControlTemplate>
         </Setter>
         
+        <Setter Property="Background" Value="Transparent" />
+        
         <Style Selector="^[IsExpanded=true] /template/ Panel#PART_ScrollBarsSeparator">
             <Setter Property="Opacity" Value="1" />
         </Style>
