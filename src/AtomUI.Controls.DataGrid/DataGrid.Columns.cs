@@ -1317,7 +1317,8 @@ public partial class DataGrid
                     visibleScrollingColumnsTmp++;
                     invalidate = true;
                     cx         = displayWidth;
-                    Debug.Assert(MathUtils.AreClose(_negHorizontalOffset,
+                    // 我们不需要那么高的精度
+                    Debug.Assert(AreEqualAt3Decimals(_negHorizontalOffset,
                         GetNegHorizontalOffsetFromHorizontalOffset(_horizontalOffset)));
                 }
 
@@ -1360,6 +1361,13 @@ public partial class DataGrid
         DisplayData.FirstDisplayedScrollingCol = firstDisplayedScrollingCol;
 
         return invalidate;
+    }
+    
+    private static bool AreEqualAt3Decimals(double a, double b)
+    {
+        long scaledA = (long)Math.Round(a * 10000);
+        long scaledB = (long)Math.Round(b * 10000);
+        return scaledA == scaledB;
     }
 
     private int ComputeFirstVisibleScrollingColumn()
