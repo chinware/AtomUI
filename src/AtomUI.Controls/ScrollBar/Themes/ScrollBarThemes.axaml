@@ -4,5 +4,6 @@
         <ResourceInclude Source="ScrollBarTheme.axaml"/>
         <ResourceInclude Source="ScrollBarRepeatButtonTheme.axaml"/>
         <ResourceInclude Source="ScrollBarThumbTheme.axaml"/>
+        <ResourceInclude Source="ScrollViewerTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

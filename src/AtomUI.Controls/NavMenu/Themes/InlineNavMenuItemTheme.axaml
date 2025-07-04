@@ -4,7 +4,7 @@
     xmlns:themes="using:AtomUI.Controls.Themes"
     xmlns:atom="https://atomui.net">
     <atom:MarginMultiplierConverter x:Key="MarginMultiplierConverter" Left="True" />
-    <ControlTheme x:Key="{x:Static themes:NavMenuThemeConstants.InlineNavMenuItemThemeId}" TargetType="atom:NavMenuItem">
+    <ControlTheme x:Key="{x:Static atom:NavMenuThemeConstants.InlineNavMenuItemThemeId}" TargetType="atom:NavMenuItem">
         <ControlTheme.BasedOn>
             <themes:BaseNavMenuItemTheme TargetType="atom:NavMenuItem" />
         </ControlTheme.BasedOn>
@@ -44,7 +44,7 @@
                                     VerticalAlignment="Center"
                                     RecognizesAccessKey="True"
                                     IsHitTestVisible="False"
-                                    Content="{TemplateBinding Header, Converter={x:Static themes:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
+                                    Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
                                     ContentTemplate="{TemplateBinding HeaderTemplate}" />
                                 <atom:TextBlock
                                     Name="{x:Static atom:BaseNavMenuItemThemeConstants.InputGestureTextPart}"
@@ -52,7 +52,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
                                     TextAlignment="Right"
-                                    Text="{TemplateBinding InputGesture, Converter={x:Static themes:BaseNavMenuItemTheme.KeyGestureConverter}}" />
+                                    Text="{TemplateBinding InputGesture, Converter={x:Static atom:BaseNavMenuItemTheme.KeyGestureConverter}}" />
                                 <Border Grid.Column="3"
                                         Name="{x:Static atom:InlineNavMenuItemThemeConstants.MenuIndicatorIconFramePart}">
                                     <atom:Icon

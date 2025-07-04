@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     xmlns:themes="using:AtomUI.Controls.Themes">
-    <ControlTheme x:Key="{x:Static themes:TabItemThemeConstants.CardTabItemThemeId}" TargetType="atom:TabItem">
+    <ControlTheme x:Key="{x:Static atom:TabItemThemeConstants.CardTabItemThemeId}" TargetType="atom:TabItem">
         <ControlTheme.BasedOn>
             <themes:BaseTabItemTheme TargetType="atom:TabItem" />
         </ControlTheme.BasedOn>
@@ -19,7 +19,7 @@
                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ContentPresenter Name="{x:Static atom:TabItemThemeConstants.ContentPresenterPart}"
                                           Content="{TemplateBinding Header}"
-                                          ContentTemplate="{TemplateBinding HeaderTemplate, Converter={x:Static themes:BaseTabItemTheme.StringToTextBlockConverter}}" />
+                                          ContentTemplate="{TemplateBinding HeaderTemplate, Converter={x:Static atom:BaseTabItemTheme.StringToTextBlockConverter}}" />
                         <atom:IconButton Name="{x:Static atom:TabItemThemeConstants.ItemCloseButtonPart}"
                                          Icon="{TemplateBinding CloseIcon}"
                                          IsVisible="{TemplateBinding IsClosable}" />

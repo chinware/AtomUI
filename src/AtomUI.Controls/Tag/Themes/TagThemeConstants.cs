@@ -1,4 +1,4 @@
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Themes;
 
 public static class TagThemeConstants
 {

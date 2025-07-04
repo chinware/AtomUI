@@ -2,7 +2,6 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               x:Class="AtomUI.Controls.Themes.BaseTabStripItemTheme"
-              xmlns:themes="using:AtomUI.Controls.Themes"
               TargetType="atom:TabStripItem">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:TabStripItem">
@@ -14,7 +13,7 @@
                                         IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <ContentPresenter Name="{x:Static atom:TabStripItemThemeConstants.ContentPresenterPart}"
                                       Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static themes:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
+                                      ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static atom:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
                     <atom:IconButton Name="{x:Static atom:TabStripItemThemeConstants.ItemCloseButtonPart}"
                                      Icon="{TemplateBinding CloseIcon}"
                                      IsVisible="{TemplateBinding IsClosable}" />

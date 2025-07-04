@@ -36,7 +36,7 @@
                             VerticalAlignment="Center"
                             RecognizesAccessKey="True"
                             IsHitTestVisible="False"
-                            Content="{TemplateBinding Header, Converter={x:Static themes:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
+                            Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
                             ContentTemplate="{TemplateBinding HeaderTemplate}" />
                         <atom:TextBlock
                             Name="{x:Static atom:BaseNavMenuItemThemeConstants.InputGestureTextPart}"
@@ -44,7 +44,7 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             TextAlignment="Right"
-                            Text="{TemplateBinding InputGesture, Converter={x:Static themes:BaseNavMenuItemTheme.KeyGestureConverter}}" />
+                            Text="{TemplateBinding InputGesture, Converter={x:Static atom:BaseNavMenuItemTheme.KeyGestureConverter}}" />
                         <atom:Icon
                             Name="{x:Static atom:BaseNavMenuItemThemeConstants.MenuIndicatorIconPart}"
                             Grid.Column="3"

@@ -1,17 +1,16 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:themes="using:AtomUI.Controls.Themes"
     xmlns:atom="https://atomui.net">
     <ControlTheme x:Key="{x:Type PopupRoot}" TargetType="PopupRoot">
         <Setter Property="Template">
             <ControlTemplate>
                 <LayoutTransformControl LayoutTransform="{TemplateBinding Transform}">
                     <Panel>
-                        <Border Name="{x:Static themes:PopupThemeConstants.TransparencyFallbackPart}"
+                        <Border Name="{x:Static atom:PopupThemeConstants.TransparencyFallbackPart}"
                                 IsHitTestVisible="False" />
                         <VisualLayerManager IsPopup="True">
-                            <ContentPresenter Name="{x:Static themes:PopupThemeConstants.ContentPresenterPart}"
+                            <ContentPresenter Name="{x:Static atom:PopupThemeConstants.ContentPresenterPart}"
                                               Background="{TemplateBinding Background}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                               Content="{TemplateBinding Content}"

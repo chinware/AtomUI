@@ -1,9 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    xmlns:themes="using:AtomUI.Controls.Themes">
-    <ControlTheme x:Key="{x:Static themes:NavMenuThemeConstants.VerticalNavMenuThemeId}" TargetType="atom:NavMenu">
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Static atom:NavMenuThemeConstants.VerticalNavMenuThemeId}" TargetType="atom:NavMenu">
         <Setter Property="Template">
             <ControlTemplate>
                 <ScrollViewer AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Utils;
