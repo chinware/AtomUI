@@ -64,7 +64,7 @@ public partial class DesignToken
     /// 字体
     /// Ant Design 的字体家族中优先使用系统默认的界面字体，同时提供了一套利于屏显的备用字体库，来维护在不同平台以及浏览器的显示下，字体始终保持良好的易读性和可读性，体现了友好、稳定和专业的特性。
     /// </summary>
-    public string FontFamily { get; set; } = String.Empty;
+    public FontFamily? FontFamily { get; set; }
 
     /// <summary>
     /// 默认字号

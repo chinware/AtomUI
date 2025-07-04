@@ -787,5 +787,6 @@ namespace AtomUI.Theme.Styling
     {
         public static readonly TokenResourceKey DefaultBackground = new TokenResourceKey("Window.DefaultBackground");
         public static readonly TokenResourceKey DefaultForeground = new TokenResourceKey("Window.DefaultForeground");
+        public static readonly TokenResourceKey SystemBarColor = new TokenResourceKey("Window.SystemBarColor");
     }
 }

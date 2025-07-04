@@ -28,12 +28,12 @@ public partial class DesignToken : AbstractDesignToken
 
     private void InitSeedTokenValues()
     {
-        ColorPrimary = Color.Parse("#1677ff");
-        ColorSuccess = Color.Parse("#52c41a");
-        ColorWarning = Color.Parse("#faad14");
-        ColorError   = Color.Parse("#ff4d4f");
-        ColorInfo    = Color.Parse("#1677ff");
-        FontFamily = "fonts:Inter#Inter, $Default";
+        ColorPrimary     = Color.Parse("#1677ff");
+        ColorSuccess     = Color.Parse("#52c41a");
+        ColorWarning     = Color.Parse("#faad14");
+        ColorError       = Color.Parse("#ff4d4f");
+        ColorInfo        = Color.Parse("#1677ff");
+        FontFamily       = FontFamily.Parse("fonts:Inter#Inter, $Default");
         BorderRadius     = new CornerRadius(6);
         ColorTransparent = Colors.Transparent;
     }

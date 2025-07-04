@@ -1,7 +1,9 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:DataType="WindowNotificationManager"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:WindowNotificationManager}" TargetType="atom:WindowNotificationManager">
         <Setter Property="Template">
             <ControlTemplate>

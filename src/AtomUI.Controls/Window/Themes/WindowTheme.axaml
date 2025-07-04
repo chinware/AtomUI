@@ -1,0 +1,38 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Window}" TargetType="atom:Window">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="{x:Static themes:WindowThemeConstants.TransparencyFallbackPart}"
+                            IsHitTestVisible="False" />
+                    <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
+                    <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
+                    <VisualLayerManager>
+                        <VisualLayerManager.ChromeOverlayLayer>
+                            <TitleBar />
+                        </VisualLayerManager.ChromeOverlayLayer>
+                        <ContentPresenter Name="{x:Static themes:WindowThemeConstants.ContentPresenterPart}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </VisualLayerManager>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:WindowTokenKey.DefaultBackground}}" />
+        <Setter Property="TransparencyBackgroundFallback" Value="{DynamicResource {x:Static atom:WindowTokenKey.DefaultBackground}}" />
+        <Setter Property="TopLevel.SystemBarColor" Value="{DynamicResource {x:Static atom:WindowTokenKey.SystemBarColor}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:WindowTokenKey.DefaultForeground}}" />
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+        <Setter Property="FontFamily" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontFamily}}" />
+        
+    </ControlTheme>
+</ResourceDictionary>

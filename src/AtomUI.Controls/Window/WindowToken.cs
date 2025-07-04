@@ -17,9 +17,19 @@ public class WindowToken : AbstractControlDesignToken
     /// 窗口默认的前景色
     /// </summary>
     public Color DefaultForeground { get; set; }
+    
+    public SolidColorBrush? SystemBarColor { get; set; }
 
     public WindowToken()
         : base("Window")
     {
+    }
+
+    protected internal override void CalculateFromAlias()
+    {
+        base.CalculateFromAlias();
+        DefaultBackground = SharedToken.ColorBgContainer;
+        DefaultForeground = SharedToken.ColorText;
+        SystemBarColor    = new SolidColorBrush(SharedToken.ColorBgContainer);
     }
 }

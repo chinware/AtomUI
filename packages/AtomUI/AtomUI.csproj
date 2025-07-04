@@ -42,6 +42,9 @@
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Theme/AtomUI.Theme.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.ReactiveUI/AtomUI.ReactiveUI.csproj">
+            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
+        </ProjectReference>
     </ItemGroup>
 
     <PropertyGroup>
@@ -55,6 +58,7 @@
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Theme.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Native.dll"/>
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.ReactiveUI.dll"/>
     </ItemGroup>
 
     <PropertyGroup>
@@ -81,6 +85,8 @@
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.pdb" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.dll" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.pdb" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.ReactiveUI.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.ReactiveUI.pdb" PackagePath="lib/$(TargetFramework)"/>
         </ItemGroup>
     </Target>
 
