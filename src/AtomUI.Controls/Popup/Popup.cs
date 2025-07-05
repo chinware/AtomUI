@@ -524,7 +524,6 @@ public class Popup : AvaloniaPopup,
         Debug.Assert(_buddyLayer != null);
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
-        popupRoot.Opacity = 0.0d;
         if (_isNeedWaitFlipSync)
         {
             Dispatcher.UIThread.Post(() =>
@@ -542,7 +541,10 @@ public class Popup : AvaloniaPopup,
         Debug.Assert(_buddyLayer != null);
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
-        _buddyLayer.AttachWithMotion(null, () =>
+        _buddyLayer.AttachWithMotion(() =>
+        {
+            popupRoot.Opacity = 0.0d;
+        }, () =>
         {
             opened?.Invoke();
             popupRoot.Opacity = 1.0d;

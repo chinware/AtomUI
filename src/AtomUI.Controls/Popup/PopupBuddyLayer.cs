@@ -184,7 +184,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         }
        
         SetupPopupHost();
-        _buddyDecorator.HideDecoratorContent();
+        // _buddyDecorator.HideDecoratorContent();
     }
 
     public void Detach()
@@ -204,17 +204,21 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         _buddyDecorator.CaptureContentControl();
         _buddyDecorator.Opacity = 0.0d;
         _buddyDecorator.NotifySceneShowed();
-        aboutToStart?.Invoke();
         var motion       = OpenMotion ?? new ZoomBigInMotion();
         if (MotionDuration != TimeSpan.Zero)
         {
             motion.Duration = MotionDuration;
         }
         NotifyAboutToRunAttachMotion();
-        motion.Run(_buddyDecorator, null, () =>
+        
+        Dispatcher.UIThread.Post(() =>
         {
-            completedAction?.Invoke();
-            NotifyAttachMotionCompleted();
+            aboutToStart?.Invoke();
+            motion.Run(_buddyDecorator, null, () =>
+            {
+                completedAction?.Invoke();
+                NotifyAttachMotionCompleted();
+            });
         });
     }
     
@@ -228,18 +232,15 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         }
         _buddyDecorator.CaptureContentControl();
         NotifyAboutToRunDetachMotion();
-
+        
         Dispatcher.UIThread.Post(() =>
-        {
+        {       
             aboutToStart?.Invoke();
-            Dispatcher.UIThread.Post(() =>
+            motion.Run(_buddyDecorator, null, () =>
             {
-                motion.Run(_buddyDecorator, null, () =>
-                {
-                    completedAction?.Invoke();
-                    NotifyDetachMotionCompleted();
-                    Detach();
-                });
+                completedAction?.Invoke();
+                NotifyDetachMotionCompleted();
+                Detach();
             });
         });
     }
@@ -251,10 +252,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     
     protected void NotifyAttachMotionCompleted()
     {
-        Dispatcher.UIThread.Post(() =>
-        {
-            _buddyDecorator.HideDecoratorContent();
-        });
+        _buddyDecorator.HideDecoratorContent();
     }
     
     protected void NotifyAboutToRunDetachMotion()
@@ -264,10 +262,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     
     protected void NotifyDetachMotionCompleted()
     {
-        Dispatcher.UIThread.Post(() =>
-        {
-            _buddyDecorator.HideDecoratorContent();
-        });
+        _buddyDecorator.HideDecoratorContent();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

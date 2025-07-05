@@ -129,7 +129,8 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
     {
         if (_decoratorControl.Content != null)
         {
-            _decoratorControl.Content.Opacity = 0.0;
+             _decoratorControl.Content.Opacity = 0.0;
+            //_decoratorControl.Content.IsVisible = false;
         }
     }
 
@@ -138,6 +139,7 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
         if (_decoratorControl.Content != null)
         {
             _decoratorControl.Content.Opacity = 1.0;
+            //_decoratorControl.Content.IsVisible       = true;
         }
     }
 }
