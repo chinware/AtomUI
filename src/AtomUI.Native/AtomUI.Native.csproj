@@ -23,8 +23,6 @@
         <AtomUINativeAbsoluteDeployPath>$(OutputPathWithoutFramework)/$(AtomUINativeDeployPath)</AtomUINativeAbsoluteDeployPath>
         <AtomUIBuildPwShScript>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../../scripts/BuildAtomUINative.ps1'))</AtomUIBuildPwShScript>
         
-        <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
-        <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)/$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
         <AtomUINativeCompiledMarker>$(AtomUINavtiveBuildPath)/.native_compiled</AtomUINativeCompiledMarker>
     </PropertyGroup>
 
@@ -37,12 +35,12 @@
     <Choose>
         <When Condition="'$(Configuration)' == 'Debug'">
             <PropertyGroup>
-                <CMakeBuildType>Debug</CMakeBuildType>
+                <NativeBuildType>Debug</NativeBuildType>
             </PropertyGroup>
         </When>
         <Otherwise>
             <PropertyGroup>
-                <CMakeBuildType>Release</CMakeBuildType>
+                <NativeBuildType>Release</NativeBuildType>
             </PropertyGroup>
         </Otherwise>
     </Choose>
@@ -57,7 +55,7 @@
         <MakeDir Directories="$(AtomUINavtiveBuildPath)" Condition="!Exists('$(AtomUINavtiveBuildPath)')"/>
         <MakeDir Directories="$(AtomUITempInstallPrefix)" Condition="!Exists('$(AtomUITempInstallPrefix)')"/>
         <MakeDir Directories="$(AtomUINativeAbsoluteDeployPath)" Condition="!Exists('$(AtomUINativeAbsoluteDeployPath)')"/>
-        <Exec Command='pwsh -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("/"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(CMakeBuildType)" -libName "$(AtomUINativeArtifactName)"'
+        <Exec Command='pwsh -NonInteractive -executionpolicy Unrestricted $(AtomUIBuildPwShScript) -buildDir "$(AtomUINavtiveBuildPath)" -sourceDir "$(AtomUINativeSrcPath)" -installPrefix "$(AtomUITempInstallPrefix.TrimEnd("/"))" -deployDir "$(AtomUINativeAbsoluteDeployPath)" -buildType "$(NativeBuildType)" -libName "$(AtomUINativeArtifactName)"'
               WorkingDirectory="$(AtomUINavtiveBuildPath)"
               ConsoleToMsBuild="true"
         />

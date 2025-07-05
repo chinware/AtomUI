@@ -22,6 +22,10 @@ target("AtomUINative", function()
         add_files("macos/WindowUtils.mm")
     elseif is_os("windows") then
         set_prefixname("")
-        add_files("windows/WindowsUtils.cpp")
+        add_files("windows/WindowUtils.cpp")
+    elseif is_os("linux") then
+        add_syslinks("xcb")
+        add_syslinks("xcb-shape")
+        add_files("linux/WindowUtils.cpp")
     end
 end)

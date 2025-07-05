@@ -2,8 +2,8 @@
     <PropertyGroup>
         <AtomUINativeWindowsArtifactName>AtomUINative.dll</AtomUINativeWindowsArtifactName>
         <AtomUINativeMacOSArtifactName>libAtomUINative.dylib</AtomUINativeMacOSArtifactName>
-        <AtomUINativeArtifactNameLinux>libAtomUINative.so</AtomUINativeArtifactNameLinux>
-        <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(AtomUINativeArtifactNameLinux)</AtomUINativeArtifactName>
+        <AtomUINativeLinuxArtifactName>libAtomUINative.so</AtomUINativeLinuxArtifactName>
+        <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(AtomUINativeLinuxArtifactName)</AtomUINativeArtifactName>
         <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('OSX'))">$(AtomUINativeMacOSArtifactName)</AtomUINativeArtifactName>
         <AtomUINativeArtifactName Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(AtomUINativeWindowsArtifactName)</AtomUINativeArtifactName>
         <CPUArchitecture>$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)</CPUArchitecture>
@@ -13,8 +13,9 @@
         <AtomUINativeWindowsX64DeployPath>runtimes/win-x64/native</AtomUINativeWindowsX64DeployPath>
         <AtomUINativeWindowsArm64DeployPath>runtimes/arm64-x64/native</AtomUINativeWindowsArm64DeployPath>
         <AtomUINativeWindowsDeployPath>runtimes/$(AtomUIWindowsRuntimeDir)/native</AtomUINativeWindowsDeployPath>
-        <AtomUINativeMacOSDeployPath>runtimes/$(AtomUIMacOSRuntimeDir)/native</AtomUINativeMacOSDeployPath>
+        <AtomUINativeLinuxX64DeployPath>runtimes/linux-x64/native</AtomUINativeLinuxX64DeployPath>
         <AtomUINativeDeployPath Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(AtomUINativeWindowsDeployPath)</AtomUINativeDeployPath>
         <AtomUINativeDeployPath Condition="$([MSBuild]::IsOSPlatform('OSX'))">$(AtomUINativeMacOSDeployPath)</AtomUINativeDeployPath>
+        <AtomUINativeDeployPath Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(AtomUINativeLinuxX64DeployPath)</AtomUINativeDeployPath>
     </PropertyGroup>
 </Project>

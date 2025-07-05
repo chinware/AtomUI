@@ -42,7 +42,7 @@ if ($IsWindows) {
      xmake build
      xmake install --installdir=$installPrefix
      Copy-Item -Path $installPrefix/x86_64/lib/$libName -Destination $deployDir
-} else {
+} elseif ($IsMacOS) {
     xmake config --project=$sourceDir --builddir=$buildDir -p macosx -a arm64 -m $buildType
     xmake build
     xmake install --installdir=$installPrefix
@@ -51,6 +51,14 @@ if ($IsWindows) {
     xmake install --installdir=$installPrefix
     Write-Output "generate universal binary"
     lipo -create $installPrefix/arm64/lib/$libName $installPrefix/x86_64/lib/$libName -output $deployDir/$libName
+} elseif ($IsLinux) {
+    xmake config --project=$sourceDir --builddir=$buildDir -p linux -a x86_64 -m $buildType
+    xmake build
+    xmake install --installdir=$installPrefix
+    Copy-Item -Path $installPrefix/x86_64/lib/$libName -Destination $deployDir
+} else {
+    $osInfo = $PSVersionTable.OS
+    throw "Unsupported operating system: $osInfo. Only supported on Windows, Linux or macOS."
 }
 
 Write-Output "generate success, saved to ${deployDir}"

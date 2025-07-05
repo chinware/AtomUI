@@ -8,7 +8,7 @@
 -- Created by chinboy on 2025/05/19.
 --
 add_rules("mode.debug", "mode.release")
-set_xmakever("2.9.9")
+set_xmakever("3.0.0")
 
 set_project("AtomUINative")
 set_version("0.0.1", {build = "%Y%m%d%H%M"})
@@ -57,6 +57,10 @@ set_configvar("ATOMUI_COPYRIGHT", ATOMUI_COPYRIGHT)
 if has_config("build_unittests") then includes("tests/unittests") end
 
 if is_mode("debug") then add_defines("ATOMUI_DEBUG_BUILD") end
+
+if is_os("linux") then
+    add_requires("libxcb")
+end 
 
 includes("include/atomui")
 includes("src")

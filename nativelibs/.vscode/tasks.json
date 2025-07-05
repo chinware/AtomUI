@@ -6,9 +6,9 @@
             "command": "xmake",
             "args": [
                 "f", 
+                "-v",
                 "-m", "debug",
-                "--toolchain=llvm",
-                "--sdk=/opt/homebrew/opt/llvm@19"
+                "--toolchain=clang"
             ],
             "group": {
                 "kind": "none",
