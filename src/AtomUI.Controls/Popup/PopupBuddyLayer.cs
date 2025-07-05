@@ -184,7 +184,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         }
        
         SetupPopupHost();
-        // _buddyDecorator.HideDecoratorContent();
     }
 
     public void Detach()
