@@ -55,7 +55,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     private Popup _buddyPopup;
     private IPopupHost? _popupHost;
     
-    private PopupBuddyDecorator _buddyDecorator;
+    internal PopupBuddyDecorator _buddyDecorator;
     
     public PopupBuddyLayer(Popup buddyPopup, TopLevel parent)
         : base(parent)
@@ -171,6 +171,13 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
             Show();
             popupRoot?.Activate();
         }
+        else if (OperatingSystem.IsLinux())
+        {
+            Show();
+            var popupRoot = _popupHost as PopupRoot;
+            popupRoot?.Hide();
+            popupRoot?.Show();
+        }
         else
         {
             Show();
@@ -214,7 +221,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     public void DetachWithMotion(Action? aboutToStart = null,
                                  Action? completedAction = null)
     {
-        aboutToStart?.Invoke();
         var motion       = CloseMotion ?? new ZoomBigOutMotion();
         if (MotionDuration != TimeSpan.Zero)
         {
@@ -222,11 +228,19 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         }
         _buddyDecorator.CaptureContentControl();
         NotifyAboutToRunDetachMotion();
-        motion.Run(_buddyDecorator, null, () =>
+
+        Dispatcher.UIThread.Post(() =>
         {
-            completedAction?.Invoke();
-            NotifyDetachMotionCompleted();
-            Detach();
+            aboutToStart?.Invoke();
+            Dispatcher.UIThread.Post(() =>
+            {
+                motion.Run(_buddyDecorator, null, () =>
+                {
+                    completedAction?.Invoke();
+                    NotifyDetachMotionCompleted();
+                    Detach();
+                });
+            });
         });
     }
 

@@ -545,7 +545,7 @@ public class Popup : AvaloniaPopup,
         _buddyLayer.AttachWithMotion(null, () =>
         {
             opened?.Invoke();
-            popupRoot.Opacity = 1.0;
+            popupRoot.Opacity = 1.0d;
             popupRoot.PlatformImpl?.SetTopmost(true);
             _isNeedWaitFlipSync = false;
             _openAnimating      = false;
@@ -588,8 +588,9 @@ public class Popup : AvaloniaPopup,
         _closeAnimating = true;
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);
-        popupRoot.Opacity = 0d;
-        _buddyLayer.DetachWithMotion(null, () =>
+        _buddyLayer.DetachWithMotion(() => {
+            popupRoot.Opacity = 0.0;
+        }, () =>
         {
             closed?.Invoke();
             Close();
