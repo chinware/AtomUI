@@ -502,7 +502,6 @@ public class Popup : AvaloniaPopup,
 
     public void MotionAwareOpen(Action? opened = null)
     {
-        
         // AbstractPopup is currently open
         if (IsOpen || _openAnimating || _closeAnimating)
         {
@@ -566,18 +565,18 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
-
+        
         if (_openAnimating)
         {
             RequestCloseWhereAnimationCompleted = true;
             return;
         }
-
+        
         if (!IsOpen)
         {
             return;
         }
-
+        
         if (!IsMotionEnabled)
         {
             _buddyLayer?.Detach();
@@ -586,7 +585,7 @@ public class Popup : AvaloniaPopup,
             closed?.Invoke();
             return;
         }
-
+        
         _closeAnimating = true;
         var popupRoot = Host as PopupRoot;
         Debug.Assert(popupRoot != null);

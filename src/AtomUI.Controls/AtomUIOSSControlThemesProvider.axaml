@@ -22,6 +22,7 @@
         <ResourceInclude Source="Expander/Themes/ExpanderTheme.axaml" />
         <ResourceInclude Source="Flyouts/Themes/FlyoutThemes.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
+        <ResourceInclude Source="HeaderedContentControl/Themes/HeaderedContentControlTheme.axaml" />
         <ResourceInclude Source="Input/Themes/InputThemes.axaml" />
         <ResourceInclude Source="ItemsControl/Themes/ItemsControlTheme.axaml" />
         <ResourceInclude Source="ListBox/Themes/ListBoxThemes.axaml" />
@@ -47,9 +48,11 @@
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
         <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
         <ResourceInclude Source="TextBlock/Themes/HyperLinkTextBlockTheme.axaml" />
+        <ResourceInclude Source="TextSelectionHandle/Themes/TextSelectionHandleTheme.axaml" />
         <ResourceInclude Source="Timeline/Themes/TimelineThemes.axaml" />
         <ResourceInclude Source="TimePicker/Themes/TimePickerThemes.axaml" />
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
+        <ResourceInclude Source="TransitioningContentControl/Themes/TransitioningContentControlTheme.axaml" />
         <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
         <ResourceInclude Source="Window/Themes/WindowThemes.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
