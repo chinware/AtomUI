@@ -2,29 +2,10 @@
     <PropertyGroup>
         <NoWarn>$(NoWarn);CS7035</NoWarn>
         <AvaloniaVersion>11.3.2</AvaloniaVersion>
-        <AtomUIVersion>0.0.5</AtomUIVersion>
-        <IsNightlyBuild Condition="'$(IsNightlyBuild)' == ''">false</IsNightlyBuild>
-        <BuildTimestamp Condition="'$(BuildTimestamp)' == ''">$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</BuildTimestamp>
-        <CanAppendBuildInfo>false</CanAppendBuildInfo>
+        <AtomUIVersion>0.0.6-build.1</AtomUIVersion>
     </PropertyGroup>
     
-    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <FileVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd HH:mm:ss"))</FileVersion>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(IsNightlyBuild)' == 'true'">
-        <OriginVersion>$(AtomUIVersion)</OriginVersion>
-        <AtomUIVersion>$(AtomUIVersion)-build.$(BuildTimestamp)</AtomUIVersion>
-    </PropertyGroup>
-
     <PropertyGroup>
         <Version>$(AtomUIVersion)</Version>
     </PropertyGroup>
-    
-    <Target Name="CheckNightlyVersion" BeforeTargets="Build">
-        <PropertyGroup>
-            <CanAppendBuildInfo Condition="'$(OriginVersion)' != '' AND !$(OriginVersion.Contains('-'))">true</CanAppendBuildInfo>
-        </PropertyGroup>
-        <Error Condition="'$(CanAppendBuildInfo)' != 'true' AND '$(IsNightlyBuild)' == 'true'" Text="The currently specified daily build, but the version information already contains other information." />
-    </Target>
 </Project>
