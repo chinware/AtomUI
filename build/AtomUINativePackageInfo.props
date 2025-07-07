@@ -9,11 +9,13 @@
         <CPUArchitecture>$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)</CPUArchitecture>
         <CPUArchitecture>$(CPUArchitecture.ToLower)</CPUArchitecture>
         <AtomUIWindowsRuntimeDir>win-$(CPUArchitecture)</AtomUIWindowsRuntimeDir>
+        <AtomUILinuxRuntimeDir>linux-$(CPUArchitecture)</AtomUILinuxRuntimeDir>
         <AtomUIMacOSRuntimeDir>osx</AtomUIMacOSRuntimeDir>
         <AtomUINativeWindowsX64DeployPath>runtimes/win-x64/native</AtomUINativeWindowsX64DeployPath>
         <AtomUINativeWindowsArm64DeployPath>runtimes/arm64-x64/native</AtomUINativeWindowsArm64DeployPath>
         <AtomUINativeWindowsDeployPath>runtimes/$(AtomUIWindowsRuntimeDir)/native</AtomUINativeWindowsDeployPath>
         <AtomUINativeLinuxX64DeployPath>runtimes/linux-x64/native</AtomUINativeLinuxX64DeployPath>
+        <AtomUINativeMacOSDeployPath>runtimes/osx/native</AtomUINativeMacOSDeployPath>
         <AtomUINativeDeployPath Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(AtomUINativeWindowsDeployPath)</AtomUINativeDeployPath>
         <AtomUINativeDeployPath Condition="$([MSBuild]::IsOSPlatform('OSX'))">$(AtomUINativeMacOSDeployPath)</AtomUINativeDeployPath>
         <AtomUINativeDeployPath Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(AtomUINativeLinuxX64DeployPath)</AtomUINativeDeployPath>

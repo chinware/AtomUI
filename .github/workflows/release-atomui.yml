@@ -2,10 +2,6 @@ name: AtomUI Release Pipeline
 on:
    workflow_dispatch:
       inputs:
-         IsNightlyBuild:
-            description: 'Is it a nightly build'
-            type: boolean
-            default: false
          TargetBranch:
             description: 'Target branch to build'
             type: string
@@ -24,6 +20,7 @@ env:
    BUILD_DIR: ${{ github.workspace }}/build
    BASE_OUTPUT_DIR: ${{ github.workspace }}/output
    MAC_OUTPUT_DIR: ${{ github.workspace }}/osx
+   LINUX_OUTPUT_DIR: ${{ github.workspace }}/linux
    LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
 jobs:
    BuildAtomUINativeMacOS:
@@ -63,11 +60,44 @@ jobs:
             with:
                name: AtomUINativeMac
                path: ${{ env.MAC_OUTPUT_DIR }}
-   
+   BuildAtomUINativeLinux:
+      name: Build AtomUINative for Linux
+      runs-on: qinware-ubuntu-latest
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Install dependencies
+            run: |
+               sudo apt update
+               sudo apt install -y build-essential libxcb1-dev libxcb-shape0-dev \
+               libgl1-mesa-dev libssl-dev curl patchelf desktop-file-utils \
+               libfuse2 zsync
+               sudo add-apt-repository ppa:xmake-io/xmake -y
+               sudo apt update -o Dir::Etc::sourcelist="sources.list.d/xmake-io-ubuntu-xmake-jammy.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+               sudo apt install xmake -y
+               xmake --version
+               sudo apt install clang
+               clang --version
+         -  name: Build for x86_64
+            run: |
+               xmake config --project=$NATIVE_LIB_SRC_DIR --toolchain=clang --builddir=$BUILD_DIR -p linux -a x86_64 -m ${{ inputs.BuildConfiguration }}
+               xmake build
+               xmake install --installdir=$LINUX_OUTPUT_DIR
+         -  name: Upload linux x86_64 artifact
+            id: artifact
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: AtomUINativeLinux
+               path: ${{ env.LINUX_OUTPUT_DIR }}
+
    BuildAtomUINuget:
       name: Build AtomUI NuGet packages
       runs-on: windows-latest
-      needs: BuildAtomUINativeMacOS
+      needs: 
+         - BuildAtomUINativeMacOS
+         - BuildAtomUINativeLinux
       steps:
          -  name: Checkout code
             uses: actions/checkout@v4.2.2
@@ -78,6 +108,11 @@ jobs:
             with:
                name: AtomUINativeMac
                path: ${{ env.MAC_OUTPUT_DIR }}
+         -  name: Download Linux artifact
+            uses: actions/download-artifact@v4.3.0
+            with:
+               name: AtomUINativeLinux
+               path: ${{ env.Linux_OUTPUT_DIR }}
          -  name: Setup MSYS2 environment
             shell: pwsh
             run: |
@@ -88,19 +123,18 @@ jobs:
                $env:MSYSTEM_PREFIX = "/clang64"
                $env:CHERE_INVOKING = "1"
                $env:PATH = "$msysPath/clang64/bin;$msysPath/usr/bin;$env:PATH"
-               
+
                # Update PATH for subsequent steps
                Add-Content $env:GITHUB_PATH "$msysPath/clang64/bin"
                Add-Content $env:GITHUB_PATH "$msysPath/usr/bin"
-               
-               
+
                # Install required packages
                & "$msysPath/usr/bin/bash.exe" -lc @"
                  pacman -Sy --noconfirm
                  pacman -S mingw-w64-clang-x86_64-xmake --noconfirm
                  pacman -S mingw-w64-clang-x86_64-clang --noconfirm
                "@
-               
+
                # Verify installations
                xmake --version
                clang --version
@@ -121,22 +155,25 @@ jobs:
             shell: pwsh
             run: |
                # Build AtomUI project
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} /p:IsNightlyBuild=${{ inputs.IsNightlyBuild }} ./packages/AtomUI/AtomUI.csproj
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./packages/AtomUI/AtomUI.csproj
                # Copy native library to runtime directory
                $osxNativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/osx/native"
                New-Item -ItemType Directory -Force -Path $osxNativeLibDir
                Copy-Item -Path $env:MAC_OUTPUT_DIR/lib/libAtomUINative.dylib -Destination $osxNativeLibDir
+               
+               $linuxNativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/linux-x64/native"
+               New-Item -ItemType Directory -Force -Path $linuxNativeLibDir
+               Copy-Item -Path $env:LINUX_OUTPUT_DIR/x86_64/lib/libAtomUINative.so -Destination $linuxNativeLibDir
          -  name: Create AtomUI NuGet packages
             shell: pwsh
             run: |
-               $buildTimestamp = (Get-Date).ToString("yyyyMMddHHmm")
                $projects = @(
                   "./packages/AtomUI/AtomUI.csproj",
                   "./src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj",
                   "./src/AtomUI.Generator/AtomUI.Generator.csproj"
                )
                foreach ($project in $projects) {
-                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} /p:BuildTimestamp=$buildTimestamp /p:IsNightlyBuild=${{ inputs.IsNightlyBuild }} $project
+                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} $project
                }
                $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
                foreach ($pkg in $packages) {
@@ -153,12 +190,11 @@ jobs:
          -  name: Build AtomUI.Controls.DataGrid projects
             shell: pwsh
             run: |
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} /p:IsNightlyBuild=${{ inputs.IsNightlyBuild }} ./src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
          -  name: Create AtomUI.Controls.DataGrid NuGet packages
             shell: pwsh
             run: |
-               $buildTimestamp = (Get-Date).ToString("yyyyMMddHHmm")
-               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} /p:BuildTimestamp=$buildTimestamp /p:IsNightlyBuild=${{ inputs.IsNightlyBuild }} ./src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
          -  name: Upload NuGet artifacts
             uses: actions/upload-artifact@v4.6.2
             with:
@@ -180,4 +216,3 @@ jobs:
                       Write-Error "push $($pkg.Name) error: $_"
                   }
                }
-               
