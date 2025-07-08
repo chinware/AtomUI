@@ -95,7 +95,11 @@ public class BaseTabControl : AvaloniaTabControl,
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
     private CompositeDisposable? _resourceBindingsDisposable;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     static BaseTabControl()
     {

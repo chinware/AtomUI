@@ -146,7 +146,11 @@ internal class TimeView : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     #endregion
 
@@ -232,11 +236,12 @@ internal class TimeView : TemplatedControl,
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerWidthProperty, SharedTokenKey.LineWidth,
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerWidthProperty,
+            SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this)));
     }
-    
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);

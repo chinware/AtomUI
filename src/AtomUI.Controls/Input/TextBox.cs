@@ -94,7 +94,11 @@ public class TextBox : AvaloniaTextBox,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     #endregion
 

@@ -127,7 +127,11 @@ public class NavMenu : NavMenuBase,
     private CompositeDisposable? _resourceBindingsDisposable;
     private ItemsPresenter? _menuItemsPresenter;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     public NavMenu()
     {

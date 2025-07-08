@@ -181,7 +181,11 @@ public class Expander : AvaloniaExpander,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ExpanderToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
     
     #endregion
     

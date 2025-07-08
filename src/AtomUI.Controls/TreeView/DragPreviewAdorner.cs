@@ -59,7 +59,11 @@ internal class DragPreview : Decorator,
     }
 
     private readonly VisualBrush _visualBrush;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
     private CompositeDisposable? _resourceBindingsDisposable;
 
     public DragPreview(Border previewControl)

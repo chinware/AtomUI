@@ -29,6 +29,7 @@
                                     Converter="{x:Static atom:BaseButtonTheme.ButtonIconVisibleConverter}">
                                     <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
                                     <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsIconVisible" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
                                 </MultiBinding>
                             </atom:IconPresenter.IsVisible>
                         </atom:IconPresenter>
@@ -43,12 +44,15 @@
     </Setter>
 
     <Style Selector="^:is(atom|Button)">
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Cursor" Value="Hand" />
         <Setter Property="DefaultShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultShadow}}" />
         <Setter Property="PrimaryShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryShadow}}" />
         <Setter Property="DangerShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DangerShadow}}" />
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        
+        <Style Selector="^/template/ Border#PART_Frame">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
 
         <!-- BuildSizeStyle 开始 -->
         <Style Selector="^[SizeType=Large]">

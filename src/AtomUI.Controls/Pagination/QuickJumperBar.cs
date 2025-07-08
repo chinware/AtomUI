@@ -57,7 +57,11 @@ internal class QuickJumperBar : TemplatedControl,
         set => SetValue(SizeTypeProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
     private CompositeDisposable? _resourceBindingsDisposable;
     
     private LineEdit? _lineEdit;

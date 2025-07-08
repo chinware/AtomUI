@@ -326,7 +326,11 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     internal TreeView? OwnerTreeView { get; set; }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
     private bool _tempAnimationDisabled = false;
     private ITreeViewInteractionHandler? TreeViewInteractionHandler => this.FindLogicalAncestorOfType<TreeView>()?.InteractionHandler;
     

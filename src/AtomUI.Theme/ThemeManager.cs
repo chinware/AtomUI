@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Styling;
-using DynamicData;
 
 namespace AtomUI.Theme;
 
@@ -286,7 +285,10 @@ public class ThemeManager : Styles, IThemeManager
     {
         foreach (var provider in _controlThemesProviders)
         {
-            Resources.MergedDictionaries.AddRange(provider.ControlThemes);
+            foreach (var resourceProvider in provider.ControlThemes)
+            {
+                Resources.MergedDictionaries.Add(resourceProvider);
+            }
         }
         _controlThemesProviders.Clear();
         BuildLanguageResources();

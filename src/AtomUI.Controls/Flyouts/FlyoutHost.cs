@@ -188,7 +188,11 @@ public class FlyoutHost : Control,
     #region 内部属性定义
 
     Control IMotionAwareControl.PropertyBindTarget => this;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     #endregion
 

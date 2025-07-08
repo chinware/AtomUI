@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
@@ -40,7 +41,7 @@ public enum ButtonShape
 
 [PseudoClasses(
     ButtonPseudoClass.IconOnly,
-    ButtonPseudoClass.Loading, 
+    ButtonPseudoClass.Loading,
     ButtonPseudoClass.IsDanger,
     ButtonPseudoClass.DefaultType,
     ButtonPseudoClass.PrimaryType,
@@ -73,10 +74,10 @@ public class Button : AvaloniaButton,
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Button>();
 
-    public static readonly StyledProperty<Icon?> IconProperty = 
+    public static readonly StyledProperty<Icon?> IconProperty =
         AvaloniaProperty.Register<Button, Icon?>(nameof(Icon));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
@@ -123,7 +124,7 @@ public class Button : AvaloniaButton,
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -151,20 +152,20 @@ public class Button : AvaloniaButton,
     internal static readonly StyledProperty<BoxShadow> DangerShadowProperty =
         AvaloniaProperty.Register<Button, BoxShadow>(
             nameof(DangerShadow));
-    
-    internal static readonly StyledProperty<bool> IsIconVisibleProperty = 
+
+    internal static readonly StyledProperty<bool> IsIconVisibleProperty =
         AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
 
     internal static readonly StyledProperty<object?> RightExtraContentProperty =
         AvaloniaProperty.Register<Button, object?>(nameof(RightExtraContent));
-    
+
     internal static readonly StyledProperty<IDataTemplate?> RightExtraContentTemplateProperty =
         AvaloniaProperty.Register<ContentControl, IDataTemplate?>(nameof(RightExtraContentTemplate));
 
     internal static readonly StyledProperty<Thickness> EffectiveBorderThicknessProperty =
         AvaloniaProperty.Register<Button, Thickness>(
             nameof(EffectiveBorderThickness));
-    
+
     internal BoxShadow DefaultShadow
     {
         get => GetValue(DefaultShadowProperty);
@@ -182,7 +183,7 @@ public class Button : AvaloniaButton,
         get => GetValue(DangerShadowProperty);
         set => SetValue(DangerShadowProperty, value);
     }
-    
+
     internal bool IsIconVisible
     {
         get => GetValue(IsIconVisibleProperty);
@@ -200,22 +201,28 @@ public class Button : AvaloniaButton,
         get => GetValue(RightExtraContentTemplateProperty);
         set => SetValue(RightExtraContentTemplateProperty, value);
     }
-    
+
     public Thickness EffectiveBorderThickness
     {
         get => GetValue(EffectiveBorderThicknessProperty);
         set => SetValue(EffectiveBorderThicknessProperty, value);
     }
-    
+
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     #endregion
-    
+
     private CompositeDisposable? _resourceBindingsDisposable;
     private Border? _frame;
+    protected bool _themeConfigured;
 
     static Button()
     {
@@ -231,11 +238,12 @@ public class Button : AvaloniaButton,
     {
         this.RegisterResources();
         this.BindWaveSpiritProperties();
+        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        var size         = base.MeasureOverride(availableSize); 
+        var size         = base.MeasureOverride(availableSize);
         var targetWidth  = size.Width;
         var targetHeight = size.Height;
 
@@ -251,15 +259,8 @@ public class Button : AvaloniaButton,
             CornerRadius = new CornerRadius(targetHeight);
             targetWidth  = Math.Max(targetWidth, targetHeight + targetHeight / 2);
         }
-      
-        return new Size(targetWidth, targetHeight);
-    }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        _resourceBindingsDisposable = new CompositeDisposable();
-        SetupControlThemeBindings();
-        base.OnAttachedToLogicalTree(e);
+        return new Size(targetWidth, targetHeight);
     }
 
     private void SetupShadows()
@@ -310,12 +311,6 @@ public class Button : AvaloniaButton,
                 };
             }
         }
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -372,10 +367,10 @@ public class Button : AvaloniaButton,
         }
 
         if (this.IsAttachedToVisualTree())
-        { 
+        {
             if (e.Property == IsDangerProperty ||
-              e.Property == IsGhostProperty ||
-              e.Property == ButtonTypeProperty)
+                e.Property == IsGhostProperty ||
+                e.Property == ButtonTypeProperty)
             {
                 SetupShadows();
             }
@@ -395,27 +390,26 @@ public class Button : AvaloniaButton,
         }
     }
 
-    protected virtual void SetupControlThemeBindings()
+    protected virtual void SetupControlThemeBindings(bool force = false)
     {
-        if (ButtonType == ButtonType.Default)
+        if (!_themeConfigured || force)
         {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID));
-        }
-        else if (ButtonType == ButtonType.Primary)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID));
-        }
-        else if (ButtonType == ButtonType.Text)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID));
-        }
-        else if (ButtonType == ButtonType.Link)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID));
+            if (ButtonType == ButtonType.Default)
+            {
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID);
+            }
+            else if (ButtonType == ButtonType.Primary)
+            {
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID);
+            }
+            else if (ButtonType == ButtonType.Text)
+            {
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID);
+            }
+            else if (ButtonType == ButtonType.Link)
+            {
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
+            }
         }
     }
 
@@ -428,7 +422,7 @@ public class Button : AvaloniaButton,
                 _frame.Transitions = new Transitions();
                 _frame.Transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
             }
-            
+
             if (Transitions is null)
             {
                 var transitions = new Transitions();
@@ -438,7 +432,8 @@ public class Button : AvaloniaButton,
                     {
                         transitions.Add(
                             TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-                        transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+                        transitions.Add(
+                            TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                     }
                 }
                 else if (ButtonType == ButtonType.Default)
@@ -474,9 +469,16 @@ public class Button : AvaloniaButton,
         ConfigureTransitions();
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupControlThemeBindings();
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
@@ -484,6 +486,12 @@ public class Button : AvaloniaButton,
         SetupEffectiveBorderThickness();
         SetupShadows();
         UpdatePseudoClasses();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        this.DisposeTokenBindings();
     }
 
     private void SetupEffectiveBorderThickness()
@@ -511,7 +519,8 @@ public class Button : AvaloniaButton,
 
     public Rect WaveGeometry()
     {
-        return new Rect(0, 0, Bounds.Width, Bounds.Height);
+        Debug.Assert(_frame != null);
+        return _frame.Bounds;
     }
 
     public CornerRadius WaveBorderRadius()

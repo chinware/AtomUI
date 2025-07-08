@@ -44,7 +44,11 @@ internal class PaginationNav : SelectingItemsControl,
 
     #region 内部属性
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     #endregion
      
@@ -141,7 +145,12 @@ internal class PaginationNav : SelectingItemsControl,
 internal class NavItemsPresenter : ItemsPresenter,
                                    IResourceBindingManager
 {
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
+    
     private CompositeDisposable? _resourceBindingsDisposable;
     
     internal static readonly DirectProperty<NavItemsPresenter, bool> IsEnabledSpacingProperty =

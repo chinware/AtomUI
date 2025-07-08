@@ -87,7 +87,11 @@ internal class PaginationNavItem : ContentControl,
         private set => SetAndRaise(IsPressedProperty, ref _isPressed, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
     
     private CompositeDisposable? _resourceBindingsDisposable;
 

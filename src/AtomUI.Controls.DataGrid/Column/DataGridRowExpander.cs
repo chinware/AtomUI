@@ -44,7 +44,12 @@ internal class DataGridRowExpander : ToggleButton,
     }
 
     private CompositeDisposable? _resourceBindingsDisposable;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;

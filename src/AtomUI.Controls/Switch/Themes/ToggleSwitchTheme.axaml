@@ -14,7 +14,7 @@
         </Setter>
         
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
+   
         <Setter Property="TrackPadding" Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.TrackPadding}}"/>
         
         <Style Selector="^[IsLoading=True], ^:disabled">

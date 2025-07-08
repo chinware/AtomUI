@@ -168,8 +168,11 @@ internal class TimelineIndicator : Control,
         set => SetAndRaise(NextIsPendingProperty, ref _nextIsPending, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
-
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
     #endregion
 
     private CompositeDisposable? _resourceBindingsDisposable;

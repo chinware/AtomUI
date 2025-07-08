@@ -41,7 +41,11 @@ internal class DotBadgeIndicator : Control,
         set => SetValue(BadgeShadowSizeProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
 
     private BoxShadows _boxShadows;
     private CompositeDisposable? _resourceBindingsDisposable;

@@ -118,7 +118,11 @@ internal class SwitchKnob : Control,
         set => SetAndRaise(LoadingBgOpacityTokenProperty, ref _loadingBgOpacity, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable => _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
+    {
+        get => _resourceBindingsDisposable;
+        set => _resourceBindingsDisposable = value;
+    }
     
     #endregion
     

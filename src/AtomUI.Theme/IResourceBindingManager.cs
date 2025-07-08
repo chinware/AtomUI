@@ -9,7 +9,7 @@ namespace AtomUI.Theme;
 
 public interface IResourceBindingManager
 {
-    CompositeDisposable? ResourceBindingsDisposable { get; }
+    CompositeDisposable? ResourceBindingsDisposable { get; set; }
 }
 
 public static class StyledElementTokenBindingsExtensions
@@ -65,7 +65,7 @@ public static class StyledElementTokenBindingsExtensions
         var consumer = control as IResourceBindingManager;
         Debug.Assert(consumer != null, $"{control.GetType()} is not IResourceBindingManager");
         consumer.ResourceBindingsDisposable?.Dispose();
-        consumer.ResourceBindingsDisposable?.Clear();
+        consumer.ResourceBindingsDisposable = null;
     }
 }
 

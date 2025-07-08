@@ -147,27 +147,26 @@ public class DropdownButton : Button
         _flyoutStateHelper.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
     }
     
-    protected override void SetupControlThemeBindings()
+    protected override void SetupControlThemeBindings(bool force = false)
     {
-        if (ButtonType == ButtonType.Default)
+        if (!_themeConfigured || force)
         {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultDropdownButtonTheme.ID));
-        }
-        else if (ButtonType == ButtonType.Primary)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryDropdownButtonTheme.ID));
-        }
-        else if (ButtonType == ButtonType.Text)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextDropdownButtonTheme.ID));
-        }
-        else if (ButtonType == ButtonType.Link)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkDropdownButtonTheme.ID));
+            if (ButtonType == ButtonType.Default)
+            {
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultDropdownButtonTheme.ID);
+            }
+            else if (ButtonType == ButtonType.Primary)
+            {
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryDropdownButtonTheme.ID);
+            }
+            else if (ButtonType == ButtonType.Text)
+            {
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextDropdownButtonTheme.ID);
+            }
+            else if (ButtonType == ButtonType.Link)
+            {
+                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkDropdownButtonTheme.ID);
+            }
         }
     }
 
