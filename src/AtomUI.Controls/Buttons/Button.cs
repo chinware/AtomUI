@@ -379,17 +379,20 @@ public class Button : AvaloniaButton,
             {
                 SetupShadows();
             }
-            else if (e.Property == ButtonTypeProperty)
-            {
-                SetupControlThemeBindings();
-            }
             else if (e.Property == IsMotionEnabledProperty ||
                      e.Property == IsWaveSpiritEnabledProperty)
             {
                 ConfigureTransitions();
             }
         }
-        
+
+        if (this.IsAttachedToLogicalTree())
+        {
+            if (e.Property == ButtonTypeProperty)
+            {
+                SetupControlThemeBindings();
+            }
+        }
     }
 
     protected virtual void SetupControlThemeBindings()
