@@ -15,7 +15,7 @@ internal class PopupConfirmFlyout : Flyout
     protected override Control CreatePresenter()
     {
         var presenter = new FlyoutPresenter();
-
+        
         if (PopupConfirmRef.TryGetTarget(out var popupConfirm))
         {
             var popupConfirmContainer = new PopupConfirmContainer(popupConfirm);

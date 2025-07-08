@@ -410,6 +410,8 @@ public class Button : AvaloniaButton,
             {
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
             }
+
+            _themeConfigured = true;
         }
     }
 
