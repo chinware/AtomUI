@@ -16,6 +16,7 @@
         <PackageReference Include="Avalonia.Svg"/>
         <PackageReference Include="System.Reactive"/>
         <PackageReference Include="Avalonia.Fonts.Inter"/>
+        <PackageReference Include="Avalonia.Desktop"/>
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
