@@ -79,43 +79,41 @@ public class AbstractMotion : IMotion
         aboutToStart?.Invoke();
 
         actor.RenderTransformOrigin = RenderTransformOrigin;
-        var observables = new List<IObservable<bool>>();
-
-        // 暂时先不保存 actor 原有的 transitions
-        actor.Transitions ??= new Transitions();
-        actor.Transitions.Clear();
-        foreach (var transition in Transitions)
-        {
-            observables.Add(transition.CompletedObservable);
-            actor.Transitions.Add(transition);
-        }
-        actor.DisableTransitions();
+        actor.Transitions           = null;
         ConfigureMotionStartValue(actor);
-        actor.EnableTransitions();
-
-        void FinishedCallback () {
-            actor.DisableTransitions();
-            actor.NotifyMotionCompleted();
-            NotifyCompleted(actor);
-            completedAction?.Invoke();
-            actor.RenderTransformOrigin = originRenderTransformOrigin;
-            actor.MotionTransform       = null;
-        }
-
+        
         Dispatcher.UIThread.Post(() =>
         {
+            var observables = new List<IObservable<bool>>();
+            var transitions = new Transitions();
+            // 暂时先不保存 actor 原有的 transitions
+            foreach (var transition in Transitions)
+            {
+                observables.Add(transition.CompletedObservable);
+                transitions.Add(transition);
+            }
+            actor.Transitions = transitions;
+
+            void FinishedCallback () {
+                actor.NotifyMotionCompleted();
+                NotifyCompleted(actor);
+                completedAction?.Invoke();
+                actor.RenderTransformOrigin = originRenderTransformOrigin;
+                actor.MotionTransform       = null;
+            }
+
             ConfigureMotionEndValue(actor);
 
             if (!actor.IsVisible)
-            {      
-                FinishedCallback();
+            {
+                Dispatcher.UIThread.Post(FinishedCallback);
             }
             else
             {
                 observables.Zip()
                            .LastAsync()
                            .ObserveOn(AvaloniaScheduler.Instance)
-                           .Subscribe(list => FinishedCallback());
+                           .Subscribe(list => Dispatcher.UIThread.Post(FinishedCallback));
             }
         });
     }
@@ -132,6 +130,7 @@ public class AbstractMotion : IMotion
             Duration = Duration,
             Easing   = Easing,
             Property = MotionActorControl.OpacityProperty,
+            Delay    = TimeSpan.FromMilliseconds(0),
         };
         Transitions.Add(opacityTransition);
         

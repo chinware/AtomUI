@@ -550,7 +550,6 @@ public class Popup : AvaloniaPopup,
         }, () =>
         {
             opened?.Invoke();
-            popupRoot.Opacity = 1.0d;
             popupRoot.PlatformImpl?.SetTopmost(true);
             _isNeedWaitFlipSync = false;
             _openAnimating      = false;
@@ -559,6 +558,7 @@ public class Popup : AvaloniaPopup,
                 RequestCloseWhereAnimationCompleted = false;
                 Dispatcher.UIThread.Post(() => { MotionAwareClose(); });
             }
+            Dispatcher.UIThread.Post(() => { popupRoot.Opacity = 1.0d; });
         });
     }
 

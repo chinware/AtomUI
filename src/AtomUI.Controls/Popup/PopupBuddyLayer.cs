@@ -246,28 +246,18 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     protected void NotifyAboutToRunAttachMotion()
     {
-        _buddyDecorator.ShowDecoratorContent();
     }
     
     protected void NotifyAttachMotionCompleted()
     {
-        Dispatcher.UIThread.Post(() =>
-        {
-            _buddyDecorator.HideDecoratorContent();
-        });
     }
     
     protected void NotifyAboutToRunDetachMotion()
     {
-        _buddyDecorator.ShowDecoratorContent();
     }
     
     protected void NotifyDetachMotionCompleted()
     {
-        Dispatcher.UIThread.Post(() =>
-        {
-            _buddyDecorator.HideDecoratorContent();
-        });
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

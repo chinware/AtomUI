@@ -83,7 +83,7 @@ internal class ZoomBigInMotion : AbstractMotion
 
     protected override void ConfigureMotionStartValue(MotionActorControl actor)
     {
-        actor.Opacity         = 0.0;
+        actor.Opacity         = 0.01;
         actor.MotionTransform = BuildScaleTransform(0.85);
     }
 
@@ -117,7 +117,7 @@ internal class ZoomBigOutMotion : AbstractMotion
 
     protected override void ConfigureMotionEndValue(MotionActorControl actor)
     {
-        actor.Opacity         = 0.0;
+        actor.Opacity         = 0.01;
         actor.MotionTransform = BuildScaleTransform(0.85);
     }
     
