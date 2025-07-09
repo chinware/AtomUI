@@ -30,7 +30,6 @@
 
     <ItemGroup>
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
-        <PackageReference Include="Avalonia.Fonts.Inter"/>
     </ItemGroup>
 
 </Project>

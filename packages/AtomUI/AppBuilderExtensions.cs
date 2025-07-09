@@ -11,7 +11,7 @@ public static class AtomUIExtensions
 
     public static AppBuilder UseAtomUI(this AppBuilder builder, ThemeManagerBuilder themeManagerBuilder)
     {
-        builder.AfterSetup(builder =>
+        builder.AfterSetup(_ =>
         {
             var themeManager = themeManagerBuilder.Build();
             themeManager.Configure();
@@ -22,6 +22,6 @@ public static class AtomUIExtensions
             builder.Instance!.Styles.Add(themeManager);
             themeManager.NotifyInitialized();
         });
-        return builder;
+        return builder.WithInterFont();
     }
 }
