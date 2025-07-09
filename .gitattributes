@@ -1,0 +1,15 @@
+# 强制所有文本文件使用 LF 换行符
+* text=auto eol=lf
+
+# 指定特定文件类型（可选）
+*.sh text eol=lf
+*.py text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+
+# 排除二进制文件
+*.png binary
+*.jpg binary
+*.jar binary
+*.zip binary

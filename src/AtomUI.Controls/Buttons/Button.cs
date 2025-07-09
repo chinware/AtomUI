@@ -385,7 +385,7 @@ public class Button : AvaloniaButton,
         {
             if (e.Property == ButtonTypeProperty)
             {
-                SetupControlThemeBindings();
+                SetupControlThemeBindings(true);
             }
         }
     }
