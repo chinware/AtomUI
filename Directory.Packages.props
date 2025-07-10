@@ -13,8 +13,8 @@
         <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)"/>
 
         <!-- TODO 版本是否跟随 AvaloniaVersion？-->
-        <PackageVersion Include="Avalonia.Svg" Version="11.1.0"/>
-        <PackageVersion Include="Avalonia.Controls.TreeDataGrid" Version="11.0.10"/>
+        <PackageVersion Include="Avalonia.Svg" Version="11.3.0"/>
+        <PackageVersion Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1"/>
 
         <PackageVersion Include="System.Reactive" Version="6.0.1"/>
         <!-- 测试相关依赖 -->
