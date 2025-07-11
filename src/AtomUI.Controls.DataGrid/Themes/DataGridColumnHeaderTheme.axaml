@@ -152,10 +152,7 @@
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
             </Style>
 
-            <Style Selector="^ /template/ Border#PART_Frame">
-                <Setter Property="Cursor" Value="Hand" />
-            </Style>
-
+            <Setter Property="Cursor" Value="Hand" />
             <Style Selector="^:pointerover">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
