@@ -41,6 +41,11 @@
                 <DefineConstants>$(DefineConstants);PLATFORM_MACOS</DefineConstants>
             </PropertyGroup>
         </When>
+        <When Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+            <PropertyGroup>
+                <DefineConstants>$(DefineConstants);PLATFORM_LINUX</DefineConstants>
+            </PropertyGroup>
+        </When>
     </Choose>
 
 </Project>
