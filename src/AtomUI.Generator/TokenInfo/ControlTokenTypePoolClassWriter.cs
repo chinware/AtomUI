@@ -1,6 +1,8 @@
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator;
 
@@ -27,7 +29,11 @@ public class ControlTokenTypePoolClassWriter
     public void Write()
     {
         var compilationUnitSyntax = BuildCompilationUnitSyntax();
-        _context.AddSource("ControlTokenTypePool.g.cs", compilationUnitSyntax.NormalizeWhitespace().ToFullString());
+        var sourceText = SourceText.From(
+            compilationUnitSyntax.NormalizeWhitespace().ToFullString().Replace("\r\n", "\n"), 
+            Encoding.UTF8
+        );
+        _context.AddSource("ControlTokenTypePool.g.cs", sourceText);
     }
 
     private CompilationUnitSyntax BuildCompilationUnitSyntax()
