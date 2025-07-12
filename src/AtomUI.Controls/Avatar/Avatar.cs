@@ -36,8 +36,7 @@ internal enum AvatarContentType
     Text
 }
 
-public class Avatar : TemplatedControl, IControlSharedTokenResourcesHost,
-                      IMotionAwareControl
+public class Avatar : TemplatedControl, IControlSharedTokenResourcesHost, IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -232,6 +231,7 @@ public class Avatar : TemplatedControl, IControlSharedTokenResourcesHost,
         }
         ConfigureShape();
         ConfigureIconSize();
+        ConfigureContentType();
     }
 
     private void ConfigureIconSize()

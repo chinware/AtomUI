@@ -72,7 +72,7 @@ internal class AvatarToken : AbstractControlDesignToken
         TextFontSizeLG  = SharedToken.FontSizeHeading3;
         TextFontSizeSM  = SharedToken.FontSize;
         GroupSpace      = SharedToken.UniformlyMarginXXS;
-        GroupOverlapping  = -SharedToken.UniformlyMarginXS;
+        GroupOverlapping  = SharedToken.UniformlyMarginXS;
         GroupBorderColor  = SharedToken.ColorBorderBg;
 
         AvatarBg    = SharedToken.ColorTextPlaceholder;

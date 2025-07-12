@@ -8,7 +8,9 @@
                 <Panel Name="RootLayout">
                     <Border Name="Frame"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}" />
+                            CornerRadius="{TemplateBinding CornerRadius}" 
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"/>
                     <atom:IconPresenter Name="IconPresenter"
                                         IconWidth="{TemplateBinding EffectiveIconSize}"
                                         IconHeight="{TemplateBinding EffectiveIconSize}"
@@ -45,6 +47,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:AvatarTokenKey.AvatarColor}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:AvatarTokenKey.GroupBorderColor}}" />
         <Style Selector="^[ContentType=Icon]">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:AvatarTokenKey.AvatarBg}}" />
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
