@@ -199,7 +199,7 @@ public partial class DataGridRow : TemplatedControl
         {
             return base.ArrangeOverride(finalSize);
         }
-
+        
         // If the DataGrid was scrolled horizontally after our last Arrange, we need to make sure
         // the Cells and Details are Arranged again
         if (!MathUtils.AreClose(_lastHorizontalOffset, OwningGrid.HorizontalOffset))
@@ -224,7 +224,7 @@ public partial class DataGridRow : TemplatedControl
                 {
                     TranslateTransform transform = new TranslateTransform();
                     // Automatic layout rounding doesn't apply to transforms so we need to Round this
-                    transform.X           = Math.Round(OwningGrid.HorizontalOffset);
+                    transform.X           = OwningGrid.HorizontalOffset;
                     child.RenderTransform = transform;
                 }
             }
@@ -367,7 +367,7 @@ public partial class DataGridRow : TemplatedControl
         if (change.Property == DataContextProperty)
         {
             var owner = OwningGrid;
-            if (owner != null && this.IsRecycled)
+            if (owner != null && IsRecycled)
             {
                 var columns = owner.ColumnsItemsInternal;
                 var nc      = columns.Count;

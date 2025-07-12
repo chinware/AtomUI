@@ -1235,10 +1235,7 @@ public partial class DataGrid
                     DisplayData.FirstDisplayedScrollingCol = DisplayData.LastTotallyDisplayedScrollingCol = -1;
                     return invalidate;
                 }
-                else
-                {
-                    firstDisplayedScrollingCol = dataGridColumn.Index;
-                }
+                firstDisplayedScrollingCol = dataGridColumn.Index;
             }
 
             cx -= _negHorizontalOffset;

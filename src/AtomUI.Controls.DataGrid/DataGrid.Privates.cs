@@ -2066,7 +2066,6 @@ public partial class DataGrid
     {
         if (IsGroupHeaderMode)
         {
-            
             if (_groupColumnHeadersPresenter != null)
             {
                 EnsureColumnHeadersVisibility();
@@ -2075,7 +2074,6 @@ public partial class DataGrid
         }
         else
         {
-        
             if (_columnHeadersPresenter != null)
             {   
                 EnsureColumnHeadersVisibility();

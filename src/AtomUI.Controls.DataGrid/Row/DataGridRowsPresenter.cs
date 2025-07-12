@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using System.Diagnostics;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -73,12 +74,6 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             return base.ArrangeOverride(finalSize);
         }
         Debug.Assert(OwningGrid.ColumnsInternal.FillerColumn is not null);
-        var availableHeight = 0d;
-        if (OwningGrid.RowsPresenterAvailableSize.HasValue)
-        {
-            // TODO 需要审查，是否可以删除
-            availableHeight = OwningGrid.RowsPresenterAvailableSize.Value.Height;
-        }
 
         OwningGrid.HandleFillerColumnWidthNeeded(finalSize.Width);
 
@@ -146,7 +141,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         }
 
         // If the Width of our RowsPresenter changed then we need to invalidate our rows
-        bool invalidateRows = (!OwningGrid.RowsPresenterAvailableSize.HasValue || availableSize.Width != OwningGrid.RowsPresenterAvailableSize.Value.Width)
+        bool invalidateRows = (!OwningGrid.RowsPresenterAvailableSize.HasValue || !MathUtils.AreClose(availableSize.Width, OwningGrid.RowsPresenterAvailableSize.Value.Width))
                               && !double.IsInfinity(availableSize.Width);
 
         // The DataGrid uses the RowsPresenter available size in order to autogrow
