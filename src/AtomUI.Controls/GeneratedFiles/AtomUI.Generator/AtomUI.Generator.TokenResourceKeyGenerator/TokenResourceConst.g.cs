@@ -47,6 +47,21 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey Padding = new TokenResourceKey("ArrowDecoratedBox.Padding");
     }
 
+    public static class AvatarTokenKey
+    {
+        public static readonly TokenResourceKey AvatarBg = new TokenResourceKey("Avatar.AvatarBg");
+        public static readonly TokenResourceKey AvatarColor = new TokenResourceKey("Avatar.AvatarColor");
+        public static readonly TokenResourceKey ContainerSize = new TokenResourceKey("Avatar.ContainerSize");
+        public static readonly TokenResourceKey ContainerSizeLG = new TokenResourceKey("Avatar.ContainerSizeLG");
+        public static readonly TokenResourceKey ContainerSizeSM = new TokenResourceKey("Avatar.ContainerSizeSM");
+        public static readonly TokenResourceKey GroupBorderColor = new TokenResourceKey("Avatar.GroupBorderColor");
+        public static readonly TokenResourceKey GroupOverlapping = new TokenResourceKey("Avatar.GroupOverlapping");
+        public static readonly TokenResourceKey GroupSpace = new TokenResourceKey("Avatar.GroupSpace");
+        public static readonly TokenResourceKey TextFontSize = new TokenResourceKey("Avatar.TextFontSize");
+        public static readonly TokenResourceKey TextFontSizeLG = new TokenResourceKey("Avatar.TextFontSizeLG");
+        public static readonly TokenResourceKey TextFontSizeSM = new TokenResourceKey("Avatar.TextFontSizeSM");
+    }
+
     public static class BadgeTokenKey
     {
         public static readonly TokenResourceKey BadgeColor = new TokenResourceKey("Badge.BadgeColor");

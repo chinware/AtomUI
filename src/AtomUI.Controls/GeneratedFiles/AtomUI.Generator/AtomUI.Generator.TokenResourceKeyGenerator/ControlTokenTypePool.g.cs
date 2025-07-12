@@ -12,6 +12,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.AdornerLayerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.AlertToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ArrowDecoratedBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.AvatarToken));
             tokenTypes.Add(typeof(AtomUI.Controls.BadgeToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ButtonSpinnerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ButtonToken));
