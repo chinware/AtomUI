@@ -215,21 +215,7 @@ public partial class DataGridRow : TemplatedControl
             _checkDetailsContentHeight = false;
             EnsureDetailsContentHeight();
         }
-
-        if (RootElement != null)
-        {
-            foreach (Control child in RootElement.Children)
-            {
-                if (DataGridFrozenGrid.GetIsFrozen(child))
-                {
-                    TranslateTransform transform = new TranslateTransform();
-                    // Automatic layout rounding doesn't apply to transforms so we need to Round this
-                    transform.X           = OwningGrid.HorizontalOffset;
-                    child.RenderTransform = transform;
-                }
-            }
-        }
-
+        
         if (_bottomGridLine != null)
         {
             RectangleGeometry gridlineClipGeometry = new RectangleGeometry();

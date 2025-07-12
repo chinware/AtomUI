@@ -182,6 +182,16 @@ internal class DataGridToken : AbstractControlDesignToken
     /// Border radius of sticky scrollbar
     /// </summary>
     public CornerRadius StickyScrollBarBorderRadius { get; set; }
+    
+    /// <summary>
+    /// 左侧列固定阴影
+    /// </summary>
+    public BoxShadows LeftFrozenShadows { get; set; }
+    
+    /// <summary>
+    /// 右侧列固定阴影
+    /// </summary>
+    public BoxShadows RightFrozenShadows { get; set; }
 
     #region 内部 Token
 
@@ -355,5 +365,21 @@ internal class DataGridToken : AbstractControlDesignToken
         TableScrollThumbBg      = StickyScrollBarBg;
         TableScrollThumbBgHover = SharedToken.ColorTextHeading;
         TableScrollBg           = SharedToken.ColorSplit;
+        LeftFrozenShadows = new BoxShadows(new BoxShadow
+        {
+            OffsetX = 10,
+            OffsetY = 0,
+            Blur    = 8,
+            Spread  = 0,
+            Color   = SharedToken.ColorSplit
+        });
+        RightFrozenShadows = new BoxShadows(new BoxShadow
+        {
+            OffsetX = -10,
+            OffsetY = 0,
+            Blur    = 8,
+            Spread  = 0,
+            Color   = SharedToken.ColorSplit
+        });
     }
 }

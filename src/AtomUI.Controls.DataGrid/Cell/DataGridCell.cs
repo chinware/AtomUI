@@ -5,7 +5,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Reactive.Disposables;
+using System.Reactive.Disposables; 
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Automation;
@@ -15,7 +15,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Layout;
 using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
@@ -47,12 +46,30 @@ public class DataGridCell : ContentControl, ICustomHitTest
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridCell>();
 
-    public static readonly DirectProperty<DataGridCell, bool> IsSortingProperty =
+    internal static readonly DirectProperty<DataGridCell, bool> IsSortingProperty =
         AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
             nameof(IsSorting),
             o => o.IsSorting, 
             (o, v) => o.IsSorting = v);
 
+    internal static readonly DirectProperty<DataGridCell, bool> IsFrozenProperty =
+        AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
+            nameof(IsFrozen),
+            o => o.IsFrozen, 
+            (o, v) => o.IsFrozen = v);
+    
+    internal static readonly DirectProperty<DataGridCell, bool> IsShowFrozenShadowProperty =
+        AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
+            nameof(IsShowFrozenShadow),
+            o => o.IsShowFrozenShadow, 
+            (o, v) => o.IsShowFrozenShadow = v);
+    
+    internal static readonly DirectProperty<DataGridCell, FrozenColumnShadowPosition> FrozenShadowPositionProperty =
+        AvaloniaProperty.RegisterDirect<DataGridCell, FrozenColumnShadowPosition>(
+            nameof(FrozenShadowPosition),
+            o => o.FrozenShadowPosition, 
+            (o, v) => o.FrozenShadowPosition = v);
+    
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -65,6 +82,30 @@ public class DataGridCell : ContentControl, ICustomHitTest
     {
         get => _isSorting;
         internal set => SetAndRaise(IsSortingProperty, ref _isSorting, value);
+    }
+    
+    bool _isFrozen = false;
+
+    internal bool IsFrozen
+    {
+        get => _isFrozen;
+        set => SetAndRaise(IsFrozenProperty, ref _isFrozen, value);
+    }
+    
+    bool _isShowFrozenShadow = false;
+
+    internal bool IsShowFrozenShadow
+    {
+        get => _isShowFrozenShadow;
+        set => SetAndRaise(IsShowFrozenShadowProperty, ref _isShowFrozenShadow, value);
+    }
+    
+    FrozenColumnShadowPosition _frozenShadowPosition = FrozenColumnShadowPosition.Right;
+
+    internal FrozenColumnShadowPosition FrozenShadowPosition
+    {
+        get => _frozenShadowPosition;
+        set => SetAndRaise(FrozenShadowPositionProperty, ref _frozenShadowPosition, value);
     }
     
     internal DataGridRow? OwningRow { get; set; }
@@ -128,15 +169,13 @@ public class DataGridCell : ContentControl, ICustomHitTest
 
     static DataGridCell()
     {
-        HorizontalContentAlignmentProperty.OverrideDefaultValue<DataGridCell>(HorizontalAlignment.Left);
-        VerticalContentAlignmentProperty.OverrideDefaultValue<DataGridCell>(VerticalAlignment.Center);
-
         PointerPressedEvent.AddClassHandler<DataGridCell>(
             (x, e) => x.HandlePointerPressed(e), handledEventsToo: true);
         FocusableProperty.OverrideDefaultValue<DataGridCell>(true);
         IsTabStopProperty.OverrideDefaultValue<DataGridCell>(false);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridCell>(
             IsOffscreenBehavior.FromClip);
+        AffectsRender<DataGridCell>(IsShowFrozenShadowProperty);
     }
 
     public DataGridCell()
@@ -160,6 +199,7 @@ public class DataGridCell : ContentControl, ICustomHitTest
         {
             EnsureGridLine(null);
         }
+        
     }
 
     protected override void OnPointerEntered(PointerEventArgs e)

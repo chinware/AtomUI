@@ -141,6 +141,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         double dragIndicatorLeftEdge = 0;
         double frozenLeftEdge        = 0;
         double scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
+        var    visibleColumnIndex    = 0;
         foreach (DataGridColumn dataGridColumn in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
@@ -154,6 +155,9 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                     dragIndicatorLeftEdge = frozenLeftEdge + DragIndicatorOffset;
                 }
                 frozenLeftEdge += dataGridColumn.ActualWidth;
+                columnHeader.IsFrozen             =  true;
+                columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Right; // 目前我们就支持左边冻结
+                columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.FrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
             }
             else
             {
@@ -163,8 +167,10 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 {
                     dragIndicatorLeftEdge = scrollingLeftEdge + DragIndicatorOffset;
                 }
+                columnHeader.IsFrozen = false;
             }
             scrollingLeftEdge += dataGridColumn.ActualWidth;
+            visibleColumnIndex++;
         }
         if (DragColumn != null)
         {

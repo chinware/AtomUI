@@ -83,7 +83,6 @@
 
     <Style Selector="^:is(atom|DataGridColumnHeader)">
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderTextColor}}" />
-
         <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
         <Setter Property="atom:ToolTip.Placement" Value="Top" />
         <Setter Property="atom:ToolTip.ShowDelay" Value="1000" />
@@ -91,6 +90,7 @@
         <Setter Property="atom:ToolTip.IsCustomShowAndHide" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="ClipToBounds" Value="False"/>
 
         <Style Selector="^[ShowSorterTooltip=True]">
             <Setter Property="atom:ToolTip.ServiceEnabled" Value="True" />
@@ -160,5 +160,12 @@
         </Style>
 
         <!-- BuildSortableColumnStyle 结束 -->
+        
+        <Style Selector="^[IsShowFrozenShadow=True]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}"/>
+            </Style>
+        </Style>
+        
     </Style>
 </ControlTheme>

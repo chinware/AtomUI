@@ -1,3 +1,4 @@
+using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
 
@@ -6,9 +7,16 @@ namespace AtomUI.Utils;
 // 反射扩展类
 internal static class AvaloniaPropertyReflectionExtensions
 {
-    public static void NotifyChanged<TValue>(this AvaloniaProperty<TValue> property, AvaloniaPropertyChangedEventArgs<TValue> e)
+    public static void InvokeNotifying(this AvaloniaProperty property, AvaloniaObject target, bool status)
     {
-        var methodInfo = typeof(AvaloniaProperty<TValue>).GetMethodInfoOrThrow("NotifyChanged");
-        methodInfo.Invoke(property, [e]);
+        var type = property.GetType();
+        var notifyingProp  = type.GetPropertyInfoOrThrow("Notifying", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+        var notifyingDelegate = notifyingProp.GetValue(property) 
+            as Action<AvaloniaObject, bool>;
+        if (notifyingDelegate == null)
+        {
+            return;
+        }
+        notifyingDelegate.Invoke(target, status);
     }
 }

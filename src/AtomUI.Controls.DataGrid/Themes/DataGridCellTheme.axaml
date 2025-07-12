@@ -57,6 +57,7 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="Focusable" Value="False"/>
+        <Setter Property="ClipToBounds" Value="False"/>
         
         <Style Selector="^ /template/ Rectangle#PART_RightGridLine">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
@@ -77,6 +78,12 @@
         
         <Style Selector="^[IsSorting=True]">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.BodySortBg}}"/>
+        </Style>
+
+        <Style Selector="^[IsShowFrozenShadow=True]">
+            <Style Selector="^ /template/ Border#PART_CellFrame">
+                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}"/>
+            </Style>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

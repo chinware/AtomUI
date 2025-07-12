@@ -32,6 +32,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HeaderSortActiveBg = new TokenResourceKey("DataGrid.HeaderSortActiveBg");
         public static readonly TokenResourceKey HeaderSortHoverBg = new TokenResourceKey("DataGrid.HeaderSortHoverBg");
         public static readonly TokenResourceKey HeaderSplitColor = new TokenResourceKey("DataGrid.HeaderSplitColor");
+        public static readonly TokenResourceKey LeftFrozenShadows = new TokenResourceKey("DataGrid.LeftFrozenShadows");
+        public static readonly TokenResourceKey RightFrozenShadows = new TokenResourceKey("DataGrid.RightFrozenShadows");
         public static readonly TokenResourceKey RowExpandedBg = new TokenResourceKey("DataGrid.RowExpandedBg");
         public static readonly TokenResourceKey RowHoverBg = new TokenResourceKey("DataGrid.RowHoverBg");
         public static readonly TokenResourceKey RowSelectedBg = new TokenResourceKey("DataGrid.RowSelectedBg");

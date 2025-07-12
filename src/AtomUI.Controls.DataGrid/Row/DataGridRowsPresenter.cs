@@ -88,7 +88,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
                 // Visibility for all filler cells needs to be set in one place.  Setting it individually in
                 // each CellsPresenter causes an NxN layout cycle (see DevDiv Bugs 211557)
                 row.EnsureFillerVisibility();
-                row.Arrange(new Rect(-OwningGrid.HorizontalOffset, topEdge, rowDesiredWidth, element.DesiredSize.Height));
+                row.Arrange(new Rect(0, topEdge, rowDesiredWidth, element.DesiredSize.Height));
             }
             else if (element is DataGridRowGroupHeader groupHeader)
             {

@@ -1441,8 +1441,8 @@ public partial class DataGrid
             {
                 if (cell.Content is StyledElement cellContent)
                 {
-                    // TODO Error 需要重构
-                    //DataContextProperty.Notifying?.Invoke(cellContent, arg2);
+                    // TODO need review 需要审查是否正常
+                    DataContextProperty.InvokeNotifying(cellContent, arg2);
                 }
             }
         }
@@ -1458,9 +1458,9 @@ public partial class DataGrid
             dataGridCell: newCell);
         if (row.OwningGrid != null)
         {
-            newCell.OwningColumn = column;
-            newCell.IsVisible    = column.IsVisible;
-            BindUtils.RelayBind(this, SizeTypeProperty, newCell, DataGridCell.SizeTypeProperty);
+            newCell.OwningColumn              = column;
+            newCell.IsVisible                 = column.IsVisible;
+            newCell[!SizeTypeProperty]        = this[!SizeTypeProperty];
         }
 
         row.Cells.Insert(column.Index, newCell);

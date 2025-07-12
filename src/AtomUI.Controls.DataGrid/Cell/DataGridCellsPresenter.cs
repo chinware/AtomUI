@@ -72,25 +72,28 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             return base.ArrangeOverride(finalSize);
         }
 
-        double frozenLeftEdge    = 0;
-        double scrollingLeftEdge = -OwningGrid.HorizontalOffset;
-
+        double frozenLeftEdge     = 0;
+        double scrollingLeftEdge  = -OwningGrid.HorizontalOffset;
+        var    visibleColumnIndex = 0;
         foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             double       cellLeftEdge;
             DataGridCell cell = OwningRow.Cells[column.Index];
             Debug.Assert(cell.OwningColumn == column);
             Debug.Assert(column.IsVisible);
-
             if (column.IsFrozen)
             {
                 cellLeftEdge = frozenLeftEdge;
                 // This can happen before or after clipping because frozen cells aren't clipped
-                frozenLeftEdge += column.ActualWidth;
+                frozenLeftEdge            += column.ActualWidth;
+                cell.IsFrozen             =  true;
+                cell.FrozenShadowPosition =  FrozenColumnShadowPosition.Right; // 目前我们就支持左边冻结
+                cell.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.FrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
             }
             else
             {
-                cellLeftEdge = scrollingLeftEdge;
+                cellLeftEdge  = scrollingLeftEdge;
+                cell.IsFrozen = false;
             }
             if (cell.IsVisible)
             {
@@ -99,6 +102,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             }
             scrollingLeftEdge                      += column.ActualWidth;
             column.IsInitialDesiredWidthDetermined =  true;
+            visibleColumnIndex++;
         }
 
         _fillerLeftEdge = scrollingLeftEdge;

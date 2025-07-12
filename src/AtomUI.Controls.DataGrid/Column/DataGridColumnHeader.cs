@@ -100,6 +100,24 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridColumnHeader>();
     
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> IsFrozenProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(IsFrozen),
+            o => o.IsFrozen, 
+            (o, v) => o.IsFrozen = v);
+    
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> IsShowFrozenShadowProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(IsShowFrozenShadow),
+            o => o.IsShowFrozenShadow, 
+            (o, v) => o.IsShowFrozenShadow = v);
+    
+    internal static readonly DirectProperty<DataGridColumnHeader, FrozenColumnShadowPosition> FrozenShadowPositionProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, FrozenColumnShadowPosition>(
+            nameof(FrozenShadowPosition),
+            o => o.FrozenShadowPosition, 
+            (o, v) => o.FrozenShadowPosition = v);
+    
     private bool _isFirstVisible = false;
     internal bool IsFirstVisible
     {
@@ -160,10 +178,33 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         set => SetAndRaise(IndicatorLayoutVisibleProperty, ref _indicatorLayoutVisible, value);
     }
     
-    public bool IsMotionEnabled
+    internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    bool _isFrozen = false;
+    internal bool IsFrozen
+    {
+        get => _isFrozen;
+        set => SetAndRaise(IsFrozenProperty, ref _isFrozen, value);
+    }
+    
+    bool _isShowFrozenShadow = false;
+
+    internal bool IsShowFrozenShadow
+    {
+        get => _isShowFrozenShadow;
+        set => SetAndRaise(IsShowFrozenShadowProperty, ref _isShowFrozenShadow, value);
+    }
+    
+    FrozenColumnShadowPosition _frozenShadowPosition = FrozenColumnShadowPosition.Right;
+
+    internal FrozenColumnShadowPosition FrozenShadowPosition
+    {
+        get => _frozenShadowPosition;
+        set => SetAndRaise(FrozenShadowPositionProperty, ref _frozenShadowPosition, value);
     }
 
     internal DataGrid? OwningGrid => OwningColumn?.OwningGrid;
