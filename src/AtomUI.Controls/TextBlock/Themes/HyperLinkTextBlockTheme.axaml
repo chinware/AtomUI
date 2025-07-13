@@ -5,13 +5,11 @@
     <ControlTheme x:Key="{x:Type atom:HyperLinkTextBlock}" TargetType="atom:HyperLinkTextBlock">
         <Setter Property="Template">
             <ControlTemplate>
-                <TextBlock Name="{x:Static atom:HyperLinkTextBlockThemeConstants.TextPart}"
+                <atom:TextBlock Name="{x:Static atom:HyperLinkTextBlockThemeConstants.TextPart}"
                            FontWeight="{TemplateBinding FontWeight}"
                            FontStyle="{TemplateBinding FontStyle}"
                            FontSize="{TemplateBinding FontSize}"
-                           Text="{TemplateBinding Text}">
-                    
-                </TextBlock>
+                           Text="{TemplateBinding Text}"/>
             </ControlTemplate>
         </Setter>
         

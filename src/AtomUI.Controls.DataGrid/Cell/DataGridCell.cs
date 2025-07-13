@@ -22,7 +22,7 @@ namespace AtomUI.Controls;
 [TemplatePart(DataGridCellThemeConstants.RightGridLinePart, typeof(Rectangle))]
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Current, StdPseudoClass.Edited, StdPseudoClass.Invalid,
     StdPseudoClass.Focus)]
-public class DataGridCell : ContentControl, ICustomHitTest
+public class DataGridCell : ContentControl
 {
     #region 公共属性定义
 
@@ -354,8 +354,8 @@ public class DataGridCell : ContentControl, ICustomHitTest
         _compositeDisposable.Clear();
     }
 
-    public bool HitTest(Point point)
-    {
-        return true;
-    }
+    // public bool HitTest(Point point)
+    // {
+    //     return true;
+    // }
 }

@@ -58,6 +58,7 @@
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Background" Value="Transparent"/>
         
         <Style Selector="^ /template/ Rectangle#PART_RightGridLine">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
