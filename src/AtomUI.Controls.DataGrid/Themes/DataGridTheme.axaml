@@ -85,19 +85,13 @@
                                 Grid.Row="1"
                                 Grid.Column="2"
                                 Orientation="Vertical" />
-
-                            <Grid ColumnDefinitions="Auto, *"
-                                  Grid.Row="2"
-                                  Grid.Column="1">
-                                <Rectangle
-                                    Name="{x:Static atom:DataGridThemeConstants.FrozenColumnScrollBarSpacerPart}"
-                                    Grid.Column="0" />
-                                <ScrollBar
-                                    Name="{x:Static atom:DataGridThemeConstants.HorizontalScrollbarPart}"
-                                    Grid.Column="1"
-                                    Orientation="Horizontal" />
-                            </Grid>
-
+                            
+                            <ScrollBar
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Name="{x:Static atom:DataGridThemeConstants.HorizontalScrollbarPart}"
+                                Orientation="Horizontal" />
+                            
                             <Border
                                 Name="{x:Static atom:DataGridThemeConstants.DisabledVisualElementPart}"
                                 Grid.Row="0"

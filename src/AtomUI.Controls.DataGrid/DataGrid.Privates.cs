@@ -254,7 +254,6 @@ public partial class DataGrid
 
     private ContentControl? _topLeftCornerHeader;
     private ContentControl? _topRightCornerHeader;
-    private Control? _frozenColumnScrollBarSpacer;
 
     // Nth row of rows 0..N that make up the RowHeightEstimate
     private int _lastEstimatedRow;
@@ -3991,10 +3990,6 @@ public partial class DataGrid
                     // maximum travel distance -- not the total width
                     _hScrollBar.Maximum = totalVisibleWidth - cellsWidth;
                     Debug.Assert(totalVisibleFrozenWidth >= 0);
-                    if (_frozenColumnScrollBarSpacer != null)
-                    {
-                        _frozenColumnScrollBarSpacer.Width = totalVisibleFrozenWidth;
-                    }
 
                     Debug.Assert(_hScrollBar.Maximum >= 0);
 

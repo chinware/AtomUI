@@ -30,7 +30,6 @@ namespace AtomUI.Controls;
 
 [TemplatePart(DataGridThemeConstants.BottomRightCornerPart, typeof(Visual))]
 [TemplatePart(DataGridThemeConstants.ColumnHeadersPresenterPart, typeof(DataGridColumnHeadersPresenter))]
-[TemplatePart(DataGridThemeConstants.FrozenColumnScrollBarSpacerPart, typeof(Control))]
 [TemplatePart(DataGridThemeConstants.HorizontalScrollbarPart, typeof(ScrollBar))]
 [TemplatePart(DataGridThemeConstants.RowsPresenterPart, typeof(DataGridRowsPresenter))]
 [TemplatePart(DataGridThemeConstants.TopLeftCornerPart, typeof(ContentControl))]
@@ -1452,9 +1451,6 @@ public partial class DataGrid : TemplatedControl,
             InvalidateRowHeightEstimate();
             UpdateRowDetailsHeightEstimate();
         }
-
-        _frozenColumnScrollBarSpacer =
-            e.NameScope.Find<Control>(DataGridThemeConstants.FrozenColumnScrollBarSpacerPart);
 
         if (_hScrollBar != null)
         {
