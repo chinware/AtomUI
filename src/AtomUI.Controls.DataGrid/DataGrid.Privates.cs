@@ -110,6 +110,8 @@ public partial class DataGrid
 
     internal double NegVerticalOffset { get; private set; }
 
+    internal double HorizontalMaximizeOffset => _hScrollBar?.Maximum ?? 0.0d;
+
     private int NoSelectionChangeCount
     {
         get => _noSelectionChangeCount;

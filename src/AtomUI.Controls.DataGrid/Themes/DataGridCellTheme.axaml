@@ -82,8 +82,16 @@
         </Style>
 
         <Style Selector="^[IsShowFrozenShadow=True]">
-            <Style Selector="^ /template/ Border#PART_CellFrame">
-                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}"/>
+            <Style Selector="^[FrozenShadowPosition=Left]">
+                <Style Selector="^ /template/ Border#PART_CellFrame">
+                    <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}"/>
+                </Style>
+            </Style>
+            
+            <Style Selector="^[FrozenShadowPosition=Right]">
+                <Style Selector="^ /template/ Border#PART_CellFrame">
+                    <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.RightFrozenShadows}}"/>
+                </Style>
             </Style>
         </Style>
     </ControlTheme>

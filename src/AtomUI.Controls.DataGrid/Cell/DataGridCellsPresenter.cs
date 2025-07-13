@@ -18,6 +18,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
     internal DataGrid? OwningGrid => OwningRow?.OwningGrid;
     
     internal DataGridRow? OwningRow { get; set; }
+    internal DataGridRowsPresenter? OwningRowsPresenter { get; set; }
     
     event EventHandler<ChildIndexChangedEventArgs>? IChildIndexProvider.ChildIndexChanged
     {
@@ -56,7 +57,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
     /// </param>
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (OwningGrid == null)
+        if (OwningGrid == null || OwningRowsPresenter == null)
         {
             return base.ArrangeOverride(finalSize);
         }
@@ -72,8 +73,34 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             return base.ArrangeOverride(finalSize);
         }
 
-        double frozenLeftEdge     = 0;
+        double frozenLeftEdge  = 0;
+        double frozenRightEdge = OwningRowsPresenter.DesiredSize.Width;
+        double realFrozenRightEdge = OwningRowsPresenter.DesiredSize.Width;
+
+        var    rowHeader      = OwningRow.HeaderCell;
+        double rowHeaderWidth = 0.0;
+        if (rowHeader != null)
+        {
+            rowHeaderWidth = rowHeader.DesiredSize.Width;
+        }
+        frozenRightEdge     -= rowHeaderWidth;
+        realFrozenRightEdge -= rowHeaderWidth;
+        
         double scrollingLeftEdge  = -OwningGrid.HorizontalOffset;
+        var    visibleColumnCount = 0;
+        // 需要先计算出 frozenRightEdge
+        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        {
+            if (column.IsRightFrozen)
+            {
+                realFrozenRightEdge -= column.ActualWidth;
+            }
+
+            visibleColumnCount++;
+        }
+        
+        var maxOffsetX = finalSize.Width - frozenRightEdge;
+        
         var    visibleColumnIndex = 0;
         foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
@@ -81,14 +108,24 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             DataGridCell cell = OwningRow.Cells[column.Index];
             Debug.Assert(cell.OwningColumn == column);
             Debug.Assert(column.IsVisible);
-            if (column.IsFrozen)
+            if (column.IsLeftFrozen)
             {
                 cellLeftEdge = frozenLeftEdge;
                 // This can happen before or after clipping because frozen cells aren't clipped
                 frozenLeftEdge            += column.ActualWidth;
                 cell.IsFrozen             =  true;
-                cell.FrozenShadowPosition =  FrozenColumnShadowPosition.Right; // 目前我们就支持左边冻结
+                cell.FrozenShadowPosition =  FrozenColumnShadowPosition.Right;
                 cell.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.LeftFrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
+            }
+            else if (column.IsRightFrozen)
+            {
+                frozenRightEdge           -= column.ActualWidth;
+                // This can happen before or after clipping because frozen cells aren't clipped
+                cellLeftEdge              =  frozenRightEdge;
+                cell.IsFrozen             =  true;
+                cell.FrozenShadowPosition =  FrozenColumnShadowPosition.Left;
+                cell.IsShowFrozenShadow = (visibleColumnIndex == visibleColumnCount - OwningGrid.RightFrozenColumnCount) &&
+                                          OwningGrid.HorizontalOffset < maxOffsetX;
             }
             else
             {
@@ -98,7 +135,8 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             if (cell.IsVisible)
             {
                 cell.Arrange(new Rect(cellLeftEdge, 0, column.LayoutRoundedWidth, finalSize.Height));
-                EnsureCellClip(cell, column.ActualWidth, finalSize.Height, frozenLeftEdge, scrollingLeftEdge);
+                var cellRightEdge = cell.Bounds.Right;
+                EnsureCellClip(cell, column.ActualWidth, finalSize.Height, frozenLeftEdge, realFrozenRightEdge, scrollingLeftEdge, cellRightEdge);
             }
             scrollingLeftEdge                      += column.ActualWidth;
             column.IsInitialDesiredWidthDetermined =  true;
@@ -112,15 +150,30 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         return finalSize;
     }
     
-    private static void EnsureCellClip(DataGridCell cell, double width, double height, double frozenLeftEdge, double cellLeftEdge)
+    private static void EnsureCellClip(DataGridCell cell, double width, double height, double frozenLeftEdge, double frozenRightEdge, double cellLeftEdge, double cellRightEdge)
     {
         // Clip the cell only if it's scrolled under frozen columns.  Unfortunately, we need to clip in this case
         // because cells could be transparent
-        if (cell.OwningColumn != null && !cell.OwningColumn.IsFrozen && frozenLeftEdge > cellLeftEdge)
+        if (cell.OwningColumn != null && !cell.OwningColumn.IsFrozen && frozenLeftEdge > cellLeftEdge &&
+                 cellRightEdge > frozenRightEdge)
+        {
+            RectangleGeometry rg    = new RectangleGeometry();
+            double            xClip = Math.Round(Math.Min(width, frozenLeftEdge - cellLeftEdge));
+            rg.Rect   = new Rect(xClip, 0, Math.Max(0, width - (frozenLeftEdge - cellLeftEdge) - (cellRightEdge - frozenRightEdge)), height);
+            cell.Clip = rg;
+        }
+        else if (cell.OwningColumn != null && !cell.OwningColumn.IsFrozen && frozenLeftEdge > cellLeftEdge)
         {
             RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Round(Math.Min(width, frozenLeftEdge - cellLeftEdge));
             rg.Rect   = new Rect(xClip, 0, Math.Max(0, width - xClip), height);
+            cell.Clip = rg;
+        }
+        else if (cell.OwningColumn != null && !cell.OwningColumn.IsFrozen && cellRightEdge > frozenRightEdge)
+        {
+            RectangleGeometry rg    = new RectangleGeometry();
+            double            xClip = Math.Round(Math.Min(width, cellRightEdge - frozenRightEdge));
+            rg.Rect   = new Rect(0, 0, Math.Max(0, width - xClip), height);
             cell.Clip = rg;
         }
         else

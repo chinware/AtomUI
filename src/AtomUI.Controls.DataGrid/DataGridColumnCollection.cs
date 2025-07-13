@@ -250,6 +250,12 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
         }
     }
 
+    internal int GetDisplayedColumnCount()
+    {
+        Debug.Assert(ItemsInternal != null);
+        return DisplayIndexMap.Count;
+    }
+
     /// <summary>
     /// Returns an enumeration of all columns that meet the criteria of the filter predicate.
     /// </summary>

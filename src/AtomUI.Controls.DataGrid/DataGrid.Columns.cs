@@ -770,12 +770,28 @@ public partial class DataGrid
             SetAndSelectCurrentCell(newCurrentCellCoordinates.ColumnIndex,
                 newCurrentCellCoordinates.Slot,
                 ColumnsInternal.VisibleColumnCount == 1 /*forceCurrentCellSelection*/);
-
-            if (newDisplayIndex < FrozenColumnCountWithFiller)
+            
+            if (IsFrozenColumnIndex(newDisplayIndex))
             {
                 CorrectColumnFrozenStates();
             }
         }
+    }
+
+    internal bool IsFrozenColumnIndex(int index)
+    {
+        if (index < LeftFrozenColumnCountWithFiller)
+        {
+            return true;
+        }
+
+        var displayColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        if (index >= displayColumnCount - RightFrozenColumnCount && index < displayColumnCount)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     internal void HandleInsertedColumnPreNotification(DataGridColumn insertedColumn)
@@ -1512,32 +1528,31 @@ public partial class DataGrid
     private void CorrectColumnFrozenStates()
     {
         int    index                = 0;
-        double frozenColumnWidth    = 0;
-        double oldFrozenColumnWidth = 0;
+        int    displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
         foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
         {
-            if (column.IsFrozen)
+            bool isLeftFrozen  = index < LeftFrozenColumnCountWithFiller;
+            bool isRightFrozen = index >= (displayedColumnCount - RightFrozenColumnCount);
+            
+            if (isLeftFrozen)
             {
-                oldFrozenColumnWidth += column.ActualWidth;
+                column.IsLeftFrozen = true;
+                column.IsRightFrozen = false;
             }
-
-            column.IsFrozen = index < FrozenColumnCountWithFiller;
-            if (column.IsFrozen)
+            else if (isRightFrozen)
             {
-                frozenColumnWidth += column.ActualWidth;
+                column.IsRightFrozen = true;
+                column.IsLeftFrozen = false;
+            }
+            else
+            {
+                column.IsFrozen = false;
             }
 
             index++;
         }
 
-        if (HorizontalOffset > Math.Max(0, frozenColumnWidth - oldFrozenColumnWidth))
-        {
-            UpdateHorizontalOffset(HorizontalOffset - frozenColumnWidth + oldFrozenColumnWidth);
-        }
-        else
-        {
-            UpdateHorizontalOffset(0);
-        }
+        UpdateHorizontalOffset(0);
     }
 
     private void CorrectColumnIndexesAfterDeletion(DataGridColumn deletedColumn)

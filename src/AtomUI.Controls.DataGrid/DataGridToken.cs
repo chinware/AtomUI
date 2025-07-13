@@ -367,7 +367,7 @@ internal class DataGridToken : AbstractControlDesignToken
         TableScrollBg           = SharedToken.ColorSplit;
         LeftFrozenShadows = new BoxShadows(new BoxShadow
         {
-            OffsetX = 10,
+            OffsetX = -10,
             OffsetY = 0,
             Blur    = 8,
             Spread  = 0,
@@ -375,7 +375,7 @@ internal class DataGridToken : AbstractControlDesignToken
         });
         RightFrozenShadows = new BoxShadows(new BoxShadow
         {
-            OffsetX = -10,
+            OffsetX = 10,
             OffsetY = 0,
             Blur    = 8,
             Spread  = 0,

@@ -105,6 +105,11 @@ public partial class DataGrid : TemplatedControl,
         AvaloniaProperty.Register<DataGrid, int>(
             nameof(LeftFrozenColumnCount),
             validate: ValidateFrozenColumnCount);
+    
+    public static readonly StyledProperty<int> RightFrozenColumnCountProperty =
+        AvaloniaProperty.Register<DataGrid, int>(
+            nameof(RightFrozenColumnCount),
+            validate: ValidateFrozenColumnCount);
 
     public static readonly StyledProperty<DataGridGridLinesVisibility> GridLinesVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, DataGridGridLinesVisibility>(nameof(GridLinesVisibility),
@@ -309,12 +314,21 @@ public partial class DataGrid : TemplatedControl,
     }
 
     /// <summary>
-    /// Gets or sets the number of columns that the user cannot scroll horizontally.
+    /// Gets or sets the number of left edge columns that the user cannot scroll horizontally.
     /// </summary>
     public int LeftFrozenColumnCount
     {
         get => GetValue(LeftFrozenColumnCountProperty);
         set => SetValue(LeftFrozenColumnCountProperty, value);
+    }
+    
+    /// <summary>
+    /// Gets or sets the number of right edge columns that the user cannot scroll horizontally.
+    /// </summary>
+    public int RightFrozenColumnCount
+    {
+        get => GetValue(RightFrozenColumnCountProperty);
+        set => SetValue(RightFrozenColumnCountProperty, value);
     }
 
     /// <summary>

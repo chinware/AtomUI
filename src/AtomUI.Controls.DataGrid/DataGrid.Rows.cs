@@ -100,7 +100,7 @@ public partial class DataGrid
 
     internal int FirstVisibleSlot => (SlotCount > 0) ? GetNextVisibleSlot(-1) : -1;
 
-    internal int FrozenColumnCountWithFiller
+    internal int LeftFrozenColumnCountWithFiller
     {
         get
         {
@@ -118,7 +118,9 @@ public partial class DataGrid
         }
     }
 
-    internal int LastVisibleSlot => (SlotCount > 0) ? GetPreviousVisibleSlot(SlotCount) : -1;
+    internal int FrozenColumnCountWithFiller => LeftFrozenColumnCountWithFiller + RightFrozenColumnCount;
+
+    internal int LastVisibleSlot => SlotCount > 0 ? GetPreviousVisibleSlot(SlotCount) : -1;
 
     internal DataGridRow? EditingRow { get; private set; }
     

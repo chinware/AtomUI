@@ -140,13 +140,15 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
 
         double dragIndicatorLeftEdge = 0;
         double frozenLeftEdge        = 0;
+        double frozenRightEdge       = finalSize.Width;
         double scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
         var    visibleColumnIndex    = 0;
+        var    VisibleColumnCount    = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
         foreach (DataGridColumn dataGridColumn in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
             Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
-            if (dataGridColumn.IsFrozen)
+            if (dataGridColumn.IsLeftFrozen)
             {
                 columnHeader.Arrange(new Rect(frozenLeftEdge, 0, dataGridColumn.LayoutRoundedWidth, finalSize.Height));
                 columnHeader.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
@@ -156,8 +158,21 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 }
                 frozenLeftEdge += dataGridColumn.ActualWidth;
                 columnHeader.IsFrozen             =  true;
-                columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Right; // 目前我们就支持左边冻结
+                columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Right;
                 columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.LeftFrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
+            }
+            else if (dataGridColumn.IsRightFrozen)
+            {
+                frozenRightEdge -= dataGridColumn.ActualWidth;
+                columnHeader.Arrange(new Rect(frozenRightEdge, 0, dataGridColumn.LayoutRoundedWidth, finalSize.Height));
+                columnHeader.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+                // if (DragColumn == dataGridColumn && DragIndicator != null)
+                // {
+                //     dragIndicatorLeftEdge = frozenLeftEdge + DragIndicatorOffset;
+                // }
+                columnHeader.IsFrozen             =  true;
+                columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Left;
+                columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == VisibleColumnCount - OwningGrid.RightFrozenColumnCount) && OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
             }
             else
             {
