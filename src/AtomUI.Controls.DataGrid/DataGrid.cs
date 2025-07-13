@@ -101,9 +101,9 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<ControlTheme> RowGroupThemeProperty =
         AvaloniaProperty.Register<DataGrid, ControlTheme>(nameof(RowGroupTheme));
 
-    public static readonly StyledProperty<int> FrozenColumnCountProperty =
+    public static readonly StyledProperty<int> LeftFrozenColumnCountProperty =
         AvaloniaProperty.Register<DataGrid, int>(
-            nameof(FrozenColumnCount),
+            nameof(LeftFrozenColumnCount),
             validate: ValidateFrozenColumnCount);
 
     public static readonly StyledProperty<DataGridGridLinesVisibility> GridLinesVisibilityProperty =
@@ -311,10 +311,10 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Gets or sets the number of columns that the user cannot scroll horizontally.
     /// </summary>
-    public int FrozenColumnCount
+    public int LeftFrozenColumnCount
     {
-        get => GetValue(FrozenColumnCountProperty);
-        set => SetValue(FrozenColumnCountProperty, value);
+        get => GetValue(LeftFrozenColumnCountProperty);
+        set => SetValue(LeftFrozenColumnCountProperty, value);
     }
 
     /// <summary>
@@ -868,7 +868,7 @@ public partial class DataGrid : TemplatedControl,
         CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleCanUserResizeColumnsChanged(e));
         ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleColumnWidthChanged(e));
-        FrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleFrozenColumnCountChanged(e));
+        LeftFrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleFrozenColumnCountChanged(e));
         GridLinesVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleGridLinesVisibilityChanged(e));
         HeadersVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleHeadersVisibilityChanged(e));
         IsReadOnlyProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleIsReadOnlyChanged(e));

@@ -157,7 +157,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 frozenLeftEdge += dataGridColumn.ActualWidth;
                 columnHeader.IsFrozen             =  true;
                 columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Right; // 目前我们就支持左边冻结
-                columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.FrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
+                columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.LeftFrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
             }
             else
             {
@@ -258,7 +258,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 rightEdge = Math.Min(rightEdge, frozenColumnsWidth);
             }
         }
-        else if (OwningGrid.FrozenColumnCount > 0)
+        else if (OwningGrid.LeftFrozenColumnCount > 0)
         {
             // If we're dragging a scrolling column, we want to clip both the DragIndicator and the DropLocationIndicator
             // controls when they go into the frozen column range.

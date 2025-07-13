@@ -578,7 +578,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
                 rightEdge = Math.Min(rightEdge, frozenColumnsWidth);
             }
         }
-        else if (OwningGrid.FrozenColumnCount > 0)
+        else if (OwningGrid.LeftFrozenColumnCount > 0)
         {
             // If we're dragging a scrolling column, we want to clip both the DragIndicator and the DropLocationIndicator
             // controls when they go into the frozen column range.

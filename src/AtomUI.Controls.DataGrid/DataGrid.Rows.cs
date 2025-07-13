@@ -104,7 +104,7 @@ public partial class DataGrid
     {
         get
         {
-            int count = FrozenColumnCount;
+            int count = LeftFrozenColumnCount;
             if (ColumnsInternal.RowGroupSpacerColumn != null && 
                 ColumnsInternal.RowGroupSpacerColumn.IsRepresented && 
                 (IsRowGroupHeadersFrozen || count > 0))

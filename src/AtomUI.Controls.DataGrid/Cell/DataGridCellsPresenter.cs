@@ -88,7 +88,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
                 frozenLeftEdge            += column.ActualWidth;
                 cell.IsFrozen             =  true;
                 cell.FrozenShadowPosition =  FrozenColumnShadowPosition.Right; // 目前我们就支持左边冻结
-                cell.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.FrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
+                cell.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.LeftFrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
             }
             else
             {

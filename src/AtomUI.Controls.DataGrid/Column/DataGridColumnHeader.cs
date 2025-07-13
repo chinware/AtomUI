@@ -373,8 +373,8 @@ internal partial class DataGridColumnHeader : ContentControl
                 // Find header we're hovering over
                 int targetIndex = GetReorderingTargetDisplayIndex(mousePositionHeaders);
                 Debug.Assert(OwningColumn != null);
-                if (((!OwningColumn.IsFrozen && targetIndex >= OwningGrid.FrozenColumnCount)
-                     || (OwningColumn.IsFrozen && targetIndex < OwningGrid.FrozenColumnCount)))
+                if (((!OwningColumn.IsFrozen && targetIndex >= OwningGrid.LeftFrozenColumnCount)
+                     || (OwningColumn.IsFrozen && targetIndex < OwningGrid.LeftFrozenColumnCount)))
                 {
                     OwningColumn.DisplayIndex = targetIndex;
 
@@ -564,7 +564,7 @@ internal partial class DataGridColumnHeader : ContentControl
         {
             rightEdge = Math.Min(rightEdge, _frozenColumnsWidth);
         }
-        else if (OwningGrid.FrozenColumnCount > 0)
+        else if (OwningGrid.LeftFrozenColumnCount > 0)
         {
             leftEdge = _frozenColumnsWidth;
         }
