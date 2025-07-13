@@ -91,6 +91,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Background" Value="Transparent" />
 
         <Style Selector="^[ShowSorterTooltip=True]">
             <Setter Property="atom:ToolTip.ServiceEnabled" Value="True" />

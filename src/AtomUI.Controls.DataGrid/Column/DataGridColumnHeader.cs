@@ -20,14 +20,13 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Rendering;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.DragIndicator, StdPseudoClass.Pressed, StdPseudoClass.SortAscending, StdPseudoClass.SortDescending)]
-internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
+internal partial class DataGridColumnHeader : ContentControl
 {
     internal enum DragMode
     {
@@ -953,10 +952,5 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
             Transitions?.Clear();
             Transitions = null;
         }
-    }
-
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 }
