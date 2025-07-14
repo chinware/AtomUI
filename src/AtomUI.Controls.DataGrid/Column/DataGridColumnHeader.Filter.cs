@@ -50,7 +50,7 @@ internal partial class DataGridColumnHeader
             (OwningColumn.CanUserFilter || OwningGrid.CanUserFilterColumns))
         {
             var ea = new DataGridColumnEventArgs(OwningColumn);
-            OwningGrid.HandleColumnFiltering(ea);
+            OwningGrid.NotifyColumnFiltering(ea);
             if (!ea.Handled && OwningGrid.DataConnection.AllowFilter &&
                 OwningGrid.DataConnection.FilterDescriptions != null)
             {
@@ -151,7 +151,7 @@ internal partial class DataGridColumnHeader
             (OwningColumn.CanUserFilter || OwningGrid.CanUserFilterColumns))
         {
             var ea = new DataGridColumnEventArgs(OwningColumn);
-            OwningGrid.HandleColumnFiltering(ea);
+            OwningGrid.NotifyColumnFiltering(ea);
             if (!ea.Handled && OwningGrid.DataConnection.AllowFilter &&
                 OwningGrid.DataConnection.FilterDescriptions != null)
             {

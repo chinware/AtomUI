@@ -189,7 +189,7 @@ internal partial class DataGridColumnHeader
             (OwningColumn.CanUserSort || OwningGrid.CanUserSortColumns))
         {
             var ea = new DataGridColumnEventArgs(OwningColumn);
-            OwningGrid.HandleColumnSorting(ea);
+            OwningGrid.NotifyColumnSorting(ea);
             if (!ea.Handled && OwningGrid.DataConnection.AllowSort &&
                 OwningGrid.DataConnection.SortDescriptions != null)
             {
@@ -351,7 +351,7 @@ internal partial class DataGridColumnHeader
             (OwningColumn.CanUserSort || OwningGrid.CanUserSortColumns))
         {
             var ea = new DataGridColumnEventArgs(OwningColumn);
-            OwningGrid.HandleColumnSorting(ea);
+            OwningGrid.NotifyColumnSorting(ea);
             if (!ea.Handled && OwningGrid.DataConnection.AllowSort &&
                 OwningGrid.DataConnection.SortDescriptions != null)
             {

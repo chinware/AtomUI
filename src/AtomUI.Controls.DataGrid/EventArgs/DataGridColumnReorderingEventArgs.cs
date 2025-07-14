@@ -22,27 +22,10 @@ public class DataGridColumnReorderingEventArgs : CancelEventArgs
     /// <summary>
     /// The column being moved.
     /// </summary>
-    public DataGridColumn Column
-    {
-        get;
-        private set;
-    }
+    public DataGridColumn Column { get; private set; }
 
     /// <summary>
     /// The popup indicator displayed while dragging.  If null and Handled = true, then do not display a tooltip.
     /// </summary>
-    public Control? DragIndicator
-    {
-        get;
-        set;
-    }
-
-    /// <summary>
-    /// UIElement to display at the insertion position.  If null and Handled = true, then do not display an insertion indicator.
-    /// </summary>
-    public Control? DropLocationIndicator
-    {
-        get;
-        set;
-    }
+    public Control? DragIndicator { get; set; }
 }

@@ -80,6 +80,10 @@
         <Style Selector="^[IsSorting=True]">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.BodySortBg}}"/>
         </Style>
+        
+        <Style Selector="^[OwningColumnDragging=True]">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.ColumnReorderActiveBg}}"/>
+        </Style>
 
         <Style Selector="^[IsShowFrozenShadow=True]">
             <Style Selector="^[FrozenShadowPosition=Left]">

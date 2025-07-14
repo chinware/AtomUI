@@ -51,6 +51,12 @@ public class DataGridCell : ContentControl
             nameof(IsSorting),
             o => o.IsSorting, 
             (o, v) => o.IsSorting = v);
+    
+    internal static readonly DirectProperty<DataGridCell, bool> OwningColumnDraggingProperty =
+        AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
+            nameof(OwningColumnDragging),
+            o => o.OwningColumnDragging, 
+            (o, v) => o.OwningColumnDragging = v);
 
     internal static readonly DirectProperty<DataGridCell, bool> IsFrozenProperty =
         AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
@@ -82,6 +88,14 @@ public class DataGridCell : ContentControl
     {
         get => _isSorting;
         internal set => SetAndRaise(IsSortingProperty, ref _isSorting, value);
+    }
+    
+    bool _owningColumnDragging = false;
+
+    public bool OwningColumnDragging
+    {
+        get => _owningColumnDragging;
+        internal set => SetAndRaise(OwningColumnDraggingProperty, ref _owningColumnDragging, value);
     }
     
     bool _isFrozen = false;
@@ -339,6 +353,20 @@ public class DataGridCell : ContentControl
                     if (v is not null && OwningColumn is not DataGridFillerColumn)
                     {
                         return v == ListSortDirection.Ascending || v == ListSortDirection.Descending;
+                    }
+
+                    return false;
+                },
+                BindingPriority.Template));
+            _compositeDisposable.Add(BindUtils.RelayBind(OwningColumn.HeaderCell,
+                DataGridColumnHeader.HeaderDragModeProperty,
+                this,
+                OwningColumnDraggingProperty,
+                (v) =>
+                {
+                    if (OwningColumn is not DataGridFillerColumn)
+                    {
+                        return v == DataGridColumnHeader.DragMode.Reorder;
                     }
 
                     return false;

@@ -117,17 +117,22 @@ public partial class DataGrid
         ColumnReordered?.Invoke(this, e);
     }
 
-    protected internal virtual void HandleColumnReordering(DataGridColumnReorderingEventArgs e)
+    protected internal virtual void NotifyColumnReordering(DataGridColumnReorderingEventArgs e)
     {
         ColumnReordering?.Invoke(this, e);
     }
+    
+    protected internal virtual void NotifyColumnDraggingOver(DataGridColumnDraggingOverEventArgs e)
+    {
+        ColumnDraggingOver?.Invoke(this, e);
+    }
 
-    protected internal virtual void HandleColumnSorting(DataGridColumnEventArgs e)
+    protected internal virtual void NotifyColumnSorting(DataGridColumnEventArgs e)
     {
         Sorting?.Invoke(this, e);
     }
 
-    protected internal virtual void HandleColumnFiltering(DataGridColumnEventArgs e)
+    protected internal virtual void NotifyColumnFiltering(DataGridColumnEventArgs e)
     {
         Filtering?.Invoke(this, e);
     }
@@ -184,7 +189,7 @@ public partial class DataGrid
             foreach (var column in ColumnsInternal)
             {
                 var ea = new DataGridColumnEventArgs(column);
-                HandleColumnSorting(ea);
+                NotifyColumnSorting(ea);
             }
 
             // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
@@ -253,7 +258,7 @@ public partial class DataGrid
             foreach (var column in ColumnsInternal)
             {
                 var ea = new DataGridColumnEventArgs(column);
-                HandleColumnFiltering(ea);
+                NotifyColumnFiltering(ea);
             }
 
             // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理

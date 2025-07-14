@@ -12,6 +12,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey CellPadding = new TokenResourceKey("DataGrid.CellPadding");
         public static readonly TokenResourceKey CellPaddingMD = new TokenResourceKey("DataGrid.CellPaddingMD");
         public static readonly TokenResourceKey CellPaddingSM = new TokenResourceKey("DataGrid.CellPaddingSM");
+        public static readonly TokenResourceKey ColumnReorderActiveBg = new TokenResourceKey("DataGrid.ColumnReorderActiveBg");
         public static readonly TokenResourceKey ExpandIconBg = new TokenResourceKey("DataGrid.ExpandIconBg");
         public static readonly TokenResourceKey ExpandIconHalfInner = new TokenResourceKey("DataGrid.ExpandIconHalfInner");
         public static readonly TokenResourceKey ExpandIconMargin = new TokenResourceKey("DataGrid.ExpandIconMargin");
@@ -41,8 +42,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SelectionColumnWidth = new TokenResourceKey("DataGrid.SelectionColumnWidth");
         public static readonly TokenResourceKey SortIconSize = new TokenResourceKey("DataGrid.SortIconSize");
         public static readonly TokenResourceKey SortIndicatorLayoutMargin = new TokenResourceKey("DataGrid.SortIndicatorLayoutMargin");
-        public static readonly TokenResourceKey StickyScrollBarBg = new TokenResourceKey("DataGrid.StickyScrollBarBg");
-        public static readonly TokenResourceKey StickyScrollBarBorderRadius = new TokenResourceKey("DataGrid.StickyScrollBarBorderRadius");
         public static readonly TokenResourceKey TableBg = new TokenResourceKey("DataGrid.TableBg");
         public static readonly TokenResourceKey TableBodySortBg = new TokenResourceKey("DataGrid.TableBodySortBg");
         public static readonly TokenResourceKey TableBorderColor = new TokenResourceKey("DataGrid.TableBorderColor");
@@ -74,10 +73,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TablePaddingSmall = new TokenResourceKey("DataGrid.TablePaddingSmall");
         public static readonly TokenResourceKey TableRadius = new TokenResourceKey("DataGrid.TableRadius");
         public static readonly TokenResourceKey TableRowHoverBg = new TokenResourceKey("DataGrid.TableRowHoverBg");
-        public static readonly TokenResourceKey TableScrollBg = new TokenResourceKey("DataGrid.TableScrollBg");
-        public static readonly TokenResourceKey TableScrollThumbBg = new TokenResourceKey("DataGrid.TableScrollThumbBg");
-        public static readonly TokenResourceKey TableScrollThumbBgHover = new TokenResourceKey("DataGrid.TableScrollThumbBgHover");
-        public static readonly TokenResourceKey TableScrollThumbSize = new TokenResourceKey("DataGrid.TableScrollThumbSize");
         public static readonly TokenResourceKey TableSelectedRowBg = new TokenResourceKey("DataGrid.TableSelectedRowBg");
         public static readonly TokenResourceKey TableSelectedRowHoverBg = new TokenResourceKey("DataGrid.TableSelectedRowHoverBg");
         public static readonly TokenResourceKey TableSelectionColumnWidth = new TokenResourceKey("DataGrid.TableSelectionColumnWidth");

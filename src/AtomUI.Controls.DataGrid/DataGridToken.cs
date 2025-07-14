@@ -172,18 +172,6 @@ internal class DataGridToken : AbstractControlDesignToken
     public double SelectionColumnWidth { get; set; }
     
     /// <summary>
-    /// Sticky 模式下滚动条背景色
-    /// Background of sticky scrollbar
-    /// </summary>
-    public Color StickyScrollBarBg { get; set; }
-    
-    /// <summary>
-    /// Sticky 模式下滚动条圆角
-    /// Border radius of sticky scrollbar
-    /// </summary>
-    public CornerRadius StickyScrollBarBorderRadius { get; set; }
-    
-    /// <summary>
     /// 左侧列固定阴影
     /// </summary>
     public BoxShadows LeftFrozenShadows { get; set; }
@@ -192,6 +180,11 @@ internal class DataGridToken : AbstractControlDesignToken
     /// 右侧列固定阴影
     /// </summary>
     public BoxShadows RightFrozenShadows { get; set; }
+    
+    /// <summary>
+    /// 列拖动排序时候的当前列的背景颜色
+    /// </summary>
+    public Color ColumnReorderActiveBg { get; set; }
 
     #region 内部 Token
 
@@ -248,12 +241,6 @@ internal class DataGridToken : AbstractControlDesignToken
     
     public CornerRadius TableTopLeftColumnCornerRadius { get; set; }
     
-    // Virtual Scroll Bar
-    public double TableScrollThumbSize { get; set; }
-    public Color TableScrollThumbBg { get; set; }
-    public Color TableScrollThumbBgHover { get; set; }
-    public Color TableScrollBg { get; set; }
-    
     #endregion
     
     protected override void CalculateFromAlias()
@@ -295,8 +282,6 @@ internal class DataGridToken : AbstractControlDesignToken
         FilterDropdownBg            = SharedToken.ColorBgContainer;
         ExpandIconBg                = SharedToken.ColorBgContainer;
         SelectionColumnWidth        = SharedToken.ControlHeight;
-        StickyScrollBarBg           = SharedToken.ColorTextPlaceholder;
-        StickyScrollBarBorderRadius = new CornerRadius(100);
         ExpandIconMargin            = new Thickness(0, 
             (SharedToken.FontSize * SharedToken.FontHeight - SharedToken.LineWidth * 3) / 2 -
             Math.Ceiling((SharedToken.FontSizeSM * 1.4 - SharedToken.LineWidth * 3) / 2), 
@@ -360,11 +345,6 @@ internal class DataGridToken : AbstractControlDesignToken
         TableFilterButtonContainerMargin       = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
         TableFilterButtonLayoutSeparatorMargin = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
         TableFilterDropdownPadding             = SharedToken.PaddingXS;
-        // Virtual Scroll Bar
-        TableScrollThumbSize    = 8;
-        TableScrollThumbBg      = StickyScrollBarBg;
-        TableScrollThumbBgHover = SharedToken.ColorTextHeading;
-        TableScrollBg           = SharedToken.ColorSplit;
         LeftFrozenShadows = new BoxShadows(new BoxShadow
         {
             OffsetX = -10,
@@ -381,5 +361,6 @@ internal class DataGridToken : AbstractControlDesignToken
             Spread  = 0,
             Color   = SharedToken.ColorSplit
         });
+        ColumnReorderActiveBg = colorFillContentSolid;
     }
 }

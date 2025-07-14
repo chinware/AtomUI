@@ -224,7 +224,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     {
         get => CanUserReorderInternal ??
                OwningGrid?.CanUserReorderColumns ??
-               DataGrid.DefaultCanUserResizeColumns;
+               DataGrid.DefaultCanUserReorderColumns;
         set =>  CanUserReorderInternal = value;
     }
     

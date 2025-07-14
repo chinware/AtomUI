@@ -171,9 +171,6 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<ScrollBarVisibility> VerticalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(VerticalScrollBarVisibility));
 
-    public static readonly StyledProperty<ITemplate<Control>> DropLocationIndicatorTemplateProperty =
-        AvaloniaProperty.Register<DataGrid, ITemplate<Control>>(nameof(DropLocationIndicatorTemplate));
-
     public static readonly DirectProperty<DataGrid, int> SelectedIndexProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, int>(
             nameof(SelectedIndex),
@@ -460,16 +457,7 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(SelectionModeProperty);
         set => SetValue(SelectionModeProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the template that is used when rendering the column headers.
-    /// </summary>
-    public ITemplate<Control> DropLocationIndicatorTemplate
-    {
-        get => GetValue(DropLocationIndicatorTemplateProperty);
-        set => SetValue(DropLocationIndicatorTemplateProperty, value);
-    }
-
+    
     /// <summary>
     /// Gets or sets the index of the current selection.
     /// </summary>
@@ -761,6 +749,11 @@ public partial class DataGrid : TemplatedControl,
     /// a preview should be shown, or cancel reordering.
     /// </summary>
     public event EventHandler<DataGridColumnReorderingEventArgs>? ColumnReordering;
+    
+    /// <summary>
+    /// This event is dispatched when the drag indicator is dragged to a specific column.
+    /// </summary>
+    public event EventHandler<DataGridColumnDraggingOverEventArgs>? ColumnDraggingOver;
 
     /// <summary>
     /// Occurs when a different cell becomes the current cell.

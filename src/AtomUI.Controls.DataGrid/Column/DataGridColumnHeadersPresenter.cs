@@ -54,39 +54,6 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
     /// </summary>
     internal Double DragIndicatorOffset { get; set; }
 
-    /// <summary>
-    /// The drop location indicator control.  This value is null if no column is being dragged.
-    /// </summary>
-    internal Control? DropLocationIndicator
-    {
-        get => _dropLocationIndicator;
-        set
-        {
-            if (value != _dropLocationIndicator)
-            {
-                if (_dropLocationIndicator != null)
-                {
-                    if (Children.Contains(_dropLocationIndicator))
-                    {
-                        Children.Remove(_dropLocationIndicator);
-                    }
-                }
-           
-                _dropLocationIndicator = value;
-                if (_dropLocationIndicator != null)
-                {
-                    Children.Add(_dropLocationIndicator);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// The distance, in pixels, that the drop location indicator should be positioned away from the left edge
-    /// of the ColumnsHeaderPresenter.
-    /// </summary>
-    internal double DropLocationIndicatorOffset { get; set; }
-
     internal DataGrid? OwningGrid { get; set; }
 
     event EventHandler<ChildIndexChangedEventArgs>? IChildIndexProvider.ChildIndexChanged
@@ -143,7 +110,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         double frozenRightEdge       = finalSize.Width;
         double scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
         var    visibleColumnIndex    = 0;
-        var    VisibleColumnCount    = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
+        var    visibleColumnCount    = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
         foreach (DataGridColumn dataGridColumn in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
@@ -172,7 +139,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 // }
                 columnHeader.IsFrozen             =  true;
                 columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Left;
-                columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == VisibleColumnCount - OwningGrid.RightFrozenColumnCount) && OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
+                columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == visibleColumnCount - OwningGrid.RightFrozenColumnCount) && OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
             }
             else
             {
@@ -191,22 +158,16 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         {
             if (DragIndicator != null)
             {
+                DragIndicator.IsVisible = true;
                 EnsureColumnReorderingClip(DragIndicator, finalSize.Height, frozenLeftEdge, dragIndicatorLeftEdge);
 
                 var height = DragIndicator.Bounds.Height;
                 if (height <= 0)
-                    height = DragIndicator.DesiredSize.Height;
-
-                DragIndicator.Arrange(new Rect(dragIndicatorLeftEdge, 0, DragIndicator.Bounds.Width, height));
-            }
-            if (DropLocationIndicator != null)
-            {
-                if (DropLocationIndicator is Control element)
                 {
-                    EnsureColumnReorderingClip(element, finalSize.Height, frozenLeftEdge, DropLocationIndicatorOffset);
+                    height = DragIndicator.DesiredSize.Height;
                 }
-
-                DropLocationIndicator.Arrange(new Rect(DropLocationIndicatorOffset, 0, DropLocationIndicator.Bounds.Width, DropLocationIndicator.Bounds.Height));
+                
+                DragIndicator.Arrange(new Rect(dragIndicatorLeftEdge, 0, DragIndicator.Bounds.Width, height));
             }
         }
 
@@ -415,10 +376,6 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         if (DragIndicator != null)
         {
             DragIndicator.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-        }
-        if (DropLocationIndicator != null)
-        {
-            DropLocationIndicator.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         }
 
         OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
