@@ -1,0 +1,46 @@
+﻿<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <!--
+       x:key表示，如果遇到atom:Breadcrumb，那就是我
+       TargetType="atom:Breadcrumb"表示本axaml中的所有属性均来自于atom:Breadcrumb class
+    -->
+    <ControlTheme x:Key="{x:Type atom:Breadcrumb}" TargetType="atom:Breadcrumb">
+        <!--
+        把外部 ViewModel 里的集合 Breadcrumbs 绑进来。（在 Theme 里写死绑定是一种偷懒写法；实际可以删掉，让外部自己绑。）
+        -->
+        <Setter Property="ItemsSource" Value="{Binding ItemsSource}"/>
+        <!--
+            把控件的外表完全换成下面这段 XAML，开始模板替换
+        -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <!--
+                TemplateBinding ItemsSource：把 Breadcrumb 的 ItemsSource 原封不动传给里面的 ItemsControl
+                -->
+                <ItemsControl Name="PART_ItemsControl"
+                              ItemsSource="{TemplateBinding ItemsSource}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="atom:BreadcrumbItem">
+                            <StackPanel Orientation="Horizontal">
+                                <!-- 文字 -->
+                                <TextBlock Text="{Binding Title}"
+                                           VerticalAlignment="Center"/>
+                                <!-- 分隔符 -->
+                                <TextBlock Text="{Binding Separator}"
+                                           Margin="4,0"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>
