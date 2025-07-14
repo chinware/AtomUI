@@ -613,14 +613,9 @@ internal partial class DataGridColumnHeader : ContentControl
         foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             Point  mousePosition = OwningGrid.ColumnHeaders.Translate(column.HeaderCell, mousePositionHeaders);
-            double columnMiddle  = column.HeaderCell.Bounds.Width / 2;
-            if (mousePosition.X >= 0 && mousePosition.X <= columnMiddle)
+            if (mousePosition.X >= 0 && mousePosition.X <= column.HeaderCell.Bounds.Width)
             {
                 return column;
-            }
-            if (mousePosition.X > columnMiddle && mousePosition.X < column.HeaderCell.Bounds.Width)
-            {
-                return OwningGrid.ColumnsInternal.GetNextVisibleColumn(column);
             }
         }
 
@@ -639,7 +634,7 @@ internal partial class DataGridColumnHeader : ContentControl
         DataGridColumn? targetColumn = GetReorderingTargetColumn(mousePositionHeaders, false /*scroll*/, out double scrollAmount);
         if (targetColumn != null)
         {
-            return targetColumn.DisplayIndex > OwningColumn.DisplayIndex ? targetColumn.DisplayIndex - 1 : targetColumn.DisplayIndex;
+            return targetColumn.DisplayIndex;
         }
         return OwningGrid.Columns.Count - 1;
     }

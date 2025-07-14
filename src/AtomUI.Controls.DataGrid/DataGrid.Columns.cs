@@ -105,6 +105,7 @@ public partial class DataGrid
 
     private DataGridColumnHeadersPresenter? _columnHeadersPresenter;
     private DataGridGroupColumnHeadersPresenter? _groupColumnHeadersPresenter;
+    private DataGridDraggingOverIndicator? _dataGridDraggingOverIndicator;
 
     protected virtual void NotifyColumnDisplayIndexChanged(DataGridColumnEventArgs e)
     {
@@ -124,6 +125,22 @@ public partial class DataGrid
     
     protected internal virtual void NotifyColumnDraggingOver(DataGridColumnDraggingOverEventArgs e)
     {
+        if (_dataGridDraggingOverIndicator != null)
+        {
+            if (e.DraggedColumn != null && e.DraggingOverColumn != null && e.DraggedColumn != e.DraggingOverColumn)
+            {
+                _dataGridDraggingOverIndicator.IsVisible          = true;
+                _dataGridDraggingOverIndicator.DraggingOverColumn = e.DraggingOverColumn;
+                _dataGridDraggingOverIndicator.DraggedColumn = e.DraggedColumn;
+            }
+            else
+            {
+                _dataGridDraggingOverIndicator.IsVisible          = false;
+                _dataGridDraggingOverIndicator.DraggingOverColumn = null;
+                _dataGridDraggingOverIndicator.DraggedColumn      = null;
+            }
+        }
+   
         ColumnDraggingOver?.Invoke(this, e);
     }
 

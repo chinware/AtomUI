@@ -1404,7 +1404,7 @@ public partial class DataGrid : TemplatedControl,
         _columnHeadersPresenter =
             e.NameScope.Find<DataGridColumnHeadersPresenter>(DataGridThemeConstants.ColumnHeadersPresenterPart);
         _groupColumnHeadersPresenter = e.NameScope.Find<DataGridGroupColumnHeadersPresenter>(DataGridThemeConstants.GroupColumnHeadersPresenterPart);
-
+        _dataGridDraggingOverIndicator = e.NameScope.Find<DataGridDraggingOverIndicator>(DataGridThemeConstants.DraggingOverIndicatorPart);
         if (_groupColumnHeadersPresenter != null)
         {
             _groupColumnHeadersPresenter.OwningGrid = this;

@@ -103,6 +103,14 @@
                                 VerticalAlignment="Stretch"
                                 CornerRadius="{TemplateBinding HeaderCornerRadius}"
                                 IsEnabled="{TemplateBinding IsEnabled}" />
+                            
+                            <atom:DataGridDraggingOverIndicator
+                                Name="{x:Static atom:DataGridThemeConstants.DraggingOverIndicatorPart}"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.RowSpan="2"
+                                Grid.ColumnSpan="3"
+                                IsVisible="False"/>
                         </Grid>
                     </DockPanel>
 

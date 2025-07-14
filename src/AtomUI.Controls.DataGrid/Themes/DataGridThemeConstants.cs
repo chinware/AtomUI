@@ -102,6 +102,7 @@ internal static class DataGridThemeConstants
     public const string DisabledVisualElementPart = "PART_DisabledVisualElement";
     public const string TitlePart = "PART_Title";
     public const string FooterPart = "PART_Footer";
+    public const string DraggingOverIndicatorPart = "PART_DraggingOverIndicator";
 }
 
 internal static class DataGridTopLeftColumnHeaderThemeConstants
