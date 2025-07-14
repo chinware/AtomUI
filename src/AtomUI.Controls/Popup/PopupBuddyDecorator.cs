@@ -6,8 +6,10 @@ using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -60,17 +62,25 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
         {
             if (_popupHost is PopupRoot oldPopupRoot)
             {
-                oldPopupRoot.SizeChanged     -= HandleBuddyPopupRootSizeChanged;
+                var oldPresenter = oldPopupRoot.Presenter;
+                if (oldPresenter != null)
+                {
+                    oldPresenter.SizeChanged -= HandleBuddyPopupRootSizeChanged;
+                }
             }
-            popupRoot.SizeChanged     += HandleBuddyPopupRootSizeChanged;
-            ConfigureDecorator(popupRoot);
+            var presenter = popupRoot.Presenter;
+            if (presenter != null)
+            {
+                presenter.SizeChanged += HandleBuddyPopupRootSizeChanged;
+            }
+            ConfigureDecorator(presenter);
+            CaptureContentControl();
         }
         _popupHost = popupHost;
     }
 
-    private void ConfigureDecorator(IPopupHost popupHost)
+    private void ConfigureDecorator(ContentPresenter? presenter)
     {
-        var presenter = popupHost.Presenter;
         if (presenter != null)
         {
             var content = presenter.Child;
@@ -91,15 +101,15 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
                 _decoratorControl.MaskCornerRadius = templatedControl.CornerRadius;
                 _decoratorControl.MaskSize         = templatedControl.Bounds.Size;
             }
-            CaptureContentControl();
         }
     }
     
     private void HandleBuddyPopupRootSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        if (sender is PopupRoot popupRoot)
+        if (sender is ContentPresenter presenter)
         {
-            ConfigureDecorator(popupRoot);
+            ConfigureDecorator(presenter);
+            ConfigureBlankContentControl();
         }
     }
     
@@ -125,19 +135,59 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
         }
     }
 
-    internal void HideDecoratorContent()
+    internal void ConfigureBlankContentControl()
     {
-        if (_decoratorControl.Content != null)
+        if (_popupHost != null && _popupHost.Presenter != null)
         {
-             _decoratorControl.Content.Opacity = 0.0;
-        }
-    }
+            var content   = _popupHost.Presenter.Child;
+            if (content != null)
+            {
+                if (content is IShadowMaskInfoProvider shadowMaskInfoProvider)
+                {
+                    var maskBounds   = shadowMaskInfoProvider.GetMaskBounds();
+                    var offset = maskBounds.Position;
 
-    internal void ShowDecoratorContent()
-    {
-        if (_decoratorControl.Content != null)
-        {
-            _decoratorControl.Content.Opacity = 1.0;
+                    var contentWidth = maskBounds.Width;
+                    var contentHeight = maskBounds.Height;
+                    var blankControl = new Canvas()
+                    {
+                        Background = Brushes.Transparent,
+                        Width      = contentWidth + offset.X,
+                        Height     = contentHeight + offset.Y,
+                    };
+                    var blankContent = new Border()
+                    {
+                        Background   = shadowMaskInfoProvider.GetMaskBackground(),
+                        CornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius(),
+                        Width        = contentWidth,
+                        Height       = contentHeight,
+                    };
+                    blankControl.Children.Add(blankContent);
+                    Canvas.SetLeft(blankContent, offset.X);
+                    Canvas.SetTop(blankContent, offset.Y);
+                    _decoratorControl.Content = blankControl;
+                }
+                else if (content is Border bordered)
+                {
+                    _decoratorControl.Content = new Border
+                    {
+                        Background   = bordered.Background,
+                        CornerRadius = bordered.CornerRadius,
+                        Width        = bordered.Bounds.Size.Width,
+                        Height       = bordered.Bounds.Size.Height
+                    };
+                }
+                else if (content is TemplatedControl templatedControl)
+                {
+                    _decoratorControl.Content = new Border
+                    {
+                        Background   = templatedControl.Background,
+                        CornerRadius = templatedControl.CornerRadius,
+                        Width        = templatedControl.Bounds.Size.Width,
+                        Height       = templatedControl.Bounds.Size.Height
+                    };
+                }
+            }
         }
     }
 }

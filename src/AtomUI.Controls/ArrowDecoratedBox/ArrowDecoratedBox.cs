@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -224,6 +225,11 @@ public class ArrowDecoratedBox : ContentControl,
     public CornerRadius GetMaskCornerRadius()
     {
         return CornerRadius;
+    }
+
+    public IBrush? GetMaskBackground()
+    {
+        return Background;
     }
 
     public Rect GetMaskBounds()

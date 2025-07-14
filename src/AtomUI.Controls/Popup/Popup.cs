@@ -564,7 +564,7 @@ public class Popup : AvaloniaPopup,
 
     public void MotionAwareClose(Action? closed = null)
     {
-        Debug.Assert(_buddyLayer != null);
+        
         if (_closeAnimating)
         {
             return;
@@ -580,7 +580,7 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
-        
+        Debug.Assert(_buddyLayer != null);
         if (!IsMotionEnabled)
         {
             _buddyLayer?.Detach();

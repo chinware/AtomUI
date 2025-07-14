@@ -184,7 +184,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         }
        
         SetupPopupHost();
-        _buddyDecorator.HideDecoratorContent();
     }
 
     public void Detach()
@@ -214,6 +213,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         motion.Run(_buddyDecorator, null, () =>
         {
             completedAction?.Invoke();
+            _buddyDecorator.ConfigureBlankContentControl();
             NotifyAttachMotionCompleted();
         });
     }

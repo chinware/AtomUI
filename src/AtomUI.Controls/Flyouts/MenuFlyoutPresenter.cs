@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -214,6 +215,11 @@ public class MenuFlyoutPresenter : MenuBase,
         }
 
         return Bounds;
+    }
+
+    public IBrush? GetMaskBackground()
+    {
+        return _arrowDecoratedBox?.Background;
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

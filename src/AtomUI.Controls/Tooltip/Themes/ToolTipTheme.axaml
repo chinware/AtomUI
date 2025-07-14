@@ -2,20 +2,23 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" HorizontalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:ToolTip}" TargetType="atom:ToolTip">
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:ArrowDecoratedBox Name="{x:Static atom:ToolTipThemeConstants.ToolTipContainerPart}"
-                                        Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                                        ContentTemplate="{TemplateBinding ContentTemplate}"
-                    />
+                                        Background="{TemplateBinding Background}">
+                    <ContentPresenter
+                        Name="{x:Static atom:ToolTipThemeConstants.ToolTipContainerPresenterPart}"
+                        Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                </atom:ArrowDecoratedBox>
             </ControlTemplate>
         </Setter>
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:ToolTipTokenKey.ToolTipBackground}}" />
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ToolTipContainer">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
             <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:ToolTipTokenKey.ToolTipMaxWidth}}" />
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ToolTipTokenKey.ToolTipBackground}}" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ToolTipTokenKey.ToolTipColor}}" />
             <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ToolTipTokenKey.ToolTipPadding}}" />

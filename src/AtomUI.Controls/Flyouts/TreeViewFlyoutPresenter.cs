@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -156,6 +157,11 @@ public class TreeViewFlyoutPresenter : FloatableTreeView,
         }
 
         return Bounds;
+    }
+
+    public IBrush? GetMaskBackground()
+    {
+        return _arrowDecoratedBox?.Background;
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

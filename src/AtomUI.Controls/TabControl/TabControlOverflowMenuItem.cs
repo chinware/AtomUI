@@ -14,7 +14,15 @@ internal class TabControlOverflowMenuItem : BaseOverflowMenuItem
         {
             var eventArgs = new CloseTabRequestEventArgs(CloseTabEvent, TabItem!);
             RaiseEvent(eventArgs);
-            Dispatcher.UIThread.Post(() => { menu.Close(); });
+            if (menu is MenuFlyoutPresenter menuFlyoutPresenter)
+            {
+                var menuFlyout = menuFlyoutPresenter.MenuFlyout;
+                menuFlyout?.Items.Remove(this);
+                if (menuFlyout?.Items.Count == 0)
+                {
+                    Dispatcher.UIThread.Post(() => { menu.Close(); });
+                }
+            }
         }
     }
 }

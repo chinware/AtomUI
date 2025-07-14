@@ -939,9 +939,9 @@ internal partial class DataGridColumnHeader : ContentControl
     {
         if (IsMotionEnabled)
         {
-            if (Transitions != null)
+            if (_frame != null)
             {
-                Transitions = new Transitions()
+                _frame.Transitions = new Transitions()
                 {
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
                 };
@@ -949,8 +949,11 @@ internal partial class DataGridColumnHeader : ContentControl
         }
         else
         {
-            Transitions?.Clear();
-            Transitions = null;
+            if (_frame != null)
+            {
+                _frame.Transitions?.Clear();
+                _frame.Transitions = null;
+            }
         }
     }
 }

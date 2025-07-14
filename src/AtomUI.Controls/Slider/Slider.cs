@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using AtomUI.Controls.Themes;
 using AtomUI.Input;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -18,6 +19,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Utilities;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -129,7 +131,7 @@ public class Slider : RangeBase,
         SliderTrack.MarksProperty.AddOwner<Slider>();
 
     public static readonly StyledProperty<string> ValueFormatTemplateProperty =
-        AvaloniaProperty.Register<Slider, string>(nameof(ValueFormatTemplate), "{0:0.00}");
+        AvaloniaProperty.Register<Slider, string>(nameof(ValueFormatTemplate), "{0:0}");
 
     public static readonly StyledProperty<bool> IncludedProperty =
         SliderTrack.IncludedProperty.AddOwner<Slider>();
@@ -232,6 +234,16 @@ public class Slider : RangeBase,
     string IControlSharedTokenResourcesHost.TokenId => SliderToken.ID;
 
     #endregion
+    
+    /// <summary>
+    /// Gets a value indicating whether the <see cref="Slider" /> is currently being dragged.
+    /// </summary>
+    protected bool IsDragging { get; private set; }
+
+    /// <summary>
+    /// Gets the <see cref="SliderTrack" /> part of the <see cref="Slider" />.
+    /// </summary>
+    protected SliderTrack? SliderTrack { get; private set; }
 
     // Slider required parts
     private bool _isFocusEngaged;
@@ -239,6 +251,7 @@ public class Slider : RangeBase,
     private IDisposable? _pointerMovedDispose;
     private IDisposable? _pointerPressDispose;
     private IDisposable? _pointerReleaseDispose;
+    private double _tipHostWidth;
 
     private const double Tolerance = 0.0001;
 
@@ -258,16 +271,6 @@ public class Slider : RangeBase,
         ValueProperty.OverrideMetadata<Slider>(new StyledPropertyMetadata<double>(enableDataValidation: true));
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<Slider>(AutomationControlType.Slider);
     }
-
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Slider" /> is currently being dragged.
-    /// </summary>
-    protected bool IsDragging { get; private set; }
-
-    /// <summary>
-    /// Gets the <see cref="SliderTrack" /> part of the <see cref="Slider" />.
-    /// </summary>
-    protected SliderTrack? SliderTrack { get; private set; }
 
     /// <summary>
     /// Instantiates a new instance of the <see cref="Slider" /> class.
@@ -298,6 +301,7 @@ public class Slider : RangeBase,
         _pointerReleaseDispose =
             this.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
         _pointerMovedDispose = this.AddDisposableHandler(PointerMovedEvent, TrackMoved, RoutingStrategies.Tunnel);
+        ConfigureTipHostWidth();
 
         if (SliderTrack is not null)
         {
@@ -321,12 +325,11 @@ public class Slider : RangeBase,
                 }
             }
         }
-
+    
         SetupSliderThumbPlacement();
     }
 
     // TODO 在 rangemode 下可能没有用
-    /// <inheritdoc />
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);
@@ -674,6 +677,15 @@ public class Slider : RangeBase,
                 }
             }
         }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == MaximumProperty ||
+                change.Property == ValueFormatTemplateProperty)
+            {
+                ConfigureTipHostWidth();
+            }
+        }
     }
 
     private string FormatValue(double value)
@@ -727,5 +739,34 @@ public class Slider : RangeBase,
     {
         PseudoClasses.Set(StdPseudoClass.Vertical, o == Orientation.Vertical);
         PseudoClasses.Set(StdPseudoClass.Horizontal, o == Orientation.Horizontal);
+    }
+
+    private void ConfigureTipHostWidth()
+    {
+        var maxValueText = FormatValue(Maximum);
+        var size = TextUtils.CalculateTextSize(maxValueText, FontSize, FontFamily);
+        _tipHostWidth = size.Width * 1.1;
+        if (SliderTrack is not null)
+        {
+            if (!IsRangeMode)
+            {
+                if (SliderTrack.StartSliderThumb is not null)
+                {
+                    ToolTip.SetTipHostWidth(SliderTrack.StartSliderThumb, _tipHostWidth);
+                }
+            }
+            else
+            {
+                if (SliderTrack.StartSliderThumb is not null)
+                {
+                    ToolTip.SetTipHostWidth(SliderTrack.StartSliderThumb, _tipHostWidth);
+                }
+
+                if (SliderTrack.EndSliderThumb is not null)
+                {
+                    ToolTip.SetTipHostWidth(SliderTrack.EndSliderThumb, _tipHostWidth);
+                }
+            }
+        }
     }
 }

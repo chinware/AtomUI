@@ -147,21 +147,28 @@
         <!-- BuildSortableColumnStyle 开始 -->
         <Style Selector="^[CanUserSort=True]">
             <Style Selector="^:sort-ascending, ^:sort-descending">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
+                </Style>
             </Style>
 
             <Setter Property="Cursor" Value="Hand" />
             <Style Selector="^:pointerover">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
+                </Style>
             </Style>
         </Style>
 
         <!-- BuildSortableColumnStyle 结束 -->
-        
+        <Style Selector="^ /template/ Border#PART_Frame">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
         <Style Selector="^[IsShowFrozenShadow=True]">
-           
+            
             <Style Selector="^ /template/ Border#PART_Frame">
                 <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
             </Style>
