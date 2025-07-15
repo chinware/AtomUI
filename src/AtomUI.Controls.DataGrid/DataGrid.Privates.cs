@@ -31,7 +31,6 @@ public partial class DataGrid
     internal const bool DefaultCanUserSortColumns = false;
     internal const bool DefaultCanUserFilterColumns = false;
     internal const bool DefaultShowSorterTooltip = false;
-    internal const int DraggingOverIndicatorZIndex = 1000;
 
     #region 内部属性定义
     

@@ -5,16 +5,16 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class DataGridDraggingOverIndicator : Control
+internal class DataGridColumnDraggingOverIndicator : Control
 {
-    internal static readonly DirectProperty<DataGridDraggingOverIndicator, DataGridColumn?> DraggingOverColumnProperty =
-        AvaloniaProperty.RegisterDirect<DataGridDraggingOverIndicator, DataGridColumn?>(
+    internal static readonly DirectProperty<DataGridColumnDraggingOverIndicator, DataGridColumn?> DraggingOverColumnProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnDraggingOverIndicator, DataGridColumn?>(
             nameof(DraggingOverColumn),
             o => o.DraggingOverColumn,
             (o, v) => o.DraggingOverColumn = v);
     
-    internal static readonly DirectProperty<DataGridDraggingOverIndicator, DataGridColumn?> DraggedColumnProperty =
-        AvaloniaProperty.RegisterDirect<DataGridDraggingOverIndicator, DataGridColumn?>(
+    internal static readonly DirectProperty<DataGridColumnDraggingOverIndicator, DataGridColumn?> DraggedColumnProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnDraggingOverIndicator, DataGridColumn?>(
             nameof(DraggedColumn),
             o => o.DraggedColumn,
             (o, v) => o.DraggedColumn = v);
@@ -33,9 +33,9 @@ internal class DataGridDraggingOverIndicator : Control
     }
     private DataGridColumn? _draggedColumn;
 
-    static DataGridDraggingOverIndicator()
+    static DataGridColumnDraggingOverIndicator()
     {
-        AffectsRender<DataGridDraggingOverIndicator>(DraggingOverColumnProperty, DraggedColumnProperty);
+        AffectsRender<DataGridColumnDraggingOverIndicator>(DraggingOverColumnProperty, DraggedColumnProperty);
     }
 
     private double _indicatorOffsetX;

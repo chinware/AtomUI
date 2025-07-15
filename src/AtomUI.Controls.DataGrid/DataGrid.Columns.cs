@@ -105,7 +105,7 @@ public partial class DataGrid
 
     private DataGridColumnHeadersPresenter? _columnHeadersPresenter;
     private DataGridGroupColumnHeadersPresenter? _groupColumnHeadersPresenter;
-    private DataGridDraggingOverIndicator? _dataGridDraggingOverIndicator;
+    private DataGridColumnDraggingOverIndicator? _dataGridDraggingOverIndicator;
 
     protected virtual void NotifyColumnDisplayIndexChanged(DataGridColumnEventArgs e)
     {

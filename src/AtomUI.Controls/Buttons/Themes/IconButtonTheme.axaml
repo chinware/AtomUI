@@ -10,8 +10,8 @@
                 BorderThickness="{TemplateBinding BorderThickness}"
                 BorderBrush="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding CornerRadius}"
-                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 Padding="{TemplateBinding Padding}">
                 <atom:IconPresenter
                     Name="{x:Static atom:IconButtonThemeConstants.IconContentPart}"
@@ -33,7 +33,7 @@
 
     <Style Selector="^:is(atom|IconButton)">
         <Setter Property="Cursor" Value="Hand" />
-
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         <Style Selector="^ /template/ Border#PART_Frame">
             <Setter Property="Background" Value="Transparent" />
         </Style>

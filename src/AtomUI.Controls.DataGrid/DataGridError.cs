@@ -175,6 +175,16 @@ internal static class DataGridError
         {
             return new InvalidOperationException("Invalid row index. Operation cannot be completed.");
         }
+        
+        public static NotSupportedException RowReorderNotAllowedException()
+        {
+            return new NotSupportedException("DataGridRowReorderColumn is used but the DataGrid CanUserReorderRows property is false.");
+        }
+        
+        public static InvalidOperationException RowReorderColumnAlreadyExistException()
+        {
+            return new InvalidOperationException("Only one DataGridRowReorderColumn is allowed.");
+        }
     }
 
     public static class DataGridSelectedItemsCollection
