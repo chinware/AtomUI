@@ -10,6 +10,7 @@
                 BorderThickness="{TemplateBinding BorderThickness}"
                 BorderBrush="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding CornerRadius}"
+                Background="{TemplateBinding Background}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Padding="{TemplateBinding Padding}">
@@ -34,23 +35,17 @@
     <Style Selector="^:is(atom|IconButton)">
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
-        <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
+        <Setter Property="Background" Value="Transparent" />
 
         <Style Selector="^[IsEnableHoverEffect=True]">
             <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
             </Style>
 
             <Style Selector="^:pressed">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
             </Style>
         </Style>
 

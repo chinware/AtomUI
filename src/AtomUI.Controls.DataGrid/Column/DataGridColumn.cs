@@ -441,7 +441,6 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// </summary>
     public IComparer? CustomSortComparer { get; set; }
     
-        
     /// <summary>
     /// Holds the name of the member to use for filter, if not using the default.
     /// </summary>
@@ -557,6 +556,10 @@ public abstract partial class DataGridColumn : AvaloniaObject
     }
 
     protected virtual void NotifyOwningGridAttached(DataGrid? owningGrid)
+    {
+    }
+    
+    protected internal virtual void NotifyOwningGridAboutToDetached()
     {
     }
     
@@ -750,6 +753,15 @@ public abstract partial class DataGridColumn : AvaloniaObject
     protected void NotifyPropertyChanged(string propertyName)
     {
         OwningGrid?.RefreshColumnElements(this, propertyName);
+    }
+    
+    /// <summary>
+    /// Set whether to allow editing
+    /// </summary>
+    /// <returns></returns>
+    public virtual bool IsEditable()
+    {
+        return true;
     }
 
     /// <summary>

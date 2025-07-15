@@ -452,12 +452,14 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
 
             Debug.Assert(ItemsInternal != null);
             DataGridColumn          dataGridColumn            = ItemsInternal[columnIndexWithFiller];
-            DataGridCellCoordinates newCurrentCellCoordinates = _owningGrid.OnRemovingColumn(dataGridColumn);
+            DataGridCellCoordinates newCurrentCellCoordinates = _owningGrid.HandleRemovingColumn(dataGridColumn);
             ItemsInternal.RemoveAt(columnIndexWithFiller);
             if (dataGridColumn.IsVisible)
             {
                 VisibleEdgedColumnsWidth -= dataGridColumn.ActualWidth;
             }
+
+            dataGridColumn.NotifyOwningGridAboutToDetached();
             dataGridColumn.OwningGrid = null;
             dataGridColumn.RemoveEditingElement();
 

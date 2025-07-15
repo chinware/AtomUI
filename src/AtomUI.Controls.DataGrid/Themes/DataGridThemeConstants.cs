@@ -123,3 +123,8 @@ internal static class DataGridRowExpanderThemeConstants
     public const string VerticalIndicatorPart = "PART_VerticalIndicator";
     public const string HorizontalIndicatorPart = "PART_HorizontalIndicator";
 }
+
+internal static class DataGridRowReorderHandleConstants
+{
+    public const string IndicatorIconButtonPart = "PART_IndicatorIconButton";
+}

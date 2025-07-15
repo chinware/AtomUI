@@ -188,12 +188,7 @@ internal class DataGridDisplayData
     }
     
     // Returns an enumeration of the displayed scrolling rows in order starting with the FirstDisplayedScrollingRow
-    internal IEnumerable<Control> GetScrollingElements()
-    {
-        return GetScrollingElements(null);
-    }
-
-    internal IEnumerable<Control> GetScrollingElements(Predicate<object>? filter)
+    internal IEnumerable<Control> GetScrollingElements(Predicate<object>? filter = null)
     {
         for (int i = 0; i < _scrollingElements.Count; i++)
         {

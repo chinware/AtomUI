@@ -770,6 +770,18 @@ public partial class DataGrid : TemplatedControl,
     /// This event is dispatched when the drag indicator is dragged to a specific column.
     /// </summary>
     public event EventHandler<DataGridColumnDraggingOverEventArgs>? ColumnDraggingOver;
+    
+    /// <summary>
+    /// Raised when row reordering ends, to allow subscribers to clean up.
+    /// </summary>
+    public event EventHandler<DataGridRowEventArgs>? RowReordered;
+    
+    /// <summary>
+    /// Raised when starting a row reordering action.  Subscribers to this event can
+    /// set tooltip and caret UIElements, constrain tooltip position, indicate that
+    /// a preview should be shown, or cancel reordering.
+    /// </summary>
+    public event EventHandler<DataGridRowReorderingEventArgs>? RowReordering;
 
     /// <summary>
     /// Occurs when a different cell becomes the current cell.

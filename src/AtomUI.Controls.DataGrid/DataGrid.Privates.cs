@@ -308,6 +308,9 @@ public partial class DataGrid
     // does not know their actual height. The heights used for the approximation are the ones
     // set as the rows were scrolled off.
     private double _verticalOffset;
+    
+    internal double VerticalOffset => _verticalOffset;
+    
     private byte _verticalScrollChangesIgnored;
     private DataGridDefaultFilter? _defaultFilter;
     

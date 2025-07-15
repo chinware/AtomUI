@@ -103,4 +103,9 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
             }
         }
     }
+    
+    public override bool IsEditable()
+    {
+        return false;
+    }
 }

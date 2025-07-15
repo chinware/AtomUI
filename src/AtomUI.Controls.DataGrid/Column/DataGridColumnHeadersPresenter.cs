@@ -15,7 +15,6 @@ namespace AtomUI.Controls;
 public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
 {
     private Control? _dragIndicator;
-    private Control? _dropLocationIndicator;
     private EventHandler<ChildIndexChangedEventArgs>? _childIndexChanged;
 
     /// <summary>

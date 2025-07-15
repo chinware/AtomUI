@@ -123,6 +123,16 @@ public partial class DataGrid
         ColumnReordering?.Invoke(this, e);
     }
     
+    protected internal virtual void NotifyRowReordered(DataGridRowEventArgs e)
+    {
+        RowReordered?.Invoke(this, e);
+    }
+
+    protected internal virtual void NotifyRowReordering(DataGridRowReorderingEventArgs e)
+    {
+        RowReordering?.Invoke(this, e);
+    }
+    
     protected internal virtual void NotifyColumnDraggingOver(DataGridColumnDraggingOverEventArgs e)
     {
         if (_dataGridDraggingOverIndicator != null)
@@ -930,7 +940,7 @@ public partial class DataGrid
         RemoveDisplayedColumnHeader(removedColumn);
     }
 
-    internal DataGridCellCoordinates OnRemovingColumn(DataGridColumn dataGridColumn)
+    internal DataGridCellCoordinates HandleRemovingColumn(DataGridColumn dataGridColumn)
     {
         Debug.Assert(dataGridColumn != null);
         Debug.Assert(dataGridColumn.Index >= 0 && dataGridColumn.Index < ColumnsItemsInternal.Count);
@@ -1037,7 +1047,7 @@ public partial class DataGrid
                 _horizontalOffset -= GetEdgedColumnWidth(dataGridColumn);
             }
 
-            if (_hScrollBar != null && _hScrollBar.IsVisible) // 
+            if (_hScrollBar != null && _hScrollBar.IsVisible) 
             {
                 _hScrollBar.Value = _horizontalOffset;
             }

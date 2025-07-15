@@ -181,6 +181,11 @@ internal static class DataGridError
             return new NotSupportedException("DataGridRowReorderColumn is used but the DataGrid CanUserReorderRows property is false.");
         }
         
+        public static NotSupportedException DataSourceTypeNotSupportRowReorderException()
+        {
+            return new NotSupportedException("The current data source does not implement the IList interface and does not support sorting.");
+        }
+        
         public static InvalidOperationException RowReorderColumnAlreadyExistException()
         {
             return new InvalidOperationException("Only one DataGridRowReorderColumn is allowed.");

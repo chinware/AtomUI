@@ -671,7 +671,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     public int ItemCount => InternalList.Count;
     
-    
     /// <summary>
     /// Gets a value indicating whether this view needs to be refreshed.
     /// </summary>
@@ -982,7 +981,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <summary>
     /// Gets the root of the Group that we expose to the user
     /// </summary>
-    private CollectionViewGroupRoot? RootGroup => _isUsingTemporaryGroup ? _temporaryGroup : _group;
+    private CollectionViewGroupRoot RootGroup => _isUsingTemporaryGroup ? _temporaryGroup : _group;
 
     /// <summary>
     /// Gets the SourceCollection as an IList
@@ -1850,7 +1849,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         if (IsGrouping)
         {
-            return RootGroup?.LeafAt(_isUsingTemporaryGroup ? ConvertToInternalIndex(index) : index);
+            return RootGroup.LeafAt(_isUsingTemporaryGroup ? ConvertToInternalIndex(index) : index);
         }
 
         if (IsAddingNew && UsesLocalArray && index == Count - 1)
@@ -2556,10 +2555,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             return (_pageSize * PageIndex) + index;
         }
-        else
-        {
-            return index;
-        }
+        return index;
     }
 
     /// <summary>
