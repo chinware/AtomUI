@@ -126,11 +126,9 @@ public partial class DataGrid
     
     internal bool LoadingOrUnloadingRow { get; private set; }
     
-    internal double[] RowGroupSublevelIndents
-    {
-        get;
-        private set;
-    }
+    internal double[] RowGroupSublevelIndents { get; private set; }
+    
+    internal DataGridRowsPresenter? RowsPresenter => _rowsPresenter;
     
     #endregion
     
@@ -1166,6 +1164,17 @@ public partial class DataGrid
         return dataGridRow;
     }
 
+    internal DataGridRow GetGeneratedGhostRow(object? dataContext)
+    {
+        var dataGridRow = new DataGridRow();
+        dataGridRow.OwningGrid  = this;
+        dataGridRow.DataContext = dataContext;
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, dataGridRow, DataGridRow.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, SizeTypeProperty, dataGridRow, DataGridRow.SizeTypeProperty);
+        CompleteCellsCollection(dataGridRow);
+        return dataGridRow;
+    }
+
     /// <summary>
     /// Returns the exact row height, whether it is currently displayed or not.
     /// The row is generated and added to the displayed rows in case it is not already displayed.
@@ -1819,7 +1828,7 @@ public partial class DataGrid
     }
 
     // Updates display information and displayed rows after scrolling the given number of pixels
-    private void ScrollSlotsByHeight(double height)
+    internal void ScrollSlotsByHeight(double height)
     {
         Debug.Assert(DisplayData.FirstScrollingSlot >= 0);
         Debug.Assert(!MathUtilities.IsZero(height));

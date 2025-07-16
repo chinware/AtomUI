@@ -19,9 +19,5 @@ public class DataGridRowEventArgs : EventArgs
     /// <summary>
     /// Gets the row that the event occurs for.
     /// </summary>
-    public DataGridRow Row
-    {
-        get;
-        private set;
-    }
+    public DataGridRow Row { get; private set; }
 }

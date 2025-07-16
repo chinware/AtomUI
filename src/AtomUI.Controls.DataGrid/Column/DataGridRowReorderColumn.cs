@@ -1,15 +1,19 @@
+using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using AtomUI.Controls.Data;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-public sealed class DataGridDetailExpanderColumn : DataGridColumn
+public sealed class DataGridRowReorderColumn : DataGridColumn
 {
     private DataGrid? _owningGrid;
     
-    public DataGridDetailExpanderColumn()
+    public DataGridRowReorderColumn()
     {
         IsReadOnly = true;    
     }
@@ -23,9 +27,11 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
     protected override Control GenerateElement(DataGridCell cell, object dataItem)
     {
         Debug.Assert(OwningGrid != null);
-        var expander = new DataGridRowExpander();
-        expander[!DataGridRowExpander.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
-        return expander;
+        var handle = new DataGridRowReorderHandle();
+        handle.OwningGrid                                         = OwningGrid;
+        handle[!DataGridRowReorderHandle.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
+        handle[!InputElement.IsEnabledProperty]                   = OwningGrid[!InputElement.IsEnabledProperty];
+        return handle;
     }
     
     protected override object? PrepareCellForEdit(Control editingElement, RoutedEventArgs editingEventArgs)
@@ -67,15 +73,30 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
                 _owningGrid                           =  null;
             }
         }
+
+        EnsureOnlyOneReorderColumn();
+    }
+
+    private void EnsureOnlyOneReorderColumn()
+    {
+        // 检查只能有一列排序列
+        if (_owningGrid != null)
+        {
+            var count = _owningGrid.Columns.Count(column => column is DataGridRowReorderColumn);
+            if (count > 1)
+            {
+                throw DataGridError.DataGridRow.RowReorderColumnAlreadyExistException();
+            }
+        }
     }
     
     private void HandleLoadingRow(object? sender, DataGridRowEventArgs e)
     {
         if (OwningGrid != null)
         {
-            if (GetCellContent(e.Row) is DataGridRowExpander expander)
+            if (GetCellContent(e.Row) is DataGridRowReorderHandle handle)
             {
-                expander.NotifyLoadingRow(e.Row);
+                handle.NotifyLoadingRow(e.Row);
             }
         }
     }
@@ -84,9 +105,9 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
     {
         if (OwningGrid != null)
         {
-            if (GetCellContent(e.Row) is DataGridRowExpander expander)
+            if (GetCellContent(e.Row) is DataGridRowReorderHandle handle)
             {
-                expander.NotifyUnLoadingRow(e.Row);
+                handle.NotifyUnLoadingRow(e.Row);
             }
         }
     }
@@ -94,12 +115,34 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
     protected override void NotifyOwningGridAttached(DataGrid? owningGrid)
     {
         base.NotifyOwningGridAttached(owningGrid);
-        ConfigureOwningGrid();
         if (owningGrid != null)
         {
-            if (owningGrid.RowDetailsVisibilityMode != DataGridRowDetailsVisibilityMode.Collapsed)
+            if (!owningGrid.CanUserReorderRows)
             {
-                throw DataGridError.DataGridColumn.RowDetailsVisibilityModeException();
+                throw DataGridError.DataGridRow.RowReorderNotAllowedException();
+            }
+            owningGrid.PropertyChanged += HandleOwningGridItemsSourceChanged;
+        }
+
+        ConfigureOwningGrid();
+    }
+    
+    protected internal override void NotifyOwningGridAboutToDetached()
+    {
+        base.NotifyOwningGridAboutToDetached();
+        if (OwningGrid != null)
+        {
+            OwningGrid.PropertyChanged -= HandleOwningGridItemsSourceChanged;
+        }
+    }
+
+    private void HandleOwningGridItemsSourceChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == DataGrid.ItemsSourceProperty)
+        {
+            if (e.NewValue != null && e.NewValue is not IList)
+            {
+                throw DataGridError.DataGridRow.DataSourceTypeNotSupportRowReorderException();
             }
         }
     }

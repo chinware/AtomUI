@@ -246,6 +246,7 @@ public class DataGridCell : ContentControl
         }
 
         OwningGrid.NotifyCellPointerPressed(new DataGridCellPointerPressedEventArgs(this, OwningRow, OwningColumn, e));
+        
         if (e.Handled)
         {
             return;
@@ -260,8 +261,12 @@ public class DataGridCell : ContentControl
 
             if (OwningRow != null)
             {
-                var handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, ColumnIndex, OwningRow.Slot, !e.Handled);
-
+                var handled = false;
+                if (OwningColumn != null && OwningColumn.IsEditable())
+                {
+                    handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, ColumnIndex, OwningRow.Slot, !e.Handled);
+                }
+                
                 // Do not handle PointerPressed with touch or pen,
                 // so we can start scroll gesture on the same event.
                 if (e.Pointer.Type != PointerType.Touch && e.Pointer.Type != PointerType.Pen)

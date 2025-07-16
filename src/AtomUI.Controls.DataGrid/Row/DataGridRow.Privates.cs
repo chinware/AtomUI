@@ -33,6 +33,9 @@ public partial class DataGridRow
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridRow>();
     
+    internal static readonly StyledProperty<bool> IsDraggingProperty
+        = AvaloniaProperty.Register<DataGridRow, bool>(nameof(IsDragging));
+    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -43,6 +46,12 @@ public partial class DataGridRow
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+    
+    internal bool IsDragging
+    {
+        get => GetValue(IsDraggingProperty);
+        set => SetValue(IsDraggingProperty, value);
     }
     
     internal int Slot { get; set; }

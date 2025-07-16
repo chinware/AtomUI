@@ -104,7 +104,7 @@
                                 CornerRadius="{TemplateBinding HeaderCornerRadius}"
                                 IsEnabled="{TemplateBinding IsEnabled}" />
                             
-                            <atom:DataGridDraggingOverIndicator
+                            <atom:DataGridColumnDraggingOverIndicator
                                 Name="{x:Static atom:DataGridThemeConstants.DraggingOverIndicatorPart}"
                                 Grid.Row="1"
                                 Grid.Column="0"

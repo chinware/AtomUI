@@ -193,53 +193,53 @@ internal class DataGridToken : AbstractControlDesignToken
     internal double ExpandIconSize { get; set; }
     internal double ExpandIconScale { get; set; }
     internal double SortIconSize { get; set; }
+    internal double RowReorderIndicatorSize { get; set; }
     internal Color HeaderIconColor { get; set; }
     internal Color HeaderIconHoverColor { get; set; }
     internal Thickness SortIndicatorLayoutMargin { get; set; }
-    
     internal Thickness FilterIndicatorPadding { get; set; }
 
     #endregion
 
-    #region 别名
-    public double TableFontSize { get; set; }
-    public Color TableBg { get; set; }
-    public CornerRadius TableRadius { get; set; }
-    public Thickness TablePadding { get; set; }
-    public Thickness TablePaddingMiddle { get; set; }
-    public Thickness TablePaddingSmall { get; set; }
-    public Color TableBorderColor { get; set; }
-    public Color TableHeaderTextColor { get; set; }
-    public Color TableHeaderBg { get; set; }
-    public Color TableFooterTextColor { get; set; }
-    public Color TableFooterBg { get; set; }
-    public Color TableHeaderCellSplitColor { get; set; }
-    public Color TableHeaderSortBg { get; set; }
-    public Color TableHeaderSortHoverBg { get; set; }
-    public Color TableBodySortBg { get; set; }
-    public Color TableFixedHeaderSortActiveBg { get; set; }
-    public Color TableHeaderFilterActiveBg { get; set; }
-    public Color TableFilterDropdownBg { get; set; }
-    public double TableFilterButtonSpacing  { get; set; }
-    public Thickness TableFilterButtonContainerMargin { get; set; }
-    public Thickness TableFilterButtonLayoutSeparatorMargin { get; set; }
+    #region 内部别名定义
+    internal double TableFontSize { get; set; }
+    internal Color TableBg { get; set; }
+    internal CornerRadius TableRadius { get; set; }
+    internal Thickness TablePadding { get; set; }
+    internal Thickness TablePaddingMiddle { get; set; }
+    internal Thickness TablePaddingSmall { get; set; }
+    internal Color TableBorderColor { get; set; }
+    internal Color TableHeaderTextColor { get; set; }
+    internal Color TableHeaderBg { get; set; }
+    internal Color TableFooterTextColor { get; set; }
+    internal Color TableFooterBg { get; set; }
+    internal Color TableHeaderCellSplitColor { get; set; }
+    internal Color TableHeaderSortBg { get; set; }
+    internal Color TableHeaderSortHoverBg { get; set; }
+    internal Color TableBodySortBg { get; set; }
+    internal Color TableFixedHeaderSortActiveBg { get; set; }
+    internal Color TableHeaderFilterActiveBg { get; set; }
+    internal Color TableFilterDropdownBg { get; set; }
+    internal double TableFilterButtonSpacing  { get; set; }
+    internal Thickness TableFilterButtonContainerMargin { get; set; }
+    internal Thickness TableFilterButtonLayoutSeparatorMargin { get; set; }
 
-    public double TableFilterDropdownHeight { get; set; }
-    public double TableFilterDropdownWidth { get; set; }
-    public Thickness TableFilterDropdownPadding { get; set; }
-    public double TableFilterDropdownSearchWidth { get; set; }
+    internal double TableFilterDropdownHeight { get; set; }
+    internal double TableFilterDropdownWidth { get; set; }
+    internal Thickness TableFilterDropdownPadding { get; set; }
+    internal double TableFilterDropdownSearchWidth { get; set; }
     
-    public Color TableRowHoverBg { get; set; }
-    public Color TableSelectedRowBg { get; set; }
-    public Color TableSelectedRowHoverBg { get; set; }
-    public double TableFontSizeMiddle { get; set; }
-    public double TableFontSizeSmall { get; set; }
-    public double TableSelectionColumnWidth { get; set; }
-    public Color TableExpandIconBg { get; set; }
-    public double TableExpandColumnWidth { get; set; }
-    public Color TableExpandedRowBg { get; set; }
+    internal Color TableRowHoverBg { get; set; }
+    internal Color TableSelectedRowBg { get; set; }
+    internal Color TableSelectedRowHoverBg { get; set; }
+    internal double TableFontSizeMiddle { get; set; }
+    internal double TableFontSizeSmall { get; set; }
+    internal double TableSelectionColumnWidth { get; set; }
+    internal Color TableExpandIconBg { get; set; }
+    internal double TableExpandColumnWidth { get; set; }
+    internal Color TableExpandedRowBg { get; set; }
     
-    public CornerRadius TableTopLeftColumnCornerRadius { get; set; }
+    internal CornerRadius TableTopLeftColumnCornerRadius { get; set; }
     
     #endregion
     
@@ -299,6 +299,7 @@ internal class DataGridToken : AbstractControlDesignToken
             baseColorAction.GetBlueF());
         ExpandIconHalfInner       = expandIconHalfInner;
         ExpandIconSize            = expandIconSize;
+        RowReorderIndicatorSize   = SharedToken.SizeMD; // TODO 需要根据 SizeType 做一定的调整
         ExpandIconScale           = SharedToken.ControlInteractiveSize / expandIconSize;
         SortIconSize              = SharedToken.FontHeight / 2.5;
         SortIndicatorLayoutMargin = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);

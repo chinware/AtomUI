@@ -723,6 +723,7 @@ internal partial class DataGridColumnHeader : ContentControl
         {
             DragIndicator         = dragIndicator
         };
+        
         OwningGrid.NotifyColumnReordering(columnReorderingEventArgs);
         if (columnReorderingEventArgs.Cancel)
         {
