@@ -52,6 +52,12 @@ public partial class DataGrid
             o => o.HeaderCornerRadius,
             (o, v) => o.HeaderCornerRadius = v);
     
+    internal static readonly DirectProperty<DataGrid, bool> IsEmptyDataSourceProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, bool>(
+            nameof(IsEmptyDataSource),
+            o => o.IsEmptyDataSource,
+            (o, v) => o.IsEmptyDataSource = v);
+    
     internal bool IsGroupHeaderMode
     {
         get => _isGroupHeaderMode;
@@ -72,6 +78,13 @@ public partial class DataGrid
         set => SetAndRaise(HeaderCornerRadiusProperty, ref _headerCornerRadius, value);
     }
     private CornerRadius _headerCornerRadius;
+    
+    internal bool IsEmptyDataSource
+    {
+        get => _isEmptyDataSource;
+        set => SetAndRaise(IsEmptyDataSourceProperty, ref _isEmptyDataSource, value);
+    }
+    private bool _isEmptyDataSource = false;
     
     internal IndexToValueTable<DataGridRowGroupInfo> RowGroupHeadersTable { get; private set; }
 
@@ -1306,13 +1319,25 @@ public partial class DataGrid
                     : default;
             }
 
-            Debug.Assert(newCollectionView != null);
-            
-            if (newCollectionView.Filter == null)
+            if (oldCollectionView != null)
             {
-                // TODO 不知道这样循环会不会有内存泄露的风险
-                _defaultFilter           = new DataGridDefaultFilter(newCollectionView);
-                newCollectionView.Filter = _defaultFilter;
+                oldCollectionView.CollectionChanged -= HandleDataCollectionViewChanged;
+            }
+            
+            if (newCollectionView != null)
+            {
+                newCollectionView.CollectionChanged += HandleDataCollectionViewChanged;
+                IsEmptyDataSource                   =  newCollectionView.IsEmpty;
+                if (newCollectionView.Filter == null)
+                {
+                    // TODO 不知道这样循环会不会有内存泄露的风险
+                    _defaultFilter           = new DataGridDefaultFilter(newCollectionView);
+                    newCollectionView.Filter = _defaultFilter;
+                }
+            }
+            else
+            {
+                IsEmptyDataSource = true;
             }
 
             DataConnection.DataSource = newCollectionView;
@@ -1360,6 +1385,14 @@ public partial class DataGrid
             _measured = false;
             InvalidateMeasure();
             UpdatePseudoClasses();
+        }
+    }
+
+    private void HandleDataCollectionViewChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (sender is DataGridCollectionView view)
+        {
+            IsEmptyDataSource = view.IsEmpty;
         }
     }
 

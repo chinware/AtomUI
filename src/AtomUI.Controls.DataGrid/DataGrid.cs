@@ -227,6 +227,12 @@ public partial class DataGrid : TemplatedControl,
 
     public static readonly StyledProperty<IDataTemplate?> FooterTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(FooterTemplate));
+    
+    public static readonly StyledProperty<object?> EmptyIndicatorProperty =
+        AvaloniaProperty.Register<DataGrid, object?>(nameof(EmptyIndicator));
+
+    public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
+        AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
@@ -586,11 +592,24 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(FooterTemplateProperty);
         set => SetValue(FooterTemplateProperty, value);
     }
+    
+    [DependsOn(nameof(EmptyIndicatorTemplate))]
+    public object? EmptyIndicator
+    {
+        get => GetValue(EmptyIndicatorProperty);
+        set => SetValue(EmptyIndicatorProperty, value);
+    }
+
+    public IDataTemplate? EmptyIndicatorTemplate
+    {
+        get => GetValue(EmptyIndicatorTemplateProperty);
+        set => SetValue(EmptyIndicatorTemplateProperty, value);
+    }
 
     /// <summary>
-                                            /// Gets or sets the column that contains the current cell.
-                                            /// </summary>
-                                            public DataGridColumn? CurrentColumn
+    /// Gets or sets the column that contains the current cell.
+    /// </summary>
+    public DataGridColumn? CurrentColumn
     {
         get
         {
@@ -1530,6 +1549,11 @@ public partial class DataGrid : TemplatedControl,
         }
 
         ConfigureHeaderCornerRadius();
+        SetValue(EmptyIndicatorProperty, new EmptyIndicator()
+        {
+            SizeType = SizeType.Middle,
+            PresetImage = PresetEmptyImage.Simple
+        }, BindingPriority.Template);
     }
 
     /// <summary>

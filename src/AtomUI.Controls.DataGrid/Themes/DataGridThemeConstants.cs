@@ -88,6 +88,7 @@ internal static class DataGridSortIndicatorThemeConstants
 internal static class DataGridThemeConstants
 {
     public const string RowsPresenterPart = "PART_RowPresenter";
+    public const string EmptyIndicatorPart = "PART_EmptyIndicator";
     public const string ColumnHeadersPresenterPart = "PART_ColumnHeadersPresenter";
     public const string GroupColumnHeadersPresenterPart = "PART_GroupColumnHeadersPresenter";
     public const string HorizontalScrollbarPart = "PART_HorizontalScrollbar";

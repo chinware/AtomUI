@@ -67,7 +67,8 @@
                                 Grid.Column="0"
                                 Grid.RowSpan="2"
                                 Grid.ColumnSpan="3"
-                                ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                                ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}"
+                                IsVisible="{TemplateBinding IsEmptyDataSource, Converter={x:Static BoolConverters.Not}}">
                                 <atom:DataGridRowsPresenter.GestureRecognizers>
                                     <ScrollGestureRecognizer
                                         CanHorizontallyScroll="True"
@@ -75,6 +76,20 @@
                                         IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_RowPresenter}" />
                                 </atom:DataGridRowsPresenter.GestureRecognizers>
                             </atom:DataGridRowsPresenter>
+                            
+                            <ContentPresenter
+                                Name="{x:Static atom:DataGridThemeConstants.EmptyIndicatorPart}"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.RowSpan="2"
+                                Grid.ColumnSpan="3"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                IsVisible="{TemplateBinding IsEmptyDataSource}"
+                                Content="{TemplateBinding EmptyIndicator}"
+                                ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}"
+                                />
+                            
                             <Rectangle
                                 Name="{x:Static atom:DataGridThemeConstants.BottomRightCornerPart}"
                                 Grid.Row="2"
@@ -143,6 +158,11 @@
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFooterBg}}" />
         </Style>
 
+        <Style Selector="^ /template/ ContentPresenter#PART_EmptyIndicator">
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXL}}" />
+        </Style>
+        
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ ContentPresenter#PART_Title">
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePadding}}" />
