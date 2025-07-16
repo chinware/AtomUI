@@ -18,7 +18,6 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -612,14 +611,6 @@ public class Popup : AvaloniaPopup,
         if (change.Property == IsFlippedProperty)
         {
             _isNeedWaitFlipSync = true;
-        }
-        else if (change.Property == PlacementTargetProperty)
-        {
-            var newTarget = change.GetNewValue<Control?>();
-            if (newTarget != null)
-            {
-                CreateBuddyLayer();
-            }
         }
     }
 }
