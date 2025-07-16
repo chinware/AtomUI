@@ -162,7 +162,8 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     public void Attach()
     {
-        _buddyDecorator.CaptureContentControl();
+        SetupPopupHost();
+        _buddyDecorator.ConfigureBlankContentControl();
         if (OperatingSystem.IsMacOS())
         {
             PlatformImpl?.SetTopmost(true);
@@ -182,8 +183,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         {
             Show();
         }
-       
-        SetupPopupHost();
     }
 
     public void Detach()

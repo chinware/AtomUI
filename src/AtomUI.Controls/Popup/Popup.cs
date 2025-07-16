@@ -18,6 +18,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -155,7 +156,7 @@ public class Popup : AvaloniaPopup,
     {
         this.BindWaveSpiritProperties();
         Closed                         += HandleClosed;
-        Opened                         += HandleOpened; 
+        Opened                         += HandleOpened;
     }
     
     // Popup 好像不加入视觉树，所以我们放在逻辑树
@@ -280,6 +281,10 @@ public class Popup : AvaloniaPopup,
     
     private void CreateBuddyLayer()
     {
+        if (_buddyLayer != null)
+        {
+            _buddyLayer.Detach();
+        }
         var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         Debug.Assert(topLevel is not null);
         _buddyLayer = new PopupBuddyLayer(this, topLevel);
@@ -511,12 +516,9 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
-
         if (!IsMotionEnabled)
         {
             Open();
-            Debug.Assert(_buddyLayer != null);
-            _buddyLayer.Attach();
             opened?.Invoke();
             (Host as PopupRoot)?.PlatformImpl?.SetTopmost(true);
             return;
@@ -610,6 +612,14 @@ public class Popup : AvaloniaPopup,
         if (change.Property == IsFlippedProperty)
         {
             _isNeedWaitFlipSync = true;
+        }
+        else if (change.Property == PlacementTargetProperty)
+        {
+            var newTarget = change.GetNewValue<Control?>();
+            if (newTarget != null)
+            {
+                CreateBuddyLayer();
+            }
         }
     }
 }
