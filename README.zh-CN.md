@@ -75,52 +75,107 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 
 > PS：扫码请注明来意，比如：学习`AtomUI`或者`Avalonia`爱好者
 
-#### 运行效果部分截图
+#### 开始使用
 
-<table border="0">
-    <tbody>
-        <tr>
-            <td align="center" valign="middle" style="padding: 2px">
-                 <img src="./resources/images/readme/controls/Button.png"/>
-            </td>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/Badge.png" />
-            </td>
-        </tr>
-        <tr>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/DatePicker.png"/>
-            </td>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/LineEdit.png"/>
-            </td>
-        </tr>
-        <tr>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/Menu.png"/>
-            </td>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/Notification.png"/>
-            </td>
-        </tr>
-        <tr>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/PopupConfirm.png"/>
-            </td>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/ProgressBar.png"/>
-            </td>
-        </tr>
-        <tr>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/RadioButton.png"/>
-            </td>
-            <td align="center" valign="middle" style="padding: 2px">
-                <img src="./resources/images/readme/controls/TreeView.png"/>
-            </td>
-        </tr>
-    </tbody>
-</table>
+AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 相关的包上传到 nuget.org，目前 AtomUI
+没有发布长期支持版，所以推荐安装我们发布的最新版本
+
+目前我们已经发布的包如下：
+
+| 包名称                      | 描述                                                    |
+|--------------------------|-------------------------------------------------------|
+| AtomUI                   | 主库，包含了主题系统和 AtomUI OSS 版本所有的控件                        |
+| AtomUI.Controls.DataGrid | 数据表格控件定义，如果不用可以不引入                                    |
+| AtomUI.Generator         | 自定义控件需要的一些源码生成器定义，您如果在自定义控件的时候需要接入 AtomUI 主题系统，需要引入此包 |
+| AtomUI.IconPkg.Generator | 如果您需要自定义 Icon 包，需要引入此包                                |
+
+```bash
+dotnet add package AtomUI --version 0.0.6-build.4
+```
+
+##### 启用 AtomUI 库
+
+###### 配置项目文件
+```xaml
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AtomUI" Version="0.0.6-build.4"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.2"/>
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.2">
+            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>
+```
+
+###### 配置程序入口文件
+
+```csharp
+using Avalonia;
+using System;
+namespace AtomUIProgressApp;
+class Program
+{
+    [STAThread]
+    public static void Main(string[] args) => BuildAvaloniaApp()
+        .StartWithClassicDesktopLifetime(args);
+    public static AppBuilder BuildAvaloniaApp()
+    {
+        var builder = AppBuilder.Configure<App>()
+            .UsePlatformDetect()
+            .WithInterFont()
+            .With(new Win32PlatformOptions())
+            .LogToTrace();
+        var themeBuilder = builder.CreateThemeManagerBuilder();
+        themeBuilder.UseCultureInfo(new CultureInfo(LanguageCode.en_US));
+        themeBuilder.UseTheme(ThemeManager.DEFAULT_THEME_ID);
+        themeBuilder.UseOSSControls();
+        return builder.UseAtomUI(themeBuilder);
+    }
+}
+```
+
+###### 开始用 AtomUI 创造无限可能
+
+您可以开始在自己的项目中开始使用 `AtomUI`
+
+```xaml
+<atom:Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="using:AtomUI.Controls"
+             xmlns:local="using:AtomUIProgressApp"
+             x:Class="AtomUIProgressApp.MainWindow"
+             Title="AtomUIProgressApp"
+             Width="800"
+             Height="600"
+             x:DataType="local:MainWindow"
+             WindowState="Normal"
+             WindowStartupLocation="CenterScreen">
+    <Panel>
+        <StackPanel Orientation="Vertical" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <atom:ProgressBar Value="{Binding ProgressValue}" Minimum="0" Maximum="100" 
+                              HorizontalAlignment="Center"
+                              Width="400"/>
+            <atom:CircleProgress Value="{Binding ProgressValue}" Minimum="0" Maximum="100"
+                                 HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                <atom:Button Click="HandleSubBtnClicked">Sub</atom:Button>
+                <atom:Button Click="HandleAddBtnClicked">Add</atom:Button>
+            </StackPanel>
+        </StackPanel>
+    </Panel>
+</atom:Window>
+```
 
 <div style="height:50px"></div>
 
