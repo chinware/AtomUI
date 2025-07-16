@@ -1504,7 +1504,7 @@ public partial class DataGrid
 
     private bool BeginCellEdit(RoutedEventArgs editingEventArgs)
     {
-        if (CurrentColumnIndex == -1 || !GetRowSelection(CurrentSlot))
+        if (CurrentColumnIndex == -1)
         {
             return false;
         }
@@ -1554,7 +1554,6 @@ public partial class DataGrid
         if (e.Cancel
             || currentRowIndex != CurrentSlot
             || currentColumnIndex != CurrentColumnIndex
-            || !GetRowSelection(CurrentSlot)
             || (EditingRow == null && !BeginRowEdit(dataGridRow)))
         {
             // If either BeginningEdit was canceled, currency/selection was changed in the event handler,
@@ -4256,25 +4255,29 @@ public partial class DataGrid
                         action = DataGridSelectionAction.AddCurrentToSelection;
                     }
                 }
-
-                var updateSelection = true;
-                var column          = ColumnsInternal[columnIndex];
-                if (column is DataGridSelectionColumn selectionColumn)
-                {
-                    var row = DisplayData.GetDisplayedElement(slot) as DataGridRow;
-                    Debug.Assert(row != null);
-                    var dataGridCell = row.Cells[columnIndex];
-                    updateSelection = selectionColumn.NotifyAboutToUpdateSelection(pointerPressedEventArgs, dataGridCell);
-                    if (updateSelection)
-                    {
-                        action = selectionColumn.GetSelectionAction(dataGridCell);
-                    }
-                }
-
+            }
+            else
+            {
+                action = DataGridSelectionAction.SelectCurrent;
+            }
+            
+            var updateSelection = true;
+            var column          = ColumnsInternal[columnIndex];
+            if (column is DataGridSelectionColumn selectionColumn)
+            {
+                var row = DisplayData.GetDisplayedElement(slot) as DataGridRow;
+                Debug.Assert(row != null);
+                var dataGridCell = row.Cells[columnIndex];
+                updateSelection = selectionColumn.NotifyAboutToUpdateSelection(pointerPressedEventArgs, dataGridCell);
                 if (updateSelection)
                 {
-                    UpdateSelectionAndCurrency(columnIndex, slot, action, scrollIntoView: false);
+                    action = selectionColumn.GetSelectionAction(dataGridCell);
                 }
+            }
+
+            if (updateSelection)
+            {
+                UpdateSelectionAndCurrency(columnIndex, slot, action, scrollIntoView: false);
             }
         }
         finally

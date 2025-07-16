@@ -1181,7 +1181,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             throw new InvalidOperationException(GetOperationNotAllowedText(nameof(CancelEdit), nameof(AddNew)));
         }
-        else if (!CanCancelEdit)
+        if (!CanCancelEdit)
         {
             throw new InvalidOperationException("CancelEdit is not supported for the current edit item.");
         }

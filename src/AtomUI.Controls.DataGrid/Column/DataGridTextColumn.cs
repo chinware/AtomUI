@@ -112,27 +112,13 @@ public class DataGridTextColumn : DataGridBoundColumn
         set => SetValue(ForegroundProperty, value);
     }
     #endregion
-    
-    private readonly Lazy<ControlTheme?> _cellTextBoxTheme;
-    private readonly Lazy<ControlTheme?> _cellTextBlockTheme;
         
     /// <summary>
     /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridTextColumn" /> class.
     /// </summary>
     public DataGridTextColumn()
     {
-        BindingTarget = TextBox.TextProperty;
-
-        _cellTextBoxTheme = new Lazy<ControlTheme?>(() =>
-        {
-            Debug.Assert(OwningGrid != null);
-            return OwningGrid.TryFindResource("DataGridCellTextBoxTheme", out var theme) ? (ControlTheme?)theme : null;
-        });
-        _cellTextBlockTheme = new Lazy<ControlTheme?>(() =>
-        {
-            Debug.Assert(OwningGrid != null);
-            return OwningGrid.TryFindResource("DataGridCellTextBlockTheme", out var theme) ? (ControlTheme?)theme : null;
-        });
+        BindingTarget = LineEdit.TextProperty;
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -156,7 +142,7 @@ public class DataGridTextColumn : DataGridBoundColumn
     /// <param name="uneditedValue">The previous, unedited value in the cell being edited.</param>
     protected override void CancelCellEdit(Control editingElement, object uneditedValue)
     {
-        if (editingElement is TextBox textBox)
+        if (editingElement is LineEdit textBox)
         {
             string? uneditedString = uneditedValue as string;
             textBox.Text = uneditedString ?? string.Empty;
@@ -171,18 +157,12 @@ public class DataGridTextColumn : DataGridBoundColumn
     /// <returns>A new <see cref="T:AtomUI.Controls.TextBox" /> control that is bound to the column's <see cref="P:AtomUI.Controls.DataGridBoundColumn.Binding" /> property value.</returns>
     protected override Control GenerateEditingElementDirect(DataGridCell cell, object dataItem)
     {
-        var textBox = new TextBox
+        var lineEdit = new LineEdit
         {                
             Name = "CellTextBox"
         };
-        if (_cellTextBoxTheme.Value is { } theme)
-        {
-            textBox.Theme = theme;
-        }
-
-        SyncProperties(textBox);
-
-        return textBox;
+        SyncProperties(lineEdit);
+        return lineEdit;
     }
         
     /// <summary>
@@ -197,10 +177,6 @@ public class DataGridTextColumn : DataGridBoundColumn
         {
             Name = "CellTextBlock"
         };
-        if (_cellTextBlockTheme.Value is { } theme)
-        {
-            textBlockElement.Theme = theme;
-        }
 
         SyncProperties(textBlockElement);
 
@@ -219,22 +195,22 @@ public class DataGridTextColumn : DataGridBoundColumn
     /// <returns>The unedited value. </returns>
     protected override object PrepareCellForEdit(Control editingElement, RoutedEventArgs editingEventArgs)
     {
-        if (editingElement is TextBox textBox)
+        if (editingElement is LineEdit lineEdit)
         {
-            string uneditedText = textBox.Text ?? String.Empty;
+            string uneditedText = lineEdit.Text ?? string.Empty;
             int    len          = uneditedText.Length;
             if (editingEventArgs is KeyEventArgs keyEventArgs && keyEventArgs.Key == Key.F2)
             {
                 // Put caret at the end of the text
-                textBox.SelectionStart = len;
-                textBox.SelectionEnd   = len;
+                lineEdit.SelectionStart = len;
+                lineEdit.SelectionEnd   = len;
             }
             else
             {
                 // Select all text
-                textBox.SelectionStart = 0;
-                textBox.SelectionEnd   = len;
-                textBox.CaretIndex     = len;
+                lineEdit.SelectionStart = 0;
+                lineEdit.SelectionEnd   = len;
+                lineEdit.CaretIndex     = len;
             }
 
             return uneditedText;

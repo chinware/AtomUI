@@ -15,7 +15,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
@@ -386,9 +385,4 @@ public class DataGridCell : ContentControl
         _compositeDisposable.Dispose();
         _compositeDisposable.Clear();
     }
-
-    // public bool HitTest(Point point)
-    // {
-    //     return true;
-    // }
 }

@@ -17,43 +17,32 @@ internal static class InstancedBindingFactory
                 return InstancedBinding.OneTime(observable, priority);
             }
             return InstancedBinding.OneTime(Observable.Return(source), priority);
-        } else if (mode == BindingMode.OneWay)
+        } 
+        if (mode == BindingMode.OneWay)
         {
             if (source is IObservable<object?> observable)
             {
                 return InstancedBinding.OneWay(observable, priority);
             }
-            else
-            {
-                throw new ArgumentException("source type must be IObservable<object?>.");
-            }
+            throw new ArgumentException("source type must be IObservable<object?>.");
         }
-        else if (mode == BindingMode.OneWayToSource)
+        if (mode == BindingMode.OneWayToSource)
         {
             if (source is IObserver<object?> observer)
             {
                 return InstancedBinding.OneWayToSource(observer, priority);
             } 
-            else
-            {
-                throw new ArgumentException("source type must be IObserver<object?>.");
-            }
+            throw new ArgumentException("source type must be IObserver<object?>.");
         }
-        else if (mode == BindingMode.TwoWay)
+        if (mode == BindingMode.TwoWay)
         {
-            if (source is IObserver<object?> observer)
+            if (source is IObserver<object?> observer && source is IObservable<object?> observable)
             {
-                return InstancedBinding.OneWayToSource(observer, priority);
+                return InstancedBinding.TwoWay(observable, observer, priority);
             } 
-            else
-            {
-                throw new ArgumentException("source type must be IObserver<object?>.");
-            }
+            throw new ArgumentException("source type must be IObserver<object?> and IObservable<object?>.");
         }
-        else
-        {
-            throw new ArgumentException("mode must be OneTime, OneWay or OneWayToSource.");
-        }
+        throw new ArgumentException("mode must be OneTime, OneWay or OneWayToSource.");
     }
     
 }
