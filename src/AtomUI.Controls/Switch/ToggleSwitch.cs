@@ -369,7 +369,7 @@ public class ToggleSwitch : ToggleButton,
 
     private void AdjustOffsetOnReleased()
     {
-        CalculateElementsOffset(DesiredSize);
+        CalculateElementsOffset(GrooveRect().Size);
 
         if (_switchKnob is not null)
         {
@@ -415,7 +415,7 @@ public class ToggleSwitch : ToggleButton,
         {
             if (e.Property == IsCheckedProperty && IsMotionEnabled)
             {
-                CalculateElementsOffset(DesiredSize);
+                CalculateElementsOffset(GrooveRect().Size);
                 WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
             }
         }
@@ -499,7 +499,8 @@ public class ToggleSwitch : ToggleButton,
     public sealed override void Render(DrawingContext context)
     {
         using var state = context.PushOpacity(SwitchOpacity);
-        context.DrawPilledRect(GrooveBackground, null, new Rect(0, 0, DesiredSize.Width, DesiredSize.Height));
+        var       size  = DesiredSize.Deflate(Margin);
+        context.DrawPilledRect(GrooveBackground, null, new Rect(new Point(0, 0), size));
     }
 
     public bool HitTest(Point point)
@@ -582,12 +583,12 @@ public class ToggleSwitch : ToggleButton,
 
     private Rect GrooveRect()
     {
-        return new Rect(new Point(0, 0), DesiredSize);
+        return new Rect(new Point(0, 0), DesiredSize.Deflate(Margin));
     }
 
     private Rect HandleRect()
     {
-        return HandleRect(IsChecked.HasValue && IsChecked.Value, DesiredSize);
+        return HandleRect(IsChecked.HasValue && IsChecked.Value, GrooveRect().Size);
     }
 
     private Rect HandleRect(bool isChecked, Size controlSize)
@@ -651,6 +652,7 @@ public class ToggleSwitch : ToggleButton,
 
     public CornerRadius WaveBorderRadius()
     {
-        return new CornerRadius(DesiredSize.Height / 2);
+        var size = GrooveRect().Size;
+        return new CornerRadius(size.Height / 2);
     }
 }
