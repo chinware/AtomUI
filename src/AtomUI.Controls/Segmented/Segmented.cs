@@ -176,10 +176,9 @@ public class Segmented : SelectingItemsControl,
             {
                 var offset    = segmentedItem.TranslatePoint(new Point(0, 0), this) ?? default;
                 var offsetX   = offset.X;
-                var offsetY   = (DesiredSize.Height - segmentedItem.DesiredSize.Height) / 2;
-                var targetPos = new Point(offsetX, offsetY);
+                var targetPos = new Point(offsetX, offset.Y);
                 SelectedThumbPos  = targetPos;
-                SelectedThumbSize = segmentedItem.Bounds.Size;
+                SelectedThumbSize = segmentedItem.DesiredSize;
             }
         }
     }
@@ -232,7 +231,7 @@ public class Segmented : SelectingItemsControl,
 
     public sealed override void Render(DrawingContext context)
     {
-        context.DrawRectangle(Background, null, new RoundedRect(new Rect(new Point(0, 0), Bounds.Size), CornerRadius));
+        context.DrawRectangle(Background, null, new RoundedRect(new Rect(DesiredSize.Deflate(Margin)), CornerRadius));
         context.DrawRectangle(SelectedThumbBg, null,
             new RoundedRect(new Rect(SelectedThumbPos, SelectedThumbSize), SelectedThumbCornerRadius),
             SelectedThumbBoxShadows);
