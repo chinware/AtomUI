@@ -9,6 +9,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -18,70 +19,71 @@ internal class PopupConfirmContainer : TemplatedControl,
 {
     #region 内部属性定义
 
-    internal static readonly StyledProperty<string> OkTextProperty =
+    public static readonly StyledProperty<string> OkTextProperty =
         PopupConfirm.OkTextProperty.AddOwner<PopupConfirmContainer>();
 
-    internal static readonly StyledProperty<string> CancelTextProperty =
+    public static readonly StyledProperty<string> CancelTextProperty =
         PopupConfirm.CancelTextProperty.AddOwner<PopupConfirmContainer>();
 
-    internal static readonly StyledProperty<ButtonType> OkButtonTypeProperty =
+    public static readonly StyledProperty<ButtonType> OkButtonTypeProperty =
         PopupConfirm.OkButtonTypeProperty.AddOwner<PopupConfirmContainer>();
 
-    internal static readonly StyledProperty<bool> IsShowCancelButtonProperty =
+    public static readonly StyledProperty<bool> IsShowCancelButtonProperty =
         PopupConfirm.IsShowCancelButtonProperty.AddOwner<PopupConfirmContainer>();
 
-    internal static readonly StyledProperty<string> TitleProperty =
+    public static readonly StyledProperty<string> TitleProperty =
         PopupConfirm.TitleProperty.AddOwner<PopupConfirmContainer>();
-
-    internal static readonly StyledProperty<object?> ConfirmContentProperty =
+    
+    public static readonly StyledProperty<object?> ConfirmContentProperty =
         PopupConfirm.ConfirmContentProperty.AddOwner<PopupConfirmContainer>();
 
-    internal static readonly StyledProperty<IDataTemplate?> ConfirmContentTemplateProperty =
+    public static readonly StyledProperty<IDataTemplate?> ConfirmContentTemplateProperty =
         PopupConfirm.ConfirmContentTemplateProperty.AddOwner<PopupConfirmContainer>();
 
-    internal static readonly StyledProperty<Icon?> IconProperty =
+    public static readonly StyledProperty<Icon?> IconProperty =
         PopupConfirm.IconProperty.AddOwner<PopupConfirmContainer>();
 
-    internal static readonly StyledProperty<PopupConfirmStatus> ConfirmStatusProperty
-        = PopupConfirm.ConfirmStatusProperty.AddOwner<PopupConfirmContainer>();
+    public static readonly StyledProperty<PopupConfirmStatus> ConfirmStatusProperty =
+        PopupConfirm.ConfirmStatusProperty.AddOwner<PopupConfirmContainer>();
 
-    internal string OkText
+    public string OkText
     {
         get => GetValue(OkTextProperty);
         set => SetValue(OkTextProperty, value);
     }
 
-    internal string CancelText
+    public string CancelText
     {
         get => GetValue(CancelTextProperty);
         set => SetValue(CancelTextProperty, value);
     }
 
-    internal ButtonType OkButtonType
+    public ButtonType OkButtonType
     {
         get => GetValue(OkButtonTypeProperty);
         set => SetValue(OkButtonTypeProperty, value);
     }
 
-    internal bool IsShowCancelButton
+    public bool IsShowCancelButton
     {
         get => GetValue(IsShowCancelButtonProperty);
         set => SetValue(IsShowCancelButtonProperty, value);
     }
 
-    internal string Title
+    public string Title
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 
-    internal object? ConfirmContent
+    [DependsOn("ConfirmContentTemplate")]
+    public object? ConfirmContent
     {
         get => GetValue(ConfirmContentProperty);
         set => SetValue(ConfirmContentProperty, value);
     }
 
-    internal IDataTemplate? ConfirmContentTemplate
+    public IDataTemplate? ConfirmContentTemplate
     {
         get => GetValue(ConfirmContentTemplateProperty);
         set => SetValue(ConfirmContentTemplateProperty, value);
@@ -133,6 +135,7 @@ internal class PopupConfirmContainer : TemplatedControl,
             _cancelButton.Width  =  double.NaN;
             _cancelButton.Height =  double.NaN;
         }
+        UpdatePseudoClasses();
     }
 
     private void HandleButtonClicked(object? sender, RoutedEventArgs args)
@@ -168,6 +171,12 @@ internal class PopupConfirmContainer : TemplatedControl,
                 SetupDefaultIcon();
             }
         }
+
+        if (change.Property == ConfirmContentProperty ||
+            change.Property == ConfirmContentTemplateProperty)
+        {
+            UpdatePseudoClasses();
+        }
     }
 
     private void SetupDefaultIcon()
@@ -177,5 +186,10 @@ internal class PopupConfirmContainer : TemplatedControl,
             ClearValue(IconProperty);
             SetValue(IconProperty, AntDesignIconPackage.ExclamationCircleFilled(), BindingPriority.Template);
         }
+    }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(PopupConfirmPseudoClass.EmptyContent, ConfirmContent == null);
     }
 }

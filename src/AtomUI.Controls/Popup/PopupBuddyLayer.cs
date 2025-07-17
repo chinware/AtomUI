@@ -65,6 +65,21 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         BindUtils.RelayBind(this, MaskShadowsProperty, _buddyDecorator, PopupBuddyDecorator.MaskShadowsProperty);
         SetMotionActor(_buddyDecorator);
         _buddyDecorator.NotifyMotionTargetAddedToScene();
+        if (OperatingSystem.IsLinux())
+        {
+            if (parent is WindowBase parentWindow)
+            {
+                parentWindow.Deactivated += HandleActiveStateChanged;
+                parentWindow.Activated   += HandleActiveStateChanged;
+            }
+        }
+    }
+
+    private void HandleActiveStateChanged(object? sender, EventArgs e)
+    {
+        var popupRoot = _popupHost as PopupRoot;
+        popupRoot?.Hide();
+        popupRoot?.Show();
     }
 
     private void SetupPopupHost()
@@ -184,6 +199,11 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     public void Detach()
     {
+        if (ParentTopLevel is WindowBase parentWindow)
+        {
+            parentWindow.Deactivated -= HandleActiveStateChanged;
+            parentWindow.Activated   -= HandleActiveStateChanged;
+        }
         Hide();
         if (this is IDisposable disposable)
         {
@@ -194,7 +214,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     public void AttachWithMotion(Action? aboutToStart = null,
                                  Action? completedAction = null)
     {
-        Attach();
         _buddyDecorator.CaptureContentControl();
         _buddyDecorator.Opacity = 0.0d;
         _buddyDecorator.NotifySceneShowed();
@@ -265,4 +284,5 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
             }
         }
     }
+
 }

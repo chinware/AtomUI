@@ -231,7 +231,6 @@ public class Popup : AvaloniaPopup,
             {
                 CreateBuddyLayer();
                 _buddyLayer?.Attach();
-                (Host as PopupRoot)?.PlatformImpl?.SetTopmost(true);
             }
 
             // 如果没有启动，我们使用自己的处理函数，一般是为了增加我们自己的动画效果
@@ -282,9 +281,11 @@ public class Popup : AvaloniaPopup,
         {
             _buddyLayer.Detach();
         }
+        
         var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         Debug.Assert(topLevel is not null);
-        _buddyLayer = new PopupBuddyLayer(this, topLevel);
+        _buddyLayer         = new PopupBuddyLayer(this, topLevel);
+        _buddyLayer.Topmost = false;
         BindUtils.RelayBind(this, MaskShadowsProperty, _buddyLayer, PopupBuddyLayer.MaskShadowsProperty);
         BindUtils.RelayBind(this, MotionDurationProperty, _buddyLayer, PopupBuddyLayer.MotionDurationProperty);
         BindUtils.RelayBind(this, OpenMotionProperty, _buddyLayer, PopupBuddyLayer.OpenMotionProperty);
@@ -513,6 +514,7 @@ public class Popup : AvaloniaPopup,
         {
             return;
         }
+        
         if (!IsMotionEnabled)
         {
             Open();
@@ -520,7 +522,7 @@ public class Popup : AvaloniaPopup,
             (Host as PopupRoot)?.PlatformImpl?.SetTopmost(true);
             return;
         }
-
+        
         Open();
         _openAnimating = true;
         Debug.Assert(_buddyLayer != null);
@@ -557,7 +559,11 @@ public class Popup : AvaloniaPopup,
                 RequestCloseWhereAnimationCompleted = false;
                 Dispatcher.UIThread.Post(() => { MotionAwareClose(); });
             }
-            Dispatcher.UIThread.Post(() => { popupRoot.Opacity = 1.0d; });
+            Dispatcher.UIThread.Post(() =>
+            {
+                
+                popupRoot.Opacity = 1.0d;
+            });
         });
     }
 

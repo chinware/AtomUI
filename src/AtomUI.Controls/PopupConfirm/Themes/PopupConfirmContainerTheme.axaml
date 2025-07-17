@@ -29,23 +29,20 @@
                             Icon="{TemplateBinding Icon}"
                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                             DockPanel.Dock="Left" />
-                        <DockPanel LastChildFill="True">
+                        <StackPanel>
                             <atom:TextBlock Name="{x:Static atom:PopupConfirmContainerThemeConstants.TitlePart}"
                                             VerticalAlignment="Center"
                                             Text="{TemplateBinding Title}"
                                             DockPanel.Dock="Top" />
                             <ContentPresenter Name="{x:Static atom:PopupConfirmContainerThemeConstants.ContentPart}"
                                               Content="{TemplateBinding ConfirmContent}"
-                                              ContentTemplate="{TemplateBinding ConfirmContentTemplate}" />
-                        </DockPanel>
+                                              ContentTemplate="{TemplateBinding ConfirmContentTemplate}" 
+                                              IsVisible="{TemplateBinding ConfirmContent, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        </StackPanel>
                     </DockPanel>
                 </DockPanel>
             </ControlTemplate>
         </Setter>
-        <Style Selector="^ /template/ DockPanel#PART_MainLayout">
-            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.PopupMinWidth}}" />
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.PopupMinHeight}}" />
-        </Style>
 
         <Style Selector="^ /template/ atom|TextBlock#PART_Title">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.TitleMargin}}" />
@@ -62,6 +59,12 @@
             <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.ButtonSpacing}}" />
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.ButtonContainerMargin}}" />
+        </Style>
+        
+        <Style Selector="^:empty-content">
+            <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
+                <Setter Property="Margin" Value="0" />
+            </Style>
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">

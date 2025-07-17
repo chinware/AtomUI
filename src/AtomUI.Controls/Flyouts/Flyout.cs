@@ -361,10 +361,7 @@ public class Flyout : PopupFlyoutBase
 
         NotifyAboutToClose();
         IsOpen = false;
-        DispatcherTimer.RunOnce((() =>
-        {
-            Popup.MotionAwareClose(HandlePopupClosed);
-        }), TimeSpan.FromMilliseconds(300));
+        Popup.MotionAwareClose(HandlePopupClosed);
         return true;
     }
 

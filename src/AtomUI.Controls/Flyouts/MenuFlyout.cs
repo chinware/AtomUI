@@ -197,32 +197,6 @@ public class MenuFlyout : Flyout
         popup.IsLightDismissEnabled = false;
     }
     
-    protected override bool HideCore(bool canCancel = true)
-    {
-        if (!IsOpen)
-        {
-            return false;
-        }
-
-        if (canCancel)
-        {
-            if (CancelClosing())
-            {
-                return false;
-            }
-        }
-
-        if (Popup.PlacementTarget?.GetVisualRoot() is null)
-        {
-            return base.HideCore(false);
-        }
-
-        NotifyAboutToClose();
-        IsOpen = false;
-        Popup.MotionAwareClose(HandlePopupClosed);
-        return true;
-    }
-
     protected override void NotifyAboutToClose()
     {
         if (_presenter != null)
