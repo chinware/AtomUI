@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net">
+    <atom:BoolToThicknessConverter x:Key="BoolToThicknessConverter" />
     <!--
        x:key表示，如果遇到atom:Breadcrumb，那就是我
        TargetType="atom:Breadcrumb"表示本axaml中的所有属性均来自于atom:Breadcrumb class
@@ -9,8 +10,13 @@
     <ControlTheme x:Key="{x:Type atom:Breadcrumb}" TargetType="atom:Breadcrumb">
         <!--
         把外部 ViewModel 里的集合 Breadcrumbs 绑进来。（在 Theme 里写死绑定是一种偷懒写法；实际可以删掉，让外部自己绑。）
+        <Setter Property="ItemsSource" Value="{TemplateBinding ItemsSource}" />，直接写在下面就会报错
         -->
-        <Setter Property="ItemsSource" Value="{Binding ItemsSource}"/>
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <!-- 是BreadcrumbTokenKey，而不是BreadcrumbToken -->
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.ItemColor}}" />
+        <Setter Property="IconFontSize" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.IconFontSize}}" />
         <!--
             把控件的外表完全换成下面这段 XAML，开始模板替换
         -->
@@ -23,24 +29,50 @@
                               ItemsSource="{TemplateBinding ItemsSource}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="atom:BreadcrumbItem">
-                            <StackPanel Orientation="Horizontal">
-                                <!-- 文字 -->
-                                <TextBlock Text="{Binding Title}"
-                                           VerticalAlignment="Center"/>
-                                <!-- 分隔符 -->
-                                <TextBlock Text="{Binding Separator}"
-                                           Margin="4,0"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
+                            <Border Name="PART_ItemContainer" 
+                                    Background="{Binding Background, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
+                                    Padding="0">
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- 面包屑Icon "{atom:IconProvider UserOutlined}" -->
+                                    <atom:IconPresenter Icon="{Binding Icon}"
+                                                        IconWidth="{Binding IconFontSize, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
+                                                        IconHeight="{Binding IconFontSize, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
+                                                        NormalFilledBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"/>
+                                    <!-- 面包屑文字 -->
+                                    <atom:TextBlock Text="{Binding Title}"
+                                                    FontSize="{Binding IconFontSize, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
+                                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
+                                                    Padding="{Binding HasIconAndText, Converter={StaticResource BoolToThicknessConverter}}"
+                                                    VerticalAlignment="Center"/>
+                                    <!-- 分隔符 -->
+                                    <atom:TextBlock VerticalAlignment="Center"
+                                                    FontSize="{Binding IconFontSize, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
+                                                    Padding="6, 0, 6, 0"
+                                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
+                                                    Text="{Binding Separator}"/>
+                                </StackPanel>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ControlTemplate>
         </Setter>
+        
+        <!-- 👉 悬停时的样式，全部为ControlTheme的直接子元素，无嵌套 -->
+        <!--
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ Border#PART_ItemContainer">
+                <Setter Property="Background" Value="Red" />
+            </Style>
+        </Style>
+        -->
+        
     </ControlTheme>
 </ResourceDictionary>
