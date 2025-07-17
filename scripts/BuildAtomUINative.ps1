@@ -38,6 +38,10 @@ $env:XMAKE_COLORTERM = 'nocolor'
 $buildType = $buildType.ToLower()
 
 if ($IsWindows) {
+     xmake config --toolchain=clang --project=$sourceDir --builddir=$buildDir -p msys -a arm64 -m $buildType -v
+     xmake build
+     xmake install --installdir=$installPrefix
+     Copy-Item -Path $installPrefix/arm64/lib/$libName -Destination $deployDir
      xmake config --toolchain=clang --project=$sourceDir --builddir=$buildDir -p msys -a x86_64 -m $buildType -v
      xmake build
      xmake install --installdir=$installPrefix
