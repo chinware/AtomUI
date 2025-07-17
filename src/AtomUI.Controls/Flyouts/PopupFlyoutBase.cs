@@ -322,12 +322,18 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
             }
         }
 
+        NotifyAboutToClose();
         IsOpen       = false;
         Popup.IsOpen = false;
 
         HandlePopupClosed();
 
         return true;
+    }
+
+    protected virtual void NotifyAboutToClose()
+    {
+        
     }
 
     protected void HandlePopupClosed()

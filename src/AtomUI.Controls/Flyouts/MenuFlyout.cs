@@ -10,6 +10,8 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Metadata;
 using Avalonia.Styling;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -50,6 +52,7 @@ public class MenuFlyout : Flyout
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
     
     private IDisposable? _detectMouseClickDisposable;
+    private MenuFlyoutPresenter? _presenter;
     
     [Content] 
     public ItemCollection Items { get; }
@@ -62,19 +65,19 @@ public class MenuFlyout : Flyout
     
     protected override Control CreatePresenter()
     {
-        var presenter = new MenuFlyoutPresenter
+        _presenter = new MenuFlyoutPresenter
         {
             ItemsSource                                = Items,
             [!ItemsControl.ItemTemplateProperty]       = this[!ItemTemplateProperty],
             [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
             MenuFlyout                                 = this
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
-        SetupArrowPosition(Popup, presenter);
+        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, MenuFlyoutPresenter.IsShowArrowProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, _presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
+        SetupArrowPosition(Popup, _presenter);
         CalculateShowArrowEffective();
 
-        return presenter;
+        return _presenter;
     }
 
     protected void SetupArrowPosition(Popup popup, MenuFlyoutPresenter? flyoutPresenter = null)
@@ -192,5 +195,45 @@ public class MenuFlyout : Flyout
     {
         base.NotifyPopupCreated(popup);
         popup.IsLightDismissEnabled = false;
+    }
+    
+    protected override bool HideCore(bool canCancel = true)
+    {
+        if (!IsOpen)
+        {
+            return false;
+        }
+
+        if (canCancel)
+        {
+            if (CancelClosing())
+            {
+                return false;
+            }
+        }
+
+        if (Popup.PlacementTarget?.GetVisualRoot() is null)
+        {
+            return base.HideCore(false);
+        }
+
+        NotifyAboutToClose();
+        IsOpen = false;
+        Popup.MotionAwareClose(HandlePopupClosed);
+        return true;
+    }
+
+    protected override void NotifyAboutToClose()
+    {
+        if (_presenter != null)
+        {
+            foreach (var childItem in _presenter.Items)
+            {
+                if (childItem is MenuItem menuItem)
+                {
+                    menuItem.IsSubMenuOpen = false;
+                }
+            }
+        }
     }
 }

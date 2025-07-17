@@ -182,6 +182,7 @@ public class Popup : AvaloniaPopup,
 
     private void HandleClosed(object? sender, EventArgs? args)
     {
+        _buddyLayer?.Detach();
         var offsetX = HorizontalOffset;
         var offsetY = VerticalOffset;
         // 还原位移
@@ -194,10 +195,7 @@ public class Popup : AvaloniaPopup,
         VerticalOffset   = offsetY;
 
         _selfLightDismissDisposable?.Dispose();
-        if (!_closeAnimating)
-        {
-            _buddyLayer?.Detach();
-        }
+  
         _firstDetected = true;
     }
 
@@ -565,7 +563,6 @@ public class Popup : AvaloniaPopup,
 
     public void MotionAwareClose(Action? closed = null)
     {
-        
         if (_closeAnimating)
         {
             return;
@@ -584,7 +581,6 @@ public class Popup : AvaloniaPopup,
         Debug.Assert(_buddyLayer != null);
         if (!IsMotionEnabled)
         {
-            _buddyLayer?.Detach();
             _isNeedDetectFlip = true;
             Close();
             closed?.Invoke();
@@ -599,8 +595,8 @@ public class Popup : AvaloniaPopup,
         }, () =>
         {
             closed?.Invoke();
-            Close();
             _closeAnimating   = false;
+            Close();
             _isNeedDetectFlip = true;
         });
     }

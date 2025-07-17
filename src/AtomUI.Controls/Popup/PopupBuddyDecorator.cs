@@ -46,10 +46,7 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
             }
             else
             {
-                popupHostProvider.PopupHostChanged += host =>
-                {
-                    SetupPopupHost(host);
-                }; 
+                popupHostProvider.PopupHostChanged += SetupPopupHost; 
             }
         }
 

@@ -77,10 +77,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
             }
             else
             {
-                popupHostProvider.PopupHostChanged += host =>
-                {
-                    SetupPopupHost(host);
-                }; 
+                popupHostProvider.PopupHostChanged += SetupPopupHost; 
             }
         }
     }
@@ -187,12 +184,11 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     public void Detach()
     {
-        _buddyDecorator.CaptureContentControl();
+        Hide();
         if (this is IDisposable disposable)
         {
             disposable.Dispose();
         }
-        Hide();
     }
 
     public void AttachWithMotion(Action? aboutToStart = null,
@@ -237,7 +233,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
                 {
                     completedAction?.Invoke();
                     NotifyDetachMotionCompleted();
-                    Detach();
                 });
             });
         });

@@ -334,14 +334,8 @@ public class Flyout : PopupFlyoutBase
             return false;
         }
 
-        IsOpen         = true;
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Popup.MotionAwareOpen(() =>
-            {
-                HandlePopupOpened(placementTarget);
-            });
-        });
+        IsOpen = true;
+        Popup.MotionAwareOpen(() => { HandlePopupOpened(placementTarget); });
         return true;
     }
 
@@ -365,18 +359,16 @@ public class Flyout : PopupFlyoutBase
             return base.HideCore(false);
         }
 
-        IsOpen          = false;
-        Dispatcher.UIThread.InvokeAsync(() =>
+        NotifyAboutToClose();
+        IsOpen = false;
+        DispatcherTimer.RunOnce((() =>
         {
-            Popup.MotionAwareClose(() =>
-            {
-                HandlePopupClosed();
-            });
-        });
+            Popup.MotionAwareClose(HandlePopupClosed);
+        }), TimeSpan.FromMilliseconds(300));
         return true;
     }
 
-    private bool CancelClosing()
+    protected bool CancelClosing()
     {
         var eventArgs = new CancelEventArgs();
         OnClosing(eventArgs);
