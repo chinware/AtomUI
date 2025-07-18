@@ -206,7 +206,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
 
         _currentPressedIsValid = false;
-        if (e.InitialPressMouseButton == MouseButton.Left && item?.HasSubMenu == false)
+        if (e.InitialPressMouseButton == MouseButton.Left && item.HasSubMenu == false)
         {
             Click(item);
             e.Handled = true;

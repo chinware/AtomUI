@@ -106,7 +106,14 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
         if (sender is ContentPresenter presenter)
         {
             ConfigureDecorator(presenter);
-            ConfigureBlankContentControl();
+            if (_popup.ConfigureBlankMaskWhenMotionAwareOpen)
+            {
+                ConfigureBlankContentControl();
+            }
+            else
+            {
+                CaptureContentControl();
+            }
         }
     }
     

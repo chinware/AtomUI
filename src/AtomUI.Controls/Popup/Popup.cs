@@ -56,6 +56,12 @@ public class Popup : AvaloniaPopup,
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty = 
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Popup>();
+    
+    public static readonly StyledProperty<bool> IsMotionAwareOpenProperty =
+        AvaloniaProperty.Register<Popup, bool>(nameof (IsMotionAwareOpen));
+    
+    public static readonly StyledProperty<bool> ConfigureBlankMaskWhenMotionAwareOpenProperty =
+        AvaloniaProperty.Register<Popup, bool>(nameof (ConfigureBlankMaskWhenMotionAwareOpen), false);
 
     public BoxShadows MaskShadows
     {
@@ -106,6 +112,22 @@ public class Popup : AvaloniaPopup,
         get => GetValue(CloseMotionProperty);
         set => SetValue(CloseMotionProperty, value);
     }
+    
+    public bool IsMotionAwareOpen
+    {
+        get => GetValue(IsMotionAwareOpenProperty);
+        set => SetValue(IsMotionAwareOpenProperty, value);
+    }
+    
+    /// <summary>
+    /// When the animation is turned on and off, whether to not make a complete mask after the animation ends, including the content
+    /// </summary>
+    public bool ConfigureBlankMaskWhenMotionAwareOpen
+    {
+        get => GetValue(ConfigureBlankMaskWhenMotionAwareOpenProperty);
+        set => SetValue(ConfigureBlankMaskWhenMotionAwareOpenProperty, value);
+    }
+
     #endregion
 
     #region 内部属性定义
@@ -134,6 +156,7 @@ public class Popup : AvaloniaPopup,
     private IDisposable? _selfLightDismissDisposable;
     private IManagedPopupPositionerPopup? _managedPopupPositioner;
     private bool _isNeedDetectFlip = true;
+    private bool _ignoreIsOpenChanged;
 
     // 在翻转之后或者恢复正常，会有属性的变动，在变动之后捕捉动画需要等一个事件循环，保证布局已经生效
     private bool _isNeedWaitFlipSync;
@@ -246,7 +269,7 @@ public class Popup : AvaloniaPopup,
 
     private void HandleMouseClick(RawInputEventArgs args)
     {
-        if (!IsOpen)
+        if (!IsMotionAwareOpen)
         {
             return;
         }
@@ -257,12 +280,15 @@ public class Popup : AvaloniaPopup,
             {
                 if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
                 {
-                    if (_firstDetected)
+                    if (_firstDetected || _openAnimating)
                     {
-                        _firstDetected = false;
+                        if (_firstDetected)
+                        {
+                            _firstDetected = false;
+                        }
                         return;
                     }
-
+                    
                     if (this is IPopupHostProvider popupHostProvider)
                     {
                         if (popupHostProvider.PopupHost != pointerEventArgs.Root)
@@ -510,7 +536,7 @@ public class Popup : AvaloniaPopup,
     public void MotionAwareOpen(Action? opened = null)
     {
         // AbstractPopup is currently open
-        if (IsOpen || _openAnimating || _closeAnimating)
+        if (_openAnimating || _closeAnimating)
         {
             return;
         }
@@ -520,6 +546,11 @@ public class Popup : AvaloniaPopup,
             Open();
             opened?.Invoke();
             (Host as PopupRoot)?.PlatformImpl?.SetTopmost(true);
+            using (BeginIgnoringIsOpen())
+            {
+                SetCurrentValue(IsMotionAwareOpenProperty, true);
+            }
+               
             return;
         }
         
@@ -551,6 +582,10 @@ public class Popup : AvaloniaPopup,
         }, () =>
         {
             opened?.Invoke();
+            using (BeginIgnoringIsOpen())
+            {
+                SetCurrentValue(IsMotionAwareOpenProperty, true);
+            }
             popupRoot.PlatformImpl?.SetTopmost(true);
             _isNeedWaitFlipSync = false;
             _openAnimating      = false;
@@ -559,11 +594,7 @@ public class Popup : AvaloniaPopup,
                 RequestCloseWhereAnimationCompleted = false;
                 Dispatcher.UIThread.Post(() => { MotionAwareClose(); });
             }
-            Dispatcher.UIThread.Post(() =>
-            {
-                
-                popupRoot.Opacity = 1.0d;
-            });
+            Dispatcher.UIThread.Post(() => { popupRoot.Opacity = 1.0d; });
         });
     }
 
@@ -580,16 +611,16 @@ public class Popup : AvaloniaPopup,
             return;
         }
         
-        if (!IsOpen)
-        {
-            return;
-        }
         Debug.Assert(_buddyLayer != null);
         if (!IsMotionEnabled)
         {
             _isNeedDetectFlip = true;
             Close();
             closed?.Invoke();
+            using (BeginIgnoringIsOpen())
+            {
+                SetCurrentValue(IsMotionAwareOpenProperty, false);
+            }
             return;
         }
         
@@ -603,6 +634,10 @@ public class Popup : AvaloniaPopup,
             closed?.Invoke();
             _closeAnimating   = false;
             Close();
+            using (BeginIgnoringIsOpen())
+            {
+                SetCurrentValue(IsMotionAwareOpenProperty, false);
+            }
             _isNeedDetectFlip = true;
         });
     }
@@ -614,6 +649,35 @@ public class Popup : AvaloniaPopup,
         {
             _isNeedWaitFlipSync = true;
         }
+        else if (change.Property == IsMotionAwareOpenProperty)
+        {
+            if (!_ignoreIsOpenChanged)
+            {
+                if (change.GetNewValue<bool>())
+                {
+                    MotionAwareOpen();
+                }
+                else
+                {
+                    MotionAwareClose();
+                }
+            }
+        }
+    }
+    
+    private IgnoreIsOpenScope BeginIgnoringIsOpen() => new IgnoreIsOpenScope(this);
+    
+    private readonly struct IgnoreIsOpenScope : IDisposable
+    {
+        private readonly Popup _owner;
+
+        public IgnoreIsOpenScope(Popup owner)
+        {
+            _owner                      = owner;
+            _owner._ignoreIsOpenChanged = true;
+        }
+
+        public void Dispose() => _owner._ignoreIsOpenChanged = false;
     }
 }
 

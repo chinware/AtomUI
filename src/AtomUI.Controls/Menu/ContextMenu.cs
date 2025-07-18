@@ -34,29 +34,37 @@ public class ContextMenu : AvaloniaContextMenu,
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
 
     #endregion
+    
+    private Popup? _popup;
 
     public ContextMenu()
     {
         this.RegisterResources();
         this.BindMotionProperties();
         // 我们在这里有一次初始化的机会
-        var popup = new Popup
+        _popup = new Popup
         {
             WindowManagerAddShadowHint     = false,
-            IsLightDismissEnabled          = true,
-            OverlayDismissEventPassThrough = true
+            IsLightDismissEnabled          = false,
+            OverlayDismissEventPassThrough = true,
+            IsDetectMouseClickEnabled      = true
         };
-
-        popup.Opened += this.CreateEventHandler("PopupOpened");
-        popup.Closed += this.CreateEventHandler<EventArgs>("PopupClosed");
+       
+        _popup.Opened += this.CreateEventHandler("PopupOpened");
+        _popup.Closed += this.CreateEventHandler<EventArgs>("PopupClosed");
         
-        popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
-        popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
+        _popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
+        _popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
         Closing += (sender, args) =>
         {
             args.Cancel = true;
         };
-        this.SetPopup(popup);
+        this.SetPopup(_popup);
+        Opened += (sender, args) =>
+        {
+            _popup.SetIgnoreIsOpenChanged(true);
+            _popup.IsMotionAwareOpen = true;
+        };
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -67,5 +75,22 @@ public class ContextMenu : AvaloniaContextMenu,
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
+    }
+    
+    public override void Close()
+    {
+        _popup?.SetIgnoreIsOpenChanged(true);
+        base.Close();
+        if (_popup != null)
+        {
+            foreach (var childItem in Items)
+            {
+                if (childItem is MenuItem menuItem)
+                {
+                    menuItem.IsSubMenuOpen = false;
+                }
+            }
+            _popup.IsMotionAwareOpen = false;
+        }
     }
 }

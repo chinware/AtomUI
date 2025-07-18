@@ -175,7 +175,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     public void Attach()
     {
         SetupPopupHost();
-        _buddyDecorator.ConfigureBlankContentControl();
+        _buddyDecorator.CaptureContentControl();
         if (OperatingSystem.IsMacOS())
         {
             PlatformImpl?.SetTopmost(true);
@@ -211,8 +211,7 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         }
     }
 
-    public void AttachWithMotion(Action? aboutToStart = null,
-                                 Action? completedAction = null)
+    public void AttachWithMotion(Action? aboutToStart = null, Action? completedAction = null)
     {
         _buddyDecorator.CaptureContentControl();
         _buddyDecorator.Opacity = 0.0d;
@@ -227,13 +226,15 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         motion.Run(_buddyDecorator, null, () =>
         {
             completedAction?.Invoke();
-            _buddyDecorator.ConfigureBlankContentControl();
+            if (_buddyPopup.ConfigureBlankMaskWhenMotionAwareOpen)
+            {
+                _buddyDecorator.ConfigureBlankContentControl();
+            }
             NotifyAttachMotionCompleted();
         });
     }
     
-    public void DetachWithMotion(Action? aboutToStart = null,
-                                 Action? completedAction = null)
+    public void DetachWithMotion(Action? aboutToStart = null, Action? completedAction = null)
     {
         var motion       = CloseMotion ?? new ZoomBigOutMotion();
         if (MotionDuration != TimeSpan.Zero)

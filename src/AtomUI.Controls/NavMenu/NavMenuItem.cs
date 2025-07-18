@@ -22,6 +22,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Point = Avalonia.Point;
 
@@ -529,7 +530,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 return;
             }
         }
-
         SetCurrentValue(IsSubMenuOpenProperty, false);
     }
 
