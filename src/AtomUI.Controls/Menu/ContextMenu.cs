@@ -69,6 +69,7 @@ public class ContextMenu : AvaloniaContextMenu,
             _popup.SetIgnoreIsOpenChanged(true);
             _popup.IsMotionAwareOpen = true;
         };
+        
     }
     
     private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
@@ -80,6 +81,11 @@ public class ContextMenu : AvaloniaContextMenu,
             {
                 popupRoots.UnionWith(MenuItem.CollectPopupRoots(childMenuItem));
             }
+        }
+
+        if (_popup?.Host is PopupRoot popupRoot)
+        {
+            popupRoots.Add(popupRoot);
         }
         return !popupRoots.Contains(args.Root);
     }

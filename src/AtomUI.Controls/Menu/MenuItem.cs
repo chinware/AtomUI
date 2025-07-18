@@ -146,6 +146,7 @@ public class MenuItem : AvaloniaMenuItem
     private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
     {
         var popupRoots = CollectPopupRoots(this);
+        
         return !popupRoots.Contains(args.Root);
     }
 
