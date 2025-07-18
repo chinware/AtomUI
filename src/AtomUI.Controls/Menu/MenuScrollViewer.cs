@@ -1,16 +1,11 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using AtomUI.Animations;
+﻿using System.Globalization;
 using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -19,17 +14,17 @@ using AvaloniaScrollViewer = ScrollViewer;
 [TemplatePart(MenuScrollViewerThemeConstants.ScrollDownButtonPart, typeof(IconButton))]
 [TemplatePart(MenuScrollViewerThemeConstants.ScrollUpButtonPart, typeof(IconButton))]
 [TemplatePart(MenuScrollViewerThemeConstants.ScrollViewContentPart, typeof(ScrollContentPresenter))]
-public class MenuScrollViewer : AvaloniaScrollViewer
+internal class MenuScrollViewer : AvaloniaScrollViewer
 {
     private IconButton? _scrollUpButton;
     private IconButton? _scrollDownButton;
 
     #region 内部属性定义
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuScrollViewer>();
 
-    internal bool IsMotionEnabled
+    public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
@@ -44,7 +39,6 @@ public class MenuScrollViewer : AvaloniaScrollViewer
         _scrollDownButton = e.NameScope.Find<IconButton>(MenuScrollViewerThemeConstants.ScrollDownButtonPart);
 
         SetupScrollButtonVisibility();
-        ConfigureTransitions();
     }
     
     private void SetupScrollButtonVisibility()
@@ -82,34 +76,6 @@ public class MenuScrollViewer : AvaloniaScrollViewer
             change.Property == ViewportProperty)
         {
             SetupScrollButtonVisibility();
-        }
-
-        if (this.IsAttachedToVisualTree())
-        {
-            ConfigureTransitions();
-        }
-    }
-    
-    private void ConfigureTransitions()
-    {
-        Debug.Assert(_scrollDownButton != null && _scrollUpButton != null);
-        if (IsMotionEnabled)
-        {
-            _scrollDownButton.Transitions = new Transitions()
-            {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-            };
-            _scrollUpButton.Transitions = new Transitions()
-            {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-            };
-        }
-        else
-        {
-            _scrollDownButton.Transitions?.Clear();
-            _scrollDownButton.Transitions = null;
-            _scrollUpButton.Transitions?.Clear();
-            _scrollUpButton.Transitions = null;
         }
     }
 }

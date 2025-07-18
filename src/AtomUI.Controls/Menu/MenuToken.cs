@@ -326,8 +326,8 @@ internal class MenuToken : AbstractControlDesignToken
         MenuPopupMinWidth = 120;
         MenuPopupMaxWidth = 800;
 
-        MenuPopupMinHeight = ItemHeight * 3;
-        MenuPopupMaxHeight = ItemHeight * 30;
+        MenuPopupMinHeight = ItemHeight * 5;
+        MenuPopupMaxHeight = ItemHeight * 15;
 
         SeparatorItemHeight = SharedToken.LineWidth * 5; // 上下两像素，留一像素给自己
 
