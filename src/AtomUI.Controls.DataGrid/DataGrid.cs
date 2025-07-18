@@ -29,7 +29,6 @@ using Avalonia.Utilities;
 namespace AtomUI.Controls;
 
 [TemplatePart(DataGridThemeConstants.BottomRightCornerPart, typeof(Visual))]
-[TemplatePart(DataGridThemeConstants.ColumnHeadersPresenterPart, typeof(DataGridColumnHeadersPresenter))]
 [TemplatePart(DataGridThemeConstants.HorizontalScrollbarPart, typeof(ScrollBar))]
 [TemplatePart(DataGridThemeConstants.RowsPresenterPart, typeof(DataGridRowsPresenter))]
 [TemplatePart(DataGridThemeConstants.TopLeftCornerPart, typeof(ContentControl))]

@@ -2208,7 +2208,6 @@ public partial class DataGrid
         }
         else
         {
-            //
             _rowsPresenter.Children.Remove(dataGridRow);
             dataGridRow.DetachFromDataGrid(false);
         }

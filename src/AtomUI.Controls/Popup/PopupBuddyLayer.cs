@@ -127,7 +127,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     {
         if (sender is PopupRoot popupRoot)
         {
-            Console.WriteLine($"HandleBuddyPopupRootPositionChanged-{e.Point}");
             ConfigureSizeAndPosition(popupRoot);
         }
     }
