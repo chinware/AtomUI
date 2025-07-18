@@ -324,11 +324,16 @@ public class Popup : AvaloniaPopup,
         {
             _buddyLayer.Detach();
         }
+
+        TopLevel? topLevel = null;
+        if (Host is PopupRoot popupRoot)
+        { 
+            topLevel = TopLevel.GetTopLevel(popupRoot);
+        }
         
-        var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         Debug.Assert(topLevel is not null);
         _buddyLayer         = new PopupBuddyLayer(this, topLevel);
-        _buddyLayer.Topmost = false;
+        _buddyLayer.Topmost = true;
         BindUtils.RelayBind(this, MaskShadowsProperty, _buddyLayer, PopupBuddyLayer.MaskShadowsProperty);
         BindUtils.RelayBind(this, MotionDurationProperty, _buddyLayer, PopupBuddyLayer.MotionDurationProperty);
         BindUtils.RelayBind(this, OpenMotionProperty, _buddyLayer, PopupBuddyLayer.OpenMotionProperty);

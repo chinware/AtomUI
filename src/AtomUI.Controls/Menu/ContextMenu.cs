@@ -69,7 +69,6 @@ public class ContextMenu : AvaloniaContextMenu,
             _popup.SetIgnoreIsOpenChanged(true);
             _popup.IsMotionAwareOpen = true;
         };
-        
     }
     
     private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
