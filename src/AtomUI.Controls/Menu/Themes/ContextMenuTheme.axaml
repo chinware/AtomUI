@@ -24,7 +24,6 @@
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuBgColor}}"/>
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}"/>
             <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}"/>
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinHeight}}"/>
             <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}"/>
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupContentPadding}}"/>
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}"/>

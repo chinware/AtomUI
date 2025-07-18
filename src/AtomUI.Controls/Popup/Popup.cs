@@ -129,6 +129,8 @@ public class Popup : AvaloniaPopup,
     }
 
     #endregion
+    
+    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHidePredicate;
 
     #region 内部属性定义
 
@@ -218,8 +220,10 @@ public class Popup : AvaloniaPopup,
         VerticalOffset   = offsetY;
 
         _selfLightDismissDisposable?.Dispose();
-  
-        _firstDetected = true;
+        if (IgnoreFirstDetected)
+        {
+            _firstDetected = true;
+        }
     }
 
     private void HandleOpened(object? sender, EventArgs? args)
@@ -264,7 +268,10 @@ public class Popup : AvaloniaPopup,
             }
         }
     }
-
+    
+    // 正常的菜单项点击的时候第一次是需要忽略点击的探测的，不然按钮会被关闭
+    // 这个可以优化动态探测 Popup 的 parent
+    internal bool IgnoreFirstDetected { get; set; } = true;
     private bool _firstDetected = true;
 
     private void HandleMouseClick(RawInputEventArgs args)
@@ -280,9 +287,9 @@ public class Popup : AvaloniaPopup,
             {
                 if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
                 {
-                    if (_firstDetected || _openAnimating)
+                    if ((IgnoreFirstDetected && _firstDetected) || _openAnimating)
                     {
-                        if (_firstDetected)
+                        if (IgnoreFirstDetected && _firstDetected)
                         {
                             _firstDetected = false;
                         }
@@ -291,9 +298,19 @@ public class Popup : AvaloniaPopup,
                     
                     if (this is IPopupHostProvider popupHostProvider)
                     {
-                        if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                        if (ClickHidePredicate is not null)
                         {
-                            MotionAwareClose();
+                            if (ClickHidePredicate(popupHostProvider, pointerEventArgs))
+                            {
+                                MotionAwareClose();
+                            }
+                        }
+                        else
+                        {
+                            if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                            {
+                                MotionAwareClose();
+                            }
                         }
                     }
                 }

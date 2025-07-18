@@ -381,7 +381,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey MenuPopupContentPadding = new TokenResourceKey("Menu.MenuPopupContentPadding");
         public static readonly TokenResourceKey MenuPopupMaxHeight = new TokenResourceKey("Menu.MenuPopupMaxHeight");
         public static readonly TokenResourceKey MenuPopupMaxWidth = new TokenResourceKey("Menu.MenuPopupMaxWidth");
-        public static readonly TokenResourceKey MenuPopupMinHeight = new TokenResourceKey("Menu.MenuPopupMinHeight");
         public static readonly TokenResourceKey MenuPopupMinWidth = new TokenResourceKey("Menu.MenuPopupMinWidth");
         public static readonly TokenResourceKey MenuTearOffHeight = new TokenResourceKey("Menu.MenuTearOffHeight");
         public static readonly TokenResourceKey ScrollButtonIconSize = new TokenResourceKey("Menu.ScrollButtonIconSize");

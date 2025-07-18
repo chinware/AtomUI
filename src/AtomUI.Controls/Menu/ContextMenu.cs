@@ -4,7 +4,10 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Input.Raw;
 
 namespace AtomUI.Controls;
 
@@ -47,12 +50,13 @@ public class ContextMenu : AvaloniaContextMenu,
             WindowManagerAddShadowHint     = false,
             IsLightDismissEnabled          = false,
             OverlayDismissEventPassThrough = true,
-            IsDetectMouseClickEnabled      = true
+            IsDetectMouseClickEnabled      = true,
+            IgnoreFirstDetected            = false
         };
        
-        _popup.Opened += this.CreateEventHandler("PopupOpened");
-        _popup.Closed += this.CreateEventHandler<EventArgs>("PopupClosed");
-        
+        _popup.Opened             += this.CreateEventHandler("PopupOpened");
+        _popup.Closed             += this.CreateEventHandler<EventArgs>("PopupClosed");
+        _popup.ClickHidePredicate =  MenuPopupClosePredicate;
         _popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
         _popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
         Closing += (sender, args) =>
@@ -65,6 +69,19 @@ public class ContextMenu : AvaloniaContextMenu,
             _popup.SetIgnoreIsOpenChanged(true);
             _popup.IsMotionAwareOpen = true;
         };
+    }
+    
+    private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        var popupRoots = new HashSet<PopupRoot>();
+        foreach (var child in Items)
+        {
+            if (child is MenuItem childMenuItem)
+            {
+                popupRoots.UnionWith(MenuItem.CollectPopupRoots(childMenuItem));
+            }
+        }
+        return !popupRoots.Contains(args.Root);
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
