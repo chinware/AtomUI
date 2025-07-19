@@ -226,7 +226,7 @@
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
             <Style Selector="^/template/ Border#PART_Frame">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultBg}}" />
+                <Setter Property="Background" Value="Transparent" />
             </Style>
 
             <Style Selector="^:pointerover">

@@ -6,7 +6,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
-using AtomUI.Controls.DataGridLang;
+using AtomUI.Controls.DataGridLocalization;
 using AtomUI.Controls.Utils;
 using AtomUI.Theme.Data;
 using Avalonia;

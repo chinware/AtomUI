@@ -77,6 +77,7 @@ public partial class DataGridRow : TemplatedControl
     }
     
     private bool _isSelected;
+    
     public bool IsSelected
     {
         get => _isSelected;

@@ -1310,7 +1310,7 @@ public partial class DataGrid
             if (newItemsSource is IDataGridCollectionView)
             {
                 setDefaultSelection = true;
-                newCollectionView = (IDataGridCollectionView)newItemsSource;
+                newCollectionView   = (IDataGridCollectionView)newItemsSource;
             }
             else
             {
@@ -1412,8 +1412,8 @@ public partial class DataGrid
             }
             else
             {
-                column.HeaderCell.IsFirstVisible = false;
-                column.HeaderCell.IsLastVisible  = false;
+                column.HeaderCell.IsFirstVisible  = false;
+                column.HeaderCell.IsLastVisible   = false;
                 column.HeaderCell.IsMiddleVisible = true;
             }
 
@@ -1494,9 +1494,9 @@ public partial class DataGrid
             dataGridCell: newCell);
         if (row.OwningGrid != null)
         {
-            newCell.OwningColumn              = column;
-            newCell.IsVisible                 = column.IsVisible;
-            newCell[!SizeTypeProperty]        = this[!SizeTypeProperty];
+            newCell.OwningColumn       = column;
+            newCell.IsVisible          = column.IsVisible;
+            newCell[!SizeTypeProperty] = this[!SizeTypeProperty];
         }
 
         row.Cells.Insert(column.Index, newCell);
@@ -1577,7 +1577,7 @@ public partial class DataGrid
     }
 
     //TODO Validation
-    private bool BeginRowEdit(DataGridRow dataGridRow)
+    internal bool BeginRowEdit(DataGridRow dataGridRow)
     {
         Debug.Assert(EditingRow == null);
         Debug.Assert(dataGridRow != null);
@@ -2505,7 +2505,7 @@ public partial class DataGrid
     }
 
     //TODO Validation
-    private bool EndRowEdit(DataGridEditAction editAction, bool exitEditingMode, bool raiseEvents)
+    internal bool EndRowEdit(DataGridEditAction editAction, bool exitEditingMode, bool raiseEvents)
     {
         if (EditingRow == null || DataConnection.CommittingEdit)
         {
@@ -2867,7 +2867,6 @@ public partial class DataGrid
         Debug.Assert(dataGridCell != null);
 
         Control?             element             = null;
-        DataGridBoundColumn? dataGridBoundColumn = dataGridColumn as DataGridBoundColumn;
         Debug.Assert(dataGridRow.DataContext != null);
         if (isCellEdited)
         {
@@ -2878,7 +2877,7 @@ public partial class DataGrid
                 dataGridCell.Content = element;
                 if (element.IsInitialized)
                 {
-                    PreparingCellForEditPrivate(element as Control);
+                    PreparingCellForEditPrivate(element);
                 }
                 else
                 {
@@ -4589,7 +4588,7 @@ public partial class DataGrid
         else
         {
             if (Footer == null && (GridLinesVisibility == DataGridGridLinesVisibility.All ||
-                                     GridLinesVisibility == DataGridGridLinesVisibility.Horizontal))
+                                   GridLinesVisibility == DataGridGridLinesVisibility.Horizontal))
             {
                 SetValue(FrameBorderThicknessProperty, new Thickness(BorderThickness.Left, BorderThickness.Top, BorderThickness.Right, 0));
             }

@@ -1,7 +1,7 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
-using AtomUI.Controls.DataGridLang;
+using AtomUI.Controls.DataGridLocalization;
 using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme.Data;

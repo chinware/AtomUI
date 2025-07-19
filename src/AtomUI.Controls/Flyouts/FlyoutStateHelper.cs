@@ -202,7 +202,9 @@ internal class FlyoutStateHelper : AvaloniaObject
         {
             _subscriptions.Add(InputElement.IsPointerOverProperty.Changed.Subscribe(args =>
             {
-                if (args.Sender == AnchorTarget)
+                if (args.Sender == AnchorTarget && 
+                    AnchorTarget.IsEnabled &&
+                    AnchorTarget.IsVisible)
                 {
                     HandleAnchorTargetHover(args);
                 }
@@ -278,13 +280,17 @@ internal class FlyoutStateHelper : AvaloniaObject
     {
         if (args is RawPointerEventArgs pointerEventArgs)
         {
-            if (AnchorTarget is not null && pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
+            if (AnchorTarget is not null && 
+                AnchorTarget.IsEnabled && 
+                AnchorTarget.IsVisible && 
+                pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
             {
+              
                 if (Flyout is null)
                 {
                     return;
                 }
-
+               
                 if (!Flyout.IsOpen && TopLevel.GetTopLevel(AnchorTarget) == args.Root)
                 {
                     if (OpenFlyoutPredicate is not null)

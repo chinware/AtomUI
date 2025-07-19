@@ -24,6 +24,7 @@ public class DataGridOperationColumn : DataGridColumn
     {
         Debug.Assert(OwningGrid != null);
         var operationButtons = new DataGridOperationButtons();
+        operationButtons.OwningGrid = OwningGrid;
         operationButtons[!DataGridOperationButtons.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
         return operationButtons;
     }
@@ -72,9 +73,9 @@ public class DataGridOperationColumn : DataGridColumn
     {
         if (OwningGrid != null)
         {
-            if (GetCellContent(e.Row) is DataGridRowExpander expander)
+            if (GetCellContent(e.Row) is DataGridOperationButtons operationButtons)
             {
-                expander.NotifyLoadingRow(e.Row);
+                operationButtons.NotifyLoadingRow(e.Row);
             }
         }
     }
@@ -83,9 +84,9 @@ public class DataGridOperationColumn : DataGridColumn
     {
         if (OwningGrid != null)
         {
-            if (GetCellContent(e.Row) is DataGridRowExpander expander)
+            if (GetCellContent(e.Row) is DataGridOperationButtons operationButtons)
             {
-                expander.NotifyUnLoadingRow(e.Row);
+                operationButtons.NotifyUnLoadingRow(e.Row);
             }
         }
     }

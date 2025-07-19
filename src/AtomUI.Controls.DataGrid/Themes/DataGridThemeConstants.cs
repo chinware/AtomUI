@@ -32,12 +32,6 @@ internal static class DataGridColumnHeaderThemeConstants
     public const string FocusVisualSecondaryPart = "PART_FocusVisualSecondary";
 }
 
-internal static class DataGridFilterIndicatorThemeConstants
-{
-    public const string FramePart = "PART_Frame";
-    public const string IconPresenterPart = "PART_IconPresenter";
-}
-
 internal static class DataGridHeaderViewItemThemeConstants
 {
     public const string ContentPresenterPart = "PART_ContentPresenter";
@@ -106,10 +100,6 @@ internal static class DataGridThemeConstants
     public const string DraggingOverIndicatorPart = "PART_DraggingOverIndicator";
 }
 
-internal static class DataGridTopLeftColumnHeaderThemeConstants
-{
-}
-
 internal static class DataGridFilterFlyoutPresenterThemeConstants
 {
     public const string ButtonLayoutPart = "PART_ButtonLayout";
@@ -128,4 +118,12 @@ internal static class DataGridRowExpanderThemeConstants
 internal static class DataGridRowReorderHandleConstants
 {
     public const string IndicatorIconButtonPart = "PART_IndicatorIconButton";
+}
+
+internal static class DataGridOperationButtonsThemeConstants
+{
+    public const string EditActionPart = "PART_EditAction";
+    public const string DeleteActionPart = "PART_DeleteAction";
+    public const string CancelActionPart = "PAR_CancelAction";
+    public const string SaveActionPart = "PAR_SaveAction";
 }

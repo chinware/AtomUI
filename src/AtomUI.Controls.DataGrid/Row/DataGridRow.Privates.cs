@@ -36,6 +36,11 @@ public partial class DataGridRow
     internal static readonly StyledProperty<bool> IsDraggingProperty
         = AvaloniaProperty.Register<DataGridRow, bool>(nameof(IsDragging));
     
+    internal static readonly DirectProperty<DataGridRow, bool> IsEditingModeProperty =
+        AvaloniaProperty.RegisterDirect<DataGridRow, bool>(
+            nameof(IsEditingMode),
+            o => o.IsEditingMode);
+    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -53,6 +58,13 @@ public partial class DataGridRow
         get => GetValue(IsDraggingProperty);
         set => SetValue(IsDraggingProperty, value);
     }
+    
+    internal bool IsEditingMode
+    {
+        get => _isEditingMode;
+        set => SetAndRaise(IsEditingModeProperty, ref _isEditingMode, value);
+    }
+    private bool _isEditingMode = false;
     
     internal int Slot { get; set; }
     
@@ -483,6 +495,7 @@ public partial class DataGridRow
             IsSelected = isSelected;
             PseudoClasses.Set(StdPseudoClass.Editing, IsEditing);
             PseudoClasses.Set(StdPseudoClass.Invalid, !IsValid);
+            IsEditingMode = IsEditing;
             ApplyHeaderStatus();
         }
     }

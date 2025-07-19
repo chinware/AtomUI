@@ -11,6 +11,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Metadata;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
@@ -63,6 +64,7 @@ public class HyperLinkTextBlock : TemplatedControl, ICustomHitTest, IMotionAware
     /// <summary>
     /// Gets or sets the text.
     /// </summary>
+    [Content]
     public string? Text
     {
         get => GetValue(TextProperty);

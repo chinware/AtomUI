@@ -165,15 +165,24 @@ public partial class DesignToken : AbstractDesignToken
         UniformlyMarginLG  = SizeLG;
         UniformlyMarginXL  = SizeXL;
         UniformlyMarginXXL = SizeXXL;
+
+        SpacingXXS = SizeXXS;
+        SpacingXS  = SizeXS;
+        SpacingSM  = SizeSM;
+        Spacing    = Size;
+        SpacingMD  = SizeMD;
+        SpacingLG  = SizeLG;
+        SpacingXL  = SizeXL;
+        SpacingXXL = SizeXXL;
         
-        MarginXXS = new Thickness(SizeXXS);
-        MarginXS  = new Thickness(SizeXS);
-        MarginSM  = new Thickness(SizeSM);
-        Margin    = new Thickness(Size);
-        MarginMD  = new Thickness(SizeMD);
-        MarginLG  = new Thickness(SizeLG);
-        MarginXL  = new Thickness(SizeXL);
-        MarginXXL = new Thickness(SizeXXL);
+        MarginXXS          = new Thickness(SizeXXS);
+        MarginXS           = new Thickness(SizeXS);
+        MarginSM           = new Thickness(SizeSM);
+        Margin             = new Thickness(Size);
+        MarginMD           = new Thickness(SizeMD);
+        MarginLG           = new Thickness(SizeLG);
+        MarginXL           = new Thickness(SizeXL);
+        MarginXXL          = new Thickness(SizeXXL);
 
         ScreenXS     = screenXS;
         ScreenXSMin  = screenXS;
