@@ -326,11 +326,17 @@ public class Popup : AvaloniaPopup,
         }
 
         TopLevel? topLevel = null;
-        if (Host is PopupRoot popupRoot)
-        { 
-            topLevel = TopLevel.GetTopLevel(popupRoot);
+        if (OperatingSystem.IsWindows())
+        {
+            topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         }
-        
+        else
+        {
+            if (Host is PopupRoot popupRoot)
+            { 
+                topLevel = TopLevel.GetTopLevel(popupRoot);
+            }
+        }
         Debug.Assert(topLevel is not null);
         _buddyLayer         = new PopupBuddyLayer(this, topLevel);
         _buddyLayer.Topmost = true;
