@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using AtomUI.Controls.Data;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -112,7 +111,6 @@ internal class DataGridOperationButtons : TemplatedControl
         if (OwningRow != null && OwningGrid != null)
         {
             SetValue(IsEditingProperty, true, BindingPriority.Template);
-            OwningGrid?.BeginRowEdit(OwningRow);
         }
     }
     
@@ -121,7 +119,6 @@ internal class DataGridOperationButtons : TemplatedControl
         if (OwningRow != null && OwningGrid != null)
         {
             SetValue(IsEditingProperty, false, BindingPriority.Template);
-            OwningGrid?.EndRowEdit(DataGridEditAction.Commit, true, true);
         }
     }
     
@@ -131,7 +128,6 @@ internal class DataGridOperationButtons : TemplatedControl
         if (OwningRow != null && OwningGrid != null)
         {
             SetValue(IsEditingProperty, false, BindingPriority.Template);
-            OwningGrid?.EndRowEdit(DataGridEditAction.Cancel, true, true);
         }
     }
 

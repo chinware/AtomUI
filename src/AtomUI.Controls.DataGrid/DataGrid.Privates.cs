@@ -1577,7 +1577,7 @@ public partial class DataGrid
     }
 
     //TODO Validation
-    internal bool BeginRowEdit(DataGridRow dataGridRow)
+    private bool BeginRowEdit(DataGridRow dataGridRow)
     {
         Debug.Assert(EditingRow == null);
         Debug.Assert(dataGridRow != null);
@@ -2505,7 +2505,7 @@ public partial class DataGrid
     }
 
     //TODO Validation
-    internal bool EndRowEdit(DataGridEditAction editAction, bool exitEditingMode, bool raiseEvents)
+    private bool EndRowEdit(DataGridEditAction editAction, bool exitEditingMode, bool raiseEvents)
     {
         if (EditingRow == null || DataConnection.CommittingEdit)
         {
@@ -3633,7 +3633,8 @@ public partial class DataGrid
             return true;
         }
 
-        int targetSlot = -1, targetColumnIndex = -1;
+        int targetSlot = -1;
+        int targetColumnIndex = -1;
 
         _noSelectionChangeCount++;
         try

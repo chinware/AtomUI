@@ -22,7 +22,7 @@
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:DataGridTokenKey.RowReorderIndicatorSize}}"/>
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>
-            <Setter Property="Cursor" Value="DragMove"/>
+            <Setter Property="Cursor" Value="SizeAll"/>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

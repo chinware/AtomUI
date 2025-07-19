@@ -7,9 +7,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaNumericUpDown = Avalonia.Controls.NumericUpDown;
 
-public class NumericUpDown : AvaloniaNumericUpDown,
-                             IMotionAwareControl,
-                             IControlSharedTokenResourcesHost
+public class NumericUpDown : AvaloniaNumericUpDown, IMotionAwareControl, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
