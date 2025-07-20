@@ -1411,7 +1411,7 @@ public partial class DataGrid
 
     private int ComputeFirstVisibleScrollingColumn()
     {
-        if (ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth() >= CellsWidth)
+        if (ColumnsInternal.GetVisibleLeftFrozenEdgedColumnsWidth() >= CellsWidth)
         {
             // Not enough room for scrolling columns.
             _negHorizontalOffset = 0;
@@ -1978,7 +1978,7 @@ public partial class DataGrid
                 if (newFirstDisplayedScrollingCol.Index == columnIndex)
                 {
                     _negHorizontalOffset = 0;
-                    double frozenColumnWidth = ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth();
+                    double frozenColumnWidth = ColumnsInternal.GetVisibleLeftFrozenEdgedColumnsWidth();
                     // If the entire column cannot be displayed, we want to start showing it from its LeftEdge
                     if (newColumnWidth > (CellsWidth - frozenColumnWidth))
                     {

@@ -107,10 +107,25 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         double dragIndicatorLeftEdge = 0;
         double frozenLeftEdge        = 0;
         double frozenRightEdge       = DesiredSize.Width;
-        double scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
-        var    visibleColumnIndex    = 0;
-        var    visibleColumnCount    = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
-        foreach (DataGridColumn dataGridColumn in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        double realFrozenRightEdge   = DesiredSize.Width;
+        
+        double scrollingLeftEdge  = -OwningGrid.HorizontalOffset;
+        var    visibleColumnIndex = 0;
+        var    visibleColumnCount = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
+        var    hasRightFrozen     = false;
+        
+        // 需要先计算出 frozenRightEdge
+        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        {
+            if (column.IsRightFrozen)
+            {
+                realFrozenRightEdge -= column.ActualWidth;
+                hasRightFrozen      =  true;
+            }
+        }
+        var visibleColumns     = OwningGrid.ColumnsInternal.GetVisibleColumns().ToList();
+        // left and normal
+         foreach (DataGridColumn dataGridColumn in visibleColumns)
         {
             DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
             Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
@@ -127,23 +142,11 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Right;
                 columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.LeftFrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
             }
-            else if (dataGridColumn.IsRightFrozen)
-            {
-                frozenRightEdge -= dataGridColumn.ActualWidth;
-                columnHeader.Arrange(new Rect(frozenRightEdge, 0, dataGridColumn.LayoutRoundedWidth, finalSize.Height));
-                columnHeader.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
-                // if (DragColumn == dataGridColumn && DragIndicator != null)
-                // {
-                //     dragIndicatorLeftEdge = frozenLeftEdge + DragIndicatorOffset;
-                // }
-                columnHeader.IsFrozen             =  true;
-                columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Left;
-                columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == visibleColumnCount - OwningGrid.RightFrozenColumnCount) && OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
-            }
             else
             {
                 columnHeader.Arrange(new Rect(scrollingLeftEdge, 0, dataGridColumn.LayoutRoundedWidth, finalSize.Height));
-                EnsureColumnHeaderClip(columnHeader, dataGridColumn.ActualWidth, finalSize.Height, frozenLeftEdge, scrollingLeftEdge);
+                var columnHeaderRightEdge = columnHeader.Bounds.Right;
+                EnsureColumnHeaderClip(columnHeader, dataGridColumn.ActualWidth, finalSize.Height, frozenLeftEdge, realFrozenRightEdge, scrollingLeftEdge, columnHeaderRightEdge);
                 if (DragColumn == dataGridColumn && DragIndicator != null)
                 {
                     dragIndicatorLeftEdge = scrollingLeftEdge + DragIndicatorOffset;
@@ -151,14 +154,46 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 columnHeader.IsFrozen = false;
             }
             scrollingLeftEdge += dataGridColumn.ActualWidth;
-            visibleColumnIndex++;
+            if (!dataGridColumn.IsRightFrozen)
+            {
+                visibleColumnIndex++;
+            }
         }
+
+
+        if (hasRightFrozen)
+        {
+            visibleColumnIndex = visibleColumns.Count - 1;
+            // right
+            for (var i = visibleColumns.Count - 1; i >= 0; i--)
+            {
+                DataGridColumn       dataGridColumn = visibleColumns[i];
+                DataGridColumnHeader columnHeader   = dataGridColumn.HeaderCell;
+                Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
+                if (dataGridColumn.IsRightFrozen)
+                {
+                    frozenRightEdge -= dataGridColumn.ActualWidth;
+                    columnHeader.Arrange(new Rect(frozenRightEdge, 0, dataGridColumn.LayoutRoundedWidth, finalSize.Height));
+                    columnHeader.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+                    columnHeader.IsFrozen             =  true;
+                    columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Left;
+                    var horizontalScrollBarVisible = OwningGrid.HorizontalScrollBar?.IsVisible ?? false;
+                    columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == visibleColumnCount - OwningGrid.RightFrozenColumnCount) && 
+                                                         horizontalScrollBarVisible &&
+                                                         OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
+                    visibleColumnIndex--;
+                }
+            }
+        }
+        
         if (DragColumn != null)
         {
             if (DragIndicator != null)
             {
                 DragIndicator.IsVisible = true;
-                EnsureColumnReorderingClip(DragIndicator, finalSize.Height, frozenLeftEdge, dragIndicatorLeftEdge);
+                var dragIndicatorRightEdge = DragIndicator.Bounds.Right;
+                // EnsureColumnReorderingClip(DragIndicator, finalSize.Height, frozenLeftEdge, dragIndicatorLeftEdge);
+                EnsureColumnReorderingClip(DragIndicator, finalSize.Height, frozenLeftEdge, realFrozenRightEdge, dragIndicatorLeftEdge, dragIndicatorRightEdge);
 
                 var height = DragIndicator.Bounds.Height;
                 if (height <= 0)
@@ -193,21 +228,73 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         return finalSize;
     }
 
-    private static void EnsureColumnHeaderClip(DataGridColumnHeader columnHeader, double width, double height, double frozenLeftEdge, double columnHeaderLeftEdge)
+    private static void EnsureColumnHeaderClip(DataGridColumnHeader columnHeader, double width, double height,
+                                               double frozenLeftEdge,
+                                               double frozenRightEdge,
+                                               double columnHeaderLeftEdge,
+                                               double columnHeaderRightEdge)
     {
         // Clip the cell only if it's scrolled under frozen columns.  Unfortunately, we need to clip in this case
         // because cells could be transparent
-        if (frozenLeftEdge > columnHeaderLeftEdge)
+        if (columnHeader.OwningColumn != null && 
+            !columnHeader.OwningColumn.IsFrozen && 
+            frozenLeftEdge > columnHeaderLeftEdge &&
+            columnHeaderRightEdge > frozenRightEdge)
         {
             RectangleGeometry rg    = new RectangleGeometry();
-            double            xClip = Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge);
-            rg.Rect           = new Rect(xClip, 0, width - xClip, height);
+            double            xClip = Math.Round(Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge));
+            rg.Rect   = new Rect(xClip, 0, Math.Max(0, width - (frozenLeftEdge - columnHeaderLeftEdge) - (columnHeaderRightEdge - frozenRightEdge)), height);
+            columnHeader.Clip = rg;
+        }
+        else if (columnHeader.OwningColumn != null && !columnHeader.OwningColumn.IsFrozen && 
+                 frozenLeftEdge > columnHeaderLeftEdge)
+        {
+            RectangleGeometry rg    = new RectangleGeometry();
+            double            xClip = Math.Round(Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge));
+            rg.Rect           = new Rect(xClip, 0, Math.Max(0, width - xClip), height);
+            columnHeader.Clip = rg;
+        }
+        else if (columnHeader.OwningColumn != null && !columnHeader.OwningColumn.IsFrozen && 
+                 columnHeaderRightEdge > frozenRightEdge)
+        {
+            RectangleGeometry rg    = new RectangleGeometry();
+            double            xClip = Math.Round(Math.Min(width, columnHeaderRightEdge - frozenRightEdge));
+            rg.Rect           = new Rect(0, 0, Math.Max(0, width - xClip), height);
             columnHeader.Clip = rg;
         }
         else
         {
             columnHeader.Clip = null;
         }
+        
+    }
+    
+    private void EnsureColumnReorderingClip(Control control, double height, 
+                                            double frozenLeftEdge,
+                                            double frozenRightEdge,
+                                            double columnHeaderLeftEdge,
+                                            double columnHeaderRightEdge)
+    {
+        Debug.Assert(OwningGrid != null);
+        Debug.Assert(DragColumn != null);
+        double width     = control.Bounds.Width;
+        
+        RectangleGeometry? rg = null;
+        if (frozenLeftEdge > columnHeaderLeftEdge)
+        {
+            rg = new RectangleGeometry();
+            double xClip = Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge);
+            rg.Rect = new Rect(xClip, 0, width - xClip, height);
+        }
+        if (columnHeaderRightEdge >= frozenRightEdge)
+        {
+            if (rg == null)
+            {
+                rg = new RectangleGeometry();
+            }
+            rg.Rect = new Rect(rg.Rect.X, rg.Rect.Y, Math.Max(0, frozenRightEdge - columnHeaderLeftEdge - rg.Rect.X), height);
+        }
+        control.Clip = rg;
     }
 
     /// <summary>
@@ -217,45 +304,45 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
     /// <param name="height">The available height</param>
     /// <param name="frozenColumnsWidth">The width of the frozen column region</param>
     /// <param name="controlLeftEdge">The left edge of the control to clip</param>
-    private void EnsureColumnReorderingClip(Control control, double height, double frozenColumnsWidth, double controlLeftEdge)
-    {
-        Debug.Assert(OwningGrid != null);
-        Debug.Assert(DragColumn != null);
-        double leftEdge  = 0;
-        double rightEdge = OwningGrid.CellsWidth;
-        double width     = control.Bounds.Width;
-        if (DragColumn.IsFrozen)
-        {
-            // If we're dragging a frozen column, we want to clip the corresponding DragIndicator control when it goes
-            // into the scrolling columns region, but not the DropLocationIndicator.
-            if (control == DragIndicator)
-            {
-                rightEdge = Math.Min(rightEdge, frozenColumnsWidth);
-            }
-        }
-        else if (OwningGrid.LeftFrozenColumnCount > 0)
-        {
-            // If we're dragging a scrolling column, we want to clip both the DragIndicator and the DropLocationIndicator
-            // controls when they go into the frozen column range.
-            leftEdge = frozenColumnsWidth;
-        }
-        RectangleGeometry? rg = null;
-        if (leftEdge > controlLeftEdge)
-        {
-            rg = new RectangleGeometry();
-            double xClip = Math.Min(width, leftEdge - controlLeftEdge);
-            rg.Rect = new Rect(xClip, 0, width - xClip, height);
-        }
-        if (controlLeftEdge + width >= rightEdge)
-        {
-            if (rg == null)
-            {
-                rg = new RectangleGeometry();
-            }
-            rg.Rect = new Rect(rg.Rect.X, rg.Rect.Y, Math.Max(0, rightEdge - controlLeftEdge - rg.Rect.X), height);
-        }
-        control.Clip = rg;
-    }
+    // private void EnsureColumnReorderingClip(Control control, double height, double frozenColumnsWidth, double controlLeftEdge)
+    // {
+    //     Debug.Assert(OwningGrid != null);
+    //     Debug.Assert(DragColumn != null);
+    //     double leftEdge  = 0;
+    //     double rightEdge = OwningGrid.CellsWidth;
+    //     double width     = control.Bounds.Width;
+    //     if (DragColumn.IsFrozen)
+    //     {
+    //         // If we're dragging a frozen column, we want to clip the corresponding DragIndicator control when it goes
+    //         // into the scrolling columns region, but not the DropLocationIndicator.
+    //         if (control == DragIndicator)
+    //         {
+    //             rightEdge = Math.Min(rightEdge, frozenColumnsWidth);
+    //         }
+    //     }
+    //     else if (OwningGrid.LeftFrozenColumnCount > 0)
+    //     {
+    //         // If we're dragging a scrolling column, we want to clip both the DragIndicator and the DropLocationIndicator
+    //         // controls when they go into the frozen column range.
+    //         leftEdge = frozenColumnsWidth;
+    //     }
+    //     RectangleGeometry? rg = null;
+    //     if (leftEdge > controlLeftEdge)
+    //     {
+    //         rg = new RectangleGeometry();
+    //         double xClip = Math.Min(width, leftEdge - controlLeftEdge);
+    //         rg.Rect = new Rect(xClip, 0, width - xClip, height);
+    //     }
+    //     if (controlLeftEdge + width >= rightEdge)
+    //     {
+    //         if (rg == null)
+    //         {
+    //             rg = new RectangleGeometry();
+    //         }
+    //         rg.Rect = new Rect(rg.Rect.X, rg.Rect.Y, Math.Max(0, rightEdge - controlLeftEdge - rg.Rect.X), height);
+    //     }
+    //     control.Clip = rg;
+    // }
 
     /// <summary>
     /// Measures the children of a <see cref="T:AtomUI.Controls.DataGridColumnHeadersPresenter" /> to 
@@ -340,9 +427,6 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         // then we will resize all the columns to fit the available space.
         if (OwningGrid.UsesStarSizing && !OwningGrid.AutoSizingColumns)
         {
-            double adjustment = Double.IsPositiveInfinity(availableSize.Width) ? OwningGrid.CellsWidth : availableSize.Width - totalDisplayWidth;
-            totalDisplayWidth += adjustment - OwningGrid.AdjustColumnWidths(0, adjustment, false);
-
             // Since we didn't know the final widths of the columns until we resized,
             // we waited until now to measure each header
             double leftEdge = 0;

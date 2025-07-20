@@ -330,10 +330,6 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             var columnFrozenRightEdge = _frozenRightEdge - RightFrozenWidth(dataGridColumn);
             headerViewItem.Arrange(new Rect(columnFrozenRightEdge,  rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
             headerViewItem.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
-            // if (DragColumn == dataGridColumn && DragIndicator != null)
-            // {
-            //     dragIndicatorLeftEdge = frozenLeftEdge + DragIndicatorOffset;
-            // }
             headerViewItem.IsFrozen             =  true;
             headerViewItem.IsShowLeftFrozenShadow   =  (_visibleColumnIndex == _visibleColumnCount - OwningGrid.RightFrozenColumnCount) && OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
             SetupParentShadowInfo(dataGridColumn, headerViewItem.IsShowLeftFrozenShadow, false);

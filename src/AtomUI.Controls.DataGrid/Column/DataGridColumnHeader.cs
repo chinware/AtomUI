@@ -249,7 +249,8 @@ internal partial class DataGridColumnHeader : ContentControl
     private static Point? _dragStart;
     private static DataGridColumn? _dragColumn;
     private static DataGridColumn? _currentDraggingOverColumn;
-    private static double _frozenColumnsWidth;
+    private static double _leftFrozenColumnsWidth;
+    private static double _rightFrozenColumnsWidth;
     private bool _areHandlersSuspended;
     private bool _desiredSeparatorVisibility = true;
     private StackPanel? _indicatorsLayout;
@@ -334,8 +335,9 @@ internal partial class DataGridColumnHeader : ContentControl
 
         if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
         {
-            HeaderDragMode                 = DragMode.MouseDown;
-            _frozenColumnsWidth       = OwningGrid.ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth();
+            HeaderDragMode            = DragMode.MouseDown;
+            _leftFrozenColumnsWidth   = OwningGrid.ColumnsInternal.GetVisibleLeftFrozenEdgedColumnsWidth();
+            _rightFrozenColumnsWidth   = OwningGrid.ColumnsInternal.GetVisibleRightFrozenEdgedColumnsWidth();
             _lastMousePositionHeaders = this.Translate(OwningGrid.ColumnHeaders, mousePosition);
 
             double          distanceFromLeft  = mousePosition.X;
@@ -384,16 +386,16 @@ internal partial class DataGridColumnHeader : ContentControl
             }
             else if (HeaderDragMode == DragMode.Reorder)
             {
+                var displayedColumnCount = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
                 // Find header we're hovering over
                 int targetIndex = GetReorderingTargetDisplayIndex(mousePositionHeaders);
+                
                 Debug.Assert(OwningColumn != null);
-                if (((!OwningColumn.IsFrozen && targetIndex >= OwningGrid.LeftFrozenColumnCount)
-                     || (OwningColumn.IsFrozen && targetIndex < OwningGrid.LeftFrozenColumnCount)))
+                if (!OwningColumn.IsFrozen && targetIndex >= OwningGrid.LeftFrozenColumnCount && (targetIndex < displayedColumnCount - OwningGrid.RightFrozenColumnCount))
                 {
                     OwningColumn.DisplayIndex = targetIndex;
                     DataGridColumnEventArgs ea = new DataGridColumnEventArgs(OwningColumn);
                     OwningGrid.NotifyColumnReordered(ea);
-                    OwningGrid.ScrollIntoView(null, _dragColumn);
                     OwningGrid.UpdateHorizontalOffset(horizontalOffset);
                 }
             }
@@ -458,6 +460,7 @@ internal partial class DataGridColumnHeader : ContentControl
         Debug.Assert(OwningGrid != null);
         return OwningGrid.CanUserReorderColumns
                && !(column is DataGridFillerColumn)
+               && !column.IsFrozen
                && column.CanUserReorderInternal.HasValue && column.CanUserReorderInternal.Value;
     }
 
@@ -575,13 +578,15 @@ internal partial class DataGridColumnHeader : ContentControl
         Debug.Assert(OwningGrid.ColumnsInternal.RowGroupSpacerColumn != null);
         double leftEdge = OwningGrid.ColumnsInternal.RowGroupSpacerColumn.IsRepresented ? OwningGrid.ColumnsInternal.RowGroupSpacerColumn.ActualWidth : 0;
         double rightEdge = OwningGrid.CellsWidth;
-        if (OwningColumn.IsFrozen)
+
+        if (OwningGrid.LeftFrozenColumnCount > 0)
         {
-            rightEdge = Math.Min(rightEdge, _frozenColumnsWidth);
+            leftEdge = _leftFrozenColumnsWidth;
         }
-        else if (OwningGrid.LeftFrozenColumnCount > 0)
+
+        if (OwningGrid.RightFrozenColumnCount > 0)
         {
-            leftEdge = _frozenColumnsWidth;
+            rightEdge -=  _rightFrozenColumnsWidth;
         }
 
         if (mousePositionHeaders.X < leftEdge)
@@ -821,7 +826,7 @@ internal partial class DataGridColumnHeader : ContentControl
             
             DataGridColumn? targetColumn = GetReorderingTargetColumn(mousePositionHeaders, !OwningColumn.IsFrozen /*scroll*/, out double scrollAmount);
 
-            if (_currentDraggingOverColumn != targetColumn)
+            if (_currentDraggingOverColumn != targetColumn && (targetColumn != null && !targetColumn.IsFrozen) || targetColumn == null)
             {
                 DataGridColumnDraggingOverEventArgs draggingOverEventArgs =
                     new DataGridColumnDraggingOverEventArgs(_dragColumn, targetColumn);

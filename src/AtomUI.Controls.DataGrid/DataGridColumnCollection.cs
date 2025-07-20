@@ -412,6 +412,34 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
         return GetDisplayedColumns(filter);
     }
 
+    internal double GetVisibleLeftFrozenEdgedColumnsWidth()
+    {
+        Debug.Assert(ItemsInternal != null);
+        double visibleFrozenColumnsWidth = 0;
+        for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
+        {
+            if (ItemsInternal[columnIndex].IsVisible && ItemsInternal[columnIndex].IsLeftFrozen)
+            {
+                visibleFrozenColumnsWidth += ItemsInternal[columnIndex].ActualWidth;
+            }
+        }
+        return visibleFrozenColumnsWidth;
+    }
+    
+    internal double GetVisibleRightFrozenEdgedColumnsWidth()
+    {
+        Debug.Assert(ItemsInternal != null);
+        double visibleFrozenColumnsWidth = 0;
+        for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
+        {
+            if (ItemsInternal[columnIndex].IsVisible && ItemsInternal[columnIndex].IsRightFrozen)
+            {
+                visibleFrozenColumnsWidth += ItemsInternal[columnIndex].ActualWidth;
+            }
+        }
+        return visibleFrozenColumnsWidth;
+    }
+    
     internal double GetVisibleFrozenEdgedColumnsWidth()
     {
         Debug.Assert(ItemsInternal != null);

@@ -106,7 +106,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         
         var visibleColumnIndex = 0;
         var visibleColumns     = OwningGrid.ColumnsInternal.GetVisibleColumns().ToList();
-        // left and nornal
+        // left and normal
         foreach (DataGridColumn column in visibleColumns)
         {
             double       cellLeftEdge;
@@ -167,8 +167,6 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
                     if (cell.IsVisible)
                     {
                         cell.Arrange(new Rect(cellLeftEdge, 0, column.LayoutRoundedWidth, finalSize.Height));
-                        var cellRightEdge = cell.Bounds.Right;
-                        EnsureCellClip(cell, column.ActualWidth, finalSize.Height, frozenLeftEdge, realFrozenRightEdge, scrollingLeftEdge, cellRightEdge);
                     }
                     scrollingLeftEdge                      += column.ActualWidth;
                     column.IsInitialDesiredWidthDetermined =  true;
