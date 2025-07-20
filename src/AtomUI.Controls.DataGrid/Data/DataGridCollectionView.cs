@@ -21,6 +21,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <summary>
     /// Since there's nothing in the un-cancelable event args that is mutable,
     /// just create one instance to be used universally.
+   
     /// </summary>
     private static readonly DataGridCurrentChangingEventArgs UnCancelableCurrentChangingEventArgs = new (false);
 
@@ -403,7 +404,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             {
                 if (IsGrouping && !_isUsingTemporaryGroup)
                 {
-                    Debug.Assert(_group != null);
                     return _group.ItemCount;
                 }
                 return Math.Max(0, Math.Min(PageSize, InternalCount - (_pageSize * PageIndex)));
@@ -414,7 +414,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 {
                     return _temporaryGroup.ItemCount;
                 }
-                Debug.Assert(_group != null);
                 return _group.ItemCount;
             }
             return InternalCount;
@@ -595,7 +594,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 return null;
             }
 
-            return RootGroup?.Items;
+            return RootGroup.Items;
         }
     }
 
@@ -1139,7 +1138,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         AdjustCurrencyForAdd(null, addIndex);
 
-        if (IsGrouping && _group != null)
+        if (IsGrouping)
         {
             _group.InsertSpecialItem(_group.Items.Count, newItem, false);
             if (PageSize > 0)
@@ -1301,7 +1300,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             {
                 int    internalIndex = ConvertToInternalIndex(addIndex);
                 object? addItem       = null;
-                if (IsGrouping && _group != null)
+                if (IsGrouping)
                 {
                     addItem = _temporaryGroup.LeafAt(internalIndex);
                     if (addItem != null)
@@ -1363,7 +1362,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             // check whether to restore currency to the item being edited
             object? restoreCurrencyTo = (editItem == CurrentItem) ? editItem : null;
 
-            if (removeIndex >= 0 && IsGrouping && _group != null)
+            if (removeIndex >= 0 && IsGrouping)
             {
                 // we can't just call RemoveFromSubgroups, as the group name
                 // for the item may have changed during the edit.
@@ -1425,7 +1424,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 if (passedFilter && (PageSize == 0 ||
                                      (pageStartIndex <= leafIndex && nextPageStartIndex > leafIndex)))
                 {
-                    _group?.AddToSubgroups(editItem, false /*loading*/);
+                    _group.AddToSubgroups(editItem, false /*loading*/);
                     int addIndex = IndexOf(editItem);
                     AdjustCurrencyForEdit(restoreCurrencyTo, addIndex);
                     HandleCollectionChanged(
@@ -1453,7 +1452,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                     object? addItem = _temporaryGroup.LeafAt(addIndex);
                     if (addItem != null)
                     {
-                        _group?.AddToSubgroups(addItem, false /*loading*/);
+                        _group.AddToSubgroups(addItem, false /*loading*/);
                         addIndex = IndexOf(addItem);
                         AdjustCurrencyForEdit(restoreCurrencyTo, addIndex);
                         HandleCollectionChanged(
@@ -1640,7 +1639,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                         object? addItem = _temporaryGroup.LeafAt(addIndex);
                         if (addItem != null)
                         {
-                            _group?.AddToSubgroups(addItem, false /*loading*/);
+                            _group.AddToSubgroups(addItem, false /*loading*/);
                             addIndex = IndexOf(addItem);
 
                             // adjust currency to either the previous current item if possible
@@ -2279,7 +2278,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         // remove the item from the internal list
         _internalList.Remove(item);
 
-        if (IsGrouping && _group != null && item != null)
+        if (IsGrouping && item != null)
         {
             if (PageSize > 0)
             {
@@ -2320,7 +2319,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         if (replaceItem)
         {
             // we first need to add the item into the current group
-            if (IsGrouping && _group != null)
+            if (IsGrouping)
             {
                 object? newItem = _temporaryGroup.LeafAt((PageSize * (PageIndex + 1)) - 1);
                 if (newItem != null)
@@ -2997,7 +2996,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         // we should only use this method if we aren't paging
         Debug.Assert(PageSize == 0, "Unexpected PageSize != 0");
-        Debug.Assert(_group != null);
         
         _group.Clear();
         _group.Initialize();
@@ -3091,7 +3089,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     //TODO Paging
     private void PrepareGroupsForCurrentPage()
     {
-        Debug.Assert(_group != null);
         _group.Clear();
         _group.Initialize();
 
@@ -3103,7 +3100,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         _group.IsDataInGroupOrder = true;
         _group.ActiveComparer     = null;
 
-        if (GroupDescriptions != null && GroupDescriptions.Count > 0)
+        if (GroupDescriptions.Count > 0)
         {
             for (int num = 0, count = Count; num < count; ++num)
             {
@@ -4327,8 +4324,8 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 if (result == 0)
                 {
                     return index;
-                }
-                else if (result > 0)
+                } 
+                if (result > 0)
                 {
                     min = index + 1;
                 }

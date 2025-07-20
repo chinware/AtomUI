@@ -5,15 +5,36 @@
     <ControlTheme x:Key="{x:Type atom:DataGridHeaderViewItem}" TargetType="atom:DataGridHeaderViewItem">
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.ContentPresenterPart}"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  BorderThickness="{TemplateBinding EffectiveBorderThickness}"/>
+                <Border Name="Frame">
+                    <ContentPresenter Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.ContentPresenterPart}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      BorderThickness="{TemplateBinding EffectiveBorderThickness}" />
+                </Border>
             </ControlTemplate>
         </Setter>
 
         <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />
+        </Style>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Style Selector="^[IsFrozen=True]">
+
+            <Setter Property="ZIndex" Value="1000" />
+            <Style Selector="^[IsShowRightFrozenShadow=True]">
+                <Style Selector="^ /template/ Border#Frame">
+                    <Setter Property="BoxShadow"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.RightFrozenShadows}}" />
+                </Style>
+            </Style>
+            <Style Selector="^[IsShowLeftFrozenShadow=True]">
+                <Style Selector="^ /template/ Border#Frame">
+                    <Setter Property="BoxShadow"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}" />
+                </Style>
+            </Style>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

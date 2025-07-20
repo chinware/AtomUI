@@ -564,7 +564,7 @@ public class Popup : AvaloniaPopup,
     public void MotionAwareOpen(Action? opened = null)
     {
         // AbstractPopup is currently open
-        if (_openAnimating || _closeAnimating)
+        if (IsMotionAwareOpen || _openAnimating || _closeAnimating)
         {
             return;
         }
@@ -628,7 +628,7 @@ public class Popup : AvaloniaPopup,
 
     public void MotionAwareClose(Action? closed = null)
     {
-        if (_closeAnimating)
+        if (!IsMotionAwareOpen || _closeAnimating)
         {
             return;
         }

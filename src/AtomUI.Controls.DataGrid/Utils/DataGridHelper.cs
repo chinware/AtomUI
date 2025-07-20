@@ -46,4 +46,18 @@ internal static class DataGridHelper
             _ => throw new ArgumentOutOfRangeException($"unsupported ListSortDirection: {sortDirection}."),
         };
     }
+    
+    public static bool AreEqualAt3Decimals(double a, double b)
+    {
+        long scaledA = (long)Math.Round(a * 10000);
+        long scaledB = (long)Math.Round(b * 10000);
+        return scaledA == scaledB;
+    }
+    
+    public static bool AreLessAt3Decimals(double a, double b)
+    {
+        long scaledA = (long)Math.Round(a * 10000);
+        long scaledB = (long)Math.Round(b * 10000);
+        return scaledA < scaledB;
+    }
 }

@@ -5,6 +5,7 @@
 
 using System.Collections.Specialized;
 using System.Diagnostics;
+using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
@@ -88,12 +89,14 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         
         double scrollingLeftEdge  = -OwningGrid.HorizontalOffset;
         var    visibleColumnCount = 0;
+        var    hasRightFrozen     = false;
         // 需要先计算出 frozenRightEdge
         foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             if (column.IsRightFrozen)
             {
                 realFrozenRightEdge -= column.ActualWidth;
+                hasRightFrozen      =  true;
             }
 
             visibleColumnCount++;
@@ -101,8 +104,10 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         
         var maxOffsetX = finalSize.Width - frozenRightEdge;
         
-        var    visibleColumnIndex = 0;
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        var visibleColumnIndex = 0;
+        var visibleColumns     = OwningGrid.ColumnsInternal.GetVisibleColumns().ToList();
+        // left and nornal
+        foreach (DataGridColumn column in visibleColumns)
         {
             double       cellLeftEdge;
             DataGridCell cell = OwningRow.Cells[column.Index];
@@ -117,16 +122,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
                 cell.FrozenShadowPosition =  FrozenColumnShadowPosition.Right;
                 cell.IsShowFrozenShadow   =  (visibleColumnIndex == OwningGrid.LeftFrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
             }
-            else if (column.IsRightFrozen)
-            {
-                frozenRightEdge           -= column.ActualWidth;
-                // This can happen before or after clipping because frozen cells aren't clipped
-                cellLeftEdge              =  frozenRightEdge;
-                cell.IsFrozen             =  true;
-                cell.FrozenShadowPosition =  FrozenColumnShadowPosition.Left;
-                cell.IsShowFrozenShadow = (visibleColumnIndex == visibleColumnCount - OwningGrid.RightFrozenColumnCount) &&
-                                          OwningGrid.HorizontalOffset < maxOffsetX;
-            }
+ 
             else
             {
                 cellLeftEdge  = scrollingLeftEdge;
@@ -140,9 +136,47 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             }
             scrollingLeftEdge                      += column.ActualWidth;
             column.IsInitialDesiredWidthDetermined =  true;
-            visibleColumnIndex++;
+            if (!column.IsRightFrozen)
+            {
+                visibleColumnIndex++;
+            }
         }
 
+        if (hasRightFrozen)
+        {
+            visibleColumnIndex = visibleColumns.Count - 1;
+            // right
+            for (var i = visibleColumns.Count - 1; i >= 0; i--)
+            {
+                DataGridColumn column       = visibleColumns[i];
+                double         cellLeftEdge = 0.0;
+                DataGridCell   cell         = OwningRow.Cells[column.Index];
+                Debug.Assert(cell.OwningColumn == column);
+                Debug.Assert(column.IsVisible);
+                if (column.IsRightFrozen)
+                {
+                    frozenRightEdge           -= column.ActualWidth;
+                    // This can happen before or after clipping because frozen cells aren't clipped
+                    cellLeftEdge              = frozenRightEdge;
+                    cell.IsFrozen             = true;
+                    cell.FrozenShadowPosition = FrozenColumnShadowPosition.Left;
+                    var horizontalScrollBarVisible = OwningGrid.HorizontalScrollBar?.IsVisible ?? false;
+                    cell.IsShowFrozenShadow = (visibleColumnIndex == visibleColumnCount - OwningGrid.RightFrozenColumnCount) && 
+                                              horizontalScrollBarVisible &&
+                                              DataGridHelper.AreLessAt3Decimals(OwningGrid.HorizontalOffset, maxOffsetX);
+                    if (cell.IsVisible)
+                    {
+                        cell.Arrange(new Rect(cellLeftEdge, 0, column.LayoutRoundedWidth, finalSize.Height));
+                        var cellRightEdge = cell.Bounds.Right;
+                        EnsureCellClip(cell, column.ActualWidth, finalSize.Height, frozenLeftEdge, realFrozenRightEdge, scrollingLeftEdge, cellRightEdge);
+                    }
+                    scrollingLeftEdge                      += column.ActualWidth;
+                    column.IsInitialDesiredWidthDetermined =  true;
+                    visibleColumnIndex--;
+                }
+            }
+        }
+        
         _fillerLeftEdge = scrollingLeftEdge;
         Debug.Assert(OwningGrid.ColumnsInternal.FillerColumn != null);
         OwningRow.FillerCell.Arrange(new Rect(_fillerLeftEdge, 0, OwningGrid.ColumnsInternal.FillerColumn.FillerWidth, finalSize.Height));

@@ -326,6 +326,7 @@ public partial class DataGrid
     
     private byte _verticalScrollChangesIgnored;
     private DataGridDefaultFilter? _defaultFilter;
+    private bool _templatedApplied;
     
     private void FlushCurrentCellChanged()
     {
@@ -1259,6 +1260,59 @@ public partial class DataGrid
             || e.Action == NotifyCollectionChangedAction.Reset)
         {
             UpdatePseudoClasses();
+            if (_templatedApplied)
+            {
+                if (IsGroupHeaderMode)
+                {
+                    SetupColumnGroupFrozenState();
+                }
+                CheckFrozenColumnCount();
+            }
+        }
+    }
+
+    private void SetupColumnGroupFrozenState()
+    {
+        if (LeftFrozenColumnCount > 0)
+        {
+            var stop = Math.Min(LeftFrozenColumnCount, Columns.Count);
+            for (var i = 0; i < stop; ++i)
+            {
+                RecursiveSetupGroupHeaderItemFrozenState(Columns[i]);
+            }
+        }
+
+        if (RightFrozenColumnCount > 0)
+        {
+            var stop  = Math.Min(RightFrozenColumnCount, Columns.Count); 
+            var count = Columns.Count;
+            for (var i = 0; i < stop; ++i)
+            {
+                RecursiveSetupGroupHeaderItemFrozenState(Columns[count - i - 1]);
+            }
+        }
+        
+    }
+
+    private void RecursiveSetupGroupHeaderItemFrozenState(IDataGridColumnGroupItem item)
+    {
+        var current = item;
+        while (current != null)
+        {
+            if (current is DataGridColumnGroupItem gridColumnGroupItem)
+            {
+                gridColumnGroupItem.HeaderCell.IsFrozen = true;
+                gridColumnGroupItem.IsFrozen            = true;
+            }
+
+            if (current is IDataGridColumnGroupItemInternal gridColumnGroupItemInternal)
+            {
+                if (gridColumnGroupItemInternal.GroupHeaderViewItem != null)
+                {
+                    gridColumnGroupItemInternal.GroupHeaderViewItem.IsFrozen             = true;
+                }
+            }
+            current = current.GroupParent;
         }
     }
 
@@ -2789,11 +2843,8 @@ public partial class DataGrid
             Debug.Assert(slot >= 0 && slot < SlotCount);
             return false;
         }
-        else
-        {
-            int rowIndex = RowIndexFromSlot(slot);
-            return rowIndex < 0 || rowIndex >= DataConnection.Count;
-        }
+        int rowIndex = RowIndexFromSlot(slot);
+        return rowIndex < 0 || rowIndex >= DataConnection.Count;
     }
 
     private void MakeFirstDisplayedCellCurrentCell()
@@ -4616,6 +4667,16 @@ public partial class DataGrid
         else
         {
             HeaderCornerRadius = new CornerRadius(0);
+        }
+    }
+
+    private void CheckFrozenColumnCount()
+    {
+        // The total number of left frozen and right frozen columns must be less than or equal to the total number of columns
+        var totalFrozenCount = LeftFrozenColumnCount + RightFrozenColumnCount;
+        if (totalFrozenCount > Columns.Count)
+        {
+            throw DataGridError.DataGrid.ValueMustBeLessThanOrEqualTo("LeftFrozenColumnCount + RightFrozenColumnCount", "Columns.Count", Columns.Count);
         }
     }
 }

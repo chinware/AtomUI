@@ -20,7 +20,6 @@
             </ControlTemplate>
         </Setter>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderTextColor}}"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}"/>
         <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}"/>
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
             <Setter Property="HorizontalContentAlignment" Value="Left"/>

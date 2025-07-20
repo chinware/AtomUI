@@ -2646,7 +2646,7 @@ public partial class DataGrid
             && DataConnection.CollectionView.Groups != null)
         {
             int totalSlots = 0;
-            _topLevelGroup                   =  (INotifyCollectionChanged)DataConnection.CollectionView.Groups;
+            _topLevelGroup                   =  DataConnection.CollectionView.Groups;
             _topLevelGroup.CollectionChanged += HandleCollectionViewGroupCollectionChanged;
             foreach (object group in DataConnection.CollectionView.Groups)
             {

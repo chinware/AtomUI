@@ -106,7 +106,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
 
         double dragIndicatorLeftEdge = 0;
         double frozenLeftEdge        = 0;
-        double frozenRightEdge       = finalSize.Width;
+        double frozenRightEdge       = DesiredSize.Width;
         double scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
         var    visibleColumnIndex    = 0;
         var    visibleColumnCount    = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();

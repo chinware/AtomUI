@@ -119,7 +119,7 @@ internal static class DataGridError
         {
             return new ArgumentOutOfRangeException(paramName, Format("{0} must be less than {1}.", valueName, value));
         }
-
+        
     }
 
     public static class DataGridColumnHeader

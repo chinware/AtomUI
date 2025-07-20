@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Controls.Data;
+using AtomUI.Controls.Utils;
 using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -1363,7 +1364,7 @@ public partial class DataGrid
                     invalidate = true;
                     cx         = displayWidth;
                     // 我们不需要那么高的精度
-                    Debug.Assert(AreEqualAt3Decimals(_negHorizontalOffset,
+                    Debug.Assert(DataGridHelper.AreEqualAt3Decimals(_negHorizontalOffset,
                         GetNegHorizontalOffsetFromHorizontalOffset(_horizontalOffset)));
                 }
 
@@ -1406,13 +1407,6 @@ public partial class DataGrid
         DisplayData.FirstDisplayedScrollingCol = firstDisplayedScrollingCol;
 
         return invalidate;
-    }
-    
-    private static bool AreEqualAt3Decimals(double a, double b)
-    {
-        long scaledA = (long)Math.Round(a * 10000);
-        long scaledB = (long)Math.Round(b * 10000);
-        return scaledA == scaledB;
     }
 
     private int ComputeFirstVisibleScrollingColumn()

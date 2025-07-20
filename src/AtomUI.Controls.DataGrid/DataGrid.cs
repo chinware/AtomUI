@@ -1456,6 +1456,8 @@ public partial class DataGrid : TemplatedControl,
             _groupColumnHeadersPresenter.OwningGrid = this;
         }
 
+        CheckFrozenColumnCount();
+
         if (ColumnGroups.Count > 0)
         {
             if (_groupColumnHeadersPresenter != null)
@@ -1466,6 +1468,7 @@ public partial class DataGrid : TemplatedControl,
                 }
 
                 BuildColumnGroupView();
+                SetupColumnGroupFrozenState();
             }
         }
         else
@@ -1553,6 +1556,7 @@ public partial class DataGrid : TemplatedControl,
             SizeType = SizeType.Middle,
             PresetImage = PresetEmptyImage.Simple
         }, BindingPriority.Template);
+        _templatedApplied = true;
     }
 
     /// <summary>
@@ -1677,5 +1681,23 @@ public partial class DataGrid : TemplatedControl,
         {
             ConfigureHeaderCornerRadius();
         }
+
+        if (_templatedApplied)
+        {
+            if (change.Property == IsGroupHeaderModeProperty)
+            {
+           
+                if (IsGroupHeaderMode)
+                {
+                    SetupColumnGroupFrozenState();
+                }
+            }
+            else if (change.Property == LeftFrozenColumnCountProperty ||
+                     change.Property == RightFrozenColumnCountProperty)
+            {
+                CheckFrozenColumnCount();
+            }
+        }
+        
     }
 }

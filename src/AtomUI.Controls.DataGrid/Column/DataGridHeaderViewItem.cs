@@ -4,7 +4,7 @@ using Avalonia.Controls;
 
 namespace AtomUI.Controls;
 
-public class DataGridHeaderViewItem : ContentControl
+internal class DataGridHeaderViewItem : ContentControl
 {
     #region 公共属性定义
 
@@ -15,6 +15,23 @@ public class DataGridHeaderViewItem : ContentControl
     public static readonly DirectProperty<DataGridHeaderViewItem, bool> IsLeafProperty =
         AvaloniaProperty.RegisterDirect<DataGridHeaderViewItem, bool>(
             nameof(IsLeaf), o => o.IsLeaf);
+    
+    public static readonly DirectProperty<DataGridHeaderViewItem, bool> IsFrozenProperty =
+        AvaloniaProperty.RegisterDirect<DataGridHeaderViewItem, bool>(nameof(IsFrozen), 
+            o => o.IsFrozen,
+            (o, v) => o.IsFrozen = v);
+    
+    public static readonly DirectProperty<DataGridHeaderViewItem, bool> IsShowLeftFrozenShadowProperty =
+        AvaloniaProperty.RegisterDirect<DataGridHeaderViewItem, bool>(
+            nameof(IsShowLeftFrozenShadow),
+            o => o.IsShowLeftFrozenShadow, 
+            (o, v) => o.IsShowLeftFrozenShadow = v);
+    
+    public static readonly DirectProperty<DataGridHeaderViewItem, bool> IsShowRightFrozenShadowProperty =
+        AvaloniaProperty.RegisterDirect<DataGridHeaderViewItem, bool>(
+            nameof(IsShowRightFrozenShadow),
+            o => o.IsShowRightFrozenShadow, 
+            (o, v) => o.IsShowRightFrozenShadow = v);
     
     /// <summary>
     /// Gets the level/indentation of the item.
@@ -32,6 +49,29 @@ public class DataGridHeaderViewItem : ContentControl
         internal set => SetAndRaise(IsLeafProperty, ref _isLeaf, value);
     }
     private bool _isLeaf;
+    
+    public bool IsFrozen
+    {
+        get => _isFrozen;
+        internal set => SetAndRaise(IsFrozenProperty, ref _isFrozen, value);
+    }
+    private bool _isFrozen;
+    
+    bool _isShowLeftFrozenShadow = false;
+
+    internal bool IsShowLeftFrozenShadow
+    {
+        get => _isShowLeftFrozenShadow;
+        set => SetAndRaise(IsShowLeftFrozenShadowProperty, ref _isShowLeftFrozenShadow, value);
+    }
+    
+    bool _isShowRightFrozenShadow = false;
+
+    internal bool IsShowRightFrozenShadow
+    {
+        get => _isShowRightFrozenShadow;
+        set => SetAndRaise(IsShowRightFrozenShadowProperty, ref _isShowRightFrozenShadow, value);
+    }
 
     #endregion
 
