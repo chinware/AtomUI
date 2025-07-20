@@ -523,7 +523,7 @@ public partial class DataGrid
             // The row is already displayed in its entirety
             return true;
         }
-        else if (DisplayData.FirstScrollingSlot == slot && slot != -1)
+        if (DisplayData.FirstScrollingSlot == slot && slot != -1)
         {
             if (!MathUtilities.IsZero(NegVerticalOffset))
             {
@@ -611,8 +611,7 @@ public partial class DataGrid
             // We scrolled too far because a row's height was larger than its approximation
             _verticalOffset = NegVerticalOffset;
         }
-
-        //
+        
         Debug.Assert(MathUtilities.LessThanOrClose(NegVerticalOffset, _verticalOffset));
 
         SetVerticalOffset(_verticalOffset);

@@ -374,9 +374,10 @@ internal partial class DataGridColumnHeader : ContentControl
     internal void HandleMouseLeftButtonUp(ref bool handled, PointerEventArgs args, Point mousePosition, Point mousePositionHeaders)
     {
         IsPressed = false;
-
+        
         if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
         {
+            var horizontalOffset = OwningGrid.HorizontalScrollBar?.Value ?? mousePosition.X;
             if (HeaderDragMode == DragMode.MouseDown)
             {
                 HandleMouseLeftButtonUpClick(args.KeyModifiers, ref handled);
@@ -390,9 +391,10 @@ internal partial class DataGridColumnHeader : ContentControl
                      || (OwningColumn.IsFrozen && targetIndex < OwningGrid.LeftFrozenColumnCount)))
                 {
                     OwningColumn.DisplayIndex = targetIndex;
-
                     DataGridColumnEventArgs ea = new DataGridColumnEventArgs(OwningColumn);
                     OwningGrid.NotifyColumnReordered(ea);
+                    OwningGrid.ScrollIntoView(null, _dragColumn);
+                    OwningGrid.UpdateHorizontalOffset(horizontalOffset);
                 }
             }
 
