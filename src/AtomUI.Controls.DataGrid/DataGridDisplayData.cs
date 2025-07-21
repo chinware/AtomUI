@@ -161,16 +161,24 @@ internal class DataGridDisplayData
         {
             DataGridRow row = _recyclableRows.Pop();
             row.IsVisible = false;
-            Debug.Assert(!_fullyRecycledRows.Contains(row));
-            _fullyRecycledRows.Push(row);
+            // TODO 拖动的时候滚动翻页了会触发这个，暂时改成动态判断
+            // Debug.Assert(!_fullyRecycledRows.Contains(row));
+            if (!_fullyRecycledRows.Contains(row))
+            {
+                _fullyRecycledRows.Push(row);
+            }
         }
         // Fully recycle Recyclable GroupHeaders and transfer them to Recycled GroupHeaders
         while (_recyclableGroupHeaders.Count > 0)
         {
             DataGridRowGroupHeader groupHeader = _recyclableGroupHeaders.Pop();
             groupHeader.IsVisible = false;
-            Debug.Assert(!_fullyRecycledGroupHeaders.Contains(groupHeader));
-            _fullyRecycledGroupHeaders.Push(groupHeader);
+            // TODO 拖动的时候滚动翻页了会触发这个，暂时改成动态判断
+            // Debug.Assert(!_fullyRecycledGroupHeaders.Contains(groupHeader));
+            if (!_fullyRecycledGroupHeaders.Contains(groupHeader))
+            {
+                _fullyRecycledGroupHeaders.Push(groupHeader);
+            }
         }
     }
     

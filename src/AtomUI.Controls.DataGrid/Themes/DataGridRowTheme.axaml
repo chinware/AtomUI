@@ -62,6 +62,7 @@
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRowHoverBg}}" />
             </Style>
+            <Setter Property="ZIndex" Value="1000" />
         </Style>
         
         <Style Selector="^[IsDragging=False]">

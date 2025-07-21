@@ -3863,7 +3863,7 @@ public partial class DataGrid
         EditingRow = null;
     }
 
-    private void ResetFocusedRow()
+    internal void ResetFocusedRow()
     {
         if (_focusedRow != null
             && _focusedRow != EditingRow

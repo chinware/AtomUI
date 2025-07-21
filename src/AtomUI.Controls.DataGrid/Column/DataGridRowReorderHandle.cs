@@ -6,7 +6,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -26,9 +25,11 @@ internal class DataGridRowReorderHandle : TemplatedControl
 
     private static Point? _dragStart;
     private static double? _dragDelta;
-    private static DataGridRow? _dragRow;
-    private static DataGridRow? _prevDraggingOverRow;
-    private static DataGridRow? _currentDraggingOverRow;
+    
+    private static Rect? _dragRowBounds;
+    private static int? _dragRowIndex;
+    private static int? _currentDraggingOverRowIndex;
+    
     private static Point? _lastMousePositionInPresenter;
     private IconButton? _indicatorButton;
 
@@ -67,48 +68,45 @@ internal class DataGridRowReorderHandle : TemplatedControl
         {
             _indicatorButton.DisableTransitions();
         }
-        if (_prevDraggingOverRow != null && _prevDraggingOverRow != OwningRow)
+        if (_currentDraggingOverRowIndex != null && _currentDraggingOverRowIndex != _dragRowIndex)
         {
             if (OwningGrid.CollectionView is IList collectionView)
             {
-                var data = collectionView[OwningRow.Index];
-                if (data is not null)
+                if (_dragRowIndex != null)
                 {
-                    collectionView.RemoveAt(OwningRow.Index);
-                    collectionView.Insert(_prevDraggingOverRow.Index, data);
+                    var data = collectionView[_dragRowIndex.Value];
+                    if (data is not null)
+                    {
+                        collectionView.RemoveAt(_dragRowIndex.Value);
+                        collectionView.Insert(_currentDraggingOverRowIndex.Value, data);
+                    }
                 }
+               
                 if (_indicatorButton != null)
                 {
                     _indicatorButton.EnableTransitions();
                 }
-                Dispatcher.UIThread.Post(() =>
-                {
-                    OwningGrid.CollectionView.Refresh();
-                });
+                OwningGrid.CollectionView.Refresh();
             }
         }
         
-        OwningRow.Opacity   = 1.0;
-
         _dragDelta                    = null;
-        _dragRow                      = null;
+        _dragRowIndex                 = null;
+        _dragRowBounds                = null;
         _dragStart                    = null;
         _lastMousePositionInPresenter = null;
-        _currentDraggingOverRow       = null;
-        _prevDraggingOverRow          = null;
-        rowsPresenter.DraggedRow      = null;
+        _currentDraggingOverRowIndex  = null;
         rowsPresenter.DragRowOffset   = 0.0;
+        rowsPresenter.InvalidateArrange();
     }
 
     private void HandlePointerMoved(object? sender, PointerEventArgs e)
     {
-        if (OwningGrid == null || !IsEnabled || OwningGrid.ColumnHeaders == null)
+        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed || OwningGrid == null || !IsEnabled || OwningGrid.ColumnHeaders == null)
         {
             return;
         }
-        
         Point mousePositionPresenter = e.GetPosition(OwningGrid.RowsPresenter);
-
         Debug.Assert(OwningGrid.Parent is InputElement);
         HandleMouseMoveReorder(mousePositionPresenter);
     }
@@ -122,38 +120,31 @@ internal class DataGridRowReorderHandle : TemplatedControl
         var rowsPresenter = OwningGrid.RowsPresenter;
 
         //handle entry into reorder mode
-        if (_dragRow == null && _lastMousePositionInPresenter != null)
+        if (_dragRowIndex == null && _lastMousePositionInPresenter != null)
         {
             HandleMouseMoveBeginReorder(mousePositionPresenter);
         }
 
         //handle reorder mode (eg, positioning of the popup)
-        if (rowsPresenter.DraggedRow != null)
+        if (rowsPresenter.DraggedRowIndex != null)
         {
             Debug.Assert(_dragStart != null);
             // Find row we're hovering over
-            var targetRow = GetReorderingTargetRow(mousePositionPresenter, true, out double scrollAmount);
-            if (targetRow != _currentDraggingOverRow)
-            {
-                _prevDraggingOverRow = _currentDraggingOverRow;
-                _currentDraggingOverRow = targetRow;
-                if (_currentDraggingOverRow != null && _currentDraggingOverRow != _dragRow)
-                {
-                    rowsPresenter.SwapOrderingChildren(OwningRow, _currentDraggingOverRow);
-                }
-            }
-            
+            var targetRowIndex = GetReorderingTargetRow(mousePositionPresenter, true, out double scrollAmount);
+            _currentDraggingOverRowIndex = targetRowIndex;
+ 
             if (_dragDelta == null)
             {
-                _dragDelta = _dragRow?.Bounds.Y;
+                _dragDelta = _dragRowBounds?.Y;
             }
             var delta = _dragDelta.HasValue ? _dragDelta.Value : 0.0;
             rowsPresenter.DragRowOffset = delta + mousePositionPresenter.Y - _dragStart.Value.Y + scrollAmount;
+            rowsPresenter.DraggedRowIndex = _dragRowIndex;
             rowsPresenter.InvalidateArrange();
         }
     }
 
-    private DataGridRow? GetReorderingTargetRow(Point mousePositionPresenter, bool scroll, out double scrollAmount)
+    private int? GetReorderingTargetRow(Point mousePositionPresenter, bool scroll, out double scrollAmount)
     {
         scrollAmount = 0;
         Debug.Assert(OwningGrid != null);
@@ -163,8 +154,8 @@ internal class DataGridRowReorderHandle : TemplatedControl
 
         var rowsPresenter = OwningGrid.RowsPresenter;
 
-        double topEdge    = rowsPresenter.Bounds.Top;
-        double bottomEdge = rowsPresenter.Bounds.Bottom;
+        double topEdge    = 0;
+        double bottomEdge = rowsPresenter.DesiredSize.Height;
 
         if (mousePositionPresenter.Y < topEdge)
         {
@@ -187,23 +178,26 @@ internal class DataGridRowReorderHandle : TemplatedControl
                 OwningGrid.VerticalScrollBar.IsVisible &&
                 OwningGrid.VerticalScrollBar.Value < OwningGrid.VerticalScrollBar.Maximum)
             {
-                double newVal = mousePositionPresenter.X - bottomEdge;
+                double newVal = mousePositionPresenter.Y - bottomEdge;
                 scrollAmount = Math.Min(newVal,
                     OwningGrid.VerticalScrollBar.Maximum - OwningGrid.VerticalScrollBar.Value);
-                OwningGrid.ScrollSlotsByHeight(scrollAmount);
+                if (scrollAmount > 0)
+                {
+                    OwningGrid.ScrollSlotsByHeight(scrollAmount);
+                }
             }
 
             mousePositionPresenter = mousePositionPresenter.WithY(bottomEdge - 1);
         }
 
-        foreach (Control child in rowsPresenter.Children)
+        foreach (Control child in OwningGrid.DisplayData.GetScrollingElements())
         {
             if (child is DataGridRow row)
             {
                 Point mousePosition = OwningGrid.RowsPresenter.Translate(row, mousePositionPresenter);
                 if (mousePosition.Y >= 0 && mousePosition.Y <= row.Bounds.Height)
                 {
-                    return row;
+                    return row.Index;
                 }
             }
         }
@@ -225,13 +219,13 @@ internal class DataGridRowReorderHandle : TemplatedControl
         }
 
         // The user didn't cancel, so prepare for the reorder
-        _dragRow         = OwningRow;
-        _dragStart       = mousePosition;
-        _dragRow.Opacity = 0.0;
+        _dragRowIndex     = OwningRow.Index;
+        _dragRowBounds    = OwningRow.Bounds;
+        _dragStart        = mousePosition;
         
         Debug.Assert(OwningGrid.RowsPresenter != null);
         // Display the reordering thumb
-        OwningGrid.RowsPresenter.DraggedRow = OwningRow;
+        OwningGrid.RowsPresenter.DraggedRowIndex = _dragRowIndex;
         OwningGrid.RowsPresenter.NotifyAboutToDragging();
     }
 

@@ -122,14 +122,6 @@ internal static class DataGridError
         
     }
 
-    public static class DataGridColumnHeader
-    {
-        public static NotSupportedException ContentDoesNotSupportUIElements()
-        {
-            return new NotSupportedException("Content does not support Controls; use ContentTemplate instead.");
-        }
-    }
-
     public static class DataGridColumn
     {
         public static NotSupportedException SelectionModeException()
@@ -189,6 +181,11 @@ internal static class DataGridError
         public static InvalidOperationException RowReorderColumnAlreadyExistException()
         {
             return new InvalidOperationException("Only one DataGridRowReorderColumn is allowed.");
+        }
+        
+        public static InvalidOperationException InvalidRowReorderPreConditionException()
+        {
+            return new InvalidOperationException("Cannot start sorting or filtering while sorting is in progress.");
         }
     }
 

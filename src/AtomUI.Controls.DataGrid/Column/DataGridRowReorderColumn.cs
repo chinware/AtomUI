@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using AtomUI.Controls.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -120,6 +119,11 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
             if (!owningGrid.CanUserReorderRows)
             {
                 throw DataGridError.DataGridRow.RowReorderNotAllowedException();
+            }
+            // TODO 需否需要检查每一列的配置
+            if (owningGrid.CanUserFilterColumns || owningGrid.CanUserSortColumns)
+            {
+                throw DataGridError.DataGridRow.InvalidRowReorderPreConditionException();
             }
             owningGrid.PropertyChanged += HandleOwningGridItemsSourceChanged;
         }
