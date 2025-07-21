@@ -65,6 +65,7 @@
 
     <PropertyGroup>
         <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
+        <AtomUINativeWindowsArm64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeWindowsArm64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsArm64Artifact>
         <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)/$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
         <AtomUINativeLinuxX64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeLinuxX64DeployPath)/$(AtomUINativeLinuxArtifactName)</AtomUINativeLinuxX64Artifact>
     </PropertyGroup>
@@ -105,6 +106,14 @@
                  Condition="$([System.IO.File]::Exists('$(AtomUINativeWindowsX64Artifact)'))">
             <Link>$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</Link>
             <PackagePath>$(AtomUINativeWindowsX64DeployPath)</PackagePath>
+            <Pack>true</Pack>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+
+        <Content Include="$(AtomUINativeWindowsArm64Artifact)"
+                 Condition="$([System.IO.File]::Exists('$(AtomUINativeWindowsArm64Artifact)'))">
+            <Link>$(AtomUINativeWindowsArm64DeployPath)/$(AtomUINativeWindowsArtifactName)</Link>
+            <PackagePath>$(AtomUINativeWindowsArm64DeployPath)</PackagePath>
             <Pack>true</Pack>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
