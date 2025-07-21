@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="$(MSBuildThisFileDirectory)../../build/AtomUINativePackageInfo.props"/>
-
     <PropertyGroup>
         <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -38,9 +36,6 @@
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Native/AtomUI.Native.csproj">
-            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
-        </ProjectReference>
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Theme/AtomUI.Theme.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
@@ -59,16 +54,8 @@
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Theme.dll"/>
-        <Reference Include="$(AtomUIPackageOutput)/AtomUI.Native.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.ReactiveUI.dll"/>
     </ItemGroup>
-
-    <PropertyGroup>
-        <AtomUINativeWindowsX64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsX64Artifact>
-        <AtomUINativeWindowsArm64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeWindowsArm64DeployPath)/$(AtomUINativeWindowsArtifactName)</AtomUINativeWindowsArm64Artifact>
-        <AtomUINativeMacOSArtifact>$(OutputPathWithoutFramework)/$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</AtomUINativeMacOSArtifact>
-        <AtomUINativeLinuxX64Artifact>$(OutputPathWithoutFramework)/$(AtomUINativeLinuxX64DeployPath)/$(AtomUINativeLinuxArtifactName)</AtomUINativeLinuxX64Artifact>
-    </PropertyGroup>
 
     <PropertyGroup>
         <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludeReferencedProjectInPackage</TargetsForTfmSpecificContentInPackage>
@@ -87,44 +74,13 @@
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.AntDesign.pdb" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.dll" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Theme.pdb" PackagePath="lib/$(TargetFramework)"/>
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.dll" PackagePath="lib/$(TargetFramework)"/>
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Native.pdb" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.ReactiveUI.dll" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.ReactiveUI.pdb" PackagePath="lib/$(TargetFramework)"/>
         </ItemGroup>
     </Target>
 
-    <ItemGroup>
-        <Content Include="$(AtomUINativeMacOSArtifact)"
-                 Condition="$([System.IO.File]::Exists('$(AtomUINativeMacOSArtifact)'))">
-            <Link>$(AtomUINativeMacOSDeployPath)/$(AtomUINativeMacOSArtifactName)</Link>
-            <PackagePath>$(AtomUINativeMacOSDeployPath)</PackagePath>
-            <Pack>true</Pack>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(AtomUINativeWindowsX64Artifact)"
-                 Condition="$([System.IO.File]::Exists('$(AtomUINativeWindowsX64Artifact)'))">
-            <Link>$(AtomUINativeWindowsX64DeployPath)/$(AtomUINativeWindowsArtifactName)</Link>
-            <PackagePath>$(AtomUINativeWindowsX64DeployPath)</PackagePath>
-            <Pack>true</Pack>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-
-        <Content Include="$(AtomUINativeWindowsArm64Artifact)"
-                 Condition="$([System.IO.File]::Exists('$(AtomUINativeWindowsArm64Artifact)'))">
-            <Link>$(AtomUINativeWindowsArm64DeployPath)/$(AtomUINativeWindowsArtifactName)</Link>
-            <PackagePath>$(AtomUINativeWindowsArm64DeployPath)</PackagePath>
-            <Pack>true</Pack>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-
-        <Content Include="$(AtomUINativeLinuxX64Artifact)"
-                 Condition="$([System.IO.File]::Exists('$(AtomUINativeLinuxX64Artifact)'))">
-            <Link>$(AtomUINativeLinuxX64DeployPath)/$(AtomUINativeLinuxArtifactName)</Link>
-            <PackagePath>$(AtomUINativeLinuxX64DeployPath)</PackagePath>
-            <Pack>true</Pack>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PackageReference Include="AtomUI.Native"/>
     </ItemGroup>
+
 </Project>

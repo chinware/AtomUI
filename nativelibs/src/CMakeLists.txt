@@ -29,7 +29,7 @@ atomui_extend_library(AtomUINative CONDITION WIN32
 
 atomui_extend_library(AtomUINative CONDITION LINUX
     SOURCES
-    linux/WindowUtils.mm
+    linux/WindowUtils.cpp
     DEPENDS
     PkgConfig::XCB
     INCLUDES ${XCB_INCLUDE_DIRS}

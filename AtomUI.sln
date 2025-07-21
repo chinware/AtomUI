@@ -31,8 +31,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{5EB2524C
 		build\AtomUINativePackageInfo.props = build\AtomUINativePackageInfo.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Native", "src\AtomUI.Native\AtomUI.Native.csproj", "{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI", "packages\AtomUI\AtomUI.csproj", "{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Generator", "src\AtomUI.Generator\AtomUI.Generator.csproj", "{2AAAF06F-B1D1-4B3F-885A-F0C329F31C78}"
@@ -69,10 +67,6 @@ Global
 		{796AC3CF-7A12-4183-9096-291738A62292}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{796AC3CF-7A12-4183-9096-291738A62292}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{796AC3CF-7A12-4183-9096-291738A62292}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90F1E4BC-4513-450E-B2B8-C64A779C8A0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF9E3D8A-7D43-42A4-839E-5B20553B1B72}.Release|Any CPU.ActiveCfg = Release|Any CPU
