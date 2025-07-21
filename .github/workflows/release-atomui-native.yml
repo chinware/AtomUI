@@ -23,7 +23,6 @@ env:
    LINUX_OUTPUT_DIR: ${{ github.workspace }}/linux
    WIN_ARM64_OUTPUT_DIR: ${{ github.workspace }}/win_arm64
    LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
-   
 jobs:
    BuildAtomUINativeLinux:
       name: Build AtomUINative for Linux X86_64
@@ -203,7 +202,7 @@ jobs:
             shell: pwsh
             run: |
                # Build AtomUI Native project
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} /src/AtomUI.Native/AtomUI.Native.csproj
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} "./src/AtomUI.Native/AtomUI.Native.csproj"
                # Copy native library to runtime directory
                $osxNativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/osx/native"
                New-Item -ItemType Directory -Force -Path $osxNativeLibDir
@@ -221,18 +220,6 @@ jobs:
             shell: pwsh
             run: |
                dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} "./src/AtomUI.Native/AtomUI.Native.csproj"
-               $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
-               foreach ($pkg in $packages) {
-                  try {
-                     dotnet nuget push $pkg.FullName --source $env:LOCAL_NUGET_DIR
-                     if ($LASTEXITCODE -ne 0) {
-                        Write-Warning "pushed nuget package: $($pkg.Name)"
-                     }
-                  }
-                  catch {
-                      Write-Error "push $($pkg.Name) error: $_"
-                  }
-               }
          -  name: Upload NuGet artifacts
             uses: actions/upload-artifact@v4.6.2
             with:
