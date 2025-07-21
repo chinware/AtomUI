@@ -47,9 +47,9 @@ dotnet pack --no-build --configuration $buildType ../packages/AtomUI/AtomUI.cspr
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
 
-Push-NuGetPackages -Source $localSourcesDir -Confirm:$false
+Push-NuGetPackages -Source $localSourcesDir
 
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
 
-Push-NuGetPackages -Source $localSourcesDir -Confirm:$false
+Push-NuGetPackages -Source $localSourcesDir

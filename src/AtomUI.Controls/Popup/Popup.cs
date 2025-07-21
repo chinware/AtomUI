@@ -164,6 +164,7 @@ public class Popup : AvaloniaPopup,
     private bool _isNeedWaitFlipSync;
     private bool _openAnimating;
     private bool _closeAnimating;
+    private bool _motionAwareOpened;
 
     // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
     internal bool RequestCloseWhereAnimationCompleted { get; set; }
@@ -564,7 +565,7 @@ public class Popup : AvaloniaPopup,
     public void MotionAwareOpen(Action? opened = null)
     {
         // AbstractPopup is currently open
-        if (IsMotionAwareOpen || _openAnimating || _closeAnimating)
+        if (_motionAwareOpened || _openAnimating || _closeAnimating)
         {
             return;
         }
@@ -574,6 +575,7 @@ public class Popup : AvaloniaPopup,
             Open();
             opened?.Invoke();
             (Host as PopupRoot)?.PlatformImpl?.SetTopmost(true);
+            _motionAwareOpened = true;
             using (BeginIgnoringIsOpen())
             {
                 SetCurrentValue(IsMotionAwareOpenProperty, true);
@@ -610,6 +612,7 @@ public class Popup : AvaloniaPopup,
         }, () =>
         {
             opened?.Invoke();
+            _motionAwareOpened = true;
             using (BeginIgnoringIsOpen())
             {
                 SetCurrentValue(IsMotionAwareOpenProperty, true);
@@ -628,7 +631,7 @@ public class Popup : AvaloniaPopup,
 
     public void MotionAwareClose(Action? closed = null)
     {
-        if (!IsMotionAwareOpen || _closeAnimating)
+        if (!_motionAwareOpened || _closeAnimating)
         {
             return;
         }
@@ -645,6 +648,7 @@ public class Popup : AvaloniaPopup,
             _isNeedDetectFlip = true;
             Close();
             closed?.Invoke();
+            _motionAwareOpened = false;
             using (BeginIgnoringIsOpen())
             {
                 SetCurrentValue(IsMotionAwareOpenProperty, false);
@@ -662,6 +666,7 @@ public class Popup : AvaloniaPopup,
             closed?.Invoke();
             _closeAnimating   = false;
             Close();
+            _motionAwareOpened = false;
             using (BeginIgnoringIsOpen())
             {
                 SetCurrentValue(IsMotionAwareOpenProperty, false);
