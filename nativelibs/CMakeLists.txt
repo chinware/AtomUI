@@ -7,7 +7,7 @@
 #
 # Created by chinboy on 2025/01/10.
 
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.28)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD YES)
 
 project(nativelibs)
