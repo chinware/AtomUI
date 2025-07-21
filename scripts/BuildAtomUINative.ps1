@@ -38,20 +38,11 @@ $env:XMAKE_COLORTERM = 'nocolor'
 $buildType = $buildType.ToLower()
 
 if ($IsWindows) {
-
-    $arch = $env:PROCESSOR_ARCHITECTURE
-
-    if ($arch -eq "ARM64") {
-        xmake config --toolchain=clang --project=$sourceDir --builddir=$buildDir -p msys -a arm64 -m $buildType -v
-        xmake build
-        xmake install --installdir=$installPrefix
-        Copy-Item -Path $installPrefix/arm64/lib/$libName -Destination $deployDir
-    } elseif ($arch -eq "AMD64") {
-        xmake config --toolchain=clang --project=$sourceDir --builddir=$buildDir -p msys -a x86_64 -m $buildType -v
-        xmake build
-        xmake install --installdir=$installPrefix
-        Copy-Item -Path $installPrefix/x86_64/lib/$libName -Destination $deployDir
-    }
+    
+    cmake -B $buildDir -S $sourceDir -DCMAKE_INSTALL_PREFIX="$installPrefix" -DCMAKE_BUILD_TYPE="$buildType" -G Ninja
+    cmake --build $buildDir
+    cmake --install $buildDir --config $buildType
+    Copy-Item -Path $installPrefix/bin/$libName -Destination $deployDir
     
 } elseif ($IsMacOS) {
     xmake config --project=$sourceDir --builddir=$buildDir -p macosx -a arm64 -m $buildType

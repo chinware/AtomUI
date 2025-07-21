@@ -146,15 +146,14 @@ jobs:
 
                # Install required packages
                & "$bashPath" -lc "pacman -S mingw-w64-clang-aarch64-clang --noconfirm"
-         -  name: Setup XMake
-            uses: xmake-io/github-action-setup-xmake@v1
-            with:
-               xmake-version: latest
+               & "$bashPath" -lc "pacman -S mingw-w64-clang-aarch64-cmake --noconfirm"
+               
          -  name: Build for Windows Arm64
             run: |
-               xmake config --project=$NATIVE_LIB_SRC_DIR --toolchain=clang --builddir=$BUILD_DIR -p msys -a arm64 -m ${{ inputs.BuildConfiguration }}
-               xmake build
-               xmake install --installdir=$WIN_ARM64_OUTPUT_DIR
+               New-Item -Path "$env:BUILD_DIR" -ItemType Directory -Force
+               cmake -B "$env:BUILD_DIR" -S "$env:NATIVE_LIB_SRC_DIR" -DCMAKE_INSTALL_PREFIX="$env:WIN_ARM64_OUTPUT_DIR" -DCMAKE_BUILD_TYPE=${{ inputs.BuildConfiguration }} -G Ninja
+               cmake --build "$env:BUILD_DIR"
+               cmake --install "$env:BUILD_DIR" --config ${{ inputs.BuildConfiguration }}
    
    BuildAtomUINuget:
       name: Build AtomUI NuGet packages
