@@ -21,11 +21,13 @@ env:
    BASE_OUTPUT_DIR: ${{ github.workspace }}/output
    MAC_OUTPUT_DIR: ${{ github.workspace }}/osx
    LINUX_OUTPUT_DIR: ${{ github.workspace }}/linux
+   WIN_ARM64_OUTPUT_DIR: ${{ github.workspace }}/win_arm64
    LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
 jobs:
    BuildAtomUINativeMacOS:
       name: Build AtomUINative for macOS
       runs-on: macos-latest
+      if: ${{ false }}
       steps:
          -  name: Checkout code
             uses: actions/checkout@v4.2.2
@@ -63,6 +65,7 @@ jobs:
    BuildAtomUINativeLinux:
       name: Build AtomUINative for Linux
       runs-on: qinware-ubuntu-latest
+      if: ${{ false }}
       steps:
          -  name: Checkout code
             uses: actions/checkout@v4.2.2
@@ -91,10 +94,71 @@ jobs:
             with:
                name: AtomUINativeLinux
                path: ${{ env.LINUX_OUTPUT_DIR }}
+   
+   BuildAtomUINativeWindowsArm64:
+      name: Build AtomUINative for Windows Arm64
+      runs-on: windows-11-arm
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Setup MSYS2 environment
+            shell: pwsh
+            run: |
+               $systemPath="C:/"
+               $msysPath = "C:/msys64"
+      
+               # Download and install Msys2 for ARM64
+               $installerUrl = "https://github.com/msys2/msys2-installer/releases/download/2025-06-22/msys2-base-x86_64-20250622.tar.xz"
+               $installerPath = "$env:TEMP\msys2-arm64.tar.xz"
+              
+               # Download the installer
+               Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
+              
+               # Extract Msys2
+               $tarPath = "$env:TEMP\msys2-arm64.tar"
+               # Extract using 7-Zip (available on GitHub runners)
+               & 7z e "$installerPath" -o"$env:TEMP" -y
+               & 7z x "$tarPath" -o"$systemPath" -y
+               $bashPath = Join-Path $msysPath "usr\bin\bash.exe"
+              
+               # Initialize Msys2
+               & $bashPath -lc "pacman-key --init"
+               & $bashPath -lc "pacman-key --populate msys2"
+              
+               # 更新系统 (分两步执行更可靠)
+               & $bashPath -lc "pacman -Syuu --noconfirm --needed --noprogressbar"
+               & $bashPath -lc "pacman -Su --noconfirm --needed --noprogressbar"
 
+               $env:MSYSTEM = "CLANGARM64"
+               $env:MSYSTEM_CARCH = "aarch64"
+               $env:MSYSTEM_CHOST = "aarch64-w64-mingw32"
+               $env:MSYSTEM_PREFIX = "/clangarm64"
+               $env:CHERE_INVOKING = "1"
+               $env:PATH = "$msysPath/clangarm64/bin;$msysPath/usr/bin;$env:PATH"
+
+               # Update PATH for subsequent steps
+               Add-Content $env:GITHUB_PATH "$msysPath/clangarm64/bin"
+               Add-Content $env:GITHUB_PATH "$msysPath/usr/bin"
+               
+               Write-Host "Msys2 installed and initialized successfully"
+
+               # Install required packages
+               & "$bashPath" -lc "pacman -S mingw-w64-clang-aarch64-clang --noconfirm"
+               & "$bashPath" -lc "pacman -S mingw-w64-clang-aarch64-cmake --noconfirm"
+               
+         -  name: Build for Windows Arm64
+            run: |
+               New-Item -Path "$env:BUILD_DIR" -ItemType Directory -Force
+               cmake -B "$env:BUILD_DIR" -S "$env:NATIVE_LIB_SRC_DIR" -DCMAKE_INSTALL_PREFIX="$env:WIN_ARM64_OUTPUT_DIR" -DCMAKE_BUILD_TYPE=${{ inputs.BuildConfiguration }} -G Ninja
+               cmake --build "$env:BUILD_DIR"
+               cmake --install "$env:BUILD_DIR" --config ${{ inputs.BuildConfiguration }}
+   
    BuildAtomUINuget:
       name: Build AtomUI NuGet packages
       runs-on: windows-latest
+      if: ${{ false }}
       needs: 
          - BuildAtomUINativeMacOS
          - BuildAtomUINativeLinux

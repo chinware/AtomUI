@@ -1,0 +1,60 @@
+name: AtomUI.Native Release Pipeline
+on:
+   workflow_dispatch:
+      inputs:
+         TargetBranch:
+            description: 'Target branch to build'
+            type: string
+            default: 'develop'
+         BuildConfiguration:
+            description: 'Build configuration'
+            type: string
+            default: 'Release'
+         PublishToNuget:
+            description: 'Publish to nuget.org'
+            type: boolean
+            default: false
+env:
+   SOURCE_DIR: ${{ github.workspace }}
+   NATIVE_LIB_SRC_DIR: ${{ github.workspace }}/nativelibs
+   BUILD_DIR: ${{ github.workspace }}/build
+   BASE_OUTPUT_DIR: ${{ github.workspace }}/output
+   MAC_OUTPUT_DIR: ${{ github.workspace }}/osx
+   LINUX_OUTPUT_DIR: ${{ github.workspace }}/linux
+   WIN_ARM64_OUTPUT_DIR: ${{ github.workspace }}/win_arm64
+   LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
+   
+jobs:
+   BuildAtomUINativeLinux:
+      name: Build AtomUINative for Linux X86_64
+      runs-on: qinware-ubuntu-latest
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Install dependencies
+            run: |
+               sudo apt update
+               sudo apt install -y build-essential libxcb1-dev libxcb-shape0-dev
+               wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
+               gpg --dearmor - | \
+               sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+               echo "deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble main" | \
+               sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
+               sudo apt update
+               sudo apt install -y cmake
+               cmake --version
+               sudo apt install clang
+               clang --version
+         -  name: Build for x86_64
+            run: |
+               cmake -B $env:BUILD_DIR -S $env:NATIVE_LIB_SRC_DIR -DCMAKE_INSTALL_PREFIX="$env:LINUX_OUTPUT_DIR" -DCMAKE_BUILD_TYPE=${{ inputs.BuildConfiguration }}
+               cmake --build $env:BUILD_DIR
+               cmake --install $env:BUILD_DIR --config ${{ inputs.BuildConfiguration }}
+         -  name: Upload linux x86_64 artifact
+            id: artifact
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: AtomUINativeLinux
+               path: ${{ env.LINUX_OUTPUT_DIR }}
