@@ -23,7 +23,6 @@ env:
    LINUX_OUTPUT_DIR: ${{ github.workspace }}/linux
    WIN_ARM64_OUTPUT_DIR: ${{ github.workspace }}/win_arm64
    LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
-   
 jobs:
    BuildAtomUINativeLinux:
       name: Build AtomUINative for Linux X86_64
@@ -49,12 +48,196 @@ jobs:
                clang --version
          -  name: Build for x86_64
             run: |
-               cmake -B $env:BUILD_DIR -S $env:NATIVE_LIB_SRC_DIR -DCMAKE_INSTALL_PREFIX="$env:LINUX_OUTPUT_DIR" -DCMAKE_BUILD_TYPE=${{ inputs.BuildConfiguration }}
-               cmake --build $env:BUILD_DIR
-               cmake --install $env:BUILD_DIR --config ${{ inputs.BuildConfiguration }}
+               cmake -B $BUILD_DIR -S $NATIVE_LIB_SRC_DIR -DCMAKE_INSTALL_PREFIX="$LINUX_OUTPUT_DIR" -DCMAKE_BUILD_TYPE=${{ inputs.BuildConfiguration }}
+               cmake --build $BUILD_DIR
+               cmake --install $BUILD_DIR --config ${{ inputs.BuildConfiguration }}
          -  name: Upload linux x86_64 artifact
             id: artifact
             uses: actions/upload-artifact@v4.6.2
             with:
                name: AtomUINativeLinux
                path: ${{ env.LINUX_OUTPUT_DIR }}
+   BuildAtomUINativeMacOS:
+      name: Build AtomUINative for macOS
+      runs-on: macos-latest
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Install dependencies
+            run: |
+               brew install cmake
+               brew install ninja
+               cmake --version
+         -  name: Build for Universal binary
+            run: |
+               cmake -B $BUILD_DIR -S $NATIVE_LIB_SRC_DIR -DCMAKE_INSTALL_PREFIX="$MAC_OUTPUT_DIR" -DCMAKE_BUILD_TYPE=${{ inputs.BuildConfiguration }} -G Ninja -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+               cmake --build $BUILD_DIR
+               cmake --install $BUILD_DIR --config ${{ inputs.BuildConfiguration }}
+         -  name: Upload macOS artifact
+            id: artifact
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: AtomUINativeMac
+               path: ${{ env.MAC_OUTPUT_DIR }}
+   BuildAtomUINativeWindowsArm64:
+      name: Build AtomUINative for Windows Arm64
+      runs-on: windows-11-arm
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Setup MSYS2 environment
+            shell: pwsh
+            run: |
+               $systemPath="C:/"
+               $msysPath = "C:/msys64"
+
+               # Download and install Msys2 for ARM64
+               $installerUrl = "https://github.com/msys2/msys2-installer/releases/download/2025-06-22/msys2-base-x86_64-20250622.tar.xz"
+               $installerPath = "$env:TEMP\msys2-arm64.tar.xz"
+
+               # Download the installer
+               Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
+
+               # Extract Msys2
+               $tarPath = "$env:TEMP\msys2-arm64.tar"
+               # Extract using 7-Zip (available on GitHub runners)
+               & 7z e "$installerPath" -o"$env:TEMP" -y
+               & 7z x "$tarPath" -o"$systemPath" -y
+               $bashPath = Join-Path $msysPath "usr\bin\bash.exe"
+
+               # Initialize Msys2
+               & $bashPath -lc "pacman-key --init"
+               & $bashPath -lc "pacman-key --populate msys2"
+
+               # 更新系统 (分两步执行更可靠)
+               & $bashPath -lc "pacman -Syuu --noconfirm --needed --noprogressbar"
+               & $bashPath -lc "pacman -Su --noconfirm --needed --noprogressbar"
+
+               $env:MSYSTEM = "CLANGARM64"
+               $env:MSYSTEM_CARCH = "aarch64"
+               $env:MSYSTEM_CHOST = "aarch64-w64-mingw32"
+               $env:MSYSTEM_PREFIX = "/clangarm64"
+               $env:CHERE_INVOKING = "1"
+               $env:PATH = "$msysPath/clangarm64/bin;$msysPath/usr/bin;$env:PATH"
+
+               # Update PATH for subsequent steps
+               Add-Content $env:GITHUB_PATH "$msysPath/clangarm64/bin"
+               Add-Content $env:GITHUB_PATH "$msysPath/usr/bin"
+
+               Write-Host "Msys2 installed and initialized successfully"
+
+               # Install required packages
+               & "$bashPath" -lc "pacman -S mingw-w64-clang-aarch64-clang --noconfirm"
+               & "$bashPath" -lc "pacman -S mingw-w64-clang-aarch64-cmake --noconfirm"
+
+         -  name: Build for Windows Arm64
+            run: |
+               New-Item -Path "$env:BUILD_DIR" -ItemType Directory -Force
+               cmake -B "$env:BUILD_DIR" -S "$env:NATIVE_LIB_SRC_DIR" -DCMAKE_INSTALL_PREFIX="$env:WIN_ARM64_OUTPUT_DIR" -DCMAKE_BUILD_TYPE=${{ inputs.BuildConfiguration }} -G Ninja
+               cmake --build "$env:BUILD_DIR"
+               cmake --install "$env:BUILD_DIR" --config ${{ inputs.BuildConfiguration }}
+         -  name: Upload Windows Arm64 artifact
+            id: artifact
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: AtomUINativeWindowsArm64
+               path: ${{ env.WIN_ARM64_OUTPUT_DIR }}
+   BuildAtomUINuget:
+      name: Build AtomUI NuGet packages
+      runs-on: windows-latest
+      needs:
+         - BuildAtomUINativeMacOS
+         - BuildAtomUINativeLinux
+         - BuildAtomUINativeWindowsArm64
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Download macOS artifact
+            uses: actions/download-artifact@v4.3.0
+            with:
+               name: AtomUINativeMac
+               path: ${{ env.MAC_OUTPUT_DIR }}
+         -  name: Download Linux artifact
+            uses: actions/download-artifact@v4.3.0
+            with:
+               name: AtomUINativeLinux
+               path: ${{ env.Linux_OUTPUT_DIR }}
+         -  name: Download Windows Arm64 artifact
+            uses: actions/download-artifact@v4.3.0
+            with:
+               name: AtomUINativeWindowsArm64
+               path: ${{ env.WIN_ARM64_OUTPUT_DIR }}
+         -  name: Setup MSYS2 environment
+            shell: pwsh
+            run: |
+               $msysPath = "C:/msys64"
+               $env:MSYSTEM = "CLANG64"
+               $env:MSYSTEM_CARCH = "x86_64"
+               $env:MSYSTEM_CHOST = "x86_64-w64-mingw32"
+               $env:MSYSTEM_PREFIX = "/clang64"
+               $env:CHERE_INVOKING = "1"
+               $env:PATH = "$msysPath/clang64/bin;$msysPath/usr/bin;$env:PATH"
+
+               # Update PATH for subsequent steps
+               Add-Content $env:GITHUB_PATH "$msysPath/clang64/bin"
+               Add-Content $env:GITHUB_PATH "$msysPath/usr/bin"
+
+               # Install required packages
+               & "$msysPath/usr/bin/bash.exe" -lc @"
+                 pacman -Sy --noconfirm
+                 pacman -S mingw-w64-clang-x86_64-cmake --noconfirm
+                 pacman -S mingw-w64-clang-x86_64-clang --noconfirm
+               "@
+
+               # Verify installations
+               cmake --version
+               clang --version
+         -  name: Build AtomUI Native projects
+            shell: pwsh
+            run: |
+               # Build AtomUI Native project
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} "./src/AtomUI.Native/AtomUI.Native.csproj"
+               # Copy native library to runtime directory
+               $osxNativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/osx/native"
+               New-Item -ItemType Directory -Force -Path $osxNativeLibDir
+               Copy-Item -Path $env:MAC_OUTPUT_DIR/lib/libAtomUINative.dylib -Destination $osxNativeLibDir
+
+               $linuxNativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/linux-x64/native"
+               New-Item -ItemType Directory -Force -Path $linuxNativeLibDir
+               Copy-Item -Path $env:LINUX_OUTPUT_DIR/lib/libAtomUINative.so -Destination $linuxNativeLibDir
+               
+               $winArm64NativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/win-arm64/native"
+               New-Item -ItemType Directory -Force -Path $winArm64NativeLibDir
+               Copy-Item -Path $env:WIN_ARM64_OUTPUT_DIR/bin/AtomUINative.dll -Destination $winArm64NativeLibDir
+               
+         -  name: Create AtomUI Native NuGet packages
+            shell: pwsh
+            run: |
+               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} "./src/AtomUI.Native/AtomUI.Native.csproj"
+         -  name: Upload NuGet artifacts
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: NuGetPackages
+               path: ${{ env.BASE_OUTPUT_DIR }}/*.nupkg
+         -  name: Publish to nuget.org
+            if: ${{ inputs.PublishToNuget == true }}
+            shell: pwsh
+            run: |
+               $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
+               foreach ($pkg in $packages) {
+                  try {
+                     dotnet nuget push $pkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+                     if ($LASTEXITCODE -ne 0) {
+                        Write-Warning "pushed nuget package: $($pkg.Name)"
+                     }
+                  }
+                  catch {
+                      Write-Error "push $($pkg.Name) error: $_"
+                  }
+               }

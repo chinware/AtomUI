@@ -12,7 +12,7 @@
         <AtomUILinuxRuntimeDir>linux-$(CPUArchitecture)</AtomUILinuxRuntimeDir>
         <AtomUIMacOSRuntimeDir>osx</AtomUIMacOSRuntimeDir>
         <AtomUINativeWindowsX64DeployPath>runtimes/win-x64/native</AtomUINativeWindowsX64DeployPath>
-        <AtomUINativeWindowsArm64DeployPath>runtimes/arm64-x64/native</AtomUINativeWindowsArm64DeployPath>
+        <AtomUINativeWindowsArm64DeployPath>runtimes/win-arm64/native</AtomUINativeWindowsArm64DeployPath>
         <AtomUINativeWindowsDeployPath>runtimes/$(AtomUIWindowsRuntimeDir)/native</AtomUINativeWindowsDeployPath>
         <AtomUINativeLinuxX64DeployPath>runtimes/linux-x64/native</AtomUINativeLinuxX64DeployPath>
         <AtomUINativeMacOSDeployPath>runtimes/osx/native</AtomUINativeMacOSDeployPath>
