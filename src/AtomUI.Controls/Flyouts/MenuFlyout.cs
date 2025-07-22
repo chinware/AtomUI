@@ -10,8 +10,6 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Metadata;
 using Avalonia.Styling;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 

@@ -9,7 +9,6 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 

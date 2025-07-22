@@ -62,28 +62,13 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     public PopupBuddyLayer(Popup buddyPopup, TopLevel parent)
         : base(parent)
     {
-        _buddyPopup     = buddyPopup;
+        _buddyPopup    = buddyPopup;
         BuddyDecorator = new PopupBuddyDecorator(_buddyPopup);
         BindUtils.RelayBind(this, MaskShadowsProperty, BuddyDecorator, PopupBuddyDecorator.MaskShadowsProperty);
         SetMotionActor(BuddyDecorator);
         BuddyDecorator.NotifyMotionTargetAddedToScene();
-        if (OperatingSystem.IsLinux())
-        {
-            if (parent is WindowBase parentWindow)
-            {
-                parentWindow.Deactivated += HandleActiveStateChanged;
-                parentWindow.Activated   += HandleActiveStateChanged;
-            }
-        }
     }
-
-    private void HandleActiveStateChanged(object? sender, EventArgs e)
-    {
-        var popupRoot = _popupHost as PopupRoot;
-        popupRoot?.Hide();
-        popupRoot?.Show();
-    }
-
+    
     private void SetupPopupHost()
     {
         if (_buddyPopup is IPopupHostProvider popupHostProvider)
@@ -214,11 +199,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
 
     public void Detach()
     {
-        if (ParentTopLevel is WindowBase parentWindow)
-        {
-            parentWindow.Deactivated -= HandleActiveStateChanged;
-            parentWindow.Activated   -= HandleActiveStateChanged;
-        }
         Hide();
         if (this is IDisposable disposable)
         {

@@ -59,11 +59,14 @@
                     <atom:Popup Name="PART_Popup"
                            WindowManagerAddShadowHint="False"
                            IsLightDismissEnabled="False"
+                           IsDetectMouseClickEnabled="True"
                            Placement="BottomEdgeAlignedLeft"
                            MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                           IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
+                           IsMotionAwareOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border
-                            Name="{x:Static atom:ComboBoxThemeConstants.PopupFramePart}">
+                            Name="{x:Static atom:ComboBoxThemeConstants.PopupFramePart}"
+                            HorizontalAlignment="Stretch"
+                            Width="{TemplateBinding EffectivePopupWidth}">
                             <atom:MenuScrollViewer>
                                 <ItemsPresenter
                                     Name="{x:Static atom:ComboBoxThemeConstants.ItemsPresenterPart}"

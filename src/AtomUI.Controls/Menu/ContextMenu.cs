@@ -59,6 +59,10 @@ public class ContextMenu : AvaloniaContextMenu,
         _popup.ClickHidePredicate =  MenuPopupClosePredicate;
         _popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
         _popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
+        if (_popup is IPopupHostProvider popupHostProvider)
+        {
+            popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
+        }
         Closing += (sender, args) =>
         {
             args.Cancel = true;
@@ -69,6 +73,20 @@ public class ContextMenu : AvaloniaContextMenu,
             _popup.SetIgnoreIsOpenChanged(true);
             _popup.IsMotionAwareOpen = true;
         };
+    }
+    
+    private void HandlePopupHostChanged(IPopupHost? host)
+    {
+        if (host is PopupRoot popupRoot)
+        {
+            if (popupRoot.ParentTopLevel is WindowBase window)
+            {
+                window.Deactivated += (sender, args) =>
+                {
+                    Close();
+                };
+            }
+        }
     }
     
     private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)

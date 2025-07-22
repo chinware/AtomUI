@@ -325,19 +325,8 @@ public class Popup : AvaloniaPopup,
         {
             _buddyLayer.Detach();
         }
-
-        TopLevel? topLevel = null;
-        if (OperatingSystem.IsWindows())
-        {
-            topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
-        }
-        else
-        {
-            if (Host is PopupRoot popupRoot)
-            { 
-                topLevel = TopLevel.GetTopLevel(popupRoot);
-            }
-        }
+        
+        var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         Debug.Assert(topLevel is not null);
         _buddyLayer         = new PopupBuddyLayer(this, topLevel);
         _buddyLayer.Topmost = true;
@@ -580,15 +569,17 @@ public class Popup : AvaloniaPopup,
             {
                 SetCurrentValue(IsMotionAwareOpenProperty, true);
             }
-               
             return;
         }
-        
         Open();
-        _openAnimating = true;
+        _openAnimating     = true;
+        _motionAwareOpened = true;
+        using (BeginIgnoringIsOpen())
+        {
+            SetCurrentValue(IsMotionAwareOpenProperty, true);
+        }
         Debug.Assert(_buddyLayer != null);
-        var popupRoot = Host as PopupRoot;
-        Debug.Assert(popupRoot != null);
+   
         if (_isNeedWaitFlipSync)
         {
             Dispatcher.UIThread.Post(() =>
@@ -612,11 +603,6 @@ public class Popup : AvaloniaPopup,
         }, () =>
         {
             opened?.Invoke();
-            _motionAwareOpened = true;
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsMotionAwareOpenProperty, true);
-            }
             popupRoot.PlatformImpl?.SetTopmost(true);
             _isNeedWaitFlipSync = false;
             _openAnimating      = false;
@@ -631,6 +617,7 @@ public class Popup : AvaloniaPopup,
 
     public void MotionAwareClose(Action? closed = null)
     {
+        var popupRoot = Host as PopupRoot;
         if (!_motionAwareOpened || _closeAnimating)
         {
             return;
@@ -643,7 +630,7 @@ public class Popup : AvaloniaPopup,
         }
         
         Debug.Assert(_buddyLayer != null);
-        if (!IsMotionEnabled)
+        if (!IsMotionEnabled || popupRoot == null)
         {
             _isNeedDetectFlip = true;
             Close();
@@ -656,9 +643,12 @@ public class Popup : AvaloniaPopup,
             return;
         }
         
-        _closeAnimating = true;
-        var popupRoot = Host as PopupRoot;
-        Debug.Assert(popupRoot != null);
+        _closeAnimating    = true;
+        _motionAwareOpened = false;
+        using (BeginIgnoringIsOpen())
+        {
+            SetCurrentValue(IsMotionAwareOpenProperty, false);
+        }
         _buddyLayer.DetachWithMotion(() => {
             popupRoot.Opacity = 0.0;
         }, () =>
@@ -666,11 +656,6 @@ public class Popup : AvaloniaPopup,
             closed?.Invoke();
             _closeAnimating   = false;
             Close();
-            _motionAwareOpened = false;
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsMotionAwareOpenProperty, false);
-            }
             _isNeedDetectFlip = true;
         });
     }

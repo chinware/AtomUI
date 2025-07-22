@@ -3,13 +3,11 @@ using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Media;
-using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
 [TemplatePart(ComboBoxThemeConstants.SpinnerHandlePart, typeof(ContentPresenter))]
-internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox, 
-                                         ICustomHitTest
+internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox
 {
     #region 公共属性定义
 
@@ -72,10 +70,5 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox,
         var padding = _spinnerHandleWidthToken + InnerBoxPadding.Right;
         EffectiveInnerBoxPadding =
             new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding, InnerBoxPadding.Bottom);
-    }
-
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 }
