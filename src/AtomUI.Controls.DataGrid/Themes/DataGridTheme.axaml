@@ -5,6 +5,8 @@
     xmlns:atom="https://atomui.net">
     <converters:DataGridHeaderCornerRadiusConverter x:Key="DataGridHeaderCornerRadiusConverter" />
     <converters:DataGridUniformBorderThicknessToScalarConverter x:Key="DataGridUniformBorderThicknessToScalarConverter" />
+    <converters:DataGridPaginationVisibilityConvertor x:Key="TopPaginationVisibilityConvertor" IsTop="True" />
+    <converters:DataGridPaginationVisibilityConvertor x:Key="BottomPaginationVisibilityConvertor" IsTop="False" />
     <ControlTheme x:Key="{x:Type atom:DataGrid}" TargetType="atom:DataGrid">
         <Setter Property="Template">
             <ControlTemplate>
@@ -14,17 +16,34 @@
                     CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource DataGridHeaderCornerRadiusConverter}}"
                     ClipToBounds="True">
                     <DockPanel LastChildFill="True">
+                        <atom:Pagination DockPanel.Dock="Top"
+                                         Name="{x:Static atom:DataGridThemeConstants.TopPaginationPart}"
+                                         Margin="{DynamicResource {x:Static atom:DataGridTokenKey.PaginationMargin}}"
+                                         Align="{TemplateBinding TopPaginationAlign}"
+                                         IsHideOnSinglePage="{TemplateBinding IsHideOnSinglePage}"
+                                         IsEnabled="{TemplateBinding IsEnabled}"
+                                         SizeType="{TemplateBinding SizeType}"
+                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                         IsVisible="{TemplateBinding PaginationVisibility, Converter={StaticResource TopPaginationVisibilityConvertor}}"/>
                         <ContentPresenter Name="{x:Static atom:DataGridThemeConstants.TitlePart}"
                                           Content="{TemplateBinding Title}"
                                           ContentTemplate="{TemplateBinding TitleTemplate}"
                                           IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}"
                                           DockPanel.Dock="Top" />
+                        <atom:Pagination DockPanel.Dock="Bottom"
+                                         Name="{x:Static atom:DataGridThemeConstants.BottomPaginationPart}"
+                                         Margin="{DynamicResource {x:Static atom:DataGridTokenKey.PaginationMargin}}"
+                                         Align="{TemplateBinding BottomPaginationAlign}"
+                                         IsHideOnSinglePage="{TemplateBinding IsHideOnSinglePage}"
+                                         IsEnabled="{TemplateBinding IsEnabled}"
+                                         SizeType="{TemplateBinding SizeType}"
+                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                         IsVisible="{TemplateBinding PaginationVisibility, Converter={StaticResource BottomPaginationVisibilityConvertor}}"/>
                         <ContentPresenter Name="{x:Static atom:DataGridThemeConstants.FooterPart}"
                                           Content="{TemplateBinding Footer}"
                                           ContentTemplate="{TemplateBinding FooterTemplate}"
                                           IsVisible="{TemplateBinding Footer, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                          DockPanel.Dock="Bottom"
-                                          Padding="10" />
+                                          DockPanel.Dock="Bottom" />
                         <Grid
                             Name="{x:Static atom:DataGridThemeConstants.RootLayoutPart}"
                             RowDefinitions="Auto, *, Auto, Auto"

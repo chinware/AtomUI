@@ -185,6 +185,11 @@ internal class DataGridToken : AbstractControlDesignToken
     /// 列拖动排序时候的当前列的背景颜色
     /// </summary>
     public Color ColumnReorderActiveBg { get; set; }
+    
+    /// <summary>
+    /// 分页器的外边距
+    /// </summary>
+    public Thickness PaginationMargin { get; set; }
 
     #region 内部 Token
 
@@ -363,5 +368,7 @@ internal class DataGridToken : AbstractControlDesignToken
             Color   = SharedToken.ColorSplit
         });
         ColumnReorderActiveBg = colorFillContentSolid;
+
+        PaginationMargin = new Thickness(0, SharedToken.UniformlyMargin);
     }
 }

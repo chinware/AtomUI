@@ -41,6 +41,8 @@ public partial class DataGrid : TemplatedControl,
                                 IControlSharedTokenResourcesHost,
                                 IResourceBindingManager
 {
+    public const int DEFAULT_PAGE_SIZE = 10;
+    
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -88,11 +90,8 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Identifies the ColumnHeaderHeight dependency property.
     /// </summary>
-    public static readonly StyledProperty<double> ColumnHeaderHeightProperty =
-        AvaloniaProperty.Register<DataGrid, double>(
-            nameof(ColumnHeaderHeight),
-            defaultValue: double.NaN,
-            validate: IsValidColumnHeaderHeight);
+    public static readonly StyledProperty<double> ColumnHeaderHeightProperty = 
+        AvaloniaProperty.Register<DataGrid, double>(nameof(ColumnHeaderHeight), defaultValue: double.NaN, validate: IsValidColumnHeaderHeight);
 
     /// <summary>
     /// Identifies the ColumnWidth dependency property.
@@ -229,6 +228,21 @@ public partial class DataGrid : TemplatedControl,
     
     public static readonly StyledProperty<object?> EmptyIndicatorProperty =
         AvaloniaProperty.Register<DataGrid, object?>(nameof(EmptyIndicator));
+    
+    public static readonly StyledProperty<DataGridGridPaginationVisibility> PaginationVisibilityProperty =
+        AvaloniaProperty.Register<DataGrid, DataGridGridPaginationVisibility>(nameof(PaginationVisibility), DataGridGridPaginationVisibility.Bottom);
+    
+    public static readonly StyledProperty<PaginationAlign> TopPaginationAlignProperty =
+        AvaloniaProperty.Register<DataGrid, PaginationAlign>(nameof(TopPaginationAlign), PaginationAlign.End);
+    
+    public static readonly StyledProperty<PaginationAlign> BottomPaginationAlignProperty =
+        AvaloniaProperty.Register<DataGrid, PaginationAlign>(nameof(BottomPaginationAlign), PaginationAlign.End);
+    
+    public static readonly StyledProperty<int> PageSizeProperty =
+        AvaloniaProperty.Register<DataGrid, int>(nameof(PageSize), DEFAULT_PAGE_SIZE);
+    
+    public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
+        Pagination.IsHideOnSinglePageProperty.AddOwner<DataGrid>();
 
     public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
@@ -563,8 +577,7 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// Gets current <see cref="IDataGridCollectionView"/>.
     /// </summary>
-    public IDataGridCollectionView? CollectionView =>
-        DataConnection.CollectionView;
+    public IDataGridCollectionView? CollectionView => DataConnection.CollectionView;
 
     [DependsOn(nameof(TitleTemplateProperty))]
     public object? Title
@@ -605,6 +618,36 @@ public partial class DataGrid : TemplatedControl,
         set => SetValue(EmptyIndicatorTemplateProperty, value);
     }
 
+    public DataGridGridPaginationVisibility PaginationVisibility
+    {
+        get => GetValue(PaginationVisibilityProperty);
+        set => SetValue(PaginationVisibilityProperty, value);
+    }
+    
+    public PaginationAlign TopPaginationAlign
+    {
+        get => GetValue(TopPaginationAlignProperty);
+        set => SetValue(TopPaginationAlignProperty, value);
+    }
+    
+    public PaginationAlign BottomPaginationAlign
+    {
+        get => GetValue(BottomPaginationAlignProperty);
+        set => SetValue(BottomPaginationAlignProperty, value);
+    }
+
+    public bool IsHideOnSinglePage
+    {
+        get => GetValue(IsHideOnSinglePageProperty);
+        set => SetValue(IsHideOnSinglePageProperty, value);
+    }
+    
+    public int PageSize
+    {
+        get => GetValue(PageSizeProperty);
+        set => SetValue(PageSizeProperty, value);
+    }
+    
     /// <summary>
     /// Gets or sets the column that contains the current cell.
     /// </summary>
@@ -1553,9 +1596,23 @@ public partial class DataGrid : TemplatedControl,
         ConfigureHeaderCornerRadius();
         SetValue(EmptyIndicatorProperty, new EmptyIndicator()
         {
-            SizeType = SizeType.Middle,
+            SizeType    = SizeType.Middle,
             PresetImage = PresetEmptyImage.Simple
         }, BindingPriority.Template);
+
+        _topPagination = e.NameScope.Find<Pagination>(DataGridThemeConstants.TopPaginationPart);
+        _bottomPagination = e.NameScope.Find<Pagination>(DataGridThemeConstants.BottomPaginationPart);
+
+        if (_topPagination != null)
+        {
+            _topPagination.CurrentPageChanged += HandlePageChangeRequest;
+        }
+        
+        if (_bottomPagination != null)
+        {
+            _bottomPagination.CurrentPageChanged += HandlePageChangeRequest;
+        }
+        
         _templatedApplied = true;
     }
 
@@ -1697,7 +1754,10 @@ public partial class DataGrid : TemplatedControl,
             {
                 CheckFrozenColumnCount();
             }
+            else if (change.Property == PageSizeProperty)
+            {
+                ReConfigurePagination();
+            }
         }
-        
     }
 }

@@ -975,7 +975,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// Gets the number of pages we currently have
     /// </summary>
     //TODO Paging
-    private int PageCount => (_pageSize > 0) ? Math.Max(1, (int)Math.Ceiling((double)ItemCount / _pageSize)) : 0;
+    private int PageCount => _pageSize > 0 ? Math.Max(1, (int)Math.Ceiling((double)ItemCount / _pageSize)) : 0;
 
     /// <summary>
     /// Gets the root of the Group that we expose to the user
@@ -2018,10 +2018,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             return MoveCurrentToPosition(index);
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     /// <summary>
@@ -2046,10 +2043,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             return MoveToPage(PageCount - 1);
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     /// <summary>
@@ -2494,14 +2488,17 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     //TODO Paging
     private void CompletePageMove(int pageIndex)
     {
-        Debug.Assert(_pageIndex != pageIndex, "Unexpected _pageIndex == pageIndex");
+        if (_pageIndex == pageIndex)
+        {
+            return;
+        }
 
         // to see whether or not to fire an NotifyPropertyChanged
-        int    oldCount                = Count;
+        int     oldCount                = Count;
         object? oldCurrentItem          = CurrentItem;
-        int    oldCurrentPosition      = CurrentPosition;
-        bool   oldIsCurrentAfterLast   = IsCurrentAfterLast;
-        bool   oldIsCurrentBeforeFirst = IsCurrentBeforeFirst;
+        int     oldCurrentPosition      = CurrentPosition;
+        bool    oldIsCurrentAfterLast   = IsCurrentAfterLast;
+        bool    oldIsCurrentBeforeFirst = IsCurrentBeforeFirst;
 
         _pageIndex = pageIndex;
 

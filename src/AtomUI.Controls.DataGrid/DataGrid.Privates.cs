@@ -33,59 +33,63 @@ public partial class DataGrid
     internal const bool DefaultShowSorterTooltip = false;
 
     #region 内部属性定义
-    
+
     internal static readonly DirectProperty<DataGrid, bool> IsGroupHeaderModeProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, bool>(
             nameof(IsGroupHeaderMode),
             o => o.IsGroupHeaderMode,
             (o, v) => o.IsGroupHeaderMode = v);
-    
+
     internal static readonly DirectProperty<DataGrid, Thickness> FrameBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, Thickness>(
             nameof(FrameBorderThickness),
             o => o.FrameBorderThickness,
             (o, v) => o.FrameBorderThickness = v);
-    
+
     internal static readonly DirectProperty<DataGrid, CornerRadius> HeaderCornerRadiusProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, CornerRadius>(
             nameof(HeaderCornerRadius),
             o => o.HeaderCornerRadius,
             (o, v) => o.HeaderCornerRadius = v);
-    
+
     internal static readonly DirectProperty<DataGrid, bool> IsEmptyDataSourceProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, bool>(
             nameof(IsEmptyDataSource),
             o => o.IsEmptyDataSource,
             (o, v) => o.IsEmptyDataSource = v);
-    
+
     internal bool IsGroupHeaderMode
     {
         get => _isGroupHeaderMode;
         set => SetAndRaise(IsGroupHeaderModeProperty, ref _isGroupHeaderMode, value);
     }
+
     private bool _isGroupHeaderMode;
-    
+
     internal Thickness FrameBorderThickness
     {
         get => _frameBorderThickness;
         set => SetAndRaise(FrameBorderThicknessProperty, ref _frameBorderThickness, value);
     }
+
     private Thickness _frameBorderThickness;
-    
+
     internal CornerRadius HeaderCornerRadius
     {
         get => _headerCornerRadius;
         set => SetAndRaise(HeaderCornerRadiusProperty, ref _headerCornerRadius, value);
     }
+
     private CornerRadius _headerCornerRadius;
-    
+
     internal bool IsEmptyDataSource
     {
         get => _isEmptyDataSource;
         set => SetAndRaise(IsEmptyDataSourceProperty, ref _isEmptyDataSource, value);
     }
+
     private bool _isEmptyDataSource = false;
-    
+
     internal IndexToValueTable<DataGridRowGroupInfo> RowGroupHeadersTable { get; private set; }
 
     internal DataGridDisplayData DisplayData { get; private set; }
@@ -219,17 +223,17 @@ public partial class DataGrid
 
     internal ScrollBar? VerticalScrollBar => _vScrollBar;
     internal ScrollBar? HorizontalScrollBar => _hScrollBar;
-    
+
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => DataGridToken.ID;
-    
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
+
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
     {
         get => _resourceBindingsDisposable;
         set => _resourceBindingsDisposable = value;
     }
-    
+
     private CompositeDisposable? _resourceBindingsDisposable;
 
     #endregion
@@ -243,7 +247,7 @@ public partial class DataGrid
     /// some properties to be ordered at the beginning and some at the end.
     /// </remarks>
     private const int DefaultColumnDisplayOrder = 10000;
-    
+
     private const double MinimumRowHeaderWidth = 4;
     private const double MinimumColumnHeaderHeight = 4;
     internal const double MaximumStarColumnWidth = 10000;
@@ -321,13 +325,15 @@ public partial class DataGrid
     // does not know their actual height. The heights used for the approximation are the ones
     // set as the rows were scrolled off.
     private double _verticalOffset;
-    
+
     internal double VerticalOffset => _verticalOffset;
-    
+
     private byte _verticalScrollChangesIgnored;
     private DataGridDefaultFilter? _defaultFilter;
     private bool _templatedApplied;
-    
+    private Pagination? _topPagination;
+    private Pagination? _bottomPagination;
+
     private void FlushCurrentCellChanged()
     {
         if (_makeFirstDisplayedCellCurrentCellPending)
@@ -1111,7 +1117,7 @@ public partial class DataGrid
             {
                 return false;
             }
-            
+
             if (item == null)
             {
                 return false;
@@ -1255,9 +1261,9 @@ public partial class DataGrid
 
     private void HandleColumnsInternalCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action == NotifyCollectionChangedAction.Add
-            || e.Action == NotifyCollectionChangedAction.Remove
-            || e.Action == NotifyCollectionChangedAction.Reset)
+        if (e.Action == NotifyCollectionChangedAction.Add ||
+            e.Action == NotifyCollectionChangedAction.Remove ||
+            e.Action == NotifyCollectionChangedAction.Reset)
         {
             UpdatePseudoClasses();
             if (_templatedApplied)
@@ -1266,6 +1272,7 @@ public partial class DataGrid
                 {
                     SetupColumnGroupFrozenState();
                 }
+
                 CheckFrozenColumnCount();
             }
         }
@@ -1284,14 +1291,13 @@ public partial class DataGrid
 
         if (RightFrozenColumnCount > 0)
         {
-            var stop  = Math.Min(RightFrozenColumnCount, Columns.Count); 
+            var stop  = Math.Min(RightFrozenColumnCount, Columns.Count);
             var count = Columns.Count;
             for (var i = 0; i < stop; ++i)
             {
                 RecursiveSetupGroupHeaderItemFrozenState(Columns[count - i - 1]);
             }
         }
-        
     }
 
     private void RecursiveSetupGroupHeaderItemFrozenState(IDataGridColumnGroupItem item)
@@ -1309,9 +1315,10 @@ public partial class DataGrid
             {
                 if (gridColumnGroupItemInternal.GroupHeaderViewItem != null)
                 {
-                    gridColumnGroupItemInternal.GroupHeaderViewItem.IsFrozen             = true;
+                    gridColumnGroupItemInternal.GroupHeaderViewItem.IsFrozen = true;
                 }
             }
+
             current = current.GroupParent;
         }
     }
@@ -1376,11 +1383,19 @@ public partial class DataGrid
             if (oldCollectionView != null)
             {
                 oldCollectionView.CollectionChanged -= HandleDataCollectionViewChanged;
+                if (oldCollectionView is DataGridCollectionView oldDataGridCollectionView)
+                {
+                    oldDataGridCollectionView.PageChanging -= HandlePageChanging;
+                }
             }
-            
+
             if (newCollectionView != null)
             {
                 newCollectionView.CollectionChanged += HandleDataCollectionViewChanged;
+                if (newCollectionView is DataGridCollectionView newDataGridCollectionView)
+                {
+                    newDataGridCollectionView.PageChanging += HandlePageChanging;
+                }
                 IsEmptyDataSource                   =  newCollectionView.IsEmpty;
                 if (newCollectionView.Filter == null)
                 {
@@ -1432,11 +1447,12 @@ public partial class DataGrid
             {
                 SelectedItem = DataConnection.CollectionView.CurrentItem;
             }
-            
+
             // Treat this like the DataGrid has never been measured because all calculations at
             // this point are invalid until the next layout cycle.  For instance, the ItemsSource
             // can be set when the DataGrid is not part of the visual tree
             _measured = false;
+            ReConfigurePagination();
             InvalidateMeasure();
             UpdatePseudoClasses();
         }
@@ -1459,7 +1475,7 @@ public partial class DataGrid
             if (i == 0)
             {
                 column.HeaderCell.IsFirstVisible = true;
-            } 
+            }
             else if (i == visibleColumns.Count - 1)
             {
                 column.HeaderCell.IsLastVisible = true;
@@ -1475,6 +1491,7 @@ public partial class DataGrid
             column.HeaderCell.CanUserFilter     = column.CanUserFilter;
             column.HeaderCell.ShowSorterTooltip = column.ShowSorterTooltip;
         }
+
         PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !visibleColumns.Any());
         PseudoClasses.Set(DataGridPseudoClass.EmptyRows, !DataConnection.Any());
     }
@@ -2046,7 +2063,7 @@ public partial class DataGrid
         InvalidateRowsMeasure(true);
         InvalidateMeasure();
     }
-    
+
     private void HandleCanUserResizeColumnsChanged(AvaloniaPropertyChangedEventArgs e)
     {
         EnsureHorizontalLayout();
@@ -2071,7 +2088,8 @@ public partial class DataGrid
                     {
                         // If the RowHeader resulted in a different width the last time it was measured, we need
                         // to re-measure it
-                        if (row.HeaderCell != null && !MathUtils.AreClose(row.HeaderCell.DesiredSize.Width, ActualRowHeaderWidth))
+                        if (row.HeaderCell != null &&
+                            !MathUtils.AreClose(row.HeaderCell.DesiredSize.Width, ActualRowHeaderWidth))
                         {
                             row.HeaderCell.InvalidateMeasure();
                             updated = true;
@@ -2164,7 +2182,7 @@ public partial class DataGrid
         else
         {
             if (_columnHeadersPresenter != null)
-            {   
+            {
                 EnsureColumnHeadersVisibility();
                 _columnHeadersPresenter.InvalidateMeasure();
             }
@@ -2199,7 +2217,7 @@ public partial class DataGrid
     private void HandleIsEnabledChanged(AvaloniaPropertyChangedEventArgs e)
     {
     }
-    
+
     private void HandleFrozenColumnCountChanged(AvaloniaPropertyChangedEventArgs e)
     {
         ProcessFrozenColumnCount();
@@ -2213,7 +2231,7 @@ public partial class DataGrid
             PreparingCellForEditPrivate(element);
         }
     }
-    
+
     private void HandleColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var value = (DataGridLength)(e.NewValue ?? DataGridLength.Auto);
@@ -2228,7 +2246,7 @@ public partial class DataGrid
 
         EnsureHorizontalLayout();
     }
-    
+
     private void HandleGridLinesVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
     {
         foreach (DataGridRow row in GetAllRows())
@@ -2237,7 +2255,7 @@ public partial class DataGrid
             row.InvalidateHorizontalArrange();
         }
     }
-    
+
     private void HandleHeadersVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
     {
         // TODO 需要审查
@@ -2265,6 +2283,7 @@ public partial class DataGrid
                     {
                         EnsureVerticalGridLines();
                     }
+
                     InvalidateMeasure();
                 }
             }
@@ -2281,6 +2300,7 @@ public partial class DataGrid
                     {
                         EnsureVerticalGridLines();
                     }
+
                     InvalidateMeasure();
                 }
             }
@@ -2311,6 +2331,7 @@ public partial class DataGrid
                         rowGroupHeader.EnsureHeaderVisibility();
                     }
                 }
+
                 InvalidateRowHeightEstimate();
                 InvalidateRowsMeasure(invalidateIndividualElements: true);
             }
@@ -2324,9 +2345,8 @@ public partial class DataGrid
                 _topLeftCornerHeader.Measure(default);
             }
         }
-
     }
-    
+
     private void HandleHorizontalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended && _rowsPresenter != null)
@@ -2337,7 +2357,7 @@ public partial class DataGrid
             }
         }
     }
-    
+
     private void HandleIsReadOnlyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
@@ -2361,7 +2381,7 @@ public partial class DataGrid
             }
         }
     }
-    
+
     private void HandleMinColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
@@ -2373,7 +2393,7 @@ public partial class DataGrid
             }
         }
     }
-    
+
     private void HandleRowHeightChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
@@ -2385,7 +2405,7 @@ public partial class DataGrid
             InvalidateMeasure();
         }
     }
-    
+
     private void HandleRowHeaderWidthChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
@@ -2393,7 +2413,7 @@ public partial class DataGrid
             EnsureRowHeaderWidth();
         }
     }
-    
+
     //TODO Validation
     //TODO Binding
     //TODO TabStop
@@ -2653,7 +2673,6 @@ public partial class DataGrid
             {
                 _columnHeadersPresenter.IsVisible = IsColumnHeadersVisible;
             }
-
         }
     }
 
@@ -2843,6 +2862,7 @@ public partial class DataGrid
             Debug.Assert(slot >= 0 && slot < SlotCount);
             return false;
         }
+
         int rowIndex = RowIndexFromSlot(slot);
         return rowIndex < 0 || rowIndex >= DataConnection.Count;
     }
@@ -2917,7 +2937,7 @@ public partial class DataGrid
         Debug.Assert(dataGridRow != null);
         Debug.Assert(dataGridCell != null);
 
-        Control?             element             = null;
+        Control? element = null;
         Debug.Assert(dataGridRow.DataContext != null);
         if (isCellEdited)
         {
@@ -2970,7 +2990,8 @@ public partial class DataGrid
         Debug.Assert(dataGridColumn != null);
         Debug.Assert(_editingEventArgs != null);
         _uneditedValue = dataGridColumn.PrepareCellForEditInternal(editingElement, _editingEventArgs);
-        NotifyPreparingCellForEdit(new DataGridPreparingCellForEditEventArgs(dataGridColumn, EditingRow, _editingEventArgs,
+        NotifyPreparingCellForEdit(new DataGridPreparingCellForEditEventArgs(dataGridColumn, EditingRow,
+            _editingEventArgs,
             editingElement));
     }
 
@@ -3684,7 +3705,7 @@ public partial class DataGrid
             return true;
         }
 
-        int targetSlot = -1;
+        int targetSlot        = -1;
         int targetColumnIndex = -1;
 
         _noSelectionChangeCount++;
@@ -4311,7 +4332,7 @@ public partial class DataGrid
             {
                 action = DataGridSelectionAction.SelectCurrent;
             }
-            
+
             var updateSelection = true;
             var column          = ColumnsInternal[columnIndex];
             if (column is DataGridSelectionColumn selectionColumn)
@@ -4460,7 +4481,7 @@ public partial class DataGrid
 
         return false;
     }
-    
+
     private void HandleSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
@@ -4468,7 +4489,7 @@ public partial class DataGrid
             ClearRowSelection(resetAnchorSlot: true);
         }
     }
-    
+
     private void HandleSelectedIndexChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
@@ -4486,7 +4507,7 @@ public partial class DataGrid
             }
         }
     }
-    
+
     private void HandleSelectedItemChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (!_areHandlersSuspended)
@@ -4521,6 +4542,7 @@ public partial class DataGrid
                         SetValueNoCallback(SelectedItemProperty, e.OldValue);
                         return;
                     }
+
                     if (slot >= SlotCount || slot < -1)
                     {
                         if (DataConnection.CollectionView != null)
@@ -4541,13 +4563,15 @@ public partial class DataGrid
                     {
                         columnIndex = FirstDisplayedNonFillerColumnIndex;
                     }
+
                     if (IsSlotOutOfSelectionBounds(slot))
                     {
                         ClearRowSelection(slotException: slot, setAnchorSlot: true);
                         return;
                     }
 
-                    UpdateSelectionAndCurrency(columnIndex, slot, DataGridSelectionAction.SelectCurrent, scrollIntoView: false);
+                    UpdateSelectionAndCurrency(columnIndex, slot, DataGridSelectionAction.SelectCurrent,
+                        scrollIntoView: false);
                 }
                 finally
                 {
@@ -4562,7 +4586,7 @@ public partial class DataGrid
             }
         }
     }
-    
+
     private void HandleAutoGenerateColumnsChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var value = (bool)(e.NewValue ?? false);
@@ -4642,7 +4666,8 @@ public partial class DataGrid
             if (Footer == null && (GridLinesVisibility == DataGridGridLinesVisibility.All ||
                                    GridLinesVisibility == DataGridGridLinesVisibility.Horizontal))
             {
-                SetValue(FrameBorderThicknessProperty, new Thickness(BorderThickness.Left, BorderThickness.Top, BorderThickness.Right, 0));
+                SetValue(FrameBorderThicknessProperty,
+                    new Thickness(BorderThickness.Left, BorderThickness.Top, BorderThickness.Right, 0));
             }
             else
             {
@@ -4676,7 +4701,8 @@ public partial class DataGrid
         var totalFrozenCount = LeftFrozenColumnCount + RightFrozenColumnCount;
         if (totalFrozenCount > Columns.Count)
         {
-            throw DataGridError.DataGrid.ValueMustBeLessThanOrEqualTo("LeftFrozenColumnCount + RightFrozenColumnCount", "Columns.Count", Columns.Count);
+            throw DataGridError.DataGrid.ValueMustBeLessThanOrEqualTo("LeftFrozenColumnCount + RightFrozenColumnCount",
+                "Columns.Count", Columns.Count);
         }
     }
 }

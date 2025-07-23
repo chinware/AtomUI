@@ -1417,9 +1417,7 @@ public partial class DataGrid
         if (slot < DisplayData.FirstScrollingSlot - 1)
         {
             // The element was added above our viewport so it pushes the VerticalOffset down
-            double elementHeight =
-                RowGroupHeadersTable.Contains(slot) ? RowGroupHeaderHeightEstimate : RowHeightEstimate;
-
+            double elementHeight = RowGroupHeadersTable.Contains(slot) ? RowGroupHeaderHeightEstimate : RowHeightEstimate;
             SetVerticalOffset(_verticalOffset + elementHeight);
         }
 
@@ -1472,7 +1470,7 @@ public partial class DataGrid
             Debug.Assert(!isCollapsed);
             NotifyAddedElementPhase1(slot, element);
         }
-        else if ((slot <= DisplayData.FirstScrollingSlot) || (isCollapsed && (slot <= DisplayData.LastScrollingSlot)))
+        else if (slot <= DisplayData.FirstScrollingSlot || (isCollapsed && slot <= DisplayData.LastScrollingSlot))
         {
             DisplayData.CorrectSlotsAfterInsertion(slot, null /*row*/, isCollapsed);
         }
@@ -3384,6 +3382,49 @@ public partial class DataGrid
                 UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
                 InvalidateRowsMeasure(invalidateIndividualElements: false);
             }
+        }
+    }
+
+    private void ReConfigurePagination()
+    {
+        if (CollectionView is DataGridCollectionView collectionView)
+        {
+            collectionView.PageSize = PageSize;
+            if (_topPagination != null)
+            {
+                _topPagination.Total       = collectionView.ItemCount;
+                _topPagination.PageSize    = PageSize;
+                _topPagination.CurrentPage = Pagination.DefaultCurrentPage;
+              
+            }
+            if (_bottomPagination != null)
+            {
+                _bottomPagination.Total       = collectionView.ItemCount;
+                _bottomPagination.PageSize    = PageSize;
+                _bottomPagination.CurrentPage = Pagination.DefaultCurrentPage;
+            }
+        }
+    }
+
+    private void HandlePageChangeRequest(object? sender, PageChangedArgs args)
+    {
+        if (CollectionView is DataGridCollectionView collectionView)
+        {
+            collectionView.MoveToPage(args.PageNumber - 1);
+        }
+    }
+
+    private void HandlePageChanging(object? sender, PageChangingEventArgs args)
+    {
+        var targetPage = args.NewPageIndex + 1;
+        if (_topPagination != null && _topPagination.CurrentPage != targetPage)
+        {
+            _topPagination.CurrentPage = targetPage;
+        }
+        
+        if (_bottomPagination != null && _bottomPagination.CurrentPage != targetPage)
+        {
+            _bottomPagination.CurrentPage = targetPage;
         }
     }
 }

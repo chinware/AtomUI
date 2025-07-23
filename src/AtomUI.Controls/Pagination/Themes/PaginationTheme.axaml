@@ -9,17 +9,17 @@
                 <StackPanel Name="{x:Static atom:PaginationThemeConstants.RootLayoutPart}"
                             Orientation="Horizontal">
                     <ContentPresenter Name="{x:Static atom:PaginationThemeConstants.TotalInfoPresenterPart}"
-                                      IsVisible="{TemplateBinding ShowTotalInfo}"
+                                      IsVisible="{TemplateBinding IsShowTotalInfo}"
                                       Content="{TemplateBinding TotalInfoText, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}" />
                     <atom:PaginationNav
                         Name="{x:Static atom:PaginationThemeConstants.NavPart}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         SizeType="{TemplateBinding SizeType}" />
                     <ContentPresenter Name="{x:Static atom:PaginationThemeConstants.SizeChangerPresenterPart}"
-                                      IsVisible="{TemplateBinding ShowSizeChanger}"
+                                      IsVisible="{TemplateBinding IsShowSizeChanger}"
                                       Content="{TemplateBinding SizeChanger}" />
                     <ContentPresenter Name="{x:Static atom:PaginationThemeConstants.QuickJumperBarPresenterPart}"
-                                      IsVisible="{TemplateBinding ShowQuickJumper}"
+                                      IsVisible="{TemplateBinding IsShowQuickJumper}"
                                       Content="{TemplateBinding QuickJumperBar}" />
                 </StackPanel>
             </ControlTemplate>
