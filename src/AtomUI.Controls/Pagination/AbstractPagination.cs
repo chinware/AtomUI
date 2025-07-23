@@ -4,6 +4,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
@@ -16,6 +17,9 @@ public abstract class AbstractPagination : TemplatedControl,
     public const int DefaultCurrentPage = 1;
     
     #region 公共属性定义
+    
+    public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
+        AvaloniaProperty.Register<AbstractPagination, bool>(nameof(IsHideOnSinglePage));
     
     public static readonly StyledProperty<PaginationAlign> AlignProperty =
         AvaloniaProperty.Register<AbstractPagination, PaginationAlign>(nameof(PaginationAlign));
@@ -36,6 +40,17 @@ public abstract class AbstractPagination : TemplatedControl,
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractPagination>();
+    
+    public static readonly DirectProperty<AbstractPagination, int> PageCountProperty =
+        AvaloniaProperty.RegisterDirect<AbstractPagination, int>(nameof(PageCount),
+            o => o.PageCount,
+            (o, v) => o.PageCount = v);
+    
+    public bool IsHideOnSinglePage
+    {
+        get => GetValue(IsHideOnSinglePageProperty);
+        set => SetValue(IsHideOnSinglePageProperty, value);
+    }
     
     public PaginationAlign Align
     {
@@ -71,6 +86,14 @@ public abstract class AbstractPagination : TemplatedControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    private int _pageCount;
+    
+    public int PageCount
+    {
+        get => _pageCount;
+        internal set => SetAndRaise(PageCountProperty, ref _pageCount, value);
     }
     
     #endregion
@@ -122,6 +145,19 @@ public abstract class AbstractPagination : TemplatedControl,
                 HandlePageConditionChanged();
             }
         }
+
+        if (change.Property == IsHideOnSinglePageProperty ||
+            change.Property == PageCountProperty)
+        {
+            if (IsHideOnSinglePage)
+            {
+                SetValue(IsVisibleProperty, PageCount > 1, BindingPriority.Template);
+            }
+            else
+            {
+                SetValue(IsVisibleProperty, true, BindingPriority.Template);
+            }
+        }
     }
 
     protected void HandlePageConditionChanged()
@@ -131,6 +167,7 @@ public abstract class AbstractPagination : TemplatedControl,
         var pageCount   = (int)Math.Ceiling(total / (double)pageSize);
         var currentPage = Math.Max(1, Math.Min(CurrentPage, pageCount));
         CurrentPage = currentPage;
+        PageCount = pageCount;
         NotifyPageConditionChanged(currentPage, pageCount, pageSize, total);
     }
 

@@ -27,9 +27,6 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
 
     #region 公共属性定义
     
-    public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
-        AvaloniaProperty.Register<Pagination, bool>(nameof(IsHideOnSinglePage));
-    
     public static readonly StyledProperty<bool> IsShowSizeChangerProperty =
         AvaloniaProperty.Register<Pagination, bool>(nameof(IsShowSizeChanger));
     
@@ -41,12 +38,6 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
 
     public static readonly StyledProperty<string?> TotalInfoTemplateProperty =
         AvaloniaProperty.Register<Pagination, string?>(nameof(TotalInfoTemplate));
-    
-    public bool IsHideOnSinglePage
-    {
-        get => GetValue(IsHideOnSinglePageProperty);
-        set => SetValue(IsHideOnSinglePageProperty, value);
-    }
     
     public bool IsShowSizeChanger
     {
