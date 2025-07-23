@@ -19,6 +19,7 @@ public enum DataGridLengthUnitType
     Star = 4
 }
 
+[TypeConverter(typeof(DataGridLengthConverter))]
 public struct DataGridLength : IEquatable<DataGridLength>
 {
     // WPF uses 1.0 as the default value as well
