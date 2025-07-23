@@ -17,10 +17,12 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                     <Border Name="BorderItemPart"
+                            Background="Transparent"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}">
                         <StackPanel Name="StackPanelItemPart"
                                     Orientation="Horizontal"
+                                    Background="Transparent"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                             <atom:IconPresenter Name="PART_IconPresenter"
@@ -33,10 +35,9 @@
                                               Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
                                               IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
-                            <!-- ButtonSpinnerLocation="{Binding (atom:ButtonSpinner.ButtonSpinnerLocation), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}" -->
                         </StackPanel>
                     </Border>
-                    <Border Name="SeparatorPart"
+                    <Border Name="BorderSeparatorPart"
                             Padding="{TemplateBinding Padding}">
                         <StackPanel>
                             <ContentPresenter Name="PART_Seprator"
@@ -52,8 +53,8 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="Padding" Value="4"></Setter>
-        <Setter Property="CornerRadius" Value="6"></Setter>
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.BreadcrumbItemContentPadding}}"></Setter>
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}"></Setter>
         
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
             <Setter Property="IconWidth"
@@ -62,12 +63,6 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
         </Style>
         
-        <!-- 最后一个：黑色 -->
-        <!--
-        <Style Selector="^:is-last /template/ ContentPresenter#PART_Content">
-            <Setter Property="Foreground" Value="Black"/>
-        </Style>
-        -->
         <!-- 非最后一个：浅灰色 -->
         <Style Selector="^:not(:is-last) /template/ ContentPresenter#PART_Content">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.PrevLinkColor}}"/>
@@ -82,21 +77,18 @@
         </Style>
         
         <!-- 当鼠标掠过的时候 -->
-        <Style Selector="^:pointerover">
-            <!-- 鼠标掠过时，Border的背景色 -->
-            <Style Selector="^ /template/ Border#BorderItemPart">
+        <Style Selector="^ /template/ Border#BorderItemPart">
+            <Style Selector="^:pointerover">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverBgColor}}" />
-            </Style>
-            <!-- 鼠标掠过时，Border内部ContentPresenter的颜色 -->
-            <Style Selector="^ /template/ ContentPresenter#PART_Content">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverColor}}" />
-            </Style>
-            <!-- 鼠标掠过时，Border内部Icon图标的颜色 -->
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="NormalFilledBrush"
-                        Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverColor}}" />
+                <Style Selector="^ ContentPresenter#PART_Content">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverColor}}" />
+                </Style>
+                <Style Selector="^ atom|IconPresenter#PART_IconPresenter">
+                    <Setter Property="NormalFilledBrush"
+                            Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverColor}}" />
+                </Style>
             </Style>
         </Style>
         

@@ -10,9 +10,9 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-/*
- * @desc: 继承SelectingItemsControl与TemplatePart注解，表示这个组件在使用的时候，可以包裹其他内容
- */
+/// <summary>
+/// 继承SelectingItemsControl，配合TemplatePart注解，表示这个组件在使用的时候，可以包裹其他内容
+/// </summary>
 [TemplatePart("PART_ItemsPresenter", typeof(ItemsPresenter))]
 public class Breadcrumb : SelectingItemsControl, IControlSharedTokenResourcesHost, IMotionAwareControl
 {
@@ -33,9 +33,6 @@ public class Breadcrumb : SelectingItemsControl, IControlSharedTokenResourcesHos
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Breadcrumb>();
-    
-    public static readonly StyledProperty<bool> IsExpandingProperty =
-        AvaloniaProperty.Register<Segmented, bool>(nameof(IsExpanding));
     
     public IEnumerable? Params
     {
@@ -61,11 +58,6 @@ public class Breadcrumb : SelectingItemsControl, IControlSharedTokenResourcesHos
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public bool IsExpanding
-    {
-        get => GetValue(IsExpandingProperty);
-        set => SetValue(IsExpandingProperty, value);
-    }
     #endregion
     
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -107,73 +99,18 @@ public class Breadcrumb : SelectingItemsControl, IControlSharedTokenResourcesHos
         var items = this.GetVisualDescendants().OfType<BreadcrumbItem>().ToList();
         for (int i = 0; i < items.Count; i++)
         {
-            var  item   = items[i];
+            var item = items[i];
             if (item.Value != null)
             {
-                Console.WriteLine($"value={item.Value}");
                 item.Content = item.Value.ToString();
             }
             bool isLast = (i == items.Count - 1);
             item.EffectiveSeparator = isLast
                 ? string.Empty
                 : ((item.Separator ?? this.Separator)) ?? string.Empty;
-            item.IsLast = isLast; // 你已有的属性
-            // 设置伪类
+            item.IsLast = isLast;
             item.SetPseudoClass(BreadcrumbPseudoClass.IsLast, isLast);
         }
     }
-    
-    /*
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        this.LayoutUpdated += OnLayoutUpdatedOnce;
-    }
-    
-    private void OnContainerPrepared(object? sender, ContainerPreparedEventArgs e)
-    {
-        UpdateSeparators();
-    }
-    
-    private void OnLayoutUpdatedOnce(object? sender, EventArgs e)
-    {
-        this.LayoutUpdated -= OnLayoutUpdatedOnce;
-        UpdateSeparators();
-    }
-    
-    */
-    
-    /*
-     * @desc: OnAttachedToVisualTree方法
-     */
-    //protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    //{
-        //base.OnAttachedToVisualTree(e);
-        //Console.WriteLine($"Seprator is {Separator}");
-        // 如果BreadcrumbItem没有设置Separator，那么使用全局Separator
-        /*
-        if (ItemsSource != null)
-        {
-            //如果 ItemsSource 的类型不明确，编译器可能无法推断出具体的类型参数。
-            var itemsSourceList = ItemsSource.Cast<BreadcrumbItem>().ToList();
-            for (int i = 0; i < itemsSourceList.Count; i++)
-            {
-                var itemValue = itemsSourceList[i];
-                if (itemValue.Value != null)
-                {
-                    itemValue.Title = itemValue.Value.ToString();
-                }
-                if (i == (itemsSourceList.Count - 1))
-                {
-                    itemValue.Separator = null;
-                }
-                else
-                {
-                    itemValue.Separator = itemValue.Separator == null ? Separator : itemValue.Separator ;
-                }
-            }
-        }
-        */
-    //}
     
 }

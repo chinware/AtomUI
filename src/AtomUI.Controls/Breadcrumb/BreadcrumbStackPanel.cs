@@ -5,27 +5,9 @@ namespace AtomUI.Controls;
 
 internal class BreadcrumbStackPanel : Panel
 {
-    #region 公共属性定义
-
-    public static readonly StyledProperty<bool> IsExpandingProperty =
-        AvaloniaProperty.Register<BreadcrumbStackPanel, bool>(nameof(IsExpanding));
-
-    public bool IsExpanding
-    {
-        get => GetValue(IsExpandingProperty);
-        set => SetValue(IsExpandingProperty, value);
-    }
-    
-    #endregion
-
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (!IsExpanding)
-        {
-            return MeasureOverrideNoExpanding(availableSize);
-        }
-
-        return MeasureOverrideExpanding(availableSize);
+        return MeasureOverrideNoExpanding(availableSize);
     }
 
     private Size MeasureOverrideNoExpanding(Size availableSize)
@@ -72,21 +54,12 @@ internal class BreadcrumbStackPanel : Panel
                 }
             }
         }
-
         return new Size(availableSize.Width, maxHeight);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (!IsExpanding)
-        {
-            ArrangeOverrideNoExpanding(finalSize);
-        }
-        else
-        {
-            ArrangeOverrideExpanding(finalSize);
-        }
-
+        ArrangeOverrideNoExpanding(finalSize);
         return finalSize;
     }
 

@@ -14,12 +14,8 @@
         -->
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <!-- 是BreadcrumbTokenKey，而不是BreadcrumbToken -->
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.ItemColor}}" />
         <Setter Property="IconFontSize" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.IconFontSize}}" />
-        <!--
-            把控件的外表完全换成下面这段 XAML，开始模板替换
-        -->
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="FramePart"
@@ -31,22 +27,12 @@
                     <ItemsPresenter Name="ItemsPresenterPart">
                         <ItemsPresenter.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <atom:BreadcrumbStackPanel IsExpanding="{Binding IsExpanding, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"/>
+                                <atom:BreadcrumbStackPanel />
                             </ItemsPanelTemplate>
                         </ItemsPresenter.ItemsPanel>
                     </ItemsPresenter>
                 </Border>
             </ControlTemplate>
         </Setter>
-        
-        <!-- 👉 悬停时的样式，全部为ControlTheme的直接子元素，无嵌套 -->
-        <!--
-        <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ Border#PART_ItemContainer">
-                <Setter Property="Background" Value="Red" />
-            </Style>
-        </Style>
-        -->
-        
     </ControlTheme>
 </ResourceDictionary>

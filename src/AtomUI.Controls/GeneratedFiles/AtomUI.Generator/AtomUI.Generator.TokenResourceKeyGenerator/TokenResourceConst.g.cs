@@ -91,6 +91,7 @@ namespace AtomUI.Theme.Styling
     public static class BreadcrumbTokenKey
     {
         public static readonly TokenResourceKey BreadcrumbItemContentMargin = new TokenResourceKey("Breadcrumb.BreadcrumbItemContentMargin");
+        public static readonly TokenResourceKey BreadcrumbItemContentPadding = new TokenResourceKey("Breadcrumb.BreadcrumbItemContentPadding");
         public static readonly TokenResourceKey IconFontSize = new TokenResourceKey("Breadcrumb.IconFontSize");
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Breadcrumb.ItemColor");
         public static readonly TokenResourceKey LastItemColor = new TokenResourceKey("Breadcrumb.LastItemColor");

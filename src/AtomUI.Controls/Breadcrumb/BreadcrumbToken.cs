@@ -48,6 +48,11 @@ internal class BreadcrumbToken : AbstractControlDesignToken
     /// BreadcrumbItem之间的margin
     /// </summary>
     public Thickness BreadcrumbItemContentMargin { get; set; }
+    
+    /// <summary>
+    /// BreadcrumbItem外面Border的Padding
+    /// </summary>
+    public Thickness BreadcrumbItemContentPadding { get; set; }
 
     /// <summary>
     /// 分隔符颜色
@@ -78,5 +83,6 @@ internal class BreadcrumbToken : AbstractControlDesignToken
         SeparatorColor              = universalColor;
         SeparatorMargin             = SharedToken.MarginMD;
         BreadcrumbItemContentMargin = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
+        BreadcrumbItemContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, SharedToken.UniformlyPaddingXXS, SharedToken.UniformlyPaddingXXS, SharedToken.UniformlyPaddingXXS);
     }
 }

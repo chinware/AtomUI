@@ -65,13 +65,11 @@ public class BreadcrumbItem : ContentControl, ISelectable
     #endregion
 
     internal static readonly StyledProperty<string> EffectiveSeparatorProperty
-        //= MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BreadcrumbItem>();
         = AvaloniaProperty.Register<BreadcrumbItem, string>(nameof(EffectiveSeparator), defaultValue: string.Empty);
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BreadcrumbItem>();
     
-    //public string EffectiveSeparator => Separator ?? (TemplatedParent as Breadcrumb)?.Separator;
     internal string EffectiveSeparator
     {
         get => GetValue(EffectiveSeparatorProperty);
