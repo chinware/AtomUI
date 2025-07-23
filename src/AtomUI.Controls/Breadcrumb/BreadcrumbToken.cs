@@ -33,7 +33,22 @@ internal class BreadcrumbToken : AbstractControlDesignToken
     /// 链接文字悬浮颜色
     /// </summary>
     public Color LinkHoverColor { get; set; }
-    
+
+    /// <summary>
+    /// 非最后一个面包屑导航的颜色
+    /// </summary>
+    public Color PrevLinkColor { get; set; }
+
+    /// <summary>
+    /// 链接文字悬浮背景颜色
+    /// </summary>
+    public Color LinkHoverBgColor { get; set; }
+
+    /// <summary>
+    /// BreadcrumbItem之间的margin
+    /// </summary>
+    public Thickness BreadcrumbItemContentMargin { get; set; }
+
     /// <summary>
     /// 分隔符颜色
     /// </summary>
@@ -54,25 +69,14 @@ internal class BreadcrumbToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         IconFontSize = SharedToken.FontSize;
         var universalColor = SharedToken.ColorText;
-        ItemColor       = universalColor;
-        LastItemColor   = universalColor;
-        LinkColor       = universalColor;
-        //LinkHoverColor  = SharedToken.ColorLinkHover;
-        LinkHoverColor  = Colors.Red;
-        SeparatorColor  = universalColor;
-        SeparatorMargin = SharedToken.MarginMD;
-        /*
-        ContainerSize    = SharedToken.ControlHeight;
-        ContainerSizeLG  = SharedToken.ControlHeightLG;
-        ContainerSizeSM  = SharedToken.ControlHeightSM;
-        TextFontSize     = Math.Round((SharedToken.FontSizeLG + SharedToken.FontSizeXL) / 2);
-        TextFontSizeLG   = SharedToken.FontSizeHeading3;
-        TextFontSizeSM   = SharedToken.FontSize;
-        GroupSpace       = SharedToken.UniformlyMarginXXS;
-        GroupOverlapping = SharedToken.UniformlyMarginXS;
-        GroupBorderColor = SharedToken.ColorBorderBg;
-        AvatarBg    = SharedToken.ColorTextPlaceholder;
-        AvatarColor = SharedToken.ColorTextLightSolid;
-        */
+        ItemColor                   = universalColor;
+        LastItemColor               = universalColor;
+        LinkColor                   = universalColor;
+        PrevLinkColor               = SharedToken.ColorTextDisabled;
+        LinkHoverColor              = SharedToken.ColorText;
+        LinkHoverBgColor            = SharedToken.ColorTextDisabled;
+        SeparatorColor              = universalColor;
+        SeparatorMargin             = SharedToken.MarginMD;
+        BreadcrumbItemContentMargin = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
     }
 }

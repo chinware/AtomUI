@@ -22,46 +22,20 @@
         -->
         <Setter Property="Template">
             <ControlTemplate>
-                <!--
-                TemplateBinding ItemsSource：把 Breadcrumb 的 ItemsSource 原封不动传给里面的 ItemsControl
-                -->
-                <ItemsControl Name="PART_ItemsControl"
-                              ItemsSource="{TemplateBinding ItemsSource}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="atom:BreadcrumbItem">
-                            <Border Name="PART_ItemContainer" 
-                                    Background="{Binding Background, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
-                                    Padding="0">
-                                <StackPanel Orientation="Horizontal">
-                                    <!-- 面包屑Icon "{atom:IconProvider UserOutlined}" -->
-                                    <atom:IconPresenter Icon="{Binding Icon}"
-                                                        IconWidth="{Binding IconFontSize, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
-                                                        IconHeight="{Binding IconFontSize, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
-                                                        NormalFilledBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"/>
-                                    <!-- 面包屑文字 -->
-                                    <atom:TextBlock Text="{Binding Title}"
-                                                    FontSize="{Binding IconFontSize, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
-                                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
-                                                    Padding="{Binding HasIconAndText, Converter={StaticResource BoolToThicknessConverter}}"
-                                                    VerticalAlignment="Center"/>
-                                    <!-- 分隔符 -->
-                                    <atom:TextBlock VerticalAlignment="Center"
-                                                    FontSize="{Binding IconFontSize, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
-                                                    Padding="6, 0, 6, 0"
-                                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"
-                                                    Text="{Binding Separator}"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <Border Name="FramePart"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                    <ItemsPresenter Name="ItemsPresenterPart">
+                        <ItemsPresenter.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <atom:BreadcrumbStackPanel IsExpanding="{Binding IsExpanding, RelativeSource={RelativeSource AncestorType=atom:Breadcrumb}}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsPresenter.ItemsPanel>
+                    </ItemsPresenter>
+                </Border>
             </ControlTemplate>
         </Setter>
         
