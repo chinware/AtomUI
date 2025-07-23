@@ -49,5 +49,9 @@
                 <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationLayoutMiniSpacing}}"/>
             </Style>
         </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemActiveColorDisabled}}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
