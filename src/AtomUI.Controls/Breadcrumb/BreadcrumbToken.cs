@@ -74,7 +74,7 @@ internal class BreadcrumbToken : AbstractControlDesignToken
         LinkColor                   = universalColor;
         PrevLinkColor               = SharedToken.ColorTextDisabled;
         LinkHoverColor              = SharedToken.ColorText;
-        LinkHoverBgColor            = SharedToken.ColorTextDisabled;
+        LinkHoverBgColor            = SharedToken.ColorBgTextHover;
         SeparatorColor              = universalColor;
         SeparatorMargin             = SharedToken.MarginMD;
         BreadcrumbItemContentMargin = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
