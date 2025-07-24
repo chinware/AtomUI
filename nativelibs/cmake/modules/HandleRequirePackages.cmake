@@ -25,6 +25,7 @@ if(LINUX)
         xcb
         xcb-shape
     )
+    find_package(X11 REQUIRED)
 endif()
 
 if(WIN32)

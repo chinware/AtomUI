@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <IncludeBuildOutput>true</IncludeBuildOutput>
+        <Version>$(AtomUINativeVersion)</Version>
     </PropertyGroup>
 
     <ItemGroup>

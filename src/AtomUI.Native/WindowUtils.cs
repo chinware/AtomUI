@@ -26,4 +26,14 @@ internal static class WindowUtils
 
         return false;
     }
+    
+    public static void LockWindowBuddyLayer(this WindowBase window, WindowBase buddyWindow)
+    {
+        var windowHandle = window.PlatformImpl?.Handle?.Handle;
+        var buddyHandle = buddyWindow.PlatformImpl?.Handle?.Handle;
+        if (windowHandle is not null && buddyHandle is not null)
+        {
+            WindowUtilsImpl.AtomUILockWindowBuddyLayer(windowHandle.Value, buddyHandle.Value);
+        }
+    }
 }

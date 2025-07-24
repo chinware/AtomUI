@@ -27,11 +27,12 @@ atomui_extend_library(AtomUINative CONDITION WIN32
     windows/WindowUtils.cpp
 )
 
+
 atomui_extend_library(AtomUINative CONDITION LINUX
     SOURCES
     linux/WindowUtils.cpp
     DEPENDS
-    PkgConfig::XCB
-    INCLUDES ${XCB_INCLUDE_DIRS}
+    PkgConfig::XCB ${X11_LIBRARIES}
+    INCLUDES ${XCB_INCLUDE_DIRS} ${X11_INCLUDE_DIR}
 )
-
+target_link_libraries(AtomUINative INTERFACE ${X11_LIBRARIES})
