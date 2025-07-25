@@ -3,6 +3,8 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -32,6 +34,7 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
 
     private Rect? _originRect;
     private Button? _searchButton;
+    private SearchEdit? _ownerSearchEdit;
 
     protected override void NotifyAddOnBorderInfoCalculated()
     {
@@ -57,12 +60,42 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+
+        if (_searchButton is not null)
+        {
+            _searchButton.Click -= HandleSearchButtonClick;
+        }
+        
         _searchButton = e.NameScope.Find<Button>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
 
         if (_searchButton is not null)
         {
             BindUtils.RelayBind(this, RightAddOnBorderThicknessProperty, _searchButton, BorderThicknessProperty);
             BindUtils.RelayBind(this, RightAddOnCornerRadiusProperty, _searchButton, CornerRadiusProperty);
+            _searchButton.Click += HandleSearchButtonClick;
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _ownerSearchEdit = this.FindLogicalAncestorOfType<SearchEdit>();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+
+        if (_searchButton is not null)
+        {
+            _searchButton.Click -= HandleSearchButtonClick;
+        }
+        
+        _ownerSearchEdit = null;
+     }
+
+    private void HandleSearchButtonClick(object? sender, RoutedEventArgs e)
+    {
+        _ownerSearchEdit?.OnSearchButtonClick(e);
     }
 }
