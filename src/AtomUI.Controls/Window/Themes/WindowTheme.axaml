@@ -7,9 +7,11 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Background="{TemplateBinding TransparencyBackgroundFallback}"
+                    <Border Name="FallbackFrame" 
+                            Background="{TemplateBinding TransparencyBackgroundFallback}"
                             CornerRadius="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}"/>
-                    <Border Background="{TemplateBinding Background}"
+                    <Border Name="Frame"
+                            Background="{TemplateBinding Background}"
                             CornerRadius="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}"
                             ClipToBounds="True">
                         <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
@@ -19,7 +21,8 @@
                             <DockPanel LastChildFill="True" Margin="{TemplateBinding WindowDecorationMargin}">
                                 <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}" 
                                                Content="{TemplateBinding Title}"
-                                               DockPanel.Dock="Top"/>
+                                               DockPanel.Dock="Top"
+                                               Logo="{TemplateBinding Logo}"/>
                                 <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                   Content="{TemplateBinding Content}"
@@ -45,6 +48,25 @@
         <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
+        
+        <Style Selector="^ /template/ Border#FallbackFrame">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Border#Frame">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
+        </Style>
+        
+        <Style Selector="^[WindowState=FullScreen], ^[WindowState=Maximized]">
+            <Style Selector="^ /template/ Border#FallbackFrame">
+                <Setter Property="CornerRadius" Value="0" />
+            </Style>
+        
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="CornerRadius" Value="0" />
+            </Style>
+        </Style>
+        
         <Setter Property="SystemDecorations">
             <OnPlatform>
                 <On Options="Default">

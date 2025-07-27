@@ -9,6 +9,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
@@ -156,5 +157,11 @@ internal class CaptionButton : AvaloniaButton, IControlSharedTokenResourcesHost
             Transitions?.Clear();
             Transitions = null;
         }
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+        e.Handled = true;
     }
 }

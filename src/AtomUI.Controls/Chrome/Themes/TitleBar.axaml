@@ -16,8 +16,10 @@
                             <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.LogoPart}"
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Center"
-                                              Content="{TemplateBinding LogoContent}"
-                                              IsVisible="{TemplateBinding LogoContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                              HorizontalContentAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              Content="{TemplateBinding Logo}"
+                                              IsVisible="{TemplateBinding Logo, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.ContentPresenterPart}"
                                               FontSize="{TemplateBinding TitleFontSize}"
                                               FontWeight="{TemplateBinding TitleFontWeight}"
@@ -46,6 +48,13 @@
 
         <Style Selector="^[IsWindowActive=False]">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ChromeTokenKey.InactiveColor}}" />
+        </Style>
+        
+        <Setter Property="Background" Value="Transparent" />
+        
+        <Style Selector="^ /template/ ContentPresenter#PART_Logo">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:ChromeTokenKey.LogoSize}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:ChromeTokenKey.LogoSize}}" />
         </Style>
 
     </ControlTheme>

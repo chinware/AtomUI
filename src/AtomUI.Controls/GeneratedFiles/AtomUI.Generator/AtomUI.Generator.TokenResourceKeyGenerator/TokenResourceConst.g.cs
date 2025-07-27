@@ -196,6 +196,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey InactiveColor = new TokenResourceKey("Chrome.InactiveColor");
         public static readonly TokenResourceKey InactiveHoverBgColor = new TokenResourceKey("Chrome.InactiveHoverBgColor");
         public static readonly TokenResourceKey LogoAndTitleSpacing = new TokenResourceKey("Chrome.LogoAndTitleSpacing");
+        public static readonly TokenResourceKey LogoSize = new TokenResourceKey("Chrome.LogoSize");
         public static readonly TokenResourceKey PressedBackgroundColor = new TokenResourceKey("Chrome.PressedBackgroundColor");
         public static readonly TokenResourceKey TitleBarPadding = new TokenResourceKey("Chrome.TitleBarPadding");
     }

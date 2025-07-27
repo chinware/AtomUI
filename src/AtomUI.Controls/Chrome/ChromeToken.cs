@@ -50,6 +50,11 @@ internal class ChromeToken : AbstractControlDesignToken
     public double CaptionButtonSize {  get; set; }
     
     /// <summary>
+    /// 应用程序图标大小
+    /// </summary>
+    public double LogoSize { get; set; }
+    
+    /// <summary>
     /// 窗口激活状态下的颜色
     /// </summary>
     public Color ActiveColor { get; set; }
@@ -107,15 +112,16 @@ internal class ChromeToken : AbstractControlDesignToken
         ForegroundColor             = SharedToken.ColorTextSecondary;
         HoverBackgroundColor        = SharedToken.ColorBgTextHover;
         PressedBackgroundColor      = SharedToken.ColorBgTextActive;
-        LogoAndTitleSpacing         = SharedToken.SizeUnit * 3;
+        LogoAndTitleSpacing         = SharedToken.SpacingXS;
         TitleBarPadding             = SharedToken.PaddingXS;
         CaptionButtonSize           = SharedToken.IconSizeSM;
+        LogoSize                    = SharedToken.IconSizeLG;
 
         ActiveColor   = SharedToken.ColorText;
         InactiveColor = SharedToken.ColorTextQuaternary;
 
-        ActiveBgColor      = SharedToken.ColorFillTertiary;
-        ActiveHoverBgColor = SharedToken.ColorFillSecondary;
+        ActiveBgColor        = SharedToken.ColorFillTertiary;
+        ActiveHoverBgColor   = SharedToken.ColorFillSecondary;
         ActivePressedBgColor = SharedToken.ColorFill;
 
         InactiveBgColor      = SharedToken.ColorFillQuaternary;

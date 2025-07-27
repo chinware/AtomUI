@@ -4,14 +4,17 @@ using System.Runtime.InteropServices;
 using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
 using AvaloniaWindow = Avalonia.Controls.Window;
 
-public class Window : AvaloniaWindow
+public class Window : AvaloniaWindow, IDisposable
 {
     #region 公共属性
 
@@ -33,8 +36,8 @@ public class Window : AvaloniaWindow
     public static readonly StyledProperty<ContextMenu> TitleBarContextMenuProperty =
         AvaloniaProperty.Register<Window, ContextMenu>(nameof(TitleBarContextMenu));
     
-    public static readonly StyledProperty<Control?> LogoContentProperty =
-        TitleBar.LogoContentProperty.AddOwner<Window>();
+    public static readonly StyledProperty<Control?> LogoProperty =
+        TitleBar.LogoProperty.AddOwner<Window>();
     
     public static readonly StyledProperty<bool> IsFullScreenEnabledProperty =
         CaptionButtonGroup.IsFullScreenEnabledProperty.AddOwner<Window>();
@@ -87,10 +90,10 @@ public class Window : AvaloniaWindow
         set => SetValue(TitleBarContextMenuProperty, value);
     }
     
-    public Control? LogoContent
+    public Control? Logo
     {
-        get => GetValue(LogoContentProperty);
-        set => SetValue(LogoContentProperty, value);
+        get => GetValue(LogoProperty);
+        set => SetValue(LogoProperty, value);
     }
     
     public bool IsFullScreenEnabled
@@ -142,6 +145,11 @@ public class Window : AvaloniaWindow
     protected override Type StyleKeyOverride { get; } = typeof(Window);
     private WindowResizer? _windowResizer;
     private readonly List<Action> _disposeActions = new();
+    private TitleBar? _titleBar;
+    private bool _isDisposed;
+    private Point? _lastMousePressedPoint;
+    private PointerPressedEventArgs? _lastMousePressedEventArgs;
+    private bool _isDragging;
 
     public Window()
     {
@@ -195,10 +203,116 @@ public class Window : AvaloniaWindow
         {
             _windowResizer.TargetWindow = this;
         }
+        _titleBar = e.NameScope.Find<TitleBar>(WindowThemeConstants.TitleBarPart);
+        if (_titleBar != null)
+        {
+            _titleBar.DoubleTapped    += HandleTitleDoubleClicked;
+            _titleBar.PointerPressed  += HandleTitleBarPointerPressed;
+            _titleBar.PointerReleased += HandleTitleBarPointerReleased;
+            _titleBar.PointerMoved    += HandleTitleBarPointerMoved;
+            _disposeActions.Add(() =>
+            {
+                _titleBar.DoubleTapped    -= HandleTitleDoubleClicked;
+                _titleBar.PointerPressed  -= HandleTitleBarPointerPressed;
+                _titleBar.PointerReleased -= HandleTitleBarPointerReleased;
+                _titleBar.PointerMoved    -= HandleTitleBarPointerMoved;
+            });
+        }
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        Dispose();
+        base.OnClosed(e);
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+        
+        if (desktop.MainWindow is Window window && window != this)
+        {
+            Icon ??= window.Icon;
+        }
     }
 
     private void HandleScalingChanged(object? sender, EventArgs e)
     {
         this.ConstrainMaxSizeToScreenRatio(MaxWidthScreenRatio, MaxHeightScreenRatio);
+    }
+
+    private void HandleTitleDoubleClicked(object? sender, RoutedEventArgs e)
+    {
+        var windowState = WindowState;
+        if (!IsMaximizeEnabled || windowState == WindowState.FullScreen)
+        {
+            return;
+        }
+        WindowState = windowState == WindowState.Maximized
+            ? WindowState.Normal
+            : WindowState.Maximized;
+    }
+
+    private void HandleTitleBarPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (!IsMoveEnabled || WindowState == WindowState.FullScreen)
+        {
+            return;
+        }
+        _lastMousePressedPoint     = e.GetPosition(this);
+        _lastMousePressedEventArgs = e;
+    }
+
+    private void HandleTitleBarPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (!IsMoveEnabled || WindowState == WindowState.FullScreen || !e.Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+        Point mousePosition       = e.GetPosition(this);
+        if (_lastMousePressedPoint != null)
+        {
+            var   distanceFromInitial = (Vector)(mousePosition - _lastMousePressedPoint);
+            if (distanceFromInitial.Length > Constants.DragThreshold)
+            {
+                _isDragging = true;
+                if (_lastMousePressedEventArgs is not null)
+                {
+                    BeginMoveDrag(_lastMousePressedEventArgs);
+                }
+            }
+        }
+    }
+    
+    private void HandleTitleBarPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (!IsMoveEnabled || e.InitialPressMouseButton != MouseButton.Left || !_isDragging)
+        {
+            return;
+        }
+        this.ConstrainMaxSizeToScreenRatio(MaxWidthScreenRatio, MaxHeightScreenRatio);
+        _lastMousePressedPoint     = null;
+        _lastMousePressedEventArgs = null;
+        _isDragging                = false;
+    }
+
+    public void Dispose()
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+        _isDisposed     =  true;
+        
+        ScalingChanged -= HandleScalingChanged;
+        foreach (var disposeAction in _disposeActions)
+        {
+            disposeAction.Invoke();
+        }
     }
 }

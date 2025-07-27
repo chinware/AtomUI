@@ -24,8 +24,8 @@ public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotio
 
     #region 公共属性定义
 
-    public static readonly StyledProperty<Control?> LogoContentProperty =
-        AvaloniaProperty.Register<TitleBar, Control?>(nameof(LogoContent));
+    public static readonly StyledProperty<Control?> LogoProperty =
+        AvaloniaProperty.Register<TitleBar, Control?>(nameof(Logo));
 
     public static readonly StyledProperty<double> TitleFontSizeProperty =
         AvaloniaProperty.Register<TitleBar, double>(nameof(TitleFontSize), defaultValue: 13);
@@ -45,10 +45,10 @@ public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotio
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TitleBar>();
 
-    public Control? LogoContent
+    public Control? Logo
     {
-        get => GetValue(LogoContentProperty);
-        set => SetValue(LogoContentProperty, value);
+        get => GetValue(LogoProperty);
+        set => SetValue(LogoProperty, value);
     }
 
     public double TitleFontSize
