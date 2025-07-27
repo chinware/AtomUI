@@ -7,23 +7,27 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
-                    <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                        <VisualLayerManager.ChromeOverlayLayer>
-                            <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"/>
-                        </VisualLayerManager.ChromeOverlayLayer>
-                        <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}">
-                            <DockPanel LastChildFill="True">
-                                <Border Height="40" Background="Brown" DockPanel.Dock="Top" />
+                    <Border Background="{TemplateBinding TransparencyBackgroundFallback}"
+                            CornerRadius="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}"/>
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}"
+                            ClipToBounds="True">
+                        <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                            <VisualLayerManager.ChromeOverlayLayer>
+                                <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"/>
+                            </VisualLayerManager.ChromeOverlayLayer>
+                            <DockPanel LastChildFill="True" Margin="{TemplateBinding WindowDecorationMargin}">
+                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}" 
+                                               Content="{TemplateBinding Title}"
+                                               DockPanel.Dock="Top"/>
                                 <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                   Content="{TemplateBinding Content}"
-                                                  Margin="{TemplateBinding Padding}"
                                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                             </DockPanel>
-                        </Panel>
-                    </VisualLayerManager>
+                        </VisualLayerManager>
+                    </Border>
                 </Panel>
             </ControlTemplate>
         </Setter>

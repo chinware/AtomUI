@@ -14,6 +14,7 @@
         <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxTheme.axaml" />
+        <ResourceInclude Source="Chrome/Themes/ChromeThemes.axaml" />
         <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" />
         <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />

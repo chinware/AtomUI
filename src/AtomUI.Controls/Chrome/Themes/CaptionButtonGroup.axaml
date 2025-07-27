@@ -1,0 +1,52 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:CaptionButtonGroup}" TargetType="atom:CaptionButtonGroup">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal" Name="RootLayout">
+                    <atom:CaptionButton 
+                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
+                        IsVisible="{TemplateBinding IsFullScreenEnabled}"
+                        IsEnabled="{TemplateBinding IsFullScreenEnabled}"
+                        IsWindowActive="{TemplateBinding IsWindowActive}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    <atom:CaptionButton
+                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.PinButtonPart}"
+                        IsVisible="{TemplateBinding IsPinEnabled}"
+                        IsEnabled="{TemplateBinding IsPinEnabled}"
+                        IsWindowActive="{TemplateBinding IsWindowActive}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    <atom:CaptionButton
+                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.MinimizeButtonPart}"
+                        IsVisible="{TemplateBinding IsMinimizeEnabled}"
+                        NormalIcon="{atom:IconProvider Kind=MinusOutlined}"
+                        IsWindowActive="{TemplateBinding IsWindowActive}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    <atom:CaptionButton
+                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.MaximizeButtonPart}"
+                        IsVisible="{TemplateBinding IsMaximizeEnabled}"
+                        NormalIcon="{atom:IconProvider Kind=WindowMaximizedOutlined}"
+                        IsWindowActive="{TemplateBinding IsWindowActive}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    <atom:CaptionButton
+                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.CloseButtonPart}"
+                        NormalIcon="{atom:IconProvider Kind=WindowCloseOutlined}"
+                        IsWindowActive="{TemplateBinding IsWindowActive}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^ /template/ StackPanel#RootLayout">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingMD}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|CaptionButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:ChromeTokenKey.CaptionButtonSize}}"/>
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:ChromeTokenKey.CaptionButtonSize}}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
