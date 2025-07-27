@@ -121,7 +121,7 @@ public abstract class AbstractPagination : TemplatedControl,
     
     #endregion
     
-    protected bool TemplateApplied = false;
+    protected bool _templateApplied = false;
     
     static AbstractPagination()
     {
@@ -136,7 +136,7 @@ public abstract class AbstractPagination : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (TemplateApplied)
+        if (_templateApplied)
         {
             if (change.Property == TotalProperty ||
                 change.Property == PageSizeProperty ||

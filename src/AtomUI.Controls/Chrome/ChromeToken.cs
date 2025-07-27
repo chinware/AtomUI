@@ -84,6 +84,16 @@ internal class ChromeToken : AbstractControlDesignToken
     /// </summary>
     public Color InactiveHoverBgColor { get; set; }
     
+    /// <summary>
+    /// 标题按钮的内间距
+    /// </summary>
+    public Thickness CaptionButtonPadding { get; set; }
+    
+    /// <summary>
+    /// 标题按钮间距
+    /// </summary>
+    public double CaptionGroupSpacing { get; set; }
+    
     public ChromeToken()
         : base(ID)
     {
@@ -110,5 +120,8 @@ internal class ChromeToken : AbstractControlDesignToken
 
         InactiveBgColor      = SharedToken.ColorFillQuaternary;
         InactiveHoverBgColor = SharedToken.ColorFillTertiary;
+        
+        CaptionButtonPadding = SharedToken.PaddingXS;
+        CaptionGroupSpacing  = SharedToken.SpacingXS;
     }
 }

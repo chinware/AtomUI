@@ -1,9 +1,16 @@
+using System.Diagnostics;
+using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Utilities;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -68,6 +75,12 @@ internal class CaptionButton : AvaloniaButton, IControlSharedTokenResourcesHost
     internal static readonly StyledProperty<bool> IsWindowActiveProperty = 
         TitleBar.IsWindowActiveProperty.AddOwner<CaptionButton>();
     
+    internal static readonly DirectProperty<CaptionButton, CornerRadius> EffectiveCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButton, CornerRadius>(
+            nameof(EffectiveCornerRadius),
+            o => o.EffectiveCornerRadius,
+            (o, v) => o.EffectiveCornerRadius = v);
+    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -79,14 +92,69 @@ internal class CaptionButton : AvaloniaButton, IControlSharedTokenResourcesHost
         get => GetValue(IsWindowActiveProperty);
         set => SetValue(IsWindowActiveProperty, value);
     }
+
+    private CornerRadius _effectiveCornerRadius;
+
+    internal CornerRadius EffectiveCornerRadius
+    {
+        get => _effectiveCornerRadius;
+        set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
+    }
     
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ChromeToken.ID;
 
     #endregion
+
+    static CaptionButton()
+    {
+        AffectsRender<CaptionButton>(EffectiveCornerRadiusProperty);
+        AffectsMeasure<CaptionButton>(IsCheckedProperty);
+    }
     
     public CaptionButton()
     {
         this.RegisterResources();
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureTransitions();
+    }
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        Debug.Assert(MathUtilities.AreClose(DesiredSize.Width, DesiredSize.Height));
+        EffectiveCornerRadius = new CornerRadius(DesiredSize.Width / 2);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
+        }
+    }
+
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            Transitions = new Transitions()
+            {
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+            };
+        }
+        else
+        {
+            Transitions?.Clear();
+            Transitions = null;
+        }
     }
 }

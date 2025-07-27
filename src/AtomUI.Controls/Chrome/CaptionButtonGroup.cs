@@ -1,11 +1,12 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
-
 
 [PseudoClasses(StdPseudoClass.Normal, StdPseudoClass.Minimized, StdPseudoClass.Maximized, StdPseudoClass.Fullscreen)]
 public class CaptionButtonGroup : TemplatedControl
@@ -13,7 +14,7 @@ public class CaptionButtonGroup : TemplatedControl
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsFullScreenEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsFullScreenEnabled));
+        AvaloniaProperty.Register<Window, bool>(nameof(IsFullScreenEnabled), true);
 
     public static readonly StyledProperty<bool> IsMaximizeEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMaximizeEnabled), defaultValue: true);
@@ -22,7 +23,7 @@ public class CaptionButtonGroup : TemplatedControl
         AvaloniaProperty.Register<Window, bool>(nameof(IsMinimizeEnabled), defaultValue: true);
 
     public static readonly StyledProperty<bool> IsPinEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsPinEnabled));
+        AvaloniaProperty.Register<Window, bool>(nameof(IsPinEnabled), true);
     
     public static readonly StyledProperty<bool> IsWindowActiveProperty = 
         TitleBar.IsWindowActiveProperty.AddOwner<CaptionButtonGroup>();
@@ -64,43 +65,99 @@ public class CaptionButtonGroup : TemplatedControl
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CaptionButtonGroup>();
     
+    internal static readonly DirectProperty<CaptionButtonGroup, bool> IsWindowMaximizedProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButtonGroup, bool>(
+            nameof(IsWindowMaximized),
+            o => o.IsWindowMaximized,
+            (o, v) => o.IsWindowMaximized = v);
+    
+    internal static readonly DirectProperty<CaptionButtonGroup, bool> IsWindowFullScreenProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButtonGroup, bool>(
+            nameof(IsWindowFullScreen),
+            o => o.IsWindowFullScreen,
+            (o, v) => o.IsWindowFullScreen = v);
+    
+    internal static readonly DirectProperty<CaptionButtonGroup, bool> IsWindowPinnedProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButtonGroup, bool>(
+            nameof(IsWindowPinned),
+            o => o.IsWindowPinned,
+            (o, v) => o.IsWindowPinned = v);
+    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    private bool _isWindowMaximized;
+
+    internal bool IsWindowMaximized
+    {
+        get => _isWindowMaximized;
+        set => SetAndRaise(IsWindowMaximizedProperty, ref _isWindowMaximized, value);
+    }
+    
+    private bool _isWindowFullScreen;
+
+    internal bool IsWindowFullScreen
+    {
+        get => _isWindowFullScreen;
+        set => SetAndRaise(IsWindowFullScreenProperty, ref _isWindowFullScreen, value);
+    }
+    
+    private bool _isWindowPinned;
+
+    internal bool IsWindowPinned
+    {
+        get => _isWindowPinned;
+        set => SetAndRaise(IsWindowPinnedProperty, ref _isWindowPinned, value);
+    }
+    
+    protected Window? HostWindow { get; private set; }
 
     #endregion
-
-    protected Window? HostWindow { get; private set; }
-    private Button? _restoreButton;
+    
+    private WindowState? _originWindowState;
+    private CaptionButton? _fullScreenButton;
+    private CaptionButton? _pinButton;
+    private CaptionButton? _minimizeButton;
+    private CaptionButton? _maximizeButton;
+    private CaptionButton? _closeButton;
+    
     private IDisposable? _disposables;
+    private readonly List<Action> _disposeActions = new();
+
+    static CaptionButtonGroup()
+    {
+        AffectsArrange<CaptionButtonGroup>(IsWindowMaximizedProperty,
+            IsWindowFullScreenProperty,
+            IsMaximizeEnabledProperty,
+            IsPinEnabledProperty,
+            IsMinimizeEnabledProperty);
+    }
 
     public virtual void Attach(Window hostWindow)
     {
         if (_disposables != null)
-            return;
-        HostWindow = hostWindow;
-        _disposables = new CompositeDisposable(Array.Empty<IDisposable>())
         {
-            HostWindow.GetObservable(Window.CanResizeProperty).Subscribe(
-                x=>
-                {
-                    if (_restoreButton == null)
-                    {
-                        return;
-                    }
-                    _restoreButton.IsEnabled = x;
-                }),
+            return;
+        }
+           
+        HostWindow = hostWindow;
+        _disposables = new CompositeDisposable
+        {
             HostWindow.GetObservable(Window.WindowStateProperty)
-                .Subscribe(x =>
-                {
-                    PseudoClasses.Set(StdPseudoClass.Minimized, x == WindowState.Minimized);
-                    PseudoClasses.Set(StdPseudoClass.Normal, x == WindowState.Normal);
-                    PseudoClasses.Set(StdPseudoClass.Maximized, x == WindowState.Maximized);
-                    PseudoClasses.Set(StdPseudoClass.Fullscreen, x == WindowState.FullScreen);
-                })
+                      .Subscribe(x =>
+                      {
+                          PseudoClasses.Set(StdPseudoClass.Minimized, x == WindowState.Minimized);
+                          PseudoClasses.Set(StdPseudoClass.Normal, x == WindowState.Normal);
+                          PseudoClasses.Set(StdPseudoClass.Maximized, IsWindowMaximized);
+                          PseudoClasses.Set(StdPseudoClass.Fullscreen, x == WindowState.FullScreen);
+                      })
         };
+        IsWindowPinned     = HostWindow.Topmost;
+        IsWindowMaximized  = HostWindow.WindowState == WindowState.Maximized;
+        IsWindowFullScreen = HostWindow.WindowState == WindowState.FullScreen;
     }
 
     public virtual void Detach()
@@ -110,25 +167,107 @@ public class CaptionButtonGroup : TemplatedControl
             return;
         }
         _disposables.Dispose();
+        foreach (var disposeAction in _disposeActions)
+        {
+            disposeAction.Invoke();
+        }
         _disposables = null;
         HostWindow   = null;
     }
 
-    protected virtual void NotifyClose()
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        
+        foreach (var disposeAction in _disposeActions)
+        {
+            disposeAction.Invoke();
+        }
+        _disposeActions.Clear();
+        
+        _closeButton      = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.CloseButtonPart);
+        _maximizeButton   = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.MaximizeButtonPart);
+        _minimizeButton   = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.MinimizeButtonPart);
+        _pinButton        = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.PinButtonPart);
+        _fullScreenButton = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.FullScreenButtonPart);
+
+        if (_closeButton != null)
+        {
+            _closeButton.Click += HandleCloseButtonClicked;
+            _disposeActions.Add(() => _closeButton.Click -= HandleCloseButtonClicked);
+        }
+
+        if (_maximizeButton != null)
+        {
+            _maximizeButton.Click += HandleMaximizeButtonClicked;
+            _disposeActions.Add(() => _maximizeButton.Click -= HandleMaximizeButtonClicked);
+        }
+
+        if (_fullScreenButton != null)
+        {
+            _fullScreenButton.Click += HandleFullScreenButtonClicked;
+            _disposeActions.Add(() => _fullScreenButton.Click -= HandleFullScreenButtonClicked);
+        }
+
+        if (_minimizeButton != null)
+        {
+            _minimizeButton.Click += HandleMinimizeButtonClicked;
+            _disposeActions.Add(() => _minimizeButton.Click -= HandleMinimizeButtonClicked);
+        }
+
+        if (_pinButton != null)
+        {
+            _pinButton.Click += HandlePinButtonClicked;
+            _disposeActions.Add(() => _pinButton.Click -= HandlePinButtonClicked);
+        }
+    }
+    
+    private void HandleFullScreenButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        if (HostWindow == null)
+        {
+            return;
+        }
+
+        if (!_isWindowFullScreen)
+        {
+            _originWindowState = HostWindow.WindowState;
+        }
+        else
+        {
+            HostWindow.WindowState = WindowState.FullScreen;
+        }
+        HostWindow.WindowState = _isWindowFullScreen
+            ? _originWindowState ?? WindowState.Normal
+            : WindowState.FullScreen;
+        IsWindowFullScreen = HostWindow.WindowState == WindowState.FullScreen;
+        IsWindowMaximized  = HostWindow.WindowState == WindowState.Maximized;
+    }
+
+    private void HandleMaximizeButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        if (HostWindow == null)
+        {
+            return;
+        }
+        var windowState = HostWindow.WindowState;
+        if (!HostWindow.IsMaximizeEnabled || windowState == WindowState.FullScreen)
+        {
+            return;
+        }
+        HostWindow.WindowState = windowState == WindowState.Maximized
+            ? WindowState.Normal
+            : WindowState.Maximized;
+        IsWindowFullScreen = HostWindow.WindowState == WindowState.FullScreen;
+        IsWindowMaximized  = HostWindow.WindowState == WindowState.Maximized;
+    }
+    
+    private void HandleCloseButtonClicked(object? sender, RoutedEventArgs e)
     {
         HostWindow?.Close();
     }
-
-    protected virtual void NotifyRestore()
-    {
-        if (HostWindow == null)
-            return;
-        HostWindow.WindowState = HostWindow.WindowState == WindowState.Maximized
-            ? WindowState.Normal
-            : WindowState.Maximized;
-    }
-
-    protected virtual void NotifyMinimize()
+    
+    private void HandleMinimizeButtonClicked(object? sender, RoutedEventArgs e)
     {
         if (HostWindow == null)
         {
@@ -137,54 +276,13 @@ public class CaptionButtonGroup : TemplatedControl
         HostWindow.WindowState = WindowState.Minimized;
     }
 
-    protected virtual void NotifyToggleFullScreen()
+    private void HandlePinButtonClicked(object? sender, RoutedEventArgs args)
     {
-        if (HostWindow == null)
+        if (HostWindow == null || !HostWindow.IsPinEnabled)
+        {
             return;
-        HostWindow.WindowState = HostWindow.WindowState == WindowState.FullScreen
-            ? WindowState.Normal
-            : WindowState.FullScreen;
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        // Button button1 = e.NameScope.Find<Button>("PART_CloseButton");
-        // if (button1 != null)
-        //     button1.Click += (EventHandler<RoutedEventArgs>)((_, args) =>
-        //     {
-        //         this.OnClose();
-        //         args.Handled = true;
-        //     });
-        // Button button2 = e.NameScope.Find<Button>("PART_RestoreButton");
-        // if (button2 != null)
-        // {
-        //     button2.Click += (EventHandler<RoutedEventArgs>)((_, args) =>
-        //     {
-        //         this.OnRestore();
-        //         args.Handled = true;
-        //     });
-        //     Button button3    = button2;
-        //     Window hostWindow = this.HostWindow;
-        //     int    num        = hostWindow != null ? (hostWindow.CanResize ? 1 : 0) : 1;
-        //     button3.IsEnabled   = num != 0;
-        //     this._restoreButton = button2;
-        // }
-        //
-        // Button button4 = e.NameScope.Find<Button>("PART_MinimizeButton");
-        // if (button4 != null)
-        //     button4.Click += (EventHandler<RoutedEventArgs>)((_, args) =>
-        //     {
-        //         this.OnMinimize();
-        //         args.Handled = true;
-        //     });
-        // Button button5 = e.NameScope.Find<Button>("PART_FullScreenButton");
-        // if (button5 == null)
-        //     return;
-        // button5.Click += (EventHandler<RoutedEventArgs>)((_, args) =>
-        // {
-        //     this.OnToggleFullScreen();
-        //     args.Handled = true;
-        // });
+        }
+        HostWindow.Topmost = !HostWindow.Topmost;
+        IsWindowPinned = HostWindow.Topmost;
     }
 }

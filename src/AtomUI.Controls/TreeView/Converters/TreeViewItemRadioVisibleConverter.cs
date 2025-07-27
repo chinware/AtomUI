@@ -1,9 +1,9 @@
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Controls.Converters;
 
-public class TreeViewItemRadioVisibleConverter : IMultiValueConverter
+internal class TreeViewItemRadioVisibleConverter : IMultiValueConverter
 {
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {

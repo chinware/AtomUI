@@ -19,6 +19,7 @@ internal class CaptionButtonGroupThemeConstants
 
 internal class CaptionButtonThemeConstants
 {
+    public const string FramePart = "PART_Frame";
     public const string RootLayoutPart = "PART_RootLayout";
     public const string NormalIconPresenterPart = "PART_NormalIconPresenter";
     public const string CheckedIconPresenterPart = "PART_CheckedIconPresenter";

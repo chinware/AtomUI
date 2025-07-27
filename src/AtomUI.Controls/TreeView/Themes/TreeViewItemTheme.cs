@@ -1,3 +1,4 @@
+using AtomUI.Controls.Converters;
 using AtomUI.Controls.Utils;
 using Avalonia.Layout;
 using Avalonia.Styling;
@@ -5,7 +6,7 @@ using MarginMultiplierConverter = Avalonia.Controls.Converters.MarginMultiplierC
 
 namespace AtomUI.Controls.Themes;
 
-public class TreeViewItemTheme : ControlTheme
+internal class TreeViewItemTheme : ControlTheme
 {
     public static readonly MarginMultiplierConverter MarginMultiplierConverter = new ()
     {

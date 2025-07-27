@@ -1,8 +1,9 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <atom:NodeSwitcherIconModeConverter x:Key="NodeSwitcherIconModeConverter" />
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters">
+    <converters:NodeSwitcherIconModeConverter x:Key="NodeSwitcherIconModeConverter" />
     <!--
         我们需要在这个切换按钮显示几种状态的图标
         1、展开和收缩两种状态的图标
