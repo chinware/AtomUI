@@ -54,6 +54,9 @@ public class Window : AvaloniaWindow, IDisposable
     public static readonly StyledProperty<bool> IsMoveEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMoveEnabled), defaultValue: true);
     
+    public static readonly StyledProperty<BoxShadows> FrameShadowsProperty =
+        AvaloniaProperty.Register<Window, BoxShadows>(nameof(FrameShadows));
+    
     public double TitleFontSize
     {
         get => GetValue(TitleFontSizeProperty);
@@ -125,6 +128,14 @@ public class Window : AvaloniaWindow, IDisposable
         get => GetValue(IsMoveEnabledProperty);
         set => SetValue(IsMoveEnabledProperty, value);
     }
+
+    public bool IsFrameShadowsEnabled { get; init; } = true;
+    
+    public BoxShadows FrameShadows
+    {
+        get => GetValue(FrameShadowsProperty);
+        set => SetValue(FrameShadowsProperty, value);
+    }
     #endregion
 
     #region 内部属性定义
@@ -150,6 +161,7 @@ public class Window : AvaloniaWindow, IDisposable
     private Point? _lastMousePressedPoint;
     private PointerPressedEventArgs? _lastMousePressedEventArgs;
     private bool _isDragging;
+    private WindowBuddyLayer? _windowBuddyLayer;
 
     public Window()
     {
@@ -308,11 +320,29 @@ public class Window : AvaloniaWindow, IDisposable
             return;
         }
         _isDisposed     =  true;
-        
+
+        if (IsFrameShadowsEnabled)
+        {
+            _windowBuddyLayer?.Detach();
+        }
         ScalingChanged -= HandleScalingChanged;
         foreach (var disposeAction in _disposeActions)
         {
             disposeAction.Invoke();
+        }
+    }
+
+    public override void Show()
+    {
+        if (IsFrameShadowsEnabled)
+        {
+            _windowBuddyLayer = new WindowBuddyLayer();
+            _windowBuddyLayer.Attach(this);
+            Show(_windowBuddyLayer);
+        }
+        else
+        {
+            base.Show();
         }
     }
 }

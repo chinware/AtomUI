@@ -32,7 +32,7 @@ public class Popup : AvaloniaPopup,
     public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
 
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
-        Border.BoxShadowProperty.AddOwner<Popup>();
+        AvaloniaProperty.Register<Popup, BoxShadows>(nameof(MaskShadows));
 
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor), 4);

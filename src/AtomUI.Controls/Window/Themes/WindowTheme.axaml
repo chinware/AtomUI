@@ -9,10 +9,10 @@
                 <Panel>
                     <Border Name="FallbackFrame" 
                             Background="{TemplateBinding TransparencyBackgroundFallback}"
-                            CornerRadius="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}"/>
+                            CornerRadius="{TemplateBinding CornerRadius}"/>
                     <Border Name="Frame"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
                             ClipToBounds="True">
                         <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                             <VisualLayerManager.ChromeOverlayLayer>
@@ -48,14 +48,8 @@
         <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
-        
-        <Style Selector="^ /template/ Border#FallbackFrame">
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
-        </Style>
-        
-        <Style Selector="^ /template/ Border#Frame">
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
-        </Style>
+        <Setter Property="FrameShadows" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadowsSecondary}}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
         
         <Style Selector="^[WindowState=FullScreen], ^[WindowState=Maximized]">
             <Style Selector="^ /template/ Border#FallbackFrame">

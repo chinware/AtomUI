@@ -11,3 +11,8 @@ internal static class WindowResizerThemeConstants
 {
     public const string RootLayoutPart = "PART_RootLayout";
 }
+
+internal static class WindowBuddyLayerThemeConstants
+{
+    public const string ShadowRendererLayoutPart = "PART_ShadowRendererLayout";
+}

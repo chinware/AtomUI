@@ -145,7 +145,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         }
         var offset         = new Point(popupOffset.X, popupOffset.Y);
         
- 
         var layerOffset = new Point(offset.X - maskShadowsThickness.Left * scaling,
             offset.Y - maskShadowsThickness.Top * scaling);
         if (OperatingSystem.IsMacOS())

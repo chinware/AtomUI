@@ -3,5 +3,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="WindowTheme.axaml"/>
         <ResourceInclude Source="WindowResizerTheme.axaml"/>
+        <ResourceInclude Source="WindowBuddyLayer.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
