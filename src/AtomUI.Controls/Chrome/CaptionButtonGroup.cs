@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -205,6 +206,10 @@ public class CaptionButtonGroup : TemplatedControl
         {
             _maximizeButton.Click += HandleMaximizeButtonClicked;
             _disposeActions.Add(() => _maximizeButton.Click -= HandleMaximizeButtonClicked);
+            if (OperatingSystem.IsWindows())
+            {
+                EnableWindowsSnapLayout(_maximizeButton);
+            }
         }
 
         if (_fullScreenButton != null)
@@ -284,5 +289,81 @@ public class CaptionButtonGroup : TemplatedControl
         }
         HostWindow.Topmost = !HostWindow.Topmost;
         IsWindowPinned = HostWindow.Topmost;
+    }
+    
+    // Referenced from https://github.com/kikipoulet/SukiUI project
+    private void EnableWindowsSnapLayout(CaptionButton maximizeButton)
+    {
+        if (HostWindow == null)
+        {
+            return;
+        }
+        const int HTMAXBUTTON = 9;
+        const uint WM_NCHITTEST = 0x0084;
+        const uint WM_CAPTURECHANGED = 0x0215;
+
+        var pointerOnButton = false;
+        var pointerOverSetter = typeof(CaptionButton).GetProperty(nameof(IsPointerOver));
+        if (pointerOverSetter is null)
+        {
+            throw new NullReferenceException($"Unable to find Button.{nameof(IsPointerOver)} property.");
+        }
+
+        nint ProcHookCallback(nint hWnd, uint msg, nint wParam, nint lParam, ref bool handled)
+        {
+            if (!maximizeButton.IsVisible) return 0;
+
+            if (msg == WM_NCHITTEST)
+            {
+                var point = new PixelPoint((short)(ToInt32(lParam) & 0xffff), (short)(ToInt32(lParam) >> 16));
+
+                var buttonSize = maximizeButton.DesiredSize;
+
+                var buttonLeftTop = maximizeButton.PointToScreen(FlowDirection == FlowDirection.LeftToRight
+                                                           ? new Point(buttonSize.Width, 0)
+                                                           : new Point(0, 0));
+
+                var x = (buttonLeftTop.X - point.X) / HostWindow.RenderScaling;
+                var y = (point.Y - buttonLeftTop.Y) / HostWindow.RenderScaling;
+
+                if (new Rect(default, buttonSize).Contains(new Point(x, y)))
+                {
+                    handled = true;
+
+                    if (pointerOnButton == false)
+                    {
+                        pointerOnButton = true;
+                        pointerOverSetter.SetValue(maximizeButton, true);
+                    }
+
+                    return HTMAXBUTTON;
+                }
+                if (pointerOnButton)
+                {
+                    pointerOnButton = false;
+                    pointerOverSetter.SetValue(maximizeButton, false);
+                }
+            }
+            else if (msg == WM_CAPTURECHANGED)
+            {
+                if (pointerOnButton && HostWindow.IsMaximizeEnabled)
+                {
+                    HostWindow.WindowState = HostWindow.WindowState == WindowState.Maximized
+                                  ? WindowState.Normal
+                                  : WindowState.Maximized;
+
+                    pointerOverSetter.SetValue(maximizeButton, false);
+                }
+            }
+
+            return 0;
+        }
+
+        static int ToInt32(IntPtr ptr) => IntPtr.Size == 4 ? ptr.ToInt32() : (int)(ptr.ToInt64() & 0xffffffff);
+        
+        var wndProcHookCallback = new Win32Properties.CustomWndProcHookCallback(ProcHookCallback);
+        Win32Properties.AddWndProcHookCallback(HostWindow, wndProcHookCallback);
+
+        _disposeActions.Add(() => Win32Properties.RemoveWndProcHookCallback(HostWindow, wndProcHookCallback));
     }
 }

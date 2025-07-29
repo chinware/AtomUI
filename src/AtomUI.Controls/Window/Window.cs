@@ -140,13 +140,27 @@ public class Window : AvaloniaWindow, IDisposable
 
     #region 内部属性定义
 
-    public static readonly DirectProperty<Window, WindowState> PreviousVisibleWindowStateProperty =
+    internal static readonly DirectProperty<Window, WindowState> PreviousVisibleWindowStateProperty =
         AvaloniaProperty.RegisterDirect<Window, WindowState>(
             nameof(PreviousVisibleWindowState),
             o => o.PreviousVisibleWindowState);
+    
+    internal static readonly DirectProperty<Window, CornerRadius> EffectiveCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<Window, CornerRadius>(
+            nameof(EffectiveCornerRadius),
+            o => o.EffectiveCornerRadius);
+    
+    private CornerRadius _effectiveCornerRadius;
+
+    internal CornerRadius EffectiveCornerRadius
+    {
+        get => _effectiveCornerRadius;
+        private set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
+    }
+    
     private WindowState _previousVisibleWindowState = WindowState.Normal;
 
-    public WindowState PreviousVisibleWindowState
+    internal WindowState PreviousVisibleWindowState
     {
         get => _previousVisibleWindowState;
         private set => SetAndRaise(PreviousVisibleWindowStateProperty, ref _previousVisibleWindowState, value);
@@ -186,6 +200,17 @@ public class Window : AvaloniaWindow, IDisposable
                 return;
             }
             HandleWindowStateChanged(oldWindowState, newWindowState);
+        }
+        else if (change.Property == CornerRadiusProperty)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                EffectiveCornerRadius = new CornerRadius(0);
+            }
+            else
+            {
+                EffectiveCornerRadius = CornerRadius;
+            }
         }
     }
     

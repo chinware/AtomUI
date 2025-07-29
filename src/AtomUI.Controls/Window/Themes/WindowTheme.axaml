@@ -8,7 +8,7 @@
             <ControlTemplate>
                 <Border Name="WindowFrame"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
+                        CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                         BackgroundSizing="InnerBorderEdge"
                         ClipToBounds="True">
                     <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
@@ -16,8 +16,8 @@
                             <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"/>
                         </VisualLayerManager.ChromeOverlayLayer>
                         <Border Name="ContentFrame"
-                                CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
-                            <DockPanel LastChildFill="True" Margin="{TemplateBinding WindowDecorationMargin}">
+                                CornerRadius="{TemplateBinding EffectiveCornerRadius}" ClipToBounds="True">
+                            <DockPanel LastChildFill="True">
                                 <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
                                                Content="{TemplateBinding Title}"
                                                DockPanel.Dock="Top"
@@ -51,7 +51,16 @@
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
         
         <Style Selector="^ /template/ Border#WindowFrame">
-            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderThickness">
+                <OnPlatform>
+                    <On Options="Default">
+                        <Thickness>0</Thickness>
+                    </On>
+                    <On Options="Linux">
+                        <Thickness>1</Thickness>
+                    </On>
+                </OnPlatform>
+            </Setter>
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         </Style>
         
