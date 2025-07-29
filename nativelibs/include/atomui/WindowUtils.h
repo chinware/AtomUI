@@ -24,7 +24,6 @@ namespace atomui
 
         static void setIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle, bool flag);
         static bool ignoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle);
-        static void lockWindowBuddyLayer(ATOMUI_WIN_HANDLE windowHandle,
-                                         ATOMUI_WIN_HANDLE buddyHandle);
+        static void moveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y);
     };
 }

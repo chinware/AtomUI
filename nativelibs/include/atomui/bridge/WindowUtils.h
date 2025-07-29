@@ -14,5 +14,4 @@
 
 extern "C" ATOMUI_EXPORT void AtomUISetWindowIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle, bool flag);
 extern "C" ATOMUI_EXPORT bool AtomUIGetWindowIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle);
-extern "C" ATOMUI_EXPORT void AtomUILockWindowBuddyLayer(ATOMUI_WIN_HANDLE windowHandle,
-                                                         ATOMUI_WIN_HANDLE buddyHandle);
+extern "C" ATOMUI_EXPORT void AtomUIMoveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y);

@@ -22,8 +22,7 @@ bool AtomUIGetWindowIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle)
     return WindowUtils::ignoresMouseEvents(windowHandle);
 }
 
-void AtomUILockWindowBuddyLayer(ATOMUI_WIN_HANDLE windowHandle,
-                                ATOMUI_WIN_HANDLE buddyHandle)
+void AtomUIMoveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y)
 {
-    WindowUtils::lockWindowBuddyLayer(windowHandle, buddyHandle);
+    WindowUtils::moveWindow(windowHandle, x, y);
 }

@@ -16,4 +16,7 @@ internal static partial class WindowUtilsImpl
     
     [LibraryImport(NativeLibName)]
     internal static partial void AtomUILockWindowBuddyLayer(IntPtr windowHandle, IntPtr buddyHandle);
+    
+    [LibraryImport(NativeLibName)]
+    internal static partial void AtomUIMoveWindow(IntPtr windowHandle, [MarshalAs(UnmanagedType.I4)] int x, [MarshalAs(UnmanagedType.I4)] int y);
 }

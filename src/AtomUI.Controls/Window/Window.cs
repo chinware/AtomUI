@@ -161,7 +161,6 @@ public class Window : AvaloniaWindow, IDisposable
     private Point? _lastMousePressedPoint;
     private PointerPressedEventArgs? _lastMousePressedEventArgs;
     private bool _isDragging;
-    private WindowBuddyLayer? _windowBuddyLayer;
 
     public Window()
     {
@@ -320,29 +319,11 @@ public class Window : AvaloniaWindow, IDisposable
             return;
         }
         _isDisposed     =  true;
-
-        if (IsFrameShadowsEnabled)
-        {
-            _windowBuddyLayer?.Detach();
-        }
+        
         ScalingChanged -= HandleScalingChanged;
         foreach (var disposeAction in _disposeActions)
         {
             disposeAction.Invoke();
-        }
-    }
-
-    public override void Show()
-    {
-        if (IsFrameShadowsEnabled)
-        {
-            _windowBuddyLayer = new WindowBuddyLayer();
-            _windowBuddyLayer.Attach(this);
-            Show(_windowBuddyLayer);
-        }
-        else
-        {
-            base.Show();
         }
     }
 }

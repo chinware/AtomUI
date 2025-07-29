@@ -6,32 +6,31 @@
     <ControlTheme x:Key="{x:Type atom:Window}" TargetType="atom:Window">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
-                    <Border Name="FallbackFrame" 
-                            Background="{TemplateBinding TransparencyBackgroundFallback}"
-                            CornerRadius="{TemplateBinding CornerRadius}"/>
-                    <Border Name="Frame"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            ClipToBounds="True">
-                        <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                            <VisualLayerManager.ChromeOverlayLayer>
-                                <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"/>
-                            </VisualLayerManager.ChromeOverlayLayer>
+                <Border Name="WindowFrame"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BackgroundSizing="InnerBorderEdge"
+                        ClipToBounds="True">
+                    <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                        <VisualLayerManager.ChromeOverlayLayer>
+                            <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"/>
+                        </VisualLayerManager.ChromeOverlayLayer>
+                        <Border Name="ContentFrame"
+                                CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
                             <DockPanel LastChildFill="True" Margin="{TemplateBinding WindowDecorationMargin}">
-                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}" 
+                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
                                                Content="{TemplateBinding Title}"
                                                DockPanel.Dock="Top"
-                                               Logo="{TemplateBinding Logo}"/>
+                                               Logo="{TemplateBinding Logo}" />
                                 <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                   Content="{TemplateBinding Content}"
                                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                             </DockPanel>
-                        </VisualLayerManager>
-                    </Border>
-                </Panel>
+                        </Border>
+                    </VisualLayerManager>
+                </Border>
             </ControlTemplate>
         </Setter>
 
@@ -51,12 +50,17 @@
         <Setter Property="FrameShadows" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadowsSecondary}}"/>
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
         
-        <Style Selector="^[WindowState=FullScreen], ^[WindowState=Maximized]">
-            <Style Selector="^ /template/ Border#FallbackFrame">
-                <Setter Property="CornerRadius" Value="0" />
-            </Style>
+        <Style Selector="^ /template/ Border#WindowFrame">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        </Style>
         
-            <Style Selector="^ /template/ Border#Frame">
+        <Style Selector="^[WindowState=FullScreen], ^[WindowState=Maximized]">
+            <Style Selector="^ /template/ Border#WindowFrame">
+                <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+            <Style Selector="^ /template/ Border#ContentFrame">
                 <Setter Property="CornerRadius" Value="0" />
             </Style>
         </Style>

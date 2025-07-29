@@ -36,4 +36,13 @@ internal static class WindowUtils
             WindowUtilsImpl.AtomUILockWindowBuddyLayer(windowHandle.Value, buddyHandle.Value);
         }
     }
+
+    public static void MoveWindow(this WindowBase window, int x, int y)
+    {
+        var windowHandle = window.PlatformImpl?.Handle?.Handle;
+        if (windowHandle is not null)
+        {
+            WindowUtilsImpl.AtomUIMoveWindow(windowHandle.Value, x, y);
+        }
+    }
 }

@@ -1,18 +1,30 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
+using System.Reflection;
 using AtomUI.Controls.Themes;
 using AtomUI.Media;
 using AtomUI.Native;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input.Raw;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.Utilities;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUI.Controls;
 
 internal class WindowBuddyLayer : AvaloniaWindow
 {
+    #region 反射信息定义
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(RawPointerEventArgs))]
+    private static readonly Lazy<MemberInfo> InputHitTestResultPropertyInfo = new Lazy<MemberInfo>(() => 
+        typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("InputHitTestResult",
+            BindingFlags.Instance | BindingFlags.NonPublic));
+    #endregion
+    
     protected override Type StyleKeyOverride { get; } = typeof(WindowBuddyLayer);
     
     public static readonly StyledProperty<BoxShadows> FrameShadowsProperty =
@@ -37,8 +49,8 @@ internal class WindowBuddyLayer : AvaloniaWindow
         SystemDecorations                 = SystemDecorations.None;
         WindowState                       = WindowState.Normal;
         this.SetWindowIgnoreMouseEvents(true);
-        Width      = 1;
-        Height     = 1;
+        Width  =  1;
+        Height =  1;
     }
 
     public void Attach(Window targetWindow)
@@ -138,9 +150,48 @@ internal class WindowBuddyLayer : AvaloniaWindow
         var offset          = new Point(args.Point.X, args.Point.Y);
         var layerOffset = new Point(offset.X - shadowThickness.Left * DesktopScaling,
             offset.Y - shadowThickness.Top * DesktopScaling);
+        var layerBounds = new Rect(layerOffset, new Size(Width * DesktopScaling, Height * DesktopScaling));
+        
+        var offsetX = 0.0d;
+        var offsetY = 0.0d;
+        
+        if (layerBounds.Left < 0 && layerBounds.Right <= _logicalBounds.Right)
+        {
+            offsetX = layerBounds.Left;
+        }
+        else if (layerBounds.Left >= 0 && layerBounds.Right > _logicalBounds.Right)
+        {
+            offsetX = layerBounds.Right - _logicalBounds.Right;
+        }
+        
+        if (layerBounds.Top < 0 && layerBounds.Bottom <= _logicalBounds.Bottom)
+        {
+            offsetY = layerBounds.Top;
+        }
+        else if (layerBounds.Top >= 0 && layerBounds.Bottom > _logicalBounds.Bottom)
+        {
+            offsetY =  layerBounds.Bottom - _logicalBounds.Bottom;
+        }
+        offsetX /= DesktopScaling;
+        offsetY /= DesktopScaling;
+        
+        var renderTransform = new TranslateTransform(offsetX, offsetY);
+        
+        if (_shadowRendererLayout != null)
+        {
+            if (MathUtilities.AreClose(offsetX, 0) && MathUtilities.AreClose(offsetY, 0))
+            {
+                RenderTransform = null;
+            }
+            else
+            {
+                RenderTransform = renderTransform;
+            }
+        }
+        
         Dispatcher.UIThread.Post(() =>
         {
-            Position   = new PixelPoint((int)Math.Round(layerOffset.X), (int)Math.Floor(layerOffset.Y + 0.5));
+            PlatformImpl!.Move(new PixelPoint((int)Math.Floor(layerOffset.X + 0.5), (int)Math.Floor(layerOffset.Y + 0.5)));
         });
     }
 
