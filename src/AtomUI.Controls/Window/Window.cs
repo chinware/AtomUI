@@ -16,7 +16,7 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 
 public class Window : AvaloniaWindow, IDisposable
 {
-    #region 公共属性
+    #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsTitleBarVisibleProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsTitleBarVisible), defaultValue: true);
@@ -40,16 +40,16 @@ public class Window : AvaloniaWindow, IDisposable
         TitleBar.LogoProperty.AddOwner<Window>();
     
     public static readonly StyledProperty<bool> IsFullScreenEnabledProperty =
-        CaptionButtonGroup.IsFullScreenEnabledProperty.AddOwner<Window>();
-    
+        AvaloniaProperty.Register<Window, bool>(nameof(IsFullScreenEnabled));
+
     public static readonly StyledProperty<bool> IsMaximizeEnabledProperty =
-        CaptionButtonGroup.IsMaximizeEnabledProperty.AddOwner<Window>();
-    
+        AvaloniaProperty.Register<Window, bool>(nameof(IsMaximizeEnabled), defaultValue: true);
+
     public static readonly StyledProperty<bool> IsMinimizeEnabledProperty =
-        CaptionButtonGroup.IsMinimizeEnabledProperty.AddOwner<Window>();
-    
+        AvaloniaProperty.Register<Window, bool>(nameof(IsMinimizeEnabled), defaultValue: true);
+
     public static readonly StyledProperty<bool> IsPinEnabledProperty =
-        CaptionButtonGroup.IsPinEnabledProperty.AddOwner<Window>();
+        AvaloniaProperty.Register<Window, bool>(nameof(IsPinEnabled));
     
     public static readonly StyledProperty<bool> IsMoveEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMoveEnabled), defaultValue: true);

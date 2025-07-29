@@ -6,19 +6,27 @@
     x:ClassModifier="internal">
     <converters:MaximizeButtonVisibleConverter x:Key="MaximizeButtonVisibleConverter" />
     <converters:MinimizeButtonVisibleConverter x:Key="MinimizeButtonVisibleConverter" />
+    <converters:FullScreenButtonVisibleConverter x:Key="FullScreenButtonVisibleConverter"/>
     <ControlTheme x:Key="{x:Type atom:CaptionButtonGroup}" TargetType="atom:CaptionButtonGroup">
         <Setter Property="Template">
             <ControlTemplate>
                 <StackPanel Orientation="Horizontal" Name="RootLayout">
                     <atom:CaptionButton
                         Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
-                        IsVisible="{TemplateBinding IsFullScreenEnabled}"
                         IsEnabled="{TemplateBinding IsFullScreenEnabled}"
                         IsWindowActive="{TemplateBinding IsWindowActive}"
                         NormalIcon="{atom:IconProvider Kind=FullscreenOutlined}"
                         CheckedIcon="{atom:IconProvider Kind=FullscreenExitOutlined}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                        IsChecked="{TemplateBinding IsWindowFullScreen}" />
+                        IsChecked="{TemplateBinding IsWindowFullScreen}">
+                        <atom:CaptionButton.IsVisible>
+                            <MultiBinding
+                                Converter="{StaticResource FullScreenButtonVisibleConverter}">
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsFullScreenEnabled" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsWindowMaximized" />
+                            </MultiBinding>
+                        </atom:CaptionButton.IsVisible>
+                    </atom:CaptionButton>
                     <atom:CaptionButton
                         Name="{x:Static atom:CaptionButtonGroupThemeConstants.PinButtonPart}"
                         IsVisible="{TemplateBinding IsPinEnabled}"

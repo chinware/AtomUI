@@ -14,16 +14,16 @@ public class CaptionButtonGroup : TemplatedControl
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsFullScreenEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsFullScreenEnabled), true);
-
+        Window.IsFullScreenEnabledProperty.AddOwner<CaptionButtonGroup>();
+    
     public static readonly StyledProperty<bool> IsMaximizeEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsMaximizeEnabled), defaultValue: true);
-
+        Window.IsMaximizeEnabledProperty.AddOwner<CaptionButtonGroup>();
+    
     public static readonly StyledProperty<bool> IsMinimizeEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsMinimizeEnabled), defaultValue: true);
-
+        Window.IsMinimizeEnabledProperty.AddOwner<CaptionButtonGroup>();
+    
     public static readonly StyledProperty<bool> IsPinEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsPinEnabled), true);
+        Window.IsPinEnabledProperty.AddOwner<CaptionButtonGroup>();
     
     public static readonly StyledProperty<bool> IsWindowActiveProperty = 
         TitleBar.IsWindowActiveProperty.AddOwner<CaptionButtonGroup>();
@@ -143,7 +143,11 @@ public class CaptionButtonGroup : TemplatedControl
             return;
         }
            
-        HostWindow = hostWindow;
+        HostWindow                         = hostWindow;
+        this[!IsFullScreenEnabledProperty] = hostWindow[!IsFullScreenEnabledProperty];
+        this[!IsPinEnabledProperty]        = hostWindow[!IsPinEnabledProperty];
+        this[!IsMaximizeEnabledProperty]   = hostWindow[!IsMaximizeEnabledProperty];
+        this[!IsMinimizeEnabledProperty]   = hostWindow[!IsMinimizeEnabledProperty];
         _disposables = new CompositeDisposable
         {
             HostWindow.GetObservable(Window.WindowStateProperty)
@@ -229,15 +233,11 @@ public class CaptionButtonGroup : TemplatedControl
             return;
         }
 
-        if (!_isWindowFullScreen)
+        if (!IsWindowFullScreen)
         {
             _originWindowState = HostWindow.WindowState;
         }
-        else
-        {
-            HostWindow.WindowState = WindowState.FullScreen;
-        }
-        HostWindow.WindowState = _isWindowFullScreen
+        HostWindow.WindowState = IsWindowFullScreen
             ? _originWindowState ?? WindowState.Normal
             : WindowState.FullScreen;
         IsWindowFullScreen = HostWindow.WindowState == WindowState.FullScreen;
