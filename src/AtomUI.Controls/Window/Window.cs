@@ -2,6 +2,7 @@
 
 using System.Runtime.InteropServices;
 using AtomUI.Controls.Themes;
+using AtomUI.Native;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -54,8 +55,15 @@ public class Window : AvaloniaWindow, IDisposable
     public static readonly StyledProperty<bool> IsMoveEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMoveEnabled), defaultValue: true);
     
-    public static readonly StyledProperty<BoxShadows> FrameShadowsProperty =
-        AvaloniaProperty.Register<Window, BoxShadows>(nameof(FrameShadows));
+    public static readonly StyledProperty<Point> MacOSCaptionGroupOffsetProperty =
+        AvaloniaProperty.Register<Window, Point>(nameof(MacOSCaptionGroupOffset), defaultValue: new Point(10, 0));
+    
+    public static readonly StyledProperty<double> MacOSCaptionGroupSpacingProperty =
+        AvaloniaProperty.Register<Window, double>(nameof(MacOSCaptionGroupSpacing), 10.0);
+    
+    public static readonly DirectProperty<Window, Thickness> MacOSTitleBarMarginProperty = 
+        AvaloniaProperty.RegisterDirect<Window, Thickness>(nameof (MacOSTitleBarMargin), 
+            o => o.MacOSTitleBarMargin);
     
     public double TitleFontSize
     {
@@ -128,14 +136,26 @@ public class Window : AvaloniaWindow, IDisposable
         get => GetValue(IsMoveEnabledProperty);
         set => SetValue(IsMoveEnabledProperty, value);
     }
-
-    public bool IsFrameShadowsEnabled { get; init; } = true;
     
-    public BoxShadows FrameShadows
+    public Point MacOSCaptionGroupOffset
     {
-        get => GetValue(FrameShadowsProperty);
-        set => SetValue(FrameShadowsProperty, value);
+        get => GetValue(MacOSCaptionGroupOffsetProperty);
+        set => SetValue(MacOSCaptionGroupOffsetProperty, value);
     }
+
+    public double MacOSCaptionGroupSpacing
+    {
+        get => GetValue(MacOSCaptionGroupSpacingProperty);
+        set => SetValue(MacOSCaptionGroupSpacingProperty, value);
+    }
+    
+    public Thickness MacOSTitleBarMargin
+    {
+        get => _macOSTitleBarMargin;
+        private set => SetAndRaise(MacOSTitleBarMarginProperty, ref _macOSTitleBarMargin, value);
+    }
+    private Thickness _macOSTitleBarMargin;
+
     #endregion
 
     #region 内部属性定义
@@ -149,6 +169,24 @@ public class Window : AvaloniaWindow, IDisposable
         AvaloniaProperty.RegisterDirect<Window, CornerRadius>(
             nameof(EffectiveCornerRadius),
             o => o.EffectiveCornerRadius);
+    
+    internal static readonly DirectProperty<Window, OperatingSystemType> OperatingSystemTypeProperty =
+        AvaloniaProperty.RegisterDirect<Window, OperatingSystemType>(
+            nameof(OperatingSystemType),
+            o => o.OperatingSystemType);
+    
+    internal static readonly DirectProperty<Window, bool> IsUseNativeResizerProperty =
+        AvaloniaProperty.RegisterDirect<Window, bool>(
+            nameof(IsUseNativeResizer),
+            o => o.IsUseNativeResizer);
+    
+    private OperatingSystemType _operatingSystemType;
+
+    internal OperatingSystemType OperatingSystemType
+    {
+        get => _operatingSystemType;
+        private set => SetAndRaise(OperatingSystemTypeProperty, ref _operatingSystemType, value);
+    }
     
     private CornerRadius _effectiveCornerRadius;
 
@@ -165,6 +203,15 @@ public class Window : AvaloniaWindow, IDisposable
         get => _previousVisibleWindowState;
         private set => SetAndRaise(PreviousVisibleWindowStateProperty, ref _previousVisibleWindowState, value);
     }
+    
+    private bool _isUseNativeResizer = true;
+
+    internal bool IsUseNativeResizer
+    {
+        get => _isUseNativeResizer;
+        private set => SetAndRaise(IsUseNativeResizerProperty, ref _isUseNativeResizer, value);
+    }
+    
     #endregion
     
     protected override Type StyleKeyOverride { get; } = typeof(Window);
@@ -179,6 +226,27 @@ public class Window : AvaloniaWindow, IDisposable
     public Window()
     {
         ScalingChanged += HandleScalingChanged;
+        if (OperatingSystem.IsWindows())
+        {
+            OperatingSystemType = OperatingSystemType.Windows;
+        }
+        else if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
+        {
+            OperatingSystemType = OperatingSystemType.macOS;
+        }
+        else if (OperatingSystem.IsLinux())
+        {
+            OperatingSystemType = OperatingSystemType.Linux;
+        }
+        else
+        {
+            OperatingSystemType = OperatingSystemType.Unknown;
+        }
+
+        if (OperatingSystemType == OperatingSystemType.Linux)
+        {
+            IsUseNativeResizer = false;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -350,5 +418,22 @@ public class Window : AvaloniaWindow, IDisposable
         {
             disposeAction.Invoke();
         }
+    }
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        
+        if (OperatingSystem.IsMacCatalyst() || OperatingSystem.IsMacOS())
+        {
+            ConfigureMacOSCaptionGroupOffset();
+        }
+    }
+
+    private void ConfigureMacOSCaptionGroupOffset()
+    {
+        this.SetMacOSOptionButtonsPosition(MacOSCaptionGroupOffset.X, MacOSCaptionGroupOffset.Y, MacOSCaptionGroupSpacing);
+        var cationsSize = this.GetMacOSOptionsSize(MacOSCaptionGroupSpacing);
+        MacOSTitleBarMargin = new Thickness(cationsSize.Width + MacOSCaptionGroupOffset.X, 0, 0, 0);
     }
 }

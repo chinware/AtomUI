@@ -184,46 +184,4 @@ bool WindowUtils::ignoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle)
     return ignores;
 }
 
-void WindowUtils::moveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y)
-{
-    Display* display = XOpenDisplay(nullptr);
-    if (!display) {
-        std::cerr << "无法打开 X11 显示连接" << std::endl;
-        return;
-    }
-    // 获取原子属性
-    Atom net_move_resize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
-    if (net_move_resize == None) {
-        std::cerr << "_NET_WM_MOVERESIZE 协议不支持" << std::endl;
-        return;
-    }
-    auto window = reinterpret_cast<Window>(windowHandle);
-    // 创建客户端消息事件
-    XEvent ev = {0};
-    ev.xclient.type = ClientMessage;
-    ev.xclient.window = window;
-    ev.xclient.message_type = net_move_resize;
-    ev.xclient.format = 32;
-
-    // 设置事件数据 (移动操作)
-    // 参数格式: [x_root, y_root, direction, button, source]
-    // 8 = 移动操作 (NET_WM_MOVERESIZE_MOVE)
-    // 1 = 忽略边界 (NET_WM_MOVERESIZE_FORCE)
-    ev.xclient.data.l[0] = x;      // 目标X位置
-    ev.xclient.data.l[1] = y;      // 目标Y位置
-    ev.xclient.data.l[2] = 8;      // 移动操作
-    ev.xclient.data.l[3] = 0;      // 不使用特定鼠标按钮
-    ev.xclient.data.l[4] = 1;      // 忽略边界标志
-
-    // 发送事件到根窗口
-    XSendEvent(display, DefaultRootWindow(display),
-               False, SubstructureRedirectMask | SubstructureNotifyMask,
-               &ev);
-    std::cout << x << ", " << y << std::endl;
-
-    // 确保事件被处理
-    XFlush(display);
-    XCloseDisplay(display);
-}
-
 }

@@ -1,4 +1,5 @@
 using AtomUI.Native.Interop;
+using Avalonia;
 using Avalonia.Controls;
 
 namespace AtomUI.Native;
@@ -37,12 +38,24 @@ internal static class WindowUtils
         }
     }
 
-    public static void MoveWindow(this WindowBase window, int x, int y)
+    public static void SetMacOSOptionButtonsPosition(this WindowBase window, double x, double y, double spacing = 10.0)
     {
         var windowHandle = window.PlatformImpl?.Handle?.Handle;
         if (windowHandle is not null)
         {
-            WindowUtilsImpl.AtomUIMoveWindow(windowHandle.Value, x, y);
+            WindowUtilsImpl.AtomUISetMacOSCaptionButtonsPosition(windowHandle.Value, x, y, spacing);
         }
+    }
+    
+    public static Size GetMacOSOptionsSize(this WindowBase window, double spacing = 10.0)
+    {
+        var windowHandle = window.PlatformImpl?.Handle?.Handle;
+        Size size = new Size();
+        if (windowHandle is not null)
+        {
+            var result = WindowUtilsImpl.AtomUIMacOSCaptionsSize(windowHandle.Value, spacing);
+            size = new Size(result.Width, result.Height);
+        }
+        return size;
     }
 }

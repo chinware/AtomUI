@@ -18,5 +18,19 @@ internal static partial class WindowUtilsImpl
     internal static partial void AtomUILockWindowBuddyLayer(IntPtr windowHandle, IntPtr buddyHandle);
     
     [LibraryImport(NativeLibName)]
-    internal static partial void AtomUIMoveWindow(IntPtr windowHandle, [MarshalAs(UnmanagedType.I4)] int x, [MarshalAs(UnmanagedType.I4)] int y);
+    internal static partial void AtomUISetMacOSCaptionButtonsPosition(IntPtr windowHandle, double x, double y, double spacing);
+    
+    [LibraryImport(NativeLibName)]
+    internal static partial CGSize AtomUIMacOSCaptionsSize(IntPtr windowHandle, double spacing);
+}
+
+// 定义与 CGSize 对应的结构体
+[StructLayout(LayoutKind.Sequential)]
+internal struct CGSize
+{
+    public double Width;
+    public double Height;
+    
+    public override string ToString() => 
+        $"Width: {Width}, Height: {Height}";
 }

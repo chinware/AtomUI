@@ -21,8 +21,3 @@ bool AtomUIGetWindowIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle)
 {
     return WindowUtils::ignoresMouseEvents(windowHandle);
 }
-
-void AtomUIMoveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y)
-{
-    WindowUtils::moveWindow(windowHandle, x, y);
-}

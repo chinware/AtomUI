@@ -27,7 +27,6 @@ atomui_extend_library(AtomUINative CONDITION WIN32
     windows/WindowUtils.cpp
 )
 
-
 atomui_extend_library(AtomUINative CONDITION LINUX
     SOURCES
     linux/WindowUtils.cpp

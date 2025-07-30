@@ -53,7 +53,4 @@ bool WindowUtils::ignoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle)
     return styles & WS_EX_TRANSPARENT;
 }
 
-void WindowUtils::moveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y)
-{
-}
 }

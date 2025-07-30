@@ -18,12 +18,13 @@ using ATOMUI_WIN_HANDLE = void *;
 
 namespace atomui
 {
-    class ATOMUI_EXPORT WindowUtils {
-    public:
-        WindowUtils() = delete;
+class ATOMUI_EXPORT WindowUtils
+{
+public:
+    WindowUtils() = delete;
 
-        static void setIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle, bool flag);
-        static bool ignoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle);
-        static void moveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y);
-    };
+    static void setIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle, bool flag);
+    static bool ignoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle);
+    static void moveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y);
+};
 }

@@ -28,7 +28,7 @@ internal class WindowBuddyLayer : AvaloniaWindow
     protected override Type StyleKeyOverride { get; } = typeof(WindowBuddyLayer);
     
     public static readonly StyledProperty<BoxShadows> FrameShadowsProperty =
-        Window.FrameShadowsProperty.AddOwner<WindowBuddyLayer>();
+        AvaloniaProperty.Register<WindowBuddyLayer, BoxShadows>(nameof(FrameShadows));
     
     public BoxShadows FrameShadows
     {

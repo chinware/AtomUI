@@ -13,15 +13,17 @@
                         ClipToBounds="True">
                     <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                         <VisualLayerManager.ChromeOverlayLayer>
-                            <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"/>
+                            <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
+                                                IsVisible="{Binding $parent[atom:Window].IsUseNativeResizer, Converter={x:Static BoolConverters.Not}}"/>
                         </VisualLayerManager.ChromeOverlayLayer>
                         <Border Name="ContentFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}" ClipToBounds="True">
                             <DockPanel LastChildFill="True">
-                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
-                                               Content="{TemplateBinding Title}"
-                                               DockPanel.Dock="Top"
-                                               Logo="{TemplateBinding Logo}" />
+                                <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
+                                    <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
+                                                   Content="{TemplateBinding Title}"
+                                                   Logo="{TemplateBinding Logo}" />
+                                </Border>
                                 <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                   Content="{TemplateBinding Content}"
@@ -44,11 +46,18 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:WindowTokenKey.DefaultForeground}}" />
         <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         <Setter Property="FontFamily" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontFamily}}" />
-        <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
+      
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
-        <Setter Property="FrameShadows" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadowsSecondary}}"/>
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
+        
+        <Style Selector="^:not(^[OperatingSystemType=macOS])">
+            <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
+        </Style>
+        <Style Selector="^[OperatingSystemType=macOS]">
+            <Setter Property="MacOSCaptionGroupOffset" Value="10, 2" />
+            <Setter Property="MacOSCaptionGroupSpacing" Value="10" />
+        </Style>
         
         <Style Selector="^ /template/ Border#WindowFrame">
             <Setter Property="BorderThickness">
@@ -63,7 +72,7 @@
             </Setter>
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         </Style>
-        
+
         <Style Selector="^[WindowState=FullScreen], ^[WindowState=Maximized]">
             <Style Selector="^ /template/ Border#WindowFrame">
                 <Setter Property="CornerRadius" Value="0" />
@@ -73,7 +82,7 @@
                 <Setter Property="CornerRadius" Value="0" />
             </Style>
         </Style>
-        
+
         <Setter Property="SystemDecorations">
             <OnPlatform>
                 <On Options="Default">

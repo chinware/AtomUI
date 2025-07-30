@@ -12,6 +12,16 @@
 #include "atomui/Global.h"
 #include "atomui/WindowUtils.h"
 
+#if defined(__APPLE__) && defined(__MACH__)
+#include <CoreGraphics/CGGeometry.h>
+#endif
+
+struct CGSize;
+
 extern "C" ATOMUI_EXPORT void AtomUISetWindowIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle, bool flag);
 extern "C" ATOMUI_EXPORT bool AtomUIGetWindowIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle);
-extern "C" ATOMUI_EXPORT void AtomUIMoveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y);
+extern "C" ATOMUI_EXPORT void AtomUISetMacOSCaptionButtonsPosition(ATOMUI_WIN_HANDLE windowHandle, double x, double y, double spacing);
+
+#if defined(__APPLE__) && defined(__MACH__)
+extern "C" ATOMUI_EXPORT CGSize AtomUIMacOSCaptionsSize(ATOMUI_WIN_HANDLE windowHandle, double spacing);
+#endif
