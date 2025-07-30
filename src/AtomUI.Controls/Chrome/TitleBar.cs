@@ -18,7 +18,7 @@ namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Active)]
 [PseudoClasses(StdPseudoClass.Normal, StdPseudoClass.Minimized, StdPseudoClass.Maximized, StdPseudoClass.Fullscreen)]
-public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotionAwareControl
+public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotionAwareControl, IOperationSystemAware
 {
     protected override Type StyleKeyOverride { get; } = typeof(TitleBar);
 
@@ -44,6 +44,9 @@ public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotio
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TitleBar>();
+    
+    public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
+        OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<TitleBar>();
 
     public Control? Logo
     {
@@ -88,6 +91,7 @@ public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotio
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
+    public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
     #endregion
 
     #region 内部属性定义
@@ -103,6 +107,7 @@ public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotio
 
     public TitleBar()
     {
+        this.ConfigureOperationSystemType();
         this.RegisterResources();
         this.BindMotionProperties();
     }
@@ -178,5 +183,10 @@ public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotio
         _disposables?.Dispose();
         _captionButtonGroup?.Detach();
         _captionButtonGroup = null;
+    }
+    
+    void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
+    {
+        SetValue(OperationSystemTypeProperty, operationSystemType);
     }
 }

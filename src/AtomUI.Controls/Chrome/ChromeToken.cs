@@ -99,6 +99,11 @@ internal class ChromeToken : AbstractControlDesignToken
     /// </summary>
     public double CaptionGroupSpacing { get; set; }
     
+    /// <summary>
+    /// 标题最小高度
+    /// </summary>
+    public double MinHeight { get; set; }
+    
     public ChromeToken()
         : base(ID)
     {
@@ -129,5 +134,7 @@ internal class ChromeToken : AbstractControlDesignToken
         
         CaptionButtonPadding = SharedToken.PaddingXS;
         CaptionGroupSpacing  = SharedToken.SpacingXS;
+        
+        MinHeight = SharedToken.ControlHeightLG;
     }
 }

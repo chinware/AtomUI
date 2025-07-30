@@ -8,7 +8,7 @@
             <ControlTemplate>
                 <Border Name="WindowFrame"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
                         BackgroundSizing="InnerBorderEdge"
                         ClipToBounds="True">
                     <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
@@ -17,7 +17,7 @@
                                                 IsVisible="{Binding $parent[atom:Window].IsUseNativeResizer, Converter={x:Static BoolConverters.Not}}"/>
                         </VisualLayerManager.ChromeOverlayLayer>
                         <Border Name="ContentFrame"
-                                CornerRadius="{TemplateBinding EffectiveCornerRadius}" ClipToBounds="True">
+                                CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
                             <DockPanel LastChildFill="True">
                                 <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
                                     <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
@@ -74,12 +74,9 @@
         </Style>
 
         <Style Selector="^[WindowState=FullScreen], ^[WindowState=Maximized]">
+            <Setter Property="CornerRadius" Value="0" />
             <Style Selector="^ /template/ Border#WindowFrame">
-                <Setter Property="CornerRadius" Value="0" />
                 <Setter Property="BorderThickness" Value="0" />
-            </Style>
-            <Style Selector="^ /template/ Border#ContentFrame">
-                <Setter Property="CornerRadius" Value="0" />
             </Style>
         </Style>
 
@@ -93,5 +90,13 @@
                 </On>
             </OnPlatform>
         </Setter>
+        
+        <Style Selector="^[OperationSystemType=macOS]">
+            <Setter Property="IsMaximizeCaptionButtonEnabled" Value="False"/>
+            <Setter Property="IsMinimizeCaptionButtonEnabled" Value="False"/>
+            <Setter Property="IsFullScreenCaptionButtonEnabled" Value="False"/>
+            <Setter Property="IsCloseCaptionButtonEnabled" Value="False"/>
+        </Style>
+        
     </ControlTheme>
 </ResourceDictionary>

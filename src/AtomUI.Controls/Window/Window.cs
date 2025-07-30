@@ -40,17 +40,20 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly StyledProperty<Control?> LogoProperty =
         TitleBar.LogoProperty.AddOwner<Window>();
     
-    public static readonly StyledProperty<bool> IsFullScreenEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsFullScreenEnabled));
+    public static readonly StyledProperty<bool> IsFullScreenCaptionButtonEnabledProperty =
+        AvaloniaProperty.Register<Window, bool>(nameof(IsFullScreenCaptionButtonEnabled));
 
-    public static readonly StyledProperty<bool> IsMaximizeEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsMaximizeEnabled), defaultValue: true);
+    public static readonly StyledProperty<bool> IsMaximizeCaptionButtonEnabledProperty =
+        AvaloniaProperty.Register<Window, bool>(nameof(IsMaximizeCaptionButtonEnabled), defaultValue: true);
 
-    public static readonly StyledProperty<bool> IsMinimizeEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsMinimizeEnabled), defaultValue: true);
+    public static readonly StyledProperty<bool> IsMinimizeCaptionButtonEnabledProperty =
+        AvaloniaProperty.Register<Window, bool>(nameof(IsMinimizeCaptionButtonEnabled), defaultValue: true);
 
-    public static readonly StyledProperty<bool> IsPinEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsPinEnabled));
+    public static readonly StyledProperty<bool> IsPinCaptionButtonEnabledProperty =
+        AvaloniaProperty.Register<Window, bool>(nameof(IsPinCaptionButtonEnabled));
+    
+    public static readonly StyledProperty<bool> IsCloseCaptionButtonEnabledProperty =
+        AvaloniaProperty.Register<Window, bool>(nameof(IsCloseCaptionButtonEnabled));
     
     public static readonly StyledProperty<bool> IsMoveEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMoveEnabled), defaultValue: true);
@@ -110,28 +113,34 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(LogoProperty, value);
     }
     
-    public bool IsFullScreenEnabled
+    public bool IsFullScreenCaptionButtonEnabled
     {
-        get => GetValue(IsFullScreenEnabledProperty);
-        set => SetValue(IsFullScreenEnabledProperty, value);
+        get => GetValue(IsFullScreenCaptionButtonEnabledProperty);
+        set => SetValue(IsFullScreenCaptionButtonEnabledProperty, value);
     }
     
-    public bool IsMaximizeEnabled
+    public bool IsMaximizeCaptionButtonEnabled
     {
-        get => GetValue(IsMaximizeEnabledProperty);
-        set => SetValue(IsMaximizeEnabledProperty, value);
+        get => GetValue(IsMaximizeCaptionButtonEnabledProperty);
+        set => SetValue(IsMaximizeCaptionButtonEnabledProperty, value);
     }
     
-    public bool IsMinimizeEnabled
+    public bool IsMinimizeCaptionButtonEnabled
     {
-        get => GetValue(IsMinimizeEnabledProperty);
-        set => SetValue(IsMinimizeEnabledProperty, value);
+        get => GetValue(IsMinimizeCaptionButtonEnabledProperty);
+        set => SetValue(IsMinimizeCaptionButtonEnabledProperty, value);
     }
     
-    public bool IsPinEnabled
+    public bool IsPinCaptionButtonEnabled
     {
-        get => GetValue(IsPinEnabledProperty);
-        set => SetValue(IsPinEnabledProperty, value);
+        get => GetValue(IsPinCaptionButtonEnabledProperty);
+        set => SetValue(IsPinCaptionButtonEnabledProperty, value);
+    }
+    
+    public bool IsCloseCaptionButtonEnabled
+    {
+        get => GetValue(IsCloseCaptionButtonEnabledProperty);
+        set => SetValue(IsCloseCaptionButtonEnabledProperty, value);
     }
     
     public bool IsMoveEnabled
@@ -159,11 +168,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     }
     private Thickness _macOSTitleBarMargin;
     
-    public OperationSystemType OperationSystemType
-    {
-        get => GetValue(OperationSystemTypeProperty);
-        private set => SetValue(OperationSystemTypeProperty, value);
-    }
+    public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
     
     #endregion
 
@@ -174,23 +179,10 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
             nameof(PreviousVisibleWindowState),
             o => o.PreviousVisibleWindowState);
     
-    internal static readonly DirectProperty<Window, CornerRadius> EffectiveCornerRadiusProperty =
-        AvaloniaProperty.RegisterDirect<Window, CornerRadius>(
-            nameof(EffectiveCornerRadius),
-            o => o.EffectiveCornerRadius);
-    
     internal static readonly DirectProperty<Window, bool> IsUseNativeResizerProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsUseNativeResizer),
             o => o.IsUseNativeResizer);
-    
-    private CornerRadius _effectiveCornerRadius;
-
-    internal CornerRadius EffectiveCornerRadius
-    {
-        get => _effectiveCornerRadius;
-        private set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
-    }
     
     private WindowState _previousVisibleWindowState = WindowState.Normal;
 
@@ -222,22 +214,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public Window()
     {
         ScalingChanged += HandleScalingChanged;
-        if (OperatingSystem.IsWindows())
-        {
-            OperationSystemType = OperationSystemType.Windows;
-        }
-        else if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
-        {
-            OperationSystemType = OperationSystemType.macOS;
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            OperationSystemType = OperationSystemType.Linux;
-        }
-        else
-        {
-            OperationSystemType = OperationSystemType.Unknown;
-        }
+        this.ConfigureOperationSystemType();
 
         if (OperationSystemType == OperationSystemType.Linux)
         {
@@ -264,17 +241,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
                 return;
             }
             HandleWindowStateChanged(oldWindowState, newWindowState);
-        }
-        else if (change.Property == CornerRadiusProperty)
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                EffectiveCornerRadius = new CornerRadius(0);
-            }
-            else
-            {
-                EffectiveCornerRadius = CornerRadius;
-            }
         }
     }
     
@@ -349,7 +315,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     private void HandleTitleDoubleClicked(object? sender, RoutedEventArgs e)
     {
         var windowState = WindowState;
-        if (!IsMaximizeEnabled || windowState == WindowState.FullScreen)
+        if (windowState == WindowState.FullScreen)
         {
             return;
         }
@@ -431,5 +397,10 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         this.SetMacOSOptionButtonsPosition(MacOSCaptionGroupOffset.X, MacOSCaptionGroupOffset.Y, MacOSCaptionGroupSpacing);
         var cationsSize = this.GetMacOSOptionsSize(MacOSCaptionGroupSpacing);
         MacOSTitleBarMargin = new Thickness(cationsSize.Width + MacOSCaptionGroupOffset.X, 0, 0, 0);
+    }
+
+    void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
+    {
+        SetValue(OperationSystemTypeProperty, operationSystemType);
     }
 }

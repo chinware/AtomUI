@@ -14,43 +14,52 @@ public class CaptionButtonGroup : TemplatedControl
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<bool> IsFullScreenEnabledProperty =
-        Window.IsFullScreenEnabledProperty.AddOwner<CaptionButtonGroup>();
+    public static readonly StyledProperty<bool> IsFullScreenCaptionButtonEnabledProperty =
+        Window.IsFullScreenCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
     
-    public static readonly StyledProperty<bool> IsMaximizeEnabledProperty =
-        Window.IsMaximizeEnabledProperty.AddOwner<CaptionButtonGroup>();
+    public static readonly StyledProperty<bool> IsMaximizeCaptionButtonEnabledProperty =
+        Window.IsMaximizeCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
     
-    public static readonly StyledProperty<bool> IsMinimizeEnabledProperty =
-        Window.IsMinimizeEnabledProperty.AddOwner<CaptionButtonGroup>();
+    public static readonly StyledProperty<bool> IsMinimizeCaptionButtonEnabledProperty =
+        Window.IsMinimizeCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
     
-    public static readonly StyledProperty<bool> IsPinEnabledProperty =
-        Window.IsPinEnabledProperty.AddOwner<CaptionButtonGroup>();
+    public static readonly StyledProperty<bool> IsPinCaptionButtonEnabledProperty =
+        Window.IsPinCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
+    
+    public static readonly StyledProperty<bool> IsCloseCaptionButtonEnabledProperty =
+        Window.IsCloseCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
     
     public static readonly StyledProperty<bool> IsWindowActiveProperty = 
         TitleBar.IsWindowActiveProperty.AddOwner<CaptionButtonGroup>();
 
-    public bool IsFullScreenEnabled
+    public bool IsFullScreenCaptionButtonEnabled
     {
-        get => GetValue(IsFullScreenEnabledProperty);
-        set => SetValue(IsFullScreenEnabledProperty, value);
+        get => GetValue(IsFullScreenCaptionButtonEnabledProperty);
+        set => SetValue(IsFullScreenCaptionButtonEnabledProperty, value);
     }
 
-    public bool IsMaximizeEnabled
+    public bool IsMaximizeCaptionButtonEnabled
     {
-        get => GetValue(IsMaximizeEnabledProperty);
-        set => SetValue(IsMaximizeEnabledProperty, value);
+        get => GetValue(IsMaximizeCaptionButtonEnabledProperty);
+        set => SetValue(IsMaximizeCaptionButtonEnabledProperty, value);
     }
 
-    public bool IsMinimizeEnabled
+    public bool IsMinimizeCaptionButtonEnabled
     {
-        get => GetValue(IsMinimizeEnabledProperty);
-        set => SetValue(IsMinimizeEnabledProperty, value);
+        get => GetValue(IsMinimizeCaptionButtonEnabledProperty);
+        set => SetValue(IsMinimizeCaptionButtonEnabledProperty, value);
     }
 
-    public bool IsPinEnabled
+    public bool IsPinCaptionButtonEnabled
     {
-        get => GetValue(IsPinEnabledProperty);
-        set => SetValue(IsPinEnabledProperty, value);
+        get => GetValue(IsPinCaptionButtonEnabledProperty);
+        set => SetValue(IsPinCaptionButtonEnabledProperty, value);
+    }
+    
+    public bool IsCloseCaptionButtonEnabled
+    {
+        get => GetValue(IsCloseCaptionButtonEnabledProperty);
+        set => SetValue(IsCloseCaptionButtonEnabledProperty, value);
     }
     
     public bool IsWindowActive
@@ -132,9 +141,9 @@ public class CaptionButtonGroup : TemplatedControl
     {
         AffectsArrange<CaptionButtonGroup>(IsWindowMaximizedProperty,
             IsWindowFullScreenProperty,
-            IsMaximizeEnabledProperty,
-            IsPinEnabledProperty,
-            IsMinimizeEnabledProperty);
+            IsMaximizeCaptionButtonEnabledProperty,
+            IsPinCaptionButtonEnabledProperty,
+            IsMinimizeCaptionButtonEnabledProperty);
     }
 
     public virtual void Attach(Window hostWindow)
@@ -144,11 +153,12 @@ public class CaptionButtonGroup : TemplatedControl
             return;
         }
            
-        HostWindow                         = hostWindow;
-        this[!IsFullScreenEnabledProperty] = hostWindow[!IsFullScreenEnabledProperty];
-        this[!IsPinEnabledProperty]        = hostWindow[!IsPinEnabledProperty];
-        this[!IsMaximizeEnabledProperty]   = hostWindow[!IsMaximizeEnabledProperty];
-        this[!IsMinimizeEnabledProperty]   = hostWindow[!IsMinimizeEnabledProperty];
+        HostWindow                                      = hostWindow;
+        this[!IsFullScreenCaptionButtonEnabledProperty] = hostWindow[!IsFullScreenCaptionButtonEnabledProperty];
+        this[!IsPinCaptionButtonEnabledProperty]        = hostWindow[!IsPinCaptionButtonEnabledProperty];
+        this[!IsMaximizeCaptionButtonEnabledProperty]   = hostWindow[!IsMaximizeCaptionButtonEnabledProperty];
+        this[!IsMinimizeCaptionButtonEnabledProperty]   = hostWindow[!IsMinimizeCaptionButtonEnabledProperty];
+        this[!IsCloseCaptionButtonEnabledProperty]      = hostWindow[!IsCloseCaptionButtonEnabledProperty];
         _disposables = new CompositeDisposable
         {
             HostWindow.GetObservable(Window.WindowStateProperty)
@@ -256,7 +266,7 @@ public class CaptionButtonGroup : TemplatedControl
             return;
         }
         var windowState = HostWindow.WindowState;
-        if (!HostWindow.IsMaximizeEnabled || windowState == WindowState.FullScreen)
+        if (!HostWindow.IsMaximizeCaptionButtonEnabled || windowState == WindowState.FullScreen)
         {
             return;
         }
@@ -283,7 +293,7 @@ public class CaptionButtonGroup : TemplatedControl
 
     private void HandlePinButtonClicked(object? sender, RoutedEventArgs args)
     {
-        if (HostWindow == null || !HostWindow.IsPinEnabled)
+        if (HostWindow == null || !HostWindow.IsPinCaptionButtonEnabled)
         {
             return;
         }
@@ -346,7 +356,7 @@ public class CaptionButtonGroup : TemplatedControl
             }
             else if (msg == WM_CAPTURECHANGED)
             {
-                if (pointerOnButton && HostWindow.IsMaximizeEnabled)
+                if (pointerOnButton && HostWindow.IsMaximizeCaptionButtonEnabled)
                 {
                     HostWindow.WindowState = HostWindow.WindowState == WindowState.Maximized
                                   ? WindowState.Normal

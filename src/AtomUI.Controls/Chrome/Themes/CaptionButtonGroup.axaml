@@ -13,7 +13,7 @@
                 <StackPanel Orientation="Horizontal" Name="RootLayout">
                     <atom:CaptionButton
                         Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
-                        IsEnabled="{TemplateBinding IsFullScreenEnabled}"
+                        IsEnabled="{TemplateBinding IsFullScreenCaptionButtonEnabled}"
                         IsWindowActive="{TemplateBinding IsWindowActive}"
                         NormalIcon="{atom:IconProvider Kind=FullscreenOutlined}"
                         CheckedIcon="{atom:IconProvider Kind=FullscreenExitOutlined}"
@@ -22,15 +22,15 @@
                         <atom:CaptionButton.IsVisible>
                             <MultiBinding
                                 Converter="{StaticResource FullScreenButtonVisibleConverter}">
-                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsFullScreenEnabled" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsFullScreenCaptionButtonEnabled" />
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsWindowMaximized" />
                             </MultiBinding>
                         </atom:CaptionButton.IsVisible>
                     </atom:CaptionButton>
                     <atom:CaptionButton
                         Name="{x:Static atom:CaptionButtonGroupThemeConstants.PinButtonPart}"
-                        IsVisible="{TemplateBinding IsPinEnabled}"
-                        IsEnabled="{TemplateBinding IsPinEnabled}"
+                        IsVisible="{TemplateBinding IsPinCaptionButtonEnabled}"
+                        IsEnabled="{TemplateBinding IsPinCaptionButtonEnabled}"
                         IsWindowActive="{TemplateBinding IsWindowActive}"
                         NormalIcon="{atom:IconProvider Kind=WindowPinOutlined}"
                         CheckedIcon="{atom:IconProvider Kind=WindowUnpinOutlined}"
@@ -44,7 +44,7 @@
                         <atom:CaptionButton.IsVisible>
                             <MultiBinding
                                 Converter="{StaticResource MinimizeButtonVisibleConverter}">
-                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsMinimizeEnabled" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsMinimizeCaptionButtonEnabled" />
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsWindowFullScreen" />
                             </MultiBinding>
                         </atom:CaptionButton.IsVisible>
@@ -59,7 +59,7 @@
                         <atom:CaptionButton.IsVisible>
                             <MultiBinding
                                 Converter="{StaticResource MaximizeButtonVisibleConverter}">
-                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsMaximizeEnabled" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsMaximizeCaptionButtonEnabled" />
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsWindowFullScreen" />
                             </MultiBinding>
                         </atom:CaptionButton.IsVisible>
@@ -68,7 +68,8 @@
                         Name="{x:Static atom:CaptionButtonGroupThemeConstants.CloseButtonPart}"
                         NormalIcon="{atom:IconProvider Kind=WindowCloseOutlined}"
                         IsWindowActive="{TemplateBinding IsWindowActive}"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
+                        IsVisible="{TemplateBinding IsCloseCaptionButtonEnabled}"/>
                 </StackPanel>
             </ControlTemplate>
         </Setter>
