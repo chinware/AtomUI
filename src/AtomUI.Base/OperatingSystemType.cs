@@ -1,6 +1,6 @@
 namespace AtomUI;
 
-public enum OperatingSystemType
+public enum OperationSystemType
 {
     Windows,
     macOS,

@@ -51,10 +51,10 @@
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
         
-        <Style Selector="^:not(^[OperatingSystemType=macOS])">
+        <Style Selector="^:not(^[OperationSystemType=macOS])">
             <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
         </Style>
-        <Style Selector="^[OperatingSystemType=macOS]">
+        <Style Selector="^[OperationSystemType=macOS]">
             <Setter Property="MacOSCaptionGroupOffset" Value="10, 2" />
             <Setter Property="MacOSCaptionGroupSpacing" Value="10" />
         </Style>

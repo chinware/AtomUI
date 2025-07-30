@@ -15,7 +15,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaWindow = Avalonia.Controls.Window;
 
-public class Window : AvaloniaWindow, IDisposable
+public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
 {
     #region 公共属性定义
 
@@ -64,6 +64,9 @@ public class Window : AvaloniaWindow, IDisposable
     public static readonly DirectProperty<Window, Thickness> MacOSTitleBarMarginProperty = 
         AvaloniaProperty.RegisterDirect<Window, Thickness>(nameof (MacOSTitleBarMargin), 
             o => o.MacOSTitleBarMargin);
+
+    public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
+        OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<Window>();
     
     public double TitleFontSize
     {
@@ -155,7 +158,13 @@ public class Window : AvaloniaWindow, IDisposable
         private set => SetAndRaise(MacOSTitleBarMarginProperty, ref _macOSTitleBarMargin, value);
     }
     private Thickness _macOSTitleBarMargin;
-
+    
+    public OperationSystemType OperationSystemType
+    {
+        get => GetValue(OperationSystemTypeProperty);
+        private set => SetValue(OperationSystemTypeProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -170,23 +179,10 @@ public class Window : AvaloniaWindow, IDisposable
             nameof(EffectiveCornerRadius),
             o => o.EffectiveCornerRadius);
     
-    internal static readonly DirectProperty<Window, OperatingSystemType> OperatingSystemTypeProperty =
-        AvaloniaProperty.RegisterDirect<Window, OperatingSystemType>(
-            nameof(OperatingSystemType),
-            o => o.OperatingSystemType);
-    
     internal static readonly DirectProperty<Window, bool> IsUseNativeResizerProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsUseNativeResizer),
             o => o.IsUseNativeResizer);
-    
-    private OperatingSystemType _operatingSystemType;
-
-    internal OperatingSystemType OperatingSystemType
-    {
-        get => _operatingSystemType;
-        private set => SetAndRaise(OperatingSystemTypeProperty, ref _operatingSystemType, value);
-    }
     
     private CornerRadius _effectiveCornerRadius;
 
@@ -228,22 +224,22 @@ public class Window : AvaloniaWindow, IDisposable
         ScalingChanged += HandleScalingChanged;
         if (OperatingSystem.IsWindows())
         {
-            OperatingSystemType = OperatingSystemType.Windows;
+            OperationSystemType = OperationSystemType.Windows;
         }
         else if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
         {
-            OperatingSystemType = OperatingSystemType.macOS;
+            OperationSystemType = OperationSystemType.macOS;
         }
         else if (OperatingSystem.IsLinux())
         {
-            OperatingSystemType = OperatingSystemType.Linux;
+            OperationSystemType = OperationSystemType.Linux;
         }
         else
         {
-            OperatingSystemType = OperatingSystemType.Unknown;
+            OperationSystemType = OperationSystemType.Unknown;
         }
 
-        if (OperatingSystemType == OperatingSystemType.Linux)
+        if (OperationSystemType == OperationSystemType.Linux)
         {
             IsUseNativeResizer = false;
         }
