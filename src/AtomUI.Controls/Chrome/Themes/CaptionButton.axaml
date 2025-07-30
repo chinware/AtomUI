@@ -1,0 +1,67 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:CaptionButton}" TargetType="atom:CaptionButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:CaptionButtonThemeConstants.FramePart}"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="{TemplateBinding EffectiveCornerRadius}">
+                    <Panel Name="{x:Static atom:CaptionButtonThemeConstants.RootLayoutPart}">
+                        <atom:IconPresenter
+                            Name="{x:Static atom:CaptionButtonThemeConstants.NormalIconPresenterPart}"
+                            Icon="{TemplateBinding NormalIcon}"
+                            IconWidth="{TemplateBinding IconWidth}"
+                            IconHeight="{TemplateBinding IconHeight}"
+                            IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                        <atom:IconPresenter
+                            Name="{x:Static atom:CaptionButtonThemeConstants.CheckedIconPresenterPart}"
+                            Icon="{TemplateBinding CheckedIcon}"
+                            IsVisible="{TemplateBinding IsChecked}"
+                            IconWidth="{TemplateBinding IconWidth}"
+                            IconHeight="{TemplateBinding IconHeight}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ChromeTokenKey.CaptionButtonPadding}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActiveColor}}" />
+        
+        <Style Selector="^ /template/ atom|IconPresenter">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActiveColor}}" />
+        </Style>
+        
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActiveBgColor}}" />
+       
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActiveHoverBgColor}}" />
+        </Style>
+        
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActivePressedBgColor}}" />
+        </Style>
+        
+        <Style Selector="^[IsWindowActive=False]">
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:ChromeTokenKey.InactiveColor}}" />
+            </Style>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ChromeTokenKey.InactiveBgColor}}" />
+            <Style Selector="^:pointerover">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:ChromeTokenKey.InactiveHoverBgColor}}" />
+            </Style>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

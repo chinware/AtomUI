@@ -17,7 +17,7 @@ internal class PopupBuddyDecorator : SceneMotionActorControl
     #region 公共属性定义
 
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
-        Border.BoxShadowProperty.AddOwner<PopupBuddyDecorator>();
+        Popup.MaskShadowsProperty.AddOwner<PopupBuddyDecorator>();
     
     public BoxShadows MaskShadows
     {

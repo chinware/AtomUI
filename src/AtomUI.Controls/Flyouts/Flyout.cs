@@ -27,7 +27,7 @@ public class Flyout : PopupFlyoutBase
         ArrowDecoratedBox.IsShowArrowProperty.AddOwner<Flyout>();
 
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
-        Border.BoxShadowProperty.AddOwner<Flyout>();
+        PopupControl.MaskShadowsProperty.AddOwner<Flyout>();
 
     /// <summary>
     /// 箭头是否始终指向中心

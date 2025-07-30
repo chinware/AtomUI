@@ -13,7 +13,7 @@
 #ifdef ATOMUI_OS_WINDOWS
 using ATOMUI_WIN_HANDLE = HWND;
 #else
-using ATOMUI_WIN_HANDLE = void*;
+using ATOMUI_WIN_HANDLE = void *;
 #endif
 
 namespace atomui
@@ -22,7 +22,9 @@ class ATOMUI_EXPORT WindowUtils
 {
 public:
     WindowUtils() = delete;
+
     static void setIgnoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle, bool flag);
     static bool ignoresMouseEvents(ATOMUI_WIN_HANDLE windowHandle);
+    static void moveWindow(ATOMUI_WIN_HANDLE windowHandle, int x, int y);
 };
 }

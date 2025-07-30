@@ -1,0 +1,63 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:WindowResizer}" TargetType="atom:WindowResizer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="{x:Static atom:WindowResizerThemeConstants.RootLayoutPart}">
+                    <Border Tag="{x:Static atom:ResizeHandleLocation.North}"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Top"
+                               Cursor="SizeNorthSouth"
+                               Height="6" />
+                    <Border Tag="{x:Static atom:ResizeHandleLocation.South}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Bottom"
+                            Cursor="SizeNorthSouth"
+                            Height="6" />
+                    <Border Tag="{x:Static atom:ResizeHandleLocation.West}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            Cursor="SizeWestEast"
+                            Width="6" />
+                    <Border Tag="{x:Static atom:ResizeHandleLocation.East}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            Cursor="SizeWestEast"
+                            Width="6" />
+                    <Border Tag="{x:Static atom:ResizeHandleLocation.NorthWest}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Cursor="TopLeftCorner"
+                            Width="8"
+                            Height="8" />
+                    <Border Tag="{x:Static atom:ResizeHandleLocation.NorthEast}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Cursor="TopRightCorner"
+                            Width="8"
+                            Height="8" />
+                    <Border Tag="{x:Static atom:ResizeHandleLocation.SouthWest}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Cursor="BottomLeftCorner"
+                            Width="8"
+                            Height="8" />
+                    <Border Tag="{x:Static atom:ResizeHandleLocation.SouthEast}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Cursor="BottomRightCorner"
+                            Width="8"
+                            Height="8" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^ /template/ Border">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

@@ -240,7 +240,6 @@ internal partial class DataGridColumnHeader : ContentControl
     #endregion
 
     private const int ResizeRegionWidth = 5;
-    private const int ColumnsDragThreshold = 5;
     
     private static Point? _lastMousePositionHeaders;
     private static Cursor? _originalCursor;
@@ -254,7 +253,7 @@ internal partial class DataGridColumnHeader : ContentControl
     private bool _areHandlersSuspended;
     private bool _desiredSeparatorVisibility = true;
     private StackPanel? _indicatorsLayout;
-    private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
+    private static Lazy<Cursor> _resizeCursor = new (() => new Cursor(StandardCursorType.SizeWestEast));
     private Border? _frame;
     
     static DataGridColumnHeader()
@@ -807,7 +806,7 @@ internal partial class DataGridColumnHeader : ContentControl
         if (HeaderDragMode == DragMode.MouseDown && _dragColumn == null && _lastMousePositionHeaders != null)
         {
             var distanceFromInitial = (Vector)(mousePositionHeaders - _lastMousePositionHeaders);
-            if (distanceFromInitial.Length > ColumnsDragThreshold)
+            if (distanceFromInitial.Length > Constants.DragThreshold)
             {
                 handled = CanReorderColumn(OwningColumn);
 

@@ -1,0 +1,17 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:WindowShadowsToPaddingConverter x:Key="WindowShadowsToPaddingConverter"/>
+    <ControlTheme x:Key="{x:Type atom:WindowBuddyLayer}" TargetType="atom:WindowBuddyLayer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Padding="{TemplateBinding FrameShadows, Converter={StaticResource WindowShadowsToPaddingConverter}}">
+                    <Panel Name="{x:Static atom:WindowBuddyLayerThemeConstants.ShadowRendererLayoutPart}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

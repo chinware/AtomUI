@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Controls.Utils;
 using AtomUI.Reflection;
-using Avalonia;
 using Avalonia.Controls;
 
 namespace AtomUI.Controls;

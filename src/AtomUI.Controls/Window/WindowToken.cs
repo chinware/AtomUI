@@ -1,4 +1,5 @@
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -18,6 +19,11 @@ public class WindowToken : AbstractControlDesignToken
     /// </summary>
     public Color DefaultForeground { get; set; }
     
+    /// <summary>
+    /// 窗口圆角，后期可能
+    /// </summary>
+    public CornerRadius CornerRadius { get; set; }
+    
     public SolidColorBrush? SystemBarColor { get; set; }
 
     public WindowToken()
@@ -30,6 +36,7 @@ public class WindowToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         DefaultBackground = SharedToken.ColorBgContainer;
         DefaultForeground = SharedToken.ColorText;
+        CornerRadius      = new CornerRadius(12);
         SystemBarColor    = new SolidColorBrush(SharedToken.ColorBgContainer);
     }
 }

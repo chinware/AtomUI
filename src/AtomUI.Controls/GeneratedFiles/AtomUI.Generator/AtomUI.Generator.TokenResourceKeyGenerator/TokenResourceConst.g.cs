@@ -88,6 +88,18 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TextFontWeight = new TokenResourceKey("Badge.TextFontWeight");
     }
 
+    public static class ButtonSpinnerTokenKey
+    {
+        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth");
+        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg");
+        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg");
+        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg");
+        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor");
+        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor");
+        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize");
+        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth");
+    }
+
     public static class ButtonTokenKey
     {
         public static readonly TokenResourceKey BorderColorDisabled = new TokenResourceKey("Button.BorderColorDisabled");
@@ -139,18 +151,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TextHoverBg = new TokenResourceKey("Button.TextHoverBg");
     }
 
-    public static class ButtonSpinnerTokenKey
-    {
-        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth");
-        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg");
-        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg");
-        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg");
-        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor");
-        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor");
-        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize");
-        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth");
-    }
-
     public static class CalendarTokenKey
     {
         public static readonly TokenResourceKey CellActiveWithRangeBg = new TokenResourceKey("Calendar.CellActiveWithRangeBg");
@@ -177,6 +177,32 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey CheckIndicatorSize = new TokenResourceKey("CheckBox.CheckIndicatorSize");
         public static readonly TokenResourceKey IndicatorTristateMarkSize = new TokenResourceKey("CheckBox.IndicatorTristateMarkSize");
         public static readonly TokenResourceKey TextMargin = new TokenResourceKey("CheckBox.TextMargin");
+    }
+
+    public static class ChromeTokenKey
+    {
+        public static readonly TokenResourceKey ActiveBgColor = new TokenResourceKey("Chrome.ActiveBgColor");
+        public static readonly TokenResourceKey ActiveColor = new TokenResourceKey("Chrome.ActiveColor");
+        public static readonly TokenResourceKey ActiveHoverBgColor = new TokenResourceKey("Chrome.ActiveHoverBgColor");
+        public static readonly TokenResourceKey ActivePressedBgColor = new TokenResourceKey("Chrome.ActivePressedBgColor");
+        public static readonly TokenResourceKey CaptionButtonPadding = new TokenResourceKey("Chrome.CaptionButtonPadding");
+        public static readonly TokenResourceKey CaptionButtonSize = new TokenResourceKey("Chrome.CaptionButtonSize");
+        public static readonly TokenResourceKey CaptionGroupSpacing = new TokenResourceKey("Chrome.CaptionGroupSpacing");
+        public static readonly TokenResourceKey CloseHoverBackgroundColor = new TokenResourceKey("Chrome.CloseHoverBackgroundColor");
+        public static readonly TokenResourceKey ClosePressedBackgroundColor = new TokenResourceKey("Chrome.ClosePressedBackgroundColor");
+        public static readonly TokenResourceKey ForegroundColor = new TokenResourceKey("Chrome.ForegroundColor");
+        public static readonly TokenResourceKey HoverBackgroundColor = new TokenResourceKey("Chrome.HoverBackgroundColor");
+        public static readonly TokenResourceKey InactiveBgColor = new TokenResourceKey("Chrome.InactiveBgColor");
+        public static readonly TokenResourceKey InactiveColor = new TokenResourceKey("Chrome.InactiveColor");
+        public static readonly TokenResourceKey InactiveHoverBgColor = new TokenResourceKey("Chrome.InactiveHoverBgColor");
+        public static readonly TokenResourceKey LogoAndTitleSpacing = new TokenResourceKey("Chrome.LogoAndTitleSpacing");
+        public static readonly TokenResourceKey LogoSize = new TokenResourceKey("Chrome.LogoSize");
+        public static readonly TokenResourceKey MinHeight = new TokenResourceKey("Chrome.MinHeight");
+        public static readonly TokenResourceKey PressedBackgroundColor = new TokenResourceKey("Chrome.PressedBackgroundColor");
+        public static readonly TokenResourceKey TitleBarPadding = new TokenResourceKey("Chrome.TitleBarPadding");
+        public static readonly TokenResourceKey WindowsCloseButtonHoverBgColor = new TokenResourceKey("Chrome.WindowsCloseButtonHoverBgColor");
+        public static readonly TokenResourceKey WindowsCloseButtonHoverColor = new TokenResourceKey("Chrome.WindowsCloseButtonHoverColor");
+        public static readonly TokenResourceKey WindowsCloseButtonPressedBgColor = new TokenResourceKey("Chrome.WindowsCloseButtonPressedBgColor");
     }
 
     public static class CollapseTokenKey
@@ -788,17 +814,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TreeNodeSwitcherMargin = new TokenResourceKey("TreeView.TreeNodeSwitcherMargin");
     }
 
-    public static class CaptionButtonTokenKey
-    {
-        public static readonly TokenResourceKey CloseHoverBackgroundColor = new TokenResourceKey("CaptionButton.CloseHoverBackgroundColor");
-        public static readonly TokenResourceKey ClosePressedBackgroundColor = new TokenResourceKey("CaptionButton.ClosePressedBackgroundColor");
-        public static readonly TokenResourceKey ForegroundColor = new TokenResourceKey("CaptionButton.ForegroundColor");
-        public static readonly TokenResourceKey HoverBackgroundColor = new TokenResourceKey("CaptionButton.HoverBackgroundColor");
-        public static readonly TokenResourceKey PressedBackgroundColor = new TokenResourceKey("CaptionButton.PressedBackgroundColor");
-    }
-
     public static class WindowTokenKey
     {
+        public static readonly TokenResourceKey CornerRadius = new TokenResourceKey("Window.CornerRadius");
         public static readonly TokenResourceKey DefaultBackground = new TokenResourceKey("Window.DefaultBackground");
         public static readonly TokenResourceKey DefaultForeground = new TokenResourceKey("Window.DefaultForeground");
         public static readonly TokenResourceKey SystemBarColor = new TokenResourceKey("Window.SystemBarColor");
