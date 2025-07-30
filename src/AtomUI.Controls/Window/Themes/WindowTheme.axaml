@@ -97,6 +97,11 @@
             <Setter Property="IsFullScreenCaptionButtonEnabled" Value="False"/>
             <Setter Property="IsCloseCaptionButtonEnabled" Value="False"/>
         </Style>
-        
+        <Style Selector="^:not(^[OperationSystemType=macOS])">
+            <Setter Property="IsMaximizeCaptionButtonEnabled" Value="True"/>
+            <Setter Property="IsMinimizeCaptionButtonEnabled" Value="True"/>
+            <Setter Property="IsCloseCaptionButtonEnabled" Value="True"/>
+            <Setter Property="IsFullScreenCaptionButtonEnabled" Value="True"/>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
