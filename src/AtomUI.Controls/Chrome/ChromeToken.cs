@@ -1,3 +1,4 @@
+using AtomUI.Media;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
@@ -80,6 +81,21 @@ internal class ChromeToken : AbstractControlDesignToken
     public Color ActivePressedBgColor { get; set; }
     
     /// <summary>
+    /// Windows 窗口关闭按钮鼠标 hover 颜色
+    /// </summary>
+    public Color WindowsCloseButtonHoverColor { get; set; }
+    
+    /// <summary>
+    /// Windows 窗口关闭按钮鼠标 hover 背景色
+    /// </summary>
+    public Color WindowsCloseButtonHoverBgColor { get; set; }
+    
+    /// <summary>
+    /// Windows 窗口关闭按钮鼠标按下背景色
+    /// </summary>
+    public Color WindowsCloseButtonPressedBgColor { get; set; }
+    
+    /// <summary>
     /// 窗口未激活状态下的颜色
     /// </summary>
     public Color InactiveBgColor { get; set; }
@@ -136,5 +152,9 @@ internal class ChromeToken : AbstractControlDesignToken
         CaptionGroupSpacing  = SharedToken.SpacingXS;
         
         MinHeight = SharedToken.ControlHeightLG;
+
+        WindowsCloseButtonHoverBgColor   = Color.FromRgb(244, 67, 54); // #F44336
+        WindowsCloseButtonPressedBgColor = Color.FromArgb(190, 244, 67, 54);
+        WindowsCloseButtonHoverColor     = ColorUtils.OnBackground(Colors.White, WindowsCloseButtonHoverBgColor);
     }
 }

@@ -10,7 +10,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Normal, StdPseudoClass.Minimized, StdPseudoClass.Maximized, StdPseudoClass.Fullscreen)]
-public class CaptionButtonGroup : TemplatedControl
+internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
 {
     #region 公共属性定义
 
@@ -31,6 +31,9 @@ public class CaptionButtonGroup : TemplatedControl
     
     public static readonly StyledProperty<bool> IsWindowActiveProperty = 
         TitleBar.IsWindowActiveProperty.AddOwner<CaptionButtonGroup>();
+    
+    public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
+        OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<CaptionButtonGroup>();
 
     public bool IsFullScreenCaptionButtonEnabled
     {
@@ -67,6 +70,8 @@ public class CaptionButtonGroup : TemplatedControl
         get => GetValue(IsWindowActiveProperty);
         set => SetValue(IsWindowActiveProperty, value);
     }
+    
+    public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
 
     #endregion
 
@@ -144,6 +149,11 @@ public class CaptionButtonGroup : TemplatedControl
             IsMaximizeCaptionButtonEnabledProperty,
             IsPinCaptionButtonEnabledProperty,
             IsMinimizeCaptionButtonEnabledProperty);
+    }
+
+    public CaptionButtonGroup()
+    {
+        this.ConfigureOperationSystemType();
     }
 
     public virtual void Attach(Window hostWindow)
@@ -375,5 +385,44 @@ public class CaptionButtonGroup : TemplatedControl
         Win32Properties.AddWndProcHookCallback(HostWindow, wndProcHookCallback);
 
         _disposeActions.Add(() => Win32Properties.RemoveWndProcHookCallback(HostWindow, wndProcHookCallback));
+    }
+    
+    void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
+    {
+        SetValue(OperationSystemTypeProperty, operationSystemType);
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        if (OperationSystemType == OperationSystemType.Windows)
+        {
+            if (_closeButton != null)
+            {
+                _closeButton.Width = MinHeight;
+                _closeButton.Height = MinHeight;
+            }
+            if (_maximizeButton != null)
+            {
+                _maximizeButton.Width  = MinHeight;
+                _maximizeButton.Height = MinHeight;
+            }
+            if (_minimizeButton != null)
+            {
+                _minimizeButton.Width  = MinHeight;
+                _minimizeButton.Height = MinHeight;
+            }
+            if (_pinButton != null)
+            {
+                _pinButton.Width  = MinHeight;
+                _pinButton.Height = MinHeight;
+            }
+            if (_fullScreenButton != null)
+            {
+                _fullScreenButton.Width  = MinHeight;
+                _fullScreenButton.Height = MinHeight;
+            }
+        }
+        var size = base.MeasureOverride(availableSize);
+        return size;
     }
 }

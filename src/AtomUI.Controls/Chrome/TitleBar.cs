@@ -18,7 +18,7 @@ namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Active)]
 [PseudoClasses(StdPseudoClass.Normal, StdPseudoClass.Minimized, StdPseudoClass.Maximized, StdPseudoClass.Fullscreen)]
-public class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotionAwareControl, IOperationSystemAware
+internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotionAwareControl, IOperationSystemAware
 {
     protected override Type StyleKeyOverride { get; } = typeof(TitleBar);
 
