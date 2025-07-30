@@ -12,7 +12,6 @@
 #include <cstring>
 #include <xcb/xcb.h>
 #include <xcb/shape.h>
-#include <X11/Xlib.h>
 
 namespace atomui
 {

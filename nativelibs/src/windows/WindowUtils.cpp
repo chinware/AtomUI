@@ -9,7 +9,6 @@
 
 #include "atomui/WindowUtils.h"
 #include <windows.h>
-#include <iostream>
 
 namespace atomui
 {
