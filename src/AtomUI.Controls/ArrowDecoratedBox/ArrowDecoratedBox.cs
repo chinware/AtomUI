@@ -126,11 +126,14 @@ public class ArrowDecoratedBox : ContentControl,
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<double> ArrowSizeProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
+    internal static readonly StyledProperty<double> ArrowSizeProperty =
+        AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
 
-    internal static readonly StyledProperty<Direction> ArrowDirectionProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, Direction>(nameof(ArrowDirection));
+    internal static readonly StyledProperty<Direction> ArrowDirectionProperty = 
+        AvaloniaProperty.Register<ArrowDecoratedBox, Direction>(nameof(ArrowDirection));
+    
+    internal static readonly StyledProperty<double> ArrowOpacityProperty =
+        AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowOpacity), 1.0);
 
     /// <summary>
     /// 箭头的大小
@@ -146,13 +149,19 @@ public class ArrowDecoratedBox : ContentControl,
         get => GetValue(ArrowDirectionProperty);
         set => SetValue(ArrowDirectionProperty, value);
     }
+    
+    internal double ArrowOpacity
+    {
+        get => GetValue(ArrowOpacityProperty);
+        set => SetValue(ArrowOpacityProperty, value);
+    }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;
 
     public Rect ArrowIndicatorBounds { get; private set; }
-
+    public Rect ArrowIndicatorLayoutBounds { get; private set; }
     #endregion
 
     // 指针最顶点位置
@@ -426,6 +435,12 @@ public class ArrowDecoratedBox : ContentControl,
             ArrowIndicatorBounds = _arrowIndicator.Bounds;
         }
 
-        _arrowPlacementFlipped = false;
+        ArrowIndicatorLayoutBounds = _arrowIndicatorLayout.Bounds;
+        _arrowPlacementFlipped     = false;
+    }
+
+    void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
+    {
+        ArrowOpacity = opacity;
     }
 }

@@ -1,3 +1,4 @@
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Media;
 using AtomUI.MotionScene;
@@ -17,37 +18,10 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
         Border.BoxShadowProperty.AddOwner<PopupBuddyLayer>();
     
-    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
-        MotionAwareControlProperty.MotionDurationProperty.AddOwner<PopupBuddyLayer>();
-    
-    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
-        Popup.OpenMotionProperty.AddOwner<PopupBuddyLayer>();
-        
-    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
-        Popup.CloseMotionProperty.AddOwner<PopupBuddyLayer>();
-    
     public BoxShadows MaskShadows
     {
         get => GetValue(MaskShadowsProperty);
         set => SetValue(MaskShadowsProperty, value);
-    }
-    
-    public TimeSpan MotionDuration
-    {
-        get => GetValue(MotionDurationProperty);
-        set => SetValue(MotionDurationProperty, value);
-    }
-    
-    public AbstractMotion? OpenMotion
-    {
-        get => GetValue(OpenMotionProperty);
-        set => SetValue(OpenMotionProperty, value);
-    }
-
-    public AbstractMotion? CloseMotion
-    {
-        get => GetValue(CloseMotionProperty);
-        set => SetValue(CloseMotionProperty, value);
     }
         
     #endregion
@@ -57,10 +31,46 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     internal static readonly StyledProperty<CornerRadius> MaskShadowsContentCornerRadiusProperty = 
         AvaloniaProperty.Register<PopupBuddyLayer, CornerRadius>(nameof (MaskShadowsContentCornerRadius));
     
+    internal static readonly StyledProperty<bool> IsShowArrowProperty =
+        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupBuddyLayer>();
+    
+    internal static readonly StyledProperty<double> ArrowSizeProperty =
+        ArrowDecoratedBox.ArrowSizeProperty.AddOwner<PopupBuddyLayer>();
+    
+    internal static readonly StyledProperty<IBrush?> ArrowFillColorProperty = 
+        AvaloniaProperty.Register<PopupBuddyLayer, IBrush?>(nameof(ArrowFillColor));
+
+    internal static readonly StyledProperty<Direction> ArrowDirectionProperty = 
+        ArrowDecoratedBox.ArrowDirectionProperty.AddOwner<PopupBuddyLayer>();
+    
     internal CornerRadius MaskShadowsContentCornerRadius
     {
         get => GetValue(MaskShadowsContentCornerRadiusProperty);
         set => SetValue(MaskShadowsContentCornerRadiusProperty, value);
+    }
+    
+    internal bool IsShowArrow
+    {
+        get => GetValue(IsShowArrowProperty);
+        set => SetValue(IsShowArrowProperty, value);
+    }
+    
+    internal double ArrowSize
+    {
+        get => GetValue(ArrowSizeProperty);
+        set => SetValue(ArrowSizeProperty, value);
+    }
+    
+    internal IBrush? ArrowFillColor
+    {
+        get => GetValue(ArrowFillColorProperty);
+        set => SetValue(ArrowFillColorProperty, value);
+    }
+
+    internal Direction ArrowDirection
+    {
+        get => GetValue(ArrowDirectionProperty);
+        set => SetValue(ArrowDirectionProperty, value);
     }
 
     #endregion
@@ -69,8 +79,9 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     private IPopupHost? _popupHost;
     private PixelPoint? _lastBuddyPopupPosition;
     private Size? _lastBuddyPopupSize;
-    private BaseMotionActor? _motionActor;
     private Panel? _shadowRendererPanel;
+    private LayoutTransformControl? _arrowIndicatorLayout;
+    private Rect _targetArrowIndicatorLayoutBounds;
     
     public PopupBuddyLayer(Popup buddyPopup, TopLevel parent)
         : base(parent)
@@ -78,7 +89,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         _buddyPopup    = buddyPopup;
     }
     
-     private void SetupPopupHost()
+    private void SetupPopupHost()
     {
         if (_buddyPopup is IPopupHostProvider popupHostProvider)
         {
@@ -107,6 +118,11 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
             ConfigureSizeAndPosition(popupRoot);
             ConfigureShadowInfo(popupRoot.Presenter);
             ConfigurePaddingForShadows();
+            var popupMotionAction  = popupRoot.FindDescendantOfType<MotionActor>();
+            if (popupMotionAction != null)
+            {
+                MotionActor?.Follow(popupMotionAction);
+            }
         }
         _popupHost = popupHost;
     }
@@ -116,9 +132,18 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         if (presenter != null)
         {
             var content = presenter.Child;
-            if (content is IShadowMaskInfoProvider shadowMaskInfoProvider)
+            if (content is ArrowDecoratedBox arrowDecoratedBox)
             {
-                MaskShadowsContentCornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
+                if (arrowDecoratedBox is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
+                {
+                    arrowAwareShadowMaskInfoProvider.SetArrowOpacity(0.0);
+                }
+                // TODO 需要优化可以变化的正常属性
+                _targetArrowIndicatorLayoutBounds = arrowDecoratedBox.ArrowIndicatorLayoutBounds;
+                MaskShadowsContentCornerRadius    = arrowDecoratedBox.GetMaskCornerRadius();
+                this[!ArrowSizeProperty]          = arrowDecoratedBox[!ArrowDecoratedBox.ArrowSizeProperty];
+                this[!ArrowDirectionProperty]     = arrowDecoratedBox[!ArrowDecoratedBox.ArrowDirectionProperty];
+                this[!ArrowFillColorProperty]     = arrowDecoratedBox[!ArrowDecoratedBox.BackgroundProperty];
             }
             else if (content is Border bordered)
             {
@@ -168,8 +193,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         _lastBuddyPopupSize     = popupOffsetSize;
         _lastBuddyPopupPosition = popupOffset;
         
-        var topLevel    = GetTopLevel(popupRoot);
-        var scaling     = 1.0;
+        var topLevel = GetTopLevel(popupRoot);
+        var scaling  = 1.0;
         if (topLevel is WindowBase windowBase)
         {
             scaling = windowBase.DesktopScaling;
@@ -214,24 +239,9 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         {
             disposable.Dispose();
         }
-    }
-
-    protected void NotifyAboutToRunAttachMotion()
-    {
+        MotionActor?.UnFollow();
     }
     
-    protected void NotifyAttachMotionCompleted()
-    {
-    }
-    
-    protected void NotifyAboutToRunDetachMotion()
-    {
-    }
-    
-    protected void NotifyDetachMotionCompleted()
-    {
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -270,10 +280,9 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 {
                     if (arrowAwareShadowMaskInfoProvider.IsShowArrow)
                     {
-                        var maskBounds = arrowAwareShadowMaskInfoProvider.GetMaskBounds();
-                        var arrowPosition         = arrowAwareShadowMaskInfoProvider.ArrowPosition;
-                        var direction = ArrowDecoratedBox.GetDirection(arrowPosition);
-                        var delta = arrowAwareShadowMaskInfoProvider.ArrowIndicatorBounds.Height;
+                        var arrowPosition = arrowAwareShadowMaskInfoProvider.ArrowPosition;
+                        var direction     = ArrowDecoratedBox.GetDirection(arrowPosition);
+                        var delta         = arrowAwareShadowMaskInfoProvider.ArrowIndicatorBounds.Height;
                         if (direction == Direction.Bottom)
                         {
                             thickness = new Thickness(thickness.Left, thickness.Top, thickness.Right, thickness.Bottom + delta);
@@ -301,17 +310,23 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _shadowRendererPanel = e.NameScope.Find<Panel>(PopupBuddyLayerXThemeConstants.ShadowRendererPart);
+        if (_popupHost is PopupRoot popupRoot)
+        {
+            var popupMotionAction  = popupRoot.FindDescendantOfType<MotionActor>();
+            if (popupMotionAction != null)
+            {
+                MotionActor?.Follow(popupMotionAction);
+            }
+        }
+
+        _arrowIndicatorLayout = e.NameScope.Find<LayoutTransformControl>(PopupBuddyLayerThemeConstants.ArrowIndicatorLayoutPart);
+       
+        _shadowRendererPanel = e.NameScope.Find<Panel>(PopupBuddyLayerThemeConstants.ShadowRendererPart);
         if (_shadowRendererPanel != null)
         {
             var shadowControls = BuildShadowRenderers(MaskShadows);
             _shadowRendererPanel.Children.AddRange(shadowControls);
         }
-
-        // if (MotionActor != null)
-        // {
-        //     MotionActor.UseRenderTransform = true;
-        // }
     }
     
     /// <summary>
@@ -336,5 +351,40 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         }
 
         return renderers;
+    }
+    
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        var size = base.ArrangeOverride(finalSize);
+        if (IsShowArrow && _arrowIndicatorLayout != null && _shadowRendererPanel != null)
+        {
+            var shadowRenderBounds = _shadowRendererPanel.Bounds;
+            var indicatorBounds    = _arrowIndicatorLayout.Bounds;
+            var offsetX            = 0.0;
+            var offsetY            = 0.0;
+            if (ArrowDirection == Direction.Bottom)
+            {
+                offsetX = _targetArrowIndicatorLayoutBounds.X;
+                offsetY = shadowRenderBounds.Bottom;
+               
+            }
+            else if (ArrowDirection == Direction.Top)
+            {
+                offsetX = _targetArrowIndicatorLayoutBounds.X;
+                offsetY = shadowRenderBounds.Top - indicatorBounds.Height;
+            }
+            else if (ArrowDirection == Direction.Left)
+            {
+                offsetX = - indicatorBounds.Width;
+                offsetY = _targetArrowIndicatorLayoutBounds.Top;
+            }
+            else if (ArrowDirection == Direction.Right)
+            {
+                offsetX = shadowRenderBounds.Width;
+                offsetY = _targetArrowIndicatorLayoutBounds.Top;
+            }
+            _arrowIndicatorLayout.Arrange(new Rect(new Point(offsetX, offsetY), new Size(indicatorBounds.Width, indicatorBounds.Height)));
+        }
+        return size;
     }
 }

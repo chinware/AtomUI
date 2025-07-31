@@ -2,11 +2,10 @@ using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Controls.Converters;
 
 internal class DoubleToGridLengthConverter : IValueConverter
 {
-    
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is double dvalue)

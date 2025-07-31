@@ -12,8 +12,10 @@ internal static class OverlayPopupHostThemeConstants
     public const string ContentPresenterPart = "PART_ContentPresenter";
 }
 
-internal static class PopupBuddyLayerXThemeConstants
+internal static class PopupBuddyLayerThemeConstants
 {
     public const string MotionActorPart = "PART_MotionActor";
     public const string ShadowRendererPart = "PART_ShadowRenderer";
+    public const string ArrowIndicatorPart = "PART_ArrowIndicator";
+    public const string ArrowIndicatorLayoutPart = "PART_ArrowIndicatorLayout";
 }

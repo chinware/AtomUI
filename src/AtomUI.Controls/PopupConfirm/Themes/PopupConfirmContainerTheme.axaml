@@ -5,8 +5,7 @@
     <ControlTheme x:Key="{x:Type atom:PopupConfirmContainer}" TargetType="atom:PopupConfirmContainer">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="Brown">
-                    <DockPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.MainLayoutPart}"
+                <DockPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.MainLayoutPart}"
                            LastChildFill="True">
                     <StackPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.ButtonLayoutPart}"
                                 Orientation="Horizontal"
@@ -37,12 +36,11 @@
                                             DockPanel.Dock="Top" />
                             <ContentPresenter Name="{x:Static atom:PopupConfirmContainerThemeConstants.ContentPart}"
                                               Content="{TemplateBinding ConfirmContent}"
-                                              ContentTemplate="{TemplateBinding ConfirmContentTemplate}" 
-                                              IsVisible="{TemplateBinding ConfirmContent, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                              ContentTemplate="{TemplateBinding ConfirmContentTemplate}"
+                                              IsVisible="{TemplateBinding ConfirmContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         </StackPanel>
                     </DockPanel>
                 </DockPanel>
-                </Border>
             </ControlTemplate>
         </Setter>
 
@@ -62,7 +60,7 @@
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.ButtonContainerMargin}}" />
         </Style>
-        
+
         <Style Selector="^:empty-content">
             <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
                 <Setter Property="Margin" Value="0" />
@@ -78,17 +76,20 @@
 
         <Style Selector="^[ConfirmStatus=Info]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             </Style>
         </Style>
         <Style Selector="^[ConfirmStatus=Warning]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
         <Style Selector="^[ConfirmStatus=Error]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
             </Style>
         </Style>
     </ControlTheme>

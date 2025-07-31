@@ -78,7 +78,7 @@ internal class ZoomBigInMotion : AbstractMotion
     protected override void ConfigureTransitions()
     {
         base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
+        RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
     }
 
     protected override void ConfigureMotionStartValue(BaseMotionActor actor)

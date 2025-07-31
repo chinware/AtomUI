@@ -5,24 +5,22 @@
     <ControlTheme x:Key="{x:Type PopupRoot}" TargetType="PopupRoot">
         <Setter Property="Template">
             <ControlTemplate>
-                <LayoutTransformControl LayoutTransform="{TemplateBinding Transform}">
+                <atom:MotionActor Name="{x:Static atom:PopupThemeConstants.MotionActorPart}">
                     <Panel>
                         <Border Name="{x:Static atom:PopupThemeConstants.TransparencyFallbackPart}"
                                 IsHitTestVisible="False" />
                         <VisualLayerManager IsPopup="True">
-                            <atom:MotionActor Name="{x:Static atom:PopupThemeConstants.MotionActorPart}">
-                                <ContentPresenter Name="{x:Static atom:PopupThemeConstants.ContentPresenterPart}"
-                                                  Background="{TemplateBinding Background}"
-                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  Content="{TemplateBinding Content}"
-                                                  Padding="{TemplateBinding Padding}" />
-                            </atom:MotionActor>
+                            <ContentPresenter Name="{x:Static atom:PopupThemeConstants.ContentPresenterPart}"
+                                              Background="{TemplateBinding Background}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              Padding="{TemplateBinding Padding}" />
                         </VisualLayerManager>
                     </Panel>
-                </LayoutTransformControl>
+                </atom:MotionActor>
             </ControlTemplate>
         </Setter>
-        
+
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
@@ -30,6 +28,6 @@
         <Setter Property="FontFamily" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontFamily}}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontStyle" Value="Normal" />
-        
+
     </ControlTheme>
 </ResourceDictionary>

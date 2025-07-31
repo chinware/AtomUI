@@ -33,6 +33,10 @@ public class AbstractMotion : IMotion
                     Action? aboutToStart = null,
                     Action? completedAction = null)
     {
+        if (actor.IsFollowMode())
+        {
+            throw new InvalidOperationException("The Actor is in follow mode and cannot perform animations.");
+        }
         if (SpiritType == MotionSpiritType.Transition)
         {
             RunTransitions(actor, aboutToStart, completedAction);

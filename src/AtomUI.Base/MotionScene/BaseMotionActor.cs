@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -30,6 +32,8 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
     }
     
     public Control? MotionTransformRoot => Presenter;
+    
+    public bool IsFollowMode() => _followTarget != null;
 
     #endregion
 
@@ -61,6 +65,9 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
     /// 动画是否在
     /// </summary>
     protected bool Animating = false;
+
+    private BaseMotionActor? _followTarget;
+    private CompositeDisposable? _followDisposables;
 
     static BaseMotionActor()
     {
@@ -181,5 +188,21 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
             Math.Round(matrix.M22, decimals),
             matrix.M31,
             matrix.M32);
+    }
+
+    public void Follow(BaseMotionActor target)
+    {
+        _followDisposables?.Dispose();
+        _followDisposables = new CompositeDisposable(4);
+        _followDisposables.Add(BindUtils.RelayBind(target, MotionTransformProperty, this, MotionTransformProperty));
+        _followDisposables.Add(BindUtils.RelayBind(target, MotionTransformOperationsProperty, this, MotionTransformOperationsProperty));
+        _followDisposables.Add(BindUtils.RelayBind(target, OpacityProperty, this, OpacityProperty));
+        _followDisposables.Add(BindUtils.RelayBind(target, RenderTransformOriginProperty, this, RenderTransformOriginProperty));
+    }
+
+    public void UnFollow()
+    {
+        _followDisposables?.Dispose();
+        _followDisposables = null;
     }
 }

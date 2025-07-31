@@ -4,7 +4,7 @@
               xmlns:atom="https://atomui.net"
               TargetType="atom:ArrowDecoratedBox">
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="atom:ArrowDecoratedBox">
             <DockPanel
                 Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ContentLayoutPart}"
                 LastChildFill="True">
@@ -13,10 +13,12 @@
                         Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ArrowIndicatorLayoutPart}"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        IsVisible="{TemplateBinding IsShowArrow}">
+                        IsVisible="{TemplateBinding IsShowArrow}"
+                        Opacity="{TemplateBinding ArrowOpacity}">
                         <atom:ArrowIndicator
                             Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ArrowIndicatorPart}"
-                            FilledColor="{TemplateBinding Background}" />
+                            FilledColor="{TemplateBinding Background}" 
+                            ArrowSize="{TemplateBinding ArrowSize}"/>
                     </LayoutTransformControl>
                 </Panel>
                 <Border
@@ -42,10 +44,6 @@
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.Padding}}" />
         <Setter Property="ArrowSize" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.ArrowSize}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
-
-        <Style Selector="^ /template/ atom|ArrowIndicator#PART_ArrowIndicator">
-            <Setter Property="ArrowSize" Value="{DynamicResource {x:Static atom:ArrowDecoratedBoxTokenKey.ArrowSize}}" />
-        </Style>
 
         <Style Selector="^[ArrowDirection=Top]">
             <Style Selector="^ /template/ Panel#PART_ArrowPositionLayout">

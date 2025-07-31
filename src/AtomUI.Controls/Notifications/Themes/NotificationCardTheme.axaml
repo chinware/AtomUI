@@ -1,8 +1,9 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <atom:StringToSelectableTextBlockConverter x:Key="StringToSelectableTextBlockConverter" />
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters">
+    <converters:StringToSelectableTextBlockConverter x:Key="StringToSelectableTextBlockConverter" />
     <atom:NotificationProgressBarVisibleConverter x:Key="NotificationProgressBarVisibleConverter" />
     <ControlTheme x:Key="{x:Type atom:NotificationCard}" TargetType="atom:NotificationCard">
         <Setter Property="Template">

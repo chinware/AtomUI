@@ -1,9 +1,10 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
-                                     VerticalAlignment="Center" />
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters">
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
+                                           VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:ComboBoxItem}" TargetType="atom:ComboBoxItem">
         <Setter Property="Template">
             <ControlTemplate>
@@ -12,11 +13,10 @@
                     Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
                     ContentTemplate="{TemplateBinding ContentTemplate}"
                     HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" 
+                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                     CornerRadius="{TemplateBinding CornerRadius}"
                     Background="{TemplateBinding Background}"
-                    Padding="{TemplateBinding Padding}"
-                    />
+                    Padding="{TemplateBinding Padding}" />
             </ControlTemplate>
         </Setter>
 
