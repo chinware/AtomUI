@@ -134,6 +134,18 @@ public class ArrowDecoratedBox : ContentControl,
     
     internal static readonly StyledProperty<double> ArrowOpacityProperty =
         AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowOpacity), 1.0);
+    
+    internal static readonly DirectProperty<ArrowDecoratedBox, Rect> ArrowIndicatorBoundsProperty =
+        AvaloniaProperty.RegisterDirect<ArrowDecoratedBox, Rect>(
+            nameof(ArrowIndicatorBounds),
+            o => o.ArrowIndicatorBounds,
+            (o, v) => o.ArrowIndicatorBounds = v);
+    
+    internal static readonly DirectProperty<ArrowDecoratedBox, Rect> ArrowIndicatorLayoutBoundsProperty =
+        AvaloniaProperty.RegisterDirect<ArrowDecoratedBox, Rect>(
+            nameof(ArrowIndicatorLayoutBounds),
+            o => o.ArrowIndicatorLayoutBounds,
+            (o, v) => o.ArrowIndicatorLayoutBounds = v);
 
     /// <summary>
     /// 箭头的大小
@@ -159,9 +171,24 @@ public class ArrowDecoratedBox : ContentControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;
+    
+    
+    private Rect _arrowIndicatorBounds;
 
-    public Rect ArrowIndicatorBounds { get; private set; }
-    public Rect ArrowIndicatorLayoutBounds { get; private set; }
+    internal Rect ArrowIndicatorBounds
+    {
+        get => _arrowIndicatorBounds;
+        set => SetAndRaise(ArrowIndicatorBoundsProperty, ref _arrowIndicatorBounds, value);
+    }
+    
+    private Rect _arrowIndicatorLayoutBounds;
+
+    internal Rect ArrowIndicatorLayoutBounds
+    {
+        get => _arrowIndicatorLayoutBounds;
+        set => SetAndRaise(ArrowIndicatorLayoutBoundsProperty, ref _arrowIndicatorLayoutBounds, value);
+    }
+
     #endregion
 
     // 指针最顶点位置
@@ -439,8 +466,28 @@ public class ArrowDecoratedBox : ContentControl,
         _arrowPlacementFlipped     = false;
     }
 
+    ArrowPosition IArrowAwareShadowMaskInfoProvider.GetArrowPosition()
+    {
+        return ArrowPosition;
+    }
+    
+    bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
+    {
+        return IsShowArrow;
+    }
+
     void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
     {
         ArrowOpacity = opacity;
+    }
+
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds()
+    {
+        return ArrowIndicatorBounds;
+    }
+    
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorLayoutBounds()
+    {
+        return ArrowIndicatorLayoutBounds;
     }
 }

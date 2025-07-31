@@ -12,9 +12,9 @@ internal interface IShadowMaskInfoProvider
 
 internal interface IArrowAwareShadowMaskInfoProvider : IShadowMaskInfoProvider
 {
-    bool IsShowArrow { get; }
-    ArrowPosition ArrowPosition { get; }
-    Rect ArrowIndicatorBounds { get; }
-    Rect ArrowIndicatorLayoutBounds { get; }
+    bool IsShowArrow();
+    ArrowPosition GetArrowPosition();
+    Rect GetArrowIndicatorBounds();
+    Rect GetArrowIndicatorLayoutBounds();
     void SetArrowOpacity(double opacity);
 }
