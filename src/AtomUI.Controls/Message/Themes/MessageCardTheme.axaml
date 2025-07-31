@@ -5,7 +5,7 @@
     <ControlTheme x:Key="{x:Type atom:MessageCard}" TargetType="atom:MessageCard">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:MotionActorControl Name="{x:Static atom:MessageCardThemeConstants.MotionActorPart}"
+                <atom:MotionActor Name="{x:Static atom:MessageCardThemeConstants.MotionActorPart}"
                                          ClipToBounds="False">
                     <Border Name="{x:Static atom:MessageCardThemeConstants.FramePart}">
                         <DockPanel Name="{x:Static atom:MessageCardThemeConstants.HeaderContainerPart}"
@@ -18,7 +18,7 @@
                                                  Text="{TemplateBinding Message}" />
                         </DockPanel>
                     </Border>
-                </atom:MotionActorControl>
+                </atom:MotionActor>
             </ControlTemplate>
         </Setter>
 

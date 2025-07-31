@@ -5,7 +5,8 @@
     <ControlTheme x:Key="{x:Type atom:PopupConfirmContainer}" TargetType="atom:PopupConfirmContainer">
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.MainLayoutPart}"
+                <Border Background="Brown">
+                    <DockPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.MainLayoutPart}"
                            LastChildFill="True">
                     <StackPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.ButtonLayoutPart}"
                                 Orientation="Horizontal"
@@ -41,6 +42,7 @@
                         </StackPanel>
                     </DockPanel>
                 </DockPanel>
+                </Border>
             </ControlTemplate>
         </Setter>
 

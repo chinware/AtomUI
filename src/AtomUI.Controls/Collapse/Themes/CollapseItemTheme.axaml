@@ -40,12 +40,12 @@
                                 Grid.Column="2" />
                         </Grid>
                     </Border>
-                    <atom:MotionActorControl Name="{x:Static atom:CollapseItemThemeConstants.ContentMotionActorPart}">
+                    <atom:MotionActor Name="{x:Static atom:CollapseItemThemeConstants.ContentMotionActorPart}">
                         <ContentPresenter Name="{x:Static atom:CollapseItemThemeConstants.ContentPresenterPart}"
                                           Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           BorderThickness="{TemplateBinding ContentBorderThickness}" />
-                    </atom:MotionActorControl>
+                    </atom:MotionActor>
                 </DockPanel>
             </ControlTemplate>
         </Setter>

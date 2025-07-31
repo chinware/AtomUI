@@ -1,19 +1,19 @@
-using AtomUI.Data;
+using AtomUI.Controls.Themes;
 using AtomUI.Media;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
+internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
 {
     #region 公共属性定义
-
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
         Border.BoxShadowProperty.AddOwner<PopupBuddyLayer>();
     
@@ -49,27 +49,36 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         get => GetValue(CloseMotionProperty);
         set => SetValue(CloseMotionProperty, value);
     }
-    
+        
     #endregion
 
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<CornerRadius> MaskShadowsContentCornerRadiusProperty = 
+        AvaloniaProperty.Register<PopupBuddyLayer, CornerRadius>(nameof (MaskShadowsContentCornerRadius));
+    
+    internal CornerRadius MaskShadowsContentCornerRadius
+    {
+        get => GetValue(MaskShadowsContentCornerRadiusProperty);
+        set => SetValue(MaskShadowsContentCornerRadiusProperty, value);
+    }
+
+    #endregion
+    
     private Popup _buddyPopup;
     private IPopupHost? _popupHost;
     private PixelPoint? _lastBuddyPopupPosition;
     private Size? _lastBuddyPopupSize;
-    
-    internal readonly PopupBuddyDecorator BuddyDecorator;
+    private BaseMotionActor? _motionActor;
+    private Panel? _shadowRendererPanel;
     
     public PopupBuddyLayer(Popup buddyPopup, TopLevel parent)
         : base(parent)
     {
         _buddyPopup    = buddyPopup;
-        BuddyDecorator = new PopupBuddyDecorator(_buddyPopup);
-        BindUtils.RelayBind(this, MaskShadowsProperty, BuddyDecorator, PopupBuddyDecorator.MaskShadowsProperty);
-        SetMotionActor(BuddyDecorator);
-        BuddyDecorator.NotifyMotionTargetAddedToScene();
     }
     
-    private void SetupPopupHost()
+     private void SetupPopupHost()
     {
         if (_buddyPopup is IPopupHostProvider popupHostProvider)
         {
@@ -96,8 +105,30 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
             popupRoot.SizeChanged     += HandleBuddyPopupRootSizeChanged;
             popupRoot.PositionChanged += HandleBuddyPopupRootPositionChanged;
             ConfigureSizeAndPosition(popupRoot);
+            ConfigureShadowInfo(popupRoot.Presenter);
+            ConfigurePaddingForShadows();
         }
         _popupHost = popupHost;
+    }
+
+    private void ConfigureShadowInfo(ContentPresenter? presenter)
+    {
+        if (presenter != null)
+        {
+            var content = presenter.Child;
+            if (content is IShadowMaskInfoProvider shadowMaskInfoProvider)
+            {
+                MaskShadowsContentCornerRadius = shadowMaskInfoProvider.GetMaskCornerRadius();
+            }
+            else if (content is Border bordered)
+            {
+                MaskShadowsContentCornerRadius = bordered.CornerRadius;
+            }
+            else if (content is TemplatedControl templatedControl)
+            {
+                MaskShadowsContentCornerRadius = templatedControl.CornerRadius;
+            }
+        }
     }
 
     private void HandleBuddyPopupRootSizeChanged(object? sender, SizeChangedEventArgs e)
@@ -174,28 +205,8 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
     public void Attach()
     {
         SetupPopupHost();
-        BuddyDecorator.CaptureContentControl();
-        if (OperatingSystem.IsMacOS())
-        {
-            PlatformImpl?.SetTopmost(true);
-            var popupRoot = _popupHost as PopupRoot;
-            popupRoot?.PlatformImpl?.SetTopmost(true);
-            Show();
-            popupRoot?.Activate();
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            Show();
-            var popupRoot = _popupHost as PopupRoot;
-            popupRoot?.Hide();
-            popupRoot?.Show();
-        }
-        else
-        {
-            Show();
-        }
     }
-
+    
     public void Detach()
     {
         Hide();
@@ -203,53 +214,6 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
         {
             disposable.Dispose();
         }
-    }
-
-    public void AttachWithMotion(Action? aboutToStart = null, Action? completedAction = null)
-    {
-        BuddyDecorator.CaptureContentControl();
-        BuddyDecorator.Opacity = 0.0d;
-        BuddyDecorator.NotifySceneShowed();
-        aboutToStart?.Invoke();
-        var motion       = OpenMotion ?? new ZoomBigInMotion();
-        if (MotionDuration != TimeSpan.Zero)
-        {
-            motion.Duration = MotionDuration;
-        }
-        NotifyAboutToRunAttachMotion();
-        motion.Run(BuddyDecorator, null, () =>
-        {
-            completedAction?.Invoke();
-            if (_buddyPopup.ConfigureBlankMaskWhenMotionAwareOpen)
-            {
-                BuddyDecorator.ConfigureBlankContentControl();
-            }
-            NotifyAttachMotionCompleted();
-        });
-    }
-    
-    public void DetachWithMotion(Action? aboutToStart = null, Action? completedAction = null)
-    {
-        var motion       = CloseMotion ?? new ZoomBigOutMotion();
-        if (MotionDuration != TimeSpan.Zero)
-        {
-            motion.Duration = MotionDuration;
-        }
-        BuddyDecorator.CaptureContentControl();
-        NotifyAboutToRunDetachMotion();
-
-        Dispatcher.UIThread.Post(() =>
-        {
-            aboutToStart?.Invoke();
-            Dispatcher.UIThread.Post(() =>
-            {
-                motion.Run(BuddyDecorator, null, () =>
-                {
-                    completedAction?.Invoke();
-                    NotifyDetachMotionCompleted();
-                });
-            });
-        });
     }
 
     protected void NotifyAboutToRunAttachMotion()
@@ -277,7 +241,100 @@ internal class PopupBuddyLayer : SceneLayer, IPopupBuddyLayer, IShadowAwareLayer
             {
                 ConfigureSizeAndPosition(popupRoot);
             }
+
+            ConfigurePaddingForShadows();
+        }
+        if (this.IsAttachedToVisualTree() && _shadowRendererPanel != null)
+        {
+            if (change.Property == MaskShadowsProperty)
+            {
+                for (var i = 0; i < MaskShadows.Count; ++i)
+                {
+                    if (_shadowRendererPanel.Children[i] is Border shadowControl)
+                    {
+                        shadowControl.BoxShadow = new BoxShadows(MaskShadows[i]);
+                    }
+                }
+            }
         }
     }
 
+    private void ConfigurePaddingForShadows()
+    {
+        var thickness = MaskShadows.Thickness();
+        if (_buddyPopup is IPopupHostProvider popupHostProvider)
+        {
+            if (popupHostProvider.PopupHost is PopupRoot popupRoot)
+            {
+                if (popupRoot.Presenter?.Child is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
+                {
+                    if (arrowAwareShadowMaskInfoProvider.IsShowArrow)
+                    {
+                        var maskBounds = arrowAwareShadowMaskInfoProvider.GetMaskBounds();
+                        var arrowPosition         = arrowAwareShadowMaskInfoProvider.ArrowPosition;
+                        var direction = ArrowDecoratedBox.GetDirection(arrowPosition);
+                        var delta = arrowAwareShadowMaskInfoProvider.ArrowIndicatorBounds.Height;
+                        if (direction == Direction.Bottom)
+                        {
+                            thickness = new Thickness(thickness.Left, thickness.Top, thickness.Right, thickness.Bottom + delta);
+                        }
+                        else if (direction == Direction.Top)
+                        {
+                            thickness = new Thickness(thickness.Left, thickness.Top + delta, thickness.Right, thickness.Bottom);
+                        }
+                        else if (direction == Direction.Left)
+                        {
+                            thickness = new Thickness(thickness.Left + delta, thickness.Top, thickness.Right, thickness.Bottom);
+                        }
+                        else
+                        {
+                            thickness = new Thickness(thickness.Left, thickness.Top, thickness.Right + delta, thickness.Bottom);
+                        }
+                    }
+                }
+            }
+        }
+
+        Padding = thickness;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _shadowRendererPanel = e.NameScope.Find<Panel>(PopupBuddyLayerXThemeConstants.ShadowRendererPart);
+        if (_shadowRendererPanel != null)
+        {
+            var shadowControls = BuildShadowRenderers(MaskShadows);
+            _shadowRendererPanel.Children.AddRange(shadowControls);
+        }
+
+        // if (MotionActor != null)
+        // {
+        //     MotionActor.UseRenderTransform = true;
+        // }
+    }
+    
+    /// <summary>
+    /// 目前的 Avalonia 版本中，当控件渲染到 RenderTargetBitmap 的时候，如果 BoxShadows 的 Count > 1 的时候，如果不是主阴影，后面的阴影如果
+    /// 指定 offset，再 RenderScaling > 1 的情况下是错的。
+    /// </summary>
+    /// <returns></returns>
+    private List<Control> BuildShadowRenderers(in BoxShadows shadows)
+    {
+        // 不知道这里为啥不行
+        var renderers = new List<Control>();
+        for (var i = 0; i < shadows.Count; ++i)
+        {
+            var renderer = new Border
+            {
+                Background      = Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                BoxShadow       = new BoxShadows(shadows[i]),
+            };
+            renderer[!CornerRadiusProperty] = this[!MaskShadowsContentCornerRadiusProperty];
+            renderers.Add(renderer);
+        }
+
+        return renderers;
+    }
 }

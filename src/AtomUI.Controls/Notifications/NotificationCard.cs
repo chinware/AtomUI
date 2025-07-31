@@ -158,7 +158,7 @@ public class NotificationCard : ContentControl,
     private bool _isClosing;
     private readonly WindowNotificationManager _notificationManager;
     private IconButton? _closeButton;
-    private MotionActorControl? _motionActor;
+    private BaseMotionActor? _motionActor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotificationCard" /> class.
@@ -193,7 +193,7 @@ public class NotificationCard : ContentControl,
         base.OnApplyTemplate(e);
 
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardThemeConstants.CloseButtonPart);
-        _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardThemeConstants.MotionActorPart);
+        _motionActor = e.NameScope.Find<BaseMotionActor>(NotificationCardThemeConstants.MotionActorPart);
 
         if (_closeButton is not null)
         {
@@ -235,7 +235,7 @@ public class NotificationCard : ContentControl,
             }
 
             _motionActor.IsVisible = false;
-            MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.IsVisible = true; });
+            motion.Run(_motionActor, () => { _motionActor.IsVisible = true; });
         }
         else
         {
@@ -274,7 +274,7 @@ public class NotificationCard : ContentControl,
                     new CubicEaseIn());
             }
         
-            MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
+            motion.Run(_motionActor, null, () => { IsClosed = true; });
         }
         else
         {

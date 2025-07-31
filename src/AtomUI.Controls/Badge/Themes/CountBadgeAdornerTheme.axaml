@@ -5,10 +5,9 @@
     <ControlTheme x:Key="{x:Type atom:CountBadgeAdorner}" TargetType="atom:CountBadgeAdorner">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:MotionActorControl
+                <atom:MotionActor
                     Name="{x:Static atom:CountBadgeAdornerThemeConstants.IndicatorMotionActorPart}"
-                    ClipToBounds="False"
-                    UseRenderTransform="True">
+                    ClipToBounds="False">
                     <Panel
                         Name="{x:Static atom:CountBadgeAdornerThemeConstants.RootLayoutPart}">
                         <Border Name="{x:Static atom:CountBadgeAdornerThemeConstants.BadgeIndicatorPart}"
@@ -20,7 +19,7 @@
                             HorizontalAlignment="Center"
                             Text="{TemplateBinding CountText}" />
                     </Panel>
-                </atom:MotionActorControl>
+                </atom:MotionActor>
             </ControlTemplate>
         </Setter>
 

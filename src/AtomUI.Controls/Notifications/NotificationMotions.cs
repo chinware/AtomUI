@@ -37,7 +37,7 @@ internal class NotificationMoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, Offset)
             };
             startFrame.Setters.Add(transformSetter);
@@ -58,7 +58,7 @@ internal class NotificationMoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -79,7 +79,7 @@ internal class NotificationMoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -100,7 +100,7 @@ internal class NotificationMoveDownInMotion : AbstractMotion
         return actorPosition.WithY(actorPosition.Y + actorSize.Height);
     }
     
-    protected override void NotifyPreStart(MotionActorControl actor)
+    protected override void NotifyPreStart(BaseMotionActor actor)
     {
         base.NotifyPreStart(actor);
         actor.Opacity = 0.0;
@@ -138,7 +138,7 @@ internal class NotificationMoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -160,7 +160,7 @@ internal class NotificationMoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.2, 0.0, Offset / 4)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -181,7 +181,7 @@ internal class NotificationMoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, Offset)
             };
             endFrame.Setters.Add(transformSetter);
@@ -229,7 +229,7 @@ internal class NotificationMoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, -Offset)
             };
             startFrame.Setters.Add(transformSetter);
@@ -250,7 +250,7 @@ internal class NotificationMoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -271,7 +271,7 @@ internal class NotificationMoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -292,7 +292,7 @@ internal class NotificationMoveUpInMotion : AbstractMotion
         return actorPosition.WithY(actorPosition.Y - actorSize.Height);
     }
     
-    protected override void NotifyPreStart(MotionActorControl actor)
+    protected override void NotifyPreStart(BaseMotionActor actor)
     {
         base.NotifyPreStart(actor);
         actor.Opacity = 0.0;
@@ -330,7 +330,7 @@ internal class NotificationMoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -352,7 +352,7 @@ internal class NotificationMoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.2, 0.0, -Offset / 4)
             };
 
@@ -374,7 +374,7 @@ internal class NotificationMoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.0, 0.0, -Offset)
             };
 
@@ -426,7 +426,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, -Offset, 0.0)
             };
 
@@ -448,7 +448,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, IsTop ? 0.3 : 1.0, -Offset, 0.0)
             };
 
@@ -470,7 +470,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -492,7 +492,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
         return actorPosition.WithX(actorPosition.X - actorSize.Width);
     }
     
-    protected override void NotifyPreStart(MotionActorControl actor)
+    protected override void NotifyPreStart(BaseMotionActor actor)
     {
         base.NotifyPreStart(actor);
         actor.Opacity = 0.0;
@@ -530,7 +530,7 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -550,7 +550,7 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
             middleFrame.Setters.Add(opacitySetter);
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -571,7 +571,7 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.0, -Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -623,7 +623,7 @@ internal class NotificationMoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, Offset, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -644,7 +644,7 @@ internal class NotificationMoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, IsTop ? 0.3 : 1.0, Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -665,7 +665,7 @@ internal class NotificationMoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -686,7 +686,7 @@ internal class NotificationMoveRightInMotion : AbstractMotion
         return actorPosition.WithY(actorPosition.X + actorSize.Height);
     }
     
-    protected override void NotifyPreStart(MotionActorControl actor)
+    protected override void NotifyPreStart(BaseMotionActor actor)
     {
         base.NotifyPreStart(actor);
         actor.Opacity = 0.0;
@@ -724,7 +724,7 @@ internal class NotificationMoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -745,7 +745,7 @@ internal class NotificationMoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -766,7 +766,7 @@ internal class NotificationMoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.0, Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);

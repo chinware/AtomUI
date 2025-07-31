@@ -8,8 +8,8 @@ namespace AtomUI.Controls;
 
 public class ArrowIndicator : Control
 {    
-    public static readonly StyledProperty<double> ArrowSizeProperty
-        = AvaloniaProperty.Register<ArrowIndicator, double>(nameof(ArrowSize));
+    public static readonly StyledProperty<double> ArrowSizeProperty =
+        AvaloniaProperty.Register<ArrowIndicator, double>(nameof(ArrowSize));
     
     public static readonly StyledProperty<IBrush?> FilledColorProperty =
         AvaloniaProperty.Register<Border, IBrush?>(nameof(FilledColor));

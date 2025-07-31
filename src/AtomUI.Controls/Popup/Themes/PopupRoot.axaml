@@ -10,11 +10,13 @@
                         <Border Name="{x:Static atom:PopupThemeConstants.TransparencyFallbackPart}"
                                 IsHitTestVisible="False" />
                         <VisualLayerManager IsPopup="True">
-                            <ContentPresenter Name="{x:Static atom:PopupThemeConstants.ContentPresenterPart}"
-                                              Background="{TemplateBinding Background}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Content="{TemplateBinding Content}"
-                                              Padding="{TemplateBinding Padding}" />
+                            <atom:MotionActor Name="{x:Static atom:PopupThemeConstants.MotionActorPart}">
+                                <ContentPresenter Name="{x:Static atom:PopupThemeConstants.ContentPresenterPart}"
+                                                  Background="{TemplateBinding Background}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  Padding="{TemplateBinding Padding}" />
+                            </atom:MotionActor>
                         </VisualLayerManager>
                     </Panel>
                 </LayoutTransformControl>

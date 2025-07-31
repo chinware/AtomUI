@@ -9,15 +9,14 @@
                     Name="{x:Static atom:DotBadgeAdornerThemeConstants.RootLayoutPart}"
                     LastChildFill="True"
                     ClipToBounds="False">
-                    <atom:MotionActorControl
+                    <atom:MotionActor
                         Name="{x:Static atom:DotBadgeAdornerThemeConstants.IndicatorMotionActorPart}"
                         ClipToBounds="False"
-                        UseRenderTransform="True"
                         DockPanel.Dock="Left">
                         <atom:DotBadgeIndicator
                             Name="{x:Static atom:DotBadgeAdornerThemeConstants.IndicatorPart}"
                             BadgeDotColor="{TemplateBinding BadgeDotColor}" />
-                    </atom:MotionActorControl>
+                    </atom:MotionActor>
                     <Label Name="{x:Static atom:DotBadgeAdornerThemeConstants.LabelPart}"
                            Content="{TemplateBinding Text}"
                            IsVisible="{TemplateBinding IsAdornerMode, Converter={x:Static BoolConverters.Not}}" />
@@ -44,7 +43,7 @@
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:BadgeTokenKey.DotBadgeLabelMargin}}" />
         </Style>
         
-        <Style Selector="^ /template/ atom|MotionActorControl#PART_IndicatorMotionActor">
+        <Style Selector="^ /template/ atom|MotionActor#PART_IndicatorMotionActor">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:BadgeTokenKey.DotSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:BadgeTokenKey.DotSize}}" />
         </Style>

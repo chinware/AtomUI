@@ -38,7 +38,7 @@ internal class CollapseMotion : AbstractMotion
         }
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
         actor.Opacity         = 1.0;
@@ -52,7 +52,7 @@ internal class CollapseMotion : AbstractMotion
         }
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
         actor.Opacity         = 0.0;
@@ -102,7 +102,7 @@ internal class ExpandMotion : AbstractMotion
 
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
         actor.Opacity         = 0.0;
@@ -116,7 +116,7 @@ internal class ExpandMotion : AbstractMotion
         }
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         var isHorizontal = Direction == Direction.Left || Direction == Direction.Right;
         actor.Opacity         = 1.0;

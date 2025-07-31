@@ -190,7 +190,7 @@ public class CollapseItem : HeaderedContentControl,
     }
 
     private bool _tempAnimationDisabled = false;
-    private MotionActorControl? _motionActor;
+    private BaseMotionActor? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
 
@@ -232,7 +232,7 @@ public class CollapseItem : HeaderedContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _motionActor           = e.NameScope.Find<MotionActorControl>(CollapseItemThemeConstants.ContentMotionActorPart);
+        _motionActor           = e.NameScope.Find<BaseMotionActor>(CollapseItemThemeConstants.ContentMotionActorPart);
         _headerDecorator       = e.NameScope.Find<Border>(CollapseItemThemeConstants.HeaderDecoratorPart);
         _expandButton          = e.NameScope.Find<IconButton>(CollapseItemThemeConstants.ExpandButtonPart);
         
@@ -329,7 +329,7 @@ public class CollapseItem : HeaderedContentControl,
 
         InAnimating = true;
         var motion = new SlideUpInMotion(MotionDuration, new CubicEaseOut());
-        MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
+        motion.Run(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
             () => { InAnimating = false; });
     }
 
@@ -348,7 +348,7 @@ public class CollapseItem : HeaderedContentControl,
 
         InAnimating = true;
         var motion = new SlideUpOutMotion(MotionDuration, new CubicEaseIn());
-        MotionInvoker.Invoke(_motionActor, motion, null, () =>
+        motion.Run(_motionActor, null, () =>
         {
             _motionActor.SetCurrentValue(IsVisibleProperty, false);
             InAnimating = false;

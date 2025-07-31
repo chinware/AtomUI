@@ -9,7 +9,7 @@
                     <Border Name="{x:Static atom:DrawerContainerThemeConstants.MaskPart}"
                             IsVisible="{TemplateBinding IsShowMask}"
                             Background="{TemplateBinding Background}" />
-                    <atom:MotionActorControl
+                    <atom:MotionActor
                         Name="{x:Static atom:DrawerContainerThemeConstants.InfoContainerMotionActorPart}"
                         Opacity="0.0">
                         <atom:DrawerInfoContainer
@@ -24,7 +24,7 @@
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             DialogSize="{TemplateBinding DialogSize}"/>
-                    </atom:MotionActorControl>
+                    </atom:MotionActor>
                 </Panel>
             </ControlTemplate>
         </Setter>

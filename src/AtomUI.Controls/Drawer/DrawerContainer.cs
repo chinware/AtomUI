@@ -201,7 +201,7 @@ internal class DrawerContainer : ContentControl
 
     internal WeakReference<Drawer>? Drawer { get; set; }
     
-    private MotionActorControl? _motionActor;
+    private BaseMotionActor? _motionActor;
     private DrawerInfoContainer? _infoContainer;
     private ITransform? _originInfoContainerTransform;
     private bool _openAnimating;
@@ -247,7 +247,7 @@ internal class DrawerContainer : ContentControl
                 
                 var motion = BuildMotionByPlacement(Placement, MotionDuration, true);
                 
-                MotionInvoker.Invoke(_motionActor, motion, null,
+                motion.Run(_motionActor, null,
                     () =>
                     {
                         _openAnimating = false;
@@ -295,7 +295,7 @@ internal class DrawerContainer : ContentControl
             var maskRunTaskSrc  = new TaskCompletionSource();
             var moveAnimTaskSrc = new TaskCompletionSource();
             var motion          = BuildMotionByPlacement(Placement, MotionDuration, false);
-            MotionInvoker.Invoke(_motionActor, motion, null,
+            motion.Run(_motionActor, null,
                 () =>
                 {
                     _closeAnimating = false;
@@ -378,7 +378,7 @@ internal class DrawerContainer : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _motionActor   = e.NameScope.Find<MotionActorControl>(DrawerContainerThemeConstants.InfoContainerMotionActorPart);
+        _motionActor   = e.NameScope.Find<BaseMotionActor>(DrawerContainerThemeConstants.InfoContainerMotionActorPart);
         _infoContainer = e.NameScope.Find<DrawerInfoContainer>(DrawerContainerThemeConstants.InfoContainerPart);
         if (_infoContainer != null)
         {

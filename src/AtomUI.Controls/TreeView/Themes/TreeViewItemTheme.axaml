@@ -63,14 +63,14 @@
                                           ContentTemplate="{TemplateBinding HeaderTemplate}" />
                     </Grid>
                 </Border>
-                <atom:MotionActorControl
+                <atom:LayoutAwareMotionActor
                     Name="{x:Static atom:TreeViewItemThemeConstants.ItemsPresenterMotionActorPart}"
                     ClipToBounds="True"
                     IsVisible="False">
                     <ItemsPresenter Name="{x:Static atom:TreeViewItemThemeConstants.ItemsPresenterPart}"
                                     Focusable="False"
                                     ItemsPanel="{TemplateBinding ItemsPanel}" />
-                </atom:MotionActorControl>
+                </atom:LayoutAwareMotionActor>
             </StackPanel>
         </ControlTemplate>
     </Setter>

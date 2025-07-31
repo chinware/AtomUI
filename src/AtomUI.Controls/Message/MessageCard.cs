@@ -141,7 +141,7 @@ public class MessageCard : TemplatedControl,
     #endregion
 
     private bool _isClosing;
-    private MotionActorControl? _motionActor;
+    private BaseMotionActor? _motionActor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MessageCard" /> class.
@@ -207,7 +207,7 @@ public class MessageCard : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _motionActor = e.NameScope.Find<MotionActorControl>(MessageCardThemeConstants.MotionActorPart);
+        _motionActor = e.NameScope.Find<BaseMotionActor>(MessageCardThemeConstants.MotionActorPart);
         ApplyShowMotion();
         UpdatePseudoClasses();
         SetupDefaultMessageIcon();
@@ -221,7 +221,7 @@ public class MessageCard : TemplatedControl,
             {
                 _motionActor.IsVisible = false;
                 var motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
-                MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.IsVisible = true; });
+                motion.Run(_motionActor, () => { _motionActor.IsVisible = true; });
             }
             else
             {
@@ -238,7 +238,7 @@ public class MessageCard : TemplatedControl,
             {
                 var motion =
                     new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
-                MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
+                motion.Run(_motionActor, null, () => { IsClosed = true; });
             }
             else
             {

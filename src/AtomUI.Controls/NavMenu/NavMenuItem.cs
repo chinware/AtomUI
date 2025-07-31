@@ -470,7 +470,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private KeyGesture? _hotkey;
     private bool _isEmbeddedInMenu;
     private Border? _horizontalFrame;
-    private MotionActorControl? _childItemsLayoutTransform;
+    private BaseMotionActor? _childItemsLayoutTransform;
     private Border? _headerFrame;
     
     // inline
@@ -714,7 +714,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         if (Mode == NavMenuMode.Inline)
         {
             _childItemsLayoutTransform =
-                e.NameScope.Find<MotionActorControl>(InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart);
+                e.NameScope.Find<BaseMotionActor>(InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart);
             if (_childItemsLayoutTransform is not null)
             {
                 _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, IsSubMenuOpen);
@@ -1127,7 +1127,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _animating                           = true;
                 _childItemsLayoutTransform.IsVisible = true;
                 var motion = new SlideUpInMotion(_openCloseMotionDuration, new CubicEaseOut());
-                MotionInvoker.Invoke(_childItemsLayoutTransform, motion,
+                motion.Run(_childItemsLayoutTransform,
                     () => { _childItemsLayoutTransform.IsVisible = true; },
                     () =>
                     {
@@ -1155,7 +1155,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _animating                           = true;
                 _childItemsLayoutTransform.IsVisible = true;
                 var motion = new SlideUpOutMotion(_openCloseMotionDuration, new CubicEaseIn());
-                MotionInvoker.Invoke(_childItemsLayoutTransform, motion, null, () =>
+                motion.Run(_childItemsLayoutTransform, null, () =>
                 {
                     _childItemsLayoutTransform.IsVisible = false;
                     _animating                           = false;

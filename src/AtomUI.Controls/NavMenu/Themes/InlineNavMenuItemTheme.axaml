@@ -66,12 +66,12 @@
                         </Border>
                     </Panel>
 
-                    <atom:MotionActorControl
+                    <atom:LayoutAwareMotionActor
                         Name="{x:Static atom:InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart}">
                         <ItemsPresenter Name="{x:Static atom:InlineNavMenuItemThemeConstants.ChildItemsPresenterPart}"
                                         Focusable="False"
                                         ItemsPanel="{TemplateBinding ItemsPanel}" />
-                    </atom:MotionActorControl>
+                    </atom:LayoutAwareMotionActor>
                 </StackPanel>
             </ControlTemplate>
         </Setter>
@@ -82,7 +82,7 @@
                         Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalItemsPanelSpacing}}" />
             </Style>
             
-            <Style Selector="^ /template/ atom|MotionActorControl#PART_ChildItemsLayoutTransform">
+            <Style Selector="^ /template/ atom|MotionActor#PART_ChildItemsLayoutTransform">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalChildItemsMargin}}" />
             </Style>

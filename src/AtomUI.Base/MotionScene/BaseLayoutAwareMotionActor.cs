@@ -1,65 +1,20 @@
-﻿using System.Diagnostics;
-using System.Reactive.Linq;
+using System.Diagnostics;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Media.Transformation;
 
 namespace AtomUI.MotionScene;
 
-public class MotionActorControl : Decorator
+public abstract class BaseLayoutAwareMotionActor : BaseMotionActor
 {
     #region 公共属性定义
-
-    public static readonly StyledProperty<ITransform?> MotionTransformProperty =
-        AvaloniaProperty.Register<MotionActorControl, ITransform?>(nameof(MotionTransform));
-    
-    public static readonly StyledProperty<TransformOperations?> MotionTransformOperationsProperty =
-        AvaloniaProperty.Register<MotionActorControl, TransformOperations?>(nameof(MotionTransformOperations));
-
     public static readonly StyledProperty<bool> UseRenderTransformProperty =
-        AvaloniaProperty.Register<MotionActorControl, bool>(nameof(UseRenderTransform));
-
-    public ITransform? MotionTransform
-    {
-        get => GetValue(MotionTransformProperty);
-        set => SetValue(MotionTransformProperty, value);
-    }
+        AvaloniaProperty.Register<BaseLayoutAwareMotionActor, bool>(nameof(UseRenderTransform));
     
-    public TransformOperations? MotionTransformOperations
-    {
-        get => GetValue(MotionTransformOperationsProperty);
-        set => SetValue(MotionTransformOperationsProperty, value);
-    }
-
     public bool UseRenderTransform
     {
         get => GetValue(UseRenderTransformProperty);
         set => SetValue(UseRenderTransformProperty, value);
     }
-
-    public Control? MotionTransformRoot => Child;
-
     #endregion
-
-    #region 公共事件定义
-
-    public event EventHandler? PreStart;
-    public event EventHandler? Completed;
-
-    #endregion
-
-    /// <summary>
-    /// RenderTransform/MatrixTransform applied to MotionTransformRoot.
-    /// </summary>
-    private readonly MatrixTransform _matrixTransform = new();
-
-    /// <summary>
-    /// Transformation matrix corresponding to _matrixTransform.
-    /// </summary>
-    private Matrix _transformation = Matrix.Identity;
-
-    private IDisposable? _transformChangedEvent;
 
     /// <summary>
     /// Acceptable difference between two doubles.
@@ -67,81 +22,21 @@ public class MotionActorControl : Decorator
     private const double AcceptableDelta = 0.0001;
 
     /// <summary>
-    /// Number of decimals to round the Matrix to.
-    /// </summary>
-    private const int DecimalsAfterRound = 4;
-
-    /// <summary>
     /// Actual DesiredSize of Child element (the value it returned from its MeasureOverride method).
     /// </summary>
     private Size _childActualSize;
 
-    /// <summary>
-    /// 动画是否在
-    /// </summary>
-    private bool _animating = false;
-
-    static MotionActorControl()
+    private static Matrix FilterScaleTransform(Matrix matrix)
     {
-        ClipToBoundsProperty.OverrideDefaultValue<MotionActorControl>(true);
-
-        MotionTransformProperty.Changed
-                               .AddClassHandler<MotionActorControl>((x, e) => x.HandleLayoutTransformChanged(e));
-        
-        MotionTransformOperationsProperty.Changed
-                               .AddClassHandler<MotionActorControl>((x, e) => x.HandleLayoutTransformOperationsChanged(e));
-
-        ChildProperty.Changed
-                     .AddClassHandler<MotionActorControl>((x, _) => x.HandleChildChanged());
-        AffectsRender<MotionActorControl>(MotionTransformProperty);
+        return new Matrix(
+            1.0,
+            matrix.M12,
+            matrix.M21,
+            1.0,
+            matrix.M31,
+            matrix.M32);
     }
-
-    private void HandleLayoutTransformChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var newTransform = e.NewValue as Transform;
-
-        _transformChangedEvent?.Dispose();
-        _transformChangedEvent = null;
-
-        if (newTransform != null)
-        {
-            _transformChangedEvent = Observable.FromEventPattern(
-                                                   v => newTransform.Changed += v, v => newTransform.Changed -= v)
-                                               .Subscribe(_ => ApplyMotionTransform());
-        }
-
-        ApplyMotionTransform();
-    }
-
-    private void HandleLayoutTransformOperationsChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var newTransform = e.NewValue as Transform;
-
-        _transformChangedEvent?.Dispose();
-        _transformChangedEvent = null;
-
-        if (newTransform != null)
-        {
-            _transformChangedEvent = Observable.FromEventPattern(
-                                                   v => newTransform.Changed += v, v => newTransform.Changed -= v)
-                                               .Subscribe(_ => ApplyMotionTransform());
-        }
-
-        ApplyMotionTransform();
-    }
-
-    private void HandleChildChanged()
-    {
-        if (null != MotionTransformRoot)
-        {
-            // 这里我们会过滤掉 Scale 缩放
-            MotionTransformRoot.RenderTransform       = _matrixTransform;
-            MotionTransformRoot.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
-        }
-
-        ApplyMotionTransform();
-    }
-
+    
     /// <summary>
     /// Applies the layout transform on the LayoutTransformerControl content.
     /// </summary>
@@ -150,7 +45,7 @@ public class MotionActorControl : Decorator
     /// Should be used to notify the LayoutTransformer control that some aspect
     /// of its Transform property has changed.
     /// </remarks>
-    private void ApplyMotionTransform()
+    protected override void ApplyMotionTransform()
     {
         // Get the transform matrix and apply it
         Matrix? matrix = default;
@@ -169,46 +64,18 @@ public class MotionActorControl : Decorator
         }
         Debug.Assert(matrix != null);
         
-        if (_transformation == matrix)
+        if (Transformation == matrix)
         {
             return;
         }
 
-        _transformation         = matrix.Value;
-        _matrixTransform.Matrix = UseRenderTransform ? matrix.Value : FilterScaleTransform(matrix.Value);
-        RenderTransform         = _matrixTransform;
+        Transformation         = matrix.Value;
+        MatrixTransform.Matrix = UseRenderTransform ? matrix.Value : FilterScaleTransform(matrix.Value);
+        RenderTransform        = MatrixTransform;
         // New transform means re-layout is necessary
         InvalidateMeasure();
     }
-
-    /// <summary>
-    /// Rounds the non-offset elements of a Matrix to avoid issues due to floating point imprecision.
-    /// </summary>
-    /// <param name="matrix">Matrix to round.</param>
-    /// <param name="decimals">Number of decimal places to round to.</param>
-    /// <returns>Rounded Matrix.</returns>
-    private static Matrix RoundMatrix(Matrix matrix, int decimals)
-    {
-        return new Matrix(
-            Math.Round(matrix.M11, decimals),
-            Math.Round(matrix.M12, decimals),
-            Math.Round(matrix.M21, decimals),
-            Math.Round(matrix.M22, decimals),
-            matrix.M31,
-            matrix.M32);
-    }
-
-    private static Matrix FilterScaleTransform(Matrix matrix)
-    {
-        return new Matrix(
-            1.0,
-            matrix.M12,
-            matrix.M21,
-            1.0,
-            matrix.M31,
-            matrix.M32);
-    }
-
+    
     protected override Size ArrangeOverride(Size finalSize)
     {
         if (MotionTransformRoot == null || (MotionTransform == null && MotionTransformOperations == null) || UseRenderTransform)
@@ -229,7 +96,7 @@ public class MotionActorControl : Decorator
 
         // Transform the working size to find its width/height
         Rect transformedRect =
-            new Rect(0, 0, finalSizeTransformed.Width, finalSizeTransformed.Height).TransformToAABB(_transformation);
+            new Rect(0, 0, finalSizeTransformed.Width, finalSizeTransformed.Height).TransformToAABB(Transformation);
         // Create the Arrange rect to center the transformed content
         Rect finalRect = new Rect(
             -transformedRect.X + ((finalSize.Width - transformedRect.Width) / 2),
@@ -260,7 +127,7 @@ public class MotionActorControl : Decorator
         // Return result to perform the transformation
         return finalSize;
     }
-
+    
     protected override Size MeasureOverride(Size availableSize)
     {
         if (MotionTransformRoot == null || (MotionTransform == null && MotionTransformOperations == null) || UseRenderTransform)
@@ -281,7 +148,7 @@ public class MotionActorControl : Decorator
         }
 
         // Perform a measure on the MotionTransformRoot (containing Child)
-        if (MotionTransformRoot.DesiredSize == default || _animating == false)
+        if (MotionTransformRoot.DesiredSize == default || Animating == false)
         {
             MotionTransformRoot.Measure(measureSize);
         }
@@ -290,9 +157,8 @@ public class MotionActorControl : Decorator
 
         // Transform DesiredSize to find its width/height
         Rect transformedDesiredRect =
-            new Rect(0, 0, desiredSize.Width, desiredSize.Height).TransformToAABB(_transformation);
+            new Rect(0, 0, desiredSize.Width, desiredSize.Height).TransformToAABB(Transformation);
         Size transformedDesiredSize = new Size(transformedDesiredRect.Width, transformedDesiredRect.Height);
-
         // Return result to allocate enough space for the transformation
         return transformedDesiredSize;
     }
@@ -323,10 +189,10 @@ public class MotionActorControl : Decorator
         }
 
         // Capture the matrix parameters
-        double a = _transformation.M11;
-        double b = _transformation.M12;
-        double c = _transformation.M21;
-        double d = _transformation.M22;
+        double a = Transformation.M11;
+        double b = Transformation.M12;
+        double c = Transformation.M21;
+        double d = Transformation.M22;
 
         // Compute maximum possible transformed width/height based on starting width/height
         // These constraints define two lines in the positive x/y quadrant
@@ -356,7 +222,7 @@ public class MotionActorControl : Decorator
             // Check for completely unbound scenario
             computedSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
         }
-        else if (!_transformation.HasInverse)
+        else if (!Transformation.HasInverse)
         {
             // Check for singular matrix
             computedSize = new Size(0, 0);
@@ -449,18 +315,5 @@ public class MotionActorControl : Decorator
     private static bool IsSizeSmaller(Size a, Size b)
     {
         return (a.Width + AcceptableDelta < b.Width) || (a.Height + AcceptableDelta < b.Height);
-    }
-
-    internal virtual void NotifyMotionPreStart()
-    {
-        PreStart?.Invoke(this, EventArgs.Empty);
-        _animating = true;
-    }
-
-    internal virtual void NotifyMotionCompleted()
-    {
-        _animating = false;
-        InvalidateMeasure();
-        Completed?.Invoke(this, EventArgs.Empty);
     }
 }

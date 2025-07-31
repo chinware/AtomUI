@@ -149,7 +149,7 @@ internal class CountBadgeAdorner : TemplatedControl
 
     #endregion
 
-    private MotionActorControl? _indicatorMotionActor;
+    private BaseMotionActor? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
     private bool _needInitialHide;
 
@@ -165,7 +165,7 @@ internal class CountBadgeAdorner : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(CountBadgeAdornerThemeConstants.IndicatorMotionActorPart);
+        _indicatorMotionActor = e.NameScope.Get<BaseMotionActor>(CountBadgeAdornerThemeConstants.IndicatorMotionActorPart);
         if (_needInitialHide)
         {
             _indicatorMotionActor.IsVisible = false;
@@ -245,7 +245,7 @@ internal class CountBadgeAdorner : TemplatedControl
         {
             _indicatorMotionActor.IsVisible = false;
             var motion = new BadgeZoomBadgeInMotion(MotionDuration);
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, () => { _indicatorMotionActor.IsVisible = true; });
+            motion.Run(_indicatorMotionActor, () => { _indicatorMotionActor.IsVisible                   = true; });
         }
     }
 
@@ -256,8 +256,7 @@ internal class CountBadgeAdorner : TemplatedControl
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration);
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource = new CancellationTokenSource();
-
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction());
+            motion.Run(_indicatorMotionActor,  null, completedAction);
         }
         else
         {

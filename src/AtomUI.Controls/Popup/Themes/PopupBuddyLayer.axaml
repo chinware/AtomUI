@@ -1,0 +1,18 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:PopupBuddyLayer}" TargetType="atom:PopupBuddyLayer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <!-- <Border Background="Brown" Opacity="0.5"/> -->
+                    <atom:MotionActor Name="{x:Static atom:PopupBuddyLayerXThemeConstants.MotionActorPart}"
+                                             Padding="{TemplateBinding Padding}">
+                        <Panel Name="{x:Static atom:PopupBuddyLayerXThemeConstants.ShadowRendererPart}"/>
+                    </atom:MotionActor>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

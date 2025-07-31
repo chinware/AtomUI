@@ -7,9 +7,9 @@
     <ControlTheme x:Key="{x:Type atom:NotificationCard}" TargetType="atom:NotificationCard">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:MotionActorControl Name="{x:Static atom:NotificationCardThemeConstants.MotionActorPart}"
-                                         ClipToBounds="False"
-                                         UseRenderTransform="False">
+                <atom:LayoutAwareMotionActor Name="{x:Static atom:NotificationCardThemeConstants.MotionActorPart}"
+                                             ClipToBounds="False"
+                                             UseRenderTransform="False">
                     <Border Name="{x:Static atom:NotificationCardThemeConstants.FramePart}">
                         <Grid ColumnDefinitions="Auto, *"
                               RowDefinitions="Auto, *, Auto">
@@ -55,7 +55,7 @@
                             </atom:NotificationProgressBar>
                         </Grid>
                     </Border>
-                </atom:MotionActorControl>
+                </atom:LayoutAwareMotionActor>
             </ControlTemplate>
         </Setter>
 
