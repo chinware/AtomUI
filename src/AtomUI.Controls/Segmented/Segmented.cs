@@ -1,13 +1,10 @@
-﻿using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -15,7 +12,6 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(SegmentedThemeConstants.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Segmented : SelectingItemsControl,
                          IMotionAwareControl,
                          IControlSharedTokenResourcesHost
