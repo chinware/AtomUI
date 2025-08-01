@@ -343,16 +343,11 @@ public class Popup : AvaloniaPopup,
     
     private void CreateBuddyLayer()
     {
-        if (_buddyLayer != null)
-        {
-            _buddyLayer.Detach();
-        }
-        
+        _buddyLayer?.Detach();
         var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         Debug.Assert(topLevel is not null);
         _buddyLayer         = new PopupBuddyLayer(this, topLevel);
         _buddyLayer.Topmost = true;
-        BindUtils.RelayBind(this, MaskShadowsProperty, _buddyLayer, PopupBuddyLayer.MaskShadowsProperty);
     }
 
     internal (bool, bool) CalculateFlipInfo(Size translatedSize, Rect anchorRect, PopupAnchor anchor,
@@ -608,19 +603,16 @@ public class Popup : AvaloniaPopup,
         Open();
         Debug.Assert(MotionActor != null);
         _buddyLayer?.Show();
-
-        var motion       = OpenMotion ?? new ZoomBigInMotion();
-        if (MotionDuration != TimeSpan.Zero)
-        {
-            motion.Duration = MotionDuration;
-        }
-
+        
         _openAnimating = true;
         using (BeginIgnoringIsOpen())
         {
             SetCurrentValue(IsMotionAwareOpenProperty, true);
         }
-        motion.Run(MotionActor, null, () =>
+        
+        var shadowAwareLayer = _buddyLayer as IShadowAwareLayer;
+        Debug.Assert(shadowAwareLayer != null);
+        shadowAwareLayer.RunOpenMotion(null, () =>
         {
             opened?.Invoke();
             _isNeedWaitFlipSync = false;
@@ -667,13 +659,12 @@ public class Popup : AvaloniaPopup,
             SetCurrentValue(IsMotionAwareOpenProperty, false);
         }
         
-        var motion       = CloseMotion ?? new ZoomBigOutMotion();
-        if (MotionDuration != TimeSpan.Zero)
-        {
-            motion.Duration = MotionDuration;
-        }
         _closeAnimating    = true;
-        motion.Run(MotionActor, null, () =>
+        
+        var shadowAwareLayer = _buddyLayer as IShadowAwareLayer;
+        Debug.Assert(shadowAwareLayer != null);
+        
+        shadowAwareLayer.RunCloseMotion(null, () =>
         {
             _buddyLayer?.Hide();
             Close();

@@ -20,8 +20,8 @@ namespace AtomUI.Controls;
 public class ToolTip : ContentControl,
                        IControlSharedTokenResourcesHost,
                        IWaveSpiritAwareControl,
-                       IPopupHostProvider,
-                       IShadowMaskInfoProvider
+                       IArrowAwareShadowMaskInfoProvider,
+                       IPopupHostProvider
 {
     #region 公共属性定义
 
@@ -348,16 +348,52 @@ public class ToolTip : ContentControl,
         Debug.Assert(_arrowDecoratedBox != null);
         return _arrowDecoratedBox.GetMaskCornerRadius();
     }
-
+    
     public Rect GetMaskBounds()
     {
         Debug.Assert(_arrowDecoratedBox != null);
         return _arrowDecoratedBox.GetMaskBounds();
     }
-
+    
     public IBrush? GetMaskBackground()
     {
         return Background;
+    }
+    
+    ArrowPosition IArrowAwareShadowMaskInfoProvider.GetArrowPosition()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowPosition;
+    }
+    
+    bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.IsShowArrow;
+    }
+
+    void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        _arrowDecoratedBox.ArrowOpacity = opacity;
+    }
+
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowIndicatorBounds;
+    }
+    
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorLayoutBounds()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowIndicatorLayoutBounds;
+    }
+    
+    ArrowDecoratedBox IArrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox;
     }
 
     private void Open(Control control)

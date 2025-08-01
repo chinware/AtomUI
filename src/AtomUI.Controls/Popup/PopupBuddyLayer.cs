@@ -1,5 +1,9 @@
+using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.MotionScene;
 using Avalonia;
@@ -8,6 +12,7 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -18,12 +23,39 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
         Border.BoxShadowProperty.AddOwner<PopupBuddyLayer>();
     
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        Popup.MotionDurationProperty.AddOwner<PopupBuddyLayer>();
+
+    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty =
+        Popup.OpenMotionProperty.AddOwner<PopupBuddyLayer>();
+        
+    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
+        Popup.CloseMotionProperty.AddOwner<PopupBuddyLayer>();
+    
     public BoxShadows MaskShadows
     {
         get => GetValue(MaskShadowsProperty);
         set => SetValue(MaskShadowsProperty, value);
     }
-        
+    
+    public TimeSpan MotionDuration
+    {
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
+    }
+    
+    public AbstractMotion? OpenMotion
+    {
+        get => GetValue(OpenMotionProperty);
+        set => SetValue(OpenMotionProperty, value);
+    }
+
+    public AbstractMotion? CloseMotion
+    {
+        get => GetValue(CloseMotionProperty);
+        set => SetValue(CloseMotionProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -48,6 +80,9 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
             nameof(ArrowIndicatorLayoutBounds),
             o => o.ArrowIndicatorLayoutBounds,
             (o, v) => o.ArrowIndicatorLayoutBounds = v);
+    
+    public static readonly StyledProperty<Thickness> MotionPaddingProperty = 
+        AvaloniaProperty.Register<PopupBuddyLayer, Thickness>(nameof (MotionPadding));
     
     internal CornerRadius MaskShadowsContentCornerRadius
     {
@@ -78,7 +113,6 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         get => GetValue(ArrowDirectionProperty);
         set => SetValue(ArrowDirectionProperty, value);
     }
-
         
     private Rect _arrowIndicatorLayoutBounds;
 
@@ -86,6 +120,12 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     {
         get => _arrowIndicatorLayoutBounds;
         set => SetAndRaise(ArrowIndicatorLayoutBoundsProperty, ref _arrowIndicatorLayoutBounds, value);
+    }
+    
+    internal Thickness MotionPadding
+    {
+        get => GetValue(MotionPaddingProperty);
+        set => SetValue(MotionPaddingProperty, value);
     }
     
     #endregion
@@ -96,7 +136,10 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     private Size? _lastBuddyPopupSize;
     private Panel? _shadowRendererPanel;
     private LayoutTransformControl? _arrowIndicatorLayout;
-
+    private ContentPresenter? _ghostContentPresenter;
+    private CompositeDisposable? _disposables;
+    private IArrowAwareShadowMaskInfoProvider? _popupArrowDecoratedBox;
+    
     static PopupBuddyLayer()
     {
         AffectsRender<PopupBuddyLayer>(MaskShadowsContentCornerRadiusProperty, ArrowFillColorProperty);
@@ -139,11 +182,6 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
             ConfigureSizeAndPosition(popupRoot);
             ConfigureShadowInfo(popupRoot.Presenter);
             ConfigurePaddingForShadows();
-            var popupMotionAction  = popupRoot.FindDescendantOfType<MotionActor>();
-            if (popupMotionAction != null)
-            {
-                MotionActor?.Follow(popupMotionAction);
-            }
         }
         _popupHost = popupHost;
     }
@@ -153,19 +191,17 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         if (presenter != null)
         {
             var content = presenter.Child;
-            if (content is ArrowDecoratedBox arrowDecoratedBox)
+            if (content is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
             {
-                if (arrowDecoratedBox is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
-                {
-                    arrowAwareShadowMaskInfoProvider.SetArrowOpacity(0.0);
-                }
-                // TODO 需要优化可以变化的正常属性
+                var arrowDecoratedBox = arrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox();
+                _popupArrowDecoratedBox = arrowDecoratedBox;
+                _popupArrowDecoratedBox.SetArrowOpacity(0.0);
                 this[!MaskShadowsContentCornerRadiusProperty]    = arrowDecoratedBox[!ArrowDecoratedBox.CornerRadiusProperty];
                 this[!ArrowIndicatorLayoutBoundsProperty] =
                     arrowDecoratedBox[!ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty];
-                this[!ArrowSizeProperty]          = arrowDecoratedBox[!ArrowDecoratedBox.ArrowSizeProperty];
-                this[!ArrowDirectionProperty]     = arrowDecoratedBox[!ArrowDecoratedBox.ArrowDirectionProperty];
-                this[!ArrowFillColorProperty]     = arrowDecoratedBox[!ArrowDecoratedBox.BackgroundProperty];
+                this[!ArrowSizeProperty]      = arrowDecoratedBox[!ArrowDecoratedBox.ArrowSizeProperty];
+                this[!ArrowDirectionProperty] = arrowDecoratedBox[!ArrowDecoratedBox.ArrowDirectionProperty];
+                this[!ArrowFillColorProperty] = arrowDecoratedBox[!ArrowDecoratedBox.BackgroundProperty];
             }
             else if (content is Border bordered)
             {
@@ -251,17 +287,61 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
 
     public void Attach()
     {
+        _disposables                           = new CompositeDisposable();
+        _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.MaskShadowsProperty, this, MaskShadowsProperty));
+        _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.MotionDurationProperty, this, MotionDurationProperty));
+        _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.OpenMotionProperty, this, OpenMotionProperty));
+        _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.CloseMotionProperty, this, CloseMotionProperty));
         SetupPopupHost();
     }
     
     public void Detach()
     {
         Hide();
+        _disposables?.Dispose();
+        _disposables = null;
         if (this is IDisposable disposable)
         {
             disposable.Dispose();
         }
         MotionActor?.UnFollow();
+    }
+
+    public void RunOpenMotion(Action? aboutToStart = null, Action? completedAction = null)
+    {
+        Debug.Assert(MotionActor !=  null);
+        var motion       = OpenMotion ?? new ZoomBigInMotion();
+        if (MotionDuration != TimeSpan.Zero)
+        {
+            motion.Duration = MotionDuration;
+        }
+
+        var shadowAwareLayer = this as IShadowAwareLayer;
+        Debug.Assert(shadowAwareLayer != null);
+        shadowAwareLayer.NotifyOpenMotionAboutToStart();
+        motion.Run(MotionActor, aboutToStart, () =>
+        {
+            shadowAwareLayer.NotifyOpenMotionCompleted();
+            completedAction?.Invoke();
+        });
+    }
+
+    public void RunCloseMotion(Action? aboutToStart = null, Action? completedAction = null)
+    {
+        Debug.Assert(MotionActor !=  null);
+        var motion       = CloseMotion ?? new ZoomBigOutMotion();
+        if (MotionDuration != TimeSpan.Zero)
+        {
+            motion.Duration = MotionDuration;
+        }
+        var shadowAwareLayer = this as IShadowAwareLayer;
+        Debug.Assert(shadowAwareLayer != null);
+        shadowAwareLayer.NotifyCloseMotionAboutToStart();
+        motion.Run(MotionActor, aboutToStart, () =>
+        {
+            shadowAwareLayer.NotifyCloseMotionCompleted();
+            completedAction?.Invoke();
+        });
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -276,15 +356,18 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
 
             ConfigurePaddingForShadows();
         }
-        if (this.IsAttachedToVisualTree() && _shadowRendererPanel != null)
+        if (this.IsAttachedToVisualTree())
         {
             if (change.Property == MaskShadowsProperty)
             {
-                for (var i = 0; i < MaskShadows.Count; ++i)
+                if (_shadowRendererPanel != null)
                 {
-                    if (_shadowRendererPanel.Children[i] is Border shadowControl)
+                    for (var i = 0; i < MaskShadows.Count; ++i)
                     {
-                        shadowControl.BoxShadow = new BoxShadows(MaskShadows[i]);
+                        if (_shadowRendererPanel.Children[i] is Border shadowControl)
+                        {
+                            shadowControl.BoxShadow = new BoxShadows(MaskShadows[i]);
+                        }
                     }
                 }
             }
@@ -294,6 +377,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     private void ConfigurePaddingForShadows()
     {
         var thickness = MaskShadows.Thickness();
+        MotionPadding = thickness;
         if (_buddyPopup is IPopupHostProvider popupHostProvider)
         {
             if (popupHostProvider.PopupHost is PopupRoot popupRoot)
@@ -342,6 +426,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         }
 
         _arrowIndicatorLayout = e.NameScope.Find<LayoutTransformControl>(PopupBuddyLayerThemeConstants.ArrowIndicatorLayoutPart);
+        _ghostContentPresenter = e.NameScope.Find<ContentPresenter>(PopupBuddyLayerThemeConstants.GhostContentPresenterPart);
        
         _shadowRendererPanel = e.NameScope.Find<Panel>(PopupBuddyLayerThemeConstants.ShadowRendererPart);
         if (_shadowRendererPanel != null)
@@ -408,5 +493,85 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
             _arrowIndicatorLayout.Arrange(new Rect(new Point(offsetX, offsetY), new Size(indicatorBounds.Width, indicatorBounds.Height)));
         }
         return size;
+    }
+
+    void IShadowAwareLayer.NotifyOpenMotionAboutToStart()
+    {
+        Debug.Assert(_ghostContentPresenter != null);
+        var popupPresenter = _popupHost?.Presenter;
+        if (_arrowIndicatorLayout != null)
+        {
+            _arrowIndicatorLayout.IsVisible = false;
+        }
+        if (_popupArrowDecoratedBox != null)
+        {
+            _popupArrowDecoratedBox.SetArrowOpacity(1.0);
+        }
+        if (popupPresenter != null)
+        {
+            _ghostContentPresenter.IsVisible = true;
+            _ghostContentPresenter.Content = new MotionTargetBitmapControl(popupPresenter.CaptureCurrentBitmap())
+            {
+                Width = popupPresenter.DesiredSize.Width,
+                Height = popupPresenter.DesiredSize.Height,
+            };
+            Dispatcher.UIThread.Post(() =>
+            {
+                popupPresenter.Opacity         = 0.0;
+            });
+        }
+    }
+
+    void IShadowAwareLayer.NotifyOpenMotionCompleted()
+    {
+        Debug.Assert(_ghostContentPresenter != null);
+        var popupPresenter = _popupHost?.Presenter;
+
+        if (popupPresenter != null)
+        {
+            popupPresenter.Opacity         = 1.0;
+        }
+        if (_popupArrowDecoratedBox != null)
+        {
+            _popupArrowDecoratedBox.SetArrowOpacity(0.0);
+        }
+        if (_arrowIndicatorLayout != null)
+        {
+            _arrowIndicatorLayout.IsVisible = true;
+        }
+        _ghostContentPresenter.IsVisible = false;
+        _ghostContentPresenter.Content   = null;
+    }
+    
+    void IShadowAwareLayer.NotifyCloseMotionAboutToStart()
+    {
+        Debug.Assert(_ghostContentPresenter != null);
+        Debug.Assert(MotionActor != null);
+        var popupPresenter = _popupHost?.Presenter;
+        if (_arrowIndicatorLayout != null)
+        {
+            _arrowIndicatorLayout.IsVisible = false;
+        }
+        if (_popupArrowDecoratedBox != null)
+        {
+            _popupArrowDecoratedBox.SetArrowOpacity(1.0);
+        }
+        if (popupPresenter != null)
+        {
+            _ghostContentPresenter.IsVisible = true;
+            _ghostContentPresenter.Content = new MotionTargetBitmapControl(popupPresenter.CaptureCurrentBitmap())
+            {
+                Width  = popupPresenter.DesiredSize.Width,
+                Height = popupPresenter.DesiredSize.Height,
+            };
+            Dispatcher.UIThread.Post(() =>
+            {
+                popupPresenter.Opacity         = 0.0;
+            });
+        }
+    }
+
+    void IShadowAwareLayer.NotifyCloseMotionCompleted()
+    {
     }
 }

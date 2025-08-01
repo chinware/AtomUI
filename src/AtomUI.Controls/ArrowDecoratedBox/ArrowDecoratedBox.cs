@@ -203,7 +203,7 @@ public class ArrowDecoratedBox : ContentControl,
     {
         AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty);
         AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty);
-        AffectsRender<ArrowDecoratedBox>(BackgroundProperty);
+        AffectsRender<ArrowDecoratedBox>(BackgroundProperty, ArrowOpacityProperty);
     }
 
     public ArrowDecoratedBox()
@@ -489,5 +489,10 @@ public class ArrowDecoratedBox : ContentControl,
     Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorLayoutBounds()
     {
         return ArrowIndicatorLayoutBounds;
+    }
+
+    ArrowDecoratedBox IArrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox()
+    {
+        return this;
     }
 }

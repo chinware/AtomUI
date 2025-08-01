@@ -205,4 +205,5 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
         _followDisposables?.Dispose();
         _followDisposables = null;
     }
+    
 }
