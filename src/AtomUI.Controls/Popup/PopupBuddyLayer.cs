@@ -388,7 +388,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                     {
                         var arrowPosition = arrowAwareShadowMaskInfoProvider.GetArrowPosition();
                         var direction     = ArrowDecoratedBox.GetDirection(arrowPosition);
-                        var delta         = arrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds().Height;
+                        var delta         = arrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds().Height + 0.5;
                         if (direction == Direction.Bottom)
                         {
                             thickness = new Thickness(thickness.Left, thickness.Top, thickness.Right, thickness.Bottom + delta);
@@ -514,8 +514,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 Width = popupPresenter.DesiredSize.Width,
                 Height = popupPresenter.DesiredSize.Height,
             };
-            _ghostContentPresenter.IsVisible = true;
-            popupPresenter.Opacity           = 0.0;
+            _ghostContentPresenter.Opacity = 1.0;
+            popupPresenter.Opacity         = 0.0;
         }
     }
 
@@ -536,7 +536,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         {
             _arrowIndicatorLayout.IsVisible = true;
         }
-        _ghostContentPresenter.IsVisible = false;
+        _ghostContentPresenter.Opacity = 0.0;
         _ghostContentPresenter.Content   = null;
     }
     
@@ -555,15 +555,15 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         }
         if (popupPresenter != null)
         {
-            _ghostContentPresenter.IsVisible = true;
             _ghostContentPresenter.Content = new MotionTargetBitmapControl(popupPresenter.CaptureCurrentBitmap())
             {
                 Width  = popupPresenter.DesiredSize.Width,
                 Height = popupPresenter.DesiredSize.Height,
             };
+            _ghostContentPresenter.Opacity = 1.0;
             Dispatcher.UIThread.Post(() =>
             {
-                popupPresenter.Opacity         = 0.0;
+                popupPresenter.Opacity = 0.0;
             });
         }
     }
