@@ -14,7 +14,7 @@
                     <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                         <VisualLayerManager.ChromeOverlayLayer>
                             <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
-                                                IsVisible="{Binding $parent[atom:Window].IsUseNativeResizer, Converter={x:Static BoolConverters.Not}}"/>
+                                                IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}"/>
                         </VisualLayerManager.ChromeOverlayLayer>
                         <Border Name="ContentFrame"
                                 CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">

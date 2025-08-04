@@ -58,6 +58,9 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly StyledProperty<bool> IsMoveEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMoveEnabled), defaultValue: true);
     
+    public static readonly StyledProperty<bool> IsResizeEnabledProperty =
+        AvaloniaProperty.Register<Window, bool>(nameof(IsResizeEnabled), defaultValue: true);
+    
     public static readonly StyledProperty<Point> MacOSCaptionGroupOffsetProperty =
         AvaloniaProperty.Register<Window, Point>(nameof(MacOSCaptionGroupOffset), defaultValue: new Point(10, 0));
     
@@ -149,6 +152,12 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(IsMoveEnabledProperty, value);
     }
     
+    public bool IsResizeEnabled
+    {
+        get => GetValue(IsResizeEnabledProperty);
+        set => SetValue(IsResizeEnabledProperty, value);
+    }
+    
     public Point MacOSCaptionGroupOffset
     {
         get => GetValue(MacOSCaptionGroupOffsetProperty);
@@ -179,25 +188,12 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
             nameof(PreviousVisibleWindowState),
             o => o.PreviousVisibleWindowState);
     
-    internal static readonly DirectProperty<Window, bool> IsUseNativeResizerProperty =
-        AvaloniaProperty.RegisterDirect<Window, bool>(
-            nameof(IsUseNativeResizer),
-            o => o.IsUseNativeResizer);
-    
     private WindowState _previousVisibleWindowState = WindowState.Normal;
 
     internal WindowState PreviousVisibleWindowState
     {
         get => _previousVisibleWindowState;
         private set => SetAndRaise(PreviousVisibleWindowStateProperty, ref _previousVisibleWindowState, value);
-    }
-    
-    private bool _isUseNativeResizer = true;
-
-    internal bool IsUseNativeResizer
-    {
-        get => _isUseNativeResizer;
-        private set => SetAndRaise(IsUseNativeResizerProperty, ref _isUseNativeResizer, value);
     }
     
     #endregion
@@ -215,11 +211,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     {
         ScalingChanged += HandleScalingChanged;
         this.ConfigureOperationSystemType();
-
-        if (OperationSystemType == OperationSystemType.Linux)
-        {
-            IsUseNativeResizer = false;
-        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -319,9 +310,15 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         {
             return;
         }
-        WindowState = windowState == WindowState.Maximized
-            ? WindowState.Normal
-            : WindowState.Maximized;
+
+        if (windowState == WindowState.Normal && IsMaximizeCaptionButtonEnabled)
+        {
+            WindowState =  WindowState.Maximized;
+        }
+        else if (windowState == WindowState.Maximized)
+        {
+            WindowState = WindowState.Normal;
+        }
     }
 
     private void HandleTitleBarPointerPressed(object? sender, PointerPressedEventArgs e)
