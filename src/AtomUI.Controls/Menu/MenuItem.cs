@@ -12,6 +12,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input.Raw;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -33,6 +34,20 @@ public class MenuItem : AvaloniaMenuItem
         set => SetValue(SizeTypeProperty, value);
     }
 
+    #endregion
+
+    #region 公共事件定义
+
+    public static readonly RoutedEvent<RoutedEventArgs> IsCheckStateChangedEvent = 
+        RoutedEvent.Register<MenuItem, RoutedEventArgs>("IsCheckStateChanged", RoutingStrategies.Bubble);
+    
+    
+    public event EventHandler<RoutedEventArgs>? IsCheckStateChanged
+    {
+        add => AddHandler(IsCheckStateChangedEvent, value);
+        remove => RemoveHandler(IsCheckStateChangedEvent, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -69,8 +84,7 @@ public class MenuItem : AvaloniaMenuItem
         {
             UpdatePseudoClasses();
         }
-        
-        if (change.Property == IconProperty)
+        else if (change.Property == IconProperty)
         {
             if (change.OldValue is Icon oldIcon)
             {
@@ -83,10 +97,13 @@ public class MenuItem : AvaloniaMenuItem
                 newIcon.SetTemplatedParent(this);
             }
         }
-
-        if (change.Property == IsMotionEnabledProperty)
+        else if (change.Property == IsMotionEnabledProperty)
         {
             ConfigureTransitions();
+        }
+        else if (change.Property == IsCheckedProperty)
+        {
+            RaiseEvent(new RoutedEventArgs(IsCheckStateChangedEvent, this));
         }
     }
 
