@@ -31,13 +31,13 @@
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            IsChecked="{TemplateBinding IsChecked}"
-                                           IsVisible="False" />
+                                           IsVisible="False"/>
                             <atom:RadioButton Name="{x:Static atom:MenuItemThemeConstants.ToggleRadioPart}"
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center"
                                               IsChecked="{TemplateBinding IsChecked}"
                                               GroupName="{TemplateBinding GroupName}"
-                                              IsVisible="False" />
+                                              IsVisible="False"/>
                         </Panel>
 
                         <atom:IconPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemIconPresenterPart}"
@@ -90,6 +90,15 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Cursor" Value="Hand" />
 
+        <Style Selector="^ /template/ atom|CheckBox#PART_ToggleCheckbox">
+            <Setter Property="IsVisible" Value="False" />
+            <Setter Property="IsWaveSpiritEnabled" Value="False" />
+        </Style>
+        <Style Selector="^ /template/ atom|RadioButton#PART_ToggleRadio">
+            <Setter Property="IsVisible" Value="False" />
+            <Setter Property="IsWaveSpiritEnabled" Value="False" />
+        </Style>
+        
         <Style Selector="^[ToggleType=None]">
             <Style Selector="^ /template/ atom|CheckBox#PART_ToggleCheckbox">
                 <Setter Property="IsVisible" Value="False" />

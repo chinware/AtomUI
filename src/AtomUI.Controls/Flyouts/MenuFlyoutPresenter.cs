@@ -89,14 +89,12 @@ public class MenuFlyoutPresenter : MenuBase,
         : base(new DefaultMenuInteractionHandler(true))
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     public MenuFlyoutPresenter(IMenuInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     public override void Close()

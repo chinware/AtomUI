@@ -110,7 +110,6 @@ public class BaseTabControl : AvaloniaTabControl,
     public BaseTabControl()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

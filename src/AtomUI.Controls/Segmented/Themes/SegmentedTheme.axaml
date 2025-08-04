@@ -20,6 +20,7 @@
             </ControlTemplate>
         </Setter>
         
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SegmentedTokenKey.TrackPadding}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SegmentedTokenKey.TrackBg}}" />
         <Setter Property="HorizontalAlignment" Value="Left" />

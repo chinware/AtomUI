@@ -2,14 +2,12 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
 using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 
 public class RadioButton : AvaloniaRadioButton,
-                           ICustomHitTest,
                            IWaveSpiritAwareControl,
                            IControlSharedTokenResourcesHost
 {
@@ -46,11 +44,5 @@ public class RadioButton : AvaloniaRadioButton,
     public RadioButton()
     {
         this.RegisterResources();
-        this.BindWaveSpiritProperties();
-    }
-    
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 }

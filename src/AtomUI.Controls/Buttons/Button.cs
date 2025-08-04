@@ -222,7 +222,7 @@ public class Button : AvaloniaButton,
 
     private CompositeDisposable? _resourceBindingsDisposable;
     private Border? _frame;
-    protected bool _themeConfigured;
+    protected bool ThemeConfigured;
 
     static Button()
     {
@@ -237,7 +237,6 @@ public class Button : AvaloniaButton,
     public Button()
     {
         this.RegisterResources();
-        this.BindWaveSpiritProperties();
         _resourceBindingsDisposable = new CompositeDisposable();
     }
 
@@ -392,7 +391,7 @@ public class Button : AvaloniaButton,
 
     protected virtual void SetupControlThemeBindings(bool force = false)
     {
-        if (!_themeConfigured || force)
+        if (!ThemeConfigured || force)
         {
             if (ButtonType == ButtonType.Default)
             {
@@ -411,7 +410,7 @@ public class Button : AvaloniaButton,
                 TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
             }
 
-            _themeConfigured = true;
+            ThemeConfigured = true;
         }
     }
 

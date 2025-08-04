@@ -33,8 +33,7 @@ public class NavMenuItemClickEventArgs : RoutedEventArgs
 }
 
 [PseudoClasses(InlineModePC, HorizontalModePC, VerticalModePC)]
-public class NavMenu : NavMenuBase,
-                       IResourceBindingManager
+public class NavMenu : NavMenuBase, IResourceBindingManager
 {
     public const string InlineModePC = ":inline-mode";
     public const string HorizontalModePC = ":horizontal-mode";

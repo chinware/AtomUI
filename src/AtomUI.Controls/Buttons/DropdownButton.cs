@@ -148,7 +148,7 @@ public class DropdownButton : Button
     
     protected override void SetupControlThemeBindings(bool force = false)
     {
-        if (!_themeConfigured || force)
+        if (!ThemeConfigured || force)
         {
             if (ButtonType == ButtonType.Default)
             {

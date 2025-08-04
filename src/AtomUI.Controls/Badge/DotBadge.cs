@@ -119,7 +119,7 @@ public class DotBadge : Control,
     public DotBadge()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
+        this.ConfigureMotionBindingStyle();
     }
 
     private DotBadgeAdorner CreateDotBadgeAdorner()

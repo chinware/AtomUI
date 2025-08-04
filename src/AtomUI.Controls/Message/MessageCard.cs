@@ -149,7 +149,6 @@ public class MessageCard : TemplatedControl,
     public MessageCard()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     /// <summary>

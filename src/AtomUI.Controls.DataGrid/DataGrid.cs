@@ -990,7 +990,6 @@ public partial class DataGrid : TemplatedControl,
     public DataGrid()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         KeyDown += HandleKeyDown;
         KeyUp   += HandleKeyUp;
 

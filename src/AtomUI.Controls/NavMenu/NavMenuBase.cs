@@ -123,7 +123,6 @@ public abstract class NavMenuBase : SelectingItemsControl,
     public NavMenuBase()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     /// <summary>

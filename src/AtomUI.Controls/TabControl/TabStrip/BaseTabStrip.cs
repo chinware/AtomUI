@@ -90,7 +90,6 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     public BaseTabStrip()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

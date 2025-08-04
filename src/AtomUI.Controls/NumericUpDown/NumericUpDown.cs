@@ -87,6 +87,5 @@ public class NumericUpDown : AvaloniaNumericUpDown, IMotionAwareControl, IContro
     public NumericUpDown()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 }

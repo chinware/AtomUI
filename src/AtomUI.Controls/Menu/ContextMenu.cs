@@ -43,7 +43,6 @@ public class ContextMenu : AvaloniaContextMenu,
     public ContextMenu()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         // 我们在这里有一次初始化的机会
         _popup = new Popup
         {

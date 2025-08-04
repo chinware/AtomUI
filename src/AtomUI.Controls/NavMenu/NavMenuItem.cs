@@ -291,8 +291,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.IsDarkStyle,
             (o, v) => o.IsDarkStyle = v);
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
 
     internal double ActiveBarWidth
     {

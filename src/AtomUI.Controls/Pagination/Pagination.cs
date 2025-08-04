@@ -156,7 +156,7 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
             SetupSizeChanger();
         }
         
-        _templateApplied = true;
+        TemplateConfigured = true;
     }
 
     private void HandleContainerPrepared(object? sender, ContainerPreparedEventArgs args)

@@ -149,7 +149,6 @@ public class Collapse : SelectingItemsControl,
     {
         SelectionChanged += HandleSelectionChanged;
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)

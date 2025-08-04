@@ -256,7 +256,6 @@ public class ToggleSwitch : ToggleButton,
     {
         LayoutUpdated += HandleLayoutUpdated;
         this.RegisterResources();
-        this.BindWaveSpiritProperties();
     }
 
     private void HandleLayoutUpdated(object? sender, EventArgs args)

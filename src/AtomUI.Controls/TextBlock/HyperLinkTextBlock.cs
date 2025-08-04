@@ -1,7 +1,6 @@
 using System.Windows.Input;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -12,13 +11,12 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed)]
-public class HyperLinkTextBlock : TemplatedControl, ICustomHitTest, IMotionAwareControl
+public class HyperLinkTextBlock : TemplatedControl, IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -165,16 +163,6 @@ public class HyperLinkTextBlock : TemplatedControl, ICustomHitTest, IMotionAware
     private bool _commandCanExecute = true;
     private EventHandler? _canExecuteChangeHandler = default;
     private EventHandler CanExecuteChangedHandler => _canExecuteChangeHandler ??= new(CanExecuteChanged);
-    
-    public HyperLinkTextBlock()
-    {
-        this.BindMotionProperties();
-    }
-    
-    public bool HitTest(Point point)
-    {
-        return true;
-    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

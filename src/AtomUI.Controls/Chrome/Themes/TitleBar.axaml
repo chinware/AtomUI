@@ -138,6 +138,7 @@
             </Setter>
         </Style>
 
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ChromeTokenKey.TitleBarPadding}}" />
         <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:ChromeTokenKey.MinHeight}}" />
 

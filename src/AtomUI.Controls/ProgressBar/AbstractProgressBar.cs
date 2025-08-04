@@ -286,7 +286,6 @@ public abstract class AbstractProgressBar : RangeBase,
     public AbstractProgressBar()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         _effectiveSizeType = SizeType;
     }
 

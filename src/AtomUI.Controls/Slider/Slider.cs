@@ -278,8 +278,6 @@ public class Slider : RangeBase,
     public Slider()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
-        UpdatePseudoClasses(Orientation);
     }
 
     /// <inheritdoc />
@@ -327,6 +325,7 @@ public class Slider : RangeBase,
         }
     
         SetupSliderThumbPlacement();
+        UpdatePseudoClasses(Orientation);
     }
 
     // TODO 在 rangemode 下可能没有用

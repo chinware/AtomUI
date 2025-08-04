@@ -7,7 +7,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Layout;
 
 namespace AtomUI.Controls;
@@ -162,6 +161,7 @@ public class ComboBox : AvaloniaComboBox,
     #endregion
     
     private Popup? _popup;
+    private IconButton? _openIndicatorButton;
 
     static ComboBox()
     {
@@ -172,11 +172,8 @@ public class ComboBox : AvaloniaComboBox,
     public ComboBox()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
-
-    private IconButton? _openIndicatorButton;
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);

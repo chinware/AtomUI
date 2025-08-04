@@ -166,7 +166,6 @@ public class NotificationCard : ContentControl,
     public NotificationCard(WindowNotificationManager manager)
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         _notificationManager = manager;
     }
     

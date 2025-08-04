@@ -1,6 +1,5 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -13,9 +12,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.IconPkg;
 
-public class Icon : Control,
-                    ICustomHitTest,
-                    IMotionAwareControl
+public class Icon : Control, ICustomHitTest, IMotionAwareControl
 {
     public static readonly StyledProperty<IconInfo?> IconInfoProperty =
         AvaloniaProperty.Register<Icon, IconInfo?>(nameof(IconInfo));
@@ -194,7 +191,6 @@ public class Icon : Control,
         RenderTransform       = new RotateTransform();
         _sourceGeometriesData = new List<Geometry>();
         _transforms           = new List<Matrix>();
-        this.BindMotionProperties();
     }
 
     private void ConfigureTransitions()

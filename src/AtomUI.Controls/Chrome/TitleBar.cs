@@ -109,7 +109,6 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
     {
         this.ConfigureOperationSystemType();
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

@@ -95,7 +95,6 @@ public class WindowNotificationManager : TemplatedControl,
     public WindowNotificationManager()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         _cardExpiredTimer      =  new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };
         _cardExpiredTimer.Tick += HandleCardExpiredTimer;
         _cleanupTimer          =  new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50), Tag = this };

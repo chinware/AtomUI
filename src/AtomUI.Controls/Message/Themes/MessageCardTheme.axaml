@@ -22,6 +22,8 @@
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        
         <Style Selector="^ /template/ atom|IconPresenter">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MessageTokenKey.MessageIconSize}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MessageTokenKey.MessageIconSize}}" />

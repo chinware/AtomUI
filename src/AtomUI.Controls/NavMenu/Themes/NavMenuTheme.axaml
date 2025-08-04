@@ -23,7 +23,13 @@
                 </DockPanel>
             </ControlTemplate>
         </Setter>
-
+        
+        <Style Selector="^:is(atom|NavMenuBase)">
+            
+        </Style>
+        
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        
         <Style Selector="^ /template/ Rectangle#PART_HorizontalLine">
             <Setter Property="IsVisible" Value="True" />
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />

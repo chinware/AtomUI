@@ -1,5 +1,4 @@
 ﻿using AtomUI.Reflection;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -23,8 +22,8 @@ public class LineEdit : TextBox,
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
         AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<LineEdit>();
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<LineEdit>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<LineEdit>();
 
     public object? LeftAddOn
     {
@@ -63,11 +62,6 @@ public class LineEdit : TextBox,
     Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
-
-    public LineEdit()
-    {
-        this.BindMotionProperties();
-    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {

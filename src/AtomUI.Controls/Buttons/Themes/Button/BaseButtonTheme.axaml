@@ -48,6 +48,8 @@
         <Setter Property="PrimaryShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryShadow}}" />
         <Setter Property="DangerShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DangerShadow}}" />
         <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="IsWaveSpiritEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
         
         <Style Selector="^/template/ Border#PART_Frame">
             <Setter Property="Cursor" Value="Hand" />

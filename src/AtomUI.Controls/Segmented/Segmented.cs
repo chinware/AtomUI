@@ -117,7 +117,6 @@ public class Segmented : SelectingItemsControl,
     public Segmented()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         SelectionChanged += HandleSelectionChanged;
         SelectionMode    =  SelectionMode.Single;
     }

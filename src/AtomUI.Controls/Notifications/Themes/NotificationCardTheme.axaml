@@ -60,6 +60,8 @@
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="IsMotionEnabled"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="OpenCloseMotionDuration"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}" />
         <Setter Property="ClipToBounds" Value="False" />

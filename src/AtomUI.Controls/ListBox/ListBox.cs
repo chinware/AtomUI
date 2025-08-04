@@ -67,7 +67,6 @@ public class ListBox : AvaloniaListBox,
     public ListBox()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)

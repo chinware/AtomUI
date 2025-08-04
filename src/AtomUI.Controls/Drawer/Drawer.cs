@@ -212,7 +212,7 @@ public class Drawer : Control,
     public Drawer()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
+        this.ConfigureMotionBindingStyle();
     }
 
     public static Drawer? GetDrawer(Visual element)

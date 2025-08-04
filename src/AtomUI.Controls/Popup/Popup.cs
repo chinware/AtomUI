@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
-using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -182,7 +181,7 @@ public class Popup : AvaloniaPopup,
 
     public Popup()
     {
-        this.BindWaveSpiritProperties();
+        this.ConfigureWaveSpiritBindingStyle();
         Closed                         += HandleClosed;
         Opened                         += HandleOpened;
         if (this is IPopupHostProvider popupHostProvider)

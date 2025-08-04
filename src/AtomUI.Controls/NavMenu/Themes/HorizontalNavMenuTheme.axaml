@@ -28,7 +28,8 @@
                 </DockPanel>
             </ControlTemplate>
         </Setter>
-
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        
         <Style Selector="^[Mode=Horizontal]">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />

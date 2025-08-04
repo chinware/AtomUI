@@ -134,7 +134,7 @@ public class CountBadge : Control,
     public CountBadge()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
+        this.ConfigureMotionBindingStyle();
     }
 
     private CountBadgeAdorner CreateBadgeAdorner()

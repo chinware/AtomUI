@@ -298,7 +298,6 @@ public class SplitButton : ContentControl,
     {
         _flyoutStateHelper = new FlyoutStateHelper();
         this.RegisterResources();
-        this.BindWaveSpiritProperties();
     }
 
     internal virtual bool InternalIsChecked => false;

@@ -72,4 +72,9 @@
             </atom:AddOnDecoratedBox>
         </ControlTemplate>
     </Setter>
+    
+    <Style Selector="^:is(atom|LineEdit)">
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+    </Style>
+    
 </ControlTheme>

@@ -16,7 +16,10 @@
                 </atom:ArrowDecoratedBox>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:ToolTipTokenKey.ToolTipBackground}}" />
+        
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ToolTipContainer">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
             <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:ToolTipTokenKey.ToolTipMaxWidth}}" />

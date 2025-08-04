@@ -1,6 +1,5 @@
 using System.Reactive.Disposables;
 using AtomUI.Theme;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -121,22 +120,17 @@ public abstract class AbstractPagination : TemplatedControl,
     
     #endregion
     
-    protected bool _templateApplied = false;
+    protected bool TemplateConfigured = false;
     
     static AbstractPagination()
     {
         AffectsMeasure<AbstractPagination>(SizeTypeProperty);
     }
-    
-    public AbstractPagination()
-    {
-        this.BindMotionProperties();
-    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (_templateApplied)
+        if (TemplateConfigured)
         {
             if (change.Property == TotalProperty ||
                 change.Property == PageSizeProperty ||

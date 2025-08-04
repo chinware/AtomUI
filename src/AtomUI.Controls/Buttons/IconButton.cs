@@ -170,7 +170,6 @@ public class IconButton : AvaloniaButton,
     public IconButton()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

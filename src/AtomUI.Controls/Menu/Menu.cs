@@ -57,7 +57,6 @@ public class Menu : AvaloniaMenu,
     public Menu()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

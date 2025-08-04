@@ -81,9 +81,9 @@ public enum ArrowPosition
     RightEdgeAlignedBottom
 }
 
-public class ArrowDecoratedBox : ContentControl,
-                                 IArrowAwareShadowMaskInfoProvider,
-                                 IMotionAwareControl,
+public class ArrowDecoratedBox : ContentControl, 
+                                 IArrowAwareShadowMaskInfoProvider, 
+                                 IMotionAwareControl, 
                                  IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -209,7 +209,6 @@ public class ArrowDecoratedBox : ContentControl,
     public ArrowDecoratedBox()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)

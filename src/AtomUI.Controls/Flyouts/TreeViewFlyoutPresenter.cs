@@ -72,14 +72,12 @@ public class TreeViewFlyoutPresenter : FloatableTreeView,
         : base(new DefaultTreeViewInteractionHandler(true))
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     public TreeViewFlyoutPresenter(ITreeViewInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
     
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)

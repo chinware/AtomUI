@@ -194,7 +194,6 @@ public class Expander : AvaloniaExpander,
     public Expander()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     private BaseMotionActor? _motionActor;

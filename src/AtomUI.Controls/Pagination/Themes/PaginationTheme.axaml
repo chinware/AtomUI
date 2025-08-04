@@ -25,6 +25,9 @@
                 </StackPanel>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
+        
         <Style Selector="^[Align=Start]">
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>

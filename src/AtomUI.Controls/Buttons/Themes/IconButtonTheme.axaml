@@ -36,7 +36,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         <Setter Property="Background" Value="Transparent" />
-
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Style Selector="^[IsEnableHoverEffect=True]">
             <Style Selector="^:pointerover">
                 <Setter Property="Background"

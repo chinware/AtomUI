@@ -2,7 +2,6 @@
 using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -19,7 +18,7 @@ namespace AtomUI.Controls;
 [PseudoClasses(StdPseudoClass.Open)]
 public class ToolTip : ContentControl,
                        IControlSharedTokenResourcesHost,
-                       IWaveSpiritAwareControl,
+                       IMotionAwareControl,
                        IArrowAwareShadowMaskInfoProvider,
                        IPopupHostProvider
 {
@@ -337,12 +336,7 @@ public class ToolTip : ContentControl,
     {
         IsOpenProperty.Changed.Subscribe(HandleIsOpenChanged);
     }
-
-    public ToolTip()
-    {
-        this.BindMotionProperties();
-    }
-
+    
     public CornerRadius GetMaskCornerRadius()
     {
         Debug.Assert(_arrowDecoratedBox != null);
