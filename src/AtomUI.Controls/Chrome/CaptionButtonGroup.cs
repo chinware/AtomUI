@@ -176,13 +176,17 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
                       {
                           PseudoClasses.Set(StdPseudoClass.Minimized, x == WindowState.Minimized);
                           PseudoClasses.Set(StdPseudoClass.Normal, x == WindowState.Normal);
-                          PseudoClasses.Set(StdPseudoClass.Maximized, IsWindowMaximized);
+                          PseudoClasses.Set(StdPseudoClass.Maximized, x == WindowState.Maximized);
                           PseudoClasses.Set(StdPseudoClass.Fullscreen, x == WindowState.FullScreen);
+                          IsWindowMaximized  = x == WindowState.Maximized;
+                          IsWindowFullScreen = x == WindowState.FullScreen;
+                      }),
+            HostWindow.GetObservable(Window.TopmostProperty)
+                      .Subscribe(x =>
+                      {
+                          IsWindowPinned     = HostWindow.Topmost;
                       })
         };
-        IsWindowPinned     = HostWindow.Topmost;
-        IsWindowMaximized  = HostWindow.WindowState == WindowState.Maximized;
-        IsWindowFullScreen = HostWindow.WindowState == WindowState.FullScreen;
     }
 
     public virtual void Detach()
