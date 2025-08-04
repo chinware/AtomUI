@@ -161,7 +161,8 @@ internal class ThemeDefinitionReader
         // 这样处理方便一点
         var algorithmsStr = reader.ReadElementContentAsString();
         var algorithms    = algorithmsStr.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        _currentDef!.Algorithms = algorithms.Select(s => s.Trim()).Distinct().ToList();
+        var algorithmNames = algorithms.Select(s => s.Trim()).Distinct();
+        _currentDef!.Algorithms = Theme.CheckAlgorithmNames(algorithmNames.ToList());
     }
 
     private void HandleStartControlTokenElement(XmlReader reader)

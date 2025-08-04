@@ -12,7 +12,7 @@ namespace AtomUI.Theme;
 /// </summary>
 public class Theme : ITheme
 {
-    public static readonly IList<string> SUPPORTED_ALGORITHMS;
+    public static readonly IList<ThemeAlgorithm> SUPPORTED_ALGORITHMS;
 
     private string _id;
     private string? _loadErrorMsg;
@@ -43,11 +43,11 @@ public class Theme : ITheme
 
     static Theme()
     {
-        SUPPORTED_ALGORITHMS = new List<string>
+        SUPPORTED_ALGORITHMS = new List<ThemeAlgorithm>
         {
-            DefaultThemeVariantCalculator.ID,
-            DarkThemeVariantCalculator.ID,
-            CompactThemeVariantCalculator.ID
+            DefaultThemeVariantCalculator.Algorithm,
+            DarkThemeVariantCalculator.Algorithm,
+            CompactThemeVariantCalculator.Algorithm
         };
     }
 
@@ -62,10 +62,7 @@ public class Theme : ITheme
         ControlTokens                                     = new Dictionary<string, IControlDesignToken>();
     }
 
-    public List<string> ThemeResourceKeys
-    {
-        get { return ResourceDictionary.Keys.Select(s => s.ToString()!).ToList(); }
-    }
+    public List<string> ThemeResourceKeys => ResourceDictionary.Keys.Select(s => s.ToString()!).ToList();
 
     internal void Load()
     {
@@ -76,20 +73,19 @@ public class Theme : ITheme
             var themeDef           = ThemeDefinition;
             var sharedTokenConfig  = themeDef.SharedTokens;
             var controlTokenConfig = themeDef.ControlTokens;
-            CheckAlgorithmNames(themeDef.Algorithms);
 
-            if (!themeDef.Algorithms.Contains(DefaultThemeVariantCalculator.ID))
+            if (!themeDef.Algorithms.Contains(DefaultThemeVariantCalculator.Algorithm))
             {
-                themeDef.Algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
+                themeDef.Algorithms.Insert(0, DefaultThemeVariantCalculator.Algorithm);
             }
-            else if (themeDef.Algorithms.Contains(DefaultThemeVariantCalculator.ID) &&
-                     themeDef.Algorithms[0] != DefaultThemeVariantCalculator.ID)
+            else if (themeDef.Algorithms.Contains(DefaultThemeVariantCalculator.Algorithm) &&
+                     themeDef.Algorithms[0] != DefaultThemeVariantCalculator.Algorithm)
             {
-                themeDef.Algorithms.Remove(DefaultThemeVariantCalculator.ID);
-                themeDef.Algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
+                themeDef.Algorithms.Remove(DefaultThemeVariantCalculator.Algorithm);
+                themeDef.Algorithms.Insert(0, DefaultThemeVariantCalculator.Algorithm);
             }
 
-            if (themeDef.Algorithms.Contains(DarkThemeVariantCalculator.ID))
+            if (themeDef.Algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
             {
                 IsDarkMode    = true;
                 _themeVariant = ThemeVariant.Dark;
@@ -158,9 +154,10 @@ public class Theme : ITheme
                 var controlTokenType  = controlToken.GetType();
                 var tokenAttr         = controlTokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
                 var qualifiedTokenKey = GenerateTokenQualifiedKey(controlToken.GetId(), tokenAttr?.ResourceCatalog);
-                if (controlTokenConfig.ContainsKey(qualifiedTokenKey))
+                
+                if (controlTokenConfig.TryGetValue(qualifiedTokenKey, out var tokenInfo))
                 {
-                    controlToken.LoadConfig(controlTokenConfig[qualifiedTokenKey].Tokens);
+                    controlToken.LoadConfig(tokenInfo.Tokens);
                 }
 
                 controlToken.BuildResourceDictionary(ResourceDictionary);
@@ -202,30 +199,36 @@ public class Theme : ITheme
         return tokenInfos;
     }
 
-    internal static void CheckAlgorithmNames(IList<string> algorithms)
+    internal static List<ThemeAlgorithm> CheckAlgorithmNames(IList<string> algorithmNames)
     {
-        foreach (var algorithm in algorithms)
+        var algorithms = new List<ThemeAlgorithm>();
+        foreach (var algorithmName in algorithmNames)
         {
-            if (!SUPPORTED_ALGORITHMS.Contains(algorithm))
+            if (Enum.TryParse<ThemeAlgorithm>(algorithmName, out var algorithm))
             {
-                throw new ThemeLoadException(
-                    $"Algorithm: {algorithm} is not supported. Supported algorithms are: {string.Join(',', SUPPORTED_ALGORITHMS)}.");
+                if (!SUPPORTED_ALGORITHMS.Contains(algorithm))
+                {
+                    throw new ThemeLoadException(
+                        $"Algorithm: {algorithm} is not supported. Supported algorithms are: {string.Join(',', SUPPORTED_ALGORITHMS)}.");
+                }
+                algorithms.Add(algorithm);
             }
         }
+        return algorithms;
     }
 
-    internal static IThemeVariantCalculator CreateThemeVariantCalculator(string algorithmId, IThemeVariantCalculator? baseAlgorithm)
+    internal static IThemeVariantCalculator CreateThemeVariantCalculator(ThemeAlgorithm algorithmId, IThemeVariantCalculator? baseAlgorithm)
     {
         IThemeVariantCalculator calculator;
-        if (algorithmId == DefaultThemeVariantCalculator.ID)
+        if (algorithmId == DefaultThemeVariantCalculator.Algorithm)
         {
             calculator = new DefaultThemeVariantCalculator();
         }
-        else if (algorithmId == DarkThemeVariantCalculator.ID)
+        else if (algorithmId == DarkThemeVariantCalculator.Algorithm)
         {
             calculator = new DarkThemeVariantCalculator(baseAlgorithm!);
         }
-        else if (algorithmId == CompactThemeVariantCalculator.ID)
+        else if (algorithmId == CompactThemeVariantCalculator.Algorithm)
         {
             calculator = new CompactThemeVariantCalculator(baseAlgorithm!);
         }

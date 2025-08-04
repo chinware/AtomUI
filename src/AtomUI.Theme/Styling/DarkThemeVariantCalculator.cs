@@ -8,7 +8,7 @@ namespace AtomUI.Theme.Styling;
 
 public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
 {
-    public const string ID = "DarkAlgorithm";
+    public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Dark;
 
     public DarkThemeVariantCalculator(IThemeVariantCalculator calculator)
         : base(calculator)

@@ -19,8 +19,8 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     public static readonly StyledProperty<Control?> ContentProperty =
         AvaloniaProperty.Register<ThemeConfigProvider, Control?>(nameof(Content));
 
-    public static readonly StyledProperty<List<string>> AlgorithmsProperty =
-        AvaloniaProperty.Register<ThemeConfigProvider, List<string>>(nameof(Algorithms));
+    public static readonly StyledProperty<List<ThemeAlgorithm>> AlgorithmsProperty =
+        AvaloniaProperty.Register<ThemeConfigProvider, List<ThemeAlgorithm>>(nameof(Algorithms));
 
     public static readonly StyledProperty<List<TokenSetter>> SharedTokenSettersProperty =
         AvaloniaProperty.Register<ThemeConfigProvider, List<TokenSetter>>(nameof(SharedTokenSetters));
@@ -35,7 +35,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         set => SetValue(ContentProperty, value);
     }
 
-    public List<string> Algorithms
+    public List<ThemeAlgorithm> Algorithms
     {
         get => GetValue(AlgorithmsProperty);
         set => SetValue(AlgorithmsProperty, value);
@@ -82,7 +82,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         _themeVariant           = ThemeVariant.Default;
         _controlTokens          = new Dictionary<string, IControlDesignToken>();
         _sharedToken            = new DesignToken();
-        Algorithms              = new List<string>();
+        Algorithms              = new List<ThemeAlgorithm>();
         SharedTokenSetters      = new List<TokenSetter>();
         ControlTokenInfoSetters = new List<ControlTokenInfoSetter>();
     }
@@ -119,19 +119,18 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void CalculateTokenResources()
     {
-        AtomUITheme.CheckAlgorithmNames(Algorithms);
-        if (!Algorithms.Contains(DefaultThemeVariantCalculator.ID))
+        if (!Algorithms.Contains(DefaultThemeVariantCalculator.Algorithm))
         {
-            Algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
+            Algorithms.Insert(0, DefaultThemeVariantCalculator.Algorithm);
         }
-        else if (Algorithms.Contains(DefaultThemeVariantCalculator.ID) &&
-                 Algorithms[0] != DefaultThemeVariantCalculator.ID)
+        else if (Algorithms.Contains(DefaultThemeVariantCalculator.Algorithm) &&
+                 Algorithms[0] != DefaultThemeVariantCalculator.Algorithm)
         {
-            Algorithms.Remove(DefaultThemeVariantCalculator.ID);
-            Algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
+            Algorithms.Remove(DefaultThemeVariantCalculator.Algorithm);
+            Algorithms.Insert(0, DefaultThemeVariantCalculator.Algorithm);
         }
 
-        if (Algorithms.Contains(DarkThemeVariantCalculator.ID))
+        if (Algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
         {
             IsDarkMode    = true;
             _themeVariant = ThemeVariant.Dark;
