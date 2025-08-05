@@ -20,7 +20,6 @@ public static class AtomUIExtensions
             themeManager.Configure();
             ThemeManager.Current     = themeManager;
             themeManager.CultureInfo = themeManagerBuilder.CultureInfo;
-            themeManager.SetActiveTheme(themeManagerBuilder.ThemeId);
             themeManager.NotifyInitialized();
             var application = builder.Instance as Application;
             if (application == null)

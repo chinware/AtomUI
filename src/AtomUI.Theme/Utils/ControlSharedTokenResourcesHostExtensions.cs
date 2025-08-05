@@ -18,7 +18,7 @@ public static class ControlSharedTokenResourcesHostExtensions
         if (sender is Control control)
         {
             var themeVariant = TokenFinderUtils.FindThemeVariant(control);
-            if (control.Resources.ThemeDictionaries.ContainsKey(themeVariant))
+            if (themeVariant is null || control.Resources.ThemeDictionaries.ContainsKey(themeVariant))
             {
                 return;
             }

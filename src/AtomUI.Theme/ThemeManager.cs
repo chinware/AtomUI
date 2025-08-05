@@ -20,7 +20,7 @@ public class ThemeManager : Styles, IThemeManager
     public static readonly CultureInfo DEFAULT_LANGUAGE = new(LanguageCode.zh_CN);
 
     private Theme? _activatedTheme;
-    private readonly Dictionary<string, Theme> _themePool;
+    private readonly Dictionary<ThemeVariant, Theme> _themePool;
     private readonly List<string> _customThemeDirs;
     private readonly List<string> _builtInThemeDirs;
     private IList<IControlThemesProvider> _controlThemesProviders;
@@ -65,7 +65,7 @@ public class ThemeManager : Styles, IThemeManager
     
     internal ThemeManager()
     {
-        _themePool       =  new Dictionary<string, Theme>();
+        _themePool       =  new Dictionary<ThemeVariant, Theme>();
         _customThemeDirs =  new List<string>();
         var appName = Application.Current?.Name ?? DEFAULT_APP_NAME;
         _builtInThemeDirs = [Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
@@ -90,11 +90,11 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    internal ITheme LoadTheme(string id)
+    internal ITheme LoadTheme(ThemeVariant themeVariant)
     {
-        if (!_themePool.TryGetValue(id, out var theme))
+        if (!_themePool.TryGetValue(themeVariant, out var theme))
         {
-            throw new InvalidOperationException($"Theme: {id} not founded in theme pool.");
+            throw new InvalidOperationException($"Theme: {themeVariant} not founded in theme pool.");
         }
         
         if (theme.IsLoaded)
@@ -121,22 +121,22 @@ public class ThemeManager : Styles, IThemeManager
     /// <summary>
     /// 取消主题在 avalonia 里面的 resource 资源
     /// </summary>
-    /// <param name="id"></param>
-    internal void UnLoadTheme(string id)
+    /// <param name="themeVariant"></param>
+    internal void UnLoadTheme(ThemeVariant themeVariant)
     {
-        if (!_themePool.ContainsKey(id))
+        if (!_themePool.ContainsKey(themeVariant))
         {
             // TODO 需要记录一个日志
             return;
         }
 
-        if (_activatedTheme != null && _activatedTheme.Id == id)
+        if (_activatedTheme != null && _activatedTheme.ThemeVariant == themeVariant)
         {
             // TODO 需要记录一个日志
             return;
         }
 
-        var theme = _themePool[id];
+        var theme = _themePool[themeVariant];
         theme.NotifyAboutToUnload();
         ThemeAboutToUnload?.Invoke(this, new ThemeOperateEventArgs(theme));
         // TODO 进行卸载操作，暂时没有实现
@@ -144,11 +144,11 @@ public class ThemeManager : Styles, IThemeManager
         ThemeUnloaded?.Invoke(this, new ThemeOperateEventArgs(theme));
     }
 
-    public void SetActiveTheme(string id)
+    public void SetActiveTheme(ThemeVariant themeVariant)
     {
-        if (!_themePool.ContainsKey(id))
+        if (!_themePool.ContainsKey(themeVariant))
         {
-            throw new ThemeNotFoundException($"Theme {id} not found");
+            throw new ThemeNotFoundException($"Theme {themeVariant} not found");
         }
 
         var oldTheme = _activatedTheme;
@@ -157,17 +157,16 @@ public class ThemeManager : Styles, IThemeManager
             oldTheme.NotifyAboutToDeActive();
         }
 
-        var theme = _themePool[id];
+        var theme = _themePool[themeVariant];
 
         if (!theme.IsLoaded)
         {
-            LoadTheme(id);
+            LoadTheme(themeVariant);
         }
         
         theme.NotifyAboutToActive();
         ThemeAboutToChange?.Invoke(this, new ThemeOperateEventArgs(oldTheme));
         _activatedTheme = theme;
-        var themeVariant  = _activatedTheme.ThemeVariant;
         if (!Resources.ThemeDictionaries.ContainsKey(themeVariant))
         {
             Resources.ThemeDictionaries.Add(themeVariant, theme.ThemeResource);
@@ -237,7 +236,7 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    private void AddThemesFromPath(string path, Dictionary<string, Theme> themes, bool isBuiltIn)
+    private void AddThemesFromPath(string path, Dictionary<ThemeVariant, Theme> themes, bool isBuiltIn)
     {
         var searchPattern = "*.xml";
         if (Directory.Exists(path))
@@ -250,25 +249,26 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    private void AddThemesFromAssets(Dictionary<string, Theme> themes)
+    private void AddThemesFromAssets(Dictionary<ThemeVariant, Theme> themes)
     {
         var filePaths = AssetLoader.GetAssets(new Uri(DEFAULT_THEME_RES_PATH), null);
         AddThemesFromFilePaths(filePaths.Select(path => path.ToString()), themes, true);
     }
 
-    private void AddThemesFromFilePaths(IEnumerable<string> filePaths, Dictionary<string, Theme> themes, bool isBuiltIn)
+    private void AddThemesFromFilePaths(IEnumerable<string> filePaths, Dictionary<ThemeVariant, Theme> themes, bool isBuiltIn)
     {
         foreach (var filePath in filePaths)
         {
-            var themeId = Path.GetFileNameWithoutExtension(filePath);
-            if (themes.ContainsKey(themeId))
+            var themeId      = Path.GetFileNameWithoutExtension(filePath);
+            var themeVariant = new ThemeVariant(themeId, null);
+            if (themes.ContainsKey(themeVariant))
             {
                 continue;
             }
 
-            var theme = new Theme(themeId, filePath, true);
+            var theme = new Theme(themeId, filePath, isBuiltIn);
             ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
-            themes.Add(themeId, theme);
+            themes.Add(themeVariant, theme);
             theme.NotifyRegistered();
         }
     }

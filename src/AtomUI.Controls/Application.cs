@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
+using Avalonia.Styling;
 
 namespace AtomUI;
 
@@ -12,12 +13,6 @@ public class Application : AvaloniaApplication, IApplication
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Application>();
-    
-    public static readonly StyledProperty<string> ActualThemeProperty = 
-        AvaloniaProperty.Register<Application, string>(nameof(ActualTheme), inherits: true);
-    
-    internal static readonly StyledProperty<string?> RequestedThemeProperty = 
-        AvaloniaProperty.Register<Application, string?>(nameof(RequestedTheme));
 
     public bool IsMotionEnabled
     {
@@ -25,35 +20,37 @@ public class Application : AvaloniaApplication, IApplication
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public string ActualTheme => GetValue(ActualThemeProperty);
-    
-    public string? RequestedTheme
-    {
-        get => GetValue(RequestedThemeProperty);
-        set => SetValue(RequestedThemeProperty, value);
-    }
-    
     #endregion
     
     private ThemeManager? _themeManager;
+    private bool _themeManagerAttached;
 
     internal void AttachThemeManager(ThemeManager themeManager)
     {
-        _themeManager = themeManager;
-        Styles.Add(themeManager);
+        _themeManager         = themeManager;
         NotifyThemeManagerAttached(themeManager);
+        _themeManagerAttached = true;
+        RequestedThemeVariant = new ThemeVariant(_themeManager.DefaultThemeId, null);
+        Styles.Add(themeManager);
     }
     
     protected virtual void NotifyThemeManagerAttached(ThemeManager themeManager)
     {}
 
-    public void SetActiveTheme(string themeId)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        
+        base.OnPropertyChanged(change);
+        if (change.Property == ActualThemeVariantProperty && _themeManagerAttached)
+        {
+            ConfigureThemeVariant();
+        }
     }
 
-    public void SetActiveLanguage(string languageCode)
+    private void ConfigureThemeVariant()
     {
-        
+        if (_themeManager != null)
+        {
+            _themeManager.SetActiveTheme(ActualThemeVariant);
+        }
     }
 }

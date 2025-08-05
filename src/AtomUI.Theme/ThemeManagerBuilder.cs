@@ -86,7 +86,7 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
     internal ThemeManager Build()
     {
         var themeManager = new ThemeManager();
-
+        themeManager.DefaultThemeId = ThemeId;
         foreach (var controlThemesProvider in ControlThemesProviders)
         {
             themeManager.RegisterControlThemesProvider(controlThemesProvider);
