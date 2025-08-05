@@ -22,8 +22,13 @@ public static class AtomUIExtensions
             themeManager.CultureInfo = themeManagerBuilder.CultureInfo;
             themeManager.LoadTheme(themeManagerBuilder.ThemeId);
             themeManager.SetActiveTheme(themeManagerBuilder.ThemeId);
-            builder.Instance!.Styles.Add(themeManager);
             themeManager.NotifyInitialized();
+            var application = builder.Instance as Application;
+            if (application == null)
+            {
+                throw new AtomUIBootstrapException("Application is not null and its type must inherit from AtomUI.Controls.Application.");
+            }
+            application.AttachThemeManager(themeManager);
             themeManagerBuilder = null;
         });
         return builder.WithInterFont();

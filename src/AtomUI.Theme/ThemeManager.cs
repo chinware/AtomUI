@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,8 +14,9 @@ namespace AtomUI.Theme;
 public class ThemeManager : Styles, IThemeManager
 {
     public const string THEME_DIR = "Themes";
-    public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
+    public const string DEFAULT_THEME_ID = "DaybreakBlue";
     public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
+    public const string DEFAULT_APP_NAME = "AtomUIApplication";
     public static readonly CultureInfo DEFAULT_LANGUAGE = new(LanguageCode.zh_CN);
 
     private Theme? _activatedTheme;
@@ -63,18 +65,11 @@ public class ThemeManager : Styles, IThemeManager
     
     internal ThemeManager()
     {
-        Initialized += (sender, args) =>
-        {
-
-        };
         _themePool       =  new Dictionary<string, Theme>();
         _customThemeDirs =  new List<string>();
-        var appName = Application.Current?.Name ?? "AtomUIApplication";
-        _builtInThemeDirs = new List<string>
-        {
-            Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
-                THEME_DIR)
-        };
+        var appName = Application.Current?.Name ?? DEFAULT_APP_NAME;
+        _builtInThemeDirs = [Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
+            THEME_DIR)];
         DefaultThemeId          = DEFAULT_THEME_ID;
         _controlThemesProviders = new List<IControlThemesProvider>();
         ControlTokenTypes       = new List<Type>();
@@ -102,12 +97,11 @@ public class ThemeManager : Styles, IThemeManager
             ScanThemes();
         }
 
-        if (!_themePool.ContainsKey(id))
+        if (!_themePool.TryGetValue(id, out var theme))
         {
             throw new InvalidOperationException($"Theme: {id} not founded in theme pool.");
         }
-
-        var theme = _themePool[id];
+        
         if (theme.IsLoaded)
         {
             // TODO 这里记录一个日志
@@ -208,19 +202,18 @@ public class ThemeManager : Styles, IThemeManager
         // 最开始的是用户指定的目录
         foreach (var path in _customThemeDirs)
         {
-            AddThemesFromPath(path, _themePool);
+            AddThemesFromPath(path, _themePool, false);
         }
 
         // 优先级从高到低
         foreach (var path in _builtInThemeDirs)
         {
-            AddThemesFromPath(path, _themePool);
+            AddThemesFromPath(path, _themePool, false);
         }
 
         // Assets 中的默认主题
         AddThemesFromAssets(_themePool);
-
-        // TODO 如果这里为空的化需要记录一个日志
+        Debug.Assert(_themePool.Count > 0);
     }
 
     private ResourceDictionary TryGetLanguageResource(CultureInfo locale)
@@ -245,7 +238,7 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    private void AddThemesFromPath(string path, Dictionary<string, Theme> themes)
+    private void AddThemesFromPath(string path, Dictionary<string, Theme> themes, bool isBuiltIn)
     {
         var searchPattern = "*.xml";
         if (Directory.Exists(path))
@@ -253,7 +246,7 @@ public class ThemeManager : Styles, IThemeManager
             var files = Directory.GetFiles(path, searchPattern);
             if (files.Length > 0)
             {
-                AddThemesFromFilePaths(files, themes);
+                AddThemesFromFilePaths(files, themes, isBuiltIn);
             }
         }
     }
@@ -261,10 +254,10 @@ public class ThemeManager : Styles, IThemeManager
     private void AddThemesFromAssets(Dictionary<string, Theme> themes)
     {
         var filePaths = AssetLoader.GetAssets(new Uri(DEFAULT_THEME_RES_PATH), null);
-        AddThemesFromFilePaths(filePaths.Select(path => path.ToString()), themes);
+        AddThemesFromFilePaths(filePaths.Select(path => path.ToString()), themes, true);
     }
 
-    private void AddThemesFromFilePaths(IEnumerable<string> filePaths, Dictionary<string, Theme> themes)
+    private void AddThemesFromFilePaths(IEnumerable<string> filePaths, Dictionary<string, Theme> themes, bool isBuiltIn)
     {
         foreach (var filePath in filePaths)
         {
@@ -274,7 +267,7 @@ public class ThemeManager : Styles, IThemeManager
                 continue;
             }
 
-            var theme = new Theme(themeId, filePath);
+            var theme = new Theme(themeId, filePath, true);
             ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
             themes.Add(themeId, theme);
             theme.NotifyRegistered();
@@ -314,9 +307,13 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    internal void NotifyInitialized()
+    internal virtual void NotifyInitialized()
     {
         Initialized?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal virtual void NotifyAttachedToApplication()
+    {
     }
 }
 

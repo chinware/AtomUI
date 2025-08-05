@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Theme name="Daybreak Blue Dark">
+<Theme Name="Daybreak Blue" IsDefault="true">
     <Algorithms>DarkAlgorithm</Algorithms>
     <SharedTokens>
     </SharedTokens>

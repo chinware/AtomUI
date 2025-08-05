@@ -2,10 +2,11 @@
 
 namespace AtomUI.Theme;
 
-public class ThemeDefinition
+internal class ThemeDefinition
 {
     public string Id { get; }
     public string DisplayName { get; set; }
+    public bool IsDefault { get; set; }
     public IList<ThemeAlgorithm> Algorithms { get; set; }
     public IDictionary<string, ControlTokenConfigInfo> ControlTokens { get; set; }
     public IDictionary<string, string> SharedTokens { get; set; }

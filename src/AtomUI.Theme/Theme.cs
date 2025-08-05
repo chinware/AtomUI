@@ -18,14 +18,15 @@ public class Theme : ITheme
     private string? _loadErrorMsg;
     private ThemeVariant _themeVariant;
     private DesignToken _sharedToken;
+    private bool _isBuiltIn;
 
     protected bool Loaded;
     protected bool LoadedStatus = true;
     protected bool Activated;
     protected IThemeVariantCalculator? ThemeVariantCalculator;
-    protected ThemeDefinition? ThemeDefinition;
     protected ResourceDictionary ResourceDictionary;
     protected Dictionary<string, IControlDesignToken> ControlTokens;
+    internal ThemeDefinition? ThemeDefinition;
 
     public string DefinitionFilePath { get; }
 
@@ -38,6 +39,7 @@ public class Theme : ITheme
     internal ResourceDictionary ThemeResource => ResourceDictionary;
     public bool IsDarkMode { get; protected set; }
     public bool IsActivated => Activated;
+    public bool IsBuiltIn => _isBuiltIn;
 
     public DesignToken SharedToken => _sharedToken;
 
@@ -51,15 +53,16 @@ public class Theme : ITheme
         };
     }
 
-    public Theme(string id, string defFilePath)
+    public Theme(string id, string defFilePath, bool isBuiltIn)
     {
         _id                                               = id;
         DefinitionFilePath                                = defFilePath;
-        _themeVariant                                     = ThemeVariant.Default;
         ResourceDictionary                                = new ResourceDictionary();
         (ResourceDictionary as IThemeVariantProvider).Key = _themeVariant;
         _sharedToken                                      = new DesignToken();
         ControlTokens                                     = new Dictionary<string, IControlDesignToken>();
+        _isBuiltIn                                        = isBuiltIn;
+        _themeVariant                                     = new ThemeVariant(id, null);
     }
 
     public List<string> ThemeResourceKeys => ResourceDictionary.Keys.Select(s => s.ToString()!).ToList();
@@ -71,6 +74,9 @@ public class Theme : ITheme
             ThemeDefinition = new ThemeDefinition(_id);
             NotifyLoadThemeDef();
             var themeDef           = ThemeDefinition;
+
+            _themeVariant = ThemeVariant.Default;
+            
             var sharedTokenConfig  = themeDef.SharedTokens;
             var controlTokenConfig = themeDef.ControlTokens;
 
