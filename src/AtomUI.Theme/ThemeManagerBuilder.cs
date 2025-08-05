@@ -14,7 +14,7 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
 
     public CultureInfo CultureInfo { get; private set; }
     public string ThemeId { get; private set; }
-    public AppBuilder AppBuilder { get; private set; }
+    public AppBuilder AppBuilder { get; }
 
     private HashSet<string> _registeredTokenTypes;
     private HashSet<string> _registeredControlThemesProviders;
@@ -73,12 +73,12 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
         _registeredLanguageProviders.Add(id);
     }
 
-    public void UseTheme(string themeId)
+    public void WithDefaultTheme(string themeId)
     {
         ThemeId = themeId;
     }
 
-    public void UseCultureInfo(CultureInfo cultureInfo)
+    public void WithDefaultCultureInfo(CultureInfo cultureInfo)
     {
         CultureInfo = cultureInfo;
     }

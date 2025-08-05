@@ -17,6 +17,6 @@ public interface IThemeManagerBuilder
     void AddControlThemesProvider(IControlThemesProvider controlThemesProvider);
     void AddLanguageProviders(AbstractLanguageProvider languageProvider);
     
-    void UseTheme(string themeId);
-    void UseCultureInfo(CultureInfo cultureInfo);
+    void WithDefaultTheme(string themeId);
+    void WithDefaultCultureInfo(CultureInfo cultureInfo);
 }
