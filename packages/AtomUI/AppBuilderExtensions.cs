@@ -6,11 +6,11 @@ namespace AtomUI.Theme;
 
 public static class AtomUIExtensions
 {
-    public static AppBuilder UseAtomUI(this AppBuilder builder, Action<ThemeManagerBuilder>? themeConfigureAction = null)
+    public static AppBuilder UseAtomUI(this AppBuilder builder, Action<IThemeManagerBuilder>? themeConfigureAction = null)
     {
         var themeManagerBuilder = new ThemeManagerBuilder(builder);
         themeManagerBuilder.WithDefaultCultureInfo(new CultureInfo(LanguageCode.en_US));
-        themeManagerBuilder.WithDefaultTheme(ThemeManager.DEFAULT_THEME_ID);
+        themeManagerBuilder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             
         themeConfigureAction?.Invoke(themeManagerBuilder);
         

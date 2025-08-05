@@ -6,6 +6,7 @@ namespace AtomUI.Theme;
 public interface IThemeManagerBuilder
 {
     IList<Type> ControlDesignTokens { get; }
+    IList<IThemeAssetPathProvider> ThemeAssetPathProviders { get; }
     IList<IControlThemesProvider> ControlThemesProviders { get; }
     IList<AbstractLanguageProvider> LanguageProviders { get; }
     IList<EventHandler> InitializedHandlers { get; }
@@ -14,6 +15,7 @@ public interface IThemeManagerBuilder
     AppBuilder AppBuilder { get; }
     
     void AddControlToken(Type tokenType);
+    void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider);
     void AddControlThemesProvider(IControlThemesProvider controlThemesProvider);
     void AddLanguageProviders(AbstractLanguageProvider languageProvider);
     

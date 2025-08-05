@@ -19,8 +19,8 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     public static readonly StyledProperty<Control?> ContentProperty =
         AvaloniaProperty.Register<ThemeConfigProvider, Control?>(nameof(Content));
 
-    public static readonly StyledProperty<List<ThemeAlgorithm>> AlgorithmsProperty =
-        AvaloniaProperty.Register<ThemeConfigProvider, List<ThemeAlgorithm>>(nameof(Algorithms));
+    public static readonly StyledProperty<List<string>> AlgorithmsProperty =
+        AvaloniaProperty.Register<ThemeConfigProvider, List<string>>(nameof(Algorithms));
 
     public static readonly StyledProperty<List<TokenSetter>> SharedTokenSettersProperty =
         AvaloniaProperty.Register<ThemeConfigProvider, List<TokenSetter>>(nameof(SharedTokenSetters));
@@ -35,7 +35,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         set => SetValue(ContentProperty, value);
     }
 
-    public List<ThemeAlgorithm> Algorithms
+    public List<string> Algorithms
     {
         get => GetValue(AlgorithmsProperty);
         set => SetValue(AlgorithmsProperty, value);
@@ -54,18 +54,19 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     }
 
     public DesignToken SharedToken => _sharedToken;
-    public bool IsDarkMode { get; protected set; } = false;
+    public bool IsDarkMode { get; protected set; }
+    
+    public ThemeVariant ThemeVariant { get; }
 
     public Dictionary<string, IControlDesignToken> ControlTokens => _controlTokens;
-    public ThemeVariant ThemeVariant => _themeVariant;
 
     #endregion
 
     #region 内部属性定义
     
-    private ThemeVariant _themeVariant;
     private DesignToken _sharedToken;
     private Dictionary<string, IControlDesignToken> _controlTokens;
+    private static int _idSeed = 1;
 
     #endregion
 
@@ -79,12 +80,12 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     public ThemeConfigProvider()
     {
-        _themeVariant           = ThemeVariant.Default;
         _controlTokens          = new Dictionary<string, IControlDesignToken>();
         _sharedToken            = new DesignToken();
-        Algorithms              = new List<ThemeAlgorithm>();
+        Algorithms              = new List<string>();
         SharedTokenSetters      = new List<TokenSetter>();
         ControlTokenInfoSetters = new List<ControlTokenInfoSetter>();
+        ThemeVariant            = new ThemeVariant($"ThemeConfigProvider-{_idSeed++}", null);
     }
 
     private void ContentChanged(AvaloniaPropertyChangedEventArgs e)
@@ -119,33 +120,27 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
 
     private void CalculateTokenResources()
     {
-        if (!Algorithms.Contains(DefaultThemeVariantCalculator.Algorithm))
+        var checkedAlgorithms = AtomUITheme.CheckAlgorithmNames(Algorithms);
+        var algorithms = new List<ThemeAlgorithm>()
         {
-            Algorithms.Insert(0, DefaultThemeVariantCalculator.Algorithm);
-        }
-        else if (Algorithms.Contains(DefaultThemeVariantCalculator.Algorithm) &&
-                 Algorithms[0] != DefaultThemeVariantCalculator.Algorithm)
+            ThemeAlgorithm.Default
+        };
+        if (checkedAlgorithms.Contains(ThemeAlgorithm.Dark))
         {
-            Algorithms.Remove(DefaultThemeVariantCalculator.Algorithm);
-            Algorithms.Insert(0, DefaultThemeVariantCalculator.Algorithm);
-        }
-
-        if (Algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
-        {
+            algorithms.Add(ThemeAlgorithm.Dark);
             IsDarkMode    = true;
-            _themeVariant = ThemeVariant.Dark;
         }
-        else
+        if (checkedAlgorithms.Contains(ThemeAlgorithm.Compact))
         {
+            algorithms.Add(ThemeAlgorithm.Compact);
             IsDarkMode    = false;
-            _themeVariant = ThemeVariant.Light;
         }
 
         IThemeVariantCalculator? baseCalculator = null;
         IThemeVariantCalculator? calculator     = null;
-        foreach (var algorithmId in Algorithms)
+        foreach (var algorithm in algorithms)
         {
-            calculator     = AtomUITheme.CreateThemeVariantCalculator(algorithmId, baseCalculator);
+            calculator     = AtomUITheme.CreateThemeVariantCalculator(algorithm, baseCalculator);
             baseCalculator = calculator;
         }
 
@@ -226,10 +221,13 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             var tokenAttr        = controlTokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
             var qualifiedTokenKey =
                 AtomUITheme.GenerateTokenQualifiedKey(controlToken.GetId(), tokenAttr?.ResourceCatalog);
-            if (controlTokenConfig.ContainsKey(qualifiedTokenKey))
+
+            if (!controlTokenConfig.TryGetValue(qualifiedTokenKey, out var tokenConfigInfo))
             {
-                controlToken.LoadConfig(controlTokenConfig[qualifiedTokenKey].Tokens);
+                continue;
             }
+            
+            controlToken.LoadConfig(tokenConfigInfo.Tokens);
 
             controlToken.BuildResourceDictionary(resourceDictionary);
             if (controlToken.HasCustomTokenConfig())

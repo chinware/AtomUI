@@ -12,7 +12,7 @@ namespace AtomUI.Controls
 {
     public static class ThemeManagerBuilderExtensions
     {
-        public static ThemeManagerBuilder UseOSSControls(this ThemeManagerBuilder themeManagerBuilder)
+        public static IThemeManagerBuilder UseOSSControls(this IThemeManagerBuilder themeManagerBuilder)
         {
             // ControlTheme 必须在 UI 线程创建好了才能实例化，不然会炸，切记切记
             themeManagerBuilder.AppBuilder.AfterSetup(_ =>

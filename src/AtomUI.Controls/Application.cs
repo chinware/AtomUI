@@ -13,11 +13,29 @@ public class Application : AvaloniaApplication, IApplication
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Application>();
+    
+    public static readonly StyledProperty<bool> IsDarkThemeModeProperty =
+        AvaloniaProperty.Register<Application, bool>(nameof(IsDarkThemeMode));
+    
+    public static readonly StyledProperty<bool> IsCompactThemeModeProperty =
+        AvaloniaProperty.Register<Application, bool>(nameof(IsCompactTheme));
 
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public bool IsDarkThemeMode
+    {
+        get => GetValue(IsDarkThemeModeProperty);
+        set => SetValue(IsDarkThemeModeProperty, value);
+    }
+    
+    public bool IsCompactTheme
+    {
+        get => GetValue(IsCompactThemeModeProperty);
+        set => SetValue(IsCompactThemeModeProperty, value);
     }
     
     #endregion
@@ -34,7 +52,7 @@ public class Application : AvaloniaApplication, IApplication
         Styles.Add(themeManager);
     }
     
-    protected virtual void NotifyThemeManagerAttached(ThemeManager themeManager)
+    protected virtual void NotifyThemeManagerAttached(IThemeManager themeManager)
     {}
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -48,9 +66,6 @@ public class Application : AvaloniaApplication, IApplication
 
     private void ConfigureThemeVariant()
     {
-        if (_themeManager != null)
-        {
-            _themeManager.SetActiveTheme(ActualThemeVariant);
-        }
+        _themeManager?.SetActiveTheme(ActualThemeVariant);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
@@ -11,19 +10,18 @@ namespace AtomUI.Theme;
 /// <summary>
 /// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
 /// </summary>
-public class ThemeManager : Styles, IThemeManager
+internal class ThemeManager : Styles, IThemeManager
 {
-    public const string THEME_DIR = "Themes";
-    public const string DEFAULT_THEME_ID = "DaybreakBlue";
     public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
     public const string DEFAULT_APP_NAME = "AtomUIApplication";
-    public static readonly CultureInfo DEFAULT_LANGUAGE = new(LanguageCode.zh_CN);
-
+    public const string THEME_DIR = "Themes";
+    
     private Theme? _activatedTheme;
     private readonly Dictionary<ThemeVariant, Theme> _themePool;
     private readonly List<string> _customThemeDirs;
     private readonly List<string> _builtInThemeDirs;
     private IList<IControlThemesProvider> _controlThemesProviders;
+    private IList<IThemeAssetPathProvider> _themeAssetPathProviders;
     
     private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
     private List<ILanguageProvider>? _languageProviders;
@@ -44,7 +42,7 @@ public class ThemeManager : Styles, IThemeManager
         set
         {
             _cultureInfo = value;
-            var languageResource = TryGetLanguageResource(value ?? DEFAULT_LANGUAGE);
+            var languageResource = TryGetLanguageResource(value ?? IThemeManager.DEFAULT_LANGUAGE);
             foreach (var entry in languageResource)
             {
                 Resources.Add(entry);
@@ -70,11 +68,12 @@ public class ThemeManager : Styles, IThemeManager
         var appName = Application.Current?.Name ?? DEFAULT_APP_NAME;
         _builtInThemeDirs = [Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
             THEME_DIR)];
-        DefaultThemeId          = DEFAULT_THEME_ID;
-        _controlThemesProviders = new List<IControlThemesProvider>();
-        ControlTokenTypes       = new List<Type>();
-        _languageProviders      = new List<ILanguageProvider>();
-        _languages              = new Dictionary<CultureInfo, ResourceDictionary>();
+        DefaultThemeId           = IThemeManager.DEFAULT_THEME_ID;
+        _controlThemesProviders  = new List<IControlThemesProvider>();
+        _themeAssetPathProviders = new List<IThemeAssetPathProvider>();
+        ControlTokenTypes        = new List<Type>();
+        _languageProviders       = new List<ILanguageProvider>();
+        _languages               = new Dictionary<CultureInfo, ResourceDictionary>();
     }
 
     public IReadOnlyCollection<ITheme> AvailableThemes
@@ -185,6 +184,11 @@ public class ThemeManager : Styles, IThemeManager
         _controlThemesProviders.Add(controlThemesProvider);
     }
 
+    public void RegisterControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
+    {
+        _themeAssetPathProviders.Add(themeAssetPathProvider);
+    }
+
     public void RegisterLanguageProvider(ILanguageProvider languageProvider)
     {
         _languageProviders?.Add(languageProvider);
@@ -209,6 +213,12 @@ public class ThemeManager : Styles, IThemeManager
             AddThemesFromPath(path, _themePool, false);
         }
 
+        foreach (var themeAssetPathProvider in _themeAssetPathProviders)
+        {
+            var filePaths = themeAssetPathProvider.GetThemeFilePaths();
+            AddThemesFromFilePaths(filePaths, _themePool, true);
+        }
+
         // Assets 中的默认主题
         AddThemesFromAssets(_themePool);
         Debug.Assert(_themePool.Count > 0);
@@ -221,7 +231,7 @@ public class ThemeManager : Styles, IThemeManager
             return resource;
         }
 
-        return _languages[DEFAULT_LANGUAGE];
+        return _languages[IThemeManager.DEFAULT_LANGUAGE];
     }
 
     public void AddCustomThemePaths(IList<string> paths)
