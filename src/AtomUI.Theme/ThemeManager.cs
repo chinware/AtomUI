@@ -90,13 +90,8 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    public ITheme LoadTheme(string id)
+    internal ITheme LoadTheme(string id)
     {
-        if (_themePool.Count == 0)
-        {
-            ScanThemes();
-        }
-
         if (!_themePool.TryGetValue(id, out var theme))
         {
             throw new InvalidOperationException($"Theme: {id} not founded in theme pool.");
@@ -104,7 +99,6 @@ public class ThemeManager : Styles, IThemeManager
         
         if (theme.IsLoaded)
         {
-            // TODO 这里记录一个日志
             return theme;
         }
 
@@ -128,7 +122,7 @@ public class ThemeManager : Styles, IThemeManager
     /// 取消主题在 avalonia 里面的 resource 资源
     /// </summary>
     /// <param name="id"></param>
-    public void UnLoadTheme(string id)
+    internal void UnLoadTheme(string id)
     {
         if (!_themePool.ContainsKey(id))
         {
@@ -154,8 +148,7 @@ public class ThemeManager : Styles, IThemeManager
     {
         if (!_themePool.ContainsKey(id))
         {
-            // TODO 需要记录一个日志
-            return;
+            throw new ThemeNotFoundException($"Theme {id} not found");
         }
 
         var oldTheme = _activatedTheme;
@@ -165,14 +158,20 @@ public class ThemeManager : Styles, IThemeManager
         }
 
         var theme = _themePool[id];
+
+        if (!theme.IsLoaded)
+        {
+            LoadTheme(id);
+        }
+        
         theme.NotifyAboutToActive();
         ThemeAboutToChange?.Invoke(this, new ThemeOperateEventArgs(oldTheme));
         _activatedTheme = theme;
-
         var themeVariant  = _activatedTheme.ThemeVariant;
-        var themeResource = new ResourceDictionary();
-        themeResource.ThemeDictionaries[themeVariant] = theme.ThemeResource;
-        Resources.MergedDictionaries.Add(themeResource);
+        if (!Resources.ThemeDictionaries.ContainsKey(themeVariant))
+        {
+            Resources.ThemeDictionaries.Add(themeVariant, theme.ThemeResource);
+        }
 
         if (oldTheme is not null)
         {
@@ -197,7 +196,7 @@ public class ThemeManager : Styles, IThemeManager
         ControlTokenTypes.Add(tokenType);
     }
 
-    public void ScanThemes()
+    internal void ScanThemes()
     {
         // 最开始的是用户指定的目录
         foreach (var path in _customThemeDirs)
@@ -276,6 +275,7 @@ public class ThemeManager : Styles, IThemeManager
 
     internal void Configure()
     {
+        ScanThemes();
         foreach (var provider in _controlThemesProviders)
         {
             foreach (var resourceProvider in provider.ControlThemes)

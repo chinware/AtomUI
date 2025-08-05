@@ -64,3 +64,16 @@ public class ThemeResourceRegisterException : SystemException
     {
     }
 }
+
+public class ThemeNotFoundException : IOException
+{
+    public ThemeNotFoundException(string? message)
+        : base(message)
+    {
+    }
+
+    public ThemeNotFoundException(string? message, Exception? innerException)
+        : base(message, innerException)
+    {
+    }
+}
