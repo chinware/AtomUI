@@ -2,6 +2,7 @@ using AtomUI.Controls;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Styling;
 
 namespace AtomUI;
@@ -68,9 +69,25 @@ public class Application : AvaloniaApplication, IApplication
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ActualThemeVariantProperty && _themeManagerAttached)
+        if (_themeManagerAttached)
         {
-            ConfigureThemeVariant();
+            if (change.Property == ActualThemeVariantProperty)
+            {
+                ConfigureThemeVariant();
+            }
+            else if (change.Property == IsDarkThemeModeProperty ||
+                     change.Property == IsCompactThemeModeProperty)
+            {
+                ConfigureActiveThemeAlgorithms();
+            }
+            else if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureEnableMotion();
+            }
+            else if (change.Property == IsWaveSpiritEnabledProperty)
+            {
+                ConfigureEnableWaveSpirit();
+            }
         }
     }
 
@@ -100,6 +117,62 @@ public class Application : AvaloniaApplication, IApplication
                     }
                 }
             }
+        }
+    }
+
+    private void ConfigureActiveThemeAlgorithms()
+    {
+        if (_themeManager == null)
+        {
+            return;
+        }
+        var newAlgorithms = new List<ThemeAlgorithm>()
+        {
+            ThemeAlgorithm.Default
+        };
+        if (IsDarkThemeMode)
+        {
+            newAlgorithms.Add(ThemeAlgorithm.Dark);
+        }
+
+        if (IsCompactThemeMode)
+        {
+            newAlgorithms.Add(ThemeAlgorithm.Compact);
+        }
+
+        if (_themeManager.ActivatedTheme != null)
+        {
+            RequestedThemeVariant = Theme.Theme.BuildThemeVariant(_themeManager.ActivatedTheme.Id, newAlgorithms);
+        }
+    }
+
+    private void ConfigureEnableMotion()
+    {
+        if (_themeManager == null)
+        {
+            return;
+        }
+        var themeResource = _themeManager.Resources[ActualThemeVariant];
+        if (themeResource is ResourceDictionary globalResourceDictionary)
+        {
+            globalResourceDictionary[SharedTokenKey.EnableMotion] = IsMotionEnabled;
+        }
+    }
+    
+    private void ConfigureEnableWaveSpirit()
+    {
+        if (_themeManager == null)
+        {
+            return;
+        }
+        if (_themeManager == null)
+        {
+            return;
+        }
+        var themeResource = _themeManager.Resources[ActualThemeVariant];
+        if (themeResource is ResourceDictionary globalResourceDictionary)
+        {
+            globalResourceDictionary[SharedTokenKey.EnableWaveSpirit] = IsWaveSpiritEnabled;
         }
     }
 }

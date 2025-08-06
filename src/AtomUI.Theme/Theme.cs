@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
@@ -13,38 +14,6 @@ namespace AtomUI.Theme;
 /// </summary>
 internal class Theme : AvaloniaObject, ITheme
 {
-    #region 公共属性定义
-
-    public static readonly DirectProperty<Theme, List<ThemeAlgorithm>> AlgorithmsProperty =
-        AvaloniaProperty.RegisterDirect<Theme, List<ThemeAlgorithm>>(
-            nameof(Algorithms),
-            o => o.Algorithms,
-            (o, v) => o.Algorithms = v);
-    
-    public static readonly DirectProperty<Theme, List<ThemeAlgorithm>> ActualAlgorithmsProperty =
-        AvaloniaProperty.RegisterDirect<Theme, List<ThemeAlgorithm>>(
-            nameof(ActualAlgorithms),
-            o => o.ActualAlgorithms,
-            (o, v) => o.ActualAlgorithms = v);
-    
-    private List<ThemeAlgorithm> _algorithms;
-
-    public List<ThemeAlgorithm> Algorithms
-    {
-        get => _algorithms;
-        private set => SetAndRaise(AlgorithmsProperty, ref _algorithms, value);
-    }
-    
-    private List<ThemeAlgorithm> _actualAlgorithms;
-
-    public List<ThemeAlgorithm> ActualAlgorithms
-    {
-        get => _actualAlgorithms;
-        private set => SetAndRaise(ActualAlgorithmsProperty, ref _actualAlgorithms, value);
-    }
-    
-    #endregion
-    
     protected bool Loaded;
     protected bool LoadedStatus = true;
     protected bool Activated;
@@ -66,26 +35,43 @@ internal class Theme : AvaloniaObject, ITheme
     public bool IsActivated => Activated;
     public bool IsBuiltIn => _isBuiltIn;
 
+    // 当 request algorithms 跟定义文件加载的一样的时候就是 primary theme
+    public bool IsPrimary => _isPrimary;
+
     public DesignToken SharedToken => _sharedToken;
+    public IList<ThemeAlgorithm> Algorithms => _algorithms;
     
     private string _id;
     private string? _loadErrorMsg;
     private ThemeVariant _themeVariant;
     private DesignToken _sharedToken;
     private bool _isBuiltIn;
+    private bool _isPrimary;
+    private IList<ThemeAlgorithm> _algorithms;
 
-    public Theme(string id, string defFilePath, bool isBuiltIn)
+    public Theme(string id, string defFilePath, ISet<ThemeAlgorithm> requestAlgorithms, bool isBuiltIn = false)
     {
         _id                = id;
         _isBuiltIn         = isBuiltIn;
         _sharedToken       = new DesignToken();
         _themeVariant      = new ThemeVariant(id, null);
         _algorithms        = new List<ThemeAlgorithm>();
-        _actualAlgorithms  = new List<ThemeAlgorithm>();
         DefinitionFilePath = defFilePath;
         ResourceDictionary = new ResourceDictionary();
         ControlTokens      = new Dictionary<string, IControlDesignToken>();
         ThemeDefinition    = new ThemeDefinition(_id);
+        _algorithms.Add(ThemeAlgorithm.Default);
+        if (requestAlgorithms.Contains(ThemeAlgorithm.Dark))
+        {
+            _algorithms.Add(ThemeAlgorithm.Dark);
+        }
+
+        if (requestAlgorithms.Contains(ThemeAlgorithm.Compact))
+        {
+            _algorithms.Add(ThemeAlgorithm.Compact);
+        }
+
+        _themeVariant = BuildThemeVariant(id, _algorithms);
     }
 
     public List<string> ThemeResourceKeys => ResourceDictionary.Keys.Select(s => s.ToString()!).ToList();
@@ -99,28 +85,17 @@ internal class Theme : AvaloniaObject, ITheme
                 throw new InvalidOperationException($"Theme: {_id} already loaded");
             }
             NotifyLoadThemeDef();
-            var themeDef           = ThemeDefinition;
 
-            _themeVariant = ThemeVariant.Default;
-
-            var algorithms = new List<ThemeAlgorithm>
+            if (_algorithms.Count != ThemeDefinition.Algorithms.Count)
             {
-                DefaultThemeVariantCalculator.Algorithm
-            };
-
-            if (themeDef.Algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
-            {
-                algorithms.Add(DarkThemeVariantCalculator.Algorithm);
+                _isPrimary = false;
             }
-
-            if (themeDef.Algorithms.Contains(CompactThemeVariantCalculator.Algorithm))
+            else
             {
-                algorithms.Add(CompactThemeVariantCalculator.Algorithm);
+                _isPrimary = _algorithms.ToHashSet().SetEquals(ThemeDefinition.Algorithms);
             }
             
-            _algorithms       = algorithms;
-            _actualAlgorithms = algorithms;
-            BuildThemeResource(algorithms);
+            BuildThemeResource(_algorithms);
 
             LoadedStatus = true;
             Loaded       = true;
@@ -138,12 +113,10 @@ internal class Theme : AvaloniaObject, ITheme
         if (algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
         {
             IsDarkMode    = true;
-            _themeVariant = ThemeVariant.Dark;
         }
         else
         {
             IsDarkMode    = false;
-            _themeVariant = ThemeVariant.Light;
         }
     
         IThemeVariantCalculator? baseCalculator = null;
@@ -215,6 +188,25 @@ internal class Theme : AvaloniaObject, ITheme
                 controlToken.BuildSharedResourceDeltaDictionary(_sharedToken);
             }
         }
+    }
+
+    internal static ThemeVariant BuildThemeVariant(string id, IList<ThemeAlgorithm> algorithms)
+    {
+        var parts = new List<string>()
+        {
+            id
+        };
+        if (algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
+        {
+            parts.Add(nameof(ThemeAlgorithm.Dark));
+        }
+
+        if (algorithms.Contains(CompactThemeVariantCalculator.Algorithm))
+        {
+            parts.Add(nameof(ThemeAlgorithm.Compact));
+        }
+
+        return new ThemeVariant(string.Join("-", parts), null);
     }
 
     private IDictionary<string, string> ExtraSharedTokenInfos(ControlTokenConfigInfo controlTokenConfigInfo)
@@ -326,7 +318,6 @@ internal class Theme : AvaloniaObject, ITheme
     internal virtual void NotifyDeActivated()
     {
         Activated         = false;
-        _actualAlgorithms = _algorithms;
     }
 
     internal virtual void NotifyAboutToLoad()

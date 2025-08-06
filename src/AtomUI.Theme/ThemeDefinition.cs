@@ -27,4 +27,25 @@ internal class ThemeDefinition
         SharedTokens.Clear();
         DisplayName = string.Empty;
     }
+
+    internal ThemeDefinition Clone()
+    {
+        var cloned = new ThemeDefinition(Id, DisplayName);
+        cloned.IsDefault = IsDefault;
+        foreach (var algorithm in Algorithms)
+        {
+            cloned.Algorithms.Add(algorithm);
+        }
+
+        foreach (var controlTokenConfigInfo in ControlTokens)
+        {
+            cloned.ControlTokens.Add(controlTokenConfigInfo.Key, controlTokenConfigInfo.Value.Clone());
+        }
+        
+        foreach (var sharedToken in SharedTokens)
+        {
+            cloned.SharedTokens.Add(sharedToken);
+        }
+        return cloned;
+    }
 }

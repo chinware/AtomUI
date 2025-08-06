@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
@@ -19,14 +18,7 @@ internal class ThemeManager : Styles, IThemeManager
 
     #region 公共属性定义
 
-    public static readonly StyledProperty<List<ThemeAlgorithm>?> ActivatedThemeAlgorithmsProperty =
-        AvaloniaProperty.Register<ThemeManager, List<ThemeAlgorithm>?>(nameof(ActivatedThemeAlgorithms));
-
-    public List<ThemeAlgorithm>? ActivatedThemeAlgorithms
-    {
-        get => GetValue(ActivatedThemeAlgorithmsProperty);
-        set => SetValue(ActivatedThemeAlgorithmsProperty, value);
-    }
+    public IList<ThemeAlgorithm>? ActivatedThemeAlgorithms { get; internal set; }
     
     #endregion
     
@@ -74,8 +66,6 @@ internal class ThemeManager : Styles, IThemeManager
     
     private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
     private List<ILanguageProvider>? _languageProviders;
-    private bool _ignoreActivatedThemeAlgorithmsChanged;
-    private IDisposable? _activatedThemeAlgorithmsDisposable;
     
     internal ThemeManager()
     {
@@ -190,18 +180,11 @@ internal class ThemeManager : Styles, IThemeManager
 
         if (oldTheme is not null)
         {
-            _activatedThemeAlgorithmsDisposable?.Dispose();
             oldTheme.NotifyDeActivated();
         }
         
         theme.NotifyActivated();
-        
-        // 先初始化从文件中导出的算法集合
-        using (BeginIgnoringIgnoreActivatedThemeAlgorithms())
-        {
-            SetCurrentValue(ActivatedThemeAlgorithmsProperty, theme.ActualAlgorithms);
-            _activatedThemeAlgorithmsDisposable = BindUtils.RelayBind(this, ActivatedThemeAlgorithmsProperty, theme, Theme.ActualAlgorithmsProperty);
-        }
+        ActivatedThemeAlgorithms = theme.Algorithms;
 
         ThemeChanged?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
     }
@@ -294,19 +277,26 @@ internal class ThemeManager : Styles, IThemeManager
 
     private void AddThemesFromFilePaths(IEnumerable<string> filePaths, Dictionary<ThemeVariant, Theme> themes, bool isBuiltIn)
     {
+        var algorithmsCombination = new List<ISet<ThemeAlgorithm>>();
+        algorithmsCombination.Add(new HashSet<ThemeAlgorithm>{ThemeAlgorithm.Default});
+        algorithmsCombination.Add(new HashSet<ThemeAlgorithm>{ThemeAlgorithm.Default, ThemeAlgorithm.Dark});
+        algorithmsCombination.Add(new HashSet<ThemeAlgorithm>{ThemeAlgorithm.Default, ThemeAlgorithm.Dark, ThemeAlgorithm.Compact});
+        algorithmsCombination.Add(new HashSet<ThemeAlgorithm>{ThemeAlgorithm.Default, ThemeAlgorithm.Compact});
         foreach (var filePath in filePaths)
         {
             var themeId      = Path.GetFileNameWithoutExtension(filePath);
-            var themeVariant = new ThemeVariant(themeId, null);
-            if (themes.ContainsKey(themeVariant))
+            foreach (var algorithms in algorithmsCombination)
             {
-                continue;
+                var theme        = new Theme(themeId, filePath, algorithms ,isBuiltIn);
+                var themeVariant = theme.ThemeVariant;
+                if (themes.ContainsKey(themeVariant))
+                {
+                    continue;
+                }
+                ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
+                themes.Add(themeVariant, theme);
+                theme.NotifyRegistered();
             }
-
-            var theme = new Theme(themeId, filePath, isBuiltIn);
-            ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
-            themes.Add(themeVariant, theme);
-            theme.NotifyRegistered();
         }
     }
 
@@ -351,21 +341,6 @@ internal class ThemeManager : Styles, IThemeManager
 
     internal virtual void NotifyAttachedToApplication()
     {
-    }
-    
-    private IgnoreActivatedThemeAlgorithmsScope BeginIgnoringIgnoreActivatedThemeAlgorithms() => new IgnoreActivatedThemeAlgorithmsScope(this);
-    
-    private readonly struct IgnoreActivatedThemeAlgorithmsScope : IDisposable
-    {
-        private readonly ThemeManager _owner;
-
-        public IgnoreActivatedThemeAlgorithmsScope(ThemeManager owner)
-        {
-            _owner                                        = owner;
-            _owner._ignoreActivatedThemeAlgorithmsChanged = true;
-        }
-
-        public void Dispose() => _owner._ignoreActivatedThemeAlgorithmsChanged = false;
     }
 }
 
