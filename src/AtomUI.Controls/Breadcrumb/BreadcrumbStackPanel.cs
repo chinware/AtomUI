@@ -36,27 +36,7 @@ internal class BreadcrumbStackPanel : Panel
 
         return new Size(targetWidth, targetHeight);
     }
-
-    private Size MeasureOverrideExpanding(Size availableSize)
-    {
-        var maxHeight          = 0d;
-        var columns            = Children.Count;
-        var availableWidth     = availableSize.Width;
-        var childAvailableSize = new Size(availableWidth / columns, availableSize.Height);
-        foreach (var child in Children)
-        {
-            if (child is BreadcrumbItem box)
-            {
-                box.Measure(childAvailableSize);
-                if (box.DesiredSize.Height > maxHeight)
-                {
-                    maxHeight = box.DesiredSize.Height;
-                }
-            }
-        }
-        return new Size(availableSize.Width, maxHeight);
-    }
-
+    
     protected override Size ArrangeOverride(Size finalSize)
     {
         ArrangeOverrideNoExpanding(finalSize);
@@ -87,30 +67,4 @@ internal class BreadcrumbStackPanel : Panel
         return finalSize;
     }
 
-    private Size ArrangeOverrideExpanding(Size finalSize)
-    {
-        var offsetX        = 0d;
-        var offsetY        = 0d;
-        var columns        = Children.Count;
-        var availableWidth = finalSize.Width;
-        var width          = availableWidth / columns;
-
-        var x = 0;
-
-        foreach (var child in Children)
-        {
-            if (child is BreadcrumbItem box)
-            {
-                if (!box.IsVisible)
-                {
-                    continue;
-                }
-
-                box.Arrange(new Rect(x * width + offsetX, offsetY, width, box.DesiredSize.Height));
-                x++;
-            }
-        }
-
-        return finalSize;
-    }
 }

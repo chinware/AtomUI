@@ -12,7 +12,7 @@ internal class BreadcrumbToken : AbstractControlDesignToken
     /// <summary>
     /// 图标大小
     /// </summary>
-    public double IconFontSize { get; set; }
+    public double IconSize { get; set; }
 
     /// <summary>
     /// 面包屑项文字颜色
@@ -72,7 +72,7 @@ internal class BreadcrumbToken : AbstractControlDesignToken
     protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        IconFontSize = SharedToken.FontSize;
+        IconSize = SharedToken.IconSize;
         var universalColor = SharedToken.ColorText;
         ItemColor                   = universalColor;
         LastItemColor               = universalColor;

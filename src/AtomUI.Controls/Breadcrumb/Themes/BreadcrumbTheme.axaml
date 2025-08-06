@@ -15,7 +15,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.ItemColor}}" />
-        <Setter Property="IconFontSize" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.IconFontSize}}" />
+        <Setter Property="IconSize" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.IconSize}}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="FramePart"
@@ -24,7 +24,7 @@
                         ClipToBounds="True"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center">
-                    <ItemsPresenter Name="ItemsPresenterPart">
+                    <ItemsPresenter Name="PART_ItemsPresenter">
                         <ItemsPresenter.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <atom:BreadcrumbStackPanel />

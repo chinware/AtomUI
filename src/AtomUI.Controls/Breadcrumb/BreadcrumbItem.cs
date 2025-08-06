@@ -29,9 +29,6 @@ public class BreadcrumbItem : ContentControl, ISelectable
     public static readonly StyledProperty<Icon?> IconProperty
         = AvaloniaProperty.Register<BreadcrumbItem, Icon?>(nameof(Icon));
     
-    public static readonly StyledProperty<bool> IsLastProperty 
-        = AvaloniaProperty.Register<BreadcrumbItem, bool>(nameof(IsLast));
-    
     public string? Separator
     {
         get => GetValue(SeparatorProperty);
@@ -56,24 +53,30 @@ public class BreadcrumbItem : ContentControl, ISelectable
         set => SetValue(IconProperty, value);
     }
     
-    public bool IsLast
-    {
-        get => GetValue(IsLastProperty);
-        internal set => SetValue(IsLastProperty, value);
-    }
-    
     #endregion
 
-    internal static readonly StyledProperty<string> EffectiveSeparatorProperty
-        = AvaloniaProperty.Register<BreadcrumbItem, string>(nameof(EffectiveSeparator), defaultValue: string.Empty);
+    #region 内部属性定义
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BreadcrumbItem>();
+    internal static readonly DirectProperty<BreadcrumbItem, string> EffectiveSeparatorProperty =
+        AvaloniaProperty.RegisterDirect<BreadcrumbItem, string>(
+            nameof(EffectiveSeparator),
+            o => o.EffectiveSeparator,
+            (o, v) => o.EffectiveSeparator = v);
     
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BreadcrumbItem>();
+    
+    internal static readonly DirectProperty<BreadcrumbItem, bool> IsLastProperty =
+        AvaloniaProperty.RegisterDirect<BreadcrumbItem, bool>(
+            nameof(IsLast),
+            o => o.IsLast,
+            (o, v) => o.IsLast = v);
+    
+    private string _effectiveSeparator = string.Empty;
     internal string EffectiveSeparator
     {
-        get => GetValue(EffectiveSeparatorProperty);
-        set => SetValue(EffectiveSeparatorProperty, value);
+        get => _effectiveSeparator;
+        set => SetAndRaise(EffectiveSeparatorProperty, ref _effectiveSeparator, value);
     }
 
     internal bool IsMotionEnabled
@@ -81,6 +84,15 @@ public class BreadcrumbItem : ContentControl, ISelectable
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    private bool _isLast;
+    internal bool IsLast
+    {
+        get => _isLast;
+        set => SetAndRaise(IsLastProperty, ref _isLast, value);
+    }
+    
+    #endregion
     
     static BreadcrumbItem()
     {
@@ -102,7 +114,7 @@ public class BreadcrumbItem : ContentControl, ISelectable
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == IconProperty)
+        if (change.Property == IconProperty || change.Property == IsLastProperty)
         {
             UpdatePseudoClasses();
         }
@@ -120,7 +132,7 @@ public class BreadcrumbItem : ContentControl, ISelectable
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            Transitions = new Transitions
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
             };
@@ -133,11 +145,7 @@ public class BreadcrumbItem : ContentControl, ISelectable
     
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(SegmentedPseudoClass.HasIcon, Icon is not null);
-    }
-    
-    public void SetPseudoClass(string pseudoClass, bool value)
-    {
-        PseudoClasses.Set(pseudoClass, value);
+        PseudoClasses.Set(BreadcrumbPseudoClass.HasIcon, Icon is not null);
+        PseudoClasses.Set(BreadcrumbPseudoClass.IsLast, IsLast);
     }
 }
