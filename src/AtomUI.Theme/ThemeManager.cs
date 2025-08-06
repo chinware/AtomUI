@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
@@ -15,17 +16,20 @@ internal class ThemeManager : Styles, IThemeManager
     public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
     public const string DEFAULT_APP_NAME = "AtomUIApplication";
     public const string THEME_DIR = "Themes";
-    
-    private Theme? _activatedTheme;
-    private readonly Dictionary<ThemeVariant, Theme> _themePool;
-    private readonly List<string> _customThemeDirs;
-    private readonly List<string> _builtInThemeDirs;
-    private IList<IControlThemesProvider> _controlThemesProviders;
-    private IList<IThemeAssetPathProvider> _themeAssetPathProviders;
-    
-    private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
-    private List<ILanguageProvider>? _languageProviders;
 
+    #region 公共属性定义
+
+    public static readonly StyledProperty<List<ThemeAlgorithm>?> ActivatedThemeAlgorithmsProperty =
+        AvaloniaProperty.Register<ThemeManager, List<ThemeAlgorithm>?>(nameof(ActivatedThemeAlgorithms));
+
+    public List<ThemeAlgorithm>? ActivatedThemeAlgorithms
+    {
+        get => GetValue(ActivatedThemeAlgorithmsProperty);
+        set => SetValue(ActivatedThemeAlgorithmsProperty, value);
+    }
+    
+    #endregion
+    
     public ITheme? ActivatedTheme => _activatedTheme;
     public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
     public static ThemeManager Current { get; internal set; } = null!;
@@ -60,6 +64,18 @@ internal class ThemeManager : Styles, IThemeManager
     public event EventHandler<ThemeChangedEventArgs>? ThemeChanged;
 
     public event EventHandler? Initialized;
+    
+    private Theme? _activatedTheme;
+    private readonly Dictionary<ThemeVariant, Theme> _themePool;
+    private readonly List<string> _customThemeDirs;
+    private readonly List<string> _builtInThemeDirs;
+    private IList<IControlThemesProvider> _controlThemesProviders;
+    private IList<IThemeAssetPathProvider> _themeAssetPathProviders;
+    
+    private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
+    private List<ILanguageProvider>? _languageProviders;
+    private bool _ignoreActivatedThemeAlgorithmsChanged;
+    private IDisposable? _activatedThemeAlgorithmsDisposable;
     
     internal ThemeManager()
     {
@@ -166,6 +182,7 @@ internal class ThemeManager : Styles, IThemeManager
         theme.NotifyAboutToActive();
         ThemeAboutToChange?.Invoke(this, new ThemeOperateEventArgs(oldTheme));
         _activatedTheme = theme;
+        
         if (!Resources.ThemeDictionaries.ContainsKey(themeVariant))
         {
             Resources.ThemeDictionaries.Add(themeVariant, theme.ThemeResource);
@@ -173,7 +190,17 @@ internal class ThemeManager : Styles, IThemeManager
 
         if (oldTheme is not null)
         {
+            _activatedThemeAlgorithmsDisposable?.Dispose();
             oldTheme.NotifyDeActivated();
+        }
+        
+        theme.NotifyActivated();
+        
+        // 先初始化从文件中导出的算法集合
+        using (BeginIgnoringIgnoreActivatedThemeAlgorithms())
+        {
+            SetCurrentValue(ActivatedThemeAlgorithmsProperty, theme.ActualAlgorithms);
+            _activatedThemeAlgorithmsDisposable = BindUtils.RelayBind(this, ActivatedThemeAlgorithmsProperty, theme, Theme.ActualAlgorithmsProperty);
         }
 
         ThemeChanged?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
@@ -324,6 +351,21 @@ internal class ThemeManager : Styles, IThemeManager
 
     internal virtual void NotifyAttachedToApplication()
     {
+    }
+    
+    private IgnoreActivatedThemeAlgorithmsScope BeginIgnoringIgnoreActivatedThemeAlgorithms() => new IgnoreActivatedThemeAlgorithmsScope(this);
+    
+    private readonly struct IgnoreActivatedThemeAlgorithmsScope : IDisposable
+    {
+        private readonly ThemeManager _owner;
+
+        public IgnoreActivatedThemeAlgorithmsScope(ThemeManager owner)
+        {
+            _owner                                        = owner;
+            _owner._ignoreActivatedThemeAlgorithmsChanged = true;
+        }
+
+        public void Dispose() => _owner._ignoreActivatedThemeAlgorithmsChanged = false;
     }
 }
 

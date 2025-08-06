@@ -2,6 +2,7 @@
 using System.Reflection;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
 
@@ -10,14 +11,40 @@ namespace AtomUI.Theme;
 /// <summary>
 /// 主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
 /// </summary>
-internal class Theme : ITheme
+internal class Theme : AvaloniaObject, ITheme
 {
-    private string _id;
-    private string? _loadErrorMsg;
-    private ThemeVariant _themeVariant;
-    private DesignToken _sharedToken;
-    private bool _isBuiltIn;
+    #region 公共属性定义
 
+    public static readonly DirectProperty<Theme, List<ThemeAlgorithm>> AlgorithmsProperty =
+        AvaloniaProperty.RegisterDirect<Theme, List<ThemeAlgorithm>>(
+            nameof(Algorithms),
+            o => o.Algorithms,
+            (o, v) => o.Algorithms = v);
+    
+    public static readonly DirectProperty<Theme, List<ThemeAlgorithm>> ActualAlgorithmsProperty =
+        AvaloniaProperty.RegisterDirect<Theme, List<ThemeAlgorithm>>(
+            nameof(ActualAlgorithms),
+            o => o.ActualAlgorithms,
+            (o, v) => o.ActualAlgorithms = v);
+    
+    private List<ThemeAlgorithm> _algorithms;
+
+    public List<ThemeAlgorithm> Algorithms
+    {
+        get => _algorithms;
+        private set => SetAndRaise(AlgorithmsProperty, ref _algorithms, value);
+    }
+    
+    private List<ThemeAlgorithm> _actualAlgorithms;
+
+    public List<ThemeAlgorithm> ActualAlgorithms
+    {
+        get => _actualAlgorithms;
+        private set => SetAndRaise(ActualAlgorithmsProperty, ref _actualAlgorithms, value);
+    }
+    
+    #endregion
+    
     protected bool Loaded;
     protected bool LoadedStatus = true;
     protected bool Activated;
@@ -40,6 +67,12 @@ internal class Theme : ITheme
     public bool IsBuiltIn => _isBuiltIn;
 
     public DesignToken SharedToken => _sharedToken;
+    
+    private string _id;
+    private string? _loadErrorMsg;
+    private ThemeVariant _themeVariant;
+    private DesignToken _sharedToken;
+    private bool _isBuiltIn;
 
     public Theme(string id, string defFilePath, bool isBuiltIn)
     {
@@ -47,6 +80,8 @@ internal class Theme : ITheme
         _isBuiltIn         = isBuiltIn;
         _sharedToken       = new DesignToken();
         _themeVariant      = new ThemeVariant(id, null);
+        _algorithms        = new List<ThemeAlgorithm>();
+        _actualAlgorithms  = new List<ThemeAlgorithm>();
         DefinitionFilePath = defFilePath;
         ResourceDictionary = new ResourceDictionary();
         ControlTokens      = new Dictionary<string, IControlDesignToken>();
@@ -59,6 +94,10 @@ internal class Theme : ITheme
     {
         try
         {
+            if (Loaded)
+            {
+                throw new InvalidOperationException($"Theme: {_id} already loaded");
+            }
             NotifyLoadThemeDef();
             var themeDef           = ThemeDefinition;
 
@@ -78,7 +117,9 @@ internal class Theme : ITheme
             {
                 algorithms.Add(CompactThemeVariantCalculator.Algorithm);
             }
-
+            
+            _algorithms       = algorithms;
+            _actualAlgorithms = algorithms;
             BuildThemeResource(algorithms);
 
             LoadedStatus = true;
@@ -284,7 +325,8 @@ internal class Theme : ITheme
 
     internal virtual void NotifyDeActivated()
     {
-        Activated = false;
+        Activated         = false;
+        _actualAlgorithms = _algorithms;
     }
 
     internal virtual void NotifyAboutToLoad()
@@ -300,10 +342,6 @@ internal class Theme : ITheme
     }
 
     internal virtual void NotifyUnloaded()
-    {
-    }
-
-    internal virtual void NotifyResetLoadStatus()
     {
     }
 

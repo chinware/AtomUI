@@ -1,5 +1,6 @@
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Styling;
 
@@ -14,16 +15,25 @@ public class Application : AvaloniaApplication, IApplication
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Application>();
     
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Application>();
+    
     public static readonly StyledProperty<bool> IsDarkThemeModeProperty =
         AvaloniaProperty.Register<Application, bool>(nameof(IsDarkThemeMode));
     
     public static readonly StyledProperty<bool> IsCompactThemeModeProperty =
-        AvaloniaProperty.Register<Application, bool>(nameof(IsCompactTheme));
+        AvaloniaProperty.Register<Application, bool>(nameof(IsCompactThemeMode));
 
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public bool IsWaveSpiritEnabled
+    {
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
     
     public bool IsDarkThemeMode
@@ -32,7 +42,7 @@ public class Application : AvaloniaApplication, IApplication
         set => SetValue(IsDarkThemeModeProperty, value);
     }
     
-    public bool IsCompactTheme
+    public bool IsCompactThemeMode
     {
         get => GetValue(IsCompactThemeModeProperty);
         set => SetValue(IsCompactThemeModeProperty, value);
@@ -66,6 +76,30 @@ public class Application : AvaloniaApplication, IApplication
 
     private void ConfigureThemeVariant()
     {
-        _themeManager?.SetActiveTheme(ActualThemeVariant);
+        if (_themeManager != null)
+        {
+            _themeManager.SetActiveTheme(ActualThemeVariant);
+            var algorithms = _themeManager.ActivatedThemeAlgorithms;
+            if (algorithms != null)
+            {
+                IsDarkThemeMode = algorithms.Contains(ThemeAlgorithm.Dark);
+                IsCompactThemeMode = algorithms.Contains(ThemeAlgorithm.Compact);
+                if (_themeManager.TryGetResource(SharedTokenKey.EnableMotion, ActualThemeVariant, out var enableMotionResource))
+                {
+                    if (enableMotionResource is bool enableMotion)
+                    {
+                        IsMotionEnabled = enableMotion;
+                    }
+                }
+                
+                if (_themeManager.TryGetResource(SharedTokenKey.EnableWaveSpirit, ActualThemeVariant, out var enableWaveSpiritResource))
+                {
+                    if (enableWaveSpiritResource is bool enableWaveSpirit)
+                    {
+                        IsWaveSpiritEnabled = enableWaveSpirit;
+                    }
+                }
+            }
+        }
     }
 }
