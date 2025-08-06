@@ -1,4 +1,5 @@
 ﻿using AtomUI.Theme;
+using AtomUI.Theme.Language;
 using AtomUI.Utils;
 
 namespace AtomUI.Controls.PopupConfirmLang;

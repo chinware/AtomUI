@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using AtomUI.Theme;
+using AtomUI.Theme.Language;
 
-namespace AtomUI.Theme
+namespace AtomUI.Theme.Language
 {
     internal class LanguageProviderPool
     {

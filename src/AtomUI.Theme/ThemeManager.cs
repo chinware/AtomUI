@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;

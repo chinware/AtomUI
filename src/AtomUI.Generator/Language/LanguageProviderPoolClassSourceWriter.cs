@@ -24,6 +24,7 @@ public class LanguageProviderPoolClassSourceWriter
     {
         _usingInfos.Add("System.Collections.Generic");
         _usingInfos.Add("AtomUI.Theme");
+        _usingInfos.Add("AtomUI.Theme.Language");
     }
 
     public void Write()
@@ -51,7 +52,7 @@ public class LanguageProviderPoolClassSourceWriter
         compilationUnit = compilationUnit.AddUsings(usingSyntaxList.ToArray());
 
         // 添加命名空间
-        var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme"));
+        var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Language"));
 
         var languageProviderPoolClassDecl = SyntaxFactory.ClassDeclaration("LanguageProviderPool")
                                                          .AddModifiers(SyntaxFactory.Token(SyntaxKind.InternalKeyword))

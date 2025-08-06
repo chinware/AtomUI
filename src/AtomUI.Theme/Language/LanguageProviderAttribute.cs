@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Theme;
+﻿namespace AtomUI.Theme.Language;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class LanguageProviderAttribute : Attribute

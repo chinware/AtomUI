@@ -39,6 +39,7 @@ public class LangResourceKeyClassSourceWriter
     private void SetupUsingInfos()
     {
         _usingInfos.Add("AtomUI.Theme");
+        _usingInfos.Add("AtomUI.Theme.Language");
     }
 
     public void Write()

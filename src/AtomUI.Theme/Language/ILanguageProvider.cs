@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace AtomUI.Theme;
+namespace AtomUI.Theme.Language;
 
 public interface ILanguageProvider
 {

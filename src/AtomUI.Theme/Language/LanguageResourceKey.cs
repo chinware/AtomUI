@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Theme;
+﻿namespace AtomUI.Theme.Language;
 
 public readonly struct LanguageResourceKey : IEquatable<LanguageResourceKey>
 {

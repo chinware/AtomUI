@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using AtomUI.Theme.Language;
 using Avalonia.Controls;
 
 namespace AtomUI.Theme;

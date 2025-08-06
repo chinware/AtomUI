@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AtomUI.Theme.Language;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Styling;
