@@ -1,5 +1,5 @@
 using System.Globalization;
-using AtomUI.Utils;
+using AtomUI.Theme.Language;
 using Avalonia;
 
 namespace AtomUI.Theme;
@@ -13,7 +13,7 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     public IList<AbstractLanguageProvider> LanguageProviders { get; }
     public IList<EventHandler> InitializedHandlers { get; }
 
-    public CultureInfo CultureInfo { get; private set; }
+    public LanguageVariant LanguageVariant { get; private set; }
     public string ThemeId { get; private set; }
     public AppBuilder AppBuilder { get; }
 
@@ -29,7 +29,7 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         ControlThemesProviders            = new List<IControlThemesProvider>();
         LanguageProviders                 = new List<AbstractLanguageProvider>();
         InitializedHandlers               = new List<EventHandler>();
-        CultureInfo                       = new CultureInfo(LanguageCode.en_US);
+        LanguageVariant                   = LanguageVariant.en_US;
         ThemeId                           = IThemeManager.DEFAULT_THEME_ID;
         _registeredTokenTypes             = new HashSet<string>();
         _registeredLanguageProviders      = new HashSet<string>();
@@ -90,7 +90,12 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
 
     public void WithDefaultCultureInfo(CultureInfo cultureInfo)
     {
-        CultureInfo = cultureInfo;
+        LanguageVariant = LanguageVariant.FromCultureInfo(cultureInfo);
+    }
+    
+    public void WithDefaultLanguageVariant(LanguageVariant languageVariant)
+    {
+        LanguageVariant = languageVariant;
     }
 
     internal ThemeManager Build()

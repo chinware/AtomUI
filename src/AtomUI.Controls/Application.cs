@@ -1,5 +1,6 @@
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -24,6 +25,12 @@ public class Application : AvaloniaApplication, IApplication
     
     public static readonly StyledProperty<bool> IsCompactThemeModeProperty =
         AvaloniaProperty.Register<Application, bool>(nameof(IsCompactThemeMode));
+    
+    public static readonly StyledProperty<LanguageVariant> ActualLanguageVariantProperty =
+        LanguageVariant.ActualLanguageVariantProperty.AddOwner<Application>();
+
+    public static readonly StyledProperty<LanguageVariant?> RequestedLanguageProperty = 
+        LanguageVariant.RequestedLanguageVariantProperty.AddOwner<Application>();
 
     public bool IsMotionEnabled
     {
@@ -49,6 +56,16 @@ public class Application : AvaloniaApplication, IApplication
         set => SetValue(IsCompactThemeModeProperty, value);
     }
     
+    public LanguageVariant? RequestedLanguageVariant
+    {
+        get => GetValue(RequestedLanguageProperty);
+        set => SetValue(RequestedLanguageProperty, value);
+    }
+    
+    public LanguageVariant ActualLanguageVariant => GetValue(ActualLanguageVariantProperty);
+    
+    public event EventHandler? ActualLanguageVariantChanged;
+    
     #endregion
     
     private ThemeManager? _themeManager;
@@ -56,11 +73,13 @@ public class Application : AvaloniaApplication, IApplication
 
     internal void AttachThemeManager(ThemeManager themeManager)
     {
-        _themeManager         = themeManager;
+        _themeManager                                 = themeManager;
+        _themeManager[!ActualLanguageVariantProperty] = this[!ActualLanguageVariantProperty];
         NotifyThemeManagerAttached(themeManager);
         _themeManagerAttached = true;
         RequestedThemeVariant = new ThemeVariant(_themeManager.DefaultThemeId, null);
         Styles.Add(themeManager);
+        _themeManager.NotifyAttachedToApplication();
     }
     
     protected virtual void NotifyThemeManagerAttached(IThemeManager themeManager)
@@ -88,8 +107,28 @@ public class Application : AvaloniaApplication, IApplication
             {
                 ConfigureEnableWaveSpirit();
             }
+            
+            if (change.Property == RequestedLanguageProperty)
+            {
+                if (change.NewValue is LanguageVariant langVariant)
+                {
+                    SetValue(ActualLanguageVariantProperty, langVariant);
+                }
+                else
+                {
+                    ClearValue(ActualLanguageVariantProperty);
+                }
+            }
+            else if (change.Property == ActualLanguageVariantProperty)
+            {
+                NotifyActualLanguageVariantChanged();
+                ActualLanguageVariantChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
+    
+    protected virtual void NotifyActualLanguageVariantChanged()
+    {}
 
     private void ConfigureThemeVariant()
     {
@@ -148,31 +187,27 @@ public class Application : AvaloniaApplication, IApplication
 
     private void ConfigureEnableMotion()
     {
-        if (_themeManager == null)
+        if (_themeManager != null)
         {
-            return;
-        }
-        var themeResource = _themeManager.Resources[ActualThemeVariant];
-        if (themeResource is ResourceDictionary globalResourceDictionary)
-        {
-            globalResourceDictionary[SharedTokenKey.EnableMotion] = IsMotionEnabled;
+            var themeResource = _themeManager.Resources[ActualThemeVariant];
+            if (themeResource is ResourceDictionary globalResourceDictionary)
+            {
+                globalResourceDictionary[SharedTokenKey.EnableMotion] = IsMotionEnabled;
+            }
         }
     }
     
     private void ConfigureEnableWaveSpirit()
     {
-        if (_themeManager == null)
+        if (_themeManager != null)
         {
-            return;
-        }
-        if (_themeManager == null)
-        {
-            return;
-        }
-        var themeResource = _themeManager.Resources[ActualThemeVariant];
-        if (themeResource is ResourceDictionary globalResourceDictionary)
-        {
-            globalResourceDictionary[SharedTokenKey.EnableWaveSpirit] = IsWaveSpiritEnabled;
+            var themeResource = _themeManager.Resources[ActualThemeVariant];
+            if (themeResource is ResourceDictionary globalResourceDictionary)
+            {
+                globalResourceDictionary[SharedTokenKey.EnableWaveSpirit] = IsWaveSpiritEnabled;
+            }
         }
     }
+    
+    // TODO 目前系统主题变化，我们没有想到合适的处理方式
 }

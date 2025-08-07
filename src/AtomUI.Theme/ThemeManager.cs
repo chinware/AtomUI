@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Globalization;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,6 +17,15 @@ internal class ThemeManager : Styles, IThemeManager
     public const string THEME_DIR = "Themes";
 
     #region 公共属性定义
+    
+    public static readonly StyledProperty<LanguageVariant> ActualLanguageVariantProperty =
+        LanguageVariant.ActualLanguageVariantProperty.AddOwner<ThemeManager>();
+    
+    public LanguageVariant ActualLanguageVariant
+    {
+        get => GetValue(ActualLanguageVariantProperty);
+        set => SetValue(ActualLanguageVariantProperty, value);
+    }
 
     public IList<ThemeAlgorithm>? ActivatedThemeAlgorithms { get; internal set; }
     
@@ -29,23 +37,6 @@ internal class ThemeManager : Styles, IThemeManager
     public string DefaultThemeId { get; set; }
 
     internal List<Type> ControlTokenTypes { get; set; }
-
-    private CultureInfo? _cultureInfo;
-
-    public CultureInfo? CultureInfo
-    {
-        get => _cultureInfo;
-
-        set
-        {
-            _cultureInfo = value;
-            var languageResource = TryGetLanguageResource(value ?? IThemeManager.DEFAULT_LANGUAGE);
-            foreach (var entry in languageResource)
-            {
-                Resources.Add(entry);
-            }
-        }
-    }
 
     public event EventHandler<ThemeOperateEventArgs>? ThemeCreated;
     public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoad;
@@ -65,7 +56,7 @@ internal class ThemeManager : Styles, IThemeManager
     private IList<IControlThemesProvider> _controlThemesProviders;
     private IList<IThemeAssetPathProvider> _themeAssetPathProviders;
     
-    private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
+    private readonly Dictionary<LanguageVariant, ResourceDictionary> _languages;
     private List<ILanguageProvider>? _languageProviders;
     
     internal ThemeManager()
@@ -80,7 +71,7 @@ internal class ThemeManager : Styles, IThemeManager
         _themeAssetPathProviders = new List<IThemeAssetPathProvider>();
         ControlTokenTypes        = new List<Type>();
         _languageProviders       = new List<ILanguageProvider>();
-        _languages               = new Dictionary<CultureInfo, ResourceDictionary>();
+        _languages               = new Dictionary<LanguageVariant, ResourceDictionary>();
     }
 
     public IReadOnlyCollection<ITheme> AvailableThemes
@@ -235,14 +226,19 @@ internal class ThemeManager : Styles, IThemeManager
         Debug.Assert(_themePool.Count > 0);
     }
 
-    private ResourceDictionary TryGetLanguageResource(CultureInfo locale)
+    private ResourceDictionary? TryGetLanguageResource(LanguageVariant languageVariant)
     {
-        if (_languages.TryGetValue(locale, out var resource))
+        if (_languages.TryGetValue(languageVariant, out var resource))
         {
             return resource;
         }
-
-        return _languages[IThemeManager.DEFAULT_LANGUAGE];
+        return null;
+    }
+    
+    private ResourceDictionary GetLanguageResourceOrDefault(LanguageVariant languageVariant, 
+                                                            ResourceDictionary defaultResourceDictionary)
+    {
+        return _languages.GetValueOrDefault(languageVariant, defaultResourceDictionary);
     }
 
     public void AddCustomThemePaths(IList<string> paths)
@@ -321,13 +317,13 @@ internal class ThemeManager : Styles, IThemeManager
         {
             foreach (var languageProvider in _languageProviders)
             {
-                var culture = new CultureInfo(languageProvider.LangCode);
-                if (!_languages.ContainsKey(culture))
+                var languageVariant = LanguageVariant.FromCode(languageProvider.LangCode);
+                if (!_languages.ContainsKey(languageVariant))
                 {
-                    _languages[culture] = new ResourceDictionary();
+                    _languages[languageVariant] = new ResourceDictionary();
                 }
 
-                var resourceDictionary = _languages[culture];
+                var resourceDictionary = _languages[languageVariant];
                 languageProvider.BuildResourceDictionary(resourceDictionary);
             }
 
@@ -342,6 +338,29 @@ internal class ThemeManager : Styles, IThemeManager
 
     internal virtual void NotifyAttachedToApplication()
     {
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ActualLanguageVariantProperty)
+        {
+            if (change.OldValue is LanguageVariant oldLangVariant)
+            {
+                var oldResource = TryGetLanguageResource(oldLangVariant);
+                if (oldResource != null)
+                {
+                    Resources.MergedDictionaries.Remove(oldResource);
+                }
+            }
+            
+            var langVariant = change.NewValue as LanguageVariant;
+            langVariant ??= IThemeManager.DEFAULT_LANGUAGE;
+            var languageResource = TryGetLanguageResource(langVariant);
+            languageResource ??= _languages[IThemeManager.DEFAULT_LANGUAGE];
+            
+            Resources.MergedDictionaries.Add(languageResource);
+        }
     }
 }
 

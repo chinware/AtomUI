@@ -4,3 +4,4 @@
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Styling")]
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Language")]

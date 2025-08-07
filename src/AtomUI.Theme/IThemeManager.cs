@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using AtomUI.Theme.Language;
 using AtomUI.Utils;
 using Avalonia.Styling;
 
@@ -7,7 +8,7 @@ namespace AtomUI.Theme;
 public interface IThemeManager
 {
     public const string DEFAULT_THEME_ID = "DaybreakBlue";
-    public static readonly CultureInfo DEFAULT_LANGUAGE = new(LanguageCode.zh_CN);
+    public static readonly LanguageVariant DEFAULT_LANGUAGE = LanguageVariant.zh_CN;
     
     public IReadOnlyCollection<ITheme> AvailableThemes { get; }
     public ITheme? ActivatedTheme { get; }

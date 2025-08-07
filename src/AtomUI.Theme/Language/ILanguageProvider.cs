@@ -4,7 +4,7 @@ namespace AtomUI.Theme.Language;
 
 public interface ILanguageProvider
 {
-    public string LangCode { get; }
+    public LanguageCode LangCode { get; }
     public string LangId { get; }
     public string ResourceCatalog { get; }
 
