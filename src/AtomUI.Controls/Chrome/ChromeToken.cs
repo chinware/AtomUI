@@ -133,11 +133,11 @@ internal class ChromeToken : AbstractControlDesignToken
         ForegroundColor             = SharedToken.ColorTextSecondary;
         HoverBackgroundColor        = SharedToken.ColorBgTextHover;
         PressedBackgroundColor      = SharedToken.ColorBgTextActive;
-        LogoAndTitleSpacing         = SharedToken.SpacingXS;
-        TitleBarPadding             = SharedToken.PaddingXS;
-        CaptionButtonSize           = SharedToken.IconSizeSM;
-        LogoSize                    = SharedToken.IconSizeLG;
-
+        LogoAndTitleSpacing         = SharedToken.SizeUnit * 2;
+        TitleBarPadding             = new Thickness(LogoAndTitleSpacing);
+        CaptionButtonSize           = SharedToken.SizeUnit * 3;
+        LogoSize                    = SharedToken.SizeUnit * 4;
+        
         ActiveColor   = SharedToken.ColorText;
         InactiveColor = SharedToken.ColorTextQuaternary;
 
@@ -148,10 +148,10 @@ internal class ChromeToken : AbstractControlDesignToken
         InactiveBgColor      = SharedToken.ColorFillQuaternary;
         InactiveHoverBgColor = SharedToken.ColorFillTertiary;
         
-        CaptionButtonPadding = SharedToken.PaddingXS;
-        CaptionGroupSpacing  = SharedToken.SpacingXS;
+        CaptionButtonPadding = new Thickness(SharedToken.SizeUnit * 2);
+        CaptionGroupSpacing  = SharedToken.SizeUnit * 2;
         
-        MinHeight = SharedToken.ControlHeightLG;
+        MinHeight = 40;
 
         WindowsCloseButtonHoverBgColor   = Color.FromRgb(244, 67, 54); // #F44336
         WindowsCloseButtonPressedBgColor = Color.FromArgb(190, 244, 67, 54);
