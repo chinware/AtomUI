@@ -189,7 +189,7 @@ public class Application : AvaloniaApplication, IApplication
     {
         if (_themeManager != null)
         {
-            var themeResource = _themeManager.Resources[ActualThemeVariant];
+            var themeResource = _themeManager.Resources.ThemeDictionaries[ActualThemeVariant];
             if (themeResource is ResourceDictionary globalResourceDictionary)
             {
                 globalResourceDictionary[SharedTokenKey.EnableMotion] = IsMotionEnabled;
@@ -201,7 +201,7 @@ public class Application : AvaloniaApplication, IApplication
     {
         if (_themeManager != null)
         {
-            var themeResource = _themeManager.Resources[ActualThemeVariant];
+            var themeResource = _themeManager.Resources.ThemeDictionaries[ActualThemeVariant];
             if (themeResource is ResourceDictionary globalResourceDictionary)
             {
                 globalResourceDictionary[SharedTokenKey.EnableWaveSpirit] = IsWaveSpiritEnabled;
