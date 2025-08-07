@@ -9,7 +9,7 @@
         <themes:BaseNavMenuItemTheme TargetType="atom:NavMenuItem" />
     </ControlTheme.BasedOn>
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="atom:NavMenuItem">
             <Panel>
                 <Border Name="{x:Static atom:BaseNavMenuItemThemeConstants.HeaderDecoratorPart}">
                     <Grid Name="{x:Static atom:BaseNavMenuItemThemeConstants.MainContainerPart}">
@@ -17,8 +17,6 @@
                             <ColumnDefinition Width="Auto"
                                               SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto"
-                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.InputGestureTextSizeGroup}" />
                             <ColumnDefinition Width="Auto"
                                               SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
                         </Grid.ColumnDefinitions>
@@ -38,16 +36,9 @@
                             IsHitTestVisible="False"
                             Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
                             ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                        <atom:TextBlock
-                            Name="{x:Static atom:BaseNavMenuItemThemeConstants.InputGestureTextPart}"
-                            Grid.Column="2"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            TextAlignment="Right"
-                            Text="{TemplateBinding InputGesture, Converter={x:Static atom:BaseNavMenuItemTheme.KeyGestureConverter}}" />
                         <atom:Icon
                             Name="{x:Static atom:BaseNavMenuItemThemeConstants.MenuIndicatorIconPart}"
-                            Grid.Column="3"
+                            Grid.Column="2"
                             IconInfo="{atom:IconInfoProvider RightOutlined}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"

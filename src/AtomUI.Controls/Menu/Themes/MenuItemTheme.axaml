@@ -59,6 +59,7 @@
                                         VerticalAlignment="Center"
                                         TextAlignment="Right"
                                         Text="{TemplateBinding InputGesture, Converter={x:Static atom:MenuItemTheme.KeyGestureConverter}}"
+                                        IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
                                         Grid.Column="3" />
 
                         <atom:Icon Name="{x:Static atom:MenuItemThemeConstants.MenuIndicatorIconPart}"

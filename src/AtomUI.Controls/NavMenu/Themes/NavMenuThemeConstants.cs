@@ -6,7 +6,6 @@ internal static class BaseNavMenuItemThemeConstants
     public const string MainContainerPart = "PART_MainContainer";
     public const string ItemIconPresenterPart = "PART_ItemIconPresenter";
     public const string ItemTextPresenterPart = "PART_ItemTextPresenter";
-    public const string InputGestureTextPart = "PART_InputGestureText";
     public const string MenuIndicatorIconPart = "PART_MenuIndicatorIcon";
 }
 
@@ -31,7 +30,6 @@ internal static class NavMenuThemeConstants
     
     // 菜单项 SizeGridName
     public const string IconPresenterSizeGroup = "IconPresenter";
-    public const string InputGestureTextSizeGroup = "InputGestureText";
     public const string MenuIndicatorIconSizeGroup = "MenuIndicatorIcon";
     
     // theme id 定义
