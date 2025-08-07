@@ -7,7 +7,7 @@ namespace AtomUI.Controls.Localization;
 
 // ReSharper disable once InconsistentNaming
 [LanguageProvider(LanguageCode.zh_CN, Constants.CommonLangID)]
-internal class zh_CN : AbstractLanguageProvider
+internal class zh_CN : LanguageProvider
 {
     public const string Ok = "确定";
     public const string Cancel = "取消";

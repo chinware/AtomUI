@@ -9,7 +9,7 @@ public interface IThemeManagerBuilder
     IList<Type> ControlDesignTokens { get; }
     IList<IThemeAssetPathProvider> ThemeAssetPathProviders { get; }
     IList<IControlThemesProvider> ControlThemesProviders { get; }
-    IList<AbstractLanguageProvider> LanguageProviders { get; }
+    IList<LanguageProvider> LanguageProviders { get; }
     IList<EventHandler> InitializedHandlers { get; }
     LanguageVariant LanguageVariant { get; }
     string ThemeId { get; }
@@ -18,7 +18,7 @@ public interface IThemeManagerBuilder
     void AddControlToken(Type tokenType);
     void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider);
     void AddControlThemesProvider(IControlThemesProvider controlThemesProvider);
-    void AddLanguageProviders(AbstractLanguageProvider languageProvider);
+    void AddLanguageProviders(LanguageProvider languageProvider);
     
     void WithDefaultTheme(string themeId);
     void WithDefaultCultureInfo(CultureInfo cultureInfo);

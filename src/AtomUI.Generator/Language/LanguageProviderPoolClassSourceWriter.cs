@@ -73,7 +73,7 @@ public class LanguageProviderPoolClassSourceWriter
                                  SyntaxFactory.GenericName(SyntaxFactory.Identifier("List"))
                                               .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
                                                   SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                      SyntaxFactory.ParseTypeName("AbstractLanguageProvider")))))
+                                                      SyntaxFactory.ParseTypeName("LanguageProvider")))))
                              .WithVariables(SyntaxFactory.SingletonSeparatedList(
                                  SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("languageProviders"))
                                               .WithInitializer(SyntaxFactory.EqualsValueClause(
@@ -85,7 +85,7 @@ public class LanguageProviderPoolClassSourceWriter
                                                                                SyntaxFactory
                                                                                    .SingletonSeparatedList<TypeSyntax>(
                                                                                        SyntaxFactory.ParseTypeName(
-                                                                                           "AbstractLanguageProvider")))))
+                                                                                           "LanguageProvider")))))
                                                                .WithArgumentList(SyntaxFactory.ArgumentList()))))))
         };
 
@@ -116,7 +116,7 @@ public class LanguageProviderPoolClassSourceWriter
                                 SyntaxFactory.GenericName(SyntaxFactory.Identifier("IList"))
                                              .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
                                                  SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                     SyntaxFactory.ParseTypeName("AbstractLanguageProvider")))),
+                                                     SyntaxFactory.ParseTypeName("LanguageProvider")))),
                                 SyntaxFactory.Identifier("GetLanguageProviders"))
                             .WithModifiers(SyntaxFactory.TokenList(
                                 SyntaxFactory.Token(SyntaxKind.InternalKeyword),

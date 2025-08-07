@@ -6,9 +6,9 @@ namespace AtomUI.Theme.Language
 {
     internal class LanguageProviderPool
     {
-        internal static IList<AbstractLanguageProvider> GetLanguageProviders()
+        internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<AbstractLanguageProvider> languageProviders = new List<AbstractLanguageProvider>();
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>();
             return languageProviders;
         }
     }

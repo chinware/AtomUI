@@ -5,7 +5,7 @@ using AtomUI.Utils;
 namespace AtomUI.Controls.DatePickerLang;
 
 [LanguageProvider(LanguageCode.zh_CN, DatePickerToken.ID)]
-internal class zh_CN : AbstractLanguageProvider
+internal class zh_CN : LanguageProvider
 {
     public const string Today = "今天";
     public const string Now = "现在";

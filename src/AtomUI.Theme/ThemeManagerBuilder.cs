@@ -10,7 +10,7 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     public IList<BaseControlTheme> ControlThemes { get; }
     public IList<IThemeAssetPathProvider> ThemeAssetPathProviders { get; }
     public IList<IControlThemesProvider> ControlThemesProviders { get; }
-    public IList<AbstractLanguageProvider> LanguageProviders { get; }
+    public IList<LanguageProvider> LanguageProviders { get; }
     public IList<EventHandler> InitializedHandlers { get; }
 
     public LanguageVariant LanguageVariant { get; private set; }
@@ -27,7 +27,7 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         ControlThemes                     = new List<BaseControlTheme>();
         ThemeAssetPathProviders           = new List<IThemeAssetPathProvider>();
         ControlThemesProviders            = new List<IControlThemesProvider>();
-        LanguageProviders                 = new List<AbstractLanguageProvider>();
+        LanguageProviders                 = new List<LanguageProvider>();
         InitializedHandlers               = new List<EventHandler>();
         LanguageVariant                   = LanguageVariant.en_US;
         ThemeId                           = IThemeManager.DEFAULT_THEME_ID;
@@ -71,7 +71,7 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         _registeredControlThemesProviders.Add(controlThemesProvider.Id);
     }
 
-    public void AddLanguageProviders(AbstractLanguageProvider languageProvider)
+    public void AddLanguageProviders(LanguageProvider languageProvider)
     {
         var id = languageProvider.GetType().FullName!;
         if (_registeredLanguageProviders.Contains(id))

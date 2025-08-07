@@ -6,9 +6,9 @@ namespace AtomUI.Theme.Language
 {
     internal class LanguageProviderPool
     {
-        internal static IList<AbstractLanguageProvider> GetLanguageProviders()
+        internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<AbstractLanguageProvider> languageProviders = new List<AbstractLanguageProvider>();
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>();
             languageProviders.Add(new AtomUI.Controls.DatePickerLang.en_US());
             languageProviders.Add(new AtomUI.Controls.DatePickerLang.zh_CN());
             languageProviders.Add(new AtomUI.Controls.Localization.en_US());

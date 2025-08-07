@@ -1,10 +1,9 @@
 ﻿using System.Reflection;
-using AtomUI.Theme.Language;
 using Avalonia.Controls;
 
-namespace AtomUI.Theme;
+namespace AtomUI.Theme.Language;
 
-public class AbstractLanguageProvider : ILanguageProvider
+public abstract class LanguageProvider : ILanguageProvider
 {
     public LanguageCode LangCode { get; }
 
@@ -12,7 +11,7 @@ public class AbstractLanguageProvider : ILanguageProvider
 
     public string ResourceCatalog { get; }
 
-    public AbstractLanguageProvider()
+    public LanguageProvider()
     {
         var type                      = GetType();
         var languageProviderAttribute = type.GetCustomAttribute<LanguageProviderAttribute>();

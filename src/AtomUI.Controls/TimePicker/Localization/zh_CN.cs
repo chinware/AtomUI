@@ -7,7 +7,7 @@ namespace AtomUI.Controls.TimePickerLang;
 
 // ReSharper disable once InconsistentNaming
 [LanguageProvider(LanguageCode.zh_CN, TimePickerToken.ID)]
-internal class zh_CN : AbstractLanguageProvider
+internal class zh_CN : LanguageProvider
 {
     public const string AMText = "上午";
     public const string PMText = "下午";
