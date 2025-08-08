@@ -189,7 +189,6 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
 
     public Icon()
     {
-        RenderTransform       = new RotateTransform();
         _sourceGeometriesData = new List<Geometry>();
         _transforms           = new List<Matrix>();
         this.ConfigureMotionBindingStyle();

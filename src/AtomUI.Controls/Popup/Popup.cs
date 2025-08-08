@@ -653,12 +653,6 @@ public class Popup : AvaloniaPopup,
             return;
         }
         
-        // 防止干扰
-        if (!popupRoot.IsVisible)
-        {
-            return;
-        }
-        
         using (BeginIgnoringIsOpen())
         {
             SetCurrentValue(IsMotionAwareOpenProperty, false);

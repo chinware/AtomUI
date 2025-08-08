@@ -174,6 +174,7 @@ namespace AtomUI.Theme.Styling
 
     public static class CheckBoxTokenKey
     {
+        public static readonly TokenResourceKey CheckedMarkSize = new TokenResourceKey("CheckBox.CheckedMarkSize");
         public static readonly TokenResourceKey CheckIndicatorSize = new TokenResourceKey("CheckBox.CheckIndicatorSize");
         public static readonly TokenResourceKey IndicatorTristateMarkSize = new TokenResourceKey("CheckBox.IndicatorTristateMarkSize");
         public static readonly TokenResourceKey TextMargin = new TokenResourceKey("CheckBox.TextMargin");

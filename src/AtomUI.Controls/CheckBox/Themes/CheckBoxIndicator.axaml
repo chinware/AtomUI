@@ -1,0 +1,51 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:CheckBoxIndicator}" TargetType="atom:CheckBoxIndicator">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel>
+                        <atom:Icon Name="{x:Static atom:CheckBoxIndicatorThemeConstants.CheckedMarkPart}"
+                                   IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" 
+                                   NormalFilledBrush="{TemplateBinding CheckedMarkBrush}"
+                                   IsVisible="False"/>
+                        <Rectangle Name="{x:Static atom:CheckBoxIndicatorThemeConstants.TristateMarkPart}"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Fill="{TemplateBinding TristateMarkBrush}"
+                                   Width="{TemplateBinding TristateMarkSize}"
+                                   Height="{TemplateBinding TristateMarkSize}"
+                                   IsVisible="False"/>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckedMarkSize}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckedMarkSize}}" />
+            <Setter Property="RenderTransform" Value="scale(0.3)"/>
+        </Style>
+        
+        <Style Selector="^[State=Checked]">
+            <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="RenderTransform" Value="scale(1.0)"/>
+            </Style>
+        </Style>
+        <Style Selector="^[State=Indeterminate]">
+            <Style Selector="^ /template/ Rectangle#PART_TristateMark">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

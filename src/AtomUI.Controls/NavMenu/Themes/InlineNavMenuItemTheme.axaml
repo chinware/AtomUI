@@ -73,7 +73,7 @@
                         Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalItemsPanelSpacing}}" />
             </Style>
             
-            <Style Selector="^ /template/ atom|MotionActor#PART_ChildItemsLayoutTransform">
+            <Style Selector="^ /template/ atom|LayoutAwareMotionActor#PART_ChildItemsLayoutTransform">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalChildItemsMargin}}" />
             </Style>

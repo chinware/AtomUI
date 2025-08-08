@@ -381,7 +381,7 @@ public class CollapseItem : HeaderedContentControl,
             {
                 _expandButton.Transitions = new Transitions()
                 {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
                 };
             }
         }

@@ -23,8 +23,8 @@
                                 IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                         <Border Name="{x:Static atom:TopLevelMenuItemThemeConstants.PopupFramePart}">
                             <atom:MenuScrollViewer
-                                IsScrollChainingEnabled="False"
-                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                                                                   IsScrollChainingEnabled="False"
+                                                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                 <ItemsPresenter
                                     Name="{x:Static atom:TopLevelMenuItemThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -102,7 +102,7 @@
 
             <Style Selector="^ /template/ Border#PART_PopupFrame">
                 <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
                 <Setter Property="CornerRadius"
                         Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
                 <Setter Property="MinWidth"

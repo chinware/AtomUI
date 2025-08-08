@@ -4537,6 +4537,21 @@ public partial class AntDesignIconPackage
         return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CarryOutOutlined, twoToneColorInfo);
     }
 
+    public static AtomUI.IconPkg.Icon CheckBoldOutlined()
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CheckBoldOutlined);
+    }
+
+    public static AtomUI.IconPkg.Icon CheckBoldOutlined(ColorInfo colorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CheckBoldOutlined, colorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon CheckBoldOutlined(TwoToneColorInfo twoToneColorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CheckBoldOutlined, twoToneColorInfo);
+    }
+
     public static AtomUI.IconPkg.Icon CheckCircleOutlined()
     {
         return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CheckCircleOutlined);
@@ -12896,6 +12911,7 @@ public partial class AntDesignIconPackage
         _iconInfoPool.Add((int)AntDesignIconKind.CaretRightOutlined, () => new IconInfo("CaretRightOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M715.8 493.5L335 165.1c-14.2-12.2-35-1.2-35 18.5v656.8c0 19.7 20.8 30.7 35 18.5l380.8-328.4c10.9-9.4 10.9-27.6 0-37z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CaretUpOutlined, () => new IconInfo("CaretUpOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CarryOutOutlined, () => new IconInfo("CarryOutOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v584zM688 420h-55.2c-5.1 0-10 2.5-13 6.6L468.9 634.4l-64.7-89c-3-4.1-7.8-6.6-13-6.6H336c-6.5 0-10.3 7.4-6.5 12.7l126.4 174a16.1 16.1 0 0 0 26 0l212.6-292.7c3.8-5.4 0-12.8-6.5-12.8z", true)}));
+        _iconInfoPool.Add((int)AntDesignIconKind.CheckBoldOutlined, () => new IconInfo("CheckBoldOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M1014.4 233.2l-84.6-84.6c-6-6-15.8-6-21.8 0L383.6 673.2 115.8 405.4c-6-6-15.8-6-21.8 0L9.6 490c-6 6-6 15.8 0 21.8l362.6 362.6c8.6 7.2 14.6 7.2 22.8 0l619.4-619.4C1020.4 249 1020.4 239.2 1014.4 233.2z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CheckCircleOutlined, () => new IconInfo("CheckCircleOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M699 353h-46.9c-10.2 0-19.9 4.9-25.9 13.3L469 584.3l-71.2-98.8c-6-8.3-15.6-13.3-25.9-13.3H325c-6.5 0-10.3 7.4-6.5 12.7l124.6 172.8a31.8 31.8 0 0 0 51.7 0l210.6-292c3.9-5.3.1-12.7-6.4-12.7z", true), new GeometryData("M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CheckSquareOutlined, () => new IconInfo("CheckSquareOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M433.1 657.7a31.8 31.8 0 0 0 51.7 0l210.6-292c3.8-5.3 0-12.7-6.5-12.7H642c-10.2 0-19.9 4.9-25.9 13.3L459 584.3l-71.2-98.8c-6-8.3-15.6-13.3-25.9-13.3H315c-6.5 0-10.3 7.4-6.5 12.7l124.6 172.8z", true), new GeometryData("M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CheckOutlined, () => new IconInfo("CheckOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z", true)}));
@@ -13434,7 +13450,7 @@ public partial class AntDesignIconPackage
         _iconInfoPool.Add((int)AntDesignIconKind.WalletTwoTone, () => new IconInfo("WalletTwoTone", new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 464H528V448h312v128zm0-192H496c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h344v200H184V184h656v200z", true), new GeometryData("M528 576h312V448H528v128zm92-104c22.1 0 40 17.9 40 40s-17.9 40-40 40-40-17.9-40-40 17.9-40 40-40z", false), new GeometryData("M580 512a40 40 0 1 0 80 0 40 40 0 1 0-80 0z", true), new GeometryData("M184 840h656V640H496c-17.7 0-32-14.3-32-32V416c0-17.7 14.3-32 32-32h344V184H184v656z", false)}));
         _iconInfoPool.Add((int)AntDesignIconKind.WarningTwoTone, () => new IconInfo("WarningTwoTone", new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M955.7 856l-416-720c-6.2-10.7-16.9-16-27.7-16s-21.6 5.3-27.7 16l-416 720C56 877.4 71.4 904 96 904h832c24.6 0 40-26.6 27.7-48zm-783.5-27.9L512 239.9l339.8 588.2H172.2z", true), new GeometryData("M172.2 828.1h679.6L512 239.9 172.2 828.1zM560 720a48.01 48.01 0 0 1-96 0 48.01 48.01 0 0 1 96 0zm-16-304v184c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V416c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8z", false), new GeometryData("M464 720a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm16-304v184c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V416c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8z", true)}));
         IconThemeRanges.Add(IconThemeType.Filled, (1, 235));
-        IconThemeRanges.Add(IconThemeType.Outlined, (236, 689));
-        IconThemeRanges.Add(IconThemeType.TwoTone, (690, 839));
+        IconThemeRanges.Add(IconThemeType.Outlined, (236, 690));
+        IconThemeRanges.Add(IconThemeType.TwoTone, (691, 840));
     }
 }
