@@ -25,7 +25,7 @@
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
 
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuBgColor}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
             <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
             <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />

@@ -20,11 +20,11 @@
     
     <Style Selector="^:is(atom|TreeViewFlyoutPresenter)">
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-        <Setter Property="Background" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupBgColor}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupContentPadding}}" />
         
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupBgColor}}" />
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupMinWidth}}" />
             <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupMaxWidth}}" />
             <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:TreeFlyoutTokenKey.PopupMinHeight}}" />

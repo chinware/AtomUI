@@ -170,7 +170,7 @@
         </Style>
 
         <Style Selector="^ /template/ Border#PART_PopupFrame">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
             <Setter Property="CornerRadius"
                     Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
