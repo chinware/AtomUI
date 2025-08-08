@@ -210,4 +210,9 @@ public class Application : AvaloniaApplication, IApplication
     }
     
     // TODO 目前系统主题变化，我们没有想到合适的处理方式
+
+    public static Application? GetInstance()
+    {
+        return Application.Current as Application;
+    }
 }
