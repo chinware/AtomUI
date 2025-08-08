@@ -47,8 +47,9 @@ internal class Theme : AvaloniaObject, ITheme
     private bool _isBuiltIn;
     private bool _isPrimary;
     private IList<ThemeAlgorithm> _algorithms;
+    private ThemeManager _themeManager;
 
-    public Theme(string id, string defFilePath, ISet<ThemeAlgorithm> requestAlgorithms, bool isBuiltIn = false)
+    public Theme(ThemeManager themeManager, string id, string defFilePath, ISet<ThemeAlgorithm> requestAlgorithms, bool isBuiltIn = false)
     {
         _id                = id;
         _isBuiltIn         = isBuiltIn;
@@ -71,6 +72,7 @@ internal class Theme : AvaloniaObject, ITheme
         }
 
         _themeVariant = BuildThemeVariant(id, _algorithms);
+        _themeManager = themeManager;
     }
 
     public List<string> ThemeResourceKeys => ResourceDictionary.Keys.Select(s => s.ToString()!).ToList();
@@ -122,7 +124,7 @@ internal class Theme : AvaloniaObject, ITheme
         IThemeVariantCalculator? calculator     = null;
         foreach (var algorithmId in algorithms)
         {
-            calculator     = CreateThemeVariantCalculator(algorithmId, baseCalculator);
+            calculator     = _themeManager.CreateThemeVariantCalculator(algorithmId, baseCalculator);
             baseCalculator = calculator;
         }
     
@@ -217,7 +219,7 @@ internal class Theme : AvaloniaObject, ITheme
                                                       BindingFlags.NonPublic |
                                                       BindingFlags.Instance |
                                                       BindingFlags.FlattenHierarchy)
-            .Select(p => p.Name).ToHashSet();
+                                       .Select(p => p.Name).ToHashSet();
         foreach (var entry in controlTokenConfigInfo.Tokens)
         {
             if (!tokenProperties.Contains(entry.Key))
@@ -242,29 +244,6 @@ internal class Theme : AvaloniaObject, ITheme
             algorithms.Add(algorithm);
         }
         return algorithms;
-    }
-
-    internal static IThemeVariantCalculator CreateThemeVariantCalculator(ThemeAlgorithm algorithm, IThemeVariantCalculator? baseAlgorithm)
-    {
-        IThemeVariantCalculator calculator;
-        if (algorithm == DefaultThemeVariantCalculator.Algorithm)
-        {
-            calculator = new DefaultThemeVariantCalculator();
-        }
-        else if (algorithm == DarkThemeVariantCalculator.Algorithm)
-        {
-            calculator = new DarkThemeVariantCalculator(baseAlgorithm!);
-        }
-        else if (algorithm == CompactThemeVariantCalculator.Algorithm)
-        {
-            calculator = new CompactThemeVariantCalculator(baseAlgorithm!);
-        }
-        else
-        {
-            throw new ThemeLoadException($"Algorithm: {algorithm} is not supported.");
-        }
-
-        return calculator;
     }
 
     protected void CollectControlTokens()

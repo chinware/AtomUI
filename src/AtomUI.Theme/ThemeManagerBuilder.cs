@@ -1,5 +1,6 @@
 using System.Globalization;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Styling;
 using Avalonia;
 
 namespace AtomUI.Theme;
@@ -12,6 +13,8 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     public IList<IControlThemesProvider> ControlThemesProviders { get; }
     public IList<LanguageProvider> LanguageProviders { get; }
     public IList<EventHandler> InitializedHandlers { get; }
+    
+    public IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; internal set; }
 
     public LanguageVariant LanguageVariant { get; private set; }
     public string ThemeId { get; private set; }
@@ -101,7 +104,8 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     internal ThemeManager Build()
     {
         var themeManager = new ThemeManager();
-        themeManager.DefaultThemeId = ThemeId;
+        themeManager.DefaultThemeId                = ThemeId;
+        themeManager.ThemeVariantCalculatorFactory = ThemeVariantCalculatorFactory;
         foreach (var controlThemesProvider in ControlThemesProviders)
         {
             themeManager.RegisterControlThemesProvider(controlThemesProvider);
@@ -128,5 +132,10 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         }
 
         return themeManager;
+    }
+
+    public void WithThemeVariantCalculatorFactory(IThemeVariantCalculatorFactory factory)
+    {
+        ThemeVariantCalculatorFactory = factory;
     }
 }

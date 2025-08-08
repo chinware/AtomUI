@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using AtomUI.Theme.Language;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
@@ -37,7 +38,8 @@ internal class ThemeManager : Styles, IThemeManager
     public string DefaultThemeId { get; set; }
 
     internal List<Type> ControlTokenTypes { get; set; }
-
+    internal IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; set; }
+    
     public event EventHandler<ThemeOperateEventArgs>? ThemeCreated;
     public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoad;
     public event EventHandler<ThemeOperateEventArgs>? ThemeLoaded;
@@ -61,8 +63,8 @@ internal class ThemeManager : Styles, IThemeManager
     
     internal ThemeManager()
     {
-        _themePool       =  new Dictionary<ThemeVariant, Theme>();
-        _customThemeDirs =  new List<string>();
+        _themePool       = new Dictionary<ThemeVariant, Theme>();
+        _customThemeDirs = new List<string>();
         var appName = Application.Current?.Name ?? DEFAULT_APP_NAME;
         _builtInThemeDirs = [Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
             THEME_DIR)];
@@ -284,7 +286,7 @@ internal class ThemeManager : Styles, IThemeManager
             var themeId      = Path.GetFileNameWithoutExtension(filePath);
             foreach (var algorithms in algorithmsCombination)
             {
-                var theme        = new Theme(themeId, filePath, algorithms ,isBuiltIn);
+                var theme        = new Theme(this, themeId, filePath, algorithms ,isBuiltIn);
                 var themeVariant = theme.ThemeVariant;
                 if (themes.ContainsKey(themeVariant))
                 {
@@ -361,6 +363,31 @@ internal class ThemeManager : Styles, IThemeManager
             
             Resources.MergedDictionaries.Add(languageResource);
         }
+    }
+
+    internal IThemeVariantCalculator CreateThemeVariantCalculator(ThemeAlgorithm algorithm, IThemeVariantCalculator? baseCalculator)
+    {
+        if (ThemeVariantCalculatorFactory != null)
+        {
+            return ThemeVariantCalculatorFactory.Create(algorithm, baseCalculator);
+        }
+
+        if (algorithm == ThemeAlgorithm.Default)
+        {
+            return new DefaultThemeVariantCalculator();
+        }
+        if (algorithm == ThemeAlgorithm.Dark)
+        {
+            Debug.Assert(baseCalculator is not null);
+            return new DarkThemeVariantCalculator(baseCalculator);
+        } 
+        if (algorithm == ThemeAlgorithm.Compact)
+        {
+            Debug.Assert(baseCalculator is not null);
+            return new CompactThemeVariantCalculator(baseCalculator);
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(algorithm), $"Unsupported theme variant algorithm: {algorithm}");
     }
 }
 

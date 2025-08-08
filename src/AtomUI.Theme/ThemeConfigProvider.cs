@@ -140,7 +140,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         IThemeVariantCalculator? calculator     = null;
         foreach (var algorithm in algorithms)
         {
-            calculator     = AtomUITheme.CreateThemeVariantCalculator(algorithm, baseCalculator);
+            calculator     = ThemeManager.Current.CreateThemeVariantCalculator(algorithm, baseCalculator);
             baseCalculator = calculator;
         }
 
