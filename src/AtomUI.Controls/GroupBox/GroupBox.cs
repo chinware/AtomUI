@@ -114,6 +114,7 @@ public class GroupBox : ContentControl,
     static GroupBox()
     {
         AffectsMeasure<GroupBox>(HeaderIconProperty);
+        AffectsRender<GroupBox>(BackgroundProperty);
     }
 
     public GroupBox()
