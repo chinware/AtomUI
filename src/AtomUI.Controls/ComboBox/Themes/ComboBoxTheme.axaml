@@ -100,7 +100,7 @@
             <Setter Property="MaskShadows" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBoxShadows}}"/>
         </Style>
         <Style Selector="^ /template/ Border#PART_PopupFrame">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}"/>
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBorderRadius}}"/>
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}"/>
         </Style>

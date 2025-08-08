@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Layout;
 
 namespace AtomUI.Controls;
@@ -161,7 +162,6 @@ public class ComboBox : AvaloniaComboBox,
     #endregion
     
     private Popup? _popup;
-    private IconButton? _openIndicatorButton;
 
     static ComboBox()
     {
@@ -177,25 +177,23 @@ public class ComboBox : AvaloniaComboBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.SetPopup(null); // 情况父类，方式鼠标点击的错误处理
         _popup               = e.NameScope.Find<Popup>(ComboBoxThemeConstants.PopupPart);
-        _openIndicatorButton = e.NameScope.Find<IconButton>(ComboBoxThemeConstants.OpenIndicatorButtonPart);
-
-        if (_openIndicatorButton is not null)
-        {
-            _openIndicatorButton.Click += (sender, args) => { SetCurrentValue(IsDropDownOpenProperty, true); };
-        }
         var spinnerHandle = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxThemeConstants.SpinnerInnerBoxPart);
         if (spinnerHandle?.SpinnerContent is ComboBoxHandle handle)
         {
-            handle.HandleClick += (sender, args) =>
-            {
-                SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
-            };
+            handle.HandleClick += HandleOpenPopupClicked;
         }
         if (_popup is IPopupHostProvider popupHostProvider)
         {
             popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
         }
+        UpdatePseudoClasses();
+    }
+
+    private void HandleOpenPopupClicked(object? sender, EventArgs e)
+    {
+        SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
     }
     
     private void HandlePopupHostChanged(IPopupHost? host)
@@ -210,12 +208,6 @@ public class ComboBox : AvaloniaComboBox,
                 };
             }
         }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        UpdatePseudoClasses();
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -236,6 +228,21 @@ public class ComboBox : AvaloniaComboBox,
         {
             UpdatePseudoClasses();
         }
+    }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (!e.Handled && e.Source is Visual source)
+        {
+            if (_popup?.IsInsidePopup(source) == true)
+            {
+                if (UpdateSelectionFromEventSource(e.Source))
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+        base.OnPointerReleased(e);
     }
 
     private void UpdatePseudoClasses()

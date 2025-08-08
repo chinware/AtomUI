@@ -250,7 +250,6 @@ internal class MenuToken : AbstractControlDesignToken
         var colorTextSecondary = SharedToken.ColorTextQuaternary;
         var colorBgContainer   = SharedToken.ColorBgContainer;
         var colorBgTextHover   = SharedToken.ColorBgTextHover;
-        var colorBgElevated    = SharedToken.ColorBgElevated;
         var padding            = SharedToken.UniformlyPadding;
         var controlHeight      = SharedToken.ControlHeight;
         var controlHeightSM    = SharedToken.ControlHeightSM;
@@ -275,7 +274,7 @@ internal class MenuToken : AbstractControlDesignToken
         DangerItemHoverColor = colorError;
 
         ItemHeight  = controlHeightSM;
-        MenuBgColor = colorBgElevated;
+        MenuBgColor = SharedToken.ColorBgContainer;
 
         ItemPaddingInline       = new Thickness(padding, SharedToken.UniformlyPaddingXXS);
         ItemIconSize            = SharedToken.IconSize;

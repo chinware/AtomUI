@@ -34,6 +34,10 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
         // Dark tokens
         SetupColorPalettes(designToken);
         CalculateColorMapTokenValues(designToken);
+        // Customize selected item background color
+        // https://github.com/ant-design/ant-design/issues/30524#issuecomment-871961867
+        designToken.ColorPrimaryBg      = designToken.ColorPrimaryBorder;
+        designToken.ColorPrimaryBgHover = designToken.ColorPrimaryBorderHover;
     }
 
     protected override ColorMap GenerateColorPalettes(Color baseColor)

@@ -144,8 +144,9 @@ public class Segmented : SelectingItemsControl,
         {
             SelectedIndex = 0;
         }
-
+        
         SetupSelectedThumbRect();
+        ConfigureTransitions();
     }
     
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)

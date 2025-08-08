@@ -47,24 +47,24 @@ public class Tag : TemplatedControl,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<string?> TagColorProperty
-        = AvaloniaProperty.Register<Tag, string?>(
+    public static readonly StyledProperty<string?> TagColorProperty =
+        AvaloniaProperty.Register<Tag, string?>(
             nameof(Color));
 
-    public static readonly StyledProperty<bool> IsClosableProperty
-        = AvaloniaProperty.Register<Tag, bool>(nameof(IsClosable));
+    public static readonly StyledProperty<bool> IsClosableProperty =
+        AvaloniaProperty.Register<Tag, bool>(nameof(IsClosable));
 
-    public static readonly StyledProperty<bool> BorderedProperty
-        = AvaloniaProperty.Register<Tag, bool>(nameof(Bordered), true);
+    public static readonly StyledProperty<bool> BorderedProperty =
+        AvaloniaProperty.Register<Tag, bool>(nameof(Bordered), true);
 
-    public static readonly StyledProperty<Icon?> IconProperty
-        = AvaloniaProperty.Register<Tag, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<Tag, Icon?>(nameof(Icon));
 
-    public static readonly StyledProperty<Icon?> CloseIconProperty
-        = AvaloniaProperty.Register<Tag, Icon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<Icon?> CloseIconProperty =
+        AvaloniaProperty.Register<Tag, Icon?>(nameof(CloseIcon));
 
-    public static readonly StyledProperty<string?> TagTextProperty
-        = AvaloniaProperty.Register<Tag, string?>(
+    public static readonly StyledProperty<string?> TagTextProperty =
+        AvaloniaProperty.Register<Tag, string?>(
             nameof(TagText));
 
     public string? TagColor

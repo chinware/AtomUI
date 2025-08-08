@@ -95,7 +95,7 @@ internal class ComboBoxToken : ButtonSpinnerToken
         
         var colorTextDisabled  = SharedToken.ColorTextDisabled;
         var colorTextSecondary = SharedToken.ColorTextSecondary;
-        var colorBgContainer   = SharedToken.ColorBgContainer;
+        var colorBgContainer   = SharedToken.ColorBgElevated;
         var colorBgTextHover   = SharedToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
@@ -105,7 +105,6 @@ internal class ComboBoxToken : ButtonSpinnerToken
         ItemBgColor         = colorBgContainer;
         ItemHoverBgColor    = colorBgTextHover;
         ItemSelectedBgColor = SharedToken.ControlItemBgActive;
-
         ItemDisabledColor = colorTextDisabled;
 
         ItemPadding = new Thickness(SharedToken.UniformlyPaddingSM, 0);
