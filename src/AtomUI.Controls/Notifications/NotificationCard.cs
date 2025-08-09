@@ -208,19 +208,18 @@ public class NotificationCard : ContentControl,
         {
             return;
         }
-
+        
         if (IsMotionEnabled)
         {
             AbstractMotion? motion;
             if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
             {
-                motion = new NotificationMoveLeftInMotion(Position == NotificationPosition.TopLeft, AnimationMaxOffsetX,
+                motion = new NotificationMoveLeftInMotion(AnimationMaxOffsetX,
                     _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
             {
-                motion = new NotificationMoveRightInMotion(Position == NotificationPosition.TopRight,
-                    AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopCenter)
             {
@@ -232,13 +231,7 @@ public class NotificationCard : ContentControl,
                 motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
                     new CubicEaseOut());
             }
-
-            _motionActor.IsVisible = false;
-            motion.Run(_motionActor, () => { _motionActor.IsVisible = true; });
-        }
-        else
-        {
-            _motionActor.IsVisible = true;
+            motion.Run(_motionActor);
         }
     }
 

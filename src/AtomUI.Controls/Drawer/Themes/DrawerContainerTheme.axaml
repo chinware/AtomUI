@@ -29,7 +29,7 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
         <Setter Property="MotionDuration"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}" />
         <Setter Property="MaskBgColor"

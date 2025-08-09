@@ -9,8 +9,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:LayoutAwareMotionActor Name="{x:Static atom:NotificationCardThemeConstants.MotionActorPart}"
-                                             ClipToBounds="False"
-                                             UseRenderTransform="False">
+                                             ClipToBounds="False">
                     <Border Name="{x:Static atom:NotificationCardThemeConstants.FramePart}">
                         <Grid ColumnDefinitions="Auto, *"
                               RowDefinitions="Auto, *, Auto">

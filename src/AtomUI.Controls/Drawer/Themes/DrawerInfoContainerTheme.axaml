@@ -53,7 +53,7 @@
 
         <Setter Property="ClipToBounds" Value="False" />
         <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
         </Style>
 
         <!-- BoxShadow style begin -->

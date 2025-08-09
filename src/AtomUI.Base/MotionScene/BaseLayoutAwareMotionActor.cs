@@ -83,7 +83,6 @@ public abstract class BaseLayoutAwareMotionActor : BaseMotionActor
             // TODO 这里可能会引起混淆，因为我们不会对 Target 实施 Scale 转换
             return base.ArrangeOverride(finalSize);
         }
-
         // Determine the largest available size after the transformation
         Size finalSizeTransformed = ComputeLargestTransformedSize(finalSize);
 
@@ -99,8 +98,8 @@ public abstract class BaseLayoutAwareMotionActor : BaseMotionActor
             new Rect(0, 0, finalSizeTransformed.Width, finalSizeTransformed.Height).TransformToAABB(Transformation);
         // Create the Arrange rect to center the transformed content
         Rect finalRect = new Rect(
-            -transformedRect.X + ((finalSize.Width - transformedRect.Width) / 2),
-            -transformedRect.Y + ((finalSize.Height - transformedRect.Height) / 2),
+            transformedRect.X + ((finalSize.Width - transformedRect.Width) / 2),
+            transformedRect.Y + ((finalSize.Height - transformedRect.Height) / 2),
             finalSizeTransformed.Width,
             finalSizeTransformed.Height);
 

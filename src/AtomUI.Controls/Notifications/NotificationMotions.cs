@@ -397,14 +397,12 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
     public double Offset { get; }
     public bool IsTop { get; }
 
-    public NotificationMoveLeftInMotion(bool isTop,
-                                        double offset,
+    public NotificationMoveLeftInMotion(double offset,
                                         TimeSpan duration,
                                         Easing? easing = null,
                                         FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        IsTop      = isTop;
         Offset     = offset;
         SpiritType = MotionSpiritType.Animation;
     }
@@ -436,7 +434,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.8)
+            Cue = new Cue(0.5)
         };
         {
             var opacitySetter = new Setter
@@ -449,7 +447,7 @@ internal class NotificationMoveLeftInMotion : AbstractMotion
             var transformSetter = new Setter
             {
                 Property = BaseMotionActor.MotionTransformOperationsProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, IsTop ? 0.3 : 1.0, -Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
             };
 
             middleFrame.Setters.Add(transformSetter);
@@ -539,13 +537,13 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.2)
+            Cue = new Cue(0.5)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 1.0
+                Value    = 0.6
             };
             middleFrame.Setters.Add(opacitySetter);
             var transformSetter = new Setter
@@ -591,16 +589,13 @@ internal class NotificationMoveLeftOutMotion : AbstractMotion
 internal class NotificationMoveRightInMotion : AbstractMotion
 {
     public double Offset { get; }
-    public bool IsTop { get; }
 
-    public NotificationMoveRightInMotion(bool isTop,
-                                         double offset,
+    public NotificationMoveRightInMotion(double offset,
                                          TimeSpan duration,
                                          Easing? easing = null,
                                          FillMode fillMode = FillMode.Forward)
         : base(duration, easing ?? new QuinticEaseOut(), fillMode)
     {
-        IsTop      = isTop;
         Offset     = offset;
         SpiritType = MotionSpiritType.Animation;
     }
@@ -632,20 +627,20 @@ internal class NotificationMoveRightInMotion : AbstractMotion
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.8)
+            Cue = new Cue(0.5)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 0.1
+                Value    = 0.0
             };
             middleFrame.Setters.Add(opacitySetter);
 
             var transformSetter = new Setter
             {
                 Property = BaseMotionActor.MotionTransformOperationsProperty,
-                Value    = BuildTranslateScaleAndTransform(1.0, IsTop ? 0.3 : 1.0, Offset, 0.0)
+                Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
         }
@@ -733,13 +728,13 @@ internal class NotificationMoveRightOutMotion : AbstractMotion
 
         var middleFrame = new KeyFrame
         {
-            Cue = new Cue(0.2)
+            Cue = new Cue(0.5)
         };
         {
             var opacitySetter = new Setter
             {
                 Property = Visual.OpacityProperty,
-                Value    = 1.0
+                Value    = 0.6
             };
             middleFrame.Setters.Add(opacitySetter);
 
