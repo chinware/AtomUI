@@ -1,9 +1,11 @@
-﻿using AtomUI.Animations;
+﻿using System.Collections.Specialized;
+using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -192,6 +194,7 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
         _sourceGeometriesData = new List<Geometry>();
         _transforms           = new List<Matrix>();
         this.ConfigureMotionBindingStyle();
+        Classes.CollectionChanged += HandlePseudoClassesChanged;
     }
 
     private void ConfigureTransitions()
@@ -200,7 +203,7 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
         {
             Transitions ??= [
                 BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
-            ];   
+            ];
         }
         else
         {
@@ -438,6 +441,26 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
     {
         base.OnDetachedFromVisualTree(e);
         _animationCancellationTokenSource?.Cancel();
+    }
+
+    private void HandlePseudoClassesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (Classes.Contains(StdPseudoClass.Disabled))
+        {
+            SetValue(IconModeProperty, IconMode.Disabled, BindingPriority.Template);
+        }
+        else if (Classes.Contains(StdPseudoClass.Selected))
+        {
+            SetValue(IconModeProperty, IconMode.Selected, BindingPriority.Template);
+        }
+        else if (Classes.Contains(StdPseudoClass.PointerOver))
+        {
+            SetValue(IconModeProperty, IconMode.Active, BindingPriority.Template);
+        }
+        else
+        {
+            SetValue(IconModeProperty, IconMode.Normal, BindingPriority.Template);
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)

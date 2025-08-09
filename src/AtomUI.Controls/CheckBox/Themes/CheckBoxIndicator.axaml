@@ -32,7 +32,7 @@
         <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckedMarkSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckedMarkSize}}" />
-            <Setter Property="RenderTransform" Value="scale(0.3)"/>
+            <Setter Property="RenderTransform" Value="scale(0.1)"/>
         </Style>
         
         <Style Selector="^[State=Checked]">
