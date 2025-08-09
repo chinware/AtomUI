@@ -1,4 +1,5 @@
 using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
@@ -227,6 +228,12 @@ internal class SwitchKnob : Control,
         }
     }
 
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        this.EnableTransitions();
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -247,6 +254,7 @@ internal class SwitchKnob : Control,
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
             ToggleSwitchTokenKey.LoadingAnimationDuration));
         ConfigureTransitions();
+        this.DisableTransitions();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

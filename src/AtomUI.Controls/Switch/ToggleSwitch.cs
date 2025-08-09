@@ -480,6 +480,7 @@ public class ToggleSwitch : ToggleButton,
         
         HandleLoadingState(IsLoading);
         ConfigureTransitions();
+        this.DisableTransitions();
     }
 
     public sealed override void Render(DrawingContext context)
@@ -614,6 +615,12 @@ public class ToggleSwitch : ToggleButton,
         return targetRect;
     }
 
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        this.EnableTransitions();
+    }
+    
     public Rect WaveGeometry()
     {
         return GrooveRect();
