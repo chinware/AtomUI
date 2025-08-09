@@ -115,6 +115,7 @@ internal class RibbonBadgeAdorner : Control
     private TextBlock? _labelText;
     private Geometry? _cornerGeometry;
     private readonly BorderRenderHelper _borderRenderHelper;
+    private bool _styleInitialized;
 
     static RibbonBadgeAdorner()
     {
@@ -131,15 +132,15 @@ internal class RibbonBadgeAdorner : Control
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        if (Styles.Count == 0)
+        if (!_styleInitialized)
         {
             BuildStyles();
+            _styleInitialized = true;
         }
     }
 
     private void BuildStyles()
     {
-        // TODO 需要优化
         var commonStyle = new Style(selector => selector.OfType<RibbonBadgeAdorner>());
         commonStyle.Add(RibbonColorProperty, SharedTokenKey.ColorPrimary);
         commonStyle.Add(CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);

@@ -85,7 +85,7 @@ internal class BadgeToken : AbstractControlDesignToken
         // 设置内部 token
         BadgeFontHeight         = SharedToken.FontHeight;
         BadgeShadowSize         = lineWidth;
-        BadgeTextColor          = SharedToken.ColorBgContainer;
+        BadgeTextColor          = SharedToken.ColorTextLightSolid;
         BadgeColor              = SharedToken.ColorError;
         BadgeColorHover         = SharedToken.ColorErrorHover;
         BadgeShadowColor        = SharedToken.ColorBorderBg;

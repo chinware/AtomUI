@@ -17,12 +17,14 @@
                             Name="{x:Static atom:CountBadgeAdornerThemeConstants.BadgeTextPart}"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Text="{TemplateBinding CountText}" />
+                            Text="{TemplateBinding CountText}" 
+                            Foreground="{TemplateBinding Foreground}"/>
                     </Panel>
                 </atom:MotionActor>
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeTextColor}}" />
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="BadgeShadowSize" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeShadowSize}}" />
         <Setter Property="BadgeShadowColor" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeShadowColor}}" />
@@ -42,7 +44,6 @@
                     Value="{DynamicResource {x:Static atom:BadgeTokenKey.CountBadgeCornerRadius}}" />
         </Style>
         <Style Selector="^ /template/ atom|TextBlock#PART_BadgeText">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeTextColor}}" />
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:BadgeTokenKey.TextFontSize}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:BadgeTokenKey.CountBadgeTextPadding}}" />
         </Style>
