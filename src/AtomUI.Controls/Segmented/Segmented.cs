@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -147,6 +148,7 @@ public class Segmented : SelectingItemsControl,
         
         SetupSelectedThumbRect();
         ConfigureTransitions();
+        this.DisableTransitions();
     }
     
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -161,6 +163,7 @@ public class Segmented : SelectingItemsControl,
     {
         base.OnSizeChanged(e);
         SetupSelectedThumbRect();
+        this.EnableTransitions();
     }
 
     private void SetupSelectedThumbRect()
