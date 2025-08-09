@@ -83,6 +83,7 @@
         </Setter>
 
         <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
 
         <Style Selector="^ /template/ atom|TextBlock#PART_HeaderText">
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />

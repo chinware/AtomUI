@@ -31,7 +31,8 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}">
                         <atom:DatePickerPresenter
-                            Name="{x:Static atom:DatePickerFlyoutPresenterThemeConstants.DatePickerPresenterPart}"/>
+                            Name="{x:Static atom:DatePickerFlyoutPresenterThemeConstants.DatePickerPresenterPart}"
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     </Border>
                 </DockPanel>
             </ControlTemplate>

@@ -84,14 +84,14 @@ internal class ListBoxToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         var colorTextDisabled  = SharedToken.ColorTextDisabled;
         var colorTextSecondary = SharedToken.ColorTextSecondary;
-        var colorBgContainer   = SharedToken.ColorBgContainer;
+        var colorBgElevated    = SharedToken.ColorBgElevated;
         var colorBgTextHover   = SharedToken.ColorBgTextHover;
 
         ItemColor         = colorTextSecondary;
         ItemHoverColor    = colorTextSecondary;
         ItemSelectedColor = SharedToken.ColorText;
 
-        ItemBgColor         = colorBgContainer;
+        ItemBgColor         = colorBgElevated;
         ItemHoverBgColor    = colorBgTextHover;
         ItemSelectedBgColor = SharedToken.ControlItemBgActive;
 

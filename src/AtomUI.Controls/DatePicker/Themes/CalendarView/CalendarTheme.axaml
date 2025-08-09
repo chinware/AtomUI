@@ -6,7 +6,7 @@
     x:Class="AtomUI.Controls.Themes.CalendarTheme"
     TargetType="calendarView:Calendar">
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="calendarView:Calendar">
             <Border Name="{x:Static atom:DatePickerCalendarThemeConstants.FramePart}"
                     ClipToBounds="True"
                     Background="{TemplateBinding Background}"
@@ -21,7 +21,7 @@
     </Setter>
 
     <Style Selector="^:is(calendarView|Calendar)">
-        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.PanelContentPadding}}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />

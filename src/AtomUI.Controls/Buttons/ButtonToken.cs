@@ -315,7 +315,7 @@ internal class ButtonToken : AbstractControlDesignToken
         LinkHoverBg                = Colors.Transparent;
         TextHoverBg                = SharedToken.ColorBgTextHover;
         DefaultColor               = SharedToken.ColorText;
-        DefaultBg                  = SharedToken.ColorBgContainer;
+        DefaultBg                  = SharedToken.ColorBgElevated;
         DefaultBorderColor         = SharedToken.ColorBorder;
         DefaultBorderColorDisabled = SharedToken.ColorBorder;
         DefaultHoverBg             = SharedToken.ColorBgContainer;
