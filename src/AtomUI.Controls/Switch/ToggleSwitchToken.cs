@@ -1,4 +1,3 @@
-using AtomUI.Media;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
@@ -90,14 +89,8 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     /// </summary>
     public double IconSizeSM { get; set; }
 
-    /// 内部 Token
-    /// 单位毫秒
-    public TimeSpan SwitchDuration { get; set; }
-
     public Color SwitchColor { get; set; }
     public double SwitchDisabledOpacity { get; set; }
-    public double SwitchLoadingIconSize { get; set; }
-    public Color SwitchLoadingIconColor { get; set; }
     public double ExtraInfoFontSize { get; set; }
     public double ExtraInfoFontSizeSM { get; set; }
     
@@ -129,12 +122,9 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         InnerMaxMargin   = handleSize + padding * 3;
         InnerMinMarginSM = handleSizeSM / 2 - padding;
         InnerMaxMarginSM = handleSizeSM + padding * 3;
-
-        SwitchDuration         = SharedToken.MotionDurationMid;
+        
         SwitchColor            = SharedToken.ColorPrimary;
         SwitchDisabledOpacity  = SharedToken.OpacityLoading;
-        SwitchLoadingIconSize  = SharedToken.FontSizeIcon * 0.75;
-        SwitchLoadingIconColor = ColorUtils.FromRgbF(SwitchDisabledOpacity, 0, 0, 0);
 
         ExtraInfoFontSize   = SharedToken.FontSizeSM;
         ExtraInfoFontSizeSM = ExtraInfoFontSize - 1;

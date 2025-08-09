@@ -139,23 +139,7 @@ internal class SwitchKnob : Control,
     
     public SwitchKnob()
     {
-        LayoutUpdated += HandleLayoutUpdated;
         UseLayoutRounding = false;
-    }
-
-    private void HandleLayoutUpdated(object? sender, EventArgs args)
-    {
-        if (IsMotionEnabled)
-        {
-            Transitions ??= new Transitions
-            {
-                TransitionUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
-            };
-        }
-        else
-        {
-            Transitions = null;
-        }
     }
     
     public void NotifyStartLoading()
@@ -233,6 +217,14 @@ internal class SwitchKnob : Control,
         {
             KnobRenderWidth = KnobSize.Width;
         }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions();
+            }
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -254,6 +246,7 @@ internal class SwitchKnob : Control,
             ToggleSwitchTokenKey.SwitchDisabledOpacity));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
             ToggleSwitchTokenKey.LoadingAnimationDuration));
+        ConfigureTransitions();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -301,4 +294,21 @@ internal class SwitchKnob : Control,
             context.DrawArc(pen, loadingRect, 0, 90);
         }
     }
+    
+    private void ConfigureTransitions()
+    {
+        if (IsMotionEnabled)
+        {
+            Transitions ??= new Transitions
+            {
+                TransitionUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
+                TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
+            };
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+
 }

@@ -129,7 +129,7 @@ internal class CheckBoxIndicator : TemplatedControl,
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            Transitions = new Transitions
             {
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
                 TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),

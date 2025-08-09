@@ -704,9 +704,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey LoadingAnimationDuration = new TokenResourceKey("ToggleSwitch.LoadingAnimationDuration");
         public static readonly TokenResourceKey SwitchColor = new TokenResourceKey("ToggleSwitch.SwitchColor");
         public static readonly TokenResourceKey SwitchDisabledOpacity = new TokenResourceKey("ToggleSwitch.SwitchDisabledOpacity");
-        public static readonly TokenResourceKey SwitchDuration = new TokenResourceKey("ToggleSwitch.SwitchDuration");
-        public static readonly TokenResourceKey SwitchLoadingIconColor = new TokenResourceKey("ToggleSwitch.SwitchLoadingIconColor");
-        public static readonly TokenResourceKey SwitchLoadingIconSize = new TokenResourceKey("ToggleSwitch.SwitchLoadingIconSize");
         public static readonly TokenResourceKey TrackHeight = new TokenResourceKey("ToggleSwitch.TrackHeight");
         public static readonly TokenResourceKey TrackHeightSM = new TokenResourceKey("ToggleSwitch.TrackHeightSM");
         public static readonly TokenResourceKey TrackMinWidth = new TokenResourceKey("ToggleSwitch.TrackMinWidth");
