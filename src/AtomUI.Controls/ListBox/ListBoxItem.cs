@@ -16,8 +16,8 @@ public class ListBoxItem : AvaloniaListBoxItem
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBoxItem>();
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBoxItem>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBoxItem>();
 
     internal static readonly DirectProperty<ListBoxItem, bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(DisabledItemHoverEffect),
@@ -52,7 +52,8 @@ public class ListBoxItem : AvaloniaListBoxItem
         {
             Transitions ??= new Transitions
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
             };
         }
         else

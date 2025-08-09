@@ -284,7 +284,7 @@ internal class DataGridToken : AbstractControlDesignToken
         FixedHeaderSortActiveBg     = colorFillSecondarySolid;
         HeaderFilterHoverBg         = SharedToken.ColorFillContent;
         FilterDropdownMenuBg        = SharedToken.ColorBgContainer;
-        FilterDropdownBg            = SharedToken.ColorBgContainer;
+        FilterDropdownBg            = SharedToken.ColorBgElevated;
         ExpandIconBg                = SharedToken.ColorBgContainer;
         SelectionColumnWidth        = SharedToken.ControlHeight;
         ExpandIconMargin            = new Thickness(0, 
