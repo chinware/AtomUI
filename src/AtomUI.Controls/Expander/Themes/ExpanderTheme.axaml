@@ -47,12 +47,13 @@
                             </Border>
                         </LayoutTransformControl>
 
-                        <atom:MotionActor Name="{x:Static atom:ExpanderThemeConstants.ContentMotionActorPart}"
-                                                 IsVisible="False">
+                        <atom:LayoutAwareMotionActor Name="{x:Static atom:ExpanderThemeConstants.ContentMotionActorPart}"
+                                                     ClipToBounds="True"
+                                                     IsVisible="False">
                             <ContentPresenter Name="{x:Static atom:ExpanderThemeConstants.ContentPresenterPart}"
                                               Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        </atom:MotionActor>
+                        </atom:LayoutAwareMotionActor>
                     </DockPanel>
                 </Border>
             </ControlTemplate>

@@ -134,23 +134,11 @@ public abstract class BaseLayoutAwareMotionActor : BaseMotionActor
         {
             return base.MeasureOverride(availableSize);
         }
-
-        Size measureSize;
-        if (_childActualSize == default)
-        {
-            // Determine the largest size after the transformation
-            measureSize = ComputeLargestTransformedSize(availableSize);
-        }
-        else
-        {
-            // Previous measure/arrange pass determined that Child.DesiredSize was larger than believed
-            measureSize = _childActualSize;
-        }
-
+        
         // Perform a measure on the MotionTransformRoot (containing Child)
         if (MotionTransformRoot.DesiredSize == default || Animating == false)
         {
-            MotionTransformRoot.Measure(measureSize);
+            MotionTransformRoot.Measure(availableSize);
         }
 
         var desiredSize = MotionTransformRoot.DesiredSize;
@@ -301,7 +289,6 @@ public abstract class BaseLayoutAwareMotionActor : BaseMotionActor
                 computedWidth,
                 (slopeFromWidth * computedWidth) + maxHeightFromWidth);
         }
-
         // Return result
         return computedSize;
     }
