@@ -3,28 +3,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net">
     <atom:BoolToThicknessConverter x:Key="BoolToThicknessConverter" />
-    <!--
-       x:key表示，如果遇到atom:Breadcrumb，那就是我
-       TargetType="atom:Breadcrumb"表示本axaml中的所有属性均来自于atom:Breadcrumb class
-    -->
     <ControlTheme x:Key="{x:Type atom:Breadcrumb}" TargetType="atom:Breadcrumb">
-        <!--
-        把外部 ViewModel 里的集合 Breadcrumbs 绑进来。（在 Theme 里写死绑定是一种偷懒写法；实际可以删掉，让外部自己绑。）
-        <Setter Property="ItemsSource" Value="{TemplateBinding ItemsSource}" />，直接写在下面就会报错
-        -->
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.ItemColor}}" />
         <Setter Property="IconSize" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.IconSize}}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="FramePart"
+                <Border Name="{x:Static atom:BreadcrumbConstants.FramePart}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}"
                         ClipToBounds="True"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center">
-                    <ItemsPresenter Name="PART_ItemsPresenter">
+                    <ItemsPresenter Name="{x:Static atom:BreadcrumbConstants.TextPresenterPart}">
                         <ItemsPresenter.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <atom:BreadcrumbStackPanel />

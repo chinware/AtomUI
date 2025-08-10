@@ -4,10 +4,6 @@
     xmlns:atom="https://atomui.net">
     <atom:BoolToThicknessConverter x:Key="BoolToThicknessConverter" />
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
-    <!--
-       x:key表示，如果遇到atom:Breadcrumb，那就是我
-       TargetType="atom:Breadcrumb"表示本axaml中的所有属性均来自于atom:Breadcrumb class
-    -->
     <ControlTheme x:Key="{x:Type atom:BreadcrumbItem}" TargetType="atom:BreadcrumbItem">
         <Setter Property="Template">
             <ControlTemplate>

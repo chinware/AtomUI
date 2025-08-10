@@ -7,30 +7,15 @@ internal class BreadcrumbStackPanel : Panel
 {
     protected override Size MeasureOverride(Size availableSize)
     {
-        return MeasureOverrideNoExpanding(availableSize);
-    }
-
-    private Size MeasureOverrideNoExpanding(Size availableSize)
-    {
-        var layoutSlotSize = availableSize;
-        layoutSlotSize = layoutSlotSize.WithWidth(double.PositiveInfinity);
-        var hasVisibleChild = false;
-        var targetWidth     = 0d;
-        var targetHeight    = 0d;
+        var  targetHeight = 0d;
+        var  targetWidth  = 0d;
         foreach (var child in Children)
         {
             if (child is BreadcrumbItem box)
             {
-                var isVisible = box.IsVisible;
-                if (isVisible && !hasVisibleChild)
-                {
-                    hasVisibleChild = true;
-                }
-
-                box.Measure(layoutSlotSize);
-                var childDesiredSize = box.DesiredSize;
-                targetWidth  += childDesiredSize.Width;
-                targetHeight =  Math.Max(targetHeight, childDesiredSize.Height);
+                box.Measure(availableSize);
+                targetWidth  += box.DesiredSize.Width;
+                targetHeight =  Math.Max(targetHeight, box.DesiredSize.Height);
             }
         }
 
@@ -39,12 +24,6 @@ internal class BreadcrumbStackPanel : Panel
     
     protected override Size ArrangeOverride(Size finalSize)
     {
-        ArrangeOverrideNoExpanding(finalSize);
-        return finalSize;
-    }
-
-    private Size ArrangeOverrideNoExpanding(Size finalSize)
-    {
         var previousChildSize = 0.0;
         var offsetX           = 0d;
         var offsetY           = 0d;
@@ -52,19 +31,11 @@ internal class BreadcrumbStackPanel : Panel
         {
             if (child is BreadcrumbItem box)
             {
-                if (!box.IsVisible)
-                {
-                    continue;
-                }
-
                 previousChildSize = box.DesiredSize.Width;
-
                 box.Arrange(new Rect(new Point(offsetX, offsetY), box.DesiredSize));
                 offsetX += previousChildSize;
             }
         }
-
         return finalSize;
     }
-
 }
