@@ -22,7 +22,7 @@
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
         
         <Style Selector="^ /template/ Border#PART_RootContainer">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuBgColor}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ContextMenuBgColor}}"/>
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}"/>
             <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}"/>
             <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}"/>

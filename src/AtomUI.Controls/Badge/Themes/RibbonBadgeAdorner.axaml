@@ -1,0 +1,34 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:RibbonBadgeAdorner}" TargetType="atom:RibbonBadgeAdorner">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <atom:TextBlock Name="{x:Static atom:RibbonBadgeAdornerThemeConstants.TextPartPart}"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{TemplateBinding Text}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="RibbonColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        <Setter Property="BadgeRibbonOffset" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeRibbonOffset}}" />
+        <Setter Property="BadgeRibbonCornerTransform"
+                Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeRibbonCornerTransform}}" />
+        <Setter Property="BadgeRibbonCornerDarkenAmount"
+                Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeRibbonCornerDarkenAmount}}" />
+
+        <Style Selector="^ /template/ atom|TextBlock#PART_TextPart">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
+            <Setter Property="LineHeight"
+                    Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeFontHeight}}" />
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeRibbonTextPadding}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

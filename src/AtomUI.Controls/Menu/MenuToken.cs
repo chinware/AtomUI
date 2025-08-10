@@ -55,6 +55,11 @@ internal class MenuToken : AbstractControlDesignToken
     /// 弹出框背景色
     /// </summary>
     public Color MenuBgColor { get; set; }
+    
+    /// <summary>
+    /// 上下文菜单背景色
+    /// </summary>
+    public Color ContextMenuBgColor { get; set; }
 
     /// <summary>
     /// 菜单项文字颜色
@@ -274,8 +279,9 @@ internal class MenuToken : AbstractControlDesignToken
         DangerItemColor      = colorError;
         DangerItemHoverColor = colorError;
 
-        ItemHeight  = controlHeightSM;
-        MenuBgColor = SharedToken.ColorBgElevated;
+        ItemHeight         = controlHeightSM;
+        MenuBgColor        = SharedToken.ColorBgContainer;
+        ContextMenuBgColor = SharedToken.ColorBgElevated;
 
         ItemPaddingInline       = new Thickness(padding, SharedToken.UniformlyPaddingXXS);
         ItemIconSize            = SharedToken.IconSize;

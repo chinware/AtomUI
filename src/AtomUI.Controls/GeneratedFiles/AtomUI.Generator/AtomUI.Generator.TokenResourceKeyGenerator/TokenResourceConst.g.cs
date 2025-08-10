@@ -388,6 +388,7 @@ namespace AtomUI.Theme.Styling
 
     public static class MenuTokenKey
     {
+        public static readonly TokenResourceKey ContextMenuBgColor = new TokenResourceKey("Menu.ContextMenuBgColor");
         public static readonly TokenResourceKey DangerItemColor = new TokenResourceKey("Menu.DangerItemColor");
         public static readonly TokenResourceKey DangerItemHoverColor = new TokenResourceKey("Menu.DangerItemHoverColor");
         public static readonly TokenResourceKey ItemBg = new TokenResourceKey("Menu.ItemBg");

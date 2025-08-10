@@ -1,6 +1,6 @@
 namespace AtomUI.Controls.Themes;
 
-internal class CountBadgeAdornerThemeConstants
+internal static class CountBadgeAdornerThemeConstants
 {
     public const string IndicatorMotionActorPart = "PART_IndicatorMotionActor";
     public const string RootLayoutPart = "PART_RootLayout";
@@ -8,10 +8,15 @@ internal class CountBadgeAdornerThemeConstants
     public const string BadgeTextPart = "PART_BadgeText";
 }
 
-internal class DotBadgeAdornerThemeConstants
+internal static class DotBadgeAdornerThemeConstants
 {
     public const string IndicatorMotionActorPart = "PART_IndicatorMotionActor";
     public const string IndicatorPart = "PART_Indicator";
     public const string LabelPart = "PART_Label";
     public const string RootLayoutPart = "PART_RootLayout";
+}
+
+internal static class RibbonBadgeAdornerThemeConstants
+{
+    public const string TextPartPart = "PART_TextPart";
 }
