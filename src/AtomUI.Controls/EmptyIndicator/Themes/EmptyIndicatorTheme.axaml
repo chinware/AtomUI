@@ -33,10 +33,11 @@
             </Style>
         </Style>
         
-        <Setter Property="ColorFill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFill}}"/>
-        <Setter Property="ColorFillTertiary" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}"/>
-        <Setter Property="ColorFillQuaternary" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillQuaternary}}"/>
-        <Setter Property="ColorBgContainer" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
+        <Setter Property="BorderColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFill}}"/>
+        <Setter Property="BorderColorSecondary" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}"/>
+        <Setter Property="ShadowColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}"/>
+        <Setter Property="ContentColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillQuaternary}}"/>
+        <Setter Property="BgColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}"/>
         
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|TextBlock#PART_Description">
