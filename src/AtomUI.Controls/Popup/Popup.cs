@@ -567,11 +567,6 @@ public class Popup : AvaloniaPopup,
     public void MotionAwareOpen(Action? opened = null)
     {
         // AbstractPopup is currently open
-        if (_motionAwareOpened || _openAnimating || _closeAnimating)
-        {
-            return;
-        }
-        
         if (!IsMotionEnabled)
         {
             Open();
@@ -585,12 +580,14 @@ public class Popup : AvaloniaPopup,
             return;
         }
         
+        if (_motionAwareOpened || _openAnimating || _closeAnimating)
+        {
+            return;
+        }
+        
         if (_isNeedWaitFlipSync)
         {
-            Dispatcher.UIThread.Post(() =>
-            {
-                ShowBuddyWithMotion(opened);
-            });
+            Dispatcher.UIThread.Post(() => { ShowBuddyWithMotion(opened); });
             return;
         }
         

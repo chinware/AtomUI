@@ -140,6 +140,10 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     private CompositeDisposable? _disposables;
     private IArrowAwareShadowMaskInfoProvider? _popupArrowDecoratedBox;
     
+    // 用于保证动画状态最终一致性
+    private IDisposable? _openMotionForceDisposable;
+    private IDisposable? _closeMotionForceDisposable;
+    
     static PopupBuddyLayer()
     {
         AffectsRender<PopupBuddyLayer>(MaskShadowsContentCornerRadiusProperty, ArrowFillColorProperty);
@@ -306,7 +310,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         }
         MotionActor?.UnFollow();
     }
-
+    
     public void RunOpenMotion(Action? aboutToStart = null, Action? completedAction = null)
     {
         Debug.Assert(MotionActor !=  null);
@@ -319,10 +323,30 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         var shadowAwareLayer = this as IShadowAwareLayer;
         Debug.Assert(shadowAwareLayer != null);
         shadowAwareLayer.NotifyOpenMotionAboutToStart();
+
+        var completedFuncCalled = false;
+        
+        _openMotionForceDisposable?.Dispose();
+        _openMotionForceDisposable = DispatcherTimer.RunOnce(() =>
+        {
+            if (!completedFuncCalled)
+            {
+                shadowAwareLayer.NotifyOpenMotionCompleted();
+                completedAction?.Invoke();
+                completedFuncCalled = true;
+            }
+      
+        }, motion.Duration * 1.2);
+        
         motion.Run(MotionActor, aboutToStart, () =>
         {
-            shadowAwareLayer.NotifyOpenMotionCompleted();
-            completedAction?.Invoke();
+            _openMotionForceDisposable.Dispose();
+            if (!completedFuncCalled)
+            {
+                shadowAwareLayer.NotifyOpenMotionCompleted();
+                completedAction?.Invoke();
+                completedFuncCalled = true;
+            }
         });
     }
 
@@ -337,10 +361,29 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         var shadowAwareLayer = this as IShadowAwareLayer;
         Debug.Assert(shadowAwareLayer != null);
         shadowAwareLayer.NotifyCloseMotionAboutToStart();
+        
+        var completedFuncCalled = false;
+        
+        _closeMotionForceDisposable?.Dispose();
+        _closeMotionForceDisposable = DispatcherTimer.RunOnce(() =>
+        {
+            if (!completedFuncCalled)
+            {
+                shadowAwareLayer.NotifyCloseMotionCompleted();
+                completedAction?.Invoke();
+                completedFuncCalled = true;
+            }
+        }, motion.Duration * 1.2);
+        
         motion.Run(MotionActor, aboutToStart, () =>
         {
-            shadowAwareLayer.NotifyCloseMotionCompleted();
-            completedAction?.Invoke();
+            _closeMotionForceDisposable.Dispose();
+            if (!completedFuncCalled)
+            {
+                shadowAwareLayer.NotifyCloseMotionCompleted();
+                completedAction?.Invoke();
+                completedFuncCalled = true;
+            }
         });
     }
     

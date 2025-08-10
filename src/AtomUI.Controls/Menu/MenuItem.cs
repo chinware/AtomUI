@@ -39,7 +39,7 @@ public class MenuItem : AvaloniaMenuItem
     #region 公共事件定义
 
     public static readonly RoutedEvent<RoutedEventArgs> IsCheckStateChangedEvent = 
-        RoutedEvent.Register<MenuItem, RoutedEventArgs>("IsCheckStateChanged", RoutingStrategies.Bubble);
+        RoutedEvent.Register<MenuItem, RoutedEventArgs>(nameof(IsCheckStateChanged), RoutingStrategies.Bubble);
     
     
     public event EventHandler<RoutedEventArgs>? IsCheckStateChanged
