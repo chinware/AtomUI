@@ -29,8 +29,8 @@ public class NumericUpDown : AvaloniaNumericUpDown, IMotionAwareControl, IContro
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         TextBox.IsEnableClearButtonProperty.AddOwner<NumericUpDown>();
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NumericUpDown>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NumericUpDown>();
 
     public object? LeftAddOn
     {

@@ -23,8 +23,8 @@ public class RibbonBadge : Control,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<string?> RibbonColorProperty
-        = AvaloniaProperty.Register<RibbonBadge, string?>(nameof(RibbonColor));
+    public static readonly StyledProperty<string?> RibbonColorProperty =
+        AvaloniaProperty.Register<RibbonBadge, string?>(nameof(RibbonColor));
 
     public static readonly StyledProperty<Control?> DecoratedTargetProperty =
         AvaloniaProperty.Register<RibbonBadge, Control?>(nameof(DecoratedTarget));
@@ -32,11 +32,11 @@ public class RibbonBadge : Control,
     public static readonly StyledProperty<Point> OffsetProperty =
         AvaloniaProperty.Register<RibbonBadge, Point>(nameof(Offset));
 
-    public static readonly StyledProperty<string?> TextProperty
-        = AvaloniaProperty.Register<RibbonBadge, string?>(nameof(Text));
+    public static readonly StyledProperty<string?> TextProperty =
+        AvaloniaProperty.Register<RibbonBadge, string?>(nameof(Text));
 
-    public static readonly StyledProperty<RibbonBadgePlacement> PlacementProperty
-        = AvaloniaProperty.Register<RibbonBadge, RibbonBadgePlacement>(
+    public static readonly StyledProperty<RibbonBadgePlacement> PlacementProperty =
+        AvaloniaProperty.Register<RibbonBadge, RibbonBadgePlacement>(
             nameof(Text),
             RibbonBadgePlacement.End);
 
@@ -110,15 +110,17 @@ public class RibbonBadge : Control,
         {
             if (DecoratedTarget is null)
             {
-                VisualChildren.Add(_ribbonBadgeAdorner);
                 _ribbonBadgeAdorner.SetLogicalParent(this);
                 _ribbonBadgeAdorner.IsAdornerMode = false;
+                VisualChildren.Add(_ribbonBadgeAdorner);
+                LogicalChildren.Add(_ribbonBadgeAdorner);
             }
             else if (DecoratedTarget is not null)
             {
                 _ribbonBadgeAdorner.IsAdornerMode = true;
-                VisualChildren.Add(DecoratedTarget);
                 DecoratedTarget.SetLogicalParent(this);
+                VisualChildren.Add(DecoratedTarget);
+                LogicalChildren.Add(DecoratedTarget);
             }
         }
     }

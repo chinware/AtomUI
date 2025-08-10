@@ -158,7 +158,8 @@ internal class CountBadgeAdorner : TemplatedControl
         AffectsMeasure<CountBadgeAdorner>(OverflowCountProperty,
             SizeProperty,
             CountProperty,
-            IsAdornerModeProperty);
+            IsAdornerModeProperty,
+            CornerRadiusProperty);
         AffectsRender<CountBadgeAdorner>(BadgeColorProperty, OffsetProperty);
     }
 
@@ -171,18 +172,13 @@ internal class CountBadgeAdorner : TemplatedControl
             _indicatorMotionActor.IsVisible = false;
             _needInitialHide                = false;
         }
+        BuildBoxShadow();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
         BuildCountText();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        BuildBoxShadow();
     }
 
     private void BuildBoxShadow()
@@ -223,6 +219,12 @@ internal class CountBadgeAdorner : TemplatedControl
         CountText = Count > OverflowCount ? $"{OverflowCount}+" : $"{Count}";
     }
 
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size = base.MeasureOverride(availableSize);
+        return size;
+    }
+
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
@@ -245,7 +247,7 @@ internal class CountBadgeAdorner : TemplatedControl
         {
             _indicatorMotionActor.IsVisible = false;
             var motion = new BadgeZoomBadgeInMotion(MotionDuration);
-            motion.Run(_indicatorMotionActor, () => { _indicatorMotionActor.IsVisible                   = true; });
+            motion.Run(_indicatorMotionActor, () => { _indicatorMotionActor.IsVisible = true; });
         }
     }
 
@@ -274,7 +276,7 @@ internal class CountBadgeAdorner : TemplatedControl
             AdornerLayer.SetIsClipEnabled(this, false);
             adornerLayer.Children.Add(this);
         }
-
+        
         if (IsMotionEnabled)
         {
             _motionCancellationTokenSource?.Cancel();
@@ -283,7 +285,7 @@ internal class CountBadgeAdorner : TemplatedControl
         }
         else
         {
-            if (_indicatorMotionActor is not null)
+            if (_indicatorMotionActor != null)
             {
                 _indicatorMotionActor.IsVisible = true;
             }
