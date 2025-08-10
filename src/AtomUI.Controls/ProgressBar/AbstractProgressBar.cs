@@ -326,7 +326,7 @@ public abstract class AbstractProgressBar : RangeBase,
         _successCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.SuccessCompletedIconPart);
         ConfigureTransitions();
         NotifySetupUI();
-        AfterUIStructureReady();
+        NotifyUiStructureReady();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -371,11 +371,6 @@ public abstract class AbstractProgressBar : RangeBase,
 
     protected virtual void NotifyHandleExtraInfoVisibility()
     {
-    }
-
-    private void AfterUIStructureReady()
-    {
-        NotifyUiStructureReady();
     }
 
     protected virtual void NotifyUiStructureReady()
