@@ -28,6 +28,7 @@
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="IsWaveSpiritEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
+        <Setter Property="SplitSeparatorBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
         
         <Style Selector="^[SizeType=Large]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}"/>

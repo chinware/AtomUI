@@ -86,11 +86,11 @@ public class SplitButton : ContentControl,
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<Icon?> IconProperty
-        = Button.IconProperty.AddOwner<SplitButton>();
+    public static readonly StyledProperty<Icon?> IconProperty =
+        Button.IconProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<Icon?> FlyoutButtonIconProperty
-        = AvaloniaProperty.Register<SplitButton, Icon?>(nameof(FlyoutButtonIcon));
+    public static readonly StyledProperty<Icon?> FlyoutButtonIconProperty =
+        AvaloniaProperty.Register<SplitButton, Icon?>(nameof(FlyoutButtonIcon));
 
     public static readonly StyledProperty<bool> IsDangerProperty =
         Button.IsDangerProperty.AddOwner<SplitButton>();
@@ -248,11 +248,20 @@ public class SplitButton : ContentControl,
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<IBrush?> SplitSeparatorBrushProperty = 
+        AvaloniaProperty.Register<SplitButton, IBrush?>(nameof (SplitSeparatorBrush));
 
     internal static readonly DirectProperty<SplitButton, ButtonType> EffectiveButtonTypeProperty =
         AvaloniaProperty.RegisterDirect<SplitButton, ButtonType>(nameof(EffectiveButtonType),
             o => o.EffectiveButtonType,
             (o, v) => o.EffectiveButtonType = v);
+    
+    internal IBrush? SplitSeparatorBrush
+    {
+        get => GetValue(SplitSeparatorBrushProperty);
+        set => SetValue(SplitSeparatorBrushProperty, value);
+    }
 
     private ButtonType _effectiveButtonType;
 
@@ -291,7 +300,7 @@ public class SplitButton : ContentControl,
         IsShowArrowProperty.OverrideDefaultValue<SplitButton>(false);
         HorizontalAlignmentProperty.OverrideDefaultValue<SplitButton>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<SplitButton>(VerticalAlignment.Top);
-        AffectsRender<SplitButton>(IsPrimaryButtonTypeProperty, IsDangerProperty);
+        AffectsRender<SplitButton>(IsPrimaryButtonTypeProperty, IsDangerProperty, SplitSeparatorBrushProperty);
     }
 
     public SplitButton()
@@ -317,7 +326,7 @@ public class SplitButton : ContentControl,
 
     private void CanExecuteChanged(ICommand? command, object? parameter)
     {
-        if (!((ILogical)this).IsAttachedToLogicalTree)
+        if (!this.IsAttachedToLogicalTree())
         {
             return;
         }
@@ -370,10 +379,9 @@ public class SplitButton : ContentControl,
                 menuFlyout.ClickHideFlyoutPredicate  = ClickHideFlyoutPredicate;
             }
 
-            _flyoutPropertyChangedDisposable = flyout
-                .GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
-                    .PlacementProperty)
-                .Subscribe(HandleFlyoutPlacementPropertyChanged);
+            _flyoutPropertyChangedDisposable = flyout.GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
+                                                         .PlacementProperty)
+                                                     .Subscribe(HandleFlyoutPlacementPropertyChanged);
         }
     }
 
@@ -810,7 +818,7 @@ public class SplitButton : ContentControl,
             if (_secondaryButton is not null)
             {
                 var cornerRadius = (float)CornerRadius.TopLeft;
-                context.FillRectangle(BorderBrush ?? Brushes.White, new Rect(0, 0, Bounds.Width, Bounds.Height),
+                context.FillRectangle(SplitSeparatorBrush ?? Brushes.White, new Rect(0, 0, Bounds.Width, Bounds.Height),
                     cornerRadius);
             }
         }
