@@ -275,7 +275,7 @@ internal class MenuToken : AbstractControlDesignToken
         DangerItemHoverColor = colorError;
 
         ItemHeight  = controlHeightSM;
-        MenuBgColor = SharedToken.ColorBgContainer;
+        MenuBgColor = SharedToken.ColorBgElevated;
 
         ItemPaddingInline       = new Thickness(padding, SharedToken.UniformlyPaddingXXS);
         ItemIconSize            = SharedToken.IconSize;
