@@ -37,6 +37,7 @@
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
                         Grid.Column="2"
                         Focusable="True"
+                        IsEnabled="{TemplateBinding IsEnabled}"
                         Icon="{atom:IconProvider SearchOutlined}"
                         BackgroundSizing="OuterBorderEdge"
                         Content="{TemplateBinding SearchButtonText}"

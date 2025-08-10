@@ -84,7 +84,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     {
         ItemsPanelProperty.OverrideDefaultValue<BaseTabStrip>(DefaultPanel);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabStrip>(false);
-        AffectsRender<BaseTabStrip>(TabStripPlacementProperty);
+        AffectsRender<BaseTabStrip>(TabStripPlacementProperty, BorderBrushProperty);
     }
 
     public BaseTabStrip()

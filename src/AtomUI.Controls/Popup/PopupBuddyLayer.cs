@@ -313,7 +313,11 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     
     public void RunOpenMotion(Action? aboutToStart = null, Action? completedAction = null)
     {
-        Debug.Assert(MotionActor !=  null);
+        if (MotionActor == null)
+        {
+            completedAction?.Invoke();
+            return;
+        }
         var motion       = OpenMotion ?? new ZoomBigInMotion();
         if (MotionDuration != TimeSpan.Zero)
         {

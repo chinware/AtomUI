@@ -93,7 +93,7 @@
             <Setter Property="KnobBoxShadow"
                     Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.HandleShadow}}" />
             <Setter Property="LoadIndicatorBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
+                    Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.OffStateLoadIndicatorColor}}" />
             <Style Selector="^[IsCheckedState=True]">
                 <Setter Property="LoadIndicatorBrush"
                         Value="{DynamicResource {x:Static atom:ToggleSwitchTokenKey.SwitchColor}}" />

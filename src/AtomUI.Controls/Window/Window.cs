@@ -311,7 +311,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
             return;
         }
 
-        if (windowState == WindowState.Normal && IsMaximizeCaptionButtonEnabled)
+        if (windowState == WindowState.Normal && (OperationSystemType == OperationSystemType.macOS || IsMaximizeCaptionButtonEnabled))
         {
             WindowState =  WindowState.Maximized;
         }

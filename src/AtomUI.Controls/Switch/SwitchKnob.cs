@@ -17,19 +17,18 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class SwitchKnob : Control,
-                            IResourceBindingManager
+internal class SwitchKnob : Control, IResourceBindingManager
 {
     #region 公共属性定义
     
-    public static readonly StyledProperty<bool> IsCheckedStateProperty
-        = AvaloniaProperty.Register<SwitchKnob, bool>(nameof(IsCheckedState));
+    public static readonly StyledProperty<bool> IsCheckedStateProperty = 
+        AvaloniaProperty.Register<SwitchKnob, bool>(nameof(IsCheckedState));
     
-    public static readonly StyledProperty<IBrush?> KnobBackgroundColorProperty
-        = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(KnobBackgroundColor));
+    public static readonly StyledProperty<IBrush?> KnobBackgroundColorProperty =
+        AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(KnobBackgroundColor));
         
-    public static readonly StyledProperty<BoxShadow> KnobBoxShadowProperty
-        = AvaloniaProperty.Register<SwitchKnob, BoxShadow>(nameof(KnobBoxShadow));
+    public static readonly StyledProperty<BoxShadow> KnobBoxShadowProperty = 
+        AvaloniaProperty.Register<SwitchKnob, BoxShadow>(nameof(KnobBoxShadow));
     
     public IBrush? KnobBackgroundColor
     {
@@ -53,26 +52,26 @@ internal class SwitchKnob : Control,
     
     #region 内部属性定义
 
-    internal static readonly StyledProperty<int> RotationProperty
-        = AvaloniaProperty.Register<SwitchKnob, int>(nameof(Rotation));
+    internal static readonly StyledProperty<int> RotationProperty =
+        AvaloniaProperty.Register<SwitchKnob, int>(nameof(Rotation));
     
-    internal static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty
-        = AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(LoadIndicatorBrush));
+    internal static readonly StyledProperty<IBrush?> LoadIndicatorBrushProperty = 
+        AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(LoadIndicatorBrush));
     
-    internal static readonly StyledProperty<Size> KnobSizeProperty
-        = AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
+    internal static readonly StyledProperty<Size> KnobSizeProperty =
+        AvaloniaProperty.Register<SwitchKnob, Size>(nameof(KnobSize));
     
-    internal static readonly StyledProperty<double> KnobRenderWidthProperty
-        = AvaloniaProperty.Register<SwitchKnob, double>(nameof(KnobRenderWidth));
+    internal static readonly StyledProperty<double> KnobRenderWidthProperty =
+        AvaloniaProperty.Register<SwitchKnob, double>(nameof(KnobRenderWidth));
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SwitchKnob>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SwitchKnob>();
     
-    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty
-        = AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration));
+    internal static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
+        AvaloniaProperty.Register<SwitchKnob, TimeSpan>(nameof(LoadingAnimationDuration));
 
-    internal static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty
-        = AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(LoadingBgOpacity),
+    internal static readonly DirectProperty<SwitchKnob, double> LoadingBgOpacityTokenProperty =
+        AvaloniaProperty.RegisterDirect<SwitchKnob, double>(nameof(LoadingBgOpacity),
             o => o.LoadingBgOpacity,
             (o, v) => o.LoadingBgOpacity = v);
 
@@ -134,7 +133,7 @@ internal class SwitchKnob : Control,
     static SwitchKnob()
     {
         AffectsRender<SwitchKnob>(
-            RotationProperty, KnobRenderWidthProperty);
+            RotationProperty, KnobRenderWidthProperty, LoadIndicatorBrushProperty);
         AffectsMeasure<SwitchKnob>(KnobSizeProperty);
     }
     

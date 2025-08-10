@@ -24,14 +24,14 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemColor}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemBgColor}}" />
         
-        <Style Selector="^:selected">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedColor}}" />
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedBgColor}}" />
-        </Style>
-        
         <Style Selector="^[DisabledItemHoverEffect=False]:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemHoverColor}}" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemHoverBgColor}}" />
+        </Style>
+        
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedColor}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedBgColor}}" />
         </Style>
         
         <Style Selector="^[SizeType=Large]">

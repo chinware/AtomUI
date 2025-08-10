@@ -17,7 +17,9 @@
                                                 IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}"/>
                         </VisualLayerManager.ChromeOverlayLayer>
                         <Border Name="ContentFrame"
-                                CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
+                                CornerRadius="{TemplateBinding CornerRadius}" 
+                                ClipToBounds="True"
+                                Cursor="Arrow">
                             <DockPanel LastChildFill="True">
                                 <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
                                     <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
@@ -97,11 +99,18 @@
             <Setter Property="IsFullScreenCaptionButtonEnabled" Value="False"/>
             <Setter Property="IsCloseCaptionButtonEnabled" Value="False"/>
         </Style>
+        
         <Style Selector="^:not(^[OperationSystemType=macOS])">
             <Setter Property="IsMaximizeCaptionButtonEnabled" Value="True"/>
             <Setter Property="IsMinimizeCaptionButtonEnabled" Value="True"/>
             <Setter Property="IsCloseCaptionButtonEnabled" Value="True"/>
             <Setter Property="IsFullScreenCaptionButtonEnabled" Value="True"/>
         </Style>
+        
+        <Style Selector="^:not(^[OperationSystemType=Linux])">
+            <Setter Property="IsResizeEnabled" Value="False"/>
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+        
     </ControlTheme>
 </ResourceDictionary>
