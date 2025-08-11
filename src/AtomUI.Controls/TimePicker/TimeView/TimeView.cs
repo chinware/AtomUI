@@ -33,8 +33,7 @@ internal class TimeSelectedEventArgs : EventArgs
 [TemplatePart(TimeViewThemeConstants.PeriodSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
 [TemplatePart(TimeViewThemeConstants.PickerSelectorContainerPart, typeof(Grid), IsRequired = true)]
 [TemplatePart(TimeViewThemeConstants.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
-internal class TimeView : TemplatedControl,
-                          IResourceBindingManager
+internal class TimeView : TemplatedControl, IResourceBindingManager
 {
     #region 公共属性定义
 

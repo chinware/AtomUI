@@ -114,8 +114,8 @@ public class RangeTimePicker : RangeInfoPickerInput,
     
     string IControlSharedTokenResourcesHost.TokenId => TimePickerToken.ID;
     
-    internal static readonly DirectProperty<RangeTimePicker, double> PreferredWidthProperty
-        = AvaloniaProperty.RegisterDirect<RangeTimePicker, double>(nameof(PreferredWidth),
+    internal static readonly DirectProperty<RangeTimePicker, double> PreferredWidthProperty =
+        AvaloniaProperty.RegisterDirect<RangeTimePicker, double>(nameof(PreferredWidth),
             o => o.PreferredWidth,
             (o, v) => o.PreferredWidth = v);
 
@@ -184,7 +184,7 @@ public class RangeTimePicker : RangeInfoPickerInput,
         {
             return;
         }
-        
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TimePickerPresenter.IsMotionEnabledProperty);
         BindUtils.RelayBind(this, MinuteIncrementProperty, presenter, TimePickerPresenter.MinuteIncrementProperty);
         BindUtils.RelayBind(this, SecondIncrementProperty, presenter, TimePickerPresenter.SecondIncrementProperty);
         BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, TimePickerPresenter.ClockIdentifierProperty);

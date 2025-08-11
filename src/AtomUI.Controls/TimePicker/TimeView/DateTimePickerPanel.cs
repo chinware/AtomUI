@@ -18,7 +18,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public enum DateTimePickerPanelType
+internal enum DateTimePickerPanelType
 {
     Year,
     Month,
@@ -29,7 +29,7 @@ public enum DateTimePickerPanelType
     TimePeriod //AM or PM
 }
 
-public struct CellHoverInfo
+internal struct CellHoverInfo
 {
     public DateTimePickerPanelType PanelType { get; }
     public int CellValue { get; }
@@ -413,7 +413,6 @@ internal class DateTimePickerPanel : Panel,
             EnableCellHoverAnimation();
             _hasInit = true;
         }
-
         return availableSize;
     }
 
@@ -424,10 +423,10 @@ internal class DateTimePickerPanel : Panel,
             return base.ArrangeOverride(finalSize);
         }
 
-        var  itemHgt  = ItemHeight;
+        var  itemHeight  = ItemHeight;
         var  children = Children;
         Rect rc;
-        var  initY = finalSize.Height / 2.0 - itemHgt / 2.0;
+        var  initY = finalSize.Height / 2.0 - itemHeight / 2.0;
 
         if (ShouldLoop)
         {
@@ -436,9 +435,9 @@ internal class DateTimePickerPanel : Panel,
 
             for (var i = 0; i < children.Count; i++)
             {
-                rc = new Rect(0, initY - Offset.Y, finalSize.Width, itemHgt);
+                rc = new Rect(0, initY - Offset.Y, finalSize.Width, itemHeight);
                 children[i].Arrange(rc);
-                initY += itemHgt;
+                initY += itemHeight;
             }
         }
         else
@@ -446,9 +445,9 @@ internal class DateTimePickerPanel : Panel,
             var first = Math.Max(0, _selectedIndex - _numItemsAboveBelowSelected);
             for (var i = 0; i < children.Count; i++)
             {
-                rc = new Rect(0, initY + first * itemHgt - Offset.Y, finalSize.Width, itemHgt);
+                rc = new Rect(0, initY + first * itemHeight - Offset.Y, finalSize.Width, itemHeight);
                 children[i].Arrange(rc);
-                initY += itemHgt;
+                initY += itemHeight;
             }
         }
 
@@ -530,13 +529,13 @@ internal class DateTimePickerPanel : Panel,
         _range      = _maximumValue - _minimumValue + 1;
         _totalItems = (int)Math.Ceiling((double)_range / _increment);
 
-        var itemHgt = ItemHeight;
+        var itemHeight = ItemHeight;
         //If looping, measure 100x as many items as we actually have
-        _extent = new Size(0, ShouldLoop ? _totalItems * itemHgt * 100 : _totalItems * itemHgt);
+        _extent = new Size(0, ShouldLoop ? _totalItems * itemHeight * 100 : _totalItems * itemHeight);
 
         //Height of 1 "set" of items
-        _extentOne = _totalItems * itemHgt;
-        _offset    = new Vector(0, ShouldLoop ? _extentOne * 50 + _selectedIndex * itemHgt : _selectedIndex * itemHgt);
+        _extentOne = _totalItems * itemHeight;
+        _offset    = new Vector(0, ShouldLoop ? _extentOne * 50 + _selectedIndex * itemHeight : _selectedIndex * itemHeight);
     }
 
     /// <summary>
@@ -566,29 +565,24 @@ internal class DateTimePickerPanel : Panel,
 
         while (children.Count < totalItemsInViewport)
         {
-            var item = new ListBoxItem
+            var item = new TimeViewCell
             {
-                MinHeight                  = ItemHeight,
                 Classes                    = { $"{PanelType}Item" },
                 VerticalContentAlignment   = VerticalAlignment.Center,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 Focusable                  = false,
                 CornerRadius               = new CornerRadius(0),
-                SizeType                   = SizeType.Middle,
                 Cursor                     = new Cursor(StandardCursorType.Hand),
                 IsMotionEnabled            = false
             };
             item.PointerEntered += (sender, args) =>
             {
-                if (sender is ListBoxItem target)
+                if (sender is TimeViewCell target)
                 {
                     var cellValue = (int)target.Tag!;
                     CellHovered?.Invoke(this, new CellHoverEventArgs(new CellHoverInfo(PanelType, cellValue)));
                 }
             };
-
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(item, TemplatedControl.PaddingProperty,
-                TimePickerTokenKey.ItemPadding, BindingPriority.LocalValue));
             children.Add(item);
         }
 
@@ -624,7 +618,7 @@ internal class DateTimePickerPanel : Panel,
 
         for (var i = 0; i < children.Count; i++)
         {
-            var item = (ListBoxItem)children[i];
+            var item = (TimeViewCell)children[i];
             var textBlock = new TextBlock
             {
                 VerticalAlignment   = VerticalAlignment.Center,
@@ -696,35 +690,40 @@ internal class DateTimePickerPanel : Panel,
 
     private void HandleItemTapped(object? sender, TappedEventArgs e)
     {
-        if (e.Source is Visual source &&
-            GetItemFromSource(source) is ListBoxItem listBoxItem &&
-            listBoxItem.Tag is int tag)
+        if (e.Source is Visual source)
         {
-            SelectedValue = tag;
-            e.Handled     = true;
+            var cell = GetItemFromSource(source);
+            if (cell != null && cell.Tag is int tag)
+            {
+                SelectedValue = tag;
+                e.Handled     = true;
+            }
         }
     }
 
     private void HandleItemDoubleTapped(object? sender, TappedEventArgs e)
     {
-        if (e.Source is Visual source &&
-            GetItemFromSource(source) is ListBoxItem listBoxItem)
+        if (e.Source is Visual source)
         {
-            CellDbClicked?.Invoke(this, new CellDbClickedEventArgs(listBoxItem.IsSelected));
-            e.Handled = true;
+            var cell = GetItemFromSource(source);
+            if (cell is not null)
+            {
+                CellDbClicked?.Invoke(this, new CellDbClickedEventArgs(cell.IsSelected));
+                e.Handled = true;
+            }
         }
     }
 
-    //Helper to get ListBoxItem from pointerevent source
-    private ListBoxItem? GetItemFromSource(Visual src)
+    //Helper to get TimeViewCell from pointerevent source
+    private TimeViewCell? GetItemFromSource(Visual src)
     {
         var item = src;
-        while (item != null && !(item is ListBoxItem))
+        while (item != null && !(item is TimeViewCell))
         {
             item = item.GetVisualParent();
         }
 
-        return (ListBoxItem?)item;
+        return (TimeViewCell?)item;
     }
 
     public bool BringIntoView(Control target, Rect targetRect)
@@ -757,7 +756,7 @@ internal class DateTimePickerPanel : Panel,
         var children = Children;
         for (var i = 0; i < children.Count; i++)
         {
-            var item = (ListBoxItem)children[i];
+            var item = (TimeViewCell)children[i];
             item.IsMotionEnabled = IsMotionEnabled;
         }
     }

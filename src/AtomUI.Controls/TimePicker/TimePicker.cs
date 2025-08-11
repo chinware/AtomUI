@@ -19,8 +19,7 @@ public enum ClockIdentifierType
     HourClock24
 }
 
-public class TimePicker : InfoPickerInput,
-                          IControlSharedTokenResourcesHost
+public class TimePicker : InfoPickerInput, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 

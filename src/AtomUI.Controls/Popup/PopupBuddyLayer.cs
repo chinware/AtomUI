@@ -147,7 +147,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     static PopupBuddyLayer()
     {
         AffectsRender<PopupBuddyLayer>(MaskShadowsContentCornerRadiusProperty, ArrowFillColorProperty);
-        AffectsMeasure<PopupBuddyLayer>(ArrowIndicatorLayoutBoundsProperty);
+        AffectsMeasure<PopupBuddyLayer>(ArrowIndicatorLayoutBoundsProperty, IsShowArrowProperty);
         AffectsArrange<PopupBuddyLayer>(ArrowSizeProperty, ArrowDirectionProperty);
     }
     
@@ -206,6 +206,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 this[!ArrowSizeProperty]      = arrowDecoratedBox[!ArrowDecoratedBox.ArrowSizeProperty];
                 this[!ArrowDirectionProperty] = arrowDecoratedBox[!ArrowDecoratedBox.ArrowDirectionProperty];
                 this[!ArrowFillColorProperty] = arrowDecoratedBox[!ArrowDecoratedBox.BackgroundProperty];
+                this[!IsShowArrowProperty] = arrowDecoratedBox[!ArrowDecoratedBox.IsShowArrowProperty];
             }
             else if (content is Border bordered)
             {
