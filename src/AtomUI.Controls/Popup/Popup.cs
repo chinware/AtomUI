@@ -289,6 +289,7 @@ public class Popup : AvaloniaPopup,
                 _selfLightDismissDisposable = inputManager.Process.Subscribe(HandleMouseClick);
             }
         }
+        _buddyLayer?.Show();
     }
     
     // 正常的菜单项点击的时候第一次是需要忽略点击的探测的，不然按钮会被关闭
@@ -570,7 +571,6 @@ public class Popup : AvaloniaPopup,
         if (!IsMotionEnabled)
         {
             Open();
-            _buddyLayer?.Show();
             opened?.Invoke();
             _motionAwareOpened = true;
             using (BeginIgnoringIsOpen())
@@ -580,10 +580,13 @@ public class Popup : AvaloniaPopup,
             return;
         }
         
+        Console.WriteLine($"{_motionAwareOpened}-{_openAnimating}-{_closeAnimating}");
         if (_motionAwareOpened || _openAnimating || _closeAnimating)
         {
             return;
         }
+        
+        Open();
         
         if (_isNeedWaitFlipSync)
         {
@@ -596,10 +599,11 @@ public class Popup : AvaloniaPopup,
 
     private void ShowBuddyWithMotion(Action? opened = null)
     {
-        Open();
-        Debug.Assert(MotionActor != null);
-        _buddyLayer?.Show();
-        
+        if (MotionActor == null)
+        {
+            Close();
+            return;
+        }
         _openAnimating = true;
         using (BeginIgnoringIsOpen())
         {
@@ -636,8 +640,8 @@ public class Popup : AvaloniaPopup,
             RequestCloseWhereAnimationCompleted = true;
             return;
         }
-        Debug.Assert(MotionActor != null);
-        if (!IsMotionEnabled || popupRoot == null)
+    
+        if (!IsMotionEnabled || popupRoot == null || MotionActor == null)
         {
             _isNeedDetectFlip = true;
             Close();

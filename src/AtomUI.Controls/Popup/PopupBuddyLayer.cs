@@ -144,6 +144,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     private IDisposable? _openMotionForceDisposable;
     private IDisposable? _closeMotionForceDisposable;
     
+    internal Popup BuddyPopup => _buddyPopup;
+    
     static PopupBuddyLayer()
     {
         AffectsRender<PopupBuddyLayer>(MaskShadowsContentCornerRadiusProperty, ArrowFillColorProperty);
@@ -292,7 +294,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
 
     public void Attach()
     {
-        _disposables                           = new CompositeDisposable();
+        _disposables = new CompositeDisposable();
         _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.MaskShadowsProperty, this, MaskShadowsProperty));
         _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.MotionDurationProperty, this, MotionDurationProperty));
         _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.OpenMotionProperty, this, OpenMotionProperty));
@@ -317,6 +319,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         if (MotionActor == null)
         {
             completedAction?.Invoke();
+            _openMotionForceDisposable?.Dispose();
             return;
         }
         var motion       = OpenMotion ?? new ZoomBigInMotion();
@@ -357,7 +360,12 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
 
     public void RunCloseMotion(Action? aboutToStart = null, Action? completedAction = null)
     {
-        Debug.Assert(MotionActor !=  null);
+        if (MotionActor == null)
+        {
+            completedAction?.Invoke();
+            _closeMotionForceDisposable?.Dispose();
+            return;
+        }
         var motion       = CloseMotion ?? new ZoomBigOutMotion();
         if (MotionDuration != TimeSpan.Zero)
         {

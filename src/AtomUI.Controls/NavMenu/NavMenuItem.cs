@@ -510,10 +510,16 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 return;
             }
-        }
 
-        SetCurrentValue(IsSubMenuOpenProperty, true);
+            SetCurrentValue(IsSubMenuOpenProperty, true);
+        }
+        else
+        {
+            SetCurrentValue(IsSubMenuOpenProperty, true);
+            _popup?.MotionAwareOpen();
+        }
     }
+    
 
     /// <summary>
     /// Closes the submenu.
@@ -529,8 +535,22 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 return;
             }
+            SetCurrentValue(IsSubMenuOpenProperty, false);
         }
-        SetCurrentValue(IsSubMenuOpenProperty, false);
+        else
+        {
+            SetCurrentValue(IsSubMenuOpenProperty, false);
+            _popup?.MotionAwareClose();
+        }
+
+        // if (this is INavMenuItem navMenuItem)
+        // {
+        //     foreach (var child in navMenuItem.SubItems)
+        //     {
+        //         child.Close();
+        //     }
+        // }
+        // SetCurrentValue(IsSubMenuOpenProperty, false);
     }
 
     /// <inheritdoc/>
@@ -1249,12 +1269,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     internal void SelectItemRecursively()
     {
         IsSelected = true;
-        if (!IsTopLevel)
+        if (Parent is NavMenuItem parent)
         {
-            if (Parent is NavMenuItem parent)
-            {
-                parent.SelectItemRecursively();
-            }
+            parent.SelectItemRecursively();
         }
     }
 
@@ -1297,4 +1314,5 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         var targetRect = new Rect(offset, targetFrame.Bounds.Size);
         return targetRect.Contains(point);
     }
+    
 }

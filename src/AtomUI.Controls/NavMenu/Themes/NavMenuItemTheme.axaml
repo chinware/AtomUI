@@ -50,8 +50,8 @@
                 <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
                             WindowManagerAddShadowHint="False"
                             IsLightDismissEnabled="False"
-                            Placement="RightEdgeAlignedTop"
-                            IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                            IsDetectMouseClickEnabled="False"
+                            Placement="RightEdgeAlignedTop">
                     <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}">
                         <atom:MenuScrollViewer>
                             <ItemsPresenter Name="{x:Static atom:NavMenuItemThemeConstants.ItemsPresenterPart}"

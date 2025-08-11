@@ -73,6 +73,7 @@
                 <atom:Popup Name="{x:Static atom:MenuItemThemeConstants.PopupPart}"
                             WindowManagerAddShadowHint="False"
                             IsLightDismissEnabled="False"
+                            IsDetectMouseClickEnabled="False"
                             Placement="RightEdgeAlignedTop"
                             IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                     <Border Name="{x:Static atom:MenuItemThemeConstants.PopupFramePart}">

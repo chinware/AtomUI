@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Diagnostics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
@@ -10,6 +11,8 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
+
+using NavMenuControl = NavMenu;
 
 internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 {
@@ -162,17 +165,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             {
                 if (navMenuItem.HasSubMenu)
                 {
-                    if (navMenuItem.IsSubMenuOpen)
-                    {
-                        // PointerPressed events may bubble from disabled items in sub-menus. In this case,
-                        // keep the sub-navMenu open.
-                        var popup = (e.Source as ILogical)?.FindLogicalAncestorOfType<Popup>();
-                        if (navMenuItem.IsTopLevel && popup == null)
-                        {
-                            CloseMenu(navMenuItem);
-                        }
-                    }
-                    else
+                    if (!navMenuItem.IsSubMenuOpen)
                     {
                         navMenuItem.Open();
                     }
@@ -182,12 +175,24 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                     // 判断当前选中的是不是自己
                     if (!ReferenceEquals(_latestSelectedItem, item))
                     {
-                        if (NavMenu is NavMenu navMenu)
+                        if (_latestSelectedItem is StyledElement latestStyleItem && item is StyledElement styledItem)
                         {
-                            navMenu.ClearSelection();
+                            var ancestorInfo = HasCommonAncestor(latestStyleItem, styledItem);
+                            if (!ancestorInfo.Item1)
+                            {
+                                if (NavMenu is NavMenu navMenu)
+                                {
+                                    navMenu.ClearSelection();
+                                }
+                            }
+                            else
+                            {
+                                if (ancestorInfo.Item2 is NavMenuItem neededClearAncestor)
+                                {
+                                    NavMenuControl.ClearSelectionRecursively(neededClearAncestor, true);
+                                }
+                            }
                         }
-
-                        navMenuItem.SelectItemRecursively();
                     }
                     _latestSelectedItem = item;
                 }
@@ -195,6 +200,52 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                 e.Handled = true;
             }
         }
+    }
+    
+    private IList<StyledElement> CollectAncestors(StyledElement control)
+    {
+        var            ancestors = new List<StyledElement>();
+        StyledElement? current   = control.Parent;
+        while (current != null && (current is NavMenuItem || control is NavMenu))
+        {
+            ancestors.Add(current);
+            current = current.Parent;
+        }
+
+        return ancestors;
+    }
+    
+    private (bool, StyledElement?) HasCommonAncestor(StyledElement lhs, StyledElement rhs)
+    {
+        var lhsAncestors = CollectAncestors(lhs);
+        var rhsAncestors = CollectAncestors(rhs);
+        var hasOverlaps  = lhsAncestors.ToHashSet().Overlaps(rhsAncestors.ToHashSet());
+        if (!hasOverlaps)
+        {
+            return (false, null);
+        }
+        // 找共同的祖先
+        StyledElement? commonAncestor = null;
+        for (var i = 0; i < lhsAncestors.Count; i++)
+        {
+            var lhsAncestor = lhsAncestors[i];
+            for (var j = 0; j < rhsAncestors.Count; j++)
+            {
+                var rhsAncestor = rhsAncestors[j];
+                if (ReferenceEquals(lhsAncestor, rhsAncestor))
+                {
+                    commonAncestor = lhsAncestor;
+                    break;
+                }
+            }
+
+            if (commonAncestor != null)
+            {
+                break;
+            }
+        }
+        Debug.Assert(commonAncestor != null);
+        return (true, commonAncestor);
     }
 
     protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -209,6 +260,10 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         if (e.InitialPressMouseButton == MouseButton.Left && item.HasSubMenu == false)
         {
             Click(item);
+            if (item is NavMenuItem navMenuItem)
+            {
+                navMenuItem.SelectItemRecursively();
+            }
             e.Handled = true;
         }
     }

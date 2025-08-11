@@ -182,7 +182,6 @@ public class MenuFlyoutPresenter : MenuBase,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-
         foreach (var i in LogicalChildren)
         {
             if (i is MenuItem menuItem)
