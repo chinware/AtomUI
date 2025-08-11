@@ -4,6 +4,7 @@
               xmlns:converters="using:AtomUI.Controls.Converters"
               xmlns:themes="using:AtomUI.Controls.Themes"
               x:Class="AtomUI.Controls.Themes.DataGridColumnHeaderTheme"
+              x:ClassModifier="internal"
               xmlns:atom="https://atomui.net">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DataGridColumnHeader">

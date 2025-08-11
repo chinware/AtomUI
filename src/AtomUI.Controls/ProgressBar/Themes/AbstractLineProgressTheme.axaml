@@ -3,7 +3,8 @@
               xmlns:atom="https://atomui.net"
               xmlns:themes="using:AtomUI.Controls.Themes"
               x:Class="AtomUI.Controls.Themes.AbstractLineProgressTheme"
-              TargetType="atom:AbstractLineProgress">
+              TargetType="atom:AbstractLineProgress"
+              x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:AbstractProgressBarTheme TargetType="atom:AbstractLineProgress"/>
     </ControlTheme.BasedOn>

@@ -4,7 +4,8 @@
     xmlns:atom="https://atomui.net"
     xmlns:themes="using:AtomUI.Controls.Themes"
     x:Class="AtomUI.Controls.Themes.NavMenuItemTheme"
-    TargetType="atom:NavMenuItem">
+    TargetType="atom:NavMenuItem"
+    x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:BaseNavMenuItemTheme TargetType="atom:NavMenuItem" />
     </ControlTheme.BasedOn>

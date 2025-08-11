@@ -2,7 +2,8 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               x:Class="AtomUI.Controls.Themes.BaseTabStripTheme"
-              TargetType="atom:BaseTabStrip">
+              TargetType="atom:BaseTabStrip"
+              x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:BaseTabStrip">
             <Border Name="{x:Static atom:TabStripThemeConstants.FramePart}"/>

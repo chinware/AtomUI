@@ -2,7 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:dataGridLocalization="clr-namespace:AtomUI.Controls.DataGridLocalization"
+    x:ClassModifier="internal"
+    xmlns:dataGridLocalization="using:AtomUI.Controls.DataGridLocalization"
     xmlns:localization="clr-namespace:AtomUI.Controls.Localization;assembly=AtomUI.Controls">
     <ControlTheme x:Key="{x:Type atom:DataGridOperationButtons}"
                   TargetType="atom:DataGridOperationButtons">

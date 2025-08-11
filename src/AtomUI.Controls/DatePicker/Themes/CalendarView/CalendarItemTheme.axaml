@@ -4,7 +4,8 @@
     xmlns:atom="https://atomui.net"
     xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView"
     x:Class="AtomUI.Controls.Themes.CalendarItemTheme"
-    TargetType="calendarView:CalendarItem">
+    TargetType="calendarView:CalendarItem"
+    x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="calendarView:CalendarItem">
             <Border

@@ -5,7 +5,8 @@
               xmlns:datePickerLang="using:AtomUI.Controls.DatePickerLang"
               xmlns:localization="clr-namespace:AtomUI.Controls.Localization"
               x:Class="AtomUI.Controls.Themes.DatePickerPresenterTheme"
-              TargetType="atom:DatePickerPresenter">
+              TargetType="atom:DatePickerPresenter"
+              x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DatePickerPresenter">
             <DockPanel Name="{x:Static atom:DatePickerPresenterThemeConstants.MainLayoutPart}"

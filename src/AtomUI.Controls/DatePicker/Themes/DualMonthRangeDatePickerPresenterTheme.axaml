@@ -5,7 +5,8 @@
     xmlns:atom="https://atomui.net"
     xmlns:calendarview="using:AtomUI.Controls.CalendarView"
     xmlns:datePickerLang="using:AtomUI.Controls.DatePickerLang"
-    xmlns:localization="clr-namespace:AtomUI.Controls.Localization">
+    xmlns:localization="clr-namespace:AtomUI.Controls.Localization"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DualMonthRangeDatePickerPresenter}"
                   TargetType="atom:DualMonthRangeDatePickerPresenter">
         <ControlTheme.BasedOn>

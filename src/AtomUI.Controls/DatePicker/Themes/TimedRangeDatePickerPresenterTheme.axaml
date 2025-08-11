@@ -5,7 +5,8 @@
     xmlns:themes="using:AtomUI.Controls.Themes"
     xmlns:calendarview="using:AtomUI.Controls.CalendarView"
     xmlns:datePickerLang="using:AtomUI.Controls.DatePickerLang"
-    xmlns:localization="clr-namespace:AtomUI.Controls.Localization">
+    xmlns:localization="clr-namespace:AtomUI.Controls.Localization"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:TimedRangeDatePickerPresenter}"
                   TargetType="atom:TimedRangeDatePickerPresenter">
         <ControlTheme.BasedOn>

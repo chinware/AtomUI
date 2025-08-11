@@ -2,6 +2,6 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Themes;
 
-public class TreeViewTheme : ControlTheme
+internal class TreeViewTheme : ControlTheme
 {
 }

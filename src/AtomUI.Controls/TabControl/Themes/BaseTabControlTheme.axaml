@@ -2,7 +2,8 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               x:Class="AtomUI.Controls.Themes.BaseTabControlTheme"
-              TargetType="atom:BaseTabControl">
+              TargetType="atom:BaseTabControl"
+              x:ClassModifier="internal">
     
     <Style Selector="^:is(atom|BaseTabControl)">
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />

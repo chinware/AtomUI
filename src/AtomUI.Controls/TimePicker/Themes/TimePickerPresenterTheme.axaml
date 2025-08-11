@@ -2,8 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:timePickerLang="clr-namespace:AtomUI.Controls.TimePickerLang"
-    xmlns:localization="clr-namespace:AtomUI.Controls.Localization">
+    xmlns:timePickerLang="using:AtomUI.Controls.TimePickerLang"
+    xmlns:localization="using:AtomUI.Controls.Localization"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:TimePickerPresenter}" TargetType="atom:TimePickerPresenter">
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:TimePickerPresenter">

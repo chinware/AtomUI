@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     TargetType="atom:NavMenuItem"
-    x:Class="AtomUI.Controls.Themes.BaseNavMenuItemTheme">
+    x:Class="AtomUI.Controls.Themes.BaseNavMenuItemTheme"
+    x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:NavMenuItem">
             <Panel>

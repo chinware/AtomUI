@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal"
     xmlns:atom="https://atomui.net">
     <converters:DataGridHeaderCornerRadiusConverter x:Key="DataGridHeaderCornerRadiusConverter" />
     <converters:DataGridUniformBorderThicknessToScalarConverter x:Key="DataGridUniformBorderThicknessToScalarConverter" />

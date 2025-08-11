@@ -3,7 +3,8 @@
               xmlns:atom="https://atomui.net"
               xmlns:themes="using:AtomUI.Controls.Themes"
               x:Class="AtomUI.Controls.Themes.TextButtonTheme"
-              TargetType="{x:Type atom:Button}">
+              TargetType="{x:Type atom:Button}"
+              x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>

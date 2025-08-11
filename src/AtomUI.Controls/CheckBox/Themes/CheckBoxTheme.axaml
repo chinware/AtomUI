@@ -2,7 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="clr-namespace:AtomUI.Controls.Converters">
+    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
     <converters:CheckBoxIndicatorStateConverter x:Key="CheckBoxIndicatorStateConverter"/>
     <ControlTheme x:Key="{x:Type atom:CheckBox}" TargetType="atom:CheckBox">
         <Setter Property="Template">
