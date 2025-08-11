@@ -206,7 +206,7 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
 
     static TreeView()
     {
-        AffectsRender<TreeView>(DragIndicatorRenderInfoProperty);
+        AffectsRender<TreeView>(DragIndicatorRenderInfoProperty, DragIndicatorBrushProperty, DragIndicatorLineWidthProperty);
     }
 
     public TreeView()

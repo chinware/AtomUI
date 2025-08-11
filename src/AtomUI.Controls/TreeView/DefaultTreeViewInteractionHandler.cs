@@ -10,7 +10,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
+internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
 {
     protected IInputManager? InputManager { get; }
     internal TreeView? TreeView { get; private set; }
