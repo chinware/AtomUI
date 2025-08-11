@@ -10,9 +10,6 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-/// <summary>
-/// 继承ItemsControl
-/// </summary>
 public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotionAwareControl
 {
     #region 公共属性定义

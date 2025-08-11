@@ -96,20 +96,9 @@ public class BreadcrumbItem : ContentControl, ISelectable
     
     static BreadcrumbItem()
     {
-        SelectableMixin.Attach<BreadcrumbItem>(IsSelectedProperty);
-        PressedMixin.Attach<BreadcrumbItem>();
-        FocusableProperty.OverrideDefaultValue<BreadcrumbItem>(true);
         AffectsRender<BreadcrumbItem>(BackgroundProperty);
     }
     
-    
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
-        UpdatePseudoClasses();
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
