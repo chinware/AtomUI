@@ -609,11 +609,6 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         }
         if (popupPresenter != null)
         {
-            _ghostContentPresenter.Content = new MotionTargetBitmapControl(popupPresenter.CaptureCurrentBitmap())
-            {
-                Width  = popupPresenter.DesiredSize.Width,
-                Height = popupPresenter.DesiredSize.Height,
-            };
             _ghostContentPresenter.Opacity = 1.0;
         }
     }
