@@ -113,6 +113,7 @@ public class Segmented : SelectingItemsControl,
             SelectedThumbBoxShadowsProperty,
             SelectedThumbSizeProperty, 
             SelectedThumbPosProperty);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<Segmented>(false);
     }
 
     public Segmented()

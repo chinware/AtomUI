@@ -105,7 +105,7 @@ internal class FlyoutStateHelper : AvaloniaObject
                 // 这里 PopupRoot 关闭的时候会被关闭，所以这里的事件处理器是不是不需要删除
                 if (TriggerType == FlyoutTriggerType.Hover)
                 {
-                    popupRoot.PointerEntered += (o, args) =>
+                    popupRoot.PointerMoved += (o, args) =>
                     {
                         StopMouseLeaveTimer();
                         if (_flyoutCloseDetectDisposable is null)
