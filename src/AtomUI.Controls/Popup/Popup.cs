@@ -276,12 +276,6 @@ public class Popup : AvaloniaPopup,
                 }
             }
 
-            if (!_openAnimating)
-            {
-                CreateBuddyLayer();
-                _buddyLayer?.Attach();
-            }
-
             // 如果没有启动，我们使用自己的处理函数，一般是为了增加我们自己的动画效果
             if (!IsLightDismissEnabled)
             {
@@ -289,6 +283,8 @@ public class Popup : AvaloniaPopup,
                 _selfLightDismissDisposable = inputManager.Process.Subscribe(HandleMouseClick);
             }
         }
+        CreateBuddyLayer();
+        _buddyLayer?.Attach();
         _buddyLayer?.Show();
     }
     
@@ -580,9 +576,9 @@ public class Popup : AvaloniaPopup,
             return;
         }
         
-        Console.WriteLine($"{_motionAwareOpened}-{_openAnimating}-{_closeAnimating}");
         if (_motionAwareOpened || _openAnimating || _closeAnimating)
         {
+            opened?.Invoke();
             return;
         }
         
@@ -597,11 +593,18 @@ public class Popup : AvaloniaPopup,
         ShowBuddyWithMotion(opened);
     }
 
+    public async Task MotionAwareOpenAsync()
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        MotionAwareOpen(() => tcs.SetResult(true));
+        await tcs.Task;
+    }
+
     private void ShowBuddyWithMotion(Action? opened = null)
     {
         if (MotionActor == null)
         {
-            Close();
+            opened?.Invoke();
             return;
         }
         _openAnimating = true;
@@ -632,16 +635,24 @@ public class Popup : AvaloniaPopup,
         var popupRoot = Host as PopupRoot;
         if ((!_motionAwareOpened && !_openAnimating) || _closeAnimating)
         {
+            closed?.Invoke();
             return;
         }
         
         if (_openAnimating)
         {
             RequestCloseWhereAnimationCompleted = true;
+            closed?.Invoke();
+            return;
+        }
+
+        if (MotionActor == null)
+        {
+            closed?.Invoke();
             return;
         }
     
-        if (!IsMotionEnabled || popupRoot == null || MotionActor == null)
+        if (!IsMotionEnabled || popupRoot == null)
         {
             _isNeedDetectFlip = true;
             Close();
@@ -666,7 +677,7 @@ public class Popup : AvaloniaPopup,
         
         shadowAwareLayer.RunCloseMotion(null, () =>
         {
-            _buddyLayer?.Hide();
+            _buddyLayer?.Detach();
             Close();
             closed?.Invoke();
             _closeAnimating    = false;
@@ -675,6 +686,13 @@ public class Popup : AvaloniaPopup,
         });
     }
 
+    public async Task MotionAwareCloseAsync()
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        MotionAwareClose(() => tcs.SetResult(true));
+        await tcs.Task;
+    }
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

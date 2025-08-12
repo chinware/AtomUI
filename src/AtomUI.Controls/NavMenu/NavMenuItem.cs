@@ -480,6 +480,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private Rectangle? _activeIndicator;
     
     private bool _animating;
+    
+    internal Popup? Popup => _popup;
 
     static NavMenuItem()
     {
@@ -510,16 +512,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 return;
             }
+        }
 
-            SetCurrentValue(IsSubMenuOpenProperty, true);
-        }
-        else
-        {
-            SetCurrentValue(IsSubMenuOpenProperty, true);
-            _popup?.MotionAwareOpen();
-        }
+        IsSubMenuOpen = true;
     }
-    
 
     /// <summary>
     /// Closes the submenu.
@@ -534,23 +530,35 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             if (_animating)
             {
                 return;
-            }
-            SetCurrentValue(IsSubMenuOpenProperty, false);
-        }
-        else
-        {
-            SetCurrentValue(IsSubMenuOpenProperty, false);
-            _popup?.MotionAwareClose();
+            }                                       
         }
 
-        // if (this is INavMenuItem navMenuItem)
-        // {
-        //     foreach (var child in navMenuItem.SubItems)
-        //     {
-        //         child.Close();
-        //     }
-        // }
-        // SetCurrentValue(IsSubMenuOpenProperty, false);
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await CloseItemAsync(this);
+        });
+    }
+
+    public async Task CloseItemAsync(INavMenuItem navMenuItem)
+    {
+
+        foreach (var child in navMenuItem.SubItems)
+        {
+            if (child is NavMenuItem childNavMenuItem)
+            {
+                await CloseItemAsync(childNavMenuItem);
+            }
+        }
+
+        if (navMenuItem is NavMenuItem navMenuItem2)
+        {
+            if (navMenuItem2._popup != null)
+            {
+                await navMenuItem2._popup.MotionAwareCloseAsync();
+            }
+
+            navMenuItem2.IsSubMenuOpen = false;
+        }
     }
 
     /// <inheritdoc/>

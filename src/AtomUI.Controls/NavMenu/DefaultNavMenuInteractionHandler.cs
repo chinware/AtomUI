@@ -8,7 +8,6 @@ using Avalonia.LogicalTree;
 using Avalonia.Platform;
 using Avalonia.Rendering;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -18,7 +17,8 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 {
     private IDisposable? _inputManagerSubscription;
     private IRenderRoot? _root;
-    private IDisposable? _currentDelayRunDisposable;
+    private IDisposable? _currentOpenDelayRunDisposable;
+    private IDisposable? _currentCloseDelayRunDisposable;
     private bool _currentPressedIsValid = false;
     private INavMenuItem? _latestSelectedItem = null;
 
@@ -64,59 +64,21 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             return;
         }
 
-        if (item.IsTopLevel)
+        _currentOpenDelayRunDisposable?.Dispose();
+        _currentCloseDelayRunDisposable?.Dispose();
+        if (item.HasSubMenu)
         {
-            if (item != item.Parent.SelectedItem &&
-                item.Parent.SelectedItem?.IsSubMenuOpen == true)
+            OpenWithDelay(item);
+        }
+        else if (item.Parent != null)
+        {
+            foreach (var sibling in item.Parent.SubItems)
             {
-                item.Parent.SelectedItem.Close();
-                if (item.HasSubMenu)
+                if (sibling.IsSubMenuOpen)
                 {
-                    item.Open();
+                    sibling.Close();
                 }
             }
-        }
-        else
-        {
-            if (item.HasSubMenu)
-            {
-                OpenWithDelay(item);
-            }
-            else if (item.Parent != null)
-            {
-                foreach (var sibling in item.Parent.SubItems)
-                {
-                    if (sibling.IsSubMenuOpen)
-                    {
-                        CloseWithDelay(sibling);
-                    }
-                }
-            }
-        }
-    }
-
-    protected virtual void PointerMoved(object? sender, PointerEventArgs e)
-    {
-        // HACK: #8179 needs to be addressed to correctly implement it in the PointerPressed method.
-        var item = GetMenuItemCore(e.Source as Control) as NavMenuItem;
-
-        if (item == null)
-        {
-            return;
-        }
-
-        var transformedBounds = item.GetTransformedBounds();
-        if (transformedBounds == null)
-        {
-            return;
-        }
-
-        var point = e.GetCurrentPoint(null);
-
-        if (point.Properties.IsLeftButtonPressed
-            && transformedBounds.Value.Contains(point.Position) == false)
-        {
-            e.Pointer.Capture(null);
         }
     }
 
@@ -129,18 +91,18 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             return;
         }
 
-        if (item.Parent.SelectedItem == item)
+        _currentOpenDelayRunDisposable?.Dispose();
+        _currentCloseDelayRunDisposable?.Dispose();
+
+        if (!item.IsPointerOverSubMenu)
         {
-            if (!item.IsPointerOverSubMenu)
+            _currentCloseDelayRunDisposable = DelayRun(() =>
             {
-                DelayRun(() =>
+                if (!item.IsPointerOverSubMenu)
                 {
-                    if (!item.IsPointerOverSubMenu)
-                    {
-                        item.IsSubMenuOpen = false;
-                    }
-                }, MenuShowDelay);
-            }
+                    item.Close();
+                }
+            }, MenuShowDelay);
         }
     }
 
@@ -315,7 +277,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         NavMenu.AddHandler(NavMenuBase.OpenedEvent, MenuOpened);
         NavMenu.AddHandler(NavMenuItem.PointerEnteredItemEvent, PointerEntered);
         NavMenu.AddHandler(NavMenuItem.PointerExitedItemEvent, PointerExited);
-        NavMenu.AddHandler(InputElement.PointerMovedEvent, PointerMoved);
 
         _root = NavMenu.VisualRoot;
 
@@ -351,7 +312,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         NavMenu.RemoveHandler(NavMenuBase.OpenedEvent, MenuOpened);
         NavMenu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, PointerEntered);
         NavMenu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, PointerExited);
-        NavMenu.RemoveHandler(InputElement.PointerMovedEvent, PointerMoved);
 
         if (_root is InputElement inputRoot)
         {
@@ -408,28 +368,19 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
         return result;
     }
-
-    internal void CloseWithDelay(INavMenuItem item)
-    {
-        void Execute()
-        {
-            if (item.Parent?.SelectedItem != item)
-            {
-                item.Close();
-            }
-        }
-
-        DelayRun(Execute, MenuShowDelay);
-    }
     
     internal void OpenWithDelay(INavMenuItem item)
     {
         void Execute()
         {
-            item.Open();
+            var parent = item.Parent as NavMenuItem;
+            if (!item.IsTopLevel && parent?.Popup?.Host != null)
+            {
+                item.Open();
+            }
         }
-        _currentDelayRunDisposable?.Dispose();
-        _currentDelayRunDisposable = DelayRun(Execute, MenuShowDelay);
+        _currentOpenDelayRunDisposable?.Dispose();
+        _currentOpenDelayRunDisposable = DelayRun(Execute, MenuShowDelay);
     }
 
     internal static INavMenuItem? GetMenuItemCore(StyledElement? item)

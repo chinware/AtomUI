@@ -33,6 +33,7 @@
 
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="ScrollViewer.AllowAutoHide" Value="False" />
         
         <Style Selector="^[Mode=Vertical]">
             <Setter Property="Padding"

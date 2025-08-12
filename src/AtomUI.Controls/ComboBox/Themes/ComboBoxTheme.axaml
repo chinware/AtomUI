@@ -81,6 +81,8 @@
             </ControlTemplate>
         </Setter>
         
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
         
         <Style Selector="^[SizeType=Large]">

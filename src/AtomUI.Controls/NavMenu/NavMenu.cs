@@ -120,6 +120,7 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
             KeyboardNavigationMode.Once);
         AutomationProperties.AccessibilityViewProperty.OverrideDefaultValue<NavMenu>(AccessibilityView.Control);
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<NavMenu>(false);
     }
 
     private CompositeDisposable? _resourceBindingsDisposable;

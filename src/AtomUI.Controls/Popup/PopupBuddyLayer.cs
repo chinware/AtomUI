@@ -387,7 +387,6 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 completedFuncCalled = true;
             }
         }, motion.Duration * 1.2);
-        
         motion.Run(MotionActor, aboutToStart, () =>
         {
             _closeMotionForceDisposable.Dispose();

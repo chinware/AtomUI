@@ -163,12 +163,6 @@ public class ComboBox : AvaloniaComboBox,
     
     private Popup? _popup;
 
-    static ComboBox()
-    {
-        HorizontalAlignmentProperty.OverrideDefaultValue<ComboBox>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<ComboBox>(VerticalAlignment.Top);
-    }
-
     public ComboBox()
     {
         this.RegisterResources();
