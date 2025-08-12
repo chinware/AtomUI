@@ -65,10 +65,11 @@ public class MenuFlyout : Flyout
     {
         _presenter = new MenuFlyoutPresenter
         {
-            ItemsSource                                = Items,
-            [!ItemsControl.ItemTemplateProperty]       = this[!ItemTemplateProperty],
-            [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
-            MenuFlyout                                 = this
+            ItemsSource                                    = Items,
+            [!ItemsControl.ItemTemplateProperty]           = this[!ItemTemplateProperty],
+            [!ItemsControl.ItemContainerThemeProperty]     = this[!ItemContainerThemeProperty],
+            [!MenuFlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty],
+            MenuFlyout                                     = this
         };
         BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, MenuFlyoutPresenter.IsShowArrowProperty);
         BindUtils.RelayBind(this, IsMotionEnabledProperty, _presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);

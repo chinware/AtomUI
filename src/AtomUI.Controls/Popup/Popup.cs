@@ -674,15 +674,17 @@ public class Popup : AvaloniaPopup,
 
         var shadowAwareLayer = _buddyLayer as IShadowAwareLayer;
         Debug.Assert(shadowAwareLayer != null);
-        
-        shadowAwareLayer.RunCloseMotion(null, () =>
+        Dispatcher.UIThread.Post(() =>
         {
-            _buddyLayer?.Detach();
-            Close();
-            closed?.Invoke();
-            _closeAnimating    = false;
-            _motionAwareOpened = false;
-            _isNeedDetectFlip  = true;
+            shadowAwareLayer.RunCloseMotion(null, () =>
+            {
+                _buddyLayer?.Detach();
+                Close();
+                closed?.Invoke();
+                _closeAnimating    = false;
+                _motionAwareOpened = false;
+                _isNeedDetectFlip  = true;
+            });
         });
     }
 

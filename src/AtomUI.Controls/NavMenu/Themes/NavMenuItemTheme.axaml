@@ -52,6 +52,7 @@
                             IsLightDismissEnabled="False"
                             IsDetectMouseClickEnabled="False"
                             Placement="RightEdgeAlignedTop"
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=OneWay}">
                     <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}">
                         <atom:MenuScrollViewer>

@@ -311,7 +311,6 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         {
             disposable.Dispose();
         }
-        MotionActor?.UnFollow();
     }
     
     public void RunOpenMotion(Action? aboutToStart = null, Action? completedAction = null)
@@ -474,9 +473,9 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         if (_popupHost is PopupRoot popupRoot)
         {
             var popupMotionAction  = popupRoot.FindDescendantOfType<MotionActor>();
-            if (popupMotionAction != null)
+            if (popupMotionAction != null && MotionActor != null)
             {
-                MotionActor?.Follow(popupMotionAction);
+                popupMotionAction.Follow(MotionActor);
             }
         }
 
@@ -616,10 +615,6 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 Height = popupPresenter.DesiredSize.Height,
             };
             _ghostContentPresenter.Opacity = 1.0;
-            Dispatcher.UIThread.Post(() =>
-            {
-                popupPresenter.Opacity = 0.0;
-            });
         }
     }
 
