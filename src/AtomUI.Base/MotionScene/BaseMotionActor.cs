@@ -198,12 +198,14 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
         _followDisposables.Add(BindUtils.RelayBind(target, MotionTransformOperationsProperty, this, MotionTransformOperationsProperty));
         _followDisposables.Add(BindUtils.RelayBind(target, OpacityProperty, this, OpacityProperty));
         _followDisposables.Add(BindUtils.RelayBind(target, RenderTransformOriginProperty, this, RenderTransformOriginProperty));
+        _followTarget = target;
     }
 
     public void UnFollow()
     {
         _followDisposables?.Dispose();
         _followDisposables = null;
+        _followTarget      = this;
     }
     
 }
