@@ -24,6 +24,7 @@
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                            IsShowCloseButton="{TemplateBinding IsShowCloseButton}"
                             DialogSize="{TemplateBinding DialogSize}"/>
                     </atom:MotionActor>
                 </Panel>

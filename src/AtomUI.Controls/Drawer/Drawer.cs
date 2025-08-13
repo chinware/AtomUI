@@ -377,6 +377,7 @@ public class Drawer : Control,
             BindUtils.RelayBind(this, PlacementProperty, _container, DrawerContainer.PlacementProperty);
             BindUtils.RelayBind(this, TitleProperty, _container, DrawerContainer.TitleProperty);
             BindUtils.RelayBind(this, IsShowMaskProperty, _container, DrawerContainer.IsShowMaskProperty);
+            BindUtils.RelayBind(this, IsShowCloseButtonProperty, _container, DrawerContainer.IsShowCloseButtonProperty);
             BindUtils.RelayBind(this, IsMotionEnabledProperty, _container, DrawerContainer.IsMotionEnabledProperty);
             BindUtils.RelayBind(this, CloseWhenClickOnMaskProperty, _container,
                 DrawerContainer.CloseWhenClickOnMaskProperty);
