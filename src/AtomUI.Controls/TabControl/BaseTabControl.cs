@@ -105,12 +105,12 @@ public class BaseTabControl : AvaloniaTabControl,
     {
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabControl>(false);
         ItemsPanelProperty.OverrideDefaultValue<BaseTabControl>(DefaultPanel);
+        AffectsRender<BaseTabControl>(BorderBrushProperty);
     }
 
     public BaseTabControl()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

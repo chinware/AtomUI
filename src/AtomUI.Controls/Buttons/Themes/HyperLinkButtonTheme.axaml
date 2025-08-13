@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:HyperLinkButton}" TargetType="atom:HyperLinkButton">
 
         <Setter Property="Template">
@@ -34,6 +35,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
 
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ Border#PART_Frame">
@@ -226,7 +228,7 @@
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
             <Style Selector="^/template/ Border#PART_Frame">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultBg}}" />
+                <Setter Property="Background" Value="Transparent" />
             </Style>
 
             <Style Selector="^:pointerover">

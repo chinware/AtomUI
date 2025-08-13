@@ -194,10 +194,9 @@ public class Expander : AvaloniaExpander,
     public Expander()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
-    private MotionActorControl? _motionActor;
+    private BaseMotionActor? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
     private bool _animating;
@@ -224,7 +223,7 @@ public class Expander : AvaloniaExpander,
     {
         base.OnApplyTemplate(e);
         this.RunThemeResourceBindingActions();
-        _motionActor     = e.NameScope.Find<MotionActorControl>(ExpanderThemeConstants.ContentMotionActorPart);
+        _motionActor     = e.NameScope.Find<BaseMotionActor>(ExpanderThemeConstants.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(ExpanderThemeConstants.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderThemeConstants.ExpandButtonPart);
 
@@ -358,7 +357,7 @@ public class Expander : AvaloniaExpander,
         var motion = new ExpandMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
             new CubicEaseOut());
-        MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
+        motion.Run(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
             () => { _animating = false; });
     }
 
@@ -379,7 +378,7 @@ public class Expander : AvaloniaExpander,
         var motion = new CollapseMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
             new CubicEaseIn());
-        MotionInvoker.Invoke(_motionActor, motion, null, () =>
+        motion.Run(_motionActor, null, () =>
         {
             _motionActor.SetCurrentValue(IsVisibleProperty, false);
             _animating = false;

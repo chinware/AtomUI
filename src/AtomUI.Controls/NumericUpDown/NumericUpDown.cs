@@ -7,9 +7,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaNumericUpDown = Avalonia.Controls.NumericUpDown;
 
-public class NumericUpDown : AvaloniaNumericUpDown,
-                             IMotionAwareControl,
-                             IControlSharedTokenResourcesHost
+public class NumericUpDown : AvaloniaNumericUpDown, IMotionAwareControl, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -31,8 +29,8 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         TextBox.IsEnableClearButtonProperty.AddOwner<NumericUpDown>();
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NumericUpDown>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NumericUpDown>();
 
     public object? LeftAddOn
     {
@@ -89,6 +87,5 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     public NumericUpDown()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 }

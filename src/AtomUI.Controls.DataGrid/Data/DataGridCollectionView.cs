@@ -21,6 +21,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <summary>
     /// Since there's nothing in the un-cancelable event args that is mutable,
     /// just create one instance to be used universally.
+   
     /// </summary>
     private static readonly DataGridCurrentChangingEventArgs UnCancelableCurrentChangingEventArgs = new (false);
 
@@ -403,7 +404,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             {
                 if (IsGrouping && !_isUsingTemporaryGroup)
                 {
-                    Debug.Assert(_group != null);
                     return _group.ItemCount;
                 }
                 return Math.Max(0, Math.Min(PageSize, InternalCount - (_pageSize * PageIndex)));
@@ -414,7 +414,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 {
                     return _temporaryGroup.ItemCount;
                 }
-                Debug.Assert(_group != null);
                 return _group.ItemCount;
             }
             return InternalCount;
@@ -595,7 +594,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 return null;
             }
 
-            return RootGroup?.Items;
+            return RootGroup.Items;
         }
     }
 
@@ -670,7 +669,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// that verify the current filter if any
     /// </summary>
     public int ItemCount => InternalList.Count;
-    
     
     /// <summary>
     /// Gets a value indicating whether this view needs to be refreshed.
@@ -804,7 +802,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 ResetCurrencyValues(oldCurrentItem, oldIsCurrentBeforeFirst, oldIsCurrentAfterLast);
 
                 // send a notification that our collection has been updated
-                OnCollectionChanged(
+                HandleCollectionChanged(
                     new NotifyCollectionChangedEventArgs(
                         NotifyCollectionChangedAction.Reset));
 
@@ -977,12 +975,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// Gets the number of pages we currently have
     /// </summary>
     //TODO Paging
-    private int PageCount => (_pageSize > 0) ? Math.Max(1, (int)Math.Ceiling((double)ItemCount / _pageSize)) : 0;
+    private int PageCount => _pageSize > 0 ? Math.Max(1, (int)Math.Ceiling((double)ItemCount / _pageSize)) : 0;
 
     /// <summary>
     /// Gets the root of the Group that we expose to the user
     /// </summary>
-    private CollectionViewGroupRoot? RootGroup => _isUsingTemporaryGroup ? _temporaryGroup : _group;
+    private CollectionViewGroupRoot RootGroup => _isUsingTemporaryGroup ? _temporaryGroup : _group;
 
     /// <summary>
     /// Gets the SourceCollection as an IList
@@ -1122,7 +1120,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 _group.RemoveFromSubgroups(removeItem);
             }
 
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Remove,
                     removeItem,
@@ -1140,7 +1138,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         AdjustCurrencyForAdd(null, addIndex);
 
-        if (IsGrouping && _group != null)
+        if (IsGrouping)
         {
             _group.InsertSpecialItem(_group.Items.Count, newItem, false);
             if (PageSize > 0)
@@ -1150,7 +1148,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         }
 
         // fire collection changed.
-        OnCollectionChanged(
+        HandleCollectionChanged(
             new NotifyCollectionChangedEventArgs(
                 NotifyCollectionChangedAction.Add,
                 newItem,
@@ -1182,7 +1180,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             throw new InvalidOperationException(GetOperationNotAllowedText(nameof(CancelEdit), nameof(AddNew)));
         }
-        else if (!CanCancelEdit)
+        if (!CanCancelEdit)
         {
             throw new InvalidOperationException("CancelEdit is not supported for the current edit item.");
         }
@@ -1288,7 +1286,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             AdjustCurrencyForRemove(index);
 
             // fire collection changed.
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Remove,
                     newItem,
@@ -1302,7 +1300,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             {
                 int    internalIndex = ConvertToInternalIndex(addIndex);
                 object? addItem       = null;
-                if (IsGrouping && _group != null)
+                if (IsGrouping)
                 {
                     addItem = _temporaryGroup.LeafAt(internalIndex);
                     if (addItem != null)
@@ -1317,7 +1315,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
                 if (addItem != null)
                 {
-                    OnCollectionChanged(
+                    HandleCollectionChanged(
                         new NotifyCollectionChangedEventArgs(
                             NotifyCollectionChangedAction.Add,
                             addItem,
@@ -1364,7 +1362,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             // check whether to restore currency to the item being edited
             object? restoreCurrencyTo = (editItem == CurrentItem) ? editItem : null;
 
-            if (removeIndex >= 0 && IsGrouping && _group != null)
+            if (removeIndex >= 0 && IsGrouping)
             {
                 // we can't just call RemoveFromSubgroups, as the group name
                 // for the item may have changed during the edit.
@@ -1386,7 +1384,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 AdjustCurrencyForRemove(removeIndex);
 
                 // raise the remove event so we can next insert it into the correct place
-                OnCollectionChanged(
+                HandleCollectionChanged(
                     new NotifyCollectionChangedEventArgs(
                         NotifyCollectionChangedAction.Remove,
                         editItem,
@@ -1426,10 +1424,10 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 if (passedFilter && (PageSize == 0 ||
                                      (pageStartIndex <= leafIndex && nextPageStartIndex > leafIndex)))
                 {
-                    _group?.AddToSubgroups(editItem, false /*loading*/);
+                    _group.AddToSubgroups(editItem, false /*loading*/);
                     int addIndex = IndexOf(editItem);
                     AdjustCurrencyForEdit(restoreCurrencyTo, addIndex);
-                    OnCollectionChanged(
+                    HandleCollectionChanged(
                         new NotifyCollectionChangedEventArgs(
                             NotifyCollectionChangedAction.Add,
                             editItem,
@@ -1454,10 +1452,10 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                     object? addItem = _temporaryGroup.LeafAt(addIndex);
                     if (addItem != null)
                     {
-                        _group?.AddToSubgroups(addItem, false /*loading*/);
+                        _group.AddToSubgroups(addItem, false /*loading*/);
                         addIndex = IndexOf(addItem);
                         AdjustCurrencyForEdit(restoreCurrencyTo, addIndex);
-                        OnCollectionChanged(
+                        HandleCollectionChanged(
                             new NotifyCollectionChangedEventArgs(
                                 NotifyCollectionChangedAction.Add,
                                 addItem,
@@ -1472,7 +1470,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 if (addIndex >= 0)
                 {
                     AdjustCurrencyForEdit(restoreCurrencyTo, addIndex);
-                    OnCollectionChanged(
+                    HandleCollectionChanged(
                         new NotifyCollectionChangedEventArgs(
                             NotifyCollectionChangedAction.Add,
                             editItem,
@@ -1490,7 +1488,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                     if (insertedToPreviousPage || (!OnLastLocalPage && removeIndex >= 0))
                     {
                         AdjustCurrencyForEdit(restoreCurrencyTo, addIndex);
-                        OnCollectionChanged(
+                        HandleCollectionChanged(
                             new NotifyCollectionChangedEventArgs(
                                 NotifyCollectionChangedAction.Add,
                                 GetItemAt(addIndex),
@@ -1564,7 +1562,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             AdjustCurrencyForRemove(removeIndex);
 
             // raise the remove event so we can next insert it into the correct place
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Remove,
                     newItem,
@@ -1610,7 +1608,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                         }
                     }
 
-                    OnCollectionChanged(
+                    HandleCollectionChanged(
                         new NotifyCollectionChangedEventArgs(
                             NotifyCollectionChangedAction.Add,
                             newItem,
@@ -1641,7 +1639,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                         object? addItem = _temporaryGroup.LeafAt(addIndex);
                         if (addItem != null)
                         {
-                            _group?.AddToSubgroups(addItem, false /*loading*/);
+                            _group.AddToSubgroups(addItem, false /*loading*/);
                             addIndex = IndexOf(addItem);
 
                             // adjust currency to either the previous current item if possible
@@ -1658,7 +1656,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                                 }
                             }
 
-                            OnCollectionChanged(
+                            HandleCollectionChanged(
                                 new NotifyCollectionChangedEventArgs(
                                     NotifyCollectionChangedAction.Add,
                                     addItem,
@@ -1674,7 +1672,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 if (addIndex >= 0)
                 {
                     AdjustCurrencyForAdd(newItem, addIndex);
-                    OnCollectionChanged(
+                    HandleCollectionChanged(
                         new NotifyCollectionChangedEventArgs(
                             NotifyCollectionChangedAction.Add,
                             newItem,
@@ -1696,7 +1694,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                         if (insertedToPreviousPage || !OnLastLocalPage)
                         {
                             AdjustCurrencyForAdd(null, addIndex);
-                            OnCollectionChanged(
+                            HandleCollectionChanged(
                                 new NotifyCollectionChangedEventArgs(
                                     NotifyCollectionChangedAction.Add,
                                     GetItemAt(addIndex),
@@ -1850,7 +1848,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         if (IsGrouping)
         {
-            return RootGroup?.LeafAt(_isUsingTemporaryGroup ? ConvertToInternalIndex(index) : index);
+            return RootGroup.LeafAt(_isUsingTemporaryGroup ? ConvertToInternalIndex(index) : index);
         }
 
         if (IsAddingNew && UsesLocalArray && index == Count - 1)
@@ -2020,10 +2018,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             return MoveCurrentToPosition(index);
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     /// <summary>
@@ -2048,10 +2043,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             return MoveToPage(PageCount - 1);
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     /// <summary>
@@ -2280,7 +2272,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         // remove the item from the internal list
         _internalList.Remove(item);
 
-        if (IsGrouping && _group != null && item != null)
+        if (IsGrouping && item != null)
         {
             if (PageSize > 0)
             {
@@ -2298,7 +2290,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         AdjustCurrencyForRemove(index);
 
         // fire remove notification
-        OnCollectionChanged(
+        HandleCollectionChanged(
             new NotifyCollectionChangedEventArgs(
                 NotifyCollectionChangedAction.Remove,
                 item,
@@ -2321,7 +2313,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         if (replaceItem)
         {
             // we first need to add the item into the current group
-            if (IsGrouping && _group != null)
+            if (IsGrouping)
             {
                 object? newItem = _temporaryGroup.LeafAt((PageSize * (PageIndex + 1)) - 1);
                 if (newItem != null)
@@ -2331,7 +2323,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             }
 
             // fire the add notification
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Add,
                     GetItemAt(PageSize - 1),
@@ -2496,14 +2488,17 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     //TODO Paging
     private void CompletePageMove(int pageIndex)
     {
-        Debug.Assert(_pageIndex != pageIndex, "Unexpected _pageIndex == pageIndex");
+        if (_pageIndex == pageIndex)
+        {
+            return;
+        }
 
         // to see whether or not to fire an NotifyPropertyChanged
-        int    oldCount                = Count;
+        int     oldCount                = Count;
         object? oldCurrentItem          = CurrentItem;
-        int    oldCurrentPosition      = CurrentPosition;
-        bool   oldIsCurrentAfterLast   = IsCurrentAfterLast;
-        bool   oldIsCurrentBeforeFirst = IsCurrentBeforeFirst;
+        int     oldCurrentPosition      = CurrentPosition;
+        bool    oldIsCurrentAfterLast   = IsCurrentAfterLast;
+        bool    oldIsCurrentBeforeFirst = IsCurrentBeforeFirst;
 
         _pageIndex = pageIndex;
 
@@ -2533,7 +2528,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             NotifyPropertyChanged(nameof(Count));
         }
 
-        OnCollectionChanged(
+        HandleCollectionChanged(
             new NotifyCollectionChangedEventArgs(
                 NotifyCollectionChangedAction.Reset));
 
@@ -2556,10 +2551,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             return (_pageSize * PageIndex) + index;
         }
-        else
-        {
-            return index;
-        }
+        return index;
     }
 
     /// <summary>
@@ -2808,7 +2800,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     ///     The NotifyCollectionChangedEventArgs to be passed to the EventHandler
     /// </param>
     //TODO Paging
-    private void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
+    private void HandleCollectionChanged(NotifyCollectionChangedEventArgs args)
     {
         if (args == null)
         {
@@ -3001,7 +2993,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         // we should only use this method if we aren't paging
         Debug.Assert(PageSize == 0, "Unexpected PageSize != 0");
-        Debug.Assert(_group != null);
         
         _group.Clear();
         _group.Initialize();
@@ -3095,7 +3086,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     //TODO Paging
     private void PrepareGroupsForCurrentPage()
     {
-        Debug.Assert(_group != null);
         _group.Clear();
         _group.Initialize();
 
@@ -3107,7 +3097,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         _group.IsDataInGroupOrder = true;
         _group.ActiveComparer     = null;
 
-        if (GroupDescriptions != null && GroupDescriptions.Count > 0)
+        if (GroupDescriptions.Count > 0)
         {
             for (int num = 0, count = Count; num < count; ++num)
             {
@@ -3246,7 +3236,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             {
                 AdjustCurrencyForRemove(PageSize - 1);
 
-                OnCollectionChanged(
+                HandleCollectionChanged(
                     new NotifyCollectionChangedEventArgs(
                         NotifyCollectionChangedAction.Remove,
                         removeNotificationItem,
@@ -3274,7 +3264,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             AdjustCurrencyForAdd(null, addedIndex);
 
             // fire add notification
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Add,
                     addedItem,
@@ -3291,7 +3281,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             if (internalIndex < ConvertToInternalIndex(0))
             {
                 // fire add notification for item pushed in
-                OnCollectionChanged(
+                HandleCollectionChanged(
                     new NotifyCollectionChangedEventArgs(
                         NotifyCollectionChangedAction.Add,
                         GetItemAt(0),
@@ -3423,7 +3413,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             // fire remove notification 
             // if we removed from current page, remove from removeIndex,
             // if we removed from previous page, remove first item (index=0)
-            OnCollectionChanged(
+            HandleCollectionChanged(
                 new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Remove,
                     removedItem,
@@ -3457,7 +3447,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 }
 
                 // fire the add notification
-                OnCollectionChanged(
+                HandleCollectionChanged(
                     new NotifyCollectionChangedEventArgs(
                         NotifyCollectionChangedAction.Add,
                         GetItemAt(PageSize - 1),
@@ -3665,7 +3655,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         // reset currency values
         ResetCurrencyValues(oldCurrentItem, oldIsCurrentBeforeFirst, oldIsCurrentAfterLast);
 
-        OnCollectionChanged(
+        HandleCollectionChanged(
             new NotifyCollectionChangedEventArgs(
                 NotifyCollectionChangedAction.Reset));
 
@@ -4331,8 +4321,8 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 if (result == 0)
                 {
                     return index;
-                }
-                else if (result > 0)
+                } 
+                if (result > 0)
                 {
                     min = index + 1;
                 }

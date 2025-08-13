@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -80,9 +81,9 @@ public enum ArrowPosition
     RightEdgeAlignedBottom
 }
 
-public class ArrowDecoratedBox : ContentControl,
-                                 IArrowAwareShadowMaskInfoProvider,
-                                 IMotionAwareControl,
+public class ArrowDecoratedBox : ContentControl, 
+                                 IArrowAwareShadowMaskInfoProvider, 
+                                 IMotionAwareControl, 
                                  IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
@@ -125,11 +126,26 @@ public class ArrowDecoratedBox : ContentControl,
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<double> ArrowSizeProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
+    internal static readonly StyledProperty<double> ArrowSizeProperty =
+        AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowSize));
 
-    internal static readonly StyledProperty<Direction> ArrowDirectionProperty
-        = AvaloniaProperty.Register<ArrowDecoratedBox, Direction>(nameof(ArrowDirection));
+    internal static readonly StyledProperty<Direction> ArrowDirectionProperty = 
+        AvaloniaProperty.Register<ArrowDecoratedBox, Direction>(nameof(ArrowDirection));
+    
+    internal static readonly StyledProperty<double> ArrowOpacityProperty =
+        AvaloniaProperty.Register<ArrowDecoratedBox, double>(nameof(ArrowOpacity), 1.0);
+    
+    internal static readonly DirectProperty<ArrowDecoratedBox, Rect> ArrowIndicatorBoundsProperty =
+        AvaloniaProperty.RegisterDirect<ArrowDecoratedBox, Rect>(
+            nameof(ArrowIndicatorBounds),
+            o => o.ArrowIndicatorBounds,
+            (o, v) => o.ArrowIndicatorBounds = v);
+    
+    internal static readonly DirectProperty<ArrowDecoratedBox, Rect> ArrowIndicatorLayoutBoundsProperty =
+        AvaloniaProperty.RegisterDirect<ArrowDecoratedBox, Rect>(
+            nameof(ArrowIndicatorLayoutBounds),
+            o => o.ArrowIndicatorLayoutBounds,
+            (o, v) => o.ArrowIndicatorLayoutBounds = v);
 
     /// <summary>
     /// 箭头的大小
@@ -145,12 +161,33 @@ public class ArrowDecoratedBox : ContentControl,
         get => GetValue(ArrowDirectionProperty);
         set => SetValue(ArrowDirectionProperty, value);
     }
+    
+    internal double ArrowOpacity
+    {
+        get => GetValue(ArrowOpacityProperty);
+        set => SetValue(ArrowOpacityProperty, value);
+    }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;
+    
+    
+    private Rect _arrowIndicatorBounds;
 
-    public Rect ArrowIndicatorBounds { get; private set; }
+    internal Rect ArrowIndicatorBounds
+    {
+        get => _arrowIndicatorBounds;
+        set => SetAndRaise(ArrowIndicatorBoundsProperty, ref _arrowIndicatorBounds, value);
+    }
+    
+    private Rect _arrowIndicatorLayoutBounds;
+
+    internal Rect ArrowIndicatorLayoutBounds
+    {
+        get => _arrowIndicatorLayoutBounds;
+        set => SetAndRaise(ArrowIndicatorLayoutBoundsProperty, ref _arrowIndicatorLayoutBounds, value);
+    }
 
     #endregion
 
@@ -166,13 +203,12 @@ public class ArrowDecoratedBox : ContentControl,
     {
         AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty);
         AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty);
-        AffectsRender<ArrowDecoratedBox>(BackgroundProperty);
+        AffectsRender<ArrowDecoratedBox>(BackgroundProperty, ArrowOpacityProperty);
     }
 
     public ArrowDecoratedBox()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     public static Direction GetDirection(ArrowPosition arrowPosition)
@@ -224,6 +260,11 @@ public class ArrowDecoratedBox : ContentControl,
     public CornerRadius GetMaskCornerRadius()
     {
         return CornerRadius;
+    }
+
+    public IBrush? GetMaskBackground()
+    {
+        return Background;
     }
 
     public Rect GetMaskBounds()
@@ -420,6 +461,37 @@ public class ArrowDecoratedBox : ContentControl,
             ArrowIndicatorBounds = _arrowIndicator.Bounds;
         }
 
-        _arrowPlacementFlipped = false;
+        ArrowIndicatorLayoutBounds = _arrowIndicatorLayout.Bounds;
+        _arrowPlacementFlipped     = false;
+    }
+
+    ArrowPosition IArrowAwareShadowMaskInfoProvider.GetArrowPosition()
+    {
+        return ArrowPosition;
+    }
+    
+    bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
+    {
+        return IsShowArrow;
+    }
+
+    void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
+    {
+        ArrowOpacity = opacity;
+    }
+
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds()
+    {
+        return ArrowIndicatorBounds;
+    }
+    
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorLayoutBounds()
+    {
+        return ArrowIndicatorLayoutBounds;
+    }
+
+    ArrowDecoratedBox IArrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox()
+    {
+        return this;
     }
 }

@@ -7,9 +7,12 @@ using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input.Raw;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -33,6 +36,20 @@ public class MenuItem : AvaloniaMenuItem
 
     #endregion
 
+    #region 公共事件定义
+
+    public static readonly RoutedEvent<RoutedEventArgs> IsCheckStateChangedEvent = 
+        RoutedEvent.Register<MenuItem, RoutedEventArgs>(nameof(IsCheckStateChanged), RoutingStrategies.Bubble);
+    
+    
+    public event EventHandler<RoutedEventArgs>? IsCheckStateChanged
+    {
+        add => AddHandler(IsCheckStateChangedEvent, value);
+        remove => RemoveHandler(IsCheckStateChangedEvent, value);
+    }
+    
+    #endregion
+
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
@@ -46,10 +63,13 @@ public class MenuItem : AvaloniaMenuItem
 
     #endregion
 
+    internal PopupRoot? SubmenuPopupRoot => _popup?.Host as PopupRoot;
+    
     private Border? _itemDecorator;
     private ContentPresenter? _headerPresenterPart;
     private RadioButton? _radioButton;
     private CheckBox? _checkBox;
+    private Popup? _popup;
     
     static MenuItem()
     {
@@ -64,8 +84,7 @@ public class MenuItem : AvaloniaMenuItem
         {
             UpdatePseudoClasses();
         }
-        
-        if (change.Property == IconProperty)
+        else if (change.Property == IconProperty)
         {
             if (change.OldValue is Icon oldIcon)
             {
@@ -78,10 +97,13 @@ public class MenuItem : AvaloniaMenuItem
                 newIcon.SetTemplatedParent(this);
             }
         }
-
-        if (change.Property == IsMotionEnabledProperty)
+        else if (change.Property == IsMotionEnabledProperty)
         {
             ConfigureTransitions();
+        }
+        else if (change.Property == IsCheckedProperty)
+        {
+            RaiseEvent(new RoutedEventArgs(IsCheckStateChangedEvent, this));
         }
     }
 
@@ -108,6 +130,11 @@ public class MenuItem : AvaloniaMenuItem
         _headerPresenterPart = e.NameScope.Find<ContentPresenter>(TopLevelMenuItemThemeConstants.HeaderPresenterPart);
         _radioButton         = e.NameScope.Find<RadioButton>(MenuItemThemeConstants.ToggleRadioPart);
         _checkBox            = e.NameScope.Find<CheckBox>(MenuItemThemeConstants.ToggleCheckboxPart);
+        _popup               = e.NameScope.Find<Popup>(MenuItemThemeConstants.PopupPart);
+        if (_popup != null)
+        {
+            _popup.ClickHidePredicate = MenuPopupClosePredicate;
+        }
         if (_radioButton != null)
         {
             _radioButton.IsCheckedChanged += (sender, args) =>
@@ -131,6 +158,35 @@ public class MenuItem : AvaloniaMenuItem
         }
         UpdatePseudoClasses();
         ConfigureTransitions();
+    }
+
+    private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        var popupRoots = CollectPopupRoots(this);
+        
+        return !popupRoots.Contains(args.Root);
+    }
+
+    internal static HashSet<PopupRoot> CollectPopupRoots(MenuItem menuItem)
+    {
+        var popupRoots = new HashSet<PopupRoot>();
+        if (menuItem.IsSubMenuOpen)
+        {
+            if (menuItem.SubmenuPopupRoot != null)
+            {
+                popupRoots.Add(menuItem.SubmenuPopupRoot);
+            }
+        }
+
+        foreach (var child in menuItem.Items)
+        {
+            if (child is MenuItem childMenuItem)
+            {
+                var childPopupRoots = CollectPopupRoots(childMenuItem);
+                popupRoots.UnionWith(childPopupRoots);
+            }
+        }
+        return popupRoots;
     }
     
     private void ConfigureTransitions()

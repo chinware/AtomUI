@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Avatar}" TargetType="atom:Avatar">
         <Setter Property="Template">
             <ControlTemplate>
@@ -44,6 +45,7 @@
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:AvatarTokenKey.AvatarColor}}" />

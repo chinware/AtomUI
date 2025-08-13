@@ -1,9 +1,11 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
-                                     VerticalAlignment="Center" />
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
+                                           VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:TimelineItem}" TargetType="atom:TimelineItem">
         <Setter Property="Template">
             <ControlTemplate>
@@ -60,36 +62,40 @@
                 <Setter Property="Padding"
                         Value="{DynamicResource {x:Static atom:TimelineTokenKey.ItemPaddingBottomLG}}" />
             </Style>
-            
+
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="Padding"
                         Value="{DynamicResource {x:Static atom:TimelineTokenKey.ItemPaddingBottomLG}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Mode=Left]">
             <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorLeftModeMargin}}" />
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorLeftModeMargin}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Mode=Right]">
             <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorRightModeMargin}}" />
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorRightModeMargin}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Mode=Alternate]">
             <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorMiddleModeMargin}}" />
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorMiddleModeMargin}}" />
             </Style>
         </Style>
 
         <Style Selector="^[IsLabelLayout=True]">
             <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorMiddleModeMargin}}" />
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorMiddleModeMargin}}" />
             </Style>
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>

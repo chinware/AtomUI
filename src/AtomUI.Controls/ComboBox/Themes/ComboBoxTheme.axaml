@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ComboBox}" TargetType="atom:ComboBox">
         <Setter Property="Template">
             <ControlTemplate>
@@ -59,11 +60,14 @@
                     <atom:Popup Name="PART_Popup"
                            WindowManagerAddShadowHint="False"
                            IsLightDismissEnabled="False"
+                           IsDetectMouseClickEnabled="True"
                            Placement="BottomEdgeAlignedLeft"
                            MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                           IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
+                           IsMotionAwareOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border
-                            Name="{x:Static atom:ComboBoxThemeConstants.PopupFramePart}">
+                            Name="{x:Static atom:ComboBoxThemeConstants.PopupFramePart}"
+                            HorizontalAlignment="Stretch"
+                            Width="{TemplateBinding EffectivePopupWidth}">
                             <atom:MenuScrollViewer>
                                 <ItemsPresenter
                                     Name="{x:Static atom:ComboBoxThemeConstants.ItemsPresenterPart}"
@@ -76,6 +80,11 @@
                 </Panel>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
+        
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}"/>
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}"/>
@@ -94,7 +103,7 @@
             <Setter Property="MaskShadows" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBoxShadows}}"/>
         </Style>
         <Style Selector="^ /template/ Border#PART_PopupFrame">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}"/>
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBorderRadius}}"/>
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}"/>
         </Style>

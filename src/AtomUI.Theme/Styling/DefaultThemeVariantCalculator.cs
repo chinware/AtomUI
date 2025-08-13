@@ -7,8 +7,8 @@ namespace AtomUI.Theme.Styling;
 
 public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
 {
-    public const string ID = "DefaultAlgorithm";
-
+    public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Default;
+    
     public DefaultThemeVariantCalculator()
         : base(null)
     {

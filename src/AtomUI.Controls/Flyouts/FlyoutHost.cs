@@ -207,7 +207,7 @@ public class FlyoutHost : Control,
     public FlyoutHost()
     {
         _flyoutStateHelper = new FlyoutStateHelper();
-        this.BindMotionProperties();
+        this.ConfigureMotionBindingStyle();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

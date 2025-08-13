@@ -3,6 +3,7 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -32,6 +33,7 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
 
     private Rect? _originRect;
     private Button? _searchButton;
+    internal SearchEdit? OwningSearchEdit { get; set; }
 
     protected override void NotifyAddOnBorderInfoCalculated()
     {
@@ -63,6 +65,12 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
         {
             BindUtils.RelayBind(this, RightAddOnBorderThicknessProperty, _searchButton, BorderThicknessProperty);
             BindUtils.RelayBind(this, RightAddOnCornerRadiusProperty, _searchButton, CornerRadiusProperty);
+            _searchButton.Click += HandleSearchButtonClick;
         }
+    }
+
+    private void HandleSearchButtonClick(object? sender, RoutedEventArgs e)
+    {
+        OwningSearchEdit?.NotifySearchButtonClicked();
     }
 }

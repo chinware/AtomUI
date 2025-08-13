@@ -1,14 +1,17 @@
-﻿namespace AtomUI.Theme;
+﻿using System.Globalization;
+using AtomUI.Theme.Language;
+using AtomUI.Utils;
+using Avalonia.Styling;
+
+namespace AtomUI.Theme;
 
 public interface IThemeManager
 {
+    public const string DEFAULT_THEME_ID = "DaybreakBlue";
+    public static readonly LanguageVariant DEFAULT_LANGUAGE = LanguageVariant.zh_CN;
+    
     public IReadOnlyCollection<ITheme> AvailableThemes { get; }
     public ITheme? ActivatedTheme { get; }
 
-    public ITheme LoadTheme(string id);
-    public void UnLoadTheme(string id);
-
-    public void SetActiveTheme(string id);
-
-    public void ScanThemes();
+    public void SetActiveTheme(ThemeVariant themeVariant);
 }

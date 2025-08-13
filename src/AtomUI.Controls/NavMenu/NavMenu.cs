@@ -32,16 +32,14 @@ public class NavMenuItemClickEventArgs : RoutedEventArgs
     public INavMenuItem NavMenuItem { get; }
 }
 
-[PseudoClasses(InlineModePC, HorizontalModePC, VerticalModePC)]
-public class NavMenu : NavMenuBase,
-                       IResourceBindingManager
+[PseudoClasses(
+    NavMenuPseudoClass.InlineMode,
+    NavMenuPseudoClass.HorizontalMode,
+    NavMenuPseudoClass.VerticalMode,
+    NavMenuPseudoClass.DarkStyle,
+    NavMenuPseudoClass.LightStyle)]
+public class NavMenu : NavMenuBase, IResourceBindingManager
 {
-    public const string InlineModePC = ":inline-mode";
-    public const string HorizontalModePC = ":horizontal-mode";
-    public const string VerticalModePC = ":vertical-mode";
-    public const string DarkStylePC = ":dark";
-    public const string LightStylePC = ":light";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<NavMenuMode> ModeProperty =
@@ -122,6 +120,7 @@ public class NavMenu : NavMenuBase,
             KeyboardNavigationMode.Once);
         AutomationProperties.AccessibilityViewProperty.OverrideDefaultValue<NavMenu>(AccessibilityView.Control);
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<NavMenu>(false);
     }
 
     private CompositeDisposable? _resourceBindingsDisposable;
@@ -144,7 +143,6 @@ public class NavMenu : NavMenuBase,
         {
             return;
         }
-
         foreach (var i in ((INavMenu)this).SubItems)
         {
             i.Close();
@@ -264,11 +262,11 @@ public class NavMenu : NavMenuBase,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(HorizontalModePC, Mode == NavMenuMode.Horizontal);
-        PseudoClasses.Set(VerticalModePC, Mode == NavMenuMode.Vertical);
-        PseudoClasses.Set(InlineModePC, Mode == NavMenuMode.Inline);
-        PseudoClasses.Set(DarkStylePC, IsDarkStyle);
-        PseudoClasses.Set(LightStylePC, !IsDarkStyle);
+        PseudoClasses.Set(NavMenuPseudoClass.HorizontalMode, Mode == NavMenuMode.Horizontal);
+        PseudoClasses.Set(NavMenuPseudoClass.VerticalMode, Mode == NavMenuMode.Vertical);
+        PseudoClasses.Set(NavMenuPseudoClass.InlineMode, Mode == NavMenuMode.Inline);
+        PseudoClasses.Set(NavMenuPseudoClass.DarkStyle, IsDarkStyle);
+        PseudoClasses.Set(NavMenuPseudoClass.LightStyle, !IsDarkStyle);
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

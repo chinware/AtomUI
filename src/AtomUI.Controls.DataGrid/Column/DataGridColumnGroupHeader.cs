@@ -1,5 +1,4 @@
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -22,6 +21,9 @@ internal class DataGridColumnGroupHeader : TemplatedControl
     
     public static readonly StyledProperty<VerticalAlignment> VerticalContentAlignmentProperty =
         ContentPresenter.VerticalContentAlignmentProperty.AddOwner<DataGridColumnGroupHeader>();
+    
+    public static readonly StyledProperty<bool> IsFrozenProperty =
+        AvaloniaProperty.Register<DataGridColumnGroupHeader, bool>(nameof(IsFrozen));
     
     public object? Header
     {
@@ -46,6 +48,12 @@ internal class DataGridColumnGroupHeader : TemplatedControl
         get => GetValue(VerticalContentAlignmentProperty);
         set => SetValue(VerticalContentAlignmentProperty, value);
     }
+    
+    public bool IsFrozen
+    {
+        get => GetValue(IsFrozenProperty);
+        set => SetValue(IsFrozenProperty, value);
+    }
 
     #endregion
 
@@ -54,7 +62,6 @@ internal class DataGridColumnGroupHeader : TemplatedControl
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridColumnGroupHeader>();
     
-    
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -62,4 +69,6 @@ internal class DataGridColumnGroupHeader : TemplatedControl
     }
 
     #endregion
+    
+    internal DataGridColumnGroupItem? OwningGroupItem { get; set; }
 }

@@ -41,11 +41,11 @@ public class OptionButtonGroup : SelectingItemsControl,
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButtonGroup>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButtonGroup>();
 
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButtonGroup>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButtonGroup>();
 
     public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
         RoutedEvent.Register<OptionButtonGroup, OptionCheckedChangedEventArgs>(
@@ -138,7 +138,6 @@ public class OptionButtonGroup : SelectingItemsControl,
     public OptionButtonGroup()
     {
         this.RegisterResources();
-        this.BindWaveSpiritProperties();
         if (this is IChildIndexProvider childIndexProvider)
         {
             childIndexProvider.ChildIndexChanged += (sender, args) => { UpdateOptionButtonsPosition(); };

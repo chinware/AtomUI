@@ -2,7 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themes="using:AtomUI.Controls.Themes">
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ComboBoxSpinnerInnerBox}" TargetType="atom:ComboBoxSpinnerInnerBox">
         <ControlTheme.BasedOn>
             <themes:AddOnDecoratedInnerBoxTheme TargetType="atom:ComboBoxSpinnerInnerBox" />
@@ -70,6 +71,7 @@
         </Setter>
 
         <Style Selector="^:is(atom|ComboBoxSpinnerInnerBox)">
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="SpinnerBorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
             <Setter Property="SpinnerHandleWidthToken" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
             
@@ -84,6 +86,10 @@
                         </Style>
                     </Style>
                 </Style>
+            </Style>
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             </Style>
         </Style>
     </ControlTheme>

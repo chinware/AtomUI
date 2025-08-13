@@ -293,9 +293,10 @@ public class LoadingIndicator : TemplatedControl,
 
     private Rect GetIndicatorRect()
     {
+        var size          = DesiredSize.Deflate(Margin);
         var indicatorSize = _customIndicatorIconPresenter?.IconWidth ?? 0d;
-        var offsetX       = (DesiredSize.Width - indicatorSize) / 2;
-        var offsetY       = (DesiredSize.Height - indicatorSize) / 2;
+        var offsetX       = (size.Width - indicatorSize) / 2;
+        var offsetY       = (size.Height - indicatorSize) / 2;
         if (IsShowLoadingMsg && LoadingMsg is not null)
         {
             offsetY -= _loadingText!.DesiredSize.Height / 2;

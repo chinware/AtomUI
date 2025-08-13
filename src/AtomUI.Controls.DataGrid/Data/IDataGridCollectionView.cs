@@ -54,7 +54,9 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     //ObservableCollection<GroupDescription> GroupDescriptions { get; }
 
     bool IsGrouping { get; }
+    
     int GroupingDepth { get; }
+    
     string GetGroupingPropertyNameAtDepth(int level);
     
     /// <summary>Gets the top-level groups.</summary>
@@ -113,6 +115,43 @@ public interface IDataGridCollectionView : IEnumerable, INotifyCollectionChanged
     /// <returns>true if the resulting <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> is an item in the view; otherwise, false.</returns>
     /// <param name="position">The index to set the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> to.</param>
     bool MoveCurrentToPosition(int position);
+
+    /// <summary>
+    /// Add a new item to the underlying collection.  Returns the new item.
+    /// After calling AddNew and changing the new item as desired, either
+    /// CommitNew or CancelNew" should be called to complete the transaction.
+    /// </summary>
+    /// <returns>The new item we are adding</returns>
+    object AddNew();
+
+    /// <summary>
+    /// Complete the transaction started by AddNew. The new
+    /// item is removed from the collection.
+    /// </summary>
+    void CancelNew();
+    
+    /// <summary>
+    /// Complete the transaction started by AddNew. We follow the WPF
+    /// convention in that the view's sort, filter, and paging
+    /// specifications (if any) are applied to the new item.
+    /// </summary>
+    void CommitNew();
+
+    /// <summary>
+    /// Remove the given item from the underlying collection. It
+    /// needs to be in the current filtered, sorted, and paged view
+    /// to call 
+    /// </summary>
+    /// <param name="item">Item we want to remove</param>
+    void Remove(object? item);
+    
+    /// <summary>
+    /// Remove the item at the given index from the underlying collection.
+    /// The index is interpreted with respect to the view (filtered, sorted,
+    /// and paged list).
+    /// </summary>
+    /// <param name="index">Index of the item we want to remove</param>
+    void RemoveAt(int index);
 
     /// <summary>Occurs before the current item changes.</summary>
     event EventHandler<DataGridCurrentChangingEventArgs>? CurrentChanging;

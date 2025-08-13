@@ -385,7 +385,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         GroupTitleColor             = SharedToken.ColorTextDescription;
         ItemSelectedColor           = SharedToken.ColorPrimary;
         HorizontalItemSelectedColor = SharedToken.ColorPrimary;
-        ItemBg                      = SharedToken.ColorBgContainer;
+        ItemBg                      = SharedToken.ColorTransparent;
         ItemHoverBg                 = SharedToken.ColorBgTextHover;
         ItemActiveBg                = SharedToken.ColorFillContent;
         SubMenuItemBg               = SharedToken.ColorFillAlter;

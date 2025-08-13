@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Themes;
+﻿using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -6,8 +6,6 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -15,7 +13,6 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(SegmentedThemeConstants.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Segmented : SelectingItemsControl,
                          IMotionAwareControl,
                          IControlSharedTokenResourcesHost
@@ -116,12 +113,12 @@ public class Segmented : SelectingItemsControl,
             SelectedThumbBoxShadowsProperty,
             SelectedThumbSizeProperty, 
             SelectedThumbPosProperty);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<Segmented>(false);
     }
 
     public Segmented()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         SelectionChanged += HandleSelectionChanged;
         SelectionMode    =  SelectionMode.Single;
     }
@@ -149,8 +146,10 @@ public class Segmented : SelectingItemsControl,
         {
             SelectedIndex = 0;
         }
-
+        
         SetupSelectedThumbRect();
+        ConfigureTransitions();
+        this.DisableTransitions();
     }
     
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -165,6 +164,7 @@ public class Segmented : SelectingItemsControl,
     {
         base.OnSizeChanged(e);
         SetupSelectedThumbRect();
+        this.EnableTransitions();
     }
 
     private void SetupSelectedThumbRect()
@@ -176,10 +176,9 @@ public class Segmented : SelectingItemsControl,
             {
                 var offset    = segmentedItem.TranslatePoint(new Point(0, 0), this) ?? default;
                 var offsetX   = offset.X;
-                var offsetY   = (DesiredSize.Height - segmentedItem.DesiredSize.Height) / 2;
-                var targetPos = new Point(offsetX, offsetY);
+                var targetPos = new Point(offsetX, offset.Y);
                 SelectedThumbPos  = targetPos;
-                SelectedThumbSize = segmentedItem.Bounds.Size;
+                SelectedThumbSize = segmentedItem.DesiredSize;
             }
         }
     }
@@ -232,7 +231,7 @@ public class Segmented : SelectingItemsControl,
 
     public sealed override void Render(DrawingContext context)
     {
-        context.DrawRectangle(Background, null, new RoundedRect(new Rect(new Point(0, 0), Bounds.Size), CornerRadius));
+        context.DrawRectangle(Background, null, new RoundedRect(new Rect(DesiredSize.Deflate(Margin)), CornerRadius));
         context.DrawRectangle(SelectedThumbBg, null,
             new RoundedRect(new Rect(SelectedThumbPos, SelectedThumbSize), SelectedThumbCornerRadius),
             SelectedThumbBoxShadows);

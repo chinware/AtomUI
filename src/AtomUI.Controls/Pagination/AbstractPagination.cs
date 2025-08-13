@@ -1,10 +1,9 @@
 using System.Reactive.Disposables;
 using AtomUI.Theme;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
+using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
@@ -18,32 +17,39 @@ public abstract class AbstractPagination : TemplatedControl,
     
     #region 公共属性定义
     
+    public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
+        AvaloniaProperty.Register<AbstractPagination, bool>(nameof(IsHideOnSinglePage));
+    
     public static readonly StyledProperty<PaginationAlign> AlignProperty =
         AvaloniaProperty.Register<AbstractPagination, PaginationAlign>(nameof(PaginationAlign));
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AbstractPagination>();
     
-    public static readonly DirectProperty<AbstractPagination, int> CurrentPageProperty =
-        AvaloniaProperty.RegisterDirect<AbstractPagination, int>(nameof(CurrentPage),
-            o => o.CurrentPage,
-            (o, v) => o.CurrentPage = v,
-            unsetValue: DefaultCurrentPage);
+    public static readonly StyledProperty<int> CurrentPageProperty =
+        AvaloniaProperty.Register<AbstractPagination, int>(nameof(CurrentPage), DefaultCurrentPage,
+            validate:v => v > 0);
     
-    public static readonly DirectProperty<AbstractPagination, int> PageSizeProperty =
-        AvaloniaProperty.RegisterDirect<AbstractPagination, int>(nameof(PageSize),
-            o => o.PageSize,
-            (o, v) => o.PageSize = v,
-            unsetValue: DefaultPageSize,
-            enableDataValidation:true);
+    public static readonly StyledProperty<int> PageSizeProperty =
+        AvaloniaProperty.Register<AbstractPagination, int>(nameof(PageSize), DefaultPageSize,
+            validate:PageSizeValidator);
     
-    public static readonly DirectProperty<AbstractPagination, long> TotalProperty =
-        AvaloniaProperty.RegisterDirect<AbstractPagination, long>(nameof(Total),
-            o => o.Total,
-            (o, v) => o.Total = v);
+    public static readonly StyledProperty<int> TotalProperty =
+        AvaloniaProperty.Register<AbstractPagination, int>(nameof(Total), validate:v => v >= 0);
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractPagination>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractPagination>();
+    
+    public static readonly DirectProperty<AbstractPagination, int> PageCountProperty =
+        AvaloniaProperty.RegisterDirect<AbstractPagination, int>(nameof(PageCount),
+            o => o.PageCount,
+            (o, v) => o.PageCount = v);
+    
+    public bool IsHideOnSinglePage
+    {
+        get => GetValue(IsHideOnSinglePageProperty);
+        set => SetValue(IsHideOnSinglePageProperty, value);
+    }
     
     public PaginationAlign Align
     {
@@ -57,38 +63,36 @@ public abstract class AbstractPagination : TemplatedControl,
         set => SetValue(SizeTypeProperty, value);
     }
     
-    private protected int _currentPage = DefaultCurrentPage;
     public int CurrentPage
     {
-        get => _currentPage;
-        set => SetAndRaise(CurrentPageProperty, ref _currentPage, value);
+        get => GetValue(CurrentPageProperty);
+        set => SetValue(CurrentPageProperty, value);
     }
     
-    private protected int _pageSize = DefaultPageSize;
     public int PageSize
     {
-        get => _pageSize;
-        set
-        {
-            if (!new[] { 10, 20, 50, 100 }.Contains(value))
-            {
-                throw new ArgumentException("PageSize only allow: 10, 20, 50, 100");
-            }
-            SetAndRaise(PageSizeProperty, ref _pageSize, value);
-        }
+        get => GetValue(PageSizeProperty);
+        set => SetValue(PageSizeProperty, value);
     }
     
-    private protected long _total;
-    public long Total
+    public int Total
     {
-        get => _total;
-        set => SetAndRaise(TotalProperty, ref _total, value);
+        get => GetValue(TotalProperty);
+        set => SetValue(TotalProperty, value);
     }
-
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    private int _pageCount;
+    
+    public int PageCount
+    {
+        get => _pageCount;
+        internal set => SetAndRaise(PageCountProperty, ref _pageCount, value);
     }
     
     #endregion
@@ -98,6 +102,13 @@ public abstract class AbstractPagination : TemplatedControl,
     #endregion
     
     #region 内部属性定义
+
+    private static bool PageSizeValidator(int pageSize)
+    {
+        int[] allowPageSizes = [10, 20, 50, 100];
+        return allowPageSizes.Contains(pageSize);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
 
     CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
@@ -106,28 +117,39 @@ public abstract class AbstractPagination : TemplatedControl,
         set => _resourceBindingsDisposable = value;
     }
     private CompositeDisposable? _resourceBindingsDisposable;
+    
     #endregion
+    
+    protected bool TemplateConfigured = false;
     
     static AbstractPagination()
     {
         AffectsMeasure<AbstractPagination>(SizeTypeProperty);
     }
-    
-    public AbstractPagination()
-    {
-        this.BindMotionProperties();
-    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (TemplateConfigured)
         {
             if (change.Property == TotalProperty ||
                 change.Property == PageSizeProperty ||
                 change.Property == CurrentPageProperty)
             {
                 HandlePageConditionChanged();
+            }
+        }
+
+        if (change.Property == IsHideOnSinglePageProperty ||
+            change.Property == PageCountProperty)
+        {
+            if (IsHideOnSinglePage)
+            {
+                SetValue(IsVisibleProperty, PageCount > 1, BindingPriority.Template);
+            }
+            else
+            {
+                SetValue(IsVisibleProperty, true, BindingPriority.Template);
             }
         }
     }
@@ -138,7 +160,8 @@ public abstract class AbstractPagination : TemplatedControl,
         var pageSize    = PageSize <= 0 ? DefaultPageSize : PageSize;
         var pageCount   = (int)Math.Ceiling(total / (double)pageSize);
         var currentPage = Math.Max(1, Math.Min(CurrentPage, pageCount));
-        _currentPage = currentPage;
+        CurrentPage = currentPage;
+        PageCount = pageCount;
         NotifyPageConditionChanged(currentPage, pageCount, pageSize, total);
     }
 

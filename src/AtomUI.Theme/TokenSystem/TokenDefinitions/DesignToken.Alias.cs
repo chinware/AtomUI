@@ -441,6 +441,46 @@ public partial class DesignToken
     /// 控制元素外边距，最大尺寸。
     /// </summary>
     public Thickness MarginXXL { get; set; }
+    
+    /// <summary>
+    /// 布局元素之间间隔，最小尺寸。
+    /// </summary>
+    public double SpacingXXS { get; set; }
+
+    /// <summary>
+    /// 布局元素之间间隔，小尺寸。
+    /// </summary>
+    public double SpacingXS { get; set; }
+
+    /// <summary>
+    /// 布局元素之间间隔，中小尺寸。
+    /// </summary>
+    public double SpacingSM { get; set; }
+
+    /// <summary>
+    /// 布局元素之间间隔，中等尺寸。
+    /// </summary>
+    public double Spacing { get; set; }
+
+    /// <summary>
+    /// 布局元素之间间隔，中大尺寸。
+    /// </summary>
+    public double SpacingMD { get; set; }
+
+    /// <summary>
+    /// 布局元素之间间隔，大尺寸。
+    /// </summary>
+    public double SpacingLG { get; set; }
+    
+    /// <summary>
+    /// 布局元素之间间隔，超大尺寸。
+    /// </summary>
+    public double SpacingXL { get; set; }
+    
+    /// <summary>
+    /// 布局元素之间间隔，最大尺寸。
+    /// </summary>
+    public double SpacingXXL { get; set; }
 
     // =============== Legacy: should be remove ===============
     /// <summary>

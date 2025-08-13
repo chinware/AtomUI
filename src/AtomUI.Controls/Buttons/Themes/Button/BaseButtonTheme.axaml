@@ -2,7 +2,8 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               x:Class="AtomUI.Controls.Themes.BaseButtonTheme"
-              TargetType="atom:Button">
+              TargetType="atom:Button"
+              x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:Button">
             <Border Name="{x:Static atom:ButtonThemeConstants.FramePart}"
@@ -48,6 +49,8 @@
         <Setter Property="PrimaryShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryShadow}}" />
         <Setter Property="DangerShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DangerShadow}}" />
         <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="IsWaveSpiritEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
         
         <Style Selector="^/template/ Border#PART_Frame">
             <Setter Property="Cursor" Value="Hand" />

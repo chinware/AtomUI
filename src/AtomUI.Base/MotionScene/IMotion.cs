@@ -21,7 +21,7 @@ public interface IMotion
     FillMode PropertyValueFillMode { get; }
     MotionSpiritType SpiritType { get; set; }
 
-    void Run(MotionActorControl actor,
+    void Run(BaseMotionActor actor,
              Action? aboutToStart = null,
              Action? completedAction = null);
 }

@@ -55,6 +55,7 @@
     <Style Selector="^:is(atom|InfoPickerInput)">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="MarginToAnchor" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXXS}}" />
         <Setter Property="InputTextBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         

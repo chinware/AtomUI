@@ -2,6 +2,7 @@
 using System.Reflection;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
 
@@ -10,22 +11,15 @@ namespace AtomUI.Theme;
 /// <summary>
 /// 主要是生成主题资源，绘制相关的管理不在这里，因为是公用的所以放在 ThemeManager 里面
 /// </summary>
-public class Theme : ITheme
+internal class Theme : AvaloniaObject, ITheme
 {
-    public static readonly IList<string> SUPPORTED_ALGORITHMS;
-
-    private string _id;
-    private string? _loadErrorMsg;
-    private ThemeVariant _themeVariant;
-    private DesignToken _sharedToken;
-
     protected bool Loaded;
     protected bool LoadedStatus = true;
     protected bool Activated;
-    protected IThemeVariantCalculator? ThemeVariantCalculator;
-    protected ThemeDefinition? ThemeDefinition;
-    protected ResourceDictionary ResourceDictionary;
-    protected Dictionary<string, IControlDesignToken> ControlTokens;
+
+    protected readonly ResourceDictionary ResourceDictionary;
+    protected readonly Dictionary<string, IControlDesignToken> ControlTokens;
+    internal ThemeDefinition ThemeDefinition;
 
     public string DefinitionFilePath { get; }
 
@@ -38,137 +32,71 @@ public class Theme : ITheme
     internal ResourceDictionary ThemeResource => ResourceDictionary;
     public bool IsDarkMode { get; protected set; }
     public bool IsActivated => Activated;
+    public bool IsBuiltIn => _isBuiltIn;
+
+    // 当 request algorithms 跟定义文件加载的一样的时候就是 primary theme
+    public bool IsPrimary => _isPrimary;
 
     public DesignToken SharedToken => _sharedToken;
+    public IList<ThemeAlgorithm> Algorithms => _algorithms;
+    
+    private string _id;
+    private string? _loadErrorMsg;
+    private ThemeVariant _themeVariant;
+    private DesignToken _sharedToken;
+    private bool _isBuiltIn;
+    private bool _isPrimary;
+    private IList<ThemeAlgorithm> _algorithms;
+    private ThemeManager _themeManager;
 
-    static Theme()
+    public Theme(ThemeManager themeManager, string id, string defFilePath, ISet<ThemeAlgorithm> requestAlgorithms, bool isBuiltIn = false)
     {
-        SUPPORTED_ALGORITHMS = new List<string>
+        _id                = id;
+        _isBuiltIn         = isBuiltIn;
+        _sharedToken       = new DesignToken();
+        _themeVariant      = new ThemeVariant(id, null);
+        _algorithms        = new List<ThemeAlgorithm>();
+        DefinitionFilePath = defFilePath;
+        ResourceDictionary = new ResourceDictionary();
+        ControlTokens      = new Dictionary<string, IControlDesignToken>();
+        ThemeDefinition    = new ThemeDefinition(_id);
+        _algorithms.Add(ThemeAlgorithm.Default);
+        if (requestAlgorithms.Contains(ThemeAlgorithm.Dark))
         {
-            DefaultThemeVariantCalculator.ID,
-            DarkThemeVariantCalculator.ID,
-            CompactThemeVariantCalculator.ID
-        };
+            _algorithms.Add(ThemeAlgorithm.Dark);
+        }
+
+        if (requestAlgorithms.Contains(ThemeAlgorithm.Compact))
+        {
+            _algorithms.Add(ThemeAlgorithm.Compact);
+        }
+
+        _themeVariant = BuildThemeVariant(id, _algorithms);
+        _themeManager = themeManager;
     }
 
-    public Theme(string id, string defFilePath)
-    {
-        _id                                               = id;
-        DefinitionFilePath                                = defFilePath;
-        _themeVariant                                     = ThemeVariant.Default;
-        ResourceDictionary                                = new ResourceDictionary();
-        (ResourceDictionary as IThemeVariantProvider).Key = _themeVariant;
-        _sharedToken                                      = new DesignToken();
-        ControlTokens                                     = new Dictionary<string, IControlDesignToken>();
-    }
-
-    public List<string> ThemeResourceKeys
-    {
-        get { return ResourceDictionary.Keys.Select(s => s.ToString()!).ToList(); }
-    }
+    public List<string> ThemeResourceKeys => ResourceDictionary.Keys.Select(s => s.ToString()!).ToList();
 
     internal void Load()
     {
         try
         {
-            ThemeDefinition = new ThemeDefinition(_id);
+            if (Loaded)
+            {
+                throw new InvalidOperationException($"Theme: {_id} already loaded");
+            }
             NotifyLoadThemeDef();
-            var themeDef           = ThemeDefinition;
-            var sharedTokenConfig  = themeDef.SharedTokens;
-            var controlTokenConfig = themeDef.ControlTokens;
-            CheckAlgorithmNames(themeDef.Algorithms);
 
-            if (!themeDef.Algorithms.Contains(DefaultThemeVariantCalculator.ID))
+            if (_algorithms.Count != ThemeDefinition.Algorithms.Count)
             {
-                themeDef.Algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
-            }
-            else if (themeDef.Algorithms.Contains(DefaultThemeVariantCalculator.ID) &&
-                     themeDef.Algorithms[0] != DefaultThemeVariantCalculator.ID)
-            {
-                themeDef.Algorithms.Remove(DefaultThemeVariantCalculator.ID);
-                themeDef.Algorithms.Insert(0, DefaultThemeVariantCalculator.ID);
-            }
-
-            if (themeDef.Algorithms.Contains(DarkThemeVariantCalculator.ID))
-            {
-                IsDarkMode    = true;
-                _themeVariant = ThemeVariant.Dark;
+                _isPrimary = false;
             }
             else
             {
-                IsDarkMode    = false;
-                _themeVariant = ThemeVariant.Light;
+                _isPrimary = _algorithms.ToHashSet().SetEquals(ThemeDefinition.Algorithms);
             }
-
-            IThemeVariantCalculator? baseCalculator = null;
-            IThemeVariantCalculator? calculator     = null;
-            foreach (var algorithmId in themeDef.Algorithms)
-            {
-                calculator     = CreateThemeVariantCalculator(algorithmId, baseCalculator);
-                baseCalculator = calculator;
-            }
-
-            Debug.Assert(calculator != null);
-            ThemeVariantCalculator = calculator;
-            _sharedToken.LoadConfig(sharedTokenConfig);
-
-            ThemeVariantCalculator?.Calculate(_sharedToken);
-
-            // 交付最终的基础色
-            _sharedToken.ColorBgBase   = ThemeVariantCalculator?.ColorBgBase;
-            _sharedToken.ColorTextBase = ThemeVariantCalculator?.ColorTextBase;
-
-            _sharedToken.CalculateAliasTokenValues();
-            _sharedToken.BuildResourceDictionary(ResourceDictionary);
-
-            CollectControlTokens();
-            foreach (var entry in ControlTokens)
-            {
-                // 如果没有修改就使用全局的
-                entry.Value.AssignSharedToken(_sharedToken);
-            }
-
-            foreach (var entry in controlTokenConfig)
-            {
-                var controlTokenInfo  = entry.Value;
-                if (!ControlTokens.ContainsKey(entry.Key))
-                {
-                    continue;
-                }
-
-                var copiedSharedToken = (DesignToken)_sharedToken.Clone();
-                copiedSharedToken.LoadConfig(ExtraSharedTokenInfos(controlTokenInfo));
-
-                if (controlTokenInfo.EnableAlgorithm)
-                {
-                    ThemeVariantCalculator?.Calculate(copiedSharedToken);
-                    copiedSharedToken.CalculateAliasTokenValues();
-                }
-
-                var controlToken = (ControlTokens[entry.Key] as AbstractControlDesignToken)!;
-                controlToken.AssignSharedToken(copiedSharedToken);
-                controlToken.SetHasCustomTokenConfig(true);
-                controlToken.SetCustomTokens(controlTokenInfo.Tokens.Keys.ToList());
-            }
-
-            foreach (var token in ControlTokens.Values)
-            {
-                var controlToken = (token as AbstractControlDesignToken)!;
-                controlToken.CalculateFromAlias();
-                var controlTokenType  = controlToken.GetType();
-                var tokenAttr         = controlTokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
-                var qualifiedTokenKey = GenerateTokenQualifiedKey(controlToken.GetId(), tokenAttr?.ResourceCatalog);
-                if (controlTokenConfig.ContainsKey(qualifiedTokenKey))
-                {
-                    controlToken.LoadConfig(controlTokenConfig[qualifiedTokenKey].Tokens);
-                }
-
-                controlToken.BuildResourceDictionary(ResourceDictionary);
-                if (controlToken.HasCustomTokenConfig())
-                {
-                    controlToken.BuildSharedResourceDeltaDictionary(_sharedToken);
-                }
-            }
+            
+            BuildThemeResource(_algorithms);
 
             LoadedStatus = true;
             Loaded       = true;
@@ -181,6 +109,107 @@ public class Theme : ITheme
         }
     }
 
+    private void BuildThemeResource(IList<ThemeAlgorithm> algorithms)
+    {
+        if (algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
+        {
+            IsDarkMode    = true;
+        }
+        else
+        {
+            IsDarkMode    = false;
+        }
+    
+        IThemeVariantCalculator? baseCalculator = null;
+        IThemeVariantCalculator? calculator     = null;
+        foreach (var algorithmId in algorithms)
+        {
+            calculator     = _themeManager.CreateThemeVariantCalculator(algorithmId, baseCalculator);
+            baseCalculator = calculator;
+        }
+    
+        Debug.Assert(calculator != null);
+        _sharedToken.LoadConfig(ThemeDefinition.SharedTokens);
+
+        calculator.Calculate(_sharedToken);
+
+        // 交付最终的基础色
+        _sharedToken.ColorBgBase   = calculator.ColorBgBase;
+        _sharedToken.ColorTextBase = calculator.ColorTextBase;
+
+        _sharedToken.CalculateAliasTokenValues();
+        _sharedToken.BuildResourceDictionary(ResourceDictionary);
+
+        CollectControlTokens();
+        foreach (var entry in ControlTokens)
+        {
+            // 如果没有修改就使用全局的
+            entry.Value.AssignSharedToken(_sharedToken);
+        }
+
+        foreach (var entry in ThemeDefinition.ControlTokens)
+        {
+            var controlTokenInfo  = entry.Value;
+            if (!ControlTokens.ContainsKey(entry.Key))
+            {
+                continue;
+            }
+
+            var copiedSharedToken = (DesignToken)_sharedToken.Clone();
+            copiedSharedToken.LoadConfig(ExtraSharedTokenInfos(controlTokenInfo));
+
+            if (controlTokenInfo.EnableAlgorithm)
+            {
+                calculator.Calculate(copiedSharedToken);
+                copiedSharedToken.CalculateAliasTokenValues();
+            }
+
+            var controlToken = (ControlTokens[entry.Key] as AbstractControlDesignToken)!;
+            controlToken.AssignSharedToken(copiedSharedToken);
+            controlToken.SetHasCustomTokenConfig(true);
+            controlToken.SetCustomTokens(controlTokenInfo.Tokens.Keys.ToList());
+        }
+
+        foreach (var token in ControlTokens.Values)
+        {
+            var controlToken = (token as AbstractControlDesignToken)!;
+            controlToken.CalculateFromAlias();
+            var controlTokenType  = controlToken.GetType();
+            var tokenAttr         = controlTokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
+            var qualifiedTokenKey = GenerateTokenQualifiedKey(controlToken.GetId(), tokenAttr?.ResourceCatalog);
+                
+            if (ThemeDefinition.ControlTokens.TryGetValue(qualifiedTokenKey, out var tokenInfo))
+            {
+                controlToken.LoadConfig(tokenInfo.Tokens);
+            }
+
+            controlToken.BuildResourceDictionary(ResourceDictionary);
+            if (controlToken.HasCustomTokenConfig())
+            {
+                controlToken.BuildSharedResourceDeltaDictionary(_sharedToken);
+            }
+        }
+    }
+
+    internal static ThemeVariant BuildThemeVariant(string id, IList<ThemeAlgorithm> algorithms)
+    {
+        var parts = new List<string>()
+        {
+            id
+        };
+        if (algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
+        {
+            parts.Add(nameof(ThemeAlgorithm.Dark));
+        }
+
+        if (algorithms.Contains(CompactThemeVariantCalculator.Algorithm))
+        {
+            parts.Add(nameof(ThemeAlgorithm.Compact));
+        }
+
+        return new ThemeVariant(string.Join("-", parts), null);
+    }
+
     private IDictionary<string, string> ExtraSharedTokenInfos(ControlTokenConfigInfo controlTokenConfigInfo)
     {
         var qualifiedKey = GenerateTokenQualifiedKey(controlTokenConfigInfo.TokenId, controlTokenConfigInfo.Catalog);
@@ -190,7 +219,7 @@ public class Theme : ITheme
                                                       BindingFlags.NonPublic |
                                                       BindingFlags.Instance |
                                                       BindingFlags.FlattenHierarchy)
-            .Select(p => p.Name).ToHashSet();
+                                       .Select(p => p.Name).ToHashSet();
         foreach (var entry in controlTokenConfigInfo.Tokens)
         {
             if (!tokenProperties.Contains(entry.Key))
@@ -202,39 +231,19 @@ public class Theme : ITheme
         return tokenInfos;
     }
 
-    internal static void CheckAlgorithmNames(IList<string> algorithms)
+    internal static ISet<ThemeAlgorithm> CheckAlgorithmNames(IList<string> algorithmNames)
     {
-        foreach (var algorithm in algorithms)
+        var algorithms = new HashSet<ThemeAlgorithm>();
+        foreach (var algorithmName in algorithmNames)
         {
-            if (!SUPPORTED_ALGORITHMS.Contains(algorithm))
+            if (!Enum.TryParse<ThemeAlgorithm>(algorithmName, out var algorithm))
             {
                 throw new ThemeLoadException(
-                    $"Algorithm: {algorithm} is not supported. Supported algorithms are: {string.Join(',', SUPPORTED_ALGORITHMS)}.");
+                    $"Algorithm: {algorithm} is not supported. Supported algorithms are: {ThemeAlgorithm.Default}, {ThemeAlgorithm.Dark}, {ThemeAlgorithm.Compact}.");
             }
+            algorithms.Add(algorithm);
         }
-    }
-
-    internal static IThemeVariantCalculator CreateThemeVariantCalculator(string algorithmId, IThemeVariantCalculator? baseAlgorithm)
-    {
-        IThemeVariantCalculator calculator;
-        if (algorithmId == DefaultThemeVariantCalculator.ID)
-        {
-            calculator = new DefaultThemeVariantCalculator();
-        }
-        else if (algorithmId == DarkThemeVariantCalculator.ID)
-        {
-            calculator = new DarkThemeVariantCalculator(baseAlgorithm!);
-        }
-        else if (algorithmId == CompactThemeVariantCalculator.ID)
-        {
-            calculator = new CompactThemeVariantCalculator(baseAlgorithm!);
-        }
-        else
-        {
-            throw new ThemeLoadException($"Algorithm: {algorithmId} is not supported.");
-        }
-
-        return calculator;
+        return algorithms;
     }
 
     protected void CollectControlTokens()
@@ -286,7 +295,7 @@ public class Theme : ITheme
 
     internal virtual void NotifyDeActivated()
     {
-        Activated = false;
+        Activated         = false;
     }
 
     internal virtual void NotifyAboutToLoad()
@@ -305,14 +314,10 @@ public class Theme : ITheme
     {
     }
 
-    internal virtual void NotifyResetLoadStatus()
-    {
-    }
-
     internal virtual void NotifyLoadThemeDef()
     {
         var reader = new ThemeDefinitionReader(this);
-        reader.Load(ThemeDefinition!);
+        reader.Load(ThemeDefinition);
     }
 
     internal virtual void NotifyRegistered()

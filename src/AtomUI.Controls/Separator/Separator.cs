@@ -227,13 +227,14 @@ public class Separator : AvaloniaSeparator,
 
     protected override Size ArrangeOverride(Size finalSize)
     {
+        var size = base.ArrangeOverride(finalSize);
         if (Orientation == Orientation.Horizontal && _titleLabel!.IsVisible)
         {
-            var titleRect = GetTitleRect(finalSize);
+            var titleRect = GetTitleRect(DesiredSize.Deflate(Margin));
             _titleLabel.Arrange(titleRect);
         }
 
-        return finalSize;
+        return size;
     }
 
     private double GetTextPaddingInline()
@@ -315,7 +316,7 @@ public class Separator : AvaloniaSeparator,
             EdgeMode = EdgeMode.Aliased
         });
         var linePen     = new Pen(LineColor, LineWidth);
-        var controlRect = new Rect(new Point(0, 0), DesiredSize);
+        var controlRect = new Rect(DesiredSize.Deflate(Margin));
         if (IsDashedLine)
         {
             linePen.DashStyle = DashStyle.Dash;
@@ -327,7 +328,7 @@ public class Separator : AvaloniaSeparator,
             if (Title?.Length > 0)
             {
                 // 画两个线段
-                var titleRect = GetTitleRect(DesiredSize);
+                var titleRect = GetTitleRect(controlRect.Size);
                 if (TitlePosition == SeparatorTitlePosition.Left)
                 {
                     if (double.IsNaN(OrientationMargin))

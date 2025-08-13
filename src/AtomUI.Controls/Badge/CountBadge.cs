@@ -24,12 +24,12 @@ public class CountBadge : Control,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<string?> BadgeColorProperty
-        = AvaloniaProperty.Register<CountBadge, string?>(
+    public static readonly StyledProperty<string?> BadgeColorProperty =
+        AvaloniaProperty.Register<CountBadge, string?>(
             nameof(BadgeColor));
 
-    public static readonly StyledProperty<int> CountProperty
-        = AvaloniaProperty.Register<CountBadge, int>(nameof(Count),
+    public static readonly StyledProperty<int> CountProperty =
+        AvaloniaProperty.Register<CountBadge, int>(nameof(Count),
             coerce: (o, v) => Math.Max(0, v));
 
     public static readonly StyledProperty<Control?> DecoratedTargetProperty =
@@ -51,8 +51,8 @@ public class CountBadge : Control,
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
         AvaloniaProperty.Register<CountBadge, bool>(nameof(BadgeIsVisible), true);
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CountBadge>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CountBadge>();
 
     public string? BadgeColor
     {
@@ -134,7 +134,7 @@ public class CountBadge : Control,
     public CountBadge()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
+        this.ConfigureMotionBindingStyle();
     }
 
     private CountBadgeAdorner CreateBadgeAdorner()
@@ -234,6 +234,7 @@ public class CountBadge : Control,
             {
                 _badgeAdorner.SetLogicalParent(this);
                 VisualChildren.Add(_badgeAdorner);
+                LogicalChildren.Add(_badgeAdorner);
                 _badgeAdorner.IsAdornerMode = false;
             }
             else if (DecoratedTarget is not null)
@@ -241,6 +242,7 @@ public class CountBadge : Control,
                 _badgeAdorner.IsAdornerMode = true;
                 DecoratedTarget.SetLogicalParent(this);
                 VisualChildren.Add(DecoratedTarget);
+                LogicalChildren.Add(DecoratedTarget);
             }
         }
     }

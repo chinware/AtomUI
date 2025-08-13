@@ -54,7 +54,7 @@ internal class PopupConfirmToken : AbstractControlDesignToken
         PopupMinWidth          = 240;
         PopupMinHeight         = 80;
         ButtonSpacing          = SharedToken.UniformlyMarginXS;
-        IconMargin             = new Thickness(SharedToken.UniformlyMarginXS, SharedToken.UniformlyMarginXS / 2, SharedToken.UniformlyMarginXS, 0);
+        IconMargin             = new Thickness(0, SharedToken.UniformlyMarginXS / 2, SharedToken.UniformlyMarginXS, 0);
         ContentContainerMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
         TitleMargin            = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
         ButtonContainerMargin  = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);

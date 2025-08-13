@@ -99,7 +99,7 @@ internal class DotBadgeAdorner : TemplatedControl
     
     #endregion
 
-    private MotionActorControl? _indicatorMotionActor;
+    private BaseMotionActor? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
 
     static DotBadgeAdorner()
@@ -111,7 +111,7 @@ internal class DotBadgeAdorner : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
-        _indicatorMotionActor = e.NameScope.Get<MotionActorControl>(DotBadgeAdornerThemeConstants.IndicatorMotionActorPart);
+        _indicatorMotionActor = e.NameScope.Get<BaseMotionActor>(DotBadgeAdornerThemeConstants.IndicatorMotionActorPart);
     }
 
     private void ApplyShowMotion()
@@ -122,7 +122,7 @@ internal class DotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource = new CancellationTokenSource();
             var motion = new BadgeZoomBadgeInMotion(MotionDuration, null, FillMode.Forward);
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, () => _indicatorMotionActor.IsVisible = true);
+            motion.Run(_indicatorMotionActor, () => _indicatorMotionActor.IsVisible = true);
         }
     }
 
@@ -133,7 +133,7 @@ internal class DotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource = new CancellationTokenSource();
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration, null, FillMode.Forward);
-            MotionInvoker.Invoke(_indicatorMotionActor, motion, null, () => completedAction());
+            motion.Run(_indicatorMotionActor, null, completedAction);
         }
     }
 

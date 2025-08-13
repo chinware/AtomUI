@@ -231,7 +231,6 @@ public abstract class InfoPickerInput : TemplatedControl,
     public InfoPickerInput()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         _flyoutStateHelper = new FlyoutStateHelper
         {
             TriggerType = FlyoutTriggerType.Click

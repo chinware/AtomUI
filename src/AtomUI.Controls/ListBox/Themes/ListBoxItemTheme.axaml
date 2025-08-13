@@ -1,8 +1,10 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"/>
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter"/>
     <ControlTheme x:Key="{x:Type atom:ListBoxItem}" TargetType="atom:ListBoxItem">
         <Setter Property="Template">
             <ControlTemplate>
@@ -15,8 +17,7 @@
                                   MinHeight="{TemplateBinding MinHeight}"
                                   Padding="{TemplateBinding Padding}"
                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  />
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
             </ControlTemplate>
         </Setter>
         
@@ -24,14 +25,14 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemColor}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemBgColor}}" />
         
-        <Style Selector="^:selected">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedColor}}" />
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedBgColor}}" />
-        </Style>
-        
         <Style Selector="^[DisabledItemHoverEffect=False]:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemHoverColor}}" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemHoverBgColor}}" />
+        </Style>
+        
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedColor}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedBgColor}}" />
         </Style>
         
         <Style Selector="^[SizeType=Large]">

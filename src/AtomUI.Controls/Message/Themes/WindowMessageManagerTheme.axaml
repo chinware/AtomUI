@@ -1,13 +1,16 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:WindowMessageManager}" TargetType="atom:WindowMessageManager">
         <Setter Property="Template">
             <ControlTemplate>
                 <ReversibleStackPanel Name="{x:Static atom:WindowMessageManagerThemeConstants.ItemsPart}" />
             </ControlTemplate>
         </Setter>
+
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
 
         <Style Selector="^:topcenter">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">

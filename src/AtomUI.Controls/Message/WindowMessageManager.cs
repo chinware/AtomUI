@@ -81,7 +81,7 @@ public class WindowMessageManager : TemplatedControl,
     public WindowMessageManager(TopLevel? host)
     {
         this.RegisterResources();
-        this.BindMotionProperties();
+
         if (host is not null)
         {
             InstallFromTopLevel(host);

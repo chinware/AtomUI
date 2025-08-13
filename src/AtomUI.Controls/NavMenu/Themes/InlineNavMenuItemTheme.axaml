@@ -2,7 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:themes="using:AtomUI.Controls.Themes"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <atom:MarginMultiplierConverter x:Key="MarginMultiplierConverter" Left="True" />
     <ControlTheme x:Key="{x:Static atom:NavMenuThemeConstants.InlineNavMenuItemThemeId}" TargetType="atom:NavMenuItem">
         <ControlTheme.BasedOn>
@@ -26,8 +27,6 @@
                                                       SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto"
-                                                      SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.InputGestureTextSizeGroup}" />
-                                    <ColumnDefinition Width="Auto"
                                                       SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
                                 </Grid.ColumnDefinitions>
                                 <atom:IconPresenter
@@ -46,14 +45,7 @@
                                     IsHitTestVisible="False"
                                     Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
                                     ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                                <atom:TextBlock
-                                    Name="{x:Static atom:BaseNavMenuItemThemeConstants.InputGestureTextPart}"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    TextAlignment="Right"
-                                    Text="{TemplateBinding InputGesture, Converter={x:Static atom:BaseNavMenuItemTheme.KeyGestureConverter}}" />
-                                <Border Grid.Column="3"
+                                <Border Grid.Column="2"
                                         Name="{x:Static atom:InlineNavMenuItemThemeConstants.MenuIndicatorIconFramePart}">
                                     <atom:Icon
                                         Name="{x:Static atom:BaseNavMenuItemThemeConstants.MenuIndicatorIconPart}"
@@ -66,12 +58,12 @@
                         </Border>
                     </Panel>
 
-                    <atom:MotionActorControl
+                    <atom:LayoutAwareMotionActor
                         Name="{x:Static atom:InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart}">
                         <ItemsPresenter Name="{x:Static atom:InlineNavMenuItemThemeConstants.ChildItemsPresenterPart}"
                                         Focusable="False"
                                         ItemsPanel="{TemplateBinding ItemsPanel}" />
-                    </atom:MotionActorControl>
+                    </atom:LayoutAwareMotionActor>
                 </StackPanel>
             </ControlTemplate>
         </Setter>
@@ -82,12 +74,11 @@
                         Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalItemsPanelSpacing}}" />
             </Style>
             
-            <Style Selector="^ /template/ atom|MotionActorControl#PART_ChildItemsLayoutTransform">
+            <Style Selector="^ /template/ atom|LayoutAwareMotionActor#PART_ChildItemsLayoutTransform">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalChildItemsMargin}}" />
             </Style>
             
-            <!-- BuildMenuIndicatorStyle begin -->
             <Style Selector="^ /template/ Border#PART_MenuIndicatorIconFrame">
                 <Setter Property="RenderTransform" Value="rotate(90deg)" />
                 <Setter Property="IsVisible" Value="True" />
@@ -104,8 +95,7 @@
                     <Setter Property="IsVisible" Value="False" />
                 </Style>
             </Style>
-            
-            <!-- BuildMenuIndicatorStyle end -->
+   
         </Style>
     </ControlTheme>
 </ResourceDictionary>

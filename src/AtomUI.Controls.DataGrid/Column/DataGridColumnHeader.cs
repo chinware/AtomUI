@@ -20,14 +20,13 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Rendering;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.DragIndicator, StdPseudoClass.Pressed, StdPseudoClass.SortAscending, StdPseudoClass.SortDescending)]
-internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
+internal partial class DataGridColumnHeader : ContentControl
 {
     internal enum DragMode
     {
@@ -118,6 +117,12 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
             o => o.FrozenShadowPosition, 
             (o, v) => o.FrozenShadowPosition = v);
     
+    internal static readonly DirectProperty<DataGridColumnHeader, DragMode> HeaderDragModeProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, DragMode>(
+            nameof(HeaderDragMode),
+            o => o.HeaderDragMode, 
+            (o, v) => o.HeaderDragMode = v);
+    
     private bool _isFirstVisible = false;
     internal bool IsFirstVisible
     {
@@ -140,6 +145,13 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         }
     }
     
+    private DragMode _headerDragMode =  DragMode.None;
+    internal DragMode HeaderDragMode
+    {
+        get => _headerDragMode;
+        set => SetAndRaise(HeaderDragModeProperty, ref _headerDragMode, value);
+    }
+    
     private bool _isMiddleVisible = false;
     internal bool IsMiddleVisible
     {
@@ -150,7 +162,7 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
             PseudoClasses.Set(DataGridPseudoClass.MiddleColumnHeader, value);
         }
     }
-    
+
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -228,20 +240,20 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
     #endregion
 
     private const int ResizeRegionWidth = 5;
-    private const int ColumnsDragThreshold = 5;
     
-    private static DragMode _dragMode;
     private static Point? _lastMousePositionHeaders;
     private static Cursor? _originalCursor;
     private static double _originalHorizontalOffset;
     private static double _originalWidth;
     private static Point? _dragStart;
     private static DataGridColumn? _dragColumn;
-    private static double _frozenColumnsWidth;
+    private static DataGridColumn? _currentDraggingOverColumn;
+    private static double _leftFrozenColumnsWidth;
+    private static double _rightFrozenColumnsWidth;
     private bool _areHandlersSuspended;
     private bool _desiredSeparatorVisibility = true;
     private StackPanel? _indicatorsLayout;
-    private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
+    private static Lazy<Cursor> _resizeCursor = new (() => new Cursor(StandardCursorType.SizeWestEast));
     private Border? _frame;
     
     static DataGridColumnHeader()
@@ -322,8 +334,9 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
 
         if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
         {
-            _dragMode                 = DragMode.MouseDown;
-            _frozenColumnsWidth       = OwningGrid.ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth();
+            HeaderDragMode            = DragMode.MouseDown;
+            _leftFrozenColumnsWidth   = OwningGrid.ColumnsInternal.GetVisibleLeftFrozenEdgedColumnsWidth();
+            _rightFrozenColumnsWidth   = OwningGrid.ColumnsInternal.GetVisibleRightFrozenEdgedColumnsWidth();
             _lastMousePositionHeaders = this.Translate(OwningGrid.ColumnHeaders, mousePosition);
 
             double          distanceFromLeft  = mousePosition.X;
@@ -336,17 +349,17 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
                 previousColumn = OwningGrid.ColumnsInternal.GetPreviousVisibleNonFillerColumn(currentColumn);
             }
 
-            if (_dragMode == DragMode.MouseDown && _dragColumn == null && (distanceFromRight <= ResizeRegionWidth))
+            if (HeaderDragMode == DragMode.MouseDown && _dragColumn == null && (distanceFromRight <= ResizeRegionWidth))
             {
                 Debug.Assert(currentColumn != null);
                 handled = TrySetResizeColumn(currentColumn);
             }
-            else if (_dragMode == DragMode.MouseDown && _dragColumn == null && distanceFromLeft <= ResizeRegionWidth && previousColumn != null)
+            else if (HeaderDragMode == DragMode.MouseDown && _dragColumn == null && distanceFromLeft <= ResizeRegionWidth && previousColumn != null)
             {
                 handled = TrySetResizeColumn(previousColumn);
             }
 
-            if (_dragMode == DragMode.Resize && _dragColumn != null)
+            if (HeaderDragMode == DragMode.Resize && _dragColumn != null)
             {
                 _dragStart                = _lastMousePositionHeaders;
                 _originalWidth            = _dragColumn.ActualWidth;
@@ -362,25 +375,27 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
     internal void HandleMouseLeftButtonUp(ref bool handled, PointerEventArgs args, Point mousePosition, Point mousePositionHeaders)
     {
         IsPressed = false;
-
+        
         if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
         {
-            if (_dragMode == DragMode.MouseDown)
+            var horizontalOffset = OwningGrid.HorizontalScrollBar?.Value ?? mousePosition.X;
+            if (HeaderDragMode == DragMode.MouseDown)
             {
                 HandleMouseLeftButtonUpClick(args.KeyModifiers, ref handled);
             }
-            else if (_dragMode == DragMode.Reorder)
+            else if (HeaderDragMode == DragMode.Reorder)
             {
+                var displayedColumnCount = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
                 // Find header we're hovering over
                 int targetIndex = GetReorderingTargetDisplayIndex(mousePositionHeaders);
+                
                 Debug.Assert(OwningColumn != null);
-                if (((!OwningColumn.IsFrozen && targetIndex >= OwningGrid.FrozenColumnCount)
-                     || (OwningColumn.IsFrozen && targetIndex < OwningGrid.FrozenColumnCount)))
+                if (!OwningColumn.IsFrozen && targetIndex >= OwningGrid.LeftFrozenColumnCount && (targetIndex < displayedColumnCount - OwningGrid.RightFrozenColumnCount))
                 {
                     OwningColumn.DisplayIndex = targetIndex;
-
                     DataGridColumnEventArgs ea = new DataGridColumnEventArgs(OwningColumn);
                     OwningGrid.NotifyColumnReordered(ea);
+                    OwningGrid.UpdateHorizontalOffset(horizontalOffset);
                 }
             }
 
@@ -389,8 +404,8 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
             // Variables that track drag mode states get reset in DataGridColumnHeader_LostMouseCapture
             args.Pointer.Capture(null);
             HandleLostMouseCapture();
-            _dragMode = DragMode.None;
-            handled   = true;
+            HeaderDragMode = DragMode.None;
+            handled        = true;
         }
     }
 
@@ -444,7 +459,8 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         Debug.Assert(OwningGrid != null);
         return OwningGrid.CanUserReorderColumns
                && !(column is DataGridFillerColumn)
-               && (column.CanUserReorderInternal.HasValue && column.CanUserReorderInternal.Value || !column.CanUserReorderInternal.HasValue);
+               && !column.IsFrozen
+               && column.CanUserReorderInternal.HasValue && column.CanUserReorderInternal.Value;
     }
 
     /// <summary>
@@ -465,14 +481,14 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         return column.ActualCanUserResize;
     }
 
-    private static bool TrySetResizeColumn(DataGridColumn column)
+    private bool TrySetResizeColumn(DataGridColumn column)
     {
         // If datagrid.CanUserResizeColumns == false, then the column can still override it
         if (CanResizeColumn(column))
         {
             _dragColumn = column;
 
-            _dragMode = DragMode.Resize;
+            HeaderDragMode = DragMode.Resize;
 
             return true;
         }
@@ -561,13 +577,15 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         Debug.Assert(OwningGrid.ColumnsInternal.RowGroupSpacerColumn != null);
         double leftEdge = OwningGrid.ColumnsInternal.RowGroupSpacerColumn.IsRepresented ? OwningGrid.ColumnsInternal.RowGroupSpacerColumn.ActualWidth : 0;
         double rightEdge = OwningGrid.CellsWidth;
-        if (OwningColumn.IsFrozen)
+
+        if (OwningGrid.LeftFrozenColumnCount > 0)
         {
-            rightEdge = Math.Min(rightEdge, _frozenColumnsWidth);
+            leftEdge = _leftFrozenColumnsWidth;
         }
-        else if (OwningGrid.FrozenColumnCount > 0)
+
+        if (OwningGrid.RightFrozenColumnCount > 0)
         {
-            leftEdge = _frozenColumnsWidth;
+            rightEdge -=  _rightFrozenColumnsWidth;
         }
 
         if (mousePositionHeaders.X < leftEdge)
@@ -601,14 +619,9 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
         {
             Point  mousePosition = OwningGrid.ColumnHeaders.Translate(column.HeaderCell, mousePositionHeaders);
-            double columnMiddle  = column.HeaderCell.Bounds.Width / 2;
-            if (mousePosition.X >= 0 && mousePosition.X <= columnMiddle)
+            if (mousePosition.X >= 0 && mousePosition.X <= column.HeaderCell.Bounds.Width)
             {
                 return column;
-            }
-            if (mousePosition.X > columnMiddle && mousePosition.X < column.HeaderCell.Bounds.Width)
-            {
-                return OwningGrid.ColumnsInternal.GetNextVisibleColumn(column);
             }
         }
 
@@ -627,7 +640,7 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         DataGridColumn? targetColumn = GetReorderingTargetColumn(mousePositionHeaders, false /*scroll*/, out double scrollAmount);
         if (targetColumn != null)
         {
-            return targetColumn.DisplayIndex > OwningColumn.DisplayIndex ? targetColumn.DisplayIndex - 1 : targetColumn.DisplayIndex;
+            return targetColumn.DisplayIndex;
         }
         return OwningGrid.Columns.Count - 1;
     }
@@ -662,16 +675,20 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         {
             _dragColumn.HeaderCell.Cursor = _originalCursor;
         }
-        _dragMode                 = DragMode.None;
+        HeaderDragMode            = DragMode.None;
         _dragColumn               = null;
         _dragStart                = null;
         _lastMousePositionHeaders = null;
+
+        _currentDraggingOverColumn = null;
+        DataGridColumnDraggingOverEventArgs draggingOverEventArgs =
+            new DataGridColumnDraggingOverEventArgs(null, null);
+        OwningGrid?.NotifyColumnDraggingOver(draggingOverEventArgs);
 
         if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
         {
             OwningGrid.ColumnHeaders.DragColumn            = null;
             OwningGrid.ColumnHeaders.DragIndicator         = null;
-            OwningGrid.ColumnHeaders.DropLocationIndicator = null;
         }
     }
 
@@ -699,47 +716,45 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         Debug.Assert(OwningColumn != null);
         var dragIndicator = new DataGridColumnHeader
         {
-            OwningColumn = OwningColumn,
-            IsEnabled    = false,
-            Content      = GetDragIndicatorContent(Content, ContentTemplate)
+            OwningColumn        = OwningColumn,
+            IsEnabled           = false,
+            Content             = GetDragIndicatorContent(Content, ContentTemplate),
+            IsSeparatorsVisible = false,
+            IsVisible = false
         };
         dragIndicator.PseudoClasses.Add(StdPseudoClass.DragIndicator);
-
-        Control? dropLocationIndicator = OwningGrid.DropLocationIndicatorTemplate?.Build();
-
-        // If the user didn't style the dropLocationIndicator's Height, default to the column header's height
-        if (dropLocationIndicator != null && double.IsNaN(dropLocationIndicator.Height) && dropLocationIndicator is Control element)
-        {
-            element.Height = Bounds.Height;
-        }
-
+        
         // pass the caret's data template to the user for modification
         DataGridColumnReorderingEventArgs columnReorderingEventArgs = new DataGridColumnReorderingEventArgs(OwningColumn)
         {
-            DropLocationIndicator = dropLocationIndicator,
             DragIndicator         = dragIndicator
         };
-        OwningGrid.HandleColumnReordering(columnReorderingEventArgs);
+        
+        OwningGrid.NotifyColumnReordering(columnReorderingEventArgs);
         if (columnReorderingEventArgs.Cancel)
         {
             return;
         }
 
         // The user didn't cancel, so prepare for the reorder
-        _dragColumn = OwningColumn;
-        _dragMode   = DragMode.Reorder;
-        _dragStart  = mousePosition;
+        _dragColumn    = OwningColumn;
+        HeaderDragMode = DragMode.Reorder;
+        _dragStart     = mousePosition;
 
         Debug.Assert(OwningGrid.ColumnHeaders != null);
         // Display the reordering thumb
         OwningGrid.ColumnHeaders.DragColumn            = OwningColumn;
         OwningGrid.ColumnHeaders.DragIndicator         = columnReorderingEventArgs.DragIndicator;
-        OwningGrid.ColumnHeaders.DropLocationIndicator = columnReorderingEventArgs.DropLocationIndicator;
 
         // If the user didn't style the dragIndicator's Width, default it to the column header's width
         if (double.IsNaN(dragIndicator.Width))
         {
-            dragIndicator.Width = Bounds.Width;
+            dragIndicator.Width = DesiredSize.Width;
+        }
+
+        if (double.IsNaN(dragIndicator.Height))
+        {
+            dragIndicator.Height = DesiredSize.Height;
         }
     }
 
@@ -752,7 +767,10 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
 
         if (content is Control control)
         {
-            if (VisualRoot == null) return content;
+            if (VisualRoot == null)
+            {
+                return content;
+            }
             control.Measure(Size.Infinity);
             var rect = new Rectangle()
             {
@@ -760,7 +778,8 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
                 Height = control.DesiredSize.Height,
                 Fill = new VisualBrush
                 {
-                    Visual = control, Stretch = Stretch.None, AlignmentX = AlignmentX.Left,
+                    Visual = control,
+                    Stretch = Stretch.Fill
                 }
             };
             return rect;
@@ -784,10 +803,10 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         Debug.Assert(OwningColumn != null);
         Debug.Assert(OwningGrid.ColumnHeaders != null);
         //handle entry into reorder mode
-        if (_dragMode == DragMode.MouseDown && _dragColumn == null && _lastMousePositionHeaders != null)
+        if (HeaderDragMode == DragMode.MouseDown && _dragColumn == null && _lastMousePositionHeaders != null)
         {
             var distanceFromInitial = (Vector)(mousePositionHeaders - _lastMousePositionHeaders);
-            if (distanceFromInitial.Length > ColumnsDragThreshold)
+            if (distanceFromInitial.Length > Constants.DragThreshold)
             {
                 handled = CanReorderColumn(OwningColumn);
 
@@ -799,38 +818,24 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         }
 
         //handle reorder mode (eg, positioning of the popup)
-        if (_dragMode == DragMode.Reorder && OwningGrid.ColumnHeaders.DragIndicator != null)
+        if (HeaderDragMode == DragMode.Reorder && OwningGrid.ColumnHeaders.DragIndicator != null)
         {
             Debug.Assert(_dragStart != null);
             // Find header we're hovering over
+            
             DataGridColumn? targetColumn = GetReorderingTargetColumn(mousePositionHeaders, !OwningColumn.IsFrozen /*scroll*/, out double scrollAmount);
 
+            if (_currentDraggingOverColumn != targetColumn && (targetColumn != null && !targetColumn.IsFrozen) || targetColumn == null)
+            {
+                DataGridColumnDraggingOverEventArgs draggingOverEventArgs =
+                    new DataGridColumnDraggingOverEventArgs(_dragColumn, targetColumn);
+                OwningGrid.NotifyColumnDraggingOver(draggingOverEventArgs);
+                _currentDraggingOverColumn =  targetColumn;
+            }
+            
             OwningGrid.ColumnHeaders.DragIndicatorOffset = mousePosition.X - _dragStart.Value.X + scrollAmount;
             OwningGrid.ColumnHeaders.InvalidateArrange();
-
-            if (OwningGrid.ColumnHeaders.DropLocationIndicator != null)
-            {
-                Point targetPosition = new Point(0, 0);
-                if (targetColumn == null || targetColumn == OwningGrid.ColumnsInternal.FillerColumn || targetColumn.IsFrozen != OwningColumn.IsFrozen)
-                {
-                    targetColumn =
-                        OwningGrid.ColumnsInternal.GetLastColumn(
-                            isVisible: true,
-                            isFrozen: OwningColumn.IsFrozen,
-                            isReadOnly: null);
-                    if (targetColumn != null)
-                    {
-                        targetPosition = targetColumn.HeaderCell.Translate(OwningGrid.ColumnHeaders, targetPosition);
-                        targetPosition = targetPosition.WithX(targetPosition.X + targetColumn.ActualWidth);
-                    }
-                }
-                else
-                {
-                    targetPosition = targetColumn.HeaderCell.Translate(OwningGrid.ColumnHeaders, targetPosition);
-                }
-                OwningGrid.ColumnHeaders.DropLocationIndicatorOffset = targetPosition.X - scrollAmount;
-            }
-
+            
             handled = true;
         }
     }
@@ -842,7 +847,7 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
             return;
         }
         Debug.Assert(OwningGrid != null);
-        if (_dragMode == DragMode.Resize && _dragColumn != null && _dragStart.HasValue)
+        if (HeaderDragMode == DragMode.Resize && _dragColumn != null && _dragStart.HasValue)
         {
             // resize column
             double mouseDelta   = mousePositionHeaders.X - _dragStart.Value.X;
@@ -861,7 +866,7 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
 
     private void SetDragCursor(Point mousePosition)
     {
-        if (_dragMode != DragMode.None || OwningGrid == null || OwningColumn == null)
+        if (HeaderDragMode != DragMode.None || OwningGrid == null || OwningColumn == null)
         {
             return;
         }
@@ -940,9 +945,9 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
     {
         if (IsMotionEnabled)
         {
-            if (Transitions != null)
+            if (_frame != null)
             {
-                Transitions = new Transitions()
+                _frame.Transitions = new Transitions()
                 {
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
                 };
@@ -950,13 +955,11 @@ internal partial class DataGridColumnHeader : ContentControl, ICustomHitTest
         }
         else
         {
-            Transitions?.Clear();
-            Transitions = null;
+            if (_frame != null)
+            {
+                _frame.Transitions?.Clear();
+                _frame.Transitions = null;
+            }
         }
-    }
-
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 }

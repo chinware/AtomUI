@@ -106,9 +106,13 @@ internal class CellEditBinding : ICellEditBinding
             if (value is BindingNotification notification)
             {
                 if (notification.ErrorType != BindingErrorType.None)
+                {
                     OnValidationError(notification);
+                }
                 else
+                {
                     OnValidValue(value);
+                }
             }
             else
             {
@@ -121,6 +125,7 @@ internal class CellEditBinding : ICellEditBinding
             _subscription?.Dispose();
             _subscription = null;
         }
+        
         protected override void Initialize()
         {
             _subscription = _sourceSubject.Subscribe(OnSourceValueUpdated);
@@ -130,10 +135,12 @@ internal class CellEditBinding : ICellEditBinding
         {
             throw new NotImplementedException();
         }
+        
         void IObserver<object?>.OnError(Exception error)
         {
             throw new NotImplementedException();
         }
+        
         void IObserver<object?>.OnNext(object? value)
         {
             OnControlValueUpdated(value);

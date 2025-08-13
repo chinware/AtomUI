@@ -29,10 +29,14 @@ public class AbstractMotion : IMotion
         Transitions           = new List<INotifyTransitionCompleted>();
     }
     
-    public void Run(MotionActorControl actor,
+    public void Run(BaseMotionActor actor,
                     Action? aboutToStart = null,
                     Action? completedAction = null)
     {
+        if (actor.IsFollowMode())
+        {
+            throw new InvalidOperationException("The Actor is in follow mode and cannot perform animations.");
+        }
         if (SpiritType == MotionSpiritType.Transition)
         {
             RunTransitions(actor, aboutToStart, completedAction);
@@ -41,7 +45,7 @@ public class AbstractMotion : IMotion
         RunAnimations(actor, aboutToStart, completedAction);
     }
 
-    private void RunAnimations(MotionActorControl actor,
+    private void RunAnimations(BaseMotionActor actor,
                                Action? aboutToStart = null,
                                Action? completedAction = null)
     {
@@ -52,6 +56,7 @@ public class AbstractMotion : IMotion
         actor.NotifyMotionPreStart();
         NotifyPreStart(actor);
         aboutToStart?.Invoke();
+        
         Dispatcher.UIThread.Post(() =>
         {
             Dispatcher.UIThread.InvokeAsync(async () =>
@@ -68,7 +73,7 @@ public class AbstractMotion : IMotion
         });
     }
     
-    private void RunTransitions(MotionActorControl actor,
+    private void RunTransitions(BaseMotionActor actor,
                                 Action? aboutToStart = null,
                                 Action? completedAction = null)
     {
@@ -129,7 +134,7 @@ public class AbstractMotion : IMotion
         {
             Duration = Duration,
             Easing   = Easing,
-            Property = MotionActorControl.OpacityProperty,
+            Property = BaseMotionActor.OpacityProperty,
             Delay    = TimeSpan.FromMilliseconds(0),
         };
         Transitions.Add(opacityTransition);
@@ -138,24 +143,24 @@ public class AbstractMotion : IMotion
         {
             Duration = Duration,
             Easing   = Easing,
-            Property = MotionActorControl.MotionTransformProperty,
+            Property = BaseMotionActor.MotionTransformProperty,
         };
         Transitions.Add(transformOperationsTransition);
     }
 
-    protected virtual void ConfigureMotionStartValue(MotionActorControl actor)
+    protected virtual void ConfigureMotionStartValue(BaseMotionActor actor)
     {
     }
 
-    protected virtual void ConfigureMotionEndValue(MotionActorControl actor)
+    protected virtual void ConfigureMotionEndValue(BaseMotionActor actor)
     {
     }
 
-    protected virtual void NotifyPreStart(MotionActorControl actor)
+    protected virtual void NotifyPreStart(BaseMotionActor actor)
     {
     }
 
-    protected virtual void NotifyCompleted(MotionActorControl actor)
+    protected virtual void NotifyCompleted(BaseMotionActor actor)
     {
     }
 

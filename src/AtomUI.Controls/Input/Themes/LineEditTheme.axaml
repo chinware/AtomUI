@@ -3,7 +3,8 @@
               xmlns:atom="https://atomui.net"
               xmlns:themes="using:AtomUI.Controls.Themes"
               TargetType="atom:LineEdit"
-              x:Class="AtomUI.Controls.Themes.LineEditTheme">
+              x:Class="AtomUI.Controls.Themes.LineEditTheme"
+              x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:TextBoxTheme TargetType="{x:Type atom:LineEdit}" />
     </ControlTheme.BasedOn>
@@ -72,4 +73,9 @@
             </atom:AddOnDecoratedBox>
         </ControlTemplate>
     </Setter>
+    
+    <Style Selector="^:is(atom|LineEdit)">
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+    </Style>
+    
 </ControlTheme>

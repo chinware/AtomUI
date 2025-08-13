@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
@@ -20,12 +19,12 @@ internal class FadeInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
     }
@@ -46,12 +45,12 @@ internal class FadeOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
     }

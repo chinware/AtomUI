@@ -4537,6 +4537,21 @@ public partial class AntDesignIconPackage
         return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CarryOutOutlined, twoToneColorInfo);
     }
 
+    public static AtomUI.IconPkg.Icon CheckBoldOutlined()
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CheckBoldOutlined);
+    }
+
+    public static AtomUI.IconPkg.Icon CheckBoldOutlined(ColorInfo colorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CheckBoldOutlined, colorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon CheckBoldOutlined(TwoToneColorInfo twoToneColorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CheckBoldOutlined, twoToneColorInfo);
+    }
+
     public static AtomUI.IconPkg.Icon CheckCircleOutlined()
     {
         return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.CheckCircleOutlined);
@@ -10117,6 +10132,96 @@ public partial class AntDesignIconPackage
         return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WifiOutlined, twoToneColorInfo);
     }
 
+    public static AtomUI.IconPkg.Icon WindowCloseOutlined()
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowCloseOutlined);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowCloseOutlined(ColorInfo colorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowCloseOutlined, colorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowCloseOutlined(TwoToneColorInfo twoToneColorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowCloseOutlined, twoToneColorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowMaximizedOutlined()
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowMaximizedOutlined);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowMaximizedOutlined(ColorInfo colorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowMaximizedOutlined, colorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowMaximizedOutlined(TwoToneColorInfo twoToneColorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowMaximizedOutlined, twoToneColorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowMinimizedOutlined()
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowMinimizedOutlined);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowMinimizedOutlined(ColorInfo colorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowMinimizedOutlined, colorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowMinimizedOutlined(TwoToneColorInfo twoToneColorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowMinimizedOutlined, twoToneColorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowPinOutlined()
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowPinOutlined);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowPinOutlined(ColorInfo colorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowPinOutlined, colorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowPinOutlined(TwoToneColorInfo twoToneColorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowPinOutlined, twoToneColorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowRestoreOutlined()
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowRestoreOutlined);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowRestoreOutlined(ColorInfo colorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowRestoreOutlined, colorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowRestoreOutlined(TwoToneColorInfo twoToneColorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowRestoreOutlined, twoToneColorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowUnpinOutlined()
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowUnpinOutlined);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowUnpinOutlined(ColorInfo colorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowUnpinOutlined, colorInfo);
+    }
+
+    public static AtomUI.IconPkg.Icon WindowUnpinOutlined(TwoToneColorInfo twoToneColorInfo)
+    {
+        return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowUnpinOutlined, twoToneColorInfo);
+    }
+
     public static AtomUI.IconPkg.Icon WindowsOutlined()
     {
         return AntDesignIconPackage.Current.BuildIcon(AntDesignIconKind.WindowsOutlined);
@@ -12806,6 +12911,7 @@ public partial class AntDesignIconPackage
         _iconInfoPool.Add((int)AntDesignIconKind.CaretRightOutlined, () => new IconInfo("CaretRightOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M715.8 493.5L335 165.1c-14.2-12.2-35-1.2-35 18.5v656.8c0 19.7 20.8 30.7 35 18.5l380.8-328.4c10.9-9.4 10.9-27.6 0-37z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CaretUpOutlined, () => new IconInfo("CaretUpOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CarryOutOutlined, () => new IconInfo("CarryOutOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v584zM688 420h-55.2c-5.1 0-10 2.5-13 6.6L468.9 634.4l-64.7-89c-3-4.1-7.8-6.6-13-6.6H336c-6.5 0-10.3 7.4-6.5 12.7l126.4 174a16.1 16.1 0 0 0 26 0l212.6-292.7c3.8-5.4 0-12.8-6.5-12.8z", true)}));
+        _iconInfoPool.Add((int)AntDesignIconKind.CheckBoldOutlined, () => new IconInfo("CheckBoldOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M1014.4 233.2l-84.6-84.6c-6-6-15.8-6-21.8 0L383.6 673.2 115.8 405.4c-6-6-15.8-6-21.8 0L9.6 490c-6 6-6 15.8 0 21.8l362.6 362.6c8.6 7.2 14.6 7.2 22.8 0l619.4-619.4C1020.4 249 1020.4 239.2 1014.4 233.2z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CheckCircleOutlined, () => new IconInfo("CheckCircleOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M699 353h-46.9c-10.2 0-19.9 4.9-25.9 13.3L469 584.3l-71.2-98.8c-6-8.3-15.6-13.3-25.9-13.3H325c-6.5 0-10.3 7.4-6.5 12.7l124.6 172.8a31.8 31.8 0 0 0 51.7 0l210.6-292c3.9-5.3.1-12.7-6.4-12.7z", true), new GeometryData("M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CheckSquareOutlined, () => new IconInfo("CheckSquareOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M433.1 657.7a31.8 31.8 0 0 0 51.7 0l210.6-292c3.8-5.3 0-12.7-6.5-12.7H642c-10.2 0-19.9 4.9-25.9 13.3L459 584.3l-71.2-98.8c-6-8.3-15.6-13.3-25.9-13.3H315c-6.5 0-10.3 7.4-6.5 12.7l124.6 172.8z", true), new GeometryData("M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.CheckOutlined, () => new IconInfo("CheckOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z", true)}));
@@ -13178,6 +13284,12 @@ public partial class AntDesignIconPackage
         _iconInfoPool.Add((int)AntDesignIconKind.WeiboOutlined, () => new IconInfo("WeiboOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M457.3 543c-68.1-17.7-145 16.2-174.6 76.2-30.1 61.2-1 129.1 67.8 151.3 71.2 23 155.2-12.2 184.4-78.3 28.7-64.6-7.2-131-77.6-149.2zm-52 156.2c-13.8 22.1-43.5 31.7-65.8 21.6-22-10-28.5-35.7-14.6-57.2 13.7-21.4 42.3-31 64.4-21.7 22.4 9.5 29.6 35 16 57.3zm45.5-58.5c-5 8.6-16.1 12.7-24.7 9.1-8.5-3.5-11.2-13.1-6.4-21.5 5-8.4 15.6-12.4 24.1-9.1 8.7 3.2 11.8 12.9 7 21.5zm334.5-197.2c15 4.8 31-3.4 35.9-18.3 11.8-36.6 4.4-78.4-23.2-109a111.39 111.39 0 0 0-106-34.3 28.45 28.45 0 0 0-21.9 33.8 28.39 28.39 0 0 0 33.8 21.8c18.4-3.9 38.3 1.8 51.9 16.7a54.2 54.2 0 0 1 11.3 53.3 28.45 28.45 0 0 0 18.2 36zm99.8-206c-56.7-62.9-140.4-86.9-217.7-70.5a32.98 32.98 0 0 0-25.4 39.3 33.12 33.12 0 0 0 39.3 25.5c55-11.7 114.4 5.4 154.8 50.1 40.3 44.7 51.2 105.7 34 159.1-5.6 17.4 3.9 36 21.3 41.7 17.4 5.6 36-3.9 41.6-21.2v-.1c24.1-75.4 8.9-161.1-47.9-223.9zM729 499c-12.2-3.6-20.5-6.1-14.1-22.1 13.8-34.7 15.2-64.7.3-86-28-40.1-104.8-37.9-192.8-1.1 0 0-27.6 12.1-20.6-9.8 13.5-43.5 11.5-79.9-9.6-101-47.7-47.8-174.6 1.8-283.5 110.6C127.3 471.1 80 557.5 80 632.2 80 775.1 263.2 862 442.5 862c235 0 391.3-136.5 391.3-245 0-65.5-55.2-102.6-104.8-118zM443 810.8c-143 14.1-266.5-50.5-275.8-144.5-9.3-93.9 99.2-181.5 242.2-195.6 143-14.2 266.5 50.5 275.8 144.4C694.4 709 586 796.6 443 810.8z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.WhatsAppOutlined, () => new IconInfo("WhatsAppOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M713.5 599.9c-10.9-5.6-65.2-32.2-75.3-35.8-10.1-3.8-17.5-5.6-24.8 5.6-7.4 11.1-28.4 35.8-35 43.3-6.4 7.4-12.9 8.3-23.8 2.8-64.8-32.4-107.3-57.8-150-131.1-11.3-19.5 11.3-18.1 32.4-60.2 3.6-7.4 1.8-13.7-1-19.3-2.8-5.6-24.8-59.8-34-81.9-8.9-21.5-18.1-18.5-24.8-18.9-6.4-0.4-13.7-0.4-21.1-0.4-7.4 0-19.3 2.8-29.4 13.7-10.1 11.1-38.6 37.8-38.6 92s39.5 106.7 44.9 114.1c5.6 7.4 77.7 118.6 188.4 166.5 70 30.2 97.4 32.8 132.4 27.6 21.3-3.2 65.2-26.6 74.3-52.5 9.1-25.8 9.1-47.9 6.4-52.5-2.7-4.9-10.1-7.7-21-13z", true), new GeometryData("M925.2 338.4c-22.6-53.7-55-101.9-96.3-143.3-41.3-41.3-89.5-73.8-143.3-96.3C630.6 75.7 572.2 64 512 64h-2c-60.6 0.3-119.3 12.3-174.5 35.9-53.3 22.8-101.1 55.2-142 96.5-40.9 41.3-73 89.3-95.2 142.8-23 55.4-34.6 114.3-34.3 174.9 0.3 69.4 16.9 138.3 48 199.9v152c0 25.4 20.6 46 46 46h152.1c61.6 31.1 130.5 47.7 199.9 48h2.1c59.9 0 118-11.6 172.7-34.3 53.5-22.3 101.6-54.3 142.8-95.2 41.3-40.9 73.8-88.7 96.5-142 23.6-55.2 35.6-113.9 35.9-174.5 0.3-60.9-11.5-120-34.8-175.6z m-151.1 438C704 845.8 611 884 512 884h-1.7c-60.3-0.3-120.2-15.3-173.1-43.5l-8.4-4.5H188V695.2l-4.5-8.4C155.3 633.9 140.3 574 140 513.7c-0.4-99.7 37.7-193.3 107.6-263.8 69.8-70.5 163.1-109.5 262.8-109.9h1.7c50 0 98.5 9.7 144.2 28.9 44.6 18.7 84.6 45.6 119 80 34.3 34.3 61.3 74.4 80 119 19.4 46.2 29.1 95.2 28.9 145.8-0.6 99.6-39.7 192.9-110.1 262.7z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.WifiOutlined, () => new IconInfo("WifiOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M723 620.5C666.8 571.6 593.4 542 513 542s-153.8 29.6-210.1 78.6a8.1 8.1 0 0 0-.8 11.2l36 42.9c2.9 3.4 8 3.8 11.4.9C393.1 637.2 450.3 614 513 614s119.9 23.2 163.5 61.5c3.4 2.9 8.5 2.5 11.4-.9l36-42.9c2.8-3.3 2.4-8.3-.9-11.2zm117.4-140.1C751.7 406.5 637.6 362 513 362s-238.7 44.5-327.5 118.4a8.05 8.05 0 0 0-1 11.3l36 42.9c2.8 3.4 7.9 3.8 11.2 1C308 472.2 406.1 434 513 434s205 38.2 281.2 101.6c3.4 2.8 8.4 2.4 11.2-1l36-42.9c2.8-3.4 2.4-8.5-1-11.3zm116.7-139C835.7 241.8 680.3 182 511 182c-168.2 0-322.6 59-443.7 157.4a8 8 0 0 0-1.1 11.4l36 42.9c2.8 3.3 7.8 3.8 11.1 1.1C222 306.7 360.3 254 511 254c151.8 0 291 53.5 400 142.7 3.4 2.8 8.4 2.3 11.2-1.1l36-42.9c2.9-3.4 2.4-8.5-1.1-11.3zM448 778a64 64 0 1 0 128 0 64 64 0 1 0-128 0z", true)}));
+        _iconInfoPool.Add((int)AntDesignIconKind.WindowCloseOutlined, () => new IconInfo("WindowCloseOutlined", IconThemeType.Outlined, new Rect(0, 0, 24, 24), new List<GeometryData>{new GeometryData("M6.4,19L5,17.6l5.6-5.6L5,6.4L6.4,5l5.6,5.6L17.6,5L19,6.4L13.4,12l5.6,5.6L17.6,19L12,13.4L6.4,19z", true)}));
+        _iconInfoPool.Add((int)AntDesignIconKind.WindowMaximizedOutlined, () => new IconInfo("WindowMaximizedOutlined", IconThemeType.Outlined, new Rect(0, 0, 24, 24), new List<GeometryData>{new GeometryData("M5,21c-0.5,0-1-0.2-1.4-0.6S3,19.5,3,19V5c0-0.5,0.2-1,0.6-1.4S4.5,3,5,3h14c0.6,0,1,0.2,1.4,0.6S21,4.4,21,5  v14c0,0.5-0.2,1-0.6,1.4S19.6,21,19,21H5z M5,19h14V5H5V19z M5,19V5V19z", true)}));
+        _iconInfoPool.Add((int)AntDesignIconKind.WindowMinimizedOutlined, () => new IconInfo("WindowMinimizedOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M0 455.111111h1024v113.777778H0z", true)}));
+        _iconInfoPool.Add((int)AntDesignIconKind.WindowPinOutlined, () => new IconInfo("WindowPinOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M768 128v85.333333h-42.666667v256l85.333334 128v85.333334h-256v298.666666h-85.333334v-298.666666H213.333333v-85.333334l85.333334-128V213.333333H256V128h512zM384 213.333333v281.856L315.904 597.333333h392.192L640 495.189333V213.333333H384z", true)}));
+        _iconInfoPool.Add((int)AntDesignIconKind.WindowRestoreOutlined, () => new IconInfo("WindowRestoreOutlined", IconThemeType.Outlined, new Rect(0, 0, 24, 24), new List<GeometryData>{new GeometryData("M17.4,6.6C17,6.2,16.5,6,16,6H4C3.5,6,3,6.2,2.6,6.6S2,7.5,2,8v12c0,0.5,0.2,1,0.6,1.4S3.5,22,4,22h12 c0.5,0,1-0.2,1.4-0.6S18,20.5,18,20V8C18,7.5,17.8,7,17.4,6.6z M16,18H4V8h12V18z", true), new GeometryData("M20,2c0.6,0,1,0.2,1.4,0.6S22,3.4,22,4v14h-2V4H6V2H20z", true), new GeometryData("M16,20V8V20z", true)}));
+        _iconInfoPool.Add((int)AntDesignIconKind.WindowUnpinOutlined, () => new IconInfo("WindowUnpinOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M616.277333 618.666667H554.666667v341.333333h-85.333334V618.666667H170.666667v-85.333334l128-158.784v-73.493333L114.602667 116.992 174.933333 56.661333 929.173333 810.88l-60.330666 60.330667L616.256 618.666667zM384.64 387.050667V405.333333l-105.856 128h252.16l-146.304-146.282666zM301.781333 64H810.666667v85.333333h-85.333334v224l128 160v82.218667L639.957333 402.176V149.333333H387.136l-85.333333-85.354666z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.WindowsOutlined, () => new IconInfo("WindowsOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M120.1 770.6L443 823.2V543.8H120.1v226.8zm63.4-163.5h196.2v141.6l-196.2-31.9V607.1zm340.3 226.5l382 62.2v-352h-382v289.8zm63.4-226.5h255.3v214.4l-255.3-41.6V607.1zm-63.4-415.7v288.8h382V128.1l-382 63.3zm318.7 225.5H587.3V245l255.3-42.3v214.2zm-722.4 63.3H443V201.9l-322.9 53.5v224.8zM183.5 309l196.2-32.5v140.4H183.5V309z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.WomanOutlined, () => new IconInfo("WomanOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M712.8 548.8c53.6-53.6 83.2-125 83.2-200.8 0-75.9-29.5-147.2-83.2-200.8C659.2 93.6 587.8 64 512 64s-147.2 29.5-200.8 83.2C257.6 200.9 228 272.1 228 348c0 63.8 20.9 124.4 59.4 173.9 7.3 9.4 15.2 18.3 23.7 26.9 8.5 8.5 17.5 16.4 26.8 23.7 39.6 30.8 86.3 50.4 136.1 57V736H360c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h114v140c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V812h114c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8H550V629.5c61.5-8.2 118.2-36.1 162.8-80.7zM512 556c-55.6 0-107.7-21.6-147.1-60.9C325.6 455.8 304 403.6 304 348s21.6-107.7 60.9-147.1C404.2 161.5 456.4 140 512 140s107.7 21.6 147.1 60.9C698.4 240.2 720 292.4 720 348s-21.6 107.7-60.9 147.1C619.7 534.4 567.6 556 512 556z", true)}));
         _iconInfoPool.Add((int)AntDesignIconKind.XOutlined, () => new IconInfo("XOutlined", IconThemeType.Outlined, new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M818 800 498.11 333.745l.546.437L787.084 0h-96.385L455.738 272 269.15 0H16.367l298.648 435.31-.036-.037L0 800h96.385l261.222-302.618L565.217 800zM230.96 72.727l448.827 654.546h-76.38L154.217 72.727z", true)}));
@@ -13338,7 +13450,7 @@ public partial class AntDesignIconPackage
         _iconInfoPool.Add((int)AntDesignIconKind.WalletTwoTone, () => new IconInfo("WalletTwoTone", new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 464H528V448h312v128zm0-192H496c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h344v200H184V184h656v200z", true), new GeometryData("M528 576h312V448H528v128zm92-104c22.1 0 40 17.9 40 40s-17.9 40-40 40-40-17.9-40-40 17.9-40 40-40z", false), new GeometryData("M580 512a40 40 0 1 0 80 0 40 40 0 1 0-80 0z", true), new GeometryData("M184 840h656V640H496c-17.7 0-32-14.3-32-32V416c0-17.7 14.3-32 32-32h344V184H184v656z", false)}));
         _iconInfoPool.Add((int)AntDesignIconKind.WarningTwoTone, () => new IconInfo("WarningTwoTone", new Rect(0, 0, 1024, 1024), new List<GeometryData>{new GeometryData("M955.7 856l-416-720c-6.2-10.7-16.9-16-27.7-16s-21.6 5.3-27.7 16l-416 720C56 877.4 71.4 904 96 904h832c24.6 0 40-26.6 27.7-48zm-783.5-27.9L512 239.9l339.8 588.2H172.2z", true), new GeometryData("M172.2 828.1h679.6L512 239.9 172.2 828.1zM560 720a48.01 48.01 0 0 1-96 0 48.01 48.01 0 0 1 96 0zm-16-304v184c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V416c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8z", false), new GeometryData("M464 720a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm16-304v184c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V416c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8z", true)}));
         IconThemeRanges.Add(IconThemeType.Filled, (1, 235));
-        IconThemeRanges.Add(IconThemeType.Outlined, (236, 683));
-        IconThemeRanges.Add(IconThemeType.TwoTone, (684, 833));
+        IconThemeRanges.Add(IconThemeType.Outlined, (236, 690));
+        IconThemeRanges.Add(IconThemeType.TwoTone, (691, 840));
     }
 }

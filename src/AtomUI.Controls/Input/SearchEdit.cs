@@ -1,8 +1,12 @@
-﻿using AtomUI.Theme;
+﻿﻿using AtomUI.Controls.Themes;
+using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -36,6 +40,19 @@ public class SearchEdit : LineEdit
 
     #endregion
 
+    #region 公共事件定义
+
+    public static readonly RoutedEvent<RoutedEventArgs> SearchButtonClickEvent =
+        RoutedEvent.Register<SearchEdit, RoutedEventArgs>(nameof(SearchButtonClick), RoutingStrategies.Bubble);
+
+    public event EventHandler<RoutedEventArgs>? SearchButtonClick
+    {
+        add => AddHandler(SearchButtonClickEvent, value);
+        remove => RemoveHandler(SearchButtonClickEvent, value);
+    }
+
+    #endregion
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -43,5 +60,21 @@ public class SearchEdit : LineEdit
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        var decoratedBox = e.NameScope.Find<SearchEditDecoratedBox>(TextBoxThemeConstants.DecoratedBoxPart);
+        if (decoratedBox != null)
+        {
+            decoratedBox.OwningSearchEdit = this;
+        }
+    }
+
+    internal void NotifySearchButtonClicked()
+    {
+        var eventArgs = new RoutedEventArgs(SearchButtonClickEvent, this);
+        RaiseEvent(eventArgs);
     }
 }

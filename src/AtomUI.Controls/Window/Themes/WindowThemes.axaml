@@ -1,6 +1,9 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="WindowTheme.axaml"/>
+        <ResourceInclude Source="WindowResizerTheme.axaml"/>
+        <ResourceInclude Source="WindowBuddyLayer.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

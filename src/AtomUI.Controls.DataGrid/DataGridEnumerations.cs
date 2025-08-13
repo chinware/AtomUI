@@ -41,6 +41,18 @@ public enum DataGridGridLinesVisibility
     All = 3,
 }
 
+/// <summary>
+/// Determines whether the inner cells' vertical/horizontal gridlines are shown or not.
+/// </summary>
+[Flags]
+public enum DataGridGridPaginationVisibility
+{
+    None = 0x00,
+    Top = 0x01,
+    Bottom = 0x02,
+    All = Top | Bottom,
+}
+
 public enum DataGridEditingUnit
 {
     Cell = 0,

@@ -19,13 +19,13 @@ internal class ZoomInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.2);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
@@ -47,19 +47,19 @@ internal class ZoomOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.2);
     }
     
-    protected override void NotifyCompleted(MotionActorControl actor)
+    protected override void NotifyCompleted(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = null;
@@ -78,16 +78,16 @@ internal class ZoomBigInMotion : AbstractMotion
     protected override void ConfigureTransitions()
     {
         base.ConfigureTransitions();
-        RenderTransformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
+        RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.01;
-        actor.MotionTransform = BuildScaleTransform(0.85);
+        actor.MotionTransform = BuildScaleTransform(0.35);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
@@ -109,19 +109,19 @@ internal class ZoomBigOutMotion : AbstractMotion
         RenderTransformOrigin = RelativePoint.Center;
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.01;
         actor.MotionTransform = BuildScaleTransform(0.85);
     }
     
-    protected override void NotifyCompleted(MotionActorControl actor)
+    protected override void NotifyCompleted(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = null;
@@ -143,13 +143,13 @@ internal class ZoomUpInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.5, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
@@ -171,19 +171,19 @@ internal class ZoomUpOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.5, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
     
-    protected override void NotifyCompleted(MotionActorControl actor)
+    protected override void NotifyCompleted(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = null;
@@ -205,13 +205,13 @@ internal class ZoomLeftInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.5, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
@@ -233,19 +233,19 @@ internal class ZoomLeftOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.5, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
     
-    protected override void NotifyCompleted(MotionActorControl actor)
+    protected override void NotifyCompleted(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = null;
@@ -267,13 +267,13 @@ internal class ZoomRightInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
@@ -295,19 +295,19 @@ internal class ZoomRightOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(1.0, 0.5, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
     
-    protected override void NotifyCompleted(MotionActorControl actor)
+    protected override void NotifyCompleted(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = null;
@@ -329,13 +329,13 @@ internal class ZoomDownInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
@@ -357,19 +357,19 @@ internal class ZoomDownOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.5, 1.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.8);
     }
     
-    protected override void NotifyCompleted(MotionActorControl actor)
+    protected override void NotifyCompleted(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = null;

@@ -1,7 +1,8 @@
 param (
     [string]$localSourcesDir = "D:/nuget.local",
     [string]$buildType = "Release",
-    [string]$preReleaseTag
+    [string]$preReleaseTag,
+    [bool]$nativeOnly=$false
 )
 
 function Push-NuGetPackages {
@@ -42,14 +43,21 @@ function Push-NuGetPackages {
     }
 }
 
-dotnet build -v diag --configuration $buildType ../packages/AtomUI/AtomUI.csproj
-dotnet pack --no-build --configuration $buildType ../packages/AtomUI/AtomUI.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
+dotnet build -v diag --configuration $buildType ../src/AtomUI.Native/AtomUI.Native.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Native/AtomUI.Native.csproj -v:diag
+Push-NuGetPackages -Source $localSourcesDir
 
-Push-NuGetPackages -Source $localSourcesDir -Confirm:$false
+if (!$nativeOnly) {
+    dotnet build -v diag --configuration $buildType ../packages/AtomUI/AtomUI.csproj
+    dotnet pack --no-build --configuration $buildType ../packages/AtomUI/AtomUI.csproj
+    dotnet pack --no-build --configuration $buildType ../src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj
+    dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
 
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+    Push-NuGetPackages -Source $localSourcesDir
 
-Push-NuGetPackages -Source $localSourcesDir -Confirm:$false
+    dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+    dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+
+    Push-NuGetPackages -Source $localSourcesDir
+}
+

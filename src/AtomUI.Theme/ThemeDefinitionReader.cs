@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Diagnostics;
+using System.Xml;
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Platform;
 
@@ -17,6 +18,7 @@ internal class ThemeDefinitionReader
     private bool _inControlTokenCtx;
 
     private const string ThemeElementName = "Theme";
+    private const string IsDefaultAttrName = "IsDefault";
     private const string AlgorithmsElementName = "Algorithms";
     private const string SharedTokensElementName = "SharedTokens";
     private const string ControlTokensElementName = "ControlTokens";
@@ -145,23 +147,43 @@ internal class ThemeDefinitionReader
 
     private void HandleStartThemeElement(XmlReader reader)
     {
+        Debug.Assert(_currentDef != null);
         var displayName = reader.GetAttribute(NameAttrName);
-        if (displayName is null)
+        if (string.IsNullOrWhiteSpace(displayName))
         {
             EmitRequiredAttrError(reader, NameAttrName);
         }
         else
         {
-            _currentDef!.DisplayName = displayName;
+            _currentDef.DisplayName = displayName;
+        }
+        var isDefaultStr = reader.GetAttribute(IsDefaultAttrName);
+        if (string.IsNullOrWhiteSpace(isDefaultStr))
+        {
+            EmitRequiredAttrError(reader, IsDefaultAttrName);
+        }
+        else
+        {
+            isDefaultStr = isDefaultStr.Trim().ToLower();
+            if (isDefaultStr == "true")
+            {
+                _currentDef.IsDefault = true;
+            }
+            else
+            {
+                _currentDef.IsDefault = false;
+            }
         }
     }
 
     private void HandleStartAlgorithmsElement(XmlReader reader)
     {
+        Debug.Assert(_currentDef != null);
         // 这样处理方便一点
         var algorithmsStr = reader.ReadElementContentAsString();
         var algorithms    = algorithmsStr.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        _currentDef!.Algorithms = algorithms.Select(s => s.Trim()).Distinct().ToList();
+        var algorithmNames = algorithms.Select(s => s.Trim()).Distinct();
+        _currentDef.Algorithms = Theme.CheckAlgorithmNames(algorithmNames.ToList());
     }
 
     private void HandleStartControlTokenElement(XmlReader reader)

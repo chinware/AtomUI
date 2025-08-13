@@ -158,7 +158,7 @@ public class NotificationCard : ContentControl,
     private bool _isClosing;
     private readonly WindowNotificationManager _notificationManager;
     private IconButton? _closeButton;
-    private MotionActorControl? _motionActor;
+    private BaseMotionActor? _motionActor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotificationCard" /> class.
@@ -166,7 +166,6 @@ public class NotificationCard : ContentControl,
     public NotificationCard(WindowNotificationManager manager)
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         _notificationManager = manager;
     }
     
@@ -193,7 +192,7 @@ public class NotificationCard : ContentControl,
         base.OnApplyTemplate(e);
 
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardThemeConstants.CloseButtonPart);
-        _motionActor = e.NameScope.Find<MotionActorControl>(NotificationCardThemeConstants.MotionActorPart);
+        _motionActor = e.NameScope.Find<BaseMotionActor>(NotificationCardThemeConstants.MotionActorPart);
 
         if (_closeButton is not null)
         {
@@ -209,19 +208,18 @@ public class NotificationCard : ContentControl,
         {
             return;
         }
-
+        
         if (IsMotionEnabled)
         {
             AbstractMotion? motion;
             if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
             {
-                motion = new NotificationMoveLeftInMotion(Position == NotificationPosition.TopLeft, AnimationMaxOffsetX,
+                motion = new NotificationMoveLeftInMotion(AnimationMaxOffsetX,
                     _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
             {
-                motion = new NotificationMoveRightInMotion(Position == NotificationPosition.TopRight,
-                    AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+                motion = new NotificationMoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
             }
             else if (Position == NotificationPosition.TopCenter)
             {
@@ -233,13 +231,7 @@ public class NotificationCard : ContentControl,
                 motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
                     new CubicEaseOut());
             }
-
-            _motionActor.IsVisible = false;
-            MotionInvoker.Invoke(_motionActor, motion, () => { _motionActor.IsVisible = true; });
-        }
-        else
-        {
-            _motionActor.IsVisible = true;
+            motion.Run(_motionActor);
         }
     }
 
@@ -274,7 +266,7 @@ public class NotificationCard : ContentControl,
                     new CubicEaseIn());
             }
         
-            MotionInvoker.Invoke(_motionActor, motion, null, () => { IsClosed = true; });
+            motion.Run(_motionActor, null, () => { IsClosed = true; });
         }
         else
         {

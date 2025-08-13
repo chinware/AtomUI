@@ -15,14 +15,13 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
 [TemplatePart(DataGridCellThemeConstants.RightGridLinePart, typeof(Rectangle))]
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Current, StdPseudoClass.Edited, StdPseudoClass.Invalid,
     StdPseudoClass.Focus)]
-public class DataGridCell : ContentControl, ICustomHitTest
+public class DataGridCell : ContentControl
 {
     #region 公共属性定义
 
@@ -51,6 +50,12 @@ public class DataGridCell : ContentControl, ICustomHitTest
             nameof(IsSorting),
             o => o.IsSorting, 
             (o, v) => o.IsSorting = v);
+    
+    internal static readonly DirectProperty<DataGridCell, bool> OwningColumnDraggingProperty =
+        AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
+            nameof(OwningColumnDragging),
+            o => o.OwningColumnDragging, 
+            (o, v) => o.OwningColumnDragging = v);
 
     internal static readonly DirectProperty<DataGridCell, bool> IsFrozenProperty =
         AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
@@ -82,6 +87,14 @@ public class DataGridCell : ContentControl, ICustomHitTest
     {
         get => _isSorting;
         internal set => SetAndRaise(IsSortingProperty, ref _isSorting, value);
+    }
+    
+    bool _owningColumnDragging = false;
+
+    public bool OwningColumnDragging
+    {
+        get => _owningColumnDragging;
+        internal set => SetAndRaise(OwningColumnDraggingProperty, ref _owningColumnDragging, value);
     }
     
     bool _isFrozen = false;
@@ -232,6 +245,7 @@ public class DataGridCell : ContentControl, ICustomHitTest
         }
 
         OwningGrid.NotifyCellPointerPressed(new DataGridCellPointerPressedEventArgs(this, OwningRow, OwningColumn, e));
+        
         if (e.Handled)
         {
             return;
@@ -246,8 +260,12 @@ public class DataGridCell : ContentControl, ICustomHitTest
 
             if (OwningRow != null)
             {
-                var handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, ColumnIndex, OwningRow.Slot, !e.Handled);
-
+                var handled = false;
+                if (OwningColumn != null && OwningColumn.IsEditable())
+                {
+                    handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, ColumnIndex, OwningRow.Slot, !e.Handled);
+                }
+                
                 // Do not handle PointerPressed with touch or pen,
                 // so we can start scroll gesture on the same event.
                 if (e.Pointer.Type != PointerType.Touch && e.Pointer.Type != PointerType.Pen)
@@ -344,6 +362,20 @@ public class DataGridCell : ContentControl, ICustomHitTest
                     return false;
                 },
                 BindingPriority.Template));
+            _compositeDisposable.Add(BindUtils.RelayBind(OwningColumn.HeaderCell,
+                DataGridColumnHeader.HeaderDragModeProperty,
+                this,
+                OwningColumnDraggingProperty,
+                (v) =>
+                {
+                    if (OwningColumn is not DataGridFillerColumn)
+                    {
+                        return v == DataGridColumnHeader.DragMode.Reorder;
+                    }
+
+                    return false;
+                },
+                BindingPriority.Template));
         }
     }
 
@@ -352,10 +384,5 @@ public class DataGridCell : ContentControl, ICustomHitTest
         base.OnDetachedFromVisualTree(e);
         _compositeDisposable.Dispose();
         _compositeDisposable.Clear();
-    }
-
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 }

@@ -250,6 +250,12 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
         }
     }
 
+    internal int GetDisplayedColumnCount()
+    {
+        Debug.Assert(ItemsInternal != null);
+        return DisplayIndexMap.Count;
+    }
+
     /// <summary>
     /// Returns an enumeration of all columns that meet the criteria of the filter predicate.
     /// </summary>
@@ -406,6 +412,34 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
         return GetDisplayedColumns(filter);
     }
 
+    internal double GetVisibleLeftFrozenEdgedColumnsWidth()
+    {
+        Debug.Assert(ItemsInternal != null);
+        double visibleFrozenColumnsWidth = 0;
+        for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
+        {
+            if (ItemsInternal[columnIndex].IsVisible && ItemsInternal[columnIndex].IsLeftFrozen)
+            {
+                visibleFrozenColumnsWidth += ItemsInternal[columnIndex].ActualWidth;
+            }
+        }
+        return visibleFrozenColumnsWidth;
+    }
+    
+    internal double GetVisibleRightFrozenEdgedColumnsWidth()
+    {
+        Debug.Assert(ItemsInternal != null);
+        double visibleFrozenColumnsWidth = 0;
+        for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
+        {
+            if (ItemsInternal[columnIndex].IsVisible && ItemsInternal[columnIndex].IsRightFrozen)
+            {
+                visibleFrozenColumnsWidth += ItemsInternal[columnIndex].ActualWidth;
+            }
+        }
+        return visibleFrozenColumnsWidth;
+    }
+    
     internal double GetVisibleFrozenEdgedColumnsWidth()
     {
         Debug.Assert(ItemsInternal != null);
@@ -446,12 +480,14 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
 
             Debug.Assert(ItemsInternal != null);
             DataGridColumn          dataGridColumn            = ItemsInternal[columnIndexWithFiller];
-            DataGridCellCoordinates newCurrentCellCoordinates = _owningGrid.OnRemovingColumn(dataGridColumn);
+            DataGridCellCoordinates newCurrentCellCoordinates = _owningGrid.HandleRemovingColumn(dataGridColumn);
             ItemsInternal.RemoveAt(columnIndexWithFiller);
             if (dataGridColumn.IsVisible)
             {
                 VisibleEdgedColumnsWidth -= dataGridColumn.ActualWidth;
             }
+
+            dataGridColumn.NotifyOwningGridAboutToDetached();
             dataGridColumn.OwningGrid = null;
             dataGridColumn.RemoveEditingElement();
 

@@ -38,24 +38,22 @@ $env:XMAKE_COLORTERM = 'nocolor'
 $buildType = $buildType.ToLower()
 
 if ($IsWindows) {
-     xmake config --toolchain=clang --project=$sourceDir --builddir=$buildDir -p msys -a x86_64 -m $buildType -v
-     xmake build
-     xmake install --installdir=$installPrefix
-     Copy-Item -Path $installPrefix/x86_64/lib/$libName -Destination $deployDir
+    
+    cmake -B $buildDir -S $sourceDir -DCMAKE_INSTALL_PREFIX="$installPrefix" -DCMAKE_BUILD_TYPE="$buildType" -G Ninja
+    cmake --build $buildDir
+    cmake --install $buildDir --config $buildType
+    Copy-Item -Path $installPrefix/bin/$libName -Destination $deployDir
+    
 } elseif ($IsMacOS) {
-    xmake config --project=$sourceDir --builddir=$buildDir -p macosx -a arm64 -m $buildType
-    xmake build
-    xmake install --installdir=$installPrefix
-    xmake config --project=$sourceDir --builddir=$buildDir -p macosx -a x86_64 -m $buildType
-    xmake build
-    xmake install --installdir=$installPrefix
-    Write-Output "generate universal binary"
-    lipo -create $installPrefix/arm64/lib/$libName $installPrefix/x86_64/lib/$libName -output $deployDir/$libName
+    cmake -B $buildDir -S $sourceDir -DCMAKE_INSTALL_PREFIX="$installPrefix" -DCMAKE_BUILD_TYPE="$buildType" -G Ninja -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+    cmake --build $buildDir
+    cmake --install $buildDir --config $buildType
+    Copy-Item -Path $installPrefix/lib/$libName -Destination $deployDir
 } elseif ($IsLinux) {
-    xmake config --project=$sourceDir --builddir=$buildDir -p linux -a x86_64 -m $buildType
-    xmake build
-    xmake install --installdir=$installPrefix
-    Copy-Item -Path $installPrefix/x86_64/lib/$libName -Destination $deployDir
+    cmake -B $buildDir -S $sourceDir -DCMAKE_INSTALL_PREFIX="$installPrefix" -DCMAKE_BUILD_TYPE="$buildType"
+    cmake --build $buildDir
+    cmake --install $buildDir --config $buildType
+    Copy-Item -Path $installPrefix/lib/$libName -Destination $deployDir
 } else {
     $osInfo = $PSVersionTable.OS
     throw "Unsupported operating system: $osInfo. Only supported on Windows, Linux or macOS."

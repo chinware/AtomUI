@@ -19,10 +19,10 @@ internal class FlyoutStateHelper : AvaloniaObject
         AvaloniaProperty.Register<FlyoutStateHelper, PopupFlyoutBase?>(nameof(Flyout));
 
     public static readonly StyledProperty<int> MouseEnterDelayProperty =
-        AvaloniaProperty.Register<FlyoutStateHelper, int>(nameof(MouseEnterDelay), 100);
+        AvaloniaProperty.Register<FlyoutStateHelper, int>(nameof(MouseEnterDelay), 200);
 
     public static readonly StyledProperty<int> MouseLeaveDelayProperty =
-        AvaloniaProperty.Register<FlyoutStateHelper, int>(nameof(MouseLeaveDelay), 100);
+        AvaloniaProperty.Register<FlyoutStateHelper, int>(nameof(MouseLeaveDelay), 200);
 
     public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
         AvaloniaProperty.Register<FlyoutStateHelper, FlyoutTriggerType>(nameof(TriggerType), FlyoutTriggerType.Click);
@@ -98,6 +98,7 @@ internal class FlyoutStateHelper : AvaloniaObject
     {
         if (Flyout is IPopupHostProvider popupHostProvider)
         {
+
             var host = popupHostProvider.PopupHost;
             if (host is PopupRoot popupRoot)
             {
@@ -122,6 +123,10 @@ internal class FlyoutStateHelper : AvaloniaObject
     private void HandleFlyoutClosed(object? sender, EventArgs e)
     {
         FlyoutClosed?.Invoke(this, EventArgs.Empty);
+        // 处理被动关闭
+        _flyoutCloseDetectDisposable?.Dispose();
+        _flyoutCloseDetectDisposable = null;
+        StopMouseEnterTimer();
     }
 
     private void StartMouseEnterTimer()
@@ -202,7 +207,9 @@ internal class FlyoutStateHelper : AvaloniaObject
         {
             _subscriptions.Add(InputElement.IsPointerOverProperty.Changed.Subscribe(args =>
             {
-                if (args.Sender == AnchorTarget)
+                if (args.Sender == AnchorTarget && 
+                    AnchorTarget.IsEnabled &&
+                    AnchorTarget.IsVisible)
                 {
                     HandleAnchorTargetHover(args);
                 }
@@ -225,7 +232,8 @@ internal class FlyoutStateHelper : AvaloniaObject
             }
             else
             {
-                HideFlyout();
+                StopMouseEnterTimer();
+                StartMouseLeaveTimer();
             }
         }
     }
@@ -240,7 +248,10 @@ internal class FlyoutStateHelper : AvaloniaObject
         _flyoutCloseDetectDisposable?.Dispose();
         StopMouseEnterTimer();
         StopMouseLeaveTimer();
-        Flyout.Hide();
+        if (Flyout.IsOpen)
+        {
+            Flyout.Hide();
+        }
         if (immediately || MouseEnterDelay == 0)
         {
             FlyoutAboutToShow?.Invoke(this, EventArgs.Empty);
@@ -258,7 +269,6 @@ internal class FlyoutStateHelper : AvaloniaObject
         {
             return;
         }
-        
         _flyoutCloseDetectDisposable?.Dispose();
         _flyoutCloseDetectDisposable = null;
         StopMouseEnterTimer();
@@ -278,13 +288,16 @@ internal class FlyoutStateHelper : AvaloniaObject
     {
         if (args is RawPointerEventArgs pointerEventArgs)
         {
-            if (AnchorTarget is not null && pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
+            if (AnchorTarget is not null && 
+                AnchorTarget.IsEnabled && 
+                AnchorTarget.IsVisible && 
+                pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
             {
                 if (Flyout is null)
                 {
                     return;
                 }
-
+               
                 if (!Flyout.IsOpen && TopLevel.GetTopLevel(AnchorTarget) == args.Root)
                 {
                     if (OpenFlyoutPredicate is not null)
@@ -335,38 +348,52 @@ internal class FlyoutStateHelper : AvaloniaObject
 
     private void DetectWhenToClosePopup(RawInputEventArgs args)
     {
-        if (args is RawPointerEventArgs pointerEventArgs)
+        if (TriggerType == FlyoutTriggerType.Hover)
         {
-            if (Flyout is null)
+            if (args is RawPointerEventArgs pointerEventArgs)
             {
-                return;
-            }
-
-            if (Flyout.IsOpen)
-            {
-                var found = false;
-                if (pointerEventArgs.Root is PopupRoot popupRoot)
+                if (Flyout is null)
                 {
-                    var current = popupRoot.Parent;
-                    while (current is not null)
+                    return;
+                }
+
+                if (Flyout.IsOpen)
+                {
+                    var        found     = false;
+                    PopupRoot? popupRoot = null;
+                    if (pointerEventArgs.Root is PopupBuddyLayer buddyLayer)
                     {
-                        if (current == AnchorTarget)
+                        if (buddyLayer.BuddyPopup.Host != null)
                         {
-                            found = true;
+                            popupRoot = buddyLayer.BuddyPopup.Host as PopupRoot;
                         }
-
-                        current = current.Parent;
+             
                     }
-                }
-                else if (CheckRootAncestor(pointerEventArgs.Root))
-                {
-                    found = true;
-                }
+                    popupRoot ??= pointerEventArgs.Root as PopupRoot;
+                    if (popupRoot is not null)
+                    {
+                        var current = popupRoot.Parent;
+                        while (current is not null)
+                        {
+                            if (current == AnchorTarget)
+                            {
+                                found = true;
+                                break;
+                            }
 
-                if (!found)
-                {
-                    FlyoutPassiveAboutToClose?.Invoke(this, EventArgs.Empty);
-                    HideFlyout();
+                            current = current.Parent;
+                        }
+                    }
+                    else if (CheckRootAncestor(pointerEventArgs.Root))
+                    {
+                        found = true;
+                    }
+
+                    if (!found)
+                    {
+                        FlyoutPassiveAboutToClose?.Invoke(this, EventArgs.Empty);
+                        HideFlyout();
+                    }
                 }
             }
         }

@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -88,14 +89,12 @@ public class MenuFlyoutPresenter : MenuBase,
         : base(new DefaultMenuInteractionHandler(true))
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     public MenuFlyoutPresenter(IMenuInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     public override void Close()
@@ -183,7 +182,6 @@ public class MenuFlyoutPresenter : MenuBase,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-
         foreach (var i in LogicalChildren)
         {
             if (i is MenuItem menuItem)
@@ -214,6 +212,11 @@ public class MenuFlyoutPresenter : MenuBase,
         }
 
         return Bounds;
+    }
+
+    public IBrush? GetMaskBackground()
+    {
+        return _arrowDecoratedBox?.Background;
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

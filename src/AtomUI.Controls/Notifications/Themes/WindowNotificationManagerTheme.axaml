@@ -11,6 +11,9 @@
             </ControlTemplate>
         </Setter>
         
+        <Setter Property="IsMotionEnabled"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         

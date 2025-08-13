@@ -3,7 +3,6 @@ using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Reflection;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -16,8 +15,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 [TemplatePart(AddOnDecoratedInnerBoxThemeConstants.ContentPresenterPart, typeof(ContentPresenter), IsRequired = true)]
-public class AddOnDecoratedInnerBox : ContentControl,
-                                      IMotionAwareControl
+public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -158,12 +156,7 @@ public class AddOnDecoratedInnerBox : ContentControl,
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
     private Border? _decorator;
-
-    public AddOnDecoratedInnerBox()
-    {
-        this.BindMotionProperties();
-    }
-
+    
     protected virtual void NotifyClearButtonClicked()
     {
     }

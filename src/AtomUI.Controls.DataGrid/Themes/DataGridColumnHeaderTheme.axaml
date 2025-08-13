@@ -4,11 +4,11 @@
               xmlns:converters="using:AtomUI.Controls.Converters"
               xmlns:themes="using:AtomUI.Controls.Themes"
               x:Class="AtomUI.Controls.Themes.DataGridColumnHeaderTheme"
+              x:ClassModifier="internal"
               xmlns:atom="https://atomui.net">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DataGridColumnHeader">
             <Border Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FramePart}"
-                    Background="{TemplateBinding Background}"
                     Padding="{TemplateBinding Padding}">
                 <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.HeaderRootLayoutPart}">
                     <Decorator Name="{x:Static atom:DataGridColumnHeaderThemeConstants.ContentDecoratorPart}">
@@ -90,8 +90,8 @@
         <Setter Property="atom:ToolTip.IsCustomShowAndHide" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="ClipToBounds" Value="False"/>
-
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
         <Style Selector="^[ShowSorterTooltip=True]">
             <Setter Property="atom:ToolTip.ServiceEnabled" Value="True" />
         </Style>
@@ -148,24 +148,58 @@
         <!-- BuildSortableColumnStyle 开始 -->
         <Style Selector="^[CanUserSort=True]">
             <Style Selector="^:sort-ascending, ^:sort-descending">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
+                </Style>
             </Style>
 
             <Setter Property="Cursor" Value="Hand" />
             <Style Selector="^:pointerover">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
+                </Style>
             </Style>
         </Style>
 
         <!-- BuildSortableColumnStyle 结束 -->
-        
-        <Style Selector="^[IsShowFrozenShadow=True]">
+        <Style Selector="^ /template/ Border#PART_Frame">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="^:drag-indicator">
             <Style Selector="^ /template/ Border#PART_Frame">
-                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}"/>
+                <Setter Property="Background" Value="#808080" />
             </Style>
         </Style>
         
+        <Style Selector="^[HeaderDragMode=Reorder]">
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.ColumnReorderActiveBg}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsShowFrozenShadow=True]">
+
+            <Style Selector="^ /template/ Border#PART_Frame">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
+            </Style>
+
+            <Style Selector="^[FrozenShadowPosition=Left]">
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="BoxShadow"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[FrozenShadowPosition=Right]">
+                <Style Selector="^ /template/ Border#PART_Frame">
+                    <Setter Property="BoxShadow"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.RightFrozenShadows}}" />
+                </Style>
+            </Style>
+        </Style>
+
     </Style>
 </ControlTheme>

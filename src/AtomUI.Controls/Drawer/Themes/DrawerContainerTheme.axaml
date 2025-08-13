@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DrawerContainer}" TargetType="atom:DrawerContainer">
         <Setter Property="Template">
             <ControlTemplate>
@@ -9,7 +10,7 @@
                     <Border Name="{x:Static atom:DrawerContainerThemeConstants.MaskPart}"
                             IsVisible="{TemplateBinding IsShowMask}"
                             Background="{TemplateBinding Background}" />
-                    <atom:MotionActorControl
+                    <atom:MotionActor
                         Name="{x:Static atom:DrawerContainerThemeConstants.InfoContainerMotionActorPart}"
                         Opacity="0.0">
                         <atom:DrawerInfoContainer
@@ -24,12 +25,12 @@
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             DialogSize="{TemplateBinding DialogSize}"/>
-                    </atom:MotionActorControl>
+                    </atom:MotionActor>
                 </Panel>
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
         <Setter Property="MotionDuration"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}" />
         <Setter Property="MaskBgColor"

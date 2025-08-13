@@ -32,12 +32,6 @@ internal static class DataGridColumnHeaderThemeConstants
     public const string FocusVisualSecondaryPart = "PART_FocusVisualSecondary";
 }
 
-internal static class DataGridFilterIndicatorThemeConstants
-{
-    public const string FramePart = "PART_Frame";
-    public const string IconPresenterPart = "PART_IconPresenter";
-}
-
 internal static class DataGridHeaderViewItemThemeConstants
 {
     public const string ContentPresenterPart = "PART_ContentPresenter";
@@ -88,9 +82,9 @@ internal static class DataGridSortIndicatorThemeConstants
 internal static class DataGridThemeConstants
 {
     public const string RowsPresenterPart = "PART_RowPresenter";
+    public const string EmptyIndicatorPart = "PART_EmptyIndicator";
     public const string ColumnHeadersPresenterPart = "PART_ColumnHeadersPresenter";
     public const string GroupColumnHeadersPresenterPart = "PART_GroupColumnHeadersPresenter";
-    public const string FrozenColumnScrollBarSpacerPart = "PART_FrozenColumnScrollBarSpacer";
     public const string HorizontalScrollbarPart = "PART_HorizontalScrollbar";
     public const string VerticalScrollbarPart = "PART_VerticalScrollbar";
     public const string TopLeftCornerPart = "PART_TopLeftCorner";
@@ -103,10 +97,9 @@ internal static class DataGridThemeConstants
     public const string DisabledVisualElementPart = "PART_DisabledVisualElement";
     public const string TitlePart = "PART_Title";
     public const string FooterPart = "PART_Footer";
-}
-
-internal static class DataGridTopLeftColumnHeaderThemeConstants
-{
+    public const string DraggingOverIndicatorPart = "PART_DraggingOverIndicator";
+    public const string TopPaginationPart = "PART_TopPagination";
+    public const string BottomPaginationPart = "PART_BottomPagination";
 }
 
 internal static class DataGridFilterFlyoutPresenterThemeConstants
@@ -122,4 +115,17 @@ internal static class DataGridRowExpanderThemeConstants
     public const string FramePart = "PART_Frame";
     public const string VerticalIndicatorPart = "PART_VerticalIndicator";
     public const string HorizontalIndicatorPart = "PART_HorizontalIndicator";
+}
+
+internal static class DataGridRowReorderHandleConstants
+{
+    public const string IndicatorIconButtonPart = "PART_IndicatorIconButton";
+}
+
+internal static class DataGridOperationButtonsThemeConstants
+{
+    public const string EditActionPart = "PART_EditAction";
+    public const string DeleteActionPart = "PART_DeleteAction";
+    public const string CancelActionPart = "PAR_CancelAction";
+    public const string SaveActionPart = "PAR_SaveAction";
 }

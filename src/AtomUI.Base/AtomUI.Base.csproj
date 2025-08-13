@@ -9,6 +9,7 @@
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="Avalonia.ReactiveUI"/>
         <PackageReference Include="System.Reactive"/>
+        <PackageReference Include="AtomUI.Native"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -18,10 +19,6 @@
         <InternalsVisibleTo Include="AtomUI.IconPkg"/>
         <InternalsVisibleTo Include="AtomUI.Controls.DataGrid"/>
         <InternalsVisibleTo Include="AtomUI.ReactiveUI"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="../AtomUI.Native/AtomUI.Native.csproj" />
     </ItemGroup>
     
 </Project>

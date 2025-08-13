@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:TimeView}" TargetType="atom:TimeView">
         <Setter Property="Template">
             <ControlTemplate>
@@ -83,6 +84,7 @@
         </Setter>
 
         <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
 
         <Style Selector="^ /template/ atom|TextBlock#PART_HeaderText">
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />

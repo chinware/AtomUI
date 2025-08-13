@@ -2,7 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themes="using:AtomUI.Controls.Themes">
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
     <themes:DefaultDropdownButtonTheme x:Key="{x:Static atom:DefaultDropdownButtonTheme.ID}" TargetType="atom:DropdownButton"/>
     <themes:PrimaryDropdownButtonTheme x:Key="{x:Static atom:PrimaryDropdownButtonTheme.ID}" TargetType="atom:DropdownButton"/>
     <themes:LinkDropdownButtonTheme x:Key="{x:Static atom:LinkDropdownButtonTheme.ID}" TargetType="atom:DropdownButton"/>

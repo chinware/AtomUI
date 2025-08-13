@@ -144,7 +144,6 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     public ButtonSpinner()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override Size ArrangeOverride(Size finalSize)

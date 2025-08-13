@@ -2,8 +2,10 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     <ControlTheme x:Key="{x:Type calendarView:CalendarDayButton}" TargetType="calendarView:CalendarDayButton">
         <Setter Property="Template">
             <ControlTemplate>

@@ -119,15 +119,7 @@ internal static class DataGridError
         {
             return new ArgumentOutOfRangeException(paramName, Format("{0} must be less than {1}.", valueName, value));
         }
-
-    }
-
-    public static class DataGridColumnHeader
-    {
-        public static NotSupportedException ContentDoesNotSupportUIElements()
-        {
-            return new NotSupportedException("Content does not support Controls; use ContentTemplate instead.");
-        }
+        
     }
 
     public static class DataGridColumn
@@ -174,6 +166,26 @@ internal static class DataGridError
         public static InvalidOperationException InvalidRowIndexCannotCompleteOperation()
         {
             return new InvalidOperationException("Invalid row index. Operation cannot be completed.");
+        }
+        
+        public static NotSupportedException RowReorderNotAllowedException()
+        {
+            return new NotSupportedException("DataGridRowReorderColumn is used but the DataGrid CanUserReorderRows property is false.");
+        }
+        
+        public static NotSupportedException DataSourceTypeNotSupportRowReorderException()
+        {
+            return new NotSupportedException("The current data source does not implement the IList interface and does not support sorting.");
+        }
+        
+        public static InvalidOperationException RowReorderColumnAlreadyExistException()
+        {
+            return new InvalidOperationException("Only one DataGridRowReorderColumn is allowed.");
+        }
+        
+        public static InvalidOperationException InvalidRowReorderPreConditionException()
+        {
+            return new InvalidOperationException("Cannot start sorting or filtering while sorting is in progress.");
         }
     }
 

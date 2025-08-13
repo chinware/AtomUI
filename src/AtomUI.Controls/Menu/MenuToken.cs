@@ -41,11 +41,6 @@ internal class MenuToken : AbstractControlDesignToken
     public double MenuPopupMaxWidth { get; set; }
 
     /// <summary>
-    /// 菜单 Popup 最小高度
-    /// </summary>
-    public double MenuPopupMinHeight { get; set; }
-
-    /// <summary>
     /// 菜单 Popup 最大高度
     /// </summary>
     public double MenuPopupMaxHeight { get; set; }
@@ -60,6 +55,11 @@ internal class MenuToken : AbstractControlDesignToken
     /// 弹出框背景色
     /// </summary>
     public Color MenuBgColor { get; set; }
+    
+    /// <summary>
+    /// 上下文菜单背景色
+    /// </summary>
+    public Color ContextMenuBgColor { get; set; }
 
     /// <summary>
     /// 菜单项文字颜色
@@ -254,8 +254,8 @@ internal class MenuToken : AbstractControlDesignToken
         var colorError         = SharedToken.ColorError;
         var colorTextSecondary = SharedToken.ColorTextQuaternary;
         var colorBgContainer   = SharedToken.ColorBgContainer;
-        var colorBgTextHover   = SharedToken.ColorBgTextHover;
         var colorBgElevated    = SharedToken.ColorBgElevated;
+        var colorBgTextHover   = SharedToken.ColorBgTextHover;
         var padding            = SharedToken.UniformlyPadding;
         var controlHeight      = SharedToken.ControlHeight;
         var controlHeightSM    = SharedToken.ControlHeightSM;
@@ -268,7 +268,7 @@ internal class MenuToken : AbstractControlDesignToken
         ItemBorderRadius = SharedToken.BorderRadius;
         ItemColor        = SharedToken.ColorText;
         ItemHoverColor   = ItemColor;
-        ItemBg           = colorBgContainer;
+        ItemBg           = colorBgElevated;
         ItemHoverBg      = colorBgTextHover;
         ItemMargin       = new Thickness(0, 0, SharedToken.UniformlyMarginXXS, 0);
 
@@ -279,8 +279,9 @@ internal class MenuToken : AbstractControlDesignToken
         DangerItemColor      = colorError;
         DangerItemHoverColor = colorError;
 
-        ItemHeight  = controlHeightSM;
-        MenuBgColor = colorBgElevated;
+        ItemHeight         = controlHeightSM;
+        MenuBgColor        = SharedToken.ColorBgContainer;
+        ContextMenuBgColor = SharedToken.ColorBgElevated;
 
         ItemPaddingInline       = new Thickness(padding, SharedToken.UniformlyPaddingXXS);
         ItemIconSize            = SharedToken.IconSize;
@@ -325,9 +326,8 @@ internal class MenuToken : AbstractControlDesignToken
 
         MenuPopupMinWidth = 120;
         MenuPopupMaxWidth = 800;
-
-        MenuPopupMinHeight = ItemHeight * 3;
-        MenuPopupMaxHeight = ItemHeight * 30;
+        
+        MenuPopupMaxHeight = ItemHeight * 15;
 
         SeparatorItemHeight = SharedToken.LineWidth * 5; // 上下两像素，留一像素给自己
 

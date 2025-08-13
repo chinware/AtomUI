@@ -219,6 +219,14 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SizeXS = new TokenResourceKey("SizeXS");
         public static readonly TokenResourceKey SizeXXL = new TokenResourceKey("SizeXXL");
         public static readonly TokenResourceKey SizeXXS = new TokenResourceKey("SizeXXS");
+        public static readonly TokenResourceKey Spacing = new TokenResourceKey("Spacing");
+        public static readonly TokenResourceKey SpacingLG = new TokenResourceKey("SpacingLG");
+        public static readonly TokenResourceKey SpacingMD = new TokenResourceKey("SpacingMD");
+        public static readonly TokenResourceKey SpacingSM = new TokenResourceKey("SpacingSM");
+        public static readonly TokenResourceKey SpacingXL = new TokenResourceKey("SpacingXL");
+        public static readonly TokenResourceKey SpacingXS = new TokenResourceKey("SpacingXS");
+        public static readonly TokenResourceKey SpacingXXL = new TokenResourceKey("SpacingXXL");
+        public static readonly TokenResourceKey SpacingXXS = new TokenResourceKey("SpacingXXS");
         public static readonly TokenResourceKey UniformlyMargin = new TokenResourceKey("UniformlyMargin");
         public static readonly TokenResourceKey UniformlyMarginLG = new TokenResourceKey("UniformlyMarginLG");
         public static readonly TokenResourceKey UniformlyMarginMD = new TokenResourceKey("UniformlyMarginMD");

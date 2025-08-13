@@ -36,7 +36,7 @@ internal class MoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
             };
             startFrame.Setters.Add(transformSetter);
@@ -57,7 +57,7 @@ internal class MoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset / 4)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -78,7 +78,7 @@ internal class MoveDownInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -99,7 +99,7 @@ internal class MoveDownInMotion : AbstractMotion
         return actorPosition.WithY(actorPosition.Y + actorSize.Height);
     }
     
-    protected override void NotifyPreStart(MotionActorControl actor)
+    protected override void NotifyPreStart(BaseMotionActor actor)
     {
         base.NotifyPreStart(actor);
         actor.Opacity = 0.0;
@@ -137,7 +137,7 @@ internal class MoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -159,7 +159,7 @@ internal class MoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset / 4)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -180,7 +180,7 @@ internal class MoveDownOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, Offset)
             };
             endFrame.Setters.Add(transformSetter);
@@ -228,7 +228,7 @@ internal class MoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 0.01, 0.0, -Offset)
             };
             startFrame.Setters.Add(transformSetter);
@@ -249,7 +249,7 @@ internal class MoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset / 4)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -270,7 +270,7 @@ internal class MoveUpInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -291,7 +291,7 @@ internal class MoveUpInMotion : AbstractMotion
         return actorPosition.WithY(actorPosition.Y - actorSize.Height);
     }
     
-    protected override void NotifyPreStart(MotionActorControl actor)
+    protected override void NotifyPreStart(BaseMotionActor actor)
     {
         base.NotifyPreStart(actor);
         actor.Opacity = 0.0;
@@ -329,7 +329,7 @@ internal class MoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -351,7 +351,7 @@ internal class MoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset / 4)
             };
 
@@ -373,7 +373,7 @@ internal class MoveUpOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, -Offset)
             };
 
@@ -422,7 +422,7 @@ internal class MoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
             };
 
@@ -444,7 +444,7 @@ internal class MoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset / 2, 0.0)
             };
 
@@ -466,7 +466,7 @@ internal class MoveLeftInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
 
@@ -488,7 +488,7 @@ internal class MoveLeftInMotion : AbstractMotion
         return actorPosition.WithX(actorPosition.X - actorSize.Width);
     }
     
-    protected override void NotifyPreStart(MotionActorControl actor)
+    protected override void NotifyPreStart(BaseMotionActor actor)
     {
         base.NotifyPreStart(actor);
         actor.Opacity = 0.0;
@@ -526,7 +526,7 @@ internal class MoveLeftOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -546,7 +546,7 @@ internal class MoveLeftOutMotion : AbstractMotion
             middleFrame.Setters.Add(opacitySetter);
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset / 2, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -567,7 +567,7 @@ internal class MoveLeftOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, -Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -616,7 +616,7 @@ internal class MoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -637,7 +637,7 @@ internal class MoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset / 2, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -658,7 +658,7 @@ internal class MoveRightInMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             endFrame.Setters.Add(transformSetter);
@@ -679,7 +679,7 @@ internal class MoveRightInMotion : AbstractMotion
         return actorPosition.WithY(actorPosition.X + actorSize.Height);
     }
     
-    protected override void NotifyPreStart(MotionActorControl actor)
+    protected override void NotifyPreStart(BaseMotionActor actor)
     {
         base.NotifyPreStart(actor);
         actor.Opacity = 0.0;
@@ -717,7 +717,7 @@ internal class MoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, 0.0, 0.0)
             };
             startFrame.Setters.Add(transformSetter);
@@ -738,7 +738,7 @@ internal class MoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset / 2, 0.0)
             };
             middleFrame.Setters.Add(transformSetter);
@@ -759,7 +759,7 @@ internal class MoveRightOutMotion : AbstractMotion
 
             var transformSetter = new Setter
             {
-                Property = MotionActorControl.MotionTransformOperationsProperty,
+                Property = BaseMotionActor.MotionTransformOperationsProperty,
                 Value    = BuildTranslateScaleAndTransform(1.0, 1.0, Offset, 0.0)
             };
             endFrame.Setters.Add(transformSetter);

@@ -637,7 +637,6 @@ public class Calendar : TemplatedControl,
     public Calendar()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         SetCurrentValue(DisplayDateProperty, DateTime.Today);
         UpdateDisplayDate(this, DisplayDate, DateTime.MinValue);
         BlackoutDates = new CalendarBlackoutDatesCollection(this);

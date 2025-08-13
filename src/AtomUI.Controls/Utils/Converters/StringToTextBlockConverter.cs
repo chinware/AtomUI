@@ -3,7 +3,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Controls.Converters;
 
 public class StringToTextBlockConverter : IValueConverter
 {

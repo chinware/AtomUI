@@ -1,6 +1,7 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:ClassModifier="internal"
     xmlns:atom="https://atomui.net">
     <ControlTheme x:Key="{x:Type atom:DataGridCell}" TargetType="atom:DataGridCell">
         <Setter Property="Template">
@@ -55,9 +56,12 @@
         </Setter>
         
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Background" Value="Transparent"/>
         
         <Style Selector="^ /template/ Rectangle#PART_RightGridLine">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
@@ -79,10 +83,22 @@
         <Style Selector="^[IsSorting=True]">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.BodySortBg}}"/>
         </Style>
+        
+        <Style Selector="^[OwningColumnDragging=True]">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.ColumnReorderActiveBg}}"/>
+        </Style>
 
         <Style Selector="^[IsShowFrozenShadow=True]">
-            <Style Selector="^ /template/ Border#PART_CellFrame">
-                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}"/>
+            <Style Selector="^[FrozenShadowPosition=Left]">
+                <Style Selector="^ /template/ Border#PART_CellFrame">
+                    <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}"/>
+                </Style>
+            </Style>
+            
+            <Style Selector="^[FrozenShadowPosition=Right]">
+                <Style Selector="^ /template/ Border#PART_CellFrame">
+                    <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.RightFrozenShadows}}"/>
+                </Style>
             </Style>
         </Style>
     </ControlTheme>

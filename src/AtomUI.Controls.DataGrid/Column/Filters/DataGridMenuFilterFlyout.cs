@@ -33,15 +33,15 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
         return presenter;
     }
 
-    protected override void OnPopupOpened(object? sender, EventArgs e)
+    protected override void NotifyPopupOpened(object? sender, EventArgs e)
     {
-        base.OnPopupOpened(sender, e);
+        base.NotifyPopupOpened(sender, e);
         IsActiveShutdown = false;
     }
 
-    protected override void OnPopupClosed(object? sender, EventArgs e)
+    protected override void NotifyPopupClosed(object? sender, EventArgs e)
     {
-        base.OnPopupClosed(sender, e);
+        base.NotifyPopupClosed(sender, e);
         List<string> selectedItems = new List<string>();
         if (Popup.Child is DataGridMenuFilterFlyoutPresenter presenter)
         {

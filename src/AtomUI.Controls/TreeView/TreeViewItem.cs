@@ -33,29 +33,29 @@ public class TreeViewItem : AvaloniaTreeItem,
                             IRadioButton
 {
     #region 公共属性定义
-    public static readonly StyledProperty<Icon?> IconProperty
-        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(Icon));
 
-    public static readonly StyledProperty<bool?> IsCheckedProperty
-        = AvaloniaProperty.Register<TreeViewItem, bool?>(nameof(IsChecked), false);
+    public static readonly StyledProperty<bool?> IsCheckedProperty =
+        AvaloniaProperty.Register<TreeViewItem, bool?>(nameof(IsChecked), false);
 
-    public static readonly StyledProperty<Icon?> SwitcherExpandIconProperty
-        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherExpandIcon));
+    public static readonly StyledProperty<Icon?> SwitcherExpandIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherExpandIcon));
 
-    public static readonly StyledProperty<Icon?> SwitcherCollapseIconProperty
-        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherCollapseIcon));
+    public static readonly StyledProperty<Icon?> SwitcherCollapseIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherCollapseIcon));
 
-    public static readonly StyledProperty<Icon?> SwitcherRotationIconProperty
-        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
+    public static readonly StyledProperty<Icon?> SwitcherRotationIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
 
-    public static readonly StyledProperty<Icon?> SwitcherLoadingIconProperty
-        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
+    public static readonly StyledProperty<Icon?> SwitcherLoadingIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
 
-    public static readonly StyledProperty<Icon?> SwitcherLeafIconProperty
-        = AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherLeafIcon));
+    public static readonly StyledProperty<Icon?> SwitcherLeafIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherLeafIcon));
 
-    public static readonly DirectProperty<TreeViewItem, bool> IsLeafProperty
-        = AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsLeaf),
+    public static readonly DirectProperty<TreeViewItem, bool> IsLeafProperty =
+        AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsLeaf),
             o => o.IsLeaf,
             (o, v) => o.IsLeaf = v);
 
@@ -156,8 +156,8 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<TreeViewItem, double> TitleHeightProperty
-        = AvaloniaProperty.RegisterDirect<TreeViewItem, double>(nameof(TitleHeight),
+    internal static readonly DirectProperty<TreeViewItem, double> TitleHeightProperty =
+        AvaloniaProperty.RegisterDirect<TreeViewItem, double>(nameof(TitleHeight),
             o => o.TitleHeight,
             (o, v) => o.TitleHeight = v);
 
@@ -196,14 +196,14 @@ public class TreeViewItem : AvaloniaTreeItem,
             o => o.DragFrameBorderThickness,
             (o, v) => o.DragFrameBorderThickness = v);
 
-    internal static readonly StyledProperty<IBrush?> EffectiveNodeBgProperty
-        = AvaloniaProperty.Register<TreeViewItem, IBrush?>(nameof(EffectiveNodeBg));
+    internal static readonly StyledProperty<IBrush?> EffectiveNodeBgProperty =
+        AvaloniaProperty.Register<TreeViewItem, IBrush?>(nameof(EffectiveNodeBg));
 
-    internal static readonly StyledProperty<CornerRadius> EffectiveNodeCornerRadiusProperty
-        = AvaloniaProperty.Register<TreeViewItem, CornerRadius>(nameof(EffectiveNodeCornerRadius));
+    internal static readonly StyledProperty<CornerRadius> EffectiveNodeCornerRadiusProperty =
+        AvaloniaProperty.Register<TreeViewItem, CornerRadius>(nameof(EffectiveNodeCornerRadius));
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeViewItem>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeViewItem>();
 
     internal static readonly DirectProperty<TreeViewItem, NodeSwitcherButtonIconMode> SwitcherModeProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, NodeSwitcherButtonIconMode>(
@@ -339,7 +339,7 @@ public class TreeViewItem : AvaloniaTreeItem,
     private CompositeDisposable? _resourceBindingsDisposable;
     private bool _animating;
     private ContentPresenter? _headerPresenter;
-    private MotionActorControl? _itemsPresenterMotionActor;
+    private BaseMotionActor? _itemsPresenterMotionActor;
     private Border? _frame;
     private IconPresenter? _iconPresenter;
     private NodeSwitcherButton? _switcherButton;
@@ -353,7 +353,9 @@ public class TreeViewItem : AvaloniaTreeItem,
             IsShowLineProperty,
             IsShowLeafIconProperty,
             IsDraggingProperty,
-            IsDragOverProperty);
+            IsDragOverProperty,
+            BorderBrushProperty,
+            BorderThicknessProperty);
     }
 
     public TreeViewItem()
@@ -531,7 +533,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         var motion = OwnerTreeView.OpenMotion ?? new ExpandMotion(Direction.Top, null, new CubicEaseOut());
         motion.Duration = OwnerTreeView.MotionDuration;
 
-        MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, () => { _itemsPresenterMotionActor.IsVisible = true; },
+        motion.Run(_itemsPresenterMotionActor, () => { _itemsPresenterMotionActor.IsVisible = true; },
             () =>
             {
                 _animating = false;
@@ -567,7 +569,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         var motion = OwnerTreeView.CloseMotion ?? new CollapseMotion(Direction.Top, null, new CubicEaseIn());
         motion.Duration = OwnerTreeView.MotionDuration;
 
-        MotionInvoker.Invoke(_itemsPresenterMotionActor, motion, null, () =>
+        motion.Run(_itemsPresenterMotionActor, null, () =>
         {
             _itemsPresenterMotionActor.IsVisible = false;
             _animating                           = false;
@@ -593,7 +595,7 @@ public class TreeViewItem : AvaloniaTreeItem,
         _frame           = e.NameScope.Find<Border>(TreeViewItemThemeConstants.FramePart);
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemThemeConstants.NodeSwitcherButtonPart);
         _itemsPresenterMotionActor =
-            e.NameScope.Find<MotionActorControl>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
+            e.NameScope.Find<BaseMotionActor>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
         ConfigureTransitions();
         if (_frame is not null)
         {

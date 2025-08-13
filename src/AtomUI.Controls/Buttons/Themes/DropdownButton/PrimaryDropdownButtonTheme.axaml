@@ -3,7 +3,8 @@
               xmlns:atom="https://atomui.net"
               xmlns:themes="using:AtomUI.Controls.Themes"
               TargetType="{x:Type atom:DropdownButton}"
-              x:Class="AtomUI.Controls.Themes.PrimaryDropdownButtonTheme">
+              x:Class="AtomUI.Controls.Themes.PrimaryDropdownButtonTheme"
+              x:ClassModifier="internal">
       <ControlTheme.BasedOn>
         <themes:PrimaryButtonTheme TargetType="{x:Type atom:DropdownButton}" />
     </ControlTheme.BasedOn>

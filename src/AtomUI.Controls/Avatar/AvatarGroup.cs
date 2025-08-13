@@ -17,10 +17,7 @@ namespace AtomUI.Controls;
 
 using ControlList = Avalonia.Controls.Controls;
 
-public class AvatarGroup : Control,
-                           IMotionAwareControl,
-                           IControlSharedTokenResourcesHost,
-                           IResourceBindingManager
+public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenResourcesHost, IResourceBindingManager
 {
     #region 公共属性定义
     
@@ -165,7 +162,7 @@ public class AvatarGroup : Control,
     {
         Children.CollectionChanged += ChildrenChanged;
         this.RegisterResources();
-        this.BindMotionProperties();
+        this.ConfigureMotionBindingStyle();
     }
 
     protected virtual void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)

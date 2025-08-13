@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Static atom:NavMenuThemeConstants.VerticalNavMenuThemeId}" TargetType="atom:NavMenu">
         <Setter Property="Template">
             <ControlTemplate>
@@ -31,7 +32,9 @@
         </Setter>
 
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
-
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="ScrollViewer.AllowAutoHide" Value="False" />
+        
         <Style Selector="^[Mode=Vertical]">
             <Setter Property="Padding"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalMenuContentPadding}}" />

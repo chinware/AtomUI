@@ -61,7 +61,7 @@ internal static class TokenFinderUtils
         return token;
     }
 
-    public static ThemeVariant FindThemeVariant(Control control)
+    public static ThemeVariant? FindThemeVariant(Control control)
     {
         ThemeVariant? themeVariant = null;
         var           current      = control;
@@ -79,8 +79,7 @@ internal static class TokenFinderUtils
         if (themeVariant is null)
         {
             var theme = ThemeManager.Current.ActivatedTheme;
-            Debug.Assert(theme != null);
-            themeVariant = theme.ThemeVariant;
+            themeVariant = theme?.ThemeVariant;
         }
         return themeVariant;
     }

@@ -1,29 +1,34 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center"/>
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center"/>
     <ControlTheme x:Key="{x:Type atom:Pagination}" TargetType="atom:Pagination">
         <Setter Property="Template">
             <ControlTemplate>
                 <StackPanel Name="{x:Static atom:PaginationThemeConstants.RootLayoutPart}"
                             Orientation="Horizontal">
                     <ContentPresenter Name="{x:Static atom:PaginationThemeConstants.TotalInfoPresenterPart}"
-                                      IsVisible="{TemplateBinding ShowTotalInfo}"
+                                      IsVisible="{TemplateBinding IsShowTotalInfo}"
                                       Content="{TemplateBinding TotalInfoText, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}" />
                     <atom:PaginationNav
                         Name="{x:Static atom:PaginationThemeConstants.NavPart}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         SizeType="{TemplateBinding SizeType}" />
                     <ContentPresenter Name="{x:Static atom:PaginationThemeConstants.SizeChangerPresenterPart}"
-                                      IsVisible="{TemplateBinding ShowSizeChanger}"
+                                      IsVisible="{TemplateBinding IsShowSizeChanger}"
                                       Content="{TemplateBinding SizeChanger}" />
                     <ContentPresenter Name="{x:Static atom:PaginationThemeConstants.QuickJumperBarPresenterPart}"
-                                      IsVisible="{TemplateBinding ShowQuickJumper}"
+                                      IsVisible="{TemplateBinding IsShowQuickJumper}"
                                       Content="{TemplateBinding QuickJumperBar}" />
                 </StackPanel>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
+        
         <Style Selector="^[Align=Start]">
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
@@ -48,6 +53,10 @@
             <Style Selector="^ /template/ StackPanel#PART_RootLayout">
                 <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationLayoutMiniSpacing}}"/>
             </Style>
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemActiveColorDisabled}}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

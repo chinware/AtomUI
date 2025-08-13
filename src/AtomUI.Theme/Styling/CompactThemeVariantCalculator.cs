@@ -4,7 +4,7 @@ namespace AtomUI.Theme.Styling;
 
 public class CompactThemeVariantCalculator : AbstractThemeVariantCalculator
 {
-    public const string ID = "CompactAlgorithm";
+    public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Compact;
 
     public CompactThemeVariantCalculator(IThemeVariantCalculator calculator)
         : base(calculator)

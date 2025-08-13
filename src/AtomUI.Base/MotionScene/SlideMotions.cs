@@ -20,13 +20,13 @@ internal class SlideUpInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleYTransform(0.8); // 不知道为啥设置成 0.0, 子元素渲染不正常;
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleYTransform(1.0);
@@ -48,13 +48,13 @@ internal class SlideUpOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleYTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleYTransform(0.8);
@@ -76,13 +76,13 @@ internal class SlideDownInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleYTransform(0.8);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleYTransform(1.0);
@@ -104,13 +104,13 @@ internal class SlideDownOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(1.0, 1.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleYTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleYTransform(0.8);
@@ -132,13 +132,13 @@ internal class SlideLeftInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleXTransform(0.8);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleXTransform(1.0);
@@ -160,13 +160,13 @@ internal class SlideLeftOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleXTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleXTransform(0.8);
@@ -188,13 +188,13 @@ internal class SlideRightInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleXTransform(0.8);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleXTransform(1.0);
@@ -216,13 +216,13 @@ internal class SlideRightOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(1.0, 0.0, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleXTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleXTransform(0.8);

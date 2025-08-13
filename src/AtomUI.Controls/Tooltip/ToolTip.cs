@@ -2,11 +2,11 @@
 using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Interactivity;
@@ -18,14 +18,17 @@ namespace AtomUI.Controls;
 [PseudoClasses(StdPseudoClass.Open)]
 public class ToolTip : ContentControl,
                        IControlSharedTokenResourcesHost,
-                       IWaveSpiritAwareControl,
-                       IPopupHostProvider,
-                       IShadowMaskInfoProvider
+                       IMotionAwareControl,
+                       IArrowAwareShadowMaskInfoProvider,
+                       IPopupHostProvider
 {
     #region 公共属性定义
 
     public static readonly AttachedProperty<object?> TipProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, object?>("Tip");
+    
+    public static readonly AttachedProperty<double> TipHostWidthProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("TipHostWidth", double.NaN);
 
     public static readonly AttachedProperty<bool> IsOpenProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
@@ -109,6 +112,16 @@ public class ToolTip : ContentControl,
         element.SetValue(TipProperty, value);
     }
 
+    public static double GetTipHostWidth(Control element)
+    {
+        return element.GetValue(TipHostWidthProperty);
+    }
+
+    public static void SetTipHostWidth(Control element, double value)
+    {
+        element.SetValue(TipHostWidthProperty, value);
+    }
+    
     public static bool GetIsOpen(Control element)
     {
         return element.GetValue(IsOpenProperty);
@@ -316,28 +329,65 @@ public class ToolTip : ContentControl,
     private Popup? _popup;
     private Action<IPopupHost?>? _popupHostChangedHandler;
     private ArrowDecoratedBox? _arrowDecoratedBox;
+    private ContentPresenter? _contentPresenter;
     private DispatcherTimer? _timer;
 
     static ToolTip()
     {
         IsOpenProperty.Changed.Subscribe(HandleIsOpenChanged);
     }
-
-    public ToolTip()
-    {
-        this.BindMotionProperties();
-    }
-
+    
     public CornerRadius GetMaskCornerRadius()
     {
         Debug.Assert(_arrowDecoratedBox != null);
         return _arrowDecoratedBox.GetMaskCornerRadius();
     }
-
+    
     public Rect GetMaskBounds()
     {
         Debug.Assert(_arrowDecoratedBox != null);
         return _arrowDecoratedBox.GetMaskBounds();
+    }
+    
+    public IBrush? GetMaskBackground()
+    {
+        return Background;
+    }
+    
+    ArrowPosition IArrowAwareShadowMaskInfoProvider.GetArrowPosition()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowPosition;
+    }
+    
+    bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.IsShowArrow;
+    }
+
+    void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        _arrowDecoratedBox.ArrowOpacity = opacity;
+    }
+
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowIndicatorBounds;
+    }
+    
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorLayoutBounds()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowIndicatorLayoutBounds;
+    }
+    
+    ArrowDecoratedBox IArrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox;
     }
 
     private void Open(Control control)
@@ -407,6 +457,11 @@ public class ToolTip : ContentControl,
         if (_arrowDecoratedBox is not null)
         {
             SetToolTipColor(control);
+            if (_contentPresenter != null)
+            {
+                _contentPresenter.Width = GetTipHostWidth(control);
+            }
+            
             _arrowDecoratedBox.Bind(ArrowDecoratedBox.IsShowArrowProperty,
                 control.GetBindingObservable(IsShowArrowProperty, flag =>
                 {
@@ -475,12 +530,12 @@ public class ToolTip : ContentControl,
             if (presetColorType is not null)
             {
                 var presetColor = PresetPrimaryColor.GetColor(presetColorType.Value);
-                _arrowDecoratedBox.Background = new SolidColorBrush(presetColor.Color());
+                Background = new SolidColorBrush(presetColor.Color());
                 InvalidateVisual();
             }
             else if (color is not null)
             {
-                _arrowDecoratedBox.Background = new SolidColorBrush(color.Value);
+                Background = new SolidColorBrush(color.Value);
                 InvalidateVisual();
             }
         }
@@ -601,6 +656,7 @@ public class ToolTip : ContentControl,
     {
         base.OnApplyTemplate(e);
         _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(ToolTipThemeConstants.ToolTipContainerPart);
+        _contentPresenter = e.NameScope.Find<ContentPresenter>(ToolTipThemeConstants.ToolTipContainerPresenterPart);
     }
 
     private Point CalculatePopupPositionDelta(Control control,

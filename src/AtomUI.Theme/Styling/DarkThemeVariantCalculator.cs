@@ -8,7 +8,7 @@ namespace AtomUI.Theme.Styling;
 
 public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
 {
-    public const string ID = "DarkAlgorithm";
+    public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Dark;
 
     public DarkThemeVariantCalculator(IThemeVariantCalculator calculator)
         : base(calculator)
@@ -34,6 +34,10 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
         // Dark tokens
         SetupColorPalettes(designToken);
         CalculateColorMapTokenValues(designToken);
+        // Customize selected item background color
+        // https://github.com/ant-design/ant-design/issues/30524#issuecomment-871961867
+        designToken.ColorPrimaryBg      = designToken.ColorPrimaryBorder;
+        designToken.ColorPrimaryBgHover = designToken.ColorPrimaryBorderHover;
     }
 
     protected override ColorMap GenerateColorPalettes(Color baseColor)

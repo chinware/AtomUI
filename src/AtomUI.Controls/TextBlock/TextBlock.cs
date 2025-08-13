@@ -2,6 +2,7 @@ using System.Reactive.Disposables;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
@@ -51,7 +52,7 @@ public class TextBlock : AvaloniaTextBlock, IResourceBindingManager
 
     private void CalculateDeltaOffsetY()
     {
-        if (!this.IsAttachedToVisualTree() || !OperatingSystem.IsMacOS())
+        if (!this.IsAttachedToVisualTree() || !OperatingSystem.IsMacOS() || MathUtils.AreClose(FontSize, 0))
         {
             return;
         }

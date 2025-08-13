@@ -10,8 +10,7 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-public class SimplePagination : AbstractPagination,
-                                IControlSharedTokenResourcesHost
+public class SimplePagination : AbstractPagination, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -102,6 +101,7 @@ public class SimplePagination : AbstractPagination,
         if (sender is PaginationNavItem navItemSender)
         {
             CurrentPage = navItemSender.PageNumber;
+            HandlePageConditionChanged();
         }
     }
     

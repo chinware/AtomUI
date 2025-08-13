@@ -26,9 +26,7 @@ public enum TreeItemHoverMode
 }
 
 [PseudoClasses(StdPseudoClass.Draggable)]
-public class TreeView : AvaloniaTreeView,
-                        IMotionAwareControl,
-                        IControlSharedTokenResourcesHost
+public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -208,7 +206,7 @@ public class TreeView : AvaloniaTreeView,
 
     static TreeView()
     {
-        AffectsRender<TreeView>(DragIndicatorRenderInfoProperty);
+        AffectsRender<TreeView>(DragIndicatorRenderInfoProperty, DragIndicatorBrushProperty, DragIndicatorLineWidthProperty);
     }
 
     public TreeView()
@@ -220,7 +218,6 @@ public class TreeView : AvaloniaTreeView,
     {
         InteractionHandler = interactionHandler ?? throw new ArgumentNullException(nameof(interactionHandler));
         this.RegisterResources();
-        this.BindMotionProperties();
         DefaultCheckedItems = new List<TreeViewItem>();
     }
 

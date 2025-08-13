@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SimplePagination}" TargetType="atom:SimplePagination">
         <Setter Property="Template">
             <ControlTemplate>
@@ -12,11 +13,13 @@
                                             PaginationItemType="Previous"
                                             Content="{atom:IconProvider LeftOutlined}"
                                             SizeType="{TemplateBinding SizeType}"
-                                            IsEnabled="{TemplateBinding IsEnabled}" />
+                                            IsEnabled="{TemplateBinding IsEnabled}"
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     <atom:LineEdit Name="{x:Static atom:SimplePaginationThemeConstants.QuickJumperPart}"
                                    IsVisible="{TemplateBinding IsReadOnly, Mode=Default, Converter={x:Static BoolConverters.Not}}"
                                    SizeType="{TemplateBinding SizeType}"
-                                   IsEnabled="{TemplateBinding IsEnabled}" />
+                                   IsEnabled="{TemplateBinding IsEnabled}" 
+                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     <atom:TextBlock Name="{x:Static atom:SimplePaginationThemeConstants.InfoIndicatorPart}"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
@@ -25,10 +28,14 @@
                                             PaginationItemType="Previous"
                                             Content="{atom:IconProvider RightOutlined}"
                                             SizeType="{TemplateBinding SizeType}"
-                                            IsEnabled="{TemplateBinding IsEnabled}" />
+                                            IsEnabled="{TemplateBinding IsEnabled}" 
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                 </StackPanel>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
+        
         <Style Selector="^[Align=Start]">
             <Setter Property="HorizontalAlignment" Value="Left" />
         </Style>

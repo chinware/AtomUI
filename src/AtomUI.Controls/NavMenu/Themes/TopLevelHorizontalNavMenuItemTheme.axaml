@@ -1,8 +1,10 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Static atom:NavMenuThemeConstants.TopLevelHorizontalNavMenuItemThemeId}"
                   TargetType="atom:NavMenuItem">
         <Setter Property="Template">
@@ -42,7 +44,7 @@
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="False"
                                 Placement="BottomEdgeAlignedLeft"
-                                IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                                IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                         <Border Name="{x:Static atom:TopLevelHorizontalNavMenuItemThemeConstants.PopupFramePart}"
                                 MinWidth="{TemplateBinding EffectivePopupMinWidth}">
                             <atom:MenuScrollViewer>
@@ -86,7 +88,7 @@
 
             <Style Selector="^ /template/ Border#PART_PopupFrame">
                 <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
                 <Setter Property="CornerRadius"
                         Value="{DynamicResource {x:Static atom:NavMenuTokenKey.MenuPopupBorderRadius}}" />
                 <Setter Property="MinWidth"

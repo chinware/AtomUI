@@ -301,6 +301,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
 
     private Size ArrangeLeafItem(DataGridColumn dataGridColumn, Rect rect)
     {
+        Debug.Assert(OwningGrid != null);
         DataGridHeaderViewItem? headerViewItem = null;
         if (dataGridColumn is IDataGridColumnGroupItemInternal groupItem)
         {
@@ -311,38 +312,97 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
         Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
             
-        if (dataGridColumn.IsFrozen)
+        if (dataGridColumn.IsLeftFrozen)
         {
             headerViewItem.Arrange(new Rect(_frozenLeftEdge, rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
-            headerViewItem.Clip =
-                null; // The layout system could have clipped this because it's not aware of our render transform
+            headerViewItem.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
             if (DragColumn == dataGridColumn && DragIndicator != null)
             {
                 _dragIndicatorLeftEdge = _frozenLeftEdge + DragIndicatorOffset;
             }
-        
             _frozenLeftEdge += dataGridColumn.ActualWidth;
+            headerViewItem.IsFrozen             =  true;
+            headerViewItem.IsShowRightFrozenShadow   =  (_visibleColumnIndex == OwningGrid.LeftFrozenColumnCount - 1) && OwningGrid.HorizontalOffset > 0;
+            SetupParentShadowInfo(dataGridColumn, headerViewItem.IsShowRightFrozenShadow, true);
+        }
+        else if (dataGridColumn.IsRightFrozen)
+        {
+            var columnFrozenRightEdge = _frozenRightEdge - RightFrozenWidth(dataGridColumn);
+            headerViewItem.Arrange(new Rect(columnFrozenRightEdge,  rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
+            headerViewItem.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+            headerViewItem.IsFrozen             =  true;
+            headerViewItem.IsShowLeftFrozenShadow   =  (_visibleColumnIndex == _visibleColumnCount - OwningGrid.RightFrozenColumnCount) && OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
+            SetupParentShadowInfo(dataGridColumn, headerViewItem.IsShowLeftFrozenShadow, false);
         }
         else
         {
-            headerViewItem.Arrange(
-                new Rect(_scrollingLeftEdge, rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
-            EnsureColumnHeaderClip(headerViewItem, dataGridColumn.ActualWidth, rect.Height, _frozenLeftEdge,
-                _scrollingLeftEdge);
+            headerViewItem.Arrange(new Rect(_scrollingLeftEdge, rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
+            EnsureColumnHeaderClip(headerViewItem, dataGridColumn.ActualWidth, rect.Height, _frozenLeftEdge, _scrollingLeftEdge);
             if (DragColumn == dataGridColumn && DragIndicator != null)
             {
                 _dragIndicatorLeftEdge = _scrollingLeftEdge + DragIndicatorOffset;
             }
+            headerViewItem.IsFrozen = false;
         }
         
         _scrollingLeftEdge += dataGridColumn.ActualWidth;
+        _visibleColumnIndex++;
         return headerViewItem.Bounds.Size;
+    }
+
+    private double RightFrozenWidth(DataGridColumn dataGridColumn)
+    {
+        var width = 0.0;
+        if (OwningGrid != null)
+        {
+            var index = OwningGrid.Columns.IndexOf(dataGridColumn);
+            if (index != -1)
+            {
+                for (var i = index; i < OwningGrid.Columns.Count; i++)
+                {
+                    var column =  OwningGrid.Columns[i];
+                    if (column.IsRightFrozen)
+                    {
+                        width += column.ActualWidth;
+                    }
+                }
+            }
+        }
+        return width;
+    }
+
+    private void SetupParentShadowInfo(IDataGridColumnGroupItemInternal groupItem, bool isShowShadowInfo, bool isLeftFrozen)
+    {
+        var current = groupItem.GroupParent;
+        while (current != null)
+        {
+            if (current is IDataGridColumnGroupItemInternal groupItemInternal)
+            {
+                var headerViewItem = groupItemInternal.GroupHeaderViewItem;
+                if (headerViewItem != null)
+                {
+                    if (isLeftFrozen)
+                    {
+                        headerViewItem.IsShowRightFrozenShadow = isShowShadowInfo;
+                    }
+                    else
+                    {
+                        headerViewItem.IsShowLeftFrozenShadow = isShowShadowInfo;
+                    }
+                }
+            }
+          
+            current        = current.GroupParent;
+        }
     }
     
     private double _leafHeight = 0.0;
     private double _dragIndicatorLeftEdge;
     private double _frozenLeftEdge;
+    private double _frozenRightEdge;
     private double _scrollingLeftEdge;
+    private int _visibleColumnIndex;
+    private int _visibleColumnCount;
     
     protected override Size ArrangeOverride(Size finalSize)
     {
@@ -407,7 +467,12 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         
         _dragIndicatorLeftEdge = 0;
         _frozenLeftEdge        = 0;
+        _frozenRightEdge       = DesiredSize.Width;
+        _visibleColumnIndex    = 0;
+        _visibleColumnCount    = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
         _scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
+        DataGridFillerColumn? fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
+        Debug.Assert(fillerColumn != null);
     
         var offsetX     = 0.0d;
         var remainWidth = finalSize.Width;
@@ -442,17 +507,16 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         
                 var height = DragIndicator.Bounds.Height;
                 if (height <= 0)
+                {
                     height = DragIndicator.DesiredSize.Height;
-        
+                }
+                
                 DragIndicator.Arrange(new Rect(_dragIndicatorLeftEdge, arrangeLeafY, DragIndicator.Bounds.Width, height));
             }
         
             if (DropLocationIndicator != null)
             {
-                if (DropLocationIndicator is Control element)
-                {
-                    EnsureColumnReorderingClip(element, _leafHeight, _frozenLeftEdge, DropLocationIndicatorOffset);
-                }
+                EnsureColumnReorderingClip(DropLocationIndicator, _leafHeight, _frozenLeftEdge, DropLocationIndicatorOffset);
         
                 DropLocationIndicator.Arrange(new Rect(DropLocationIndicatorOffset, arrangeLeafY,
                     DropLocationIndicator.Bounds.Width, DropLocationIndicator.Bounds.Height));
@@ -460,8 +524,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         }
         
         OwningGrid.HandleFillerColumnWidthNeeded(finalSize.Width);
-        DataGridFillerColumn? fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
-        Debug.Assert(fillerColumn != null);
+ 
         if (fillerColumn.FillerWidth > 0)
         {
             fillerColumn.HeaderCell.IsVisible = true;
@@ -495,7 +558,15 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
                 {
                     var size = groupItem.GroupHeaderViewItem.DesiredSize;
                     selfHeight = size.Height;
-                    groupItem.GroupHeaderViewItem.Arrange(new Rect(rect.X, rect.Y, size.Width, hasChildren ? selfHeight : rect.Height));
+                    var offsetX = rect.X;
+                    if (groupItem is DataGridColumnGroupItem groupItemX)
+                    {
+                        if (!groupItemX.IsFrozen)
+                        {
+                            offsetX -= OwningGrid!.HorizontalOffset;
+                        }
+                    }
+                    groupItem.GroupHeaderViewItem.Arrange(new Rect(offsetX, rect.Y, size.Width, hasChildren ? selfHeight : rect.Height));
                 }
                 else
                 {
@@ -578,7 +649,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
                 rightEdge = Math.Min(rightEdge, frozenColumnsWidth);
             }
         }
-        else if (OwningGrid.FrozenColumnCount > 0)
+        else if (OwningGrid.LeftFrozenColumnCount > 0)
         {
             // If we're dragging a scrolling column, we want to clip both the DragIndicator and the DropLocationIndicator
             // controls when they go into the frozen column range.

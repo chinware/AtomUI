@@ -1,10 +1,12 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="TimePickerTheme.axaml"/>
         <ResourceInclude Source="RangeTimePickerTheme.axaml"/>
         <ResourceInclude Source="TimePickerFlyoutPresenterTheme.axaml"/>
         <ResourceInclude Source="TimePickerPresenterTheme.axaml"/>
         <ResourceInclude Source="TimeViewTheme.axaml"/>
+        <ResourceInclude Source="TimeViewCell.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

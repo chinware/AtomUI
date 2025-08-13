@@ -1,20 +1,24 @@
 using System.Globalization;
-using AtomUI.Utils;
+using AtomUI.Theme.Language;
+using AtomUI.Theme.Styling;
 using Avalonia;
 
 namespace AtomUI.Theme;
 
-public class ThemeManagerBuilder : IThemeManagerBuilder
+internal class ThemeManagerBuilder : IThemeManagerBuilder
 {
     public IList<Type> ControlDesignTokens { get; }
     public IList<BaseControlTheme> ControlThemes { get; }
+    public IList<IThemeAssetPathProvider> ThemeAssetPathProviders { get; }
     public IList<IControlThemesProvider> ControlThemesProviders { get; }
-    public IList<AbstractLanguageProvider> LanguageProviders { get; }
+    public IList<LanguageProvider> LanguageProviders { get; }
     public IList<EventHandler> InitializedHandlers { get; }
+    
+    public IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; internal set; }
 
-    public CultureInfo CultureInfo { get; private set; }
+    public LanguageVariant LanguageVariant { get; private set; }
     public string ThemeId { get; private set; }
-    public AppBuilder AppBuilder { get; private set; }
+    public AppBuilder AppBuilder { get; }
 
     private HashSet<string> _registeredTokenTypes;
     private HashSet<string> _registeredControlThemesProviders;
@@ -24,11 +28,12 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
     {
         ControlDesignTokens               = new List<Type>();
         ControlThemes                     = new List<BaseControlTheme>();
+        ThemeAssetPathProviders           = new List<IThemeAssetPathProvider>();
         ControlThemesProviders            = new List<IControlThemesProvider>();
-        LanguageProviders                 = new List<AbstractLanguageProvider>();
+        LanguageProviders                 = new List<LanguageProvider>();
         InitializedHandlers               = new List<EventHandler>();
-        CultureInfo                       = new CultureInfo(LanguageCode.en_US);
-        ThemeId                           = ThemeManager.DEFAULT_THEME_ID;
+        LanguageVariant                   = LanguageVariant.en_US;
+        ThemeId                           = IThemeManager.DEFAULT_THEME_ID;
         _registeredTokenTypes             = new HashSet<string>();
         _registeredLanguageProviders      = new HashSet<string>();
         _registeredControlThemesProviders = new HashSet<string>();
@@ -47,6 +52,14 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
         _registeredTokenTypes.Add(typeStr);
     }
 
+    public void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
+    {
+        if (!ThemeAssetPathProviders.Contains(themeAssetPathProvider))
+        {
+            ThemeAssetPathProviders.Add(themeAssetPathProvider);
+        }
+    }
+    
     public void AddControlThemesProvider(IControlThemesProvider controlThemesProvider)
     {
         if (string.IsNullOrEmpty(controlThemesProvider.Id))
@@ -61,7 +74,7 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
         _registeredControlThemesProviders.Add(controlThemesProvider.Id);
     }
 
-    public void AddLanguageProviders(AbstractLanguageProvider languageProvider)
+    public void AddLanguageProviders(LanguageProvider languageProvider)
     {
         var id = languageProvider.GetType().FullName!;
         if (_registeredLanguageProviders.Contains(id))
@@ -73,20 +86,26 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
         _registeredLanguageProviders.Add(id);
     }
 
-    public void UseTheme(string themeId)
+    public void WithDefaultTheme(string themeId)
     {
         ThemeId = themeId;
     }
 
-    public void UseCultureInfo(CultureInfo cultureInfo)
+    public void WithDefaultCultureInfo(CultureInfo cultureInfo)
     {
-        CultureInfo = cultureInfo;
+        LanguageVariant = LanguageVariant.FromCultureInfo(cultureInfo);
+    }
+    
+    public void WithDefaultLanguageVariant(LanguageVariant languageVariant)
+    {
+        LanguageVariant = languageVariant;
     }
 
     internal ThemeManager Build()
     {
         var themeManager = new ThemeManager();
-
+        themeManager.DefaultThemeId                = ThemeId;
+        themeManager.ThemeVariantCalculatorFactory = ThemeVariantCalculatorFactory;
         foreach (var controlThemesProvider in ControlThemesProviders)
         {
             themeManager.RegisterControlThemesProvider(controlThemesProvider);
@@ -95,6 +114,11 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
         foreach (var tokenType in ControlDesignTokens)
         {
             themeManager.RegisterControlTokenType(tokenType);
+        }
+        
+        foreach (var themeAssetPathProvider in ThemeAssetPathProviders)
+        {
+            themeManager.RegisterControlThemesProvider(themeAssetPathProvider);
         }
 
         foreach (var languageProvider in LanguageProviders)
@@ -108,5 +132,10 @@ public class ThemeManagerBuilder : IThemeManagerBuilder
         }
 
         return themeManager;
+    }
+
+    public void WithThemeVariantCalculatorFactory(IThemeVariantCalculatorFactory factory)
+    {
+        ThemeVariantCalculatorFactory = factory;
     }
 }

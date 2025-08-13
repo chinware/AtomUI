@@ -1,0 +1,58 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:PopupBuddyLayer}" TargetType="atom:PopupBuddyLayer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <atom:MotionActor Name="{x:Static atom:PopupBuddyLayerThemeConstants.MotionActorPart}">
+                        <Panel>
+                            <Decorator Padding="{TemplateBinding Padding}">
+                                <Panel>
+                                    <Panel Name="{x:Static atom:PopupBuddyLayerThemeConstants.ShadowRendererPart}"/>
+                                    <LayoutTransformControl
+                                        Name="{x:Static atom:PopupBuddyLayerThemeConstants.ArrowIndicatorLayoutPart}"
+                                        ZIndex="1000"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top">
+                                        <atom:ArrowIndicator
+                                            Name="{x:Static atom:PopupBuddyLayerThemeConstants.ArrowIndicatorPart}"
+                                            FilledColor="{TemplateBinding ArrowFillColor}" 
+                                            ArrowSize="{TemplateBinding ArrowSize}"/>
+                                    </LayoutTransformControl>
+                                </Panel>
+                            </Decorator>
+                            <ContentPresenter
+                                Name="{x:Static atom:PopupBuddyLayerThemeConstants.GhostContentPresenterPart}"
+                                ZIndex="1000" 
+                                Padding="{TemplateBinding MotionPadding}"/>
+                        </Panel>
+                    </atom:MotionActor>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^[ArrowDirection=Top]">
+            <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+                <Setter Property="LayoutTransform" Value="rotate(0deg)" />
+            </Style>
+        </Style>
+        <Style Selector="^[ArrowDirection=Right]">
+            <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+                <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+            </Style>
+        </Style>
+        <Style Selector="^[ArrowDirection=Bottom]">
+            <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+                <Setter Property="LayoutTransform" Value="rotate(180deg)" />
+            </Style>
+        </Style>
+        <Style Selector="^[ArrowDirection=Left]">
+            <Style Selector="^ /template/ LayoutTransformControl#PART_ArrowIndicatorLayout">
+                <Setter Property="LayoutTransform" Value="rotate(-90deg)" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

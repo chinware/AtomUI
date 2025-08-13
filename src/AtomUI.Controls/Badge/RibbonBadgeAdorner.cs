@@ -1,18 +1,16 @@
-﻿using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.Media;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.LogicalTree;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
-using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class RibbonBadgeAdorner : Control
+internal class RibbonBadgeAdorner : TemplatedControl
 {
     #region 内部属性定义
 
@@ -31,9 +29,6 @@ internal class RibbonBadgeAdorner : Control
     internal static readonly StyledProperty<Point> OffsetProperty =
         AvaloniaProperty.Register<RibbonBadgeAdorner, Point>(
             nameof(Offset));
-
-    internal static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
-        Border.CornerRadiusProperty.AddOwner<RibbonBadgeAdorner>();
 
     internal static readonly StyledProperty<Point> BadgeRibbonOffsetProperty =
         AvaloniaProperty.Register<RibbonBadgeAdorner, Point>(
@@ -85,12 +80,6 @@ internal class RibbonBadgeAdorner : Control
         set => SetValue(OffsetProperty, value);
     }
 
-    internal CornerRadius CornerRadius
-    {
-        get => GetValue(CornerRadiusProperty);
-        set => SetValue(CornerRadiusProperty, value);
-    }
-
     internal Point BadgeRibbonOffset
     {
         get => GetValue(BadgeRibbonOffsetProperty);
@@ -111,7 +100,6 @@ internal class RibbonBadgeAdorner : Control
     
     #endregion
     
-    private bool _initialized;
     private TextBlock? _labelText;
     private Geometry? _cornerGeometry;
     private readonly BorderRenderHelper _borderRenderHelper;
@@ -128,50 +116,11 @@ internal class RibbonBadgeAdorner : Control
         _borderRenderHelper = new BorderRenderHelper();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        if (Styles.Count == 0)
-        {
-            BuildStyles();
-        }
-    }
-
-    private void BuildStyles()
-    {
-        // TODO 需要优化
-        var commonStyle = new Style(selector => selector.OfType<RibbonBadgeAdorner>());
-        commonStyle.Add(RibbonColorProperty, SharedTokenKey.ColorPrimary);
-        commonStyle.Add(CornerRadiusProperty, SharedTokenKey.BorderRadiusSM);
-        commonStyle.Add(BadgeRibbonOffsetProperty, BadgeTokenKey.BadgeRibbonOffset);
-        commonStyle.Add(BadgeRibbonCornerTransformProperty, BadgeTokenKey.BadgeRibbonCornerTransform);
-        commonStyle.Add(BadgeRibbonCornerDarkenAmountProperty, BadgeTokenKey.BadgeRibbonCornerDarkenAmount);
-        var labelStyle = new Style(selector => selector.Nesting().Child().OfType<TextBlock>());
-        labelStyle.Add(TextBlock.ForegroundProperty, SharedTokenKey.ColorTextLightSolid);
-        labelStyle.Add(TextBlock.LineHeightProperty, BadgeTokenKey.BadgeFontHeight);
-        labelStyle.Add(TextBlock.PaddingProperty, BadgeTokenKey.BadgeRibbonTextPadding);
-        commonStyle.Add(labelStyle);
-        Styles.Add(commonStyle);
-    }
-
-    public sealed override void ApplyTemplate()
-    {
-        base.ApplyTemplate();
-        if (!_initialized)
-        {
-            HorizontalAlignment = HorizontalAlignment.Left;
-            VerticalAlignment   = VerticalAlignment.Top;
-            _labelText = new TextBlock()
-            {
-                Text                = Text,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment   = VerticalAlignment.Center
-            };
-            _labelText.SetLogicalParent(this);
-            VisualChildren.Add(_labelText);
-            BuildCornerGeometry();
-            _initialized = true;
-        }
+        base.OnApplyTemplate(e);
+        _labelText = e.NameScope.Find<TextBlock>(RibbonBadgeAdornerThemeConstants.TextPartPart);
+        BuildCornerGeometry();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -203,7 +152,7 @@ internal class RibbonBadgeAdorner : Control
         base.OnPropertyChanged(e);
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == PlacementProperty)
+            if (e.Property == PlacementProperty || e.Property == BadgeRibbonOffsetProperty)
             {
                 BuildCornerGeometry(true);
             }

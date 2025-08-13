@@ -100,11 +100,11 @@ public partial class DataGrid
 
     internal int FirstVisibleSlot => (SlotCount > 0) ? GetNextVisibleSlot(-1) : -1;
 
-    internal int FrozenColumnCountWithFiller
+    internal int LeftFrozenColumnCountWithFiller
     {
         get
         {
-            int count = FrozenColumnCount;
+            int count = LeftFrozenColumnCount;
             if (ColumnsInternal.RowGroupSpacerColumn != null && 
                 ColumnsInternal.RowGroupSpacerColumn.IsRepresented && 
                 (IsRowGroupHeadersFrozen || count > 0))
@@ -118,17 +118,17 @@ public partial class DataGrid
         }
     }
 
-    internal int LastVisibleSlot => (SlotCount > 0) ? GetPreviousVisibleSlot(SlotCount) : -1;
+    internal int FrozenColumnCountWithFiller => LeftFrozenColumnCountWithFiller + RightFrozenColumnCount;
+
+    internal int LastVisibleSlot => SlotCount > 0 ? GetPreviousVisibleSlot(SlotCount) : -1;
 
     internal DataGridRow? EditingRow { get; private set; }
     
     internal bool LoadingOrUnloadingRow { get; private set; }
     
-    internal double[] RowGroupSublevelIndents
-    {
-        get;
-        private set;
-    }
+    internal double[] RowGroupSublevelIndents { get; private set; }
+    
+    internal DataGridRowsPresenter? RowsPresenter => _rowsPresenter;
     
     #endregion
     
@@ -523,7 +523,7 @@ public partial class DataGrid
             // The row is already displayed in its entirety
             return true;
         }
-        else if (DisplayData.FirstScrollingSlot == slot && slot != -1)
+        if (DisplayData.FirstScrollingSlot == slot && slot != -1)
         {
             if (!MathUtilities.IsZero(NegVerticalOffset))
             {
@@ -611,8 +611,7 @@ public partial class DataGrid
             // We scrolled too far because a row's height was larger than its approximation
             _verticalOffset = NegVerticalOffset;
         }
-
-        //
+        
         Debug.Assert(MathUtilities.LessThanOrClose(NegVerticalOffset, _verticalOffset));
 
         SetVerticalOffset(_verticalOffset);
@@ -1164,6 +1163,17 @@ public partial class DataGrid
         return dataGridRow;
     }
 
+    internal DataGridRow GetGeneratedGhostRow(object? dataContext)
+    {
+        var dataGridRow = new DataGridRow();
+        dataGridRow.OwningGrid  = this;
+        dataGridRow.DataContext = dataContext;
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, dataGridRow, DataGridRow.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, SizeTypeProperty, dataGridRow, DataGridRow.SizeTypeProperty);
+        CompleteCellsCollection(dataGridRow);
+        return dataGridRow;
+    }
+
     /// <summary>
     /// Returns the exact row height, whether it is currently displayed or not.
     /// The row is generated and added to the displayed rows in case it is not already displayed.
@@ -1407,9 +1417,7 @@ public partial class DataGrid
         if (slot < DisplayData.FirstScrollingSlot - 1)
         {
             // The element was added above our viewport so it pushes the VerticalOffset down
-            double elementHeight =
-                RowGroupHeadersTable.Contains(slot) ? RowGroupHeaderHeightEstimate : RowHeightEstimate;
-
+            double elementHeight = RowGroupHeadersTable.Contains(slot) ? RowGroupHeaderHeightEstimate : RowHeightEstimate;
             SetVerticalOffset(_verticalOffset + elementHeight);
         }
 
@@ -1462,7 +1470,7 @@ public partial class DataGrid
             Debug.Assert(!isCollapsed);
             NotifyAddedElementPhase1(slot, element);
         }
-        else if ((slot <= DisplayData.FirstScrollingSlot) || (isCollapsed && (slot <= DisplayData.LastScrollingSlot)))
+        else if (slot <= DisplayData.FirstScrollingSlot || (isCollapsed && slot <= DisplayData.LastScrollingSlot))
         {
             DisplayData.CorrectSlotsAfterInsertion(slot, null /*row*/, isCollapsed);
         }
@@ -1817,7 +1825,7 @@ public partial class DataGrid
     }
 
     // Updates display information and displayed rows after scrolling the given number of pixels
-    private void ScrollSlotsByHeight(double height)
+    internal void ScrollSlotsByHeight(double height)
     {
         Debug.Assert(DisplayData.FirstScrollingSlot >= 0);
         Debug.Assert(!MathUtilities.IsZero(height));
@@ -2197,7 +2205,6 @@ public partial class DataGrid
         }
         else
         {
-            //
             _rowsPresenter.Children.Remove(dataGridRow);
             dataGridRow.DetachFromDataGrid(false);
         }
@@ -2636,7 +2643,7 @@ public partial class DataGrid
             && DataConnection.CollectionView.Groups != null)
         {
             int totalSlots = 0;
-            _topLevelGroup                   =  (INotifyCollectionChanged)DataConnection.CollectionView.Groups;
+            _topLevelGroup                   =  DataConnection.CollectionView.Groups;
             _topLevelGroup.CollectionChanged += HandleCollectionViewGroupCollectionChanged;
             foreach (object group in DataConnection.CollectionView.Groups)
             {
@@ -3375,6 +3382,49 @@ public partial class DataGrid
                 UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
                 InvalidateRowsMeasure(invalidateIndividualElements: false);
             }
+        }
+    }
+
+    private void ReConfigurePagination()
+    {
+        if (CollectionView is DataGridCollectionView collectionView)
+        {
+            collectionView.PageSize = PageSize;
+            if (_topPagination != null)
+            {
+                _topPagination.Total       = collectionView.ItemCount;
+                _topPagination.PageSize    = PageSize;
+                _topPagination.CurrentPage = Pagination.DefaultCurrentPage;
+              
+            }
+            if (_bottomPagination != null)
+            {
+                _bottomPagination.Total       = collectionView.ItemCount;
+                _bottomPagination.PageSize    = PageSize;
+                _bottomPagination.CurrentPage = Pagination.DefaultCurrentPage;
+            }
+        }
+    }
+
+    private void HandlePageChangeRequest(object? sender, PageChangedArgs args)
+    {
+        if (CollectionView is DataGridCollectionView collectionView)
+        {
+            collectionView.MoveToPage(args.PageNumber - 1);
+        }
+    }
+
+    private void HandlePageChanging(object? sender, PageChangingEventArgs args)
+    {
+        var targetPage = args.NewPageIndex + 1;
+        if (_topPagination != null && _topPagination.CurrentPage != targetPage)
+        {
+            _topPagination.CurrentPage = targetPage;
+        }
+        
+        if (_bottomPagination != null && _bottomPagination.CurrentPage != targetPage)
+        {
+            _bottomPagination.CurrentPage = targetPage;
         }
     }
 }

@@ -46,7 +46,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
             {
                 var resourceKey = new TokenResourceKey($"{_id}.{entryResourceKey.UnQualifiedKey()}",
                     entryResourceKey.Catalog);
-                dictionary.Add(resourceKey, entry.Value);
+                dictionary[resourceKey] = entry.Value;
             }
         }
     }
@@ -83,7 +83,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
                 }
             }
 
-            _sharedResourceDeltaDictionary.Add(new TokenResourceKey(name), localSharedTokenValue);
+            _sharedResourceDeltaDictionary[new TokenResourceKey(name)] = localSharedTokenValue;
         }
     }
 

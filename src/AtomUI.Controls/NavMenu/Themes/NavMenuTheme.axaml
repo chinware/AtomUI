@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:NavMenu}" TargetType="atom:NavMenu">
         <Setter Property="Template">
             <ControlTemplate>
@@ -23,7 +24,13 @@
                 </DockPanel>
             </ControlTemplate>
         </Setter>
-
+        
+        <Style Selector="^:is(atom|NavMenuBase)">
+            
+        </Style>
+        
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        
         <Style Selector="^ /template/ Rectangle#PART_HorizontalLine">
             <Setter Property="IsVisible" Value="True" />
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />

@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using System.Diagnostics;
+using AtomUI.Controls.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -20,14 +21,23 @@ namespace AtomUI.Controls;
 /// </summary>
 public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
 {
+    #region 内部属性定义
+    
+    internal int? DraggedRowIndex { get; set; }
+    
+    internal Double DragRowOffset { get; set; }
+    
+    internal DataGrid? OwningGrid { get; set; }
     private EventHandler<ChildIndexChangedEventArgs>? _childIndexChanged;
 
+    #endregion
+    
+    private DataGridRow? _dragIndicator;
+    
     public DataGridRowsPresenter()
     {
         AddHandler(Gestures.ScrollGestureEvent, OnScrollGesture);
     }
-
-    internal DataGrid? OwningGrid { get; set; }
 
     event EventHandler<ChildIndexChangedEventArgs>? IChildIndexProvider.ChildIndexChanged
     {
@@ -79,7 +89,16 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
 
         double rowDesiredWidth = OwningGrid.RowHeadersDesiredWidth + OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth + OwningGrid.ColumnsInternal.FillerColumn.FillerWidth;
         double topEdge = -OwningGrid.NegVerticalOffset;
-        foreach (Control element in OwningGrid.DisplayData.GetScrollingElements())
+
+        var visibleRows = new List<Control>();
+        visibleRows.AddRange(OwningGrid.DisplayData.GetScrollingElements());
+        
+        if (_dragIndicator != null)
+        {
+            visibleRows.Add(_dragIndicator);
+        }
+        
+        foreach (Control element in visibleRows)
         {
             if (element is DataGridRow row)
             {
@@ -88,7 +107,14 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
                 // Visibility for all filler cells needs to be set in one place.  Setting it individually in
                 // each CellsPresenter causes an NxN layout cycle (see DevDiv Bugs 211557)
                 row.EnsureFillerVisibility();
-                row.Arrange(new Rect(0, topEdge, rowDesiredWidth, element.DesiredSize.Height));
+                if (_dragIndicator == row)
+                {
+                    row.Arrange(new Rect(0, DragRowOffset, rowDesiredWidth, element.DesiredSize.Height));
+                }
+                else
+                {
+                    row.Arrange(new Rect(0, topEdge, rowDesiredWidth, element.DesiredSize.Height));
+                }
             }
             else if (element is DataGridRowGroupHeader groupHeader)
             {
@@ -154,7 +180,14 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         double totalCellsWidth = OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth;
 
         double headerWidth = 0;
-        foreach (Control element in OwningGrid.DisplayData.GetScrollingElements())
+        
+        var visibleRows = OwningGrid.DisplayData.GetScrollingElements().ToList();
+        if (_dragIndicator != null)
+        {
+            visibleRows.Add(_dragIndicator);
+        }
+        
+        foreach (Control element in visibleRows)
         {
             DataGridRow? row = element as DataGridRow;
             if (row != null)
@@ -175,8 +208,11 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             {
                 headerWidth = Math.Max(headerWidth, groupHeader.HeaderCell.DesiredSize.Width);
             }
-
-            totalHeight += element.DesiredSize.Height;
+            
+            if (element != _dragIndicator)
+            {
+                totalHeight += element.DesiredSize.Height;
+            }
         }
 
         OwningGrid.RowHeadersDesiredWidth = headerWidth;
@@ -192,7 +228,34 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
     {
         e.Handled = e.Handled || (OwningGrid?.UpdateScroll(-e.Delta) ?? false);
     }
+    
+    internal void NotifyAboutToDragging()
+    {
+        Debug.Assert(OwningGrid != null);
+        Debug.Assert(DraggedRowIndex.HasValue);
+        object? data = null;
+        if (OwningGrid.CollectionView is DataGridCollectionView collectionView)
+        {
+            data = collectionView.GetItemAt(DraggedRowIndex.Value);
+        }
+        _dragIndicator            = OwningGrid.GetGeneratedGhostRow(data);
+        _dragIndicator.Index      = DraggedRowIndex.Value;
+        _dragIndicator.IsDragging = true;
+        LogicalChildren.Add(_dragIndicator);
+        VisualChildren.Add(_dragIndicator);
+    }
 
+    internal void NotifyDropped()
+    {
+        if (_dragIndicator != null)
+        {
+            LogicalChildren.Remove(_dragIndicator);
+            VisualChildren.Remove(_dragIndicator);
+        }
+
+        _dragIndicator = null;
+    }
+    
 #if DEBUG
     internal void PrintChildren()
     {

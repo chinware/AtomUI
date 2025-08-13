@@ -12,6 +12,6 @@ public abstract class WaveSpiritAwareControlProperty : MotionAwareControlPropert
 {
     public const string IsWaveSpiritEnabledPropertyName = "IsWaveSpiritEnabled";
 
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = AvaloniaProperty.Register<WaveSpiritAwareControlProperty, bool>(IsWaveSpiritEnabledPropertyName);
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        AvaloniaProperty.Register<StyledElement, bool>(IsWaveSpiritEnabledPropertyName);
 }

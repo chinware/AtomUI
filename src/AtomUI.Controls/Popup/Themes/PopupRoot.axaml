@@ -1,11 +1,12 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type PopupRoot}" TargetType="PopupRoot">
         <Setter Property="Template">
             <ControlTemplate>
-                <LayoutTransformControl LayoutTransform="{TemplateBinding Transform}">
+                <atom:MotionActor Name="{x:Static atom:PopupThemeConstants.MotionActorPart}">
                     <Panel>
                         <Border Name="{x:Static atom:PopupThemeConstants.TransparencyFallbackPart}"
                                 IsHitTestVisible="False" />
@@ -17,10 +18,10 @@
                                               Padding="{TemplateBinding Padding}" />
                         </VisualLayerManager>
                     </Panel>
-                </LayoutTransformControl>
+                </atom:MotionActor>
             </ControlTemplate>
         </Setter>
-        
+
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
@@ -28,6 +29,6 @@
         <Setter Property="FontFamily" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontFamily}}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontStyle" Value="Normal" />
-        
+
     </ControlTheme>
 </ResourceDictionary>

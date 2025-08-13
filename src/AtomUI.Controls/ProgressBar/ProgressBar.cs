@@ -614,34 +614,37 @@ public class ProgressBar : AbstractLineProgress
     {
         if (!PercentPosition.IsInner)
         {
-            BindUtils.RelayBind(this, ForegroundProperty, _percentageLabel!, Label.ForegroundProperty);
+            BindUtils.RelayBind(this, ForegroundProperty, _percentageLabel!, ForegroundProperty);
         }
         else
         {
-            // 根据当前的 Stroke 笔刷计算可读性
-            // 但是渐变笔刷就麻烦了，暂时不支持吧
-            var colorTextLabel      = (ColorTextLabel as ISolidColorBrush)!.Color;
-            var colorTextLightSolid = (ColorTextLightSolid as ISolidColorBrush)!.Color;
-            var colors              = new List<Color> { colorTextLabel, colorTextLightSolid };
-            if (MathUtils.AreClose(Value, 0))
+            if (ColorTextLabel != null && ColorTextLightSolid != null)
             {
-                if (GrooveBrush is ISolidColorBrush grooveBrush)
+                // 根据当前的 Stroke 笔刷计算可读性
+                // 但是渐变笔刷就麻烦了，暂时不支持吧
+                var colorTextLabel      = (ColorTextLabel as ISolidColorBrush)!.Color;
+                var colorTextLightSolid = (ColorTextLightSolid as ISolidColorBrush)!.Color;
+                var colors              = new List<Color> { colorTextLabel, colorTextLightSolid };
+                if (MathUtils.AreClose(Value, 0))
                 {
-                    var mostReadable = ColorUtils.MostReadable(grooveBrush.Color, colors);
-                    if (mostReadable.HasValue)
+                    if (GrooveBrush is ISolidColorBrush grooveBrush)
                     {
-                        _percentageLabel?.SetValue(Label.ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
+                        var mostReadable = ColorUtils.MostReadable(grooveBrush.Color, colors);
+                        if (mostReadable.HasValue)
+                        {
+                            _percentageLabel?.SetValue(ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
+                        }
                     }
                 }
-            }
-            else
-            {
-                if (IndicatorBarBrush is ISolidColorBrush indicatorBarBrush)
+                else
                 {
-                    var mostReadable = ColorUtils.MostReadable(indicatorBarBrush.Color, colors);
-                    if (mostReadable.HasValue)
+                    if (IndicatorBarBrush is ISolidColorBrush indicatorBarBrush)
                     {
-                        _percentageLabel?.SetValue(Label.ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
+                        var mostReadable = ColorUtils.MostReadable(indicatorBarBrush.Color, colors);
+                        if (mostReadable.HasValue)
+                        {
+                            _percentageLabel?.SetValue(ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
+                        }
                     }
                 }
             }

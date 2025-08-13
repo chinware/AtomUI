@@ -1,11 +1,12 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:MessageCard}" TargetType="atom:MessageCard">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:MotionActorControl Name="{x:Static atom:MessageCardThemeConstants.MotionActorPart}"
+                <atom:MotionActor Name="{x:Static atom:MessageCardThemeConstants.MotionActorPart}"
                                          ClipToBounds="False">
                     <Border Name="{x:Static atom:MessageCardThemeConstants.FramePart}">
                         <DockPanel Name="{x:Static atom:MessageCardThemeConstants.HeaderContainerPart}"
@@ -18,10 +19,12 @@
                                                  Text="{TemplateBinding Message}" />
                         </DockPanel>
                     </Border>
-                </atom:MotionActorControl>
+                </atom:MotionActor>
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        
         <Style Selector="^ /template/ atom|IconPresenter">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MessageTokenKey.MessageIconSize}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MessageTokenKey.MessageIconSize}}" />

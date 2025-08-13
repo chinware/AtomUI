@@ -1,8 +1,6 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
-using AtomUI.Data;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
@@ -24,10 +22,9 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
 
     protected override Control GenerateElement(DataGridCell cell, object dataItem)
     {
-        EnsureOwningGrid();
         Debug.Assert(OwningGrid != null);
         var expander = new DataGridRowExpander();
-        expander[!DataGridColumnHeader.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
+        expander[!DataGridRowExpander.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
         return expander;
     }
     
@@ -44,7 +41,7 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
         return headerCell;
     }
     
-    private bool EnsureOwningGrid()
+    private void ConfigureOwningGrid()
     {
         if (OwningGrid != null)
         {
@@ -55,9 +52,7 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
                 _owningGrid.LoadingRow                += HandleLoadingRow;
                 _owningGrid.UnloadingRow              += HandleUnLoadingRow;
             }
-            return true;
         }
-        return false;
     }
     
     private void HandleColumnsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -99,6 +94,7 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
     protected override void NotifyOwningGridAttached(DataGrid? owningGrid)
     {
         base.NotifyOwningGridAttached(owningGrid);
+        ConfigureOwningGrid();
         if (owningGrid != null)
         {
             if (owningGrid.RowDetailsVisibilityMode != DataGridRowDetailsVisibilityMode.Collapsed)
@@ -106,5 +102,10 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
                 throw DataGridError.DataGridColumn.RowDetailsVisibilityModeException();
             }
         }
+    }
+    
+    public override bool IsEditable()
+    {
+        return false;
     }
 }

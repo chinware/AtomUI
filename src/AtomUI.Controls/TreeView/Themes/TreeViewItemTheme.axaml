@@ -2,6 +2,7 @@
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              x:ClassModifier="internal"
               x:Class="AtomUI.Controls.Themes.TreeViewItemTheme">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:TreeViewItem">
@@ -63,14 +64,14 @@
                                           ContentTemplate="{TemplateBinding HeaderTemplate}" />
                     </Grid>
                 </Border>
-                <atom:MotionActorControl
+                <atom:LayoutAwareMotionActor
                     Name="{x:Static atom:TreeViewItemThemeConstants.ItemsPresenterMotionActorPart}"
                     ClipToBounds="True"
                     IsVisible="False">
                     <ItemsPresenter Name="{x:Static atom:TreeViewItemThemeConstants.ItemsPresenterPart}"
                                     Focusable="False"
                                     ItemsPanel="{TemplateBinding ItemsPanel}" />
-                </atom:MotionActorControl>
+                </atom:LayoutAwareMotionActor>
             </StackPanel>
         </ControlTemplate>
     </Setter>

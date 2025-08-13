@@ -10,7 +10,6 @@ namespace AtomUI.Controls;
 public class FlyoutPresenter : ArrowDecoratedBox,
                                IControlSharedTokenResourcesHost
 {
-
     #region 内部属性定义
 
     Control IControlSharedTokenResourcesHost.HostControl => this;

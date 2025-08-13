@@ -119,7 +119,7 @@ public class DotBadge : Control,
     public DotBadge()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
+        this.ConfigureMotionBindingStyle();
     }
 
     private DotBadgeAdorner CreateDotBadgeAdorner()
@@ -215,12 +215,14 @@ public class DotBadge : Control,
                 _dotBadgeAdorner.IsAdornerMode = false;
                 _dotBadgeAdorner.SetLogicalParent(this);
                 VisualChildren.Add(_dotBadgeAdorner);
+                LogicalChildren.Add(_dotBadgeAdorner);
             }
             else
             {
                 _dotBadgeAdorner.IsAdornerMode = true;
                 DecoratedTarget.SetLogicalParent(this);
                 VisualChildren.Add(DecoratedTarget);
+                LogicalChildren.Add(DecoratedTarget);
             }
         }
     }

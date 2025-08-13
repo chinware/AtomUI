@@ -1,22 +1,22 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:HyperLinkTextBlock}" TargetType="atom:HyperLinkTextBlock">
         <Setter Property="Template">
             <ControlTemplate>
-                <TextBlock Name="{x:Static atom:HyperLinkTextBlockThemeConstants.TextPart}"
+                <atom:TextBlock Name="{x:Static atom:HyperLinkTextBlockThemeConstants.TextPart}"
                            FontWeight="{TemplateBinding FontWeight}"
                            FontStyle="{TemplateBinding FontStyle}"
                            FontSize="{TemplateBinding FontSize}"
-                           Text="{TemplateBinding Text}">
-                    
-                </TextBlock>
+                           Text="{TemplateBinding Text}"/>
             </ControlTemplate>
         </Setter>
         
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         
         <Style Selector="^[IsEnabled=True]">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />

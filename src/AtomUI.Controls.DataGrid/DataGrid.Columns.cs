@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Controls.Data;
+using AtomUI.Controls.Utils;
 using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -105,6 +106,7 @@ public partial class DataGrid
 
     private DataGridColumnHeadersPresenter? _columnHeadersPresenter;
     private DataGridGroupColumnHeadersPresenter? _groupColumnHeadersPresenter;
+    private DataGridColumnDraggingOverIndicator? _dataGridDraggingOverIndicator;
 
     protected virtual void NotifyColumnDisplayIndexChanged(DataGridColumnEventArgs e)
     {
@@ -117,17 +119,48 @@ public partial class DataGrid
         ColumnReordered?.Invoke(this, e);
     }
 
-    protected internal virtual void HandleColumnReordering(DataGridColumnReorderingEventArgs e)
+    protected internal virtual void NotifyColumnReordering(DataGridColumnReorderingEventArgs e)
     {
         ColumnReordering?.Invoke(this, e);
     }
+    
+    protected internal virtual void NotifyRowReordered(DataGridRowEventArgs e)
+    {
+        RowReordered?.Invoke(this, e);
+    }
 
-    protected internal virtual void HandleColumnSorting(DataGridColumnEventArgs e)
+    protected internal virtual void NotifyRowReordering(DataGridRowReorderingEventArgs e)
+    {
+        RowReordering?.Invoke(this, e);
+    }
+    
+    protected internal virtual void NotifyColumnDraggingOver(DataGridColumnDraggingOverEventArgs e)
+    {
+        if (_dataGridDraggingOverIndicator != null)
+        {
+            if (e.DraggedColumn != null && e.DraggingOverColumn != null && e.DraggedColumn != e.DraggingOverColumn)
+            {
+                _dataGridDraggingOverIndicator.IsVisible          = true;
+                _dataGridDraggingOverIndicator.DraggingOverColumn = e.DraggingOverColumn;
+                _dataGridDraggingOverIndicator.DraggedColumn = e.DraggedColumn;
+            }
+            else
+            {
+                _dataGridDraggingOverIndicator.IsVisible          = false;
+                _dataGridDraggingOverIndicator.DraggingOverColumn = null;
+                _dataGridDraggingOverIndicator.DraggedColumn      = null;
+            }
+        }
+   
+        ColumnDraggingOver?.Invoke(this, e);
+    }
+
+    protected internal virtual void NotifyColumnSorting(DataGridColumnEventArgs e)
     {
         Sorting?.Invoke(this, e);
     }
 
-    protected internal virtual void HandleColumnFiltering(DataGridColumnEventArgs e)
+    protected internal virtual void NotifyColumnFiltering(DataGridColumnEventArgs e)
     {
         Filtering?.Invoke(this, e);
     }
@@ -184,7 +217,7 @@ public partial class DataGrid
             foreach (var column in ColumnsInternal)
             {
                 var ea = new DataGridColumnEventArgs(column);
-                HandleColumnSorting(ea);
+                NotifyColumnSorting(ea);
             }
 
             // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
@@ -253,7 +286,7 @@ public partial class DataGrid
             foreach (var column in ColumnsInternal)
             {
                 var ea = new DataGridColumnEventArgs(column);
-                HandleColumnFiltering(ea);
+                NotifyColumnFiltering(ea);
             }
 
             // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
@@ -770,12 +803,28 @@ public partial class DataGrid
             SetAndSelectCurrentCell(newCurrentCellCoordinates.ColumnIndex,
                 newCurrentCellCoordinates.Slot,
                 ColumnsInternal.VisibleColumnCount == 1 /*forceCurrentCellSelection*/);
-
-            if (newDisplayIndex < FrozenColumnCountWithFiller)
+            
+            if (IsFrozenColumnIndex(newDisplayIndex))
             {
                 CorrectColumnFrozenStates();
             }
         }
+    }
+
+    internal bool IsFrozenColumnIndex(int index)
+    {
+        if (index < LeftFrozenColumnCountWithFiller)
+        {
+            return true;
+        }
+
+        var displayColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        if (index >= displayColumnCount - RightFrozenColumnCount && index < displayColumnCount)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     internal void HandleInsertedColumnPreNotification(DataGridColumn insertedColumn)
@@ -892,7 +941,7 @@ public partial class DataGrid
         RemoveDisplayedColumnHeader(removedColumn);
     }
 
-    internal DataGridCellCoordinates OnRemovingColumn(DataGridColumn dataGridColumn)
+    internal DataGridCellCoordinates HandleRemovingColumn(DataGridColumn dataGridColumn)
     {
         Debug.Assert(dataGridColumn != null);
         Debug.Assert(dataGridColumn.Index >= 0 && dataGridColumn.Index < ColumnsItemsInternal.Count);
@@ -999,7 +1048,7 @@ public partial class DataGrid
                 _horizontalOffset -= GetEdgedColumnWidth(dataGridColumn);
             }
 
-            if (_hScrollBar != null && _hScrollBar.IsVisible) // 
+            if (_hScrollBar != null && _hScrollBar.IsVisible) 
             {
                 _hScrollBar.Value = _horizontalOffset;
             }
@@ -1315,7 +1364,7 @@ public partial class DataGrid
                     invalidate = true;
                     cx         = displayWidth;
                     // 我们不需要那么高的精度
-                    Debug.Assert(AreEqualAt3Decimals(_negHorizontalOffset,
+                    Debug.Assert(DataGridHelper.AreEqualAt3Decimals(_negHorizontalOffset,
                         GetNegHorizontalOffsetFromHorizontalOffset(_horizontalOffset)));
                 }
 
@@ -1359,17 +1408,10 @@ public partial class DataGrid
 
         return invalidate;
     }
-    
-    private static bool AreEqualAt3Decimals(double a, double b)
-    {
-        long scaledA = (long)Math.Round(a * 10000);
-        long scaledB = (long)Math.Round(b * 10000);
-        return scaledA == scaledB;
-    }
 
     private int ComputeFirstVisibleScrollingColumn()
     {
-        if (ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth() >= CellsWidth)
+        if (ColumnsInternal.GetVisibleLeftFrozenEdgedColumnsWidth() >= CellsWidth)
         {
             // Not enough room for scrolling columns.
             _negHorizontalOffset = 0;
@@ -1512,32 +1554,31 @@ public partial class DataGrid
     private void CorrectColumnFrozenStates()
     {
         int    index                = 0;
-        double frozenColumnWidth    = 0;
-        double oldFrozenColumnWidth = 0;
+        int    displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
         foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
         {
-            if (column.IsFrozen)
+            bool isLeftFrozen  = index < LeftFrozenColumnCountWithFiller;
+            bool isRightFrozen = index >= (displayedColumnCount - RightFrozenColumnCount);
+            
+            if (isLeftFrozen)
             {
-                oldFrozenColumnWidth += column.ActualWidth;
+                column.IsLeftFrozen = true;
+                column.IsRightFrozen = false;
             }
-
-            column.IsFrozen = index < FrozenColumnCountWithFiller;
-            if (column.IsFrozen)
+            else if (isRightFrozen)
             {
-                frozenColumnWidth += column.ActualWidth;
+                column.IsRightFrozen = true;
+                column.IsLeftFrozen = false;
+            }
+            else
+            {
+                column.IsFrozen = false;
             }
 
             index++;
         }
 
-        if (HorizontalOffset > Math.Max(0, frozenColumnWidth - oldFrozenColumnWidth))
-        {
-            UpdateHorizontalOffset(HorizontalOffset - frozenColumnWidth + oldFrozenColumnWidth);
-        }
-        else
-        {
-            UpdateHorizontalOffset(0);
-        }
+        UpdateHorizontalOffset(0);
     }
 
     private void CorrectColumnIndexesAfterDeletion(DataGridColumn deletedColumn)
@@ -1937,7 +1978,7 @@ public partial class DataGrid
                 if (newFirstDisplayedScrollingCol.Index == columnIndex)
                 {
                     _negHorizontalOffset = 0;
-                    double frozenColumnWidth = ColumnsInternal.GetVisibleFrozenEdgedColumnsWidth();
+                    double frozenColumnWidth = ColumnsInternal.GetVisibleLeftFrozenEdgedColumnsWidth();
                     // If the entire column cannot be displayed, we want to start showing it from its LeftEdge
                     if (newColumnWidth > (CellsWidth - frozenColumnWidth))
                     {

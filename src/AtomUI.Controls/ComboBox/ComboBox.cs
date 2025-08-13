@@ -4,8 +4,10 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Layout;
 
 namespace AtomUI.Controls;
@@ -81,7 +83,6 @@ public class ComboBox : AvaloniaComboBox,
         set => SetValue(RightAddOnTemplateProperty, value);
     }
     
-    
     public object? InnerLeftContent
     {
         get => GetValue(InnerLeftContentProperty);
@@ -139,64 +140,68 @@ public class ComboBox : AvaloniaComboBox,
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<ComboBox, double> EffectivePopupWidthProperty =
+        AvaloniaProperty.RegisterDirect<ComboBox, double>(
+            nameof(EffectivePopupWidth),
+            o => o.EffectivePopupWidth,
+            (o, v) => o.EffectivePopupWidth = v);
+    
+    private double _effectivePopupWidth;
+
+    internal double EffectivePopupWidth
+    {
+        get => _effectivePopupWidth;
+        set => SetAndRaise(EffectivePopupWidthProperty, ref _effectivePopupWidth, value);
+    }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ComboBoxToken.ID;
 
     #endregion
-
-    static ComboBox()
-    {
-        HorizontalAlignmentProperty.OverrideDefaultValue<ComboBox>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<ComboBox>(VerticalAlignment.Top);
-    }
+    
+    private Popup? _popup;
 
     public ComboBox()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
-
-    private IconButton? _openIndicatorButton;
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        var size = base.ArrangeOverride(finalSize);
-        if (_popup is not null)
-        {
-            _popup.MinWidth = size.Width;
-        }
-
-        return size;
-    }
-
-    private Popup? _popup;
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        this.SetPopup(null); // 情况父类，方式鼠标点击的错误处理
         _popup               = e.NameScope.Find<Popup>(ComboBoxThemeConstants.PopupPart);
-        _openIndicatorButton = e.NameScope.Find<IconButton>(ComboBoxThemeConstants.OpenIndicatorButtonPart);
-
-        if (_openIndicatorButton is not null)
-        {
-            _openIndicatorButton.Click += (sender, args) => { SetCurrentValue(IsDropDownOpenProperty, true); };
-        }
         var spinnerHandle = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxThemeConstants.SpinnerInnerBoxPart);
         if (spinnerHandle?.SpinnerContent is ComboBoxHandle handle)
         {
-            handle.HandleClick += (sender, args) =>
-            {
-                SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
-            };
+            handle.HandleClick += HandleOpenPopupClicked;
         }
+        if (_popup is IPopupHostProvider popupHostProvider)
+        {
+            popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
+        }
+        UpdatePseudoClasses();
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    private void HandleOpenPopupClicked(object? sender, EventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        UpdatePseudoClasses();
+        SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+    }
+    
+    private void HandlePopupHostChanged(IPopupHost? host)
+    {
+        if (host is PopupRoot popupRoot)
+        {
+            if (popupRoot.ParentTopLevel is WindowBase window)
+            {
+                window.Deactivated += (sender, args) =>
+                {
+                    IsDropDownOpen = false;
+                };
+            }
+        }
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -218,10 +223,31 @@ public class ComboBox : AvaloniaComboBox,
             UpdatePseudoClasses();
         }
     }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (!e.Handled && e.Source is Visual source)
+        {
+            if (_popup?.IsInsidePopup(source) == true)
+            {
+                if (UpdateSelectionFromEventSource(e.Source))
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+        base.OnPointerReleased(e);
+    }
 
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
         PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
+    }
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        EffectivePopupWidth = e.NewSize.Width;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -149,7 +148,7 @@ public class DropdownButton : Button
     
     protected override void SetupControlThemeBindings(bool force = false)
     {
-        if (!_themeConfigured || force)
+        if (!ThemeConfigured || force)
         {
             if (ButtonType == ButtonType.Default)
             {

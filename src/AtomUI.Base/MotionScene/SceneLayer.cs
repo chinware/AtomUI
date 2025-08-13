@@ -2,6 +2,7 @@
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
 using Avalonia.Platform;
@@ -11,9 +12,9 @@ namespace AtomUI.MotionScene;
 
 internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
+    public const string MotionActorPart = "PART_MotionActor";
+    protected BaseMotionActor? MotionActor;
     protected readonly IManagedPopupPositionerPopup? ManagedPopupPositionerPopup;
-    private readonly Canvas _layout;
-    private SceneMotionActorControl? _motionActorControl;
 
     static SceneLayer()
     {
@@ -51,9 +52,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
         {
             ManagedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
         }
-
-        _layout   = new Canvas();
-        Content   = _layout;
+        
         Focusable = false;
     }
 
@@ -90,21 +89,7 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     {
         PlatformImpl?.Dispose();
     }
-
-    public void SetMotionActor(SceneMotionActorControl actorControl)
-    {
-        _motionActorControl = actorControl;
-        _layout.Children.Add(actorControl);
-    }
-
-    public void RemoveMotionActor()
-    {
-        if (_motionActorControl != null)
-        {
-            _layout.Children.Remove(_motionActorControl);
-        }
-    }
-
+    
     // 这个地方我们可以需要定制
     protected override Size MeasureOverride(Size availableSize)
     {
@@ -157,13 +142,10 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
         Height = size.Height;
         ManagedPopupPositionerPopup?.MoveAndResize(new Point(Math.Round(point.X), Math.Floor(point.Y + 0.5)), size);
     }
-
-    protected override void OnOpened(EventArgs e)
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnOpened(e);
-        if (_motionActorControl is not null)
-        {
-            _motionActorControl.NotifySceneLayerHostWinOpened();
-        }
+        base.OnApplyTemplate(e);
+        MotionActor         = e.NameScope.Find<BaseMotionActor>(MotionActorPart);
     }
 }

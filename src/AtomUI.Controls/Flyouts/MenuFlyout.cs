@@ -50,6 +50,7 @@ public class MenuFlyout : Flyout
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
     
     private IDisposable? _detectMouseClickDisposable;
+    private MenuFlyoutPresenter? _presenter;
     
     [Content] 
     public ItemCollection Items { get; }
@@ -62,19 +63,20 @@ public class MenuFlyout : Flyout
     
     protected override Control CreatePresenter()
     {
-        var presenter = new MenuFlyoutPresenter
+        _presenter = new MenuFlyoutPresenter
         {
-            ItemsSource                                = Items,
-            [!ItemsControl.ItemTemplateProperty]       = this[!ItemTemplateProperty],
-            [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
-            MenuFlyout                                 = this
+            ItemsSource                                    = Items,
+            [!ItemsControl.ItemTemplateProperty]           = this[!ItemTemplateProperty],
+            [!ItemsControl.ItemContainerThemeProperty]     = this[!ItemContainerThemeProperty],
+            [!MenuFlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty],
+            MenuFlyout                                     = this
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
-        SetupArrowPosition(Popup, presenter);
+        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, MenuFlyoutPresenter.IsShowArrowProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, _presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
+        SetupArrowPosition(Popup, _presenter);
         CalculateShowArrowEffective();
 
-        return presenter;
+        return _presenter;
     }
 
     protected void SetupArrowPosition(Popup popup, MenuFlyoutPresenter? flyoutPresenter = null)
@@ -192,5 +194,19 @@ public class MenuFlyout : Flyout
     {
         base.NotifyPopupCreated(popup);
         popup.IsLightDismissEnabled = false;
+    }
+    
+    protected override void NotifyAboutToClose()
+    {
+        if (_presenter != null)
+        {
+            foreach (var childItem in _presenter.Items)
+            {
+                if (childItem is MenuItem menuItem)
+                {
+                    menuItem.IsSubMenuOpen = false;
+                }
+            }
+        }
     }
 }

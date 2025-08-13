@@ -172,18 +172,6 @@ internal class DataGridToken : AbstractControlDesignToken
     public double SelectionColumnWidth { get; set; }
     
     /// <summary>
-    /// Sticky 模式下滚动条背景色
-    /// Background of sticky scrollbar
-    /// </summary>
-    public Color StickyScrollBarBg { get; set; }
-    
-    /// <summary>
-    /// Sticky 模式下滚动条圆角
-    /// Border radius of sticky scrollbar
-    /// </summary>
-    public CornerRadius StickyScrollBarBorderRadius { get; set; }
-    
-    /// <summary>
     /// 左侧列固定阴影
     /// </summary>
     public BoxShadows LeftFrozenShadows { get; set; }
@@ -192,6 +180,16 @@ internal class DataGridToken : AbstractControlDesignToken
     /// 右侧列固定阴影
     /// </summary>
     public BoxShadows RightFrozenShadows { get; set; }
+    
+    /// <summary>
+    /// 列拖动排序时候的当前列的背景颜色
+    /// </summary>
+    public Color ColumnReorderActiveBg { get; set; }
+    
+    /// <summary>
+    /// 分页器的外边距
+    /// </summary>
+    public Thickness PaginationMargin { get; set; }
 
     #region 内部 Token
 
@@ -200,59 +198,53 @@ internal class DataGridToken : AbstractControlDesignToken
     internal double ExpandIconSize { get; set; }
     internal double ExpandIconScale { get; set; }
     internal double SortIconSize { get; set; }
+    internal double RowReorderIndicatorSize { get; set; }
     internal Color HeaderIconColor { get; set; }
     internal Color HeaderIconHoverColor { get; set; }
     internal Thickness SortIndicatorLayoutMargin { get; set; }
-    
     internal Thickness FilterIndicatorPadding { get; set; }
 
     #endregion
 
-    #region 别名
-    public double TableFontSize { get; set; }
-    public Color TableBg { get; set; }
-    public CornerRadius TableRadius { get; set; }
-    public Thickness TablePadding { get; set; }
-    public Thickness TablePaddingMiddle { get; set; }
-    public Thickness TablePaddingSmall { get; set; }
-    public Color TableBorderColor { get; set; }
-    public Color TableHeaderTextColor { get; set; }
-    public Color TableHeaderBg { get; set; }
-    public Color TableFooterTextColor { get; set; }
-    public Color TableFooterBg { get; set; }
-    public Color TableHeaderCellSplitColor { get; set; }
-    public Color TableHeaderSortBg { get; set; }
-    public Color TableHeaderSortHoverBg { get; set; }
-    public Color TableBodySortBg { get; set; }
-    public Color TableFixedHeaderSortActiveBg { get; set; }
-    public Color TableHeaderFilterActiveBg { get; set; }
-    public Color TableFilterDropdownBg { get; set; }
-    public double TableFilterButtonSpacing  { get; set; }
-    public Thickness TableFilterButtonContainerMargin { get; set; }
-    public Thickness TableFilterButtonLayoutSeparatorMargin { get; set; }
+    #region 内部别名定义
+    internal double TableFontSize { get; set; }
+    internal Color TableBg { get; set; }
+    internal CornerRadius TableRadius { get; set; }
+    internal Thickness TablePadding { get; set; }
+    internal Thickness TablePaddingMiddle { get; set; }
+    internal Thickness TablePaddingSmall { get; set; }
+    internal Color TableBorderColor { get; set; }
+    internal Color TableHeaderTextColor { get; set; }
+    internal Color TableHeaderBg { get; set; }
+    internal Color TableFooterTextColor { get; set; }
+    internal Color TableFooterBg { get; set; }
+    internal Color TableHeaderCellSplitColor { get; set; }
+    internal Color TableHeaderSortBg { get; set; }
+    internal Color TableHeaderSortHoverBg { get; set; }
+    internal Color TableBodySortBg { get; set; }
+    internal Color TableFixedHeaderSortActiveBg { get; set; }
+    internal Color TableHeaderFilterActiveBg { get; set; }
+    internal Color TableFilterDropdownBg { get; set; }
+    internal double TableFilterButtonSpacing  { get; set; }
+    internal Thickness TableFilterButtonContainerMargin { get; set; }
+    internal Thickness TableFilterButtonLayoutSeparatorMargin { get; set; }
 
-    public double TableFilterDropdownHeight { get; set; }
-    public double TableFilterDropdownWidth { get; set; }
-    public Thickness TableFilterDropdownPadding { get; set; }
-    public double TableFilterDropdownSearchWidth { get; set; }
+    internal double TableFilterDropdownHeight { get; set; }
+    internal double TableFilterDropdownWidth { get; set; }
+    internal Thickness TableFilterDropdownPadding { get; set; }
+    internal double TableFilterDropdownSearchWidth { get; set; }
     
-    public Color TableRowHoverBg { get; set; }
-    public Color TableSelectedRowBg { get; set; }
-    public Color TableSelectedRowHoverBg { get; set; }
-    public double TableFontSizeMiddle { get; set; }
-    public double TableFontSizeSmall { get; set; }
-    public double TableSelectionColumnWidth { get; set; }
-    public Color TableExpandIconBg { get; set; }
-    public double TableExpandColumnWidth { get; set; }
-    public Color TableExpandedRowBg { get; set; }
+    internal Color TableRowHoverBg { get; set; }
+    internal Color TableSelectedRowBg { get; set; }
+    internal Color TableSelectedRowHoverBg { get; set; }
+    internal double TableFontSizeMiddle { get; set; }
+    internal double TableFontSizeSmall { get; set; }
+    internal double TableSelectionColumnWidth { get; set; }
+    internal Color TableExpandIconBg { get; set; }
+    internal double TableExpandColumnWidth { get; set; }
+    internal Color TableExpandedRowBg { get; set; }
     
-    public CornerRadius TableTopLeftColumnCornerRadius { get; set; }
-    
-    // Virtual Scroll Bar
-    public double TableScrollThumbSize { get; set; }
-    public Color TableScrollThumbBg { get; set; }
-    public Color TableScrollThumbBgHover { get; set; }
-    public Color TableScrollBg { get; set; }
+    internal CornerRadius TableTopLeftColumnCornerRadius { get; set; }
     
     #endregion
     
@@ -292,11 +284,9 @@ internal class DataGridToken : AbstractControlDesignToken
         FixedHeaderSortActiveBg     = colorFillSecondarySolid;
         HeaderFilterHoverBg         = SharedToken.ColorFillContent;
         FilterDropdownMenuBg        = SharedToken.ColorBgContainer;
-        FilterDropdownBg            = SharedToken.ColorBgContainer;
+        FilterDropdownBg            = SharedToken.ColorBgElevated;
         ExpandIconBg                = SharedToken.ColorBgContainer;
         SelectionColumnWidth        = SharedToken.ControlHeight;
-        StickyScrollBarBg           = SharedToken.ColorTextPlaceholder;
-        StickyScrollBarBorderRadius = new CornerRadius(100);
         ExpandIconMargin            = new Thickness(0, 
             (SharedToken.FontSize * SharedToken.FontHeight - SharedToken.LineWidth * 3) / 2 -
             Math.Ceiling((SharedToken.FontSizeSM * 1.4 - SharedToken.LineWidth * 3) / 2), 
@@ -314,6 +304,7 @@ internal class DataGridToken : AbstractControlDesignToken
             baseColorAction.GetBlueF());
         ExpandIconHalfInner       = expandIconHalfInner;
         ExpandIconSize            = expandIconSize;
+        RowReorderIndicatorSize   = SharedToken.SizeMD; // TODO 需要根据 SizeType 做一定的调整
         ExpandIconScale           = SharedToken.ControlInteractiveSize / expandIconSize;
         SortIconSize              = SharedToken.FontHeight / 2.5;
         SortIndicatorLayoutMargin = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
@@ -360,20 +351,7 @@ internal class DataGridToken : AbstractControlDesignToken
         TableFilterButtonContainerMargin       = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
         TableFilterButtonLayoutSeparatorMargin = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
         TableFilterDropdownPadding             = SharedToken.PaddingXS;
-        // Virtual Scroll Bar
-        TableScrollThumbSize    = 8;
-        TableScrollThumbBg      = StickyScrollBarBg;
-        TableScrollThumbBgHover = SharedToken.ColorTextHeading;
-        TableScrollBg           = SharedToken.ColorSplit;
         LeftFrozenShadows = new BoxShadows(new BoxShadow
-        {
-            OffsetX = 10,
-            OffsetY = 0,
-            Blur    = 8,
-            Spread  = 0,
-            Color   = SharedToken.ColorSplit
-        });
-        RightFrozenShadows = new BoxShadows(new BoxShadow
         {
             OffsetX = -10,
             OffsetY = 0,
@@ -381,5 +359,16 @@ internal class DataGridToken : AbstractControlDesignToken
             Spread  = 0,
             Color   = SharedToken.ColorSplit
         });
+        RightFrozenShadows = new BoxShadows(new BoxShadow
+        {
+            OffsetX = 10,
+            OffsetY = 0,
+            Blur    = 8,
+            Spread  = 0,
+            Color   = SharedToken.ColorSplit
+        });
+        ColumnReorderActiveBg = colorFillContentSolid;
+
+        PaginationMargin = new Thickness(0, SharedToken.UniformlyMargin);
     }
 }

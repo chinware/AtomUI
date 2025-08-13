@@ -11,9 +11,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -47,24 +47,24 @@ public class Tag : TemplatedControl,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<string?> TagColorProperty
-        = AvaloniaProperty.Register<Tag, string?>(
+    public static readonly StyledProperty<string?> TagColorProperty =
+        AvaloniaProperty.Register<Tag, string?>(
             nameof(Color));
 
-    public static readonly StyledProperty<bool> IsClosableProperty
-        = AvaloniaProperty.Register<Tag, bool>(nameof(IsClosable));
+    public static readonly StyledProperty<bool> IsClosableProperty =
+        AvaloniaProperty.Register<Tag, bool>(nameof(IsClosable));
 
-    public static readonly StyledProperty<bool> BorderedProperty
-        = AvaloniaProperty.Register<Tag, bool>(nameof(Bordered), true);
+    public static readonly StyledProperty<bool> BorderedProperty =
+        AvaloniaProperty.Register<Tag, bool>(nameof(Bordered), true);
 
-    public static readonly StyledProperty<Icon?> IconProperty
-        = AvaloniaProperty.Register<Tag, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<Tag, Icon?>(nameof(Icon));
 
-    public static readonly StyledProperty<Icon?> CloseIconProperty
-        = AvaloniaProperty.Register<Tag, Icon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<Icon?> CloseIconProperty =
+        AvaloniaProperty.Register<Tag, Icon?>(nameof(CloseIcon));
 
-    public static readonly StyledProperty<string?> TagTextProperty
-        = AvaloniaProperty.Register<Tag, string?>(
+    public static readonly StyledProperty<string?> TagTextProperty =
+        AvaloniaProperty.Register<Tag, string?>(
             nameof(TagText));
 
     public string? TagColor
@@ -177,7 +177,8 @@ public class Tag : TemplatedControl,
         AffectsMeasure<Tag>(BorderedProperty,
             IconProperty,
             IsClosableProperty);
-        AffectsRender<Tag>(ForegroundProperty,
+        AffectsRender<Tag>(TagColorProperty,
+            ForegroundProperty,
             BackgroundProperty,
             BorderBrushProperty);
     }
@@ -186,13 +187,7 @@ public class Tag : TemplatedControl,
     {
         this.RegisterResources();
     }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -202,7 +197,7 @@ public class Tag : TemplatedControl,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-        SetupDefaultCloseIcon();
+
         SetupPresetColorMap();
         SetupStatusColorMap();
         if (TagColor is not null)
@@ -210,12 +205,31 @@ public class Tag : TemplatedControl,
             SetupTagColorInfo(TagColor);
         }
         SetupBorderThicknessBinding();
+        ThemeManager.Current.ThemeChanged += HandleActualThemeVariantChanged;
     }
-
+    
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         this.DisposeTokenBindings();
+        ThemeManager.Current.ThemeChanged -= HandleActualThemeVariantChanged;
+    }
+    
+    private void HandleActualThemeVariantChanged(object? sender, ThemeChangedEventArgs e)
+    {
+        SetupStatusColorMap(true);
+        SetupPresetColorMap(true);
+        if (TagColor is not null)
+        {
+            SetupTagColorInfo(TagColor);
+        }
+        InvalidateVisual();
+    }
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        SetupDefaultCloseIcon();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -228,6 +242,17 @@ public class Tag : TemplatedControl,
             if (e.Property == CloseIconProperty)
             {
                 SetupDefaultCloseIcon();
+            }
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (e.Property == TagColorProperty)
+            {
+                if (TagColor is not null)
+                {
+                    SetupTagColorInfo(TagColor); 
+                }
             }
         }
     }
@@ -244,11 +269,14 @@ public class Tag : TemplatedControl,
         }
     }
 
-    private static void SetupPresetColorMap()
+    private static void SetupPresetColorMap(bool force = false)
     {
-        if (_presetColorMap.Count == 0)
+        if (_presetColorMap.Count == 0 || force)
         {
-            // TODO 根据当前的主题风格设置，是否需要根据风格不一样进行动态调整呢？
+            if (force)
+            {
+                _presetColorMap.Clear();
+            }
             var activatedTheme = ThemeManager.Current.ActivatedTheme;
             var sharedToken    = activatedTheme?.SharedToken;
             if (sharedToken == null)
@@ -272,10 +300,14 @@ public class Tag : TemplatedControl,
         }
     }
 
-    private static void SetupStatusColorMap()
+    private static void SetupStatusColorMap(bool force = false)
     {
-        if (_statusColorMap.Count == 0)
+        if (_statusColorMap.Count == 0 || force)
         {
+            if (force)
+            {
+                _statusColorMap.Clear();
+            }
             var activatedTheme = ThemeManager.Current.ActivatedTheme;
             var sharedToken    = activatedTheme?.SharedToken;
             if (sharedToken == null)

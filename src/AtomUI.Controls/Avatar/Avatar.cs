@@ -176,7 +176,6 @@ public class Avatar : TemplatedControl, IControlSharedTokenResourcesHost, IMotio
     public Avatar()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

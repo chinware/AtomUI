@@ -14,7 +14,8 @@
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
         <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" />
-        <ResourceInclude Source="CheckBox/Themes/CheckBoxTheme.axaml" />
+        <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
+        <ResourceInclude Source="Chrome/Themes/ChromeThemes.axaml" />
         <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" />
         <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
@@ -36,7 +37,7 @@
         <ResourceInclude Source="NumericUpDown/Themes/NumericUpDownTheme.axaml" />
         <ResourceInclude Source="OptionButtonBox/Themes/OptionButtonBoxThemes.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
-        <ResourceInclude Source="Popup/Themes/PopupRoot.axaml" />
+        <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
         <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
         <ResourceInclude Source="Primitives/SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />

@@ -77,6 +77,7 @@ public partial class DataGridRow : TemplatedControl
     }
     
     private bool _isSelected;
+    
     public bool IsSelected
     {
         get => _isSelected;
@@ -219,7 +220,7 @@ public partial class DataGridRow : TemplatedControl
         if (_bottomGridLine != null)
         {
             RectangleGeometry gridlineClipGeometry = new RectangleGeometry();
-            gridlineClipGeometry.Rect = new Rect(OwningGrid.HorizontalOffset, 0, Math.Max(0, DesiredSize.Width - OwningGrid.HorizontalOffset), _bottomGridLine.DesiredSize.Height);
+            gridlineClipGeometry.Rect = new Rect(0, 0, Math.Max(0, DesiredSize.Width - OwningGrid.HorizontalOffset), _bottomGridLine.DesiredSize.Height);
             _bottomGridLine.Clip = gridlineClipGeometry;
         }
 
@@ -284,6 +285,10 @@ public partial class DataGridRow : TemplatedControl
         if (_cellsElement != null)
         {
             _cellsElement.OwningRow = this;
+            if (Parent is DataGridRowsPresenter dataGridRowsPresenter)
+            {
+                _cellsElement.OwningRowsPresenter = dataGridRowsPresenter;
+            }
             // Cells that were already added before the Template was applied need to
             // be added to the Canvas
             if (Cells.Count > 0)

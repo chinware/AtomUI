@@ -79,63 +79,51 @@ public class EmptyIndicator : TemplatedControl,
     #endregion
 
     #region 内部属性定义
-
-    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillProperty =
-        AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
-            nameof(_colorFill),
-            o => o._colorFill,
-            (o, v) => o._colorFill = v);
-
-    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillTertiaryProperty =
-        AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
-            nameof(_colorFillTertiary),
-            o => o._colorFillTertiary,
-            (o, v) => o._colorFillTertiary = v);
-
-    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorFillQuaternaryProperty =
-        AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
-            nameof(_colorFillQuaternary),
-            o => o._colorFillQuaternary,
-            (o, v) => o._colorFillQuaternary = v);
-
-    internal static readonly DirectProperty<EmptyIndicator, IBrush?> ColorBgContainerProperty =
-        AvaloniaProperty.RegisterDirect<EmptyIndicator, IBrush?>(
-            nameof(_colorBgContainer),
-            o => o._colorBgContainer,
-            (o, v) => o._colorBgContainer = v);
-
-    private IBrush? _colorFill;
-
-    internal IBrush? ColorFill
+    
+    internal static readonly StyledProperty<IBrush?> BorderColorProperty =
+        AvaloniaProperty.Register<RibbonBadge, IBrush?>(nameof(BorderColor));
+    
+    internal static readonly StyledProperty<IBrush?> BorderColorSecondaryProperty =
+        AvaloniaProperty.Register<RibbonBadge, IBrush?>(nameof(BorderColorSecondary));
+    
+    internal static readonly StyledProperty<IBrush?> ShadowColorProperty =
+        AvaloniaProperty.Register<RibbonBadge, IBrush?>(nameof(ShadowColor));
+    
+    internal static readonly StyledProperty<IBrush?> ContentColorProperty =
+        AvaloniaProperty.Register<RibbonBadge, IBrush?>(nameof(ContentColor));
+    
+    internal static readonly StyledProperty<IBrush?> BgColorProperty =
+        AvaloniaProperty.Register<RibbonBadge, IBrush?>(nameof(BgColor));
+    
+    internal IBrush? BorderColor
     {
-        get => _colorFill;
-        set => SetAndRaise(ColorFillProperty, ref _colorFill, value);
+        get => GetValue(BorderColorProperty);
+        set => SetValue(BorderColorProperty, value);
+    }
+    
+    internal IBrush? BorderColorSecondary
+    {
+        get => GetValue(BorderColorSecondaryProperty);
+        set => SetValue(BorderColorSecondaryProperty, value);
+    }
+    
+    internal IBrush? ShadowColor
+    {
+        get => GetValue(ShadowColorProperty);
+        set => SetValue(ShadowColorProperty, value);
     }
 
-    private IBrush? _colorFillTertiary;
-
-    internal IBrush? ColorFillTertiary
+    internal IBrush? ContentColor
     {
-        get => _colorFillTertiary;
-        set => SetAndRaise(ColorFillTertiaryProperty, ref _colorFillTertiary, value);
+        get => GetValue(ContentColorProperty);
+        set => SetValue(ContentColorProperty, value);
     }
-
-    private IBrush? _colorFillQuaternary;
-
-    internal IBrush? ColorFillQuaternary
+    
+    internal IBrush? BgColor
     {
-        get => _colorFillQuaternary;
-        set => SetAndRaise(ColorFillQuaternaryProperty, ref _colorFillQuaternary, value);
+        get => GetValue(BgColorProperty);
+        set => SetValue(BgColorProperty, value);
     }
-
-    private IBrush? _colorBgContainer;
-
-    internal IBrush? ColorBgContainer
-    {
-        get => _colorBgContainer;
-        set => SetAndRaise(ColorBgContainerProperty, ref _colorBgContainer, value);
-    }
-
 
     string IControlSharedTokenResourcesHost.TokenId => EmptyIndicatorToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -151,10 +139,11 @@ public class EmptyIndicator : TemplatedControl,
             ImageSourceProperty,
             DescriptionProperty,
             IsShowDescriptionProperty,
-            ColorFillProperty,
-            ColorFillTertiaryProperty,
-            ColorFillQuaternaryProperty,
-            ColorBgContainerProperty);
+            BorderColorProperty,
+            BorderColorSecondaryProperty,
+            ShadowColorProperty,
+            ContentColorProperty,
+            BgColorProperty);
     }
 
     public EmptyIndicator()
@@ -192,10 +181,11 @@ public class EmptyIndicator : TemplatedControl,
         base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == ColorFillProperty ||
-                change.Property == ColorFillTertiaryProperty ||
-                change.Property == ColorFillQuaternaryProperty ||
-                change.Property == ColorBgContainerProperty)
+            if (change.Property == BorderColorProperty ||
+                change.Property == BorderColorSecondaryProperty ||
+                change.Property == ShadowColorProperty ||
+                change.Property == ContentColorProperty ||
+                change.Property == BgColorProperty)
             {
                 SetupImage();
             }
@@ -211,21 +201,23 @@ public class EmptyIndicator : TemplatedControl,
 
         if (PresetImage is not null)
         {
-            if (PresetImage.Value == PresetEmptyImage.Default)
+            if (BorderColor != null && ShadowColor != null && ContentColor != null && BgColor != null && BorderColorSecondary != null)
             {
-                _svg.Source = BuiltInImageBuilder.BuildDefaultImage();
+                var colorBgContainer    = ((ISolidColorBrush)BgColor!).Color;
+                var borderColor         = ColorUtils.OnBackground(((ISolidColorBrush)BorderColor).Color, colorBgContainer);
+                var borderColorSecondary         = ColorUtils.OnBackground(((ISolidColorBrush)BorderColorSecondary).Color, colorBgContainer);
+                var shadowColor         = ColorUtils.OnBackground(((ISolidColorBrush)ShadowColor).Color, colorBgContainer);
+                var contentColor        = ColorUtils.OnBackground(((ISolidColorBrush)ContentColor).Color, colorBgContainer);
+                if (PresetImage.Value == PresetEmptyImage.Default)
+                {
+                    _svg.Source = BuiltInImageBuilder.BuildDefaultImage(shadowColor, borderColor, borderColorSecondary);
+                }
+                else
+                {
+                    _svg.Source = BuiltInImageBuilder.BuildSimpleImage(contentColor, borderColor, shadowColor);
+                }
             }
-            else
-            {
-                var colorFill           = ((ISolidColorBrush)ColorFill!).Color;
-                var colorFillTertiary   = ((ISolidColorBrush)ColorFillTertiary!).Color;
-                var colorFillQuaternary = ((ISolidColorBrush)ColorFillQuaternary!).Color;
-                var colorBgContainer    = ((ISolidColorBrush)ColorBgContainer!).Color;
-                var borderColor         = ColorUtils.OnBackground(colorFill, colorBgContainer);
-                var shadowColor         = ColorUtils.OnBackground(colorFillTertiary, colorBgContainer);
-                var contentColor        = ColorUtils.OnBackground(colorFillQuaternary, colorBgContainer);
-                _svg.Source = BuiltInImageBuilder.BuildSimpleImage(contentColor, borderColor, shadowColor);
-            }
+            
         }
         else if (ImageSource is not null)
         {

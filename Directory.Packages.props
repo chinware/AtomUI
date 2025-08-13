@@ -29,6 +29,10 @@
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0-3.final"/>
         <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0-beta1.24219.2"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageVersion Include="AtomUI.Native" Version="$(AtomUINativeVersion)"/>
+    </ItemGroup>
     
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <PackageVersion Include="AtomUI" Version="$(AtomUIVersion)"/>

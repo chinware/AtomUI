@@ -1,8 +1,10 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:Expander}" TargetType="atom:Expander">
         <Setter Property="Template">
             <ControlTemplate>
@@ -46,18 +48,20 @@
                             </Border>
                         </LayoutTransformControl>
 
-                        <atom:MotionActorControl Name="{x:Static atom:ExpanderThemeConstants.ContentMotionActorPart}"
-                                                 IsVisible="False">
+                        <atom:LayoutAwareMotionActor Name="{x:Static atom:ExpanderThemeConstants.ContentMotionActorPart}"
+                                                     ClipToBounds="True"
+                                                     IsVisible="False">
                             <ContentPresenter Name="{x:Static atom:ExpanderThemeConstants.ContentPresenterPart}"
                                               Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        </atom:MotionActorControl>
+                        </atom:LayoutAwareMotionActor>
                     </DockPanel>
                 </Border>
             </ControlTemplate>
         </Setter>
 
         <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
 
         <Style Selector="^ /template/ Border#PART_Frame">
             <Setter Property="CornerRadius"

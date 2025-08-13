@@ -1,7 +1,8 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
     <ControlTheme x:Key="TopLevelMenuItemTheme" TargetType="atom:MenuItem">
         <Setter Property="Template">
             <ControlTemplate>
@@ -20,10 +21,11 @@
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="False"
                                 Placement="BottomEdgeAlignedLeft"
-                                IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                                IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                         <Border Name="{x:Static atom:TopLevelMenuItemThemeConstants.PopupFramePart}">
                             <atom:MenuScrollViewer
-                                IsScrollChainingEnabled="False">
+                                                                   IsScrollChainingEnabled="False"
+                                                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                 <ItemsPresenter
                                     Name="{x:Static atom:TopLevelMenuItemThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -101,15 +103,13 @@
 
             <Style Selector="^ /template/ Border#PART_PopupFrame">
                 <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
                 <Setter Property="CornerRadius"
                         Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
                 <Setter Property="MinWidth"
                         Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
                 <Setter Property="MaxWidth"
                         Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
-                <Setter Property="MinHeight"
-                        Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinHeight}}" />
                 <Setter Property="MaxHeight"
                         Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />
                 <Setter Property="Padding"

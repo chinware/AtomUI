@@ -4,12 +4,13 @@
     xmlns:atom="https://atomui.net"
     xmlns:themes="using:AtomUI.Controls.Themes"
     x:Class="AtomUI.Controls.Themes.NavMenuItemTheme"
-    TargetType="atom:NavMenuItem">
+    TargetType="atom:NavMenuItem"
+    x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:BaseNavMenuItemTheme TargetType="atom:NavMenuItem" />
     </ControlTheme.BasedOn>
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="atom:NavMenuItem">
             <Panel>
                 <Border Name="{x:Static atom:BaseNavMenuItemThemeConstants.HeaderDecoratorPart}">
                     <Grid Name="{x:Static atom:BaseNavMenuItemThemeConstants.MainContainerPart}">
@@ -17,8 +18,6 @@
                             <ColumnDefinition Width="Auto"
                                               SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto"
-                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.InputGestureTextSizeGroup}" />
                             <ColumnDefinition Width="Auto"
                                               SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
                         </Grid.ColumnDefinitions>
@@ -38,16 +37,9 @@
                             IsHitTestVisible="False"
                             Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemTheme.StringToTextBlockConverter}}"
                             ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                        <atom:TextBlock
-                            Name="{x:Static atom:BaseNavMenuItemThemeConstants.InputGestureTextPart}"
-                            Grid.Column="2"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            TextAlignment="Right"
-                            Text="{TemplateBinding InputGesture, Converter={x:Static atom:BaseNavMenuItemTheme.KeyGestureConverter}}" />
                         <atom:Icon
                             Name="{x:Static atom:BaseNavMenuItemThemeConstants.MenuIndicatorIconPart}"
-                            Grid.Column="3"
+                            Grid.Column="2"
                             IconInfo="{atom:IconInfoProvider RightOutlined}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
@@ -58,8 +50,10 @@
                 <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
                             WindowManagerAddShadowHint="False"
                             IsLightDismissEnabled="False"
+                            IsDetectMouseClickEnabled="False"
                             Placement="RightEdgeAlignedTop"
-                            IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                            IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=OneWay}">
                     <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}">
                         <atom:MenuScrollViewer>
                             <ItemsPresenter Name="{x:Static atom:NavMenuItemThemeConstants.ItemsPresenterPart}"
@@ -87,7 +81,7 @@
 
         <Style Selector="^ /template/ Border#PART_PopupFrame">
             <Setter Property="Background"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
             <Setter Property="CornerRadius"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.MenuPopupBorderRadius}}" />
             <Setter Property="MinWidth"

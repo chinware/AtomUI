@@ -33,6 +33,8 @@ public class ComboBoxItem : AvaloniaComboBoxItem
     }
     #endregion
     
+    protected override Type StyleKeyOverride { get; } = typeof(ComboBoxItem);
+    
     private void ConfigureTransitions()
     {
         if (IsMotionEnabled)

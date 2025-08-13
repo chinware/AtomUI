@@ -20,13 +20,13 @@ internal class BadgeZoomBadgeInMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.01);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
@@ -48,13 +48,13 @@ internal class BadgeZoomBadgeOutMotion : AbstractMotion
         RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
     }
 
-    protected override void ConfigureMotionStartValue(MotionActorControl actor)
+    protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
         actor.MotionTransform = BuildScaleTransform(1.0);
     }
 
-    protected override void ConfigureMotionEndValue(MotionActorControl actor)
+    protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
         actor.MotionTransform = BuildScaleTransform(0.01);

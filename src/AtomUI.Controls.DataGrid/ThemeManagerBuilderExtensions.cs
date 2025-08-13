@@ -1,10 +1,11 @@
 using AtomUI.Theme;
+using AtomUI.Theme.Language;
 
 namespace AtomUI.Controls;
 
 public static class OSSDataGridThemeManagerBuilderExtensions
 {
-    public static ThemeManagerBuilder UseOSSDataGrid(this ThemeManagerBuilder themeManagerBuilder)
+    public static IThemeManagerBuilder UseOSSDataGrid(this IThemeManagerBuilder themeManagerBuilder)
     {
         themeManagerBuilder.AppBuilder.AfterSetup(_ =>
         {

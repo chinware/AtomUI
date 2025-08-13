@@ -93,6 +93,8 @@ public class DataGridColumnGroupItem : AvaloniaObject,
         get;
         internal set;
     }
+
+    internal bool IsFrozen { get; set; } = false;
     #endregion
     
     private DataGridColumnGroupHeader? _headerCell;
@@ -153,6 +155,7 @@ public class DataGridColumnGroupItem : AvaloniaObject,
     internal virtual DataGridColumnGroupHeader CreateHeader()
     {
         var result = new DataGridColumnGroupHeader();
+        result.OwningGroupItem = this;
         Debug.Assert(OwningGrid != null);
         result[!DataGridColumnGroupHeader.HeaderProperty]         = this[!HeaderProperty];
         result[!DataGridColumnGroupHeader.HeaderTemplateProperty] = this[!HeaderTemplateProperty];

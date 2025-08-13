@@ -16,128 +16,17 @@ on:
             default: false
 env:
    SOURCE_DIR: ${{ github.workspace }}
-   NATIVE_LIB_SRC_DIR: ${{ github.workspace }}/nativelibs
-   BUILD_DIR: ${{ github.workspace }}/build
    BASE_OUTPUT_DIR: ${{ github.workspace }}/output
-   MAC_OUTPUT_DIR: ${{ github.workspace }}/osx
-   LINUX_OUTPUT_DIR: ${{ github.workspace }}/linux
    LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
 jobs:
-   BuildAtomUINativeMacOS:
-      name: Build AtomUINative for macOS
-      runs-on: macos-latest
-      steps:
-         -  name: Checkout code
-            uses: actions/checkout@v4.2.2
-            with:
-               ref: ${{ inputs.TargetBranch }}
-         -  name: Install dependencies
-            run: |
-               brew install xmake
-               xmake --version
-         -  name: Build for ARM64
-            run: |
-               xmake config --project=$NATIVE_LIB_SRC_DIR --builddir=$BUILD_DIR -p macosx -a arm64 -m ${{ inputs.BuildConfiguration }}
-               xmake build
-               xmake install --installdir=$MAC_OUTPUT_DIR
-         -  name: Build for x86_64
-            run: |
-               xmake config --project=$NATIVE_LIB_SRC_DIR --builddir=$BUILD_DIR -p macosx -a x86_64 -m ${{ inputs.BuildConfiguration }}
-               xmake build
-               xmake install --installdir=$MAC_OUTPUT_DIR
-         -  name: Create universal binary
-            run: |
-               mkdir -p $MAC_OUTPUT_DIR/lib
-               lipo -create \
-               $MAC_OUTPUT_DIR/arm64/lib/libAtomUINative.dylib \
-               $MAC_OUTPUT_DIR/x86_64/lib/libAtomUINative.dylib \
-               -output $MAC_OUTPUT_DIR/lib/libAtomUINative.dylib
-               lipo -info $MAC_OUTPUT_DIR/lib/libAtomUINative.dylib
-               rm -rf $MAC_OUTPUT_DIR/arm64 $MAC_OUTPUT_DIR/x86_64
-         -  name: Upload macOS artifact
-            id: artifact
-            uses: actions/upload-artifact@v4.6.2
-            with:
-               name: AtomUINativeMac
-               path: ${{ env.MAC_OUTPUT_DIR }}
-   BuildAtomUINativeLinux:
-      name: Build AtomUINative for Linux
-      runs-on: qinware-ubuntu-latest
-      steps:
-         -  name: Checkout code
-            uses: actions/checkout@v4.2.2
-            with:
-               ref: ${{ inputs.TargetBranch }}
-         -  name: Install dependencies
-            run: |
-               sudo apt update
-               sudo apt install -y build-essential libxcb1-dev libxcb-shape0-dev \
-               libgl1-mesa-dev libssl-dev curl patchelf desktop-file-utils \
-               libfuse2 zsync
-               sudo add-apt-repository ppa:xmake-io/xmake -y
-               sudo apt update -o Dir::Etc::sourcelist="sources.list.d/xmake-io-ubuntu-xmake-jammy.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
-               sudo apt install xmake -y
-               xmake --version
-               sudo apt install clang
-               clang --version
-         -  name: Build for x86_64
-            run: |
-               xmake config --project=$NATIVE_LIB_SRC_DIR --toolchain=clang --builddir=$BUILD_DIR -p linux -a x86_64 -m ${{ inputs.BuildConfiguration }}
-               xmake build
-               xmake install --installdir=$LINUX_OUTPUT_DIR
-         -  name: Upload linux x86_64 artifact
-            id: artifact
-            uses: actions/upload-artifact@v4.6.2
-            with:
-               name: AtomUINativeLinux
-               path: ${{ env.LINUX_OUTPUT_DIR }}
-
    BuildAtomUINuget:
       name: Build AtomUI NuGet packages
       runs-on: windows-latest
-      needs: 
-         - BuildAtomUINativeMacOS
-         - BuildAtomUINativeLinux
       steps:
          -  name: Checkout code
             uses: actions/checkout@v4.2.2
             with:
                ref: ${{ inputs.TargetBranch }}
-         -  name: Download macOS artifact
-            uses: actions/download-artifact@v4.3.0
-            with:
-               name: AtomUINativeMac
-               path: ${{ env.MAC_OUTPUT_DIR }}
-         -  name: Download Linux artifact
-            uses: actions/download-artifact@v4.3.0
-            with:
-               name: AtomUINativeLinux
-               path: ${{ env.Linux_OUTPUT_DIR }}
-         -  name: Setup MSYS2 environment
-            shell: pwsh
-            run: |
-               $msysPath = "C:/msys64"
-               $env:MSYSTEM = "CLANG64"
-               $env:MSYSTEM_CARCH = "x86_64"
-               $env:MSYSTEM_CHOST = "x86_64-w64-mingw32"
-               $env:MSYSTEM_PREFIX = "/clang64"
-               $env:CHERE_INVOKING = "1"
-               $env:PATH = "$msysPath/clang64/bin;$msysPath/usr/bin;$env:PATH"
-
-               # Update PATH for subsequent steps
-               Add-Content $env:GITHUB_PATH "$msysPath/clang64/bin"
-               Add-Content $env:GITHUB_PATH "$msysPath/usr/bin"
-
-               # Install required packages
-               & "$msysPath/usr/bin/bash.exe" -lc @"
-                 pacman -Sy --noconfirm
-                 pacman -S mingw-w64-clang-x86_64-xmake --noconfirm
-                 pacman -S mingw-w64-clang-x86_64-clang --noconfirm
-               "@
-
-               # Verify installations
-               xmake --version
-               clang --version
          -  name: Create local NuGet feed
             run: |
                $localFeedPath = $env:LOCAL_NUGET_DIR
@@ -156,14 +45,6 @@ jobs:
             run: |
                # Build AtomUI project
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./packages/AtomUI/AtomUI.csproj
-               # Copy native library to runtime directory
-               $osxNativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/osx/native"
-               New-Item -ItemType Directory -Force -Path $osxNativeLibDir
-               Copy-Item -Path $env:MAC_OUTPUT_DIR/lib/libAtomUINative.dylib -Destination $osxNativeLibDir
-               
-               $linuxNativeLibDir = "$env:SOURCE_DIR/output/Bin/${{ inputs.BuildConfiguration }}/runtimes/linux-x64/native"
-               New-Item -ItemType Directory -Force -Path $linuxNativeLibDir
-               Copy-Item -Path $env:LINUX_OUTPUT_DIR/x86_64/lib/libAtomUINative.so -Destination $linuxNativeLibDir
          -  name: Create AtomUI NuGet packages
             shell: pwsh
             run: |

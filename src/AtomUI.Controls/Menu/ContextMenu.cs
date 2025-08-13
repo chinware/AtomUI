@@ -4,7 +4,10 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Input.Raw;
 
 namespace AtomUI.Controls;
 
@@ -34,29 +37,73 @@ public class ContextMenu : AvaloniaContextMenu,
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
 
     #endregion
+    
+    private Popup? _popup;
 
     public ContextMenu()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
         // 我们在这里有一次初始化的机会
-        var popup = new Popup
+        _popup = new Popup
         {
             WindowManagerAddShadowHint     = false,
-            IsLightDismissEnabled          = true,
-            OverlayDismissEventPassThrough = true
+            IsLightDismissEnabled          = false,
+            OverlayDismissEventPassThrough = true,
+            IsDetectMouseClickEnabled      = true,
+            IgnoreFirstDetected            = false
         };
-
-        popup.Opened += this.CreateEventHandler("PopupOpened");
-        popup.Closed += this.CreateEventHandler<EventArgs>("PopupClosed");
-        
-        popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
-        popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
+       
+        _popup.Opened             += this.CreateEventHandler("PopupOpened");
+        _popup.Closed             += this.CreateEventHandler<EventArgs>("PopupClosed");
+        _popup.ClickHidePredicate =  MenuPopupClosePredicate;
+        _popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
+        _popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
+        if (_popup is IPopupHostProvider popupHostProvider)
+        {
+            popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
+        }
         Closing += (sender, args) =>
         {
             args.Cancel = true;
         };
-        this.SetPopup(popup);
+        this.SetPopup(_popup);
+        Opened += (sender, args) =>
+        {
+            _popup.SetIgnoreIsOpenChanged(true);
+            _popup.IsMotionAwareOpen = true;
+        };
+    }
+    
+    private void HandlePopupHostChanged(IPopupHost? host)
+    {
+        if (host is PopupRoot popupRoot)
+        {
+            if (popupRoot.ParentTopLevel is WindowBase window)
+            {
+                window.Deactivated += (sender, args) =>
+                {
+                    Close();
+                };
+            }
+        }
+    }
+    
+    private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        var popupRoots = new HashSet<PopupRoot>();
+        foreach (var child in Items)
+        {
+            if (child is MenuItem childMenuItem)
+            {
+                popupRoots.UnionWith(MenuItem.CollectPopupRoots(childMenuItem));
+            }
+        }
+
+        if (_popup?.Host is PopupRoot popupRoot)
+        {
+            popupRoots.Add(popupRoot);
+        }
+        return !popupRoots.Contains(args.Root);
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -67,5 +114,22 @@ public class ContextMenu : AvaloniaContextMenu,
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
+    }
+    
+    public override void Close()
+    {
+        _popup?.SetIgnoreIsOpenChanged(true);
+        base.Close();
+        if (_popup != null)
+        {
+            foreach (var childItem in Items)
+            {
+                if (childItem is MenuItem menuItem)
+                {
+                    menuItem.IsSubMenuOpen = false;
+                }
+            }
+            _popup.IsMotionAwareOpen = false;
+        }
     }
 }

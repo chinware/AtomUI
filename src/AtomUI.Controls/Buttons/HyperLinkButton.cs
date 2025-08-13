@@ -120,7 +120,6 @@ public class HyperLinkButton : AvaloniaButton,
     public HyperLinkButton()
     {
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

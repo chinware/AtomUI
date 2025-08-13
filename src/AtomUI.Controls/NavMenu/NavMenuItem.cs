@@ -22,6 +22,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Point = Avalonia.Point;
 
@@ -290,8 +291,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.IsDarkStyle,
             (o, v) => o.IsDarkStyle = v);
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
 
     internal double ActiveBarWidth
     {
@@ -469,7 +470,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private KeyGesture? _hotkey;
     private bool _isEmbeddedInMenu;
     private Border? _horizontalFrame;
-    private MotionActorControl? _childItemsLayoutTransform;
+    private BaseMotionActor? _childItemsLayoutTransform;
     private Border? _headerFrame;
     
     // inline
@@ -479,6 +480,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     private Rectangle? _activeIndicator;
     
     private bool _animating;
+    
+    internal Popup? Popup => _popup;
 
     static NavMenuItem()
     {
@@ -511,7 +514,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             }
         }
 
-        SetCurrentValue(IsSubMenuOpenProperty, true);
+        IsSubMenuOpen = true;
     }
 
     /// <summary>
@@ -527,10 +530,35 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             if (_animating)
             {
                 return;
+            }                                       
+        }
+
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await CloseItemAsync(this);
+        });
+    }
+
+    public async Task CloseItemAsync(INavMenuItem navMenuItem)
+    {
+
+        foreach (var child in navMenuItem.SubItems)
+        {
+            if (child is NavMenuItem childNavMenuItem)
+            {
+                await CloseItemAsync(childNavMenuItem);
             }
         }
 
-        SetCurrentValue(IsSubMenuOpenProperty, false);
+        if (navMenuItem is NavMenuItem navMenuItem2)
+        {
+            if (navMenuItem2._popup != null)
+            {
+                await navMenuItem2._popup.MotionAwareCloseAsync();
+            }
+
+            navMenuItem2.IsSubMenuOpen = false;
+        }
     }
 
     /// <inheritdoc/>
@@ -714,7 +742,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         if (Mode == NavMenuMode.Inline)
         {
             _childItemsLayoutTransform =
-                e.NameScope.Find<MotionActorControl>(InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart);
+                e.NameScope.Find<BaseMotionActor>(InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart);
             if (_childItemsLayoutTransform is not null)
             {
                 _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, IsSubMenuOpen);
@@ -1127,7 +1155,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _animating                           = true;
                 _childItemsLayoutTransform.IsVisible = true;
                 var motion = new SlideUpInMotion(_openCloseMotionDuration, new CubicEaseOut());
-                MotionInvoker.Invoke(_childItemsLayoutTransform, motion,
+                motion.Run(_childItemsLayoutTransform,
                     () => { _childItemsLayoutTransform.IsVisible = true; },
                     () =>
                     {
@@ -1155,7 +1183,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _animating                           = true;
                 _childItemsLayoutTransform.IsVisible = true;
                 var motion = new SlideUpOutMotion(_openCloseMotionDuration, new CubicEaseIn());
-                MotionInvoker.Invoke(_childItemsLayoutTransform, motion, null, () =>
+                motion.Run(_childItemsLayoutTransform, null, () =>
                 {
                     _childItemsLayoutTransform.IsVisible = false;
                     _animating                           = false;
@@ -1249,12 +1277,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     internal void SelectItemRecursively()
     {
         IsSelected = true;
-        if (!IsTopLevel)
+        if (Parent is NavMenuItem parent)
         {
-            if (Parent is NavMenuItem parent)
-            {
-                parent.SelectItemRecursively();
-            }
+            parent.SelectItemRecursively();
         }
     }
 
@@ -1297,4 +1322,5 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         var targetRect = new Rect(offset, targetFrame.Bounds.Size);
         return targetRect.Contains(point);
     }
+    
 }

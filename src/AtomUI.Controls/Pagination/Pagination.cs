@@ -21,62 +21,40 @@ public enum PaginationAlign
     End
 }
 
-public class Pagination : AbstractPagination,
-                          IControlSharedTokenResourcesHost
+public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
 {
     internal const int MaxNavItemCount = 11;
-    
+
     #region 公共属性定义
     
-    public static readonly DirectProperty<Pagination, bool> HideOnSinglePageProperty =
-        AvaloniaProperty.RegisterDirect<Pagination, bool>(nameof(HideOnSinglePage),
-            o => o.HideOnSinglePage,
-            (o, v) => o.HideOnSinglePage = v);
+    public static readonly StyledProperty<bool> IsShowSizeChangerProperty =
+        AvaloniaProperty.Register<Pagination, bool>(nameof(IsShowSizeChanger));
     
-    public static readonly DirectProperty<Pagination, bool> ShowSizeChangerProperty =
-        AvaloniaProperty.RegisterDirect<Pagination, bool>(nameof(ShowSizeChanger),
-            o => o.ShowSizeChanger,
-            (o, v) => o.ShowSizeChanger = v);
+    public static readonly StyledProperty<bool> IsShowQuickJumperProperty =
+        AvaloniaProperty.Register<Pagination, bool>(nameof(IsShowQuickJumper));
     
-    public static readonly DirectProperty<Pagination, bool> ShowQuickJumperProperty =
-        AvaloniaProperty.RegisterDirect<Pagination, bool>(nameof(ShowQuickJumper),
-            o => o.ShowQuickJumper,
-            (o, v) => o.ShowQuickJumper = v);
-    
-    public static readonly DirectProperty<Pagination, bool> ShowTotalInfoProperty =
-        AvaloniaProperty.RegisterDirect<Pagination, bool>(nameof(ShowTotalInfo),
-            o => o.ShowTotalInfo,
-            (o, v) => o.ShowTotalInfo = v);
-    
+    public static readonly StyledProperty<bool> IsShowTotalInfoProperty =
+        AvaloniaProperty.Register<Pagination, bool>(nameof(IsShowTotalInfo));
+
     public static readonly StyledProperty<string?> TotalInfoTemplateProperty =
         AvaloniaProperty.Register<Pagination, string?>(nameof(TotalInfoTemplate));
     
-    private bool _hideOnSinglePage;
-    public bool HideOnSinglePage
+    public bool IsShowSizeChanger
     {
-        get => _hideOnSinglePage;
-        set => SetAndRaise(HideOnSinglePageProperty, ref _hideOnSinglePage, value);
+        get => GetValue(IsShowSizeChangerProperty);
+        set => SetValue(IsShowSizeChangerProperty, value);
     }
     
-    private bool _showSizeChanger;
-    public bool ShowSizeChanger
+    public bool IsShowQuickJumper
     {
-        get => _showSizeChanger;
-        set => SetAndRaise(ShowSizeChangerProperty, ref _showSizeChanger, value);
+        get => GetValue(IsShowQuickJumperProperty);
+        set => SetValue(IsShowQuickJumperProperty, value);
     }
     
-    private bool _showQuickJumper;
-    public bool ShowQuickJumper
+    public bool IsShowTotalInfo
     {
-        get => _showQuickJumper;
-        set => SetAndRaise(ShowQuickJumperProperty, ref _showQuickJumper, value);
-    }
-    
-    private bool _showTotalInfo;
-    public bool ShowTotalInfo
-    {
-        get => _showTotalInfo;
-        set => SetAndRaise(ShowTotalInfoProperty, ref _showTotalInfo, value);
+        get => GetValue(IsShowTotalInfoProperty);
+        set => SetValue(IsShowTotalInfoProperty, value);
     }
     
     public string? TotalInfoTemplate
@@ -84,61 +62,66 @@ public class Pagination : AbstractPagination,
         get => GetValue(TotalInfoTemplateProperty);
         set => SetValue(TotalInfoTemplateProperty, value);
     }
-    
+
     #endregion
-    
+
     #region 内部属性定义
-    
+
     internal static readonly DirectProperty<Pagination, ComboBox?> SizeChangerProperty =
         AvaloniaProperty.RegisterDirect<Pagination, ComboBox?>(nameof(SizeChanger),
             o => o.SizeChanger,
             (o, v) => o.SizeChanger = v);
-    
+
     internal static readonly DirectProperty<Pagination, QuickJumperBar?> QuickJumperBarProperty =
         AvaloniaProperty.RegisterDirect<Pagination, QuickJumperBar?>(nameof(QuickJumperBar),
             o => o.QuickJumperBar,
             (o, v) => o.QuickJumperBar = v);
-    
+
     internal static readonly DirectProperty<Pagination, string?> PageTextProperty =
-        AvaloniaProperty.RegisterDirect<Pagination,  string?>(nameof(PageText),
+        AvaloniaProperty.RegisterDirect<Pagination, string?>(nameof(PageText),
             o => o.PageText,
             (o, v) => o.PageText = v);
-    
+
     internal static readonly DirectProperty<Pagination, string?> TotalInfoTextProperty =
-        AvaloniaProperty.RegisterDirect<Pagination,  string?>(nameof(TotalInfoText),
+        AvaloniaProperty.RegisterDirect<Pagination, string?>(nameof(TotalInfoText),
             o => o.TotalInfoText,
             (o, v) => o.TotalInfoText = v);
-    
+
     private ComboBox? _sizeChanger;
+
     internal ComboBox? SizeChanger
     {
         get => _sizeChanger;
         set => SetAndRaise(SizeChangerProperty, ref _sizeChanger, value);
     }
-    
+
     private QuickJumperBar? _quickJumperBar;
+
     internal QuickJumperBar? QuickJumperBar
     {
         get => _quickJumperBar;
         set => SetAndRaise(QuickJumperBarProperty, ref _quickJumperBar, value);
     }
-    
+
     private string? _pageText;
+
     public string? PageText
     {
         get => _pageText;
         set => SetAndRaise(PageTextProperty, ref _pageText, value);
     }
-    
+
     private string? _totalInfoText;
+
     public string? TotalInfoText
     {
         get => _totalInfoText;
         set => SetAndRaise(TotalInfoTextProperty, ref _totalInfoText, value);
     }
-    
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => PaginationToken.ID;
+
     #endregion
 
     private PaginationNav? _paginationNav;
@@ -155,20 +138,25 @@ public class Pagination : AbstractPagination,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _paginationNav  = e.NameScope.Find<PaginationNav>(PaginationThemeConstants.NavPart);
+        _paginationNav = e.NameScope.Find<PaginationNav>(PaginationThemeConstants.NavPart);
         Debug.Assert(_paginationNav is not null);
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, PageTextProperty, PaginationLangResourceKey.PageText));
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, TotalInfoTemplateProperty, PaginationLangResourceKey.TotalInfoFormat));
+        this.AddResourceBindingDisposable(
+            LanguageResourceBinder.CreateBinding(this, PageTextProperty, PaginationLangResourceKey.PageText));
+        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, TotalInfoTemplateProperty,
+            PaginationLangResourceKey.TotalInfoFormat));
         _paginationNav.ContainerPrepared   += HandleContainerPrepared;
         _paginationNav.PageNavigateRequest += HandlePageNavRequest;
-        if (ShowQuickJumper)
+        if (IsShowQuickJumper)
         {
             SetupQuickJumper();
         }
-        if (ShowSizeChanger)
+
+        if (IsShowSizeChanger)
         {
             SetupSizeChanger();
         }
+        
+        TemplateConfigured = true;
     }
 
     private void HandleContainerPrepared(object? sender, ContainerPreparedEventArgs args)
@@ -194,12 +182,13 @@ public class Pagination : AbstractPagination,
                 navItem.PaginationItemType = PaginationItemType.PageIndicator;
             }
         }
+
         if (_paginationNav.GetRealizedContainers().Count() == count)
         {
             HandlePageConditionChanged();
         }
     }
-    
+
     protected override void NotifyPageConditionChanged(int currentPage, int pageCount, int pageSize, long total)
     {
         Debug.Assert(_paginationNav != null);
@@ -219,7 +208,7 @@ public class Pagination : AbstractPagination,
                 navItem.Content            = null;
             }
         }
-        
+
         _previousPageItem.IsEnabled  = currentPage > 1;
         _previousPageItem.PageNumber = Math.Max(1, CurrentPage - 1);
         _nextPageItem.IsEnabled      = currentPage < pageCount;
@@ -244,12 +233,15 @@ public class Pagination : AbstractPagination,
 
     private void SetupLeftButtonRange(int currentPage, int pageCount)
     {
-        if (currentPage < 5) {
+        if (currentPage < 5)
+        {
             for (var i = 1; i < currentPage; i++)
             {
                 SetupNextIndicatorNavItem(i, false);
             }
-        } else {
+        }
+        else
+        {
             var leftDelta = Math.Max(2, 4 - (pageCount - currentPage));
             var i         = currentPage - leftDelta;
             if (i > 1)
@@ -257,6 +249,7 @@ public class Pagination : AbstractPagination,
                 SetupNextIndicatorNavItem(1, false);
                 SetupEllipsisNavItem();
             }
+
             for (; i < currentPage; i++)
             {
                 SetupNextIndicatorNavItem(i, false);
@@ -296,6 +289,7 @@ public class Pagination : AbstractPagination,
         {
             throw new ArgumentException("Invalid next push item index");
         }
+
         Debug.Assert(_paginationNav != null);
         var navItem = _paginationNav.ContainerFromIndex(_nextPushItemIndex++) as PaginationNavItem;
 
@@ -303,6 +297,7 @@ public class Pagination : AbstractPagination,
         {
             _selectedNavItemIndex = _nextPushItemIndex - 1;
         }
+
         Debug.Assert(navItem != null);
         navItem.PageNumber = pageIndex;
         navItem.Content    = $"{pageIndex}";
@@ -315,6 +310,7 @@ public class Pagination : AbstractPagination,
         {
             throw new ArgumentException("Invalid next push item index");
         }
+
         Debug.Assert(_paginationNav != null);
         var navItem = _paginationNav.ContainerFromIndex(_nextPushItemIndex++) as PaginationNavItem;
         Debug.Assert(navItem != null);
@@ -328,11 +324,11 @@ public class Pagination : AbstractPagination,
         base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == ShowSizeChangerProperty)
+            if (change.Property == IsShowSizeChangerProperty)
             {
                 SetupSizeChanger();
-            } 
-            else if (change.Property == ShowQuickJumperProperty)
+            }
+            else if (change.Property == IsShowQuickJumperProperty)
             {
                 SetupQuickJumper();
             }
@@ -364,7 +360,7 @@ public class Pagination : AbstractPagination,
 
     private void SetupTotalInfoText()
     {
-        if (ShowTotalInfo && TotalInfoTemplate != null)
+        if (IsShowTotalInfo && TotalInfoTemplate != null)
         {
             TotalInfoText = TotalInfoTemplate.Replace("${Total}", $"{Total}")
                                              .Replace("${RangeStart}", $"{(CurrentPage - 1) * PageSize}")
@@ -379,7 +375,7 @@ public class Pagination : AbstractPagination,
             var sizeChanger = new ComboBox();
             sizeChanger.VerticalAlignment = VerticalAlignment.Center;
             BindUtils.RelayBind(this, SizeTypeProperty, sizeChanger, ComboBox.SizeTypeProperty);
-            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"10 / {PageText}", PageSize  = 10});
+            sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"10 / {PageText}", PageSize  = 10 });
             sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"20 / {PageText}", PageSize  = 20 });
             sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"50 / {PageText}", PageSize  = 50 });
             sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"100 / {PageText}", PageSize = 100 });

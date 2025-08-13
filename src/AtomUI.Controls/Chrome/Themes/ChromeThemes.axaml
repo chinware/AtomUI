@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="TitleBar.axaml"/>
+        <ResourceInclude Source="CaptionButton.axaml"/>
+        <ResourceInclude Source="CaptionButtonGroup.axaml"/>
+        <ResourceInclude Source="WindowsCaptionButton.axaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

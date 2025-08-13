@@ -3,7 +3,8 @@
               xmlns:atom="https://atomui.net"
               xmlns:themes="using:AtomUI.Controls.Themes"
               x:Class="AtomUI.Controls.Themes.DefaultButtonTheme"
-              TargetType="{x:Type atom:Button}">
+              TargetType="{x:Type atom:Button}"
+              x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
@@ -57,10 +58,6 @@
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
 
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="Transparent" />
-                </Style>
-
                 <Style Selector="^:pointerover">
                     <Setter Property="Foreground"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
@@ -78,11 +75,7 @@
                 <Style Selector="^:danger">
                     <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
                     <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-
-                    <Style Selector="^/template/ Border#PART_Frame">
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-
+                    
                     <Style Selector="^:pointerover">
                         <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorderHover}}" />

@@ -110,6 +110,11 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
     private CompositeDisposable? _resourceBindingsDisposable;
     private ContentPresenter? _handleContentPresenter;
 
+    static ButtonSpinnerInnerBox()
+    {
+        AffectsRender<ButtonSpinnerInnerBox>(SpinnerBorderBrushProperty);
+    }
+
     protected override void BuildEffectiveInnerBoxPadding()
     {
         if (ShowButtonSpinner)
@@ -168,6 +173,7 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
             {
                 EdgeMode = EdgeMode.Aliased
             });
+
             {
                 // 画竖线
                 var startPoint = new Point(handleOffset.X, 0);

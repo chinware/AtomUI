@@ -21,7 +21,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
 {
     #region 常量定义
 
-    internal const bool DefaultIsReadOnly = false;
+    internal const bool DefaultIsReadOnly = true;
 
     #endregion
 

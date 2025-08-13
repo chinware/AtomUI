@@ -90,18 +90,35 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     /// </summary>
     public double IconSizeSM { get; set; }
 
-    /// 内部 Token
-    /// 单位毫秒
-    public TimeSpan SwitchDuration { get; set; }
-
+    /// <summary>
+    /// 开关的颜色
+    /// </summary>
     public Color SwitchColor { get; set; }
+    
+    /// <summary>
+    /// 开源禁用状态的透明度
+    /// </summary>
     public double SwitchDisabledOpacity { get; set; }
-    public double SwitchLoadingIconSize { get; set; }
-    public Color SwitchLoadingIconColor { get; set; }
+    
+    /// <summary>
+    /// 开关空白区域的字体大小，正常尺寸
+    /// </summary>
     public double ExtraInfoFontSize { get; set; }
+    
+    /// <summary>
+    /// 开关空白区域的字体大小，小尺寸
+    /// </summary>
     public double ExtraInfoFontSizeSM { get; set; }
     
+    /// <summary>
+    /// 加载动画的周期时长
+    /// </summary>
     public TimeSpan LoadingAnimationDuration { get; set; }
+    
+    /// <summary>
+    /// 在关状态下的加载指示器的颜色
+    /// </summary>
+    public Color OffStateLoadIndicatorColor { get; set; }
 
     protected internal override void CalculateFromAlias()
     {
@@ -129,12 +146,9 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
         InnerMaxMargin   = handleSize + padding * 3;
         InnerMinMarginSM = handleSizeSM / 2 - padding;
         InnerMaxMarginSM = handleSizeSM + padding * 3;
-
-        SwitchDuration         = SharedToken.MotionDurationMid;
+        
         SwitchColor            = SharedToken.ColorPrimary;
         SwitchDisabledOpacity  = SharedToken.OpacityLoading;
-        SwitchLoadingIconSize  = SharedToken.FontSizeIcon * 0.75;
-        SwitchLoadingIconColor = ColorUtils.FromRgbF(SwitchDisabledOpacity, 0, 0, 0);
 
         ExtraInfoFontSize   = SharedToken.FontSizeSM;
         ExtraInfoFontSizeSM = ExtraInfoFontSize - 1;
@@ -147,8 +161,9 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
             Color   = Color.FromArgb((int)(255 * 0.2), 0, 35, 11)
         };
 
-        IconSize                 = TrackHeightSM;
-        IconSizeSM               = TrackHeightSM - SharedToken.UniformlyPaddingXXS;
-        LoadingAnimationDuration = TimeSpan.FromMilliseconds(1200); // 毫秒
+        IconSize                   = TrackHeightSM;
+        IconSizeSM                 = TrackHeightSM - SharedToken.UniformlyPaddingXXS;
+        LoadingAnimationDuration   = TimeSpan.FromMilliseconds(1200); // 毫秒
+        OffStateLoadIndicatorColor = ColorUtils.FromRgbF(0.4,0.0, 0.0, 0.0);
     }
 }

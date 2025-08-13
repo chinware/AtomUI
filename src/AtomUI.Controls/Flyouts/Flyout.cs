@@ -10,7 +10,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Styling;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -28,7 +27,7 @@ public class Flyout : PopupFlyoutBase
         ArrowDecoratedBox.IsShowArrowProperty.AddOwner<Flyout>();
 
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
-        Border.BoxShadowProperty.AddOwner<Flyout>();
+        PopupControl.MaskShadowsProperty.AddOwner<Flyout>();
 
     /// <summary>
     /// 箭头是否始终指向中心
@@ -334,14 +333,8 @@ public class Flyout : PopupFlyoutBase
             return false;
         }
 
-        IsOpen         = true;
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Popup.MotionAwareOpen(() =>
-            {
-                HandlePopupOpened(placementTarget);
-            });
-        });
+        IsOpen = true;
+        Popup.MotionAwareOpen(() => { HandlePopupOpened(placementTarget); });
         return true;
     }
 
@@ -365,18 +358,13 @@ public class Flyout : PopupFlyoutBase
             return base.HideCore(false);
         }
 
-        IsOpen          = false;
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Popup.MotionAwareClose(() =>
-            {
-                HandlePopupClosed();
-            });
-        });
+        NotifyAboutToClose();
+        IsOpen = false;
+        Popup.MotionAwareClose(HandlePopupClosed);
         return true;
     }
 
-    private bool CancelClosing()
+    protected bool CancelClosing()
     {
         var eventArgs = new CancelEventArgs();
         OnClosing(eventArgs);

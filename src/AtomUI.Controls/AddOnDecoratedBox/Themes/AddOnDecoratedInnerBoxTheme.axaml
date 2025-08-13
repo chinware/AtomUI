@@ -2,7 +2,8 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               x:Class="AtomUI.Controls.Themes.AddOnDecoratedInnerBoxTheme"
-              TargetType="atom:AddOnDecoratedInnerBox">
+              TargetType="atom:AddOnDecoratedInnerBox"
+              x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:AddOnDecoratedInnerBox">
             <Panel>
@@ -59,6 +60,7 @@
     </Setter>
 
     <Style Selector="^:is(atom|AddOnDecoratedInnerBox)">
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="ContentPresenterMargin" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}" />
         <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
             <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />

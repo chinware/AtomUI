@@ -234,7 +234,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     public PopupFlyoutBase()
     {
-        _popupLazy = new Lazy<Popup>(() => CreatePopup());
+        _popupLazy = new Lazy<Popup>(CreatePopup);
     }
 
     protected internal virtual void NotifyPopupCreated(Popup popup)
@@ -250,16 +250,11 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     protected internal virtual void NotifyPositionPopup(bool showAtPointer)
     {
-        Size sz;
         // Popup.Child can't be null here, it was set in ShowAtCore.
         if (Popup.Child!.DesiredSize == default)
         {
             // Popup may not have been shown yet. Measure content
-            sz = LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
-        }
-        else
-        {
-            sz = Popup.Child.DesiredSize;
+            LayoutHelper.MeasureChild(Popup.Child, Size.Infinity, new Thickness());
         }
 
         Popup.VerticalOffset   = VerticalOffset;
@@ -322,12 +317,18 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
             }
         }
 
+        NotifyAboutToClose();
         IsOpen       = false;
         Popup.IsOpen = false;
 
         HandlePopupClosed();
 
         return true;
+    }
+
+    protected virtual void NotifyAboutToClose()
+    {
+        
     }
 
     protected void HandlePopupClosed()
@@ -526,23 +527,40 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
             OverlayDismissEventPassThrough = false
         };
 
-        popup.Opened += OnPopupOpened;
-        popup.Closed += OnPopupClosed;
-        popup.AddClosingEventHandler(OnPopupClosing);
-
+        popup.Opened += NotifyPopupOpened;
+        popup.Closed += NotifyPopupClosed;
+        popup.AddClosingEventHandler(HandlePopupClosing);
+        if (popup is IPopupHostProvider popupHostProvider)
+        {
+            popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
+        }
         popup.KeyUp += HandlePlacementTargetOrPopupKeyUp;
         NotifyPopupCreated(popup);
         return popup;
     }
 
-    protected virtual void OnPopupOpened(object? sender, EventArgs e)
+    private void HandlePopupHostChanged(IPopupHost? host)
+    {
+        if (host is PopupRoot popupRoot)
+        {
+            if (popupRoot.ParentTopLevel is WindowBase window)
+            {
+                window.Deactivated += (sender, args) =>
+                {
+                    Hide();
+                };
+            }
+        }
+    }
+
+    protected virtual void NotifyPopupOpened(object? sender, EventArgs e)
     {
         IsOpen = true;
 
         _popupHostChangedHandler?.Invoke(Popup.Host);
     }
 
-    private void OnPopupClosing(object? sender, CancelEventArgs e)
+    private void HandlePopupClosing(object? sender, CancelEventArgs e)
     {
         if (IsOpen)
         {
@@ -550,7 +568,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         }
     }
 
-    protected virtual void OnPopupClosed(object? sender, EventArgs e)
+    protected virtual void NotifyPopupClosed(object? sender, EventArgs e)
     {
         HideCore(false);
 
@@ -560,12 +578,9 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     // This method is handling both popup logical tree and target logical tree.
     private void HandlePlacementTargetOrPopupKeyUp(object? sender, KeyEventArgs e)
     {
-        if (!e.Handled
-            && IsOpen
-            && Target?.ContextFlyout == this)
+        if (!e.Handled && IsOpen && Target?.ContextFlyout == this)
         {
             var keymap = Application.Current!.PlatformSettings?.HotkeyConfiguration;
-
             if (keymap?.OpenContextMenu.Any(k => k.Matches(e)) == true)
             {
                 e.Handled = HideCore();

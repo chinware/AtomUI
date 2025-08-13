@@ -2,7 +2,8 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               x:Class="AtomUI.Controls.Themes.IconButtonTheme"
-              TargetType="atom:IconButton">
+              TargetType="atom:IconButton"
+              x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:IconButton">
             <Border
@@ -10,8 +11,9 @@
                 BorderThickness="{TemplateBinding BorderThickness}"
                 BorderBrush="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding CornerRadius}"
-                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                Background="{TemplateBinding Background}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 Padding="{TemplateBinding Padding}">
                 <atom:IconPresenter
                     Name="{x:Static atom:IconButtonThemeConstants.IconContentPart}"
@@ -33,24 +35,18 @@
 
     <Style Selector="^:is(atom|IconButton)">
         <Setter Property="Cursor" Value="Hand" />
-
-        <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
-
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Style Selector="^[IsEnableHoverEffect=True]">
             <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
             </Style>
 
             <Style Selector="^:pressed">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
             </Style>
         </Style>
 

@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -89,6 +90,7 @@ public class PopupConfirm : FlyoutHost,
         set => SetValue(TitleProperty, value);
     }
 
+    [DependsOn("ConfirmContentTemplate")]
     public object? ConfirmContent
     {
         get => GetValue(ConfirmContentProperty);

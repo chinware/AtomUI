@@ -24,6 +24,7 @@ public class LanguageProviderPoolClassSourceWriter
     {
         _usingInfos.Add("System.Collections.Generic");
         _usingInfos.Add("AtomUI.Theme");
+        _usingInfos.Add("AtomUI.Theme.Language");
     }
 
     public void Write()
@@ -51,7 +52,7 @@ public class LanguageProviderPoolClassSourceWriter
         compilationUnit = compilationUnit.AddUsings(usingSyntaxList.ToArray());
 
         // 添加命名空间
-        var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme"));
+        var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Language"));
 
         var languageProviderPoolClassDecl = SyntaxFactory.ClassDeclaration("LanguageProviderPool")
                                                          .AddModifiers(SyntaxFactory.Token(SyntaxKind.InternalKeyword))
@@ -72,7 +73,7 @@ public class LanguageProviderPoolClassSourceWriter
                                  SyntaxFactory.GenericName(SyntaxFactory.Identifier("List"))
                                               .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
                                                   SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                      SyntaxFactory.ParseTypeName("AbstractLanguageProvider")))))
+                                                      SyntaxFactory.ParseTypeName("LanguageProvider")))))
                              .WithVariables(SyntaxFactory.SingletonSeparatedList(
                                  SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("languageProviders"))
                                               .WithInitializer(SyntaxFactory.EqualsValueClause(
@@ -84,7 +85,7 @@ public class LanguageProviderPoolClassSourceWriter
                                                                                SyntaxFactory
                                                                                    .SingletonSeparatedList<TypeSyntax>(
                                                                                        SyntaxFactory.ParseTypeName(
-                                                                                           "AbstractLanguageProvider")))))
+                                                                                           "LanguageProvider")))))
                                                                .WithArgumentList(SyntaxFactory.ArgumentList()))))))
         };
 
@@ -115,7 +116,7 @@ public class LanguageProviderPoolClassSourceWriter
                                 SyntaxFactory.GenericName(SyntaxFactory.Identifier("IList"))
                                              .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
                                                  SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                     SyntaxFactory.ParseTypeName("AbstractLanguageProvider")))),
+                                                     SyntaxFactory.ParseTypeName("LanguageProvider")))),
                                 SyntaxFactory.Identifier("GetLanguageProviders"))
                             .WithModifiers(SyntaxFactory.TokenList(
                                 SyntaxFactory.Token(SyntaxKind.InternalKeyword),

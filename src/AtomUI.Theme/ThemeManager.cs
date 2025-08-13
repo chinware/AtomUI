@@ -1,5 +1,6 @@
-﻿using System.Globalization;
-using AtomUI.Utils;
+﻿using System.Diagnostics;
+using AtomUI.Theme.Language;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
@@ -10,46 +11,35 @@ namespace AtomUI.Theme;
 /// <summary>
 /// 当切换主题时候就是动态的换 ResourceDictionary 里面的东西
 /// </summary>
-public class ThemeManager : Styles, IThemeManager
+internal class ThemeManager : Styles, IThemeManager
 {
-    public const string THEME_DIR = "Themes";
-    public const string DEFAULT_THEME_ID = "DaybreakBlueLight";
     public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
-    public static readonly CultureInfo DEFAULT_LANGUAGE = new(LanguageCode.zh_CN);
+    public const string DEFAULT_APP_NAME = "AtomUIApplication";
+    public const string THEME_DIR = "Themes";
 
-    private Theme? _activatedTheme;
-    private readonly Dictionary<string, Theme> _themePool;
-    private readonly List<string> _customThemeDirs;
-    private readonly List<string> _builtInThemeDirs;
-    private IList<IControlThemesProvider> _controlThemesProviders;
+    #region 公共属性定义
     
-    private readonly Dictionary<CultureInfo, ResourceDictionary> _languages;
-    private List<ILanguageProvider>? _languageProviders;
+    public static readonly StyledProperty<LanguageVariant> ActualLanguageVariantProperty =
+        LanguageVariant.ActualLanguageVariantProperty.AddOwner<ThemeManager>();
+    
+    public LanguageVariant ActualLanguageVariant
+    {
+        get => GetValue(ActualLanguageVariantProperty);
+        set => SetValue(ActualLanguageVariantProperty, value);
+    }
 
+    public IList<ThemeAlgorithm>? ActivatedThemeAlgorithms { get; internal set; }
+    
+    #endregion
+    
     public ITheme? ActivatedTheme => _activatedTheme;
     public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
     public static ThemeManager Current { get; internal set; } = null!;
     public string DefaultThemeId { get; set; }
 
     internal List<Type> ControlTokenTypes { get; set; }
-
-    private CultureInfo? _cultureInfo;
-
-    public CultureInfo? CultureInfo
-    {
-        get => _cultureInfo;
-
-        set
-        {
-            _cultureInfo = value;
-            var languageResource = TryGetLanguageResource(value ?? DEFAULT_LANGUAGE);
-            foreach (var entry in languageResource)
-            {
-                Resources.Add(entry);
-            }
-        }
-    }
-
+    internal IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; set; }
+    
     public event EventHandler<ThemeOperateEventArgs>? ThemeCreated;
     public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToLoad;
     public event EventHandler<ThemeOperateEventArgs>? ThemeLoaded;
@@ -61,25 +51,29 @@ public class ThemeManager : Styles, IThemeManager
 
     public event EventHandler? Initialized;
     
+    private Theme? _activatedTheme;
+    private readonly Dictionary<ThemeVariant, Theme> _themePool;
+    private readonly List<string> _customThemeDirs;
+    private readonly List<string> _builtInThemeDirs;
+    private IList<IControlThemesProvider> _controlThemesProviders;
+    private IList<IThemeAssetPathProvider> _themeAssetPathProviders;
+    
+    private readonly Dictionary<LanguageVariant, ResourceDictionary> _languages;
+    private List<ILanguageProvider>? _languageProviders;
+    
     internal ThemeManager()
     {
-        Initialized += (sender, args) =>
-        {
-
-        };
-        _themePool       =  new Dictionary<string, Theme>();
-        _customThemeDirs =  new List<string>();
-        var appName = Application.Current?.Name ?? "AtomUIApplication";
-        _builtInThemeDirs = new List<string>
-        {
-            Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
-                THEME_DIR)
-        };
-        DefaultThemeId          = DEFAULT_THEME_ID;
-        _controlThemesProviders = new List<IControlThemesProvider>();
-        ControlTokenTypes       = new List<Type>();
-        _languageProviders      = new List<ILanguageProvider>();
-        _languages              = new Dictionary<CultureInfo, ResourceDictionary>();
+        _themePool       = new Dictionary<ThemeVariant, Theme>();
+        _customThemeDirs = new List<string>();
+        var appName = Application.Current?.Name ?? DEFAULT_APP_NAME;
+        _builtInThemeDirs = [Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName),
+            THEME_DIR)];
+        DefaultThemeId           = IThemeManager.DEFAULT_THEME_ID;
+        _controlThemesProviders  = new List<IControlThemesProvider>();
+        _themeAssetPathProviders = new List<IThemeAssetPathProvider>();
+        ControlTokenTypes        = new List<Type>();
+        _languageProviders       = new List<ILanguageProvider>();
+        _languages               = new Dictionary<LanguageVariant, ResourceDictionary>();
     }
 
     public IReadOnlyCollection<ITheme> AvailableThemes
@@ -95,22 +89,15 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    public ITheme LoadTheme(string id)
+    internal ITheme LoadTheme(ThemeVariant themeVariant)
     {
-        if (_themePool.Count == 0)
+        if (!_themePool.TryGetValue(themeVariant, out var theme))
         {
-            ScanThemes();
+            throw new InvalidOperationException($"Theme: {themeVariant} not founded in theme pool.");
         }
-
-        if (!_themePool.ContainsKey(id))
-        {
-            throw new InvalidOperationException($"Theme: {id} not founded in theme pool.");
-        }
-
-        var theme = _themePool[id];
+        
         if (theme.IsLoaded)
         {
-            // TODO 这里记录一个日志
             return theme;
         }
 
@@ -133,22 +120,22 @@ public class ThemeManager : Styles, IThemeManager
     /// <summary>
     /// 取消主题在 avalonia 里面的 resource 资源
     /// </summary>
-    /// <param name="id"></param>
-    public void UnLoadTheme(string id)
+    /// <param name="themeVariant"></param>
+    internal void UnLoadTheme(ThemeVariant themeVariant)
     {
-        if (!_themePool.ContainsKey(id))
+        if (!_themePool.ContainsKey(themeVariant))
         {
             // TODO 需要记录一个日志
             return;
         }
 
-        if (_activatedTheme != null && _activatedTheme.Id == id)
+        if (_activatedTheme != null && _activatedTheme.ThemeVariant == themeVariant)
         {
             // TODO 需要记录一个日志
             return;
         }
 
-        var theme = _themePool[id];
+        var theme = _themePool[themeVariant];
         theme.NotifyAboutToUnload();
         ThemeAboutToUnload?.Invoke(this, new ThemeOperateEventArgs(theme));
         // TODO 进行卸载操作，暂时没有实现
@@ -156,12 +143,11 @@ public class ThemeManager : Styles, IThemeManager
         ThemeUnloaded?.Invoke(this, new ThemeOperateEventArgs(theme));
     }
 
-    public void SetActiveTheme(string id)
+    public void SetActiveTheme(ThemeVariant themeVariant)
     {
-        if (!_themePool.ContainsKey(id))
+        if (!_themePool.ContainsKey(themeVariant))
         {
-            // TODO 需要记录一个日志
-            return;
+            throw new ThemeNotFoundException($"Theme {themeVariant} not found");
         }
 
         var oldTheme = _activatedTheme;
@@ -170,20 +156,29 @@ public class ThemeManager : Styles, IThemeManager
             oldTheme.NotifyAboutToDeActive();
         }
 
-        var theme = _themePool[id];
+        var theme = _themePool[themeVariant];
+
+        if (!theme.IsLoaded)
+        {
+            LoadTheme(themeVariant);
+        }
+        
         theme.NotifyAboutToActive();
         ThemeAboutToChange?.Invoke(this, new ThemeOperateEventArgs(oldTheme));
         _activatedTheme = theme;
-
-        var themeVariant  = _activatedTheme.ThemeVariant;
-        var themeResource = new ResourceDictionary();
-        themeResource.ThemeDictionaries[themeVariant] = theme.ThemeResource;
-        Resources.MergedDictionaries.Add(themeResource);
+        
+        if (!Resources.ThemeDictionaries.ContainsKey(themeVariant))
+        {
+            Resources.ThemeDictionaries.Add(themeVariant, theme.ThemeResource);
+        }
 
         if (oldTheme is not null)
         {
             oldTheme.NotifyDeActivated();
         }
+        
+        theme.NotifyActivated();
+        ActivatedThemeAlgorithms = theme.Algorithms;
 
         ThemeChanged?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
     }
@@ -191,6 +186,11 @@ public class ThemeManager : Styles, IThemeManager
     public void RegisterControlThemesProvider(IControlThemesProvider controlThemesProvider)
     {
         _controlThemesProviders.Add(controlThemesProvider);
+    }
+
+    public void RegisterControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
+    {
+        _themeAssetPathProviders.Add(themeAssetPathProvider);
     }
 
     public void RegisterLanguageProvider(ILanguageProvider languageProvider)
@@ -203,34 +203,44 @@ public class ThemeManager : Styles, IThemeManager
         ControlTokenTypes.Add(tokenType);
     }
 
-    public void ScanThemes()
+    internal void ScanThemes()
     {
         // 最开始的是用户指定的目录
         foreach (var path in _customThemeDirs)
         {
-            AddThemesFromPath(path, _themePool);
+            AddThemesFromPath(path, _themePool, false);
         }
 
         // 优先级从高到低
         foreach (var path in _builtInThemeDirs)
         {
-            AddThemesFromPath(path, _themePool);
+            AddThemesFromPath(path, _themePool, false);
+        }
+
+        foreach (var themeAssetPathProvider in _themeAssetPathProviders)
+        {
+            var filePaths = themeAssetPathProvider.GetThemeFilePaths();
+            AddThemesFromFilePaths(filePaths, _themePool, true);
         }
 
         // Assets 中的默认主题
         AddThemesFromAssets(_themePool);
-
-        // TODO 如果这里为空的化需要记录一个日志
+        Debug.Assert(_themePool.Count > 0);
     }
 
-    private ResourceDictionary TryGetLanguageResource(CultureInfo locale)
+    private ResourceDictionary? TryGetLanguageResource(LanguageVariant languageVariant)
     {
-        if (_languages.TryGetValue(locale, out var resource))
+        if (_languages.TryGetValue(languageVariant, out var resource))
         {
             return resource;
         }
-
-        return _languages[DEFAULT_LANGUAGE];
+        return null;
+    }
+    
+    private ResourceDictionary GetLanguageResourceOrDefault(LanguageVariant languageVariant, 
+                                                            ResourceDictionary defaultResourceDictionary)
+    {
+        return _languages.GetValueOrDefault(languageVariant, defaultResourceDictionary);
     }
 
     public void AddCustomThemePaths(IList<string> paths)
@@ -245,7 +255,7 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    private void AddThemesFromPath(string path, Dictionary<string, Theme> themes)
+    private void AddThemesFromPath(string path, Dictionary<ThemeVariant, Theme> themes, bool isBuiltIn)
     {
         var searchPattern = "*.xml";
         if (Directory.Exists(path))
@@ -253,36 +263,45 @@ public class ThemeManager : Styles, IThemeManager
             var files = Directory.GetFiles(path, searchPattern);
             if (files.Length > 0)
             {
-                AddThemesFromFilePaths(files, themes);
+                AddThemesFromFilePaths(files, themes, isBuiltIn);
             }
         }
     }
 
-    private void AddThemesFromAssets(Dictionary<string, Theme> themes)
+    private void AddThemesFromAssets(Dictionary<ThemeVariant, Theme> themes)
     {
         var filePaths = AssetLoader.GetAssets(new Uri(DEFAULT_THEME_RES_PATH), null);
-        AddThemesFromFilePaths(filePaths.Select(path => path.ToString()), themes);
+        AddThemesFromFilePaths(filePaths.Select(path => path.ToString()), themes, true);
     }
 
-    private void AddThemesFromFilePaths(IEnumerable<string> filePaths, Dictionary<string, Theme> themes)
+    private void AddThemesFromFilePaths(IEnumerable<string> filePaths, Dictionary<ThemeVariant, Theme> themes, bool isBuiltIn)
     {
+        var algorithmsCombination = new List<ISet<ThemeAlgorithm>>();
+        algorithmsCombination.Add(new HashSet<ThemeAlgorithm>{ThemeAlgorithm.Default});
+        algorithmsCombination.Add(new HashSet<ThemeAlgorithm>{ThemeAlgorithm.Default, ThemeAlgorithm.Dark});
+        algorithmsCombination.Add(new HashSet<ThemeAlgorithm>{ThemeAlgorithm.Default, ThemeAlgorithm.Dark, ThemeAlgorithm.Compact});
+        algorithmsCombination.Add(new HashSet<ThemeAlgorithm>{ThemeAlgorithm.Default, ThemeAlgorithm.Compact});
         foreach (var filePath in filePaths)
         {
-            var themeId = Path.GetFileNameWithoutExtension(filePath);
-            if (themes.ContainsKey(themeId))
+            var themeId      = Path.GetFileNameWithoutExtension(filePath);
+            foreach (var algorithms in algorithmsCombination)
             {
-                continue;
+                var theme        = new Theme(this, themeId, filePath, algorithms ,isBuiltIn);
+                var themeVariant = theme.ThemeVariant;
+                if (themes.ContainsKey(themeVariant))
+                {
+                    continue;
+                }
+                ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
+                themes.Add(themeVariant, theme);
+                theme.NotifyRegistered();
             }
-
-            var theme = new Theme(themeId, filePath);
-            ThemeCreated?.Invoke(this, new ThemeOperateEventArgs(theme));
-            themes.Add(themeId, theme);
-            theme.NotifyRegistered();
         }
     }
 
     internal void Configure()
     {
+        ScanThemes();
         foreach (var provider in _controlThemesProviders)
         {
             foreach (var resourceProvider in provider.ControlThemes)
@@ -300,13 +319,13 @@ public class ThemeManager : Styles, IThemeManager
         {
             foreach (var languageProvider in _languageProviders)
             {
-                var culture = new CultureInfo(languageProvider.LangCode);
-                if (!_languages.ContainsKey(culture))
+                var languageVariant = LanguageVariant.FromCode(languageProvider.LangCode);
+                if (!_languages.ContainsKey(languageVariant))
                 {
-                    _languages[culture] = new ResourceDictionary();
+                    _languages[languageVariant] = new ResourceDictionary();
                 }
 
-                var resourceDictionary = _languages[culture];
+                var resourceDictionary = _languages[languageVariant];
                 languageProvider.BuildResourceDictionary(resourceDictionary);
             }
 
@@ -314,9 +333,61 @@ public class ThemeManager : Styles, IThemeManager
         }
     }
 
-    internal void NotifyInitialized()
+    internal virtual void NotifyInitialized()
     {
         Initialized?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal virtual void NotifyAttachedToApplication()
+    {
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ActualLanguageVariantProperty)
+        {
+            if (change.OldValue is LanguageVariant oldLangVariant)
+            {
+                var oldResource = TryGetLanguageResource(oldLangVariant);
+                if (oldResource != null)
+                {
+                    Resources.MergedDictionaries.Remove(oldResource);
+                }
+            }
+            
+            var langVariant = change.NewValue as LanguageVariant;
+            langVariant ??= IThemeManager.DEFAULT_LANGUAGE;
+            var languageResource = TryGetLanguageResource(langVariant);
+            languageResource ??= _languages[IThemeManager.DEFAULT_LANGUAGE];
+            
+            Resources.MergedDictionaries.Add(languageResource);
+        }
+    }
+
+    internal IThemeVariantCalculator CreateThemeVariantCalculator(ThemeAlgorithm algorithm, IThemeVariantCalculator? baseCalculator)
+    {
+        if (ThemeVariantCalculatorFactory != null)
+        {
+            return ThemeVariantCalculatorFactory.Create(algorithm, baseCalculator);
+        }
+
+        if (algorithm == ThemeAlgorithm.Default)
+        {
+            return new DefaultThemeVariantCalculator();
+        }
+        if (algorithm == ThemeAlgorithm.Dark)
+        {
+            Debug.Assert(baseCalculator is not null);
+            return new DarkThemeVariantCalculator(baseCalculator);
+        } 
+        if (algorithm == ThemeAlgorithm.Compact)
+        {
+            Debug.Assert(baseCalculator is not null);
+            return new CompactThemeVariantCalculator(baseCalculator);
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(algorithm), $"Unsupported theme variant algorithm: {algorithm}");
     }
 }
 
