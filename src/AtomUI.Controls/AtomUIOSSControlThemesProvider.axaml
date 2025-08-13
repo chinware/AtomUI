@@ -10,6 +10,7 @@
         <ResourceInclude Source="ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="Avatar/Themes/AvatarTheme.axaml" />
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
+        <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
         <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" />

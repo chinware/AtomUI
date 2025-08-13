@@ -1,0 +1,92 @@
+﻿<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <atom:BoolToThicknessConverter x:Key="BoolToThicknessConverter" />
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type atom:BreadcrumbItem}" TargetType="atom:BreadcrumbItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Name="ROOTLayout"
+                            Background="{TemplateBinding Background}"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Border Name="BorderItemPart"
+                            Background="Transparent"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <StackPanel Name="StackPanelItemPart"
+                                    Orientation="Horizontal"
+                                    Background="Transparent"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <atom:IconPresenter Name="PART_IconPresenter"
+                                                Icon="{TemplateBinding Icon}"
+                                                NormalFilledBrush="{DynamicResource {x:Static atom:BreadcrumbTokenKey.PrevLinkColor}}"
+                                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <ContentPresenter Name="PART_Content"
+                                              HorizontalContentAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                              IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Name="BorderSeparatorPart"
+                            Padding="{TemplateBinding Padding}">
+                        <StackPanel>
+                            <ContentPresenter Name="PART_Seprator"
+                                              HorizontalContentAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}"
+                                              Content="{TemplateBinding EffectiveSeparator}"
+                                              IsVisible="{TemplateBinding EffectiveSeparator, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.BreadcrumbItemContentPadding}}"></Setter>
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}"></Setter>
+        
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Setter Property="IconWidth"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+        </Style>
+        
+        <!-- 非最后一个：浅灰色 -->
+        <Style Selector="^:not(:is-last) /template/ ContentPresenter#PART_Content">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.PrevLinkColor}}"/>
+        </Style>
+        
+        <!-- 如果有icon的话，搞出来一个margin当间隔 -->
+        <Style Selector="^:has-icon">
+            <Style Selector="^ /template/ ContentPresenter#PART_Content">
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.BreadcrumbItemContentMargin}}" />
+            </Style>
+        </Style>
+        
+        <!-- 当鼠标掠过的时候 -->
+        <Style Selector="^ /template/ Border#BorderItemPart">
+            <Style Selector="^:pointerover">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverBgColor}}" />
+                <Style Selector="^ ContentPresenter#PART_Content">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverColor}}" />
+                </Style>
+                <Style Selector="^ atom|IconPresenter#PART_IconPresenter">
+                    <Setter Property="NormalFilledBrush"
+                            Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverColor}}" />
+                </Style>
+            </Style>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>
