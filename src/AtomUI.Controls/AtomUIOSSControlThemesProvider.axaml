@@ -45,6 +45,7 @@
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
         <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />
+        <ResourceInclude Source="Skeleton/Themes/SkeletonThemes.axaml" />
         <ResourceInclude Source="Slider/Themes/SliderThemes.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchTheme.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />

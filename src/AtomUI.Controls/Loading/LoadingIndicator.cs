@@ -91,7 +91,7 @@ public class LoadingIndicator : TemplatedControl,
         AvaloniaProperty.Register<LoadingIndicator, double>(
             nameof(IndicatorTextMargin));
 
-    private static readonly DirectProperty<LoadingIndicator, double> IndicatorAngleProperty =
+    internal static readonly DirectProperty<LoadingIndicator, double> IndicatorAngleProperty =
         AvaloniaProperty.RegisterDirect<LoadingIndicator, double>(
             nameof(IndicatorAngle),
             o => o.IndicatorAngle,
@@ -117,7 +117,7 @@ public class LoadingIndicator : TemplatedControl,
 
     private double _indicatorAngle;
 
-    private double IndicatorAngle
+    internal double IndicatorAngle
     {
         get => _indicatorAngle;
         set => SetAndRaise(IndicatorAngleProperty, ref _indicatorAngle, value);
@@ -133,10 +133,6 @@ public class LoadingIndicator : TemplatedControl,
     private RenderInfo? _renderInfo;
     private IconPresenter? _customIndicatorIconPresenter;
     private CancellationTokenSource? _cancellationTokenSource;
-
-    // internal const double LARGE_INDICATOR_SIZE = 48;
-    // internal const double MIDDLE_INDICATOR_SIZE = 32;
-    // internal const double SMALL_INDICATOR_SIZE = 16;
     
     internal const double MAX_CONTENT_WIDTH = 120; // 拍脑袋的决定
     internal const double MAX_CONTENT_HEIGHT = 400;

@@ -47,14 +47,19 @@ internal class SkeletonToken : AbstractControlDesignToken
     public double ParagraphLineHeight { get; set; }
     
     /// <summary>
+    /// 段落骨架屏单行胶囊圆角值
+    /// </summary>
+    public CornerRadius ParagraphLineRoundCornerRadius { get; set; }
+    
+    /// <summary>
     /// 默认加载的时长
     /// </summary>
     public TimeSpan LoadingMotionDuration { get; set; }
     
-    /// <summary>
-    /// 默认加载的动画背景笔刷
-    /// </summary>
-    public IBrush? LoadingBackground { get; set; }
+    // 流光动画背景定义
+    public IBrush? LoadingBackgroundStart { get; set; }
+    public IBrush? LoadingBackgroundMiddle { get; set; }
+    public IBrush? LoadingBackgroundEnd { get; set; }
 
     public SkeletonToken()
         : base(ID)
@@ -70,16 +75,41 @@ internal class SkeletonToken : AbstractControlDesignToken
         BlockRadius           = SharedToken.BorderRadiusSM;
         ParagraphMarginTop    = new Thickness(0, SharedToken.UniformlyMarginLG + SharedToken.UniformlyMarginXXS, 0, 0);
         ParagraphLineHeight   = SharedToken.ControlHeight / 2;
+        ParagraphLineRoundCornerRadius = new CornerRadius(ParagraphLineHeight / 2);
         LoadingMotionDuration = TimeSpan.FromSeconds(1.4);
-        LoadingBackground     = new LinearGradientBrush()
+        LoadingBackgroundStart     = new LinearGradientBrush()
         {
             StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
             EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
             GradientStops =
             {
-                new GradientStop { Offset = 0.25, Color = GradientFromColor },
-                new GradientStop { Offset = 0.37, Color = GradientToColor },
-                new GradientStop { Offset = 0.63, Color = GradientFromColor }
+                new GradientStop { Offset = 0.0, Color = GradientFromColor },
+                new GradientStop { Offset = 0.0, Color = GradientToColor },
+                new GradientStop { Offset = 1.0, Color = GradientFromColor }
+            }
+        };
+        
+        LoadingBackgroundMiddle     = new LinearGradientBrush()
+        {
+            StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
+            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
+            GradientStops =
+            {
+                new GradientStop { Offset = 0.0, Color = GradientFromColor },
+                new GradientStop { Offset = 1.0, Color = GradientToColor },
+                new GradientStop { Offset = 1.0, Color = GradientFromColor }
+            }
+        };
+        
+        LoadingBackgroundEnd     = new LinearGradientBrush()
+        {
+            StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
+            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
+            GradientStops =
+            {
+                new GradientStop { Offset = 0.0, Color = GradientFromColor },
+                new GradientStop { Offset = 1.0, Color = GradientFromColor },
+                new GradientStop { Offset = 1.0, Color = GradientFromColor }
             }
         };
     }

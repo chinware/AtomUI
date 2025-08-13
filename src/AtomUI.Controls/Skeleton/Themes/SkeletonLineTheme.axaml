@@ -1,0 +1,43 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SkeletonLine}" TargetType="atom:SkeletonLine">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:SkeletonLineThemeConstants.LineFramePart}" ClipToBounds="True">
+                    <Panel>
+                        <Rectangle Name="{x:Static atom:SkeletonThemeConstants.ActiveAnimationLayerPart}"
+                                   Fill="{TemplateBinding AnimationLayerFill}"
+                                   IsVisible="{TemplateBinding IsActive}"/>
+                        <Rectangle Name="Line"/>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingMotionDuration}}"/>
+        <Setter Property="LoadingBackgroundStart" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundStart}}"/>
+        <Setter Property="LoadingBackgroundMiddle" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundMiddle}}"/>
+        <Setter Property="LoadingBackgroundEnd" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundEnd}}"/>
+        <Style Selector="^ /template/ Border#PART_LineFrame">
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ParagraphLineHeight}}"/>
+        </Style>
+        
+        <Style Selector="^[IsRound=True]">
+            <Style Selector="^ /template/ Border#PART_LineFrame">
+                <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ParagraphLineRoundCornerRadius}}"/>
+            </Style>
+        </Style>
+        <Style Selector="^[IsRound=False]">
+            <Style Selector="^ /template/ Border#PART_LineFrame">
+                <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.BlockRadius}}"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ Rectangle#Line">
+            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.GradientFromColor}}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
