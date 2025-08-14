@@ -17,9 +17,6 @@ public abstract class AbstractSkeleton : TemplatedControl
     public static readonly StyledProperty<bool> IsActiveProperty =
         AvaloniaProperty.Register<AbstractSkeleton, bool>(nameof(IsActive));
     
-    // public static readonly StyledProperty<SizeType> SizeTypeProperty =
-    //     SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AbstractSkeleton>();
-    
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<AbstractSkeleton>();
 
@@ -31,13 +28,7 @@ public abstract class AbstractSkeleton : TemplatedControl
         get => GetValue(IsActiveProperty);
         set => SetValue(IsActiveProperty, value);
     }
-    
-    // public SizeType SizeType
-    // {
-    //     get => GetValue(SizeTypeProperty);
-    //     set => SetValue(SizeTypeProperty, value);
-    // }
-    //
+
     public TimeSpan MotionDuration
     {
         get => GetValue(MotionDurationProperty);
@@ -117,19 +108,19 @@ public abstract class AbstractSkeleton : TemplatedControl
                     }
                 }
             }
-        }
-
-        if (change.Property == LoadingBackgroundStartProperty ||
-            change.Property == LoadingBackgroundMiddleProperty ||
-            change.Property == LoadingBackgroundEndProperty ||
-            change.Property == MotionDurationProperty)
-        {
-            if (!IsFollowMode)
+            
+            if (change.Property == LoadingBackgroundStartProperty ||
+                change.Property == LoadingBackgroundMiddleProperty ||
+                change.Property == LoadingBackgroundEndProperty ||
+                change.Property == MotionDurationProperty)
             {
-                BuildActiveAnimation(true);
-                if (IsActive)
+                if (!IsFollowMode)
                 {
-                    StartActiveAnimation();
+                    BuildActiveAnimation(true);
+                    if (IsActive)
+                    {
+                        StartActiveAnimation();
+                    }
                 }
             }
         }

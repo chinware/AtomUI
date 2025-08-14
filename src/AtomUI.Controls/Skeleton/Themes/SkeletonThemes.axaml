@@ -4,6 +4,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="SkeletonTheme.axaml" />
         <ResourceInclude Source="SkeletonLineTheme.axaml" />
+        <ResourceInclude Source="SkeletonAvatarTheme.axaml" />
         <ResourceInclude Source="SkeletonParagraphTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

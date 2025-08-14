@@ -11,7 +11,8 @@
                         <Rectangle Name="{x:Static atom:SkeletonThemeConstants.ActiveAnimationLayerPart}"
                                    Fill="{TemplateBinding AnimationLayerFill}"
                                    IsVisible="{TemplateBinding IsActive}"/>
-                        <Rectangle Name="Line"/>
+                        <Rectangle Name="Line"
+                                   IsVisible="{TemplateBinding IsActive, Converter={x:Static BoolConverters.Not}}"/>
                     </Panel>
                 </Border>
             </ControlTemplate>

@@ -1,4 +1,6 @@
 using AtomUI.Controls.Themes;
+using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -6,7 +8,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class SkeletonParagraph : AbstractSkeleton
+public class SkeletonParagraph : AbstractSkeleton, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -18,6 +20,9 @@ public class SkeletonParagraph : AbstractSkeleton
     
     public static readonly StyledProperty<int> RowsProperty =
         AvaloniaProperty.Register<SkeletonParagraph, int>(nameof(Rows), 2, validate: i => i >= 1);
+
+    public static readonly StyledProperty<bool> IsRoundProperty =
+        SkeletonLine.IsRoundProperty.AddOwner<SkeletonParagraph>();
 
     public SkeletonWidth LastLineWidth
     {
@@ -37,9 +42,27 @@ public class SkeletonParagraph : AbstractSkeleton
         set => SetValue(RowsProperty, value);
     }
     
+    public bool IsRound
+    {
+        get => GetValue(IsRoundProperty);
+        set => SetValue(IsRoundProperty, value);
+    }
+    
+    #endregion
+    
+    #region 内部属性定义
+
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => SkeletonToken.ID;
+
     #endregion
     
     private StackPanel? _linesLayout;
+
+    public SkeletonParagraph()
+    {
+        this.RegisterResources();
+    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {

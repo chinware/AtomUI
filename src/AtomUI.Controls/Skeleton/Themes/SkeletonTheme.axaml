@@ -3,4 +3,75 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Skeleton}" TargetType="atom:Skeleton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel LastChildFill="True">
+                    <atom:SkeletonAvatar DockPanel.Dock="Left"
+                                         Name="{x:Static atom:SkeletonThemeConstants.AvatarPart}"
+                                         SizeType="{TemplateBinding AvatarSizeType}"
+                                         Shape="{TemplateBinding AvatarShape}"
+                                         Size="{TemplateBinding AvatarSize}"
+                                         IsVisible="{TemplateBinding IsShowAvatar}"
+                                         IsActive="{TemplateBinding IsActive}"/>
+                    <StackPanel Orientation="Vertical" 
+                                Name="{x:Static atom:SkeletonThemeConstants.ContentPart}">
+                        <atom:SkeletonTitle Name="{x:Static atom:SkeletonThemeConstants.TitlePart}"
+                                            IsVisible="{TemplateBinding IsShowTitle}"
+                                            IsRound="{TemplateBinding IsRound}"
+                                            LineWidth="{TemplateBinding TitleWidth}"
+                                            IsActive="{TemplateBinding IsActive}"/>
+                        <atom:SkeletonParagraph Name="{x:Static atom:SkeletonThemeConstants.ParagraphPart}"
+                                                IsVisible="{TemplateBinding IsShowParagraph}"
+                                                IsRound="{TemplateBinding IsRound}"
+                                                Rows="{TemplateBinding ParagraphRows}"
+                                                LastLineWidth="{TemplateBinding ParagraphLastLineWidth}"
+                                                LineWidths="{TemplateBinding ParagraphLineWidths}"
+                                                IsActive="{TemplateBinding IsActive}"/>
+                    </StackPanel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingMotionDuration}}"/>
+        <Setter Property="LoadingBackgroundStart" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundStart}}"/>
+        <Setter Property="LoadingBackgroundMiddle" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundMiddle}}"/>
+        <Setter Property="LoadingBackgroundEnd" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundEnd}}"/>
+        
+        <Setter Property="AvatarSizeType" Value="Large"/>
+        <Setter Property="AvatarShape" Value="Circle"/>
+        
+        <Style Selector="^ /template/ atom|SkeletonAvatar">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.AvatarMarginRight}}"/>
+        </Style>
+        
+        <Style Selector="^[IsShowTitle=True][IsShowParagraph=False]">
+            <Setter Property="AvatarShape" Value="Square"/>
+        </Style>
+        
+        <Style Selector="^[IsShowAvatar=False][IsShowParagraph=True]">
+            <Setter Property="TitleWidth" Value="38%"/>
+        </Style>
+        
+        <Style Selector="^[IsShowAvatar=True][IsShowParagraph=True]">
+            <Setter Property="TitleWidth" Value="50%"/>
+        </Style>
+                
+        <Style Selector="^[IsShowAvatar=False][IsShowTitle=False]">
+            <Setter Property="ParagraphLastLineWidth" Value="61%"/>
+        </Style>
+        
+        <Style Selector="^[IsShowTitle=True]">
+            <Style Selector="^ /template/ atom|SkeletonParagraph">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ParagraphMarginTop}}"/>
+            </Style>
+        </Style>
+        
+        <Setter Property="ParagraphRows" Value="2"/>
+        
+        <Style Selector="^[IsShowAvatar=False][IsShowTitle=True]">
+            <Setter Property="ParagraphRows" Value="3"/>
+        </Style>
+        
+    </ControlTheme>
 </ResourceDictionary>

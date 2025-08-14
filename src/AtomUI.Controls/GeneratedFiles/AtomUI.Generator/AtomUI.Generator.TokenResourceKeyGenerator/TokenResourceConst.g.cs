@@ -661,6 +661,7 @@ namespace AtomUI.Theme.Styling
 
     public static class SkeletonTokenKey
     {
+        public static readonly TokenResourceKey AvatarMarginRight = new TokenResourceKey("Skeleton.AvatarMarginRight");
         public static readonly TokenResourceKey BlockRadius = new TokenResourceKey("Skeleton.BlockRadius");
         public static readonly TokenResourceKey GradientFromColor = new TokenResourceKey("Skeleton.GradientFromColor");
         public static readonly TokenResourceKey GradientToColor = new TokenResourceKey("Skeleton.GradientToColor");

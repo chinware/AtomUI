@@ -41,6 +41,11 @@ internal class SkeletonToken : AbstractControlDesignToken
     public Thickness ParagraphMarginTop { get; set; }
     
     /// <summary>
+    /// 头像骨架屏右间距
+    /// </summary>
+    public Thickness AvatarMarginRight { get; set; }
+    
+    /// <summary>
     /// 段落骨架屏单行高度
     /// Line height of paragraph skeleton
     /// </summary>
@@ -74,6 +79,7 @@ internal class SkeletonToken : AbstractControlDesignToken
         TitleHeight           = SharedToken.ControlHeight / 2;
         BlockRadius           = SharedToken.BorderRadiusSM;
         ParagraphMarginTop    = new Thickness(0, SharedToken.UniformlyMarginLG + SharedToken.UniformlyMarginXXS, 0, 0);
+        AvatarMarginRight = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
         ParagraphLineHeight   = SharedToken.ControlHeight / 2;
         ParagraphLineRoundCornerRadius = new CornerRadius(ParagraphLineHeight / 2);
         LoadingMotionDuration = TimeSpan.FromSeconds(1.4);
