@@ -1,0 +1,46 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:Class="AtomUI.Controls.Themes.SkeletonImageTheme"
+    TargetType="atom:SkeletonImage"
+    xmlns:themes="using:AtomUI.Controls.Themes" 
+    x:ClassModifier="internal">
+    
+    <ControlTheme.BasedOn>
+        <themes:AbstractSkeletonTheme TargetType="atom:SkeletonImage" />
+    </ControlTheme.BasedOn>
+    
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:AbstractSkeleton">
+            <Panel Name="{x:Static atom:AbstractSkeletonThemeConstants.RootLayoutPart}">
+                <Border Name="{x:Static atom:AbstractSkeletonThemeConstants.ActiveAnimationLayerPart}"
+                        Background="{TemplateBinding AnimationLayerFill}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        IsVisible="{TemplateBinding IsActive}" />
+                <Border Name="{x:Static atom:AbstractSkeletonThemeConstants.ContentLayerPart}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <atom:Icon Name="Image"
+                               IconInfo="{atom:IconInfoProvider Kind=ImageFilled}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               NormalFilledBrush="#bfbfbf" />
+                </Border>
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+    
+    <Style Selector="^:is(atom|SkeletonImage)">
+        <Setter Property="Height" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ImageContainerSize}}" />
+        <Setter Property="Width" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ImageContainerSize}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ImageContainerMaxSize}}" />
+        <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ImageContainerMaxSize}}" />
+    
+        <Style Selector="^ /template/ atom|Icon#Image">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ImageSize}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.ImageSize}}" />
+        </Style>
+    </Style>
+</ControlTheme>
