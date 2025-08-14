@@ -11,10 +11,10 @@ public class SkeletonNode : SkeletonImage
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> ContentProperty = 
-        ContentControl.ContentProperty.AddOwner<ContentPresenter>();
+        ContentControl.ContentProperty.AddOwner<SkeletonNode>();
     
     public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = 
-        ContentControl.ContentTemplateProperty.AddOwner<ContentPresenter>();
+        ContentControl.ContentTemplateProperty.AddOwner<SkeletonNode>();
     
     [Content]
     [DependsOn("ContentTemplate")]

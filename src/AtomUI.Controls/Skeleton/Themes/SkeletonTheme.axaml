@@ -10,30 +10,35 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel LastChildFill="True">
-                    <atom:SkeletonAvatar DockPanel.Dock="Left"
-                                         Name="{x:Static atom:SkeletonThemeConstants.AvatarPart}"
-                                         SizeType="{TemplateBinding AvatarSizeType}"
-                                         Shape="{TemplateBinding AvatarShape}"
-                                         Size="{TemplateBinding AvatarSize}"
-                                         IsVisible="{TemplateBinding IsShowAvatar}"
-                                         IsActive="{TemplateBinding IsActive}"/>
-                    <StackPanel Orientation="Vertical" 
-                                Name="{x:Static atom:SkeletonThemeConstants.ContentPart}">
-                        <atom:SkeletonTitle Name="{x:Static atom:SkeletonThemeConstants.TitlePart}"
-                                            IsVisible="{TemplateBinding IsShowTitle}"
-                                            IsRound="{TemplateBinding IsRound}"
-                                            LineWidth="{TemplateBinding TitleWidth}"
-                                            IsActive="{TemplateBinding IsActive}"/>
-                        <atom:SkeletonParagraph Name="{x:Static atom:SkeletonThemeConstants.ParagraphPart}"
-                                                IsVisible="{TemplateBinding IsShowParagraph}"
+                <Panel>
+                    <DockPanel LastChildFill="True" IsVisible="{TemplateBinding IsContentVisible, Converter={x:Static BoolConverters.Not}}">
+                        <atom:SkeletonAvatar DockPanel.Dock="Left"
+                                             Name="{x:Static atom:SkeletonThemeConstants.AvatarPart}"
+                                             SizeType="{TemplateBinding AvatarSizeType}"
+                                             Shape="{TemplateBinding AvatarShape}"
+                                             Size="{TemplateBinding AvatarSize}"
+                                             IsVisible="{TemplateBinding IsShowAvatar}"
+                                             IsActive="{TemplateBinding IsActive}"/>
+                        <StackPanel Orientation="Vertical" 
+                                    Name="{x:Static atom:SkeletonThemeConstants.ContentPart}">
+                            <atom:SkeletonTitle Name="{x:Static atom:SkeletonThemeConstants.TitlePart}"
+                                                IsVisible="{TemplateBinding IsShowTitle}"
                                                 IsRound="{TemplateBinding IsRound}"
-                                                Rows="{TemplateBinding ParagraphRows}"
-                                                LastLineWidth="{TemplateBinding ParagraphLastLineWidth}"
-                                                LineWidths="{TemplateBinding ParagraphLineWidths}"
+                                                LineWidth="{TemplateBinding TitleWidth}"
                                                 IsActive="{TemplateBinding IsActive}"/>
-                    </StackPanel>
-                </DockPanel>
+                            <atom:SkeletonParagraph Name="{x:Static atom:SkeletonThemeConstants.ParagraphPart}"
+                                                    IsVisible="{TemplateBinding IsShowParagraph}"
+                                                    IsRound="{TemplateBinding IsRound}"
+                                                    Rows="{TemplateBinding ParagraphRows}"
+                                                    LastLineWidth="{TemplateBinding ParagraphLastLineWidth}"
+                                                    LineWidths="{TemplateBinding ParagraphLineWidths}"
+                                                    IsActive="{TemplateBinding IsActive}"/>
+                        </StackPanel>
+                    </DockPanel>
+                    <ContentPresenter IsVisible="{TemplateBinding IsContentVisible}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                </Panel>
             </ControlTemplate>
         </Setter>
         

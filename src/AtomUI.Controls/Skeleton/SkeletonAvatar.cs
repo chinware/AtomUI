@@ -47,7 +47,6 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
             o => o.IsCustomSize,
             (o, v) => o.IsCustomSize = v);
     
-    
     private bool _isCustomSize;
 
     internal bool IsCustomSize

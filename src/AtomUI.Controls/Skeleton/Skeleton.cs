@@ -4,7 +4,10 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -47,6 +50,12 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
     
     public static readonly StyledProperty<double> AvatarSizeProperty =
         AvaloniaProperty.Register<Skeleton, double>(nameof(AvatarSizeType), Double.NaN);
+    
+    public static readonly StyledProperty<object?> ContentProperty = 
+        ContentControl.ContentProperty.AddOwner<Skeleton>();
+    
+    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = 
+        ContentControl.ContentTemplateProperty.AddOwner<Skeleton>();
     
     public bool IsLoading
     {
@@ -119,9 +128,37 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
         get => GetValue(AvatarSizeProperty);
         set => SetValue(AvatarSizeProperty, value);
     }
+    
+    [Content]
+    [DependsOn("ContentTemplate")]
+    public object? Content
+    {
+        get => GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
+    }
+    
+    public IDataTemplate? ContentTemplate
+    {
+        get => GetValue(ContentTemplateProperty);
+        set => SetValue(ContentTemplateProperty, value);
+    }
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<Skeleton, bool> IsContentVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Skeleton, bool>(
+            nameof(IsContentVisible),
+            o => o.IsContentVisible,
+            (o, v) => o.IsContentVisible = v);
+    
+    private bool _isContentVisible;
+
+    internal bool IsContentVisible
+    {
+        get => _isContentVisible;
+        set => SetAndRaise(IsContentVisibleProperty, ref _isContentVisible, value);
+    }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SkeletonToken.ID;
@@ -155,6 +192,17 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
         if (IsActive)
         {
             StartActiveAnimation();
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsLoadingProperty || 
+            change.Property == ContentProperty || 
+            change.Property == ContentTemplateProperty)
+        {
+            IsContentVisible = !IsLoading && (Content != null || ContentTemplate != null);
         }
     }
 }
