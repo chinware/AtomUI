@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -14,8 +13,8 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<AvatarShape> ShapeProperty =
         AvaloniaProperty.Register<SkeletonAvatar, AvatarShape>(nameof(AvatarShape), AvatarShape.Circle);
     
-    public static readonly StyledProperty<AvatarSizeType> SizeTypeProperty =
-        Avatar.SizeTypeProperty.AddOwner<SkeletonAvatar>();
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SkeletonAvatar>();
     
     public static readonly StyledProperty<double> SizeProperty =
         AvaloniaProperty.Register<SkeletonAvatar, double>(nameof(Size), Double.NaN);
@@ -26,7 +25,7 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
         set => SetValue(ShapeProperty, value);
     }
     
-    public AvatarSizeType SizeType
+    public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -41,13 +40,26 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
     #endregion
     
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<SkeletonAvatar, bool> IsCustomSizeProperty =
+        AvaloniaProperty.RegisterDirect<SkeletonAvatar, bool>(
+            nameof(IsCustomSize),
+            o => o.IsCustomSize,
+            (o, v) => o.IsCustomSize = v);
+    
+    
+    private bool _isCustomSize;
+
+    internal bool IsCustomSize
+    {
+        get => _isCustomSize;
+        set => SetAndRaise(IsCustomSizeProperty, ref _isCustomSize, value);
+    }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SkeletonToken.ID;
 
     #endregion
-    
-    private AvatarSizeType? _originSizeType;
     
     public SkeletonAvatar()
     {
@@ -57,24 +69,10 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == SizeProperty)
-        {
-            if (!double.IsNaN(Size))
-            {
-                _originSizeType = SizeType;
-                SizeType        = AvatarSizeType.Custom;
-            }
-            else
-            {
-                if (_originSizeType.HasValue)
-                {
-                    SizeType = _originSizeType.Value;
-                }
-            }
-        }
-        else if (change.Property == SizeTypeProperty)
+        if (change.Property == SizeTypeProperty || change.Property == SizeProperty)
         {
             ConfigureSize();
+            IsCustomSize = !double.IsNaN(Size);
         }
         else if (change.Property == ShapeProperty)
         {
@@ -92,9 +90,8 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
     
     private void ConfigureSize()
     {
-        if (SizeType == AvatarSizeType.Custom)
+        if (!double.IsNaN(Size))
         {
-            Debug.Assert(!double.IsNaN(Size));
             // 不影响模板设置
             SetValue(WidthProperty, Size, BindingPriority.Template);
             SetValue(HeightProperty, Size, BindingPriority.Template);

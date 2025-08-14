@@ -1,0 +1,17 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SkeletonButton}" TargetType="atom:SkeletonButton">
+        <ControlTheme.BasedOn>
+            <themes:SkeletonElementTheme TargetType="atom:SkeletonButton" />
+        </ControlTheme.BasedOn>
+        
+        <Style Selector="^[Shape=Square]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

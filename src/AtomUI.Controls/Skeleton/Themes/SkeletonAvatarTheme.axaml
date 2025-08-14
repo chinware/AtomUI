@@ -2,27 +2,13 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SkeletonAvatar}" TargetType="atom:SkeletonAvatar">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Panel>
-                    <Border Name="{x:Static atom:SkeletonThemeConstants.ActiveAnimationLayerPart}"
-                            Background="{TemplateBinding AnimationLayerFill}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            IsVisible="{TemplateBinding IsActive}"/>
-                    <Border Name="Avatar"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            IsVisible="{TemplateBinding IsActive, Converter={x:Static BoolConverters.Not}}"/>
-                </Panel>
-            </ControlTemplate>
-        </Setter>
+        <ControlTheme.BasedOn>
+            <themes:AbstractSkeletonTheme TargetType="atom:SkeletonAvatar" />
+        </ControlTheme.BasedOn>
         
-        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingMotionDuration}}"/>
-        <Setter Property="LoadingBackgroundStart" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundStart}}"/>
-        <Setter Property="LoadingBackgroundMiddle" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundMiddle}}"/>
-        <Setter Property="LoadingBackgroundEnd" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundEnd}}"/>
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.GradientFromColor}}" />
@@ -55,7 +41,7 @@
                 <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
             </Style>
             
-            <Style Selector="^[SizeType=Custom]">
+            <Style Selector="^[IsCustomSize=True]">
                 <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
             </Style>
         </Style>
