@@ -1,10 +1,16 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    x:ClassModifier="internal">
+                    x:ClassModifier="internal"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:themes="using:AtomUI.Controls.Themes">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="SkeletonTheme.axaml" />
         <ResourceInclude Source="SkeletonLineTheme.axaml" />
         <ResourceInclude Source="SkeletonAvatarTheme.axaml" />
         <ResourceInclude Source="SkeletonParagraphTheme.axaml" />
+        <ResourceInclude Source="SkeletonButtonTheme.axaml" />
+        <ResourceInclude Source="SkeletonInputTheme.axaml" />
+        <ResourceInclude Source="SkeletonNodeTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
+    <themes:SkeletonImageTheme x:Key="{x:Type atom:SkeletonImage}" TargetType="atom:SkeletonImage"/>
 </ResourceDictionary>

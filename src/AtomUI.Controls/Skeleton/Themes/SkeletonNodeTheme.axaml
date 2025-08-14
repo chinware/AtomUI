@@ -1,0 +1,33 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SkeletonNode}" TargetType="atom:SkeletonNode">
+        <ControlTheme.BasedOn>
+            <themes:SkeletonImageTheme TargetType="atom:SkeletonNode" />
+        </ControlTheme.BasedOn>
+        
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:SkeletonNode">
+                <Panel Name="{x:Static atom:AbstractSkeletonThemeConstants.RootLayoutPart}">
+                    <Border Name="{x:Static atom:AbstractSkeletonThemeConstants.ActiveAnimationLayerPart}"
+                            Background="{TemplateBinding AnimationLayerFill}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            IsVisible="{TemplateBinding IsActive}" />
+                    <Border Name="{x:Static atom:AbstractSkeletonThemeConstants.ContentLayerPart}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Name="ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+    </ControlTheme>
+</ResourceDictionary>

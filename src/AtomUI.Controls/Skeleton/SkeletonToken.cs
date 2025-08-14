@@ -65,6 +65,10 @@ internal class SkeletonToken : AbstractControlDesignToken
     public IBrush? LoadingBackgroundStart { get; set; }
     public IBrush? LoadingBackgroundMiddle { get; set; }
     public IBrush? LoadingBackgroundEnd { get; set; }
+    
+    public double ImageSize { get; set; }
+    public double ImageContainerSize {  get; set; }
+    public double ImageContainerMaxSize { get; set; }
 
     public SkeletonToken()
         : base(ID)
@@ -118,5 +122,10 @@ internal class SkeletonToken : AbstractControlDesignToken
                 new GradientStop { Offset = 1.0, Color = GradientFromColor }
             }
         };
+
+        var imageSizeBase = SharedToken.ControlHeight * 1.5;
+        ImageSize             = imageSizeBase;
+        ImageContainerSize    = imageSizeBase * 2;
+        ImageContainerMaxSize = imageSizeBase * 4;
     }
 }

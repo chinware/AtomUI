@@ -1,0 +1,33 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Templates;
+using Avalonia.Metadata;
+
+namespace AtomUI.Controls;
+
+public class SkeletonNode : SkeletonImage
+{
+    #region 公共属性定义
+
+    public static readonly StyledProperty<object?> ContentProperty = 
+        ContentControl.ContentProperty.AddOwner<ContentPresenter>();
+    
+    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = 
+        ContentControl.ContentTemplateProperty.AddOwner<ContentPresenter>();
+    
+    [Content]
+    [DependsOn("ContentTemplate")]
+    public object? Content
+    {
+        get => GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
+    }
+    
+    public IDataTemplate? ContentTemplate
+    {
+        get => GetValue(ContentTemplateProperty);
+        set => SetValue(ContentTemplateProperty, value);
+    }
+    #endregion
+}

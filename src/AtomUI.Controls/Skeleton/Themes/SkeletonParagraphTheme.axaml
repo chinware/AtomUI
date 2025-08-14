@@ -2,8 +2,13 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SkeletonParagraph}" TargetType="atom:SkeletonParagraph">
+        <ControlTheme.BasedOn>
+            <themes:AbstractSkeletonTheme TargetType="atom:SkeletonParagraph" />
+        </ControlTheme.BasedOn>
+        
         <Setter Property="Template">
             <ControlTemplate>
                 <StackPanel Orientation="Vertical" Name="{x:Static atom:SkeletonParagraphThemeConstants.LineLayoutPart}"/>
@@ -14,9 +19,5 @@
             <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightXS}}"/>
         </Style>
         
-        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingMotionDuration}}"/>
-        <Setter Property="LoadingBackgroundStart" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundStart}}"/>
-        <Setter Property="LoadingBackgroundMiddle" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundMiddle}}"/>
-        <Setter Property="LoadingBackgroundEnd" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundEnd}}"/>
     </ControlTheme>
 </ResourceDictionary>

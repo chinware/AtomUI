@@ -31,7 +31,7 @@ public class SkeletonLine : AbstractSkeleton
 
     protected override Type StyleKeyOverride { get; } = typeof(SkeletonLine);
 
-    private Border? _frame;
+    private Panel? _rootLayout;
 
     protected override Size MeasureOverride(Size availableSize)
     {
@@ -53,9 +53,9 @@ public class SkeletonLine : AbstractSkeleton
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
-        if (_frame != null)
+        if (_rootLayout != null)
         {
-            _frame.Arrange(new Rect(0, 0, DesiredSize.Width, DesiredSize.Height));
+            _rootLayout.Arrange(new Rect(0, 0, DesiredSize.Width, DesiredSize.Height));
         }
         return size;
     }
@@ -63,7 +63,7 @@ public class SkeletonLine : AbstractSkeleton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _frame               = e.NameScope.Find<Border>(SkeletonLineThemeConstants.LineFramePart);
+        _rootLayout               = e.NameScope.Find<Panel>(AbstractSkeletonThemeConstants.RootLayoutPart);
         if (!IsFollowMode)
         {
             if (IsActive)
