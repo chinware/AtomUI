@@ -665,6 +665,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey BlockRadius = new TokenResourceKey("Skeleton.BlockRadius");
         public static readonly TokenResourceKey GradientFromColor = new TokenResourceKey("Skeleton.GradientFromColor");
         public static readonly TokenResourceKey GradientToColor = new TokenResourceKey("Skeleton.GradientToColor");
+        public static readonly TokenResourceKey ImageContainerMaxSize = new TokenResourceKey("Skeleton.ImageContainerMaxSize");
+        public static readonly TokenResourceKey ImageContainerSize = new TokenResourceKey("Skeleton.ImageContainerSize");
+        public static readonly TokenResourceKey ImageSize = new TokenResourceKey("Skeleton.ImageSize");
         public static readonly TokenResourceKey LoadingBackgroundEnd = new TokenResourceKey("Skeleton.LoadingBackgroundEnd");
         public static readonly TokenResourceKey LoadingBackgroundMiddle = new TokenResourceKey("Skeleton.LoadingBackgroundMiddle");
         public static readonly TokenResourceKey LoadingBackgroundStart = new TokenResourceKey("Skeleton.LoadingBackgroundStart");

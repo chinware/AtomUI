@@ -1,0 +1,37 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:Class="AtomUI.Controls.Themes.SkeletonElementTheme"
+    TargetType="atom:SkeletonElement"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <themes:AbstractSkeletonTheme TargetType="atom:SkeletonElement" />
+    </ControlTheme.BasedOn>
+    
+    <Style Selector="^:is(atom|SkeletonElement)">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Style Selector="^[IsBlock=True]">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+            <Setter Property="VerticalAlignment" Value="Top" />
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+        </Style>
+        
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}"/>
+    </Style>
+    
+</ControlTheme>
