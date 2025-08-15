@@ -599,10 +599,6 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         Debug.Assert(_ghostContentPresenter != null);
         Debug.Assert(MotionActor != null);
         var popupPresenter = _popupHost?.Presenter;
-        if (_arrowIndicatorLayout != null)
-        {
-            _arrowIndicatorLayout.IsVisible = false;
-        }
         if (_popupArrowDecoratedBox != null)
         {
             _popupArrowDecoratedBox.SetArrowOpacity(1.0);

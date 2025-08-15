@@ -128,6 +128,14 @@ public class RangeDatePicker : RangeInfoPickerInput,
         var flyout = new RangeDatePickerFlyout();
         flyout.IsDetectMouseClickEnabled = false;
         BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, RangeDatePickerFlyout.IsMotionEnabledProperty);
+        
+        BindUtils.RelayBind(this, RangeStartSelectedDateProperty, flyout, RangeDatePickerFlyout.SelectedDateTimeProperty);
+        BindUtils.RelayBind(this, RangeEndSelectedDateProperty, flyout, RangeDatePickerFlyout.SecondarySelectedDateTimeProperty);
+        BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, RangeDatePickerFlyout.ClockIdentifierProperty);
+        BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, RangeDatePickerFlyout.IsNeedConfirmProperty);
+        BindUtils.RelayBind(this, IsShowNowProperty, flyout, RangeDatePickerFlyout.IsShowNowProperty);
+        BindUtils.RelayBind(this, IsShowTimeProperty, flyout, RangeDatePickerFlyout.IsShowTimeProperty);
+        
         return flyout;
     }
     
@@ -147,30 +155,11 @@ public class RangeDatePicker : RangeInfoPickerInput,
     
     protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
-        if (flyoutPresenter is RangeDatePickerFlyoutPresenter rangeDatePickerFlyoutPresenter)
+        if (PickerFlyout is RangeDatePickerFlyout datePickerFlyout)
         {
-            BindUtils.RelayBind(this, IsShowTimeProperty, rangeDatePickerFlyoutPresenter, RangeDatePickerFlyoutPresenter.IsShowTimeProperty);
-            rangeDatePickerFlyoutPresenter.AttachedToVisualTree += (sender, args) =>
-            {
-                _pickerPresenter = rangeDatePickerFlyoutPresenter.DatePickerPresenter;
-                ConfigurePickerPresenter(_pickerPresenter);
-            };
+            _pickerPresenter = datePickerFlyout.DatePickerPresenter as RangeDatePickerPresenter;
+            _pickerPresenter?.NotifyRepairReverseRange(true);
         }
-    }
-    
-    private void ConfigurePickerPresenter(RangeDatePickerPresenter? presenter)
-    {
-        if (presenter is null)
-        {
-            return;
-        }
-        presenter.NotifyRepairReverseRange(true);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, RangeDatePickerPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, RangeStartSelectedDateProperty, presenter, RangeDatePickerPresenter.SelectedDateTimeProperty);
-        BindUtils.RelayBind(this, RangeEndSelectedDateProperty, presenter, RangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, RangeDatePickerPresenter.ClockIdentifierProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, RangeDatePickerPresenter.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, presenter, RangeDatePickerPresenter.IsShowNowProperty);
     }
     
     protected override void NotifyFlyoutOpened()
@@ -193,7 +182,6 @@ public class RangeDatePicker : RangeInfoPickerInput,
             {
                 _pickerPresenter.NotifySelectRangeStart(false);
             }
-
         }
     }
     
@@ -214,7 +202,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
 
     private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
     {
-        _isChoosing = args.IsChoosing;
+        IsChoosing = args.IsChoosing;
         UpdatePseudoClasses();
         if (!args.IsChoosing)
         {
@@ -428,7 +416,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             if (RangeEndSelectedDate is null)
             {
-                _infoInputBox?.Clear();
+                InfoInputBox?.Clear();
             }
             _pickerPresenter?.NotifySelectRangeStart(true);
         }
@@ -436,7 +424,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             if (RangeStartSelectedDate is null)
             {
-                _secondaryInfoInputBox?.Clear();
+                SecondaryInfoInputBox?.Clear();
             }
             _pickerPresenter?.NotifySelectRangeStart(false);
         }
@@ -444,12 +432,12 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             if (RangeStartSelectedDate is null)
             {
-                _infoInputBox?.Clear();
+                InfoInputBox?.Clear();
             }
     
             if (RangeEndSelectedDate is null)
             {
-                _secondaryInfoInputBox?.Clear();
+                SecondaryInfoInputBox?.Clear();
             }
         }
     }
@@ -464,19 +452,19 @@ public class RangeDatePicker : RangeInfoPickerInput,
         var size   = base.MeasureOverride(availableSize);
         var width  = size.Width;
         var height = size.Height;
-        if (_pickerInnerBox is not null)
+        if (PickerInnerBox is not null)
         {
             var preferredWidth = 0d;
-            if (_pickerInnerBox.RightAddOnContent is Control rightAddOnContent)
+            if (PickerInnerBox.RightAddOnContent is Control rightAddOnContent)
             {
                 preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
-                                  _pickerInnerBox.EffectiveInnerBoxPadding.Left +
-                                  _pickerInnerBox.EffectiveInnerBoxPadding.Right;
+                                  PickerInnerBox.EffectiveInnerBoxPadding.Left +
+                                  PickerInnerBox.EffectiveInnerBoxPadding.Right;
             }
 
-            if (_rangePickerArrow is not null)
+            if (RangePickerArrow is not null)
             {
-                preferredWidth += _rangePickerArrow.DesiredSize.Width;
+                preferredWidth += RangePickerArrow.DesiredSize.Width;
             }
 
             preferredWidth += PreferredWidth;

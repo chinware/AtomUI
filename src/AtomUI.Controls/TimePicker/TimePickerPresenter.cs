@@ -14,8 +14,7 @@ using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
-internal class TimePickerPresenter : PickerPresenterBase,
-                                     IResourceBindingManager
+internal class TimePickerPresenter : PickerPresenterBase, IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -280,6 +279,10 @@ internal class TimePickerPresenter : PickerPresenterBase,
     private void HandleTimeViewTempTimeSelected(object? sender, TimeSelectedEventArgs args)
     {
         TempSelectedTime = args.Time;
+        if (!IsNeedConfirm)
+        {
+            SelectedTime = TempSelectedTime;
+        }
     }
 
     protected override void OnConfirmed()

@@ -75,23 +75,23 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         AffectsArrange<RangeInfoPickerInput>(PickerIndicatorOffsetXProperty, PickerIndicatorOffsetYProperty);
     }
     
-    private protected Rectangle? _rangePickerIndicator;
-    private protected Icon? _rangePickerArrow;
-    private protected TextBox? _secondaryInfoInputBox;
+    private protected Rectangle? RangePickerIndicator;
+    private protected Icon? RangePickerArrow;
+    private protected TextBox? SecondaryInfoInputBox;
     private TopLevel? _topLevel;
 
     public override void Clear()
     {
-        _infoInputBox?.Clear();
-        _secondaryInfoInputBox?.Clear();
+        InfoInputBox?.Clear();
+        SecondaryInfoInputBox?.Clear();
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _secondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
-        _rangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
-        _rangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
+        SecondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
+        RangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
+        RangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
         
         ConfigureTransitions();
     }
@@ -106,9 +106,9 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     {
         if (IsMotionEnabled)
         {
-            if (_rangePickerIndicator != null)
+            if (RangePickerIndicator != null)
             {
-                _rangePickerIndicator.Transitions ??= new Transitions
+                RangePickerIndicator.Transitions ??= new Transitions
                 {
                     TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
                     TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty)
@@ -122,9 +122,9 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         }
         else
         {
-            if (_rangePickerIndicator != null)
+            if (RangePickerIndicator != null)
             {
-                _rangePickerIndicator.Transitions = null;
+                RangePickerIndicator.Transitions = null;
             }
 
             Transitions = null;
@@ -155,19 +155,19 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     
     private bool IsPointerInInfoInputBox(Point position)
     {
-        if (_infoInputBox is null || _topLevel is null)
+        if (InfoInputBox is null || _topLevel is null)
         {
             return false;
         }
 
-        var pos = _infoInputBox.TranslatePoint(new Point(0, 0), _topLevel);
+        var pos = InfoInputBox.TranslatePoint(new Point(0, 0), _topLevel);
         if (!pos.HasValue)
         {
             return false;
         }
 
-        var targetWidth  = _infoInputBox.Bounds.Width;
-        var targetHeight = _infoInputBox.Bounds.Height;
+        var targetWidth  = InfoInputBox.Bounds.Width;
+        var targetHeight = InfoInputBox.Bounds.Height;
         var startOffsetX = pos.Value.X;
         var endOffsetX   = startOffsetX + targetWidth;
         var offsetY      = pos.Value.Y;
@@ -192,19 +192,19 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
 
     private bool IsPointerInSecondaryTextBox(Point position)
     {
-        if (_secondaryInfoInputBox is null || _topLevel is null)
+        if (SecondaryInfoInputBox is null || _topLevel is null)
         {
             return false;
         }
 
-        var pos = _secondaryInfoInputBox.TranslatePoint(new Point(0, 0), _topLevel);
+        var pos = SecondaryInfoInputBox.TranslatePoint(new Point(0, 0), _topLevel);
         if (!pos.HasValue)
         {
             return false;
         }
 
-        var targetWidth  = _secondaryInfoInputBox.Bounds.Width;
-        var targetHeight = _secondaryInfoInputBox.Bounds.Height;
+        var targetWidth  = SecondaryInfoInputBox.Bounds.Width;
+        var targetHeight = SecondaryInfoInputBox.Bounds.Height;
         var startOffsetX = pos.Value.X;
         var endOffsetX   = startOffsetX + targetWidth;
         var offsetY      = pos.Value.Y;
@@ -269,12 +269,12 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var borderThickness = _decoratedBox?.BorderThickness ?? default;
+        var borderThickness = DecoratedBox?.BorderThickness ?? default;
         var size            = base.ArrangeOverride(finalSize).Inflate(borderThickness);
-        if (_rangePickerIndicator is not null)
+        if (RangePickerIndicator is not null)
         {
-            Canvas.SetLeft(_rangePickerIndicator, PickerIndicatorOffsetX);
-            Canvas.SetTop(_rangePickerIndicator, PickerIndicatorOffsetY);
+            Canvas.SetLeft(RangePickerIndicator, PickerIndicatorOffsetX);
+            Canvas.SetTop(RangePickerIndicator, PickerIndicatorOffsetY);
         }
 
         return size;
@@ -283,16 +283,16 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);
-        if (_decoratedBox is not null)
+        if (DecoratedBox is not null)
         {
-            PickerIndicatorOffsetY = _decoratedBox.DesiredSize.Height - _rangePickerIndicator!.Height;
+            PickerIndicatorOffsetY = DecoratedBox.DesiredSize.Height - RangePickerIndicator!.Height;
         }
     
         if (double.IsNaN(PickerIndicatorOffsetX))
         {
             if (_rangeActivatedPart == RangeActivatedPart.None)
             {
-                var offset = _infoInputBox!.TranslatePoint(new Point(0, 0), this) ?? default;
+                var offset = InfoInputBox!.TranslatePoint(new Point(0, 0), this) ?? default;
                 PickerIndicatorOffsetX = offset.X;
             }
         }
@@ -321,30 +321,30 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     
     protected void SetupPickerIndicatorPosition()
     {
-        if (_rangePickerIndicator is null ||
-            _decoratedBox is null ||
-            _infoInputBox is null ||
-            _secondaryInfoInputBox is null)
+        if (RangePickerIndicator is null ||
+            DecoratedBox is null ||
+            InfoInputBox is null ||
+            SecondaryInfoInputBox is null)
         {
             return;
         }
         
         if (_rangeActivatedPart == RangeActivatedPart.None)
         {
-            _rangePickerIndicator.Opacity = 0;
+            RangePickerIndicator.Opacity = 0;
         }
         else if (_rangeActivatedPart == RangeActivatedPart.Start)
         {
-            _rangePickerIndicator.Opacity = 1;
-            _rangePickerIndicator.Width   = _infoInputBox.Bounds.Width;
-            var offset = _infoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
+            RangePickerIndicator.Opacity = 1;
+            RangePickerIndicator.Width   = InfoInputBox.Bounds.Width;
+            var offset = InfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
             PickerIndicatorOffsetX = offset.X;
         }
         else if (_rangeActivatedPart == RangeActivatedPart.End)
         {
-            _rangePickerIndicator.Opacity = 1;
-            _rangePickerIndicator.Width   = _secondaryInfoInputBox.Bounds.Width;
-            var offset = _secondaryInfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
+            RangePickerIndicator.Opacity = 1;
+            RangePickerIndicator.Width   = SecondaryInfoInputBox.Bounds.Width;
+            var offset = SecondaryInfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
             PickerIndicatorOffsetX = offset.X;
         }
     }
