@@ -90,7 +90,6 @@ namespace AtomUI.Theme.Styling
 
     public static class BreadcrumbTokenKey
     {
-        public static readonly TokenResourceKey BreadcrumbItemContentMargin = new TokenResourceKey("Breadcrumb.BreadcrumbItemContentMargin");
         public static readonly TokenResourceKey BreadcrumbItemContentPadding = new TokenResourceKey("Breadcrumb.BreadcrumbItemContentPadding");
         public static readonly TokenResourceKey IconSize = new TokenResourceKey("Breadcrumb.IconSize");
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("Breadcrumb.ItemColor");
@@ -98,21 +97,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey LinkColor = new TokenResourceKey("Breadcrumb.LinkColor");
         public static readonly TokenResourceKey LinkHoverBgColor = new TokenResourceKey("Breadcrumb.LinkHoverBgColor");
         public static readonly TokenResourceKey LinkHoverColor = new TokenResourceKey("Breadcrumb.LinkHoverColor");
-        public static readonly TokenResourceKey PrevLinkColor = new TokenResourceKey("Breadcrumb.PrevLinkColor");
         public static readonly TokenResourceKey SeparatorColor = new TokenResourceKey("Breadcrumb.SeparatorColor");
         public static readonly TokenResourceKey SeparatorMargin = new TokenResourceKey("Breadcrumb.SeparatorMargin");
-    }
-
-    public static class ButtonSpinnerTokenKey
-    {
-        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth");
-        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg");
-        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg");
-        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg");
-        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor");
-        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor");
-        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize");
-        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth");
     }
 
     public static class ButtonTokenKey
