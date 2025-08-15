@@ -1,58 +1,54 @@
-﻿using System.Collections;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
+using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
 public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotionAwareControl
 {
     #region 公共属性定义
-
-    public static readonly StyledProperty<IEnumerable?> ParamsProperty =
-        AvaloniaProperty.Register<Breadcrumb, IEnumerable?>(
-            nameof(Params));
-
-    public static readonly StyledProperty<double> IconSizeProperty =
-        AvaloniaProperty.Register<Breadcrumb, double>(nameof(IconSize), defaultValue: 16);
-
-    public static readonly StyledProperty<string?> SeparatorProperty =
-        AvaloniaProperty.Register<Breadcrumb, string?>(
+    public static readonly StyledProperty<object?> SeparatorProperty =
+        AvaloniaProperty.Register<Breadcrumb, object?>(
             nameof(Separator),
             defaultValue: "/"
         );
+    
+    public static readonly StyledProperty<IDataTemplate?> SeparatorTemplateProperty =
+        AvaloniaProperty.Register<Breadcrumb, IDataTemplate?>(nameof (SeparatorTemplate));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Breadcrumb>();
 
-    public IEnumerable? Params
-    {
-        get => GetValue(ParamsProperty);
-        set => SetValue(ParamsProperty, value);
-    }
-
-    public double IconSize
-    {
-        get => GetValue(IconSizeProperty);
-        set => SetValue(IconSizeProperty, value);
-    }
-
-    public string? Separator
+    [DependsOn("ContentTemplate")]
+    public object? Separator
     {
         get => GetValue(SeparatorProperty);
         set => SetValue(SeparatorProperty, value);
     }
-
+    
+    public IDataTemplate? SeparatorTemplate
+    {
+        get => GetValue(SeparatorTemplateProperty);
+        set => SetValue(SeparatorTemplateProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+
+    #endregion
+
+    #region 公共事件定义
+
+    public event EventHandler<BreadcrumbNavigateEventArgs>? NavigateRequest;
 
     #endregion
 
@@ -62,41 +58,50 @@ public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotio
 
     public Breadcrumb()
     {
-        Items.CollectionChanged += OnItemsCollectionChanged;
+        Items.CollectionChanged += HandleItemsCollectionChanged;
         this.RegisterResources();
-        this.BindMotionProperties();
     }
 
-    private void OnItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        // parse a property from axaml is async in Avalonia. So use Dispatcher.UIThread to make sure object property has a value 
-        Dispatcher.UIThread.Post(() =>
+        if (Items.Count > 0)
         {
-            this._processChildItems();
-        }, DispatcherPriority.Background);
-    }
-
-    private void _processChildItems()
-    {
-        if (Items != null && Items.Count > 0)
-        {
-            var lastChildItem = Items[Items.Count - 1];
-            foreach (var childItem in Items)
+            for (int i = 0; i < ItemCount; i++)
             {
-                if (childItem is BreadcrumbItem breadcrumbItem)
+                var item = Items[i];
+                if (item is BreadcrumbItem breadcrumbItem)
                 {
-                    breadcrumbItem.IsLast             = false;
-                    breadcrumbItem.EffectiveSeparator = ((breadcrumbItem.Separator ?? this.Separator)) ?? "/";
-                    breadcrumbItem.Content = breadcrumbItem.Value != null ? breadcrumbItem.Value.ToString() : breadcrumbItem.Content ;
+                    breadcrumbItem.IsLast = (i == ItemCount - 1);
                 }
             }
-            if (lastChildItem is BreadcrumbItem lastBreadcrumbItem)
-            {
-                lastBreadcrumbItem.IsLast = true;
-                lastBreadcrumbItem.EffectiveSeparator = lastBreadcrumbItem.IsLast
-                    ? string.Empty
-                    : ((lastBreadcrumbItem.Separator ?? this.Separator)) ?? string.Empty;
-            }
         }
+    }
+    
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        var breadcrumbItem = new BreadcrumbItem();
+        // 避免破环 BreadcrumbItem 自行指定的分割符
+        BindUtils.RelayBind(this, SeparatorProperty, breadcrumbItem, BreadcrumbItem.SeparatorProperty, BindingMode.Default, BindingPriority.Template);
+        BindUtils.RelayBind(this, SeparatorTemplateProperty, breadcrumbItem, BreadcrumbItem.SeparatorTemplateProperty, BindingMode.Default, BindingPriority.Template);
+        return breadcrumbItem;
+    }
+
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        return NeedsContainer<BreadcrumbItem>(item, out recycleKey);
+    }
+
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (container is BreadcrumbItem breadcrumbItem)
+        {
+            breadcrumbItem[!BreadcrumbItem.IsMotionEnabledProperty]   = this[!IsMotionEnabledProperty];
+        }
+    }
+
+    internal void NotifyNavigateRequest(BreadcrumbItem breadcrumbItem)
+    {
+        NavigateRequest?.Invoke(this, new BreadcrumbNavigateEventArgs(breadcrumbItem));
     }
 }
