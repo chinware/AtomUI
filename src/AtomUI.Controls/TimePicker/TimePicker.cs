@@ -145,6 +145,10 @@ public class TimePicker : InfoPickerInput, IControlSharedTokenResourcesHost
             _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
             _pickerPresenter.HoverTimeChanged      -= HandleHoverTimeChanged;
             _pickerPresenter.Confirmed             -= HandleConfirmed;
+            if (!IsNeedConfirm)
+            {
+                SelectedTime = _pickerPresenter?.SelectedTime;
+            }
         }
     }
 

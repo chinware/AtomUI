@@ -32,7 +32,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     internal void NotifySelectRangeStart(bool isStart)
     {
-        if (_calendarView is RangeCalendar rangeCalendar)
+        if (CalendarView is RangeCalendar rangeCalendar)
         {
             rangeCalendar.IsSelectRangeStart = isStart;
             SyncTimeViewTimeValue();
@@ -41,7 +41,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     internal void NotifyRepairReverseRange(bool isRepair)
     {
-        if (_calendarView is RangeCalendar rangeCalendar)
+        if (CalendarView is RangeCalendar rangeCalendar)
         {
             rangeCalendar.IsRepairReverseRange = isRepair;
         }
@@ -49,9 +49,9 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     protected override void NotifyTimeViewHoverChanged(TimeSpan? newTime)
     {
-        if (_calendarView is RangeCalendar rangeCalendar)
+        if (CalendarView is RangeCalendar rangeCalendar)
         {
-            DateTime? hoverDateTime = default;
+            DateTime? hoverDateTime;
             if (rangeCalendar.IsSelectRangeStart)
             {
                 hoverDateTime = CollectDateTime(SelectedDateTime, newTime);
@@ -67,16 +67,16 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     protected override void NotifyPointerEnterConfirmButton()
     {
-        if (_calendarView is RangeCalendar rangeCalendar)
+        if (CalendarView is RangeCalendar rangeCalendar)
         {
             DateTime? hoverDateTime = default;
             if (rangeCalendar.IsSelectRangeStart)
             {
-                hoverDateTime = CollectDateTime(SelectedDateTime, TempSelectedTime ?? _timeView?.SelectedTime);
+                hoverDateTime = CollectDateTime(SelectedDateTime, TempSelectedTime ?? TimeView?.SelectedTime);
             }
             else
             {
-                hoverDateTime = CollectDateTime(SecondarySelectedDateTime, TempSelectedTime ?? _timeView?.SelectedTime);
+                hoverDateTime = CollectDateTime(SecondarySelectedDateTime, TempSelectedTime ?? TimeView?.SelectedTime);
             }
 
             EmitHoverDateTimeChanged(hoverDateTime);
@@ -85,18 +85,18 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     protected override void NotifyCalendarViewDateSelected()
     {
-        if (_calendarView is RangeCalendar rangeCalendar)
+        if (CalendarView is RangeCalendar rangeCalendar)
         {
             // 部分确认
             if (rangeCalendar.IsSelectRangeStart)
             {
                 SelectedDateTime =
-                    CollectDateTime(rangeCalendar.SelectedDate, TempSelectedTime ?? _timeView?.SelectedTime);
+                    CollectDateTime(rangeCalendar.SelectedDate, TempSelectedTime ?? TimeView?.SelectedTime);
             }
             else
             {
                 SecondarySelectedDateTime = CollectDateTime(rangeCalendar.SecondarySelectedDate,
-                    TempSelectedTime ?? _timeView?.SelectedTime);
+                    TempSelectedTime ?? TimeView?.SelectedTime);
             }
 
             if (!IsNeedConfirm)
@@ -136,15 +136,15 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     protected override void SyncTimeViewTimeValue()
     {
-        if (_timeView is not null && _calendarView is RangeCalendar rangeCalendar)
+        if (TimeView is not null && CalendarView is RangeCalendar rangeCalendar)
         {
             if (rangeCalendar.IsSelectRangeStart)
             {
-                _timeView.SelectedTime = SelectedDateTime?.TimeOfDay ?? TimeSpan.Zero;
+                TimeView.SelectedTime = SelectedDateTime?.TimeOfDay ?? TimeSpan.Zero;
             }
             else
             {
-                _timeView.SelectedTime = SecondarySelectedDateTime?.TimeOfDay ?? TimeSpan.Zero;
+                TimeView.SelectedTime = SecondarySelectedDateTime?.TimeOfDay ?? TimeSpan.Zero;
             }
         }
     }
@@ -152,7 +152,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     protected override void TimeViewTempTimeSelected(TimeSpan? time)
     {
         base.TimeViewTempTimeSelected(time);
-        if (_calendarView is RangeCalendar rangeCalendar)
+        if (CalendarView is RangeCalendar rangeCalendar)
         {
             // 部分确认
             if (rangeCalendar.IsSelectRangeStart)
@@ -168,20 +168,20 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     protected override void SetupConfirmButtonEnableStatus()
     {
-        if (_confirmButton is null)
+        if (ConfirmButton is null)
         {
             return;
         }
 
-        if (_calendarView is RangeCalendar rangeCalendar)
+        if (CalendarView is RangeCalendar rangeCalendar)
         {
             if (rangeCalendar.IsSelectRangeStart)
             {
-                _confirmButton.IsEnabled = SelectedDateTime is not null;
+                ConfirmButton.IsEnabled = SelectedDateTime is not null;
             }
             else
             {
-                _confirmButton.IsEnabled = SecondarySelectedDateTime is not null;
+                ConfirmButton.IsEnabled = SecondarySelectedDateTime is not null;
             }
         }
     }
