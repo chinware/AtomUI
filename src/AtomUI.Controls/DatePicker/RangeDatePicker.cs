@@ -214,7 +214,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
 
     private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
     {
-        _isChoosing = args.IsChoosing;
+        IsChoosing = args.IsChoosing;
         UpdatePseudoClasses();
         if (!args.IsChoosing)
         {
@@ -428,7 +428,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             if (RangeEndSelectedDate is null)
             {
-                _infoInputBox?.Clear();
+                InfoInputBox?.Clear();
             }
             _pickerPresenter?.NotifySelectRangeStart(true);
         }
@@ -436,7 +436,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             if (RangeStartSelectedDate is null)
             {
-                _secondaryInfoInputBox?.Clear();
+                SecondaryInfoInputBox?.Clear();
             }
             _pickerPresenter?.NotifySelectRangeStart(false);
         }
@@ -444,12 +444,12 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             if (RangeStartSelectedDate is null)
             {
-                _infoInputBox?.Clear();
+                InfoInputBox?.Clear();
             }
     
             if (RangeEndSelectedDate is null)
             {
-                _secondaryInfoInputBox?.Clear();
+                SecondaryInfoInputBox?.Clear();
             }
         }
     }
@@ -464,19 +464,19 @@ public class RangeDatePicker : RangeInfoPickerInput,
         var size   = base.MeasureOverride(availableSize);
         var width  = size.Width;
         var height = size.Height;
-        if (_pickerInnerBox is not null)
+        if (PickerInnerBox is not null)
         {
             var preferredWidth = 0d;
-            if (_pickerInnerBox.RightAddOnContent is Control rightAddOnContent)
+            if (PickerInnerBox.RightAddOnContent is Control rightAddOnContent)
             {
                 preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
-                                  _pickerInnerBox.EffectiveInnerBoxPadding.Left +
-                                  _pickerInnerBox.EffectiveInnerBoxPadding.Right;
+                                  PickerInnerBox.EffectiveInnerBoxPadding.Left +
+                                  PickerInnerBox.EffectiveInnerBoxPadding.Right;
             }
 
-            if (_rangePickerArrow is not null)
+            if (RangePickerArrow is not null)
             {
-                preferredWidth += _rangePickerArrow.DesiredSize.Width;
+                preferredWidth += RangePickerArrow.DesiredSize.Width;
             }
 
             preferredWidth += PreferredWidth;

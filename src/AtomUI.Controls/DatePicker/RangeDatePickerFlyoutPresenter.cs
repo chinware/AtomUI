@@ -50,8 +50,7 @@ internal class RangeDatePickerFlyoutPresenter : FlyoutPresenter
             DatePickerPresenter = new DualMonthRangeDatePickerPresenter();
         }
 
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, DatePickerPresenter,
-            RangeDatePickerPresenter.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, DatePickerPresenter, IsMotionEnabledProperty);
 
         Content = DatePickerPresenter;
     }

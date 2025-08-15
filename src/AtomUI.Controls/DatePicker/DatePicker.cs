@@ -219,7 +219,7 @@ public class DatePicker : InfoPickerInput,
 
     private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
     {
-        _isChoosing = args.IsChoosing;
+        IsChoosing = args.IsChoosing;
         UpdatePseudoClasses();
         if (!args.IsChoosing)
         {

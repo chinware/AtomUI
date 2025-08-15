@@ -107,35 +107,23 @@ public class TimePicker : InfoPickerInput, IControlSharedTokenResourcesHost
 
     protected override Flyout CreatePickerFlyout()
     {
-        return new TimePickerFlyout();
+        var timePickerFlyout = new TimePickerFlyout();
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, timePickerFlyout, TimePickerPresenter.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, MinuteIncrementProperty, timePickerFlyout, TimePickerPresenter.MinuteIncrementProperty);
+        BindUtils.RelayBind(this, SecondIncrementProperty, timePickerFlyout, TimePickerPresenter.SecondIncrementProperty);
+        BindUtils.RelayBind(this, ClockIdentifierProperty, timePickerFlyout, TimePickerPresenter.ClockIdentifierProperty);
+        BindUtils.RelayBind(this, SelectedTimeProperty, timePickerFlyout, TimePickerPresenter.SelectedTimeProperty);
+        BindUtils.RelayBind(this, IsNeedConfirmProperty, timePickerFlyout, TimePickerPresenter.IsNeedConfirmProperty);
+        BindUtils.RelayBind(this, IsShowNowProperty, timePickerFlyout, TimePickerPresenter.IsShowNowProperty);
+        return timePickerFlyout;
     }
 
     protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
-        if (flyoutPresenter is TimePickerFlyoutPresenter timePickerFlyoutPresenter)
+        if (PickerFlyout is TimePickerFlyout timePickerFlyout)
         {
-            timePickerFlyoutPresenter.AttachedToVisualTree += (sender, args) =>
-            {
-                _pickerPresenter = timePickerFlyoutPresenter.TimePickerPresenter;
-                ConfigurePickerPresenter(_pickerPresenter);
-            };
+            _pickerPresenter = timePickerFlyout.TimePickerPresenter;
         }
-    }
-
-    private void ConfigurePickerPresenter(TimePickerPresenter? presenter)
-    {
-        if (presenter is null)
-        {
-            return;
-        }
-
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TimePickerPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, MinuteIncrementProperty, presenter, TimePickerPresenter.MinuteIncrementProperty);
-        BindUtils.RelayBind(this, SecondIncrementProperty, presenter, TimePickerPresenter.SecondIncrementProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, TimePickerPresenter.ClockIdentifierProperty);
-        BindUtils.RelayBind(this, SelectedTimeProperty, presenter, TimePickerPresenter.SelectedTimeProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, TimePickerPresenter.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, presenter, TimePickerPresenter.IsShowNowProperty);
     }
 
     protected override void NotifyFlyoutOpened()
@@ -162,7 +150,7 @@ public class TimePicker : InfoPickerInput, IControlSharedTokenResourcesHost
 
     private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
     {
-        _isChoosing = args.IsChoosing;
+        IsChoosing = args.IsChoosing;
         UpdatePseudoClasses();
         if (!args.IsChoosing)
         {

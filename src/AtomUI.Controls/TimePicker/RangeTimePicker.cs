@@ -163,33 +163,22 @@ public class RangeTimePicker : RangeInfoPickerInput,
     
     protected override Flyout CreatePickerFlyout()
     {
-        return new TimePickerFlyout();
+        var timePickerFlyout = new TimePickerFlyout();
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, timePickerFlyout, TimePickerPresenter.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, MinuteIncrementProperty, timePickerFlyout, TimePickerPresenter.MinuteIncrementProperty);
+        BindUtils.RelayBind(this, SecondIncrementProperty, timePickerFlyout, TimePickerPresenter.SecondIncrementProperty);
+        BindUtils.RelayBind(this, ClockIdentifierProperty, timePickerFlyout, TimePickerPresenter.ClockIdentifierProperty);
+        BindUtils.RelayBind(this, IsNeedConfirmProperty, timePickerFlyout, TimePickerPresenter.IsNeedConfirmProperty);
+        BindUtils.RelayBind(this, IsShowNowProperty, timePickerFlyout, TimePickerPresenter.IsShowNowProperty);
+        return timePickerFlyout;
     }
     
     protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
-        if (flyoutPresenter is TimePickerFlyoutPresenter timePickerFlyoutPresenter)
+        if (PickerFlyout is TimePickerFlyout timePickerFlyout)
         {
-            timePickerFlyoutPresenter.AttachedToVisualTree += (sender, args) =>
-            {
-                _pickerPresenter = timePickerFlyoutPresenter.TimePickerPresenter;
-                ConfigurePickerPresenter(_pickerPresenter);
-            };
+            _pickerPresenter = timePickerFlyout.TimePickerPresenter;
         }
-    }
-    
-    private void ConfigurePickerPresenter(TimePickerPresenter? presenter)
-    {
-        if (presenter is null)
-        {
-            return;
-        }
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TimePickerPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, MinuteIncrementProperty, presenter, TimePickerPresenter.MinuteIncrementProperty);
-        BindUtils.RelayBind(this, SecondIncrementProperty, presenter, TimePickerPresenter.SecondIncrementProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, TimePickerPresenter.ClockIdentifierProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, TimePickerPresenter.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, presenter, TimePickerPresenter.IsShowNowProperty);
     }
 
     protected override void NotifyFlyoutOpened()
@@ -216,7 +205,7 @@ public class RangeTimePicker : RangeInfoPickerInput,
     
     private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
     {
-        _isChoosing = args.IsChoosing;
+        IsChoosing = args.IsChoosing;
         UpdatePseudoClasses();
         if (!args.IsChoosing)
         {
@@ -386,32 +375,32 @@ public class RangeTimePicker : RangeInfoPickerInput,
     
     protected void ResetRangeStartTimeValue()
     {
-        if (_infoInputBox is not null)
+        if (InfoInputBox is not null)
         {
             if (RangeStartDefaultTime is not null)
             {
-                _infoInputBox.Text = DateTimeUtils.FormatTimeSpan(RangeStartDefaultTime.Value,
+                InfoInputBox.Text = DateTimeUtils.FormatTimeSpan(RangeStartDefaultTime.Value,
                     ClockIdentifier == ClockIdentifierType.HourClock12);
             }
             else
             {
-                _infoInputBox.Clear();
+                InfoInputBox.Clear();
             }
         }
     }
     
     protected void ResetRangeEndTimeValue()
     {
-        if (_secondaryInfoInputBox is not null)
+        if (SecondaryInfoInputBox is not null)
         {
             if (RangeEndDefaultTime is not null)
             {
-                _secondaryInfoInputBox.Text = DateTimeUtils.FormatTimeSpan(RangeEndDefaultTime.Value,
+                SecondaryInfoInputBox.Text = DateTimeUtils.FormatTimeSpan(RangeEndDefaultTime.Value,
                     ClockIdentifier == ClockIdentifierType.HourClock12);
             }
             else
             {
-                _secondaryInfoInputBox.Clear();
+                SecondaryInfoInputBox.Clear();
             }
         }
     }
@@ -465,19 +454,19 @@ public class RangeTimePicker : RangeInfoPickerInput,
         var size   = base.MeasureOverride(availableSize);
         var width  = size.Width;
         var height = size.Height;
-        if (_pickerInnerBox is not null)
+        if (PickerInnerBox is not null)
         {
             var preferredWidth = 0d;
-            if (_pickerInnerBox.RightAddOnContent is Control rightAddOnContent)
+            if (PickerInnerBox.RightAddOnContent is Control rightAddOnContent)
             {
                 preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
-                                 _pickerInnerBox.EffectiveInnerBoxPadding.Left +
-                                 _pickerInnerBox.EffectiveInnerBoxPadding.Right;
+                                 PickerInnerBox.EffectiveInnerBoxPadding.Left +
+                                 PickerInnerBox.EffectiveInnerBoxPadding.Right;
             }
 
-            if (_rangePickerArrow is not null)
+            if (RangePickerArrow is not null)
             {
-                preferredWidth += _rangePickerArrow.DesiredSize.Width;
+                preferredWidth += RangePickerArrow.DesiredSize.Width;
             }
 
             preferredWidth += PreferredWidth;
