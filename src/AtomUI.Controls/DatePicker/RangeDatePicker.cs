@@ -128,6 +128,14 @@ public class RangeDatePicker : RangeInfoPickerInput,
         var flyout = new RangeDatePickerFlyout();
         flyout.IsDetectMouseClickEnabled = false;
         BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, RangeDatePickerFlyout.IsMotionEnabledProperty);
+        
+        BindUtils.RelayBind(this, RangeStartSelectedDateProperty, flyout, RangeDatePickerFlyout.SelectedDateTimeProperty);
+        BindUtils.RelayBind(this, RangeEndSelectedDateProperty, flyout, RangeDatePickerFlyout.SecondarySelectedDateTimeProperty);
+        BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, RangeDatePickerFlyout.ClockIdentifierProperty);
+        BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, RangeDatePickerFlyout.IsNeedConfirmProperty);
+        BindUtils.RelayBind(this, IsShowNowProperty, flyout, RangeDatePickerFlyout.IsShowNowProperty);
+        BindUtils.RelayBind(this, IsShowTimeProperty, flyout, RangeDatePickerFlyout.IsShowTimeProperty);
+        
         return flyout;
     }
     
@@ -147,30 +155,11 @@ public class RangeDatePicker : RangeInfoPickerInput,
     
     protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
-        if (flyoutPresenter is RangeDatePickerFlyoutPresenter rangeDatePickerFlyoutPresenter)
+        if (PickerFlyout is RangeDatePickerFlyout datePickerFlyout)
         {
-            BindUtils.RelayBind(this, IsShowTimeProperty, rangeDatePickerFlyoutPresenter, RangeDatePickerFlyoutPresenter.IsShowTimeProperty);
-            rangeDatePickerFlyoutPresenter.AttachedToVisualTree += (sender, args) =>
-            {
-                _pickerPresenter = rangeDatePickerFlyoutPresenter.DatePickerPresenter;
-                ConfigurePickerPresenter(_pickerPresenter);
-            };
+            _pickerPresenter = datePickerFlyout.DatePickerPresenter as RangeDatePickerPresenter;
+            _pickerPresenter?.NotifyRepairReverseRange(true);
         }
-    }
-    
-    private void ConfigurePickerPresenter(RangeDatePickerPresenter? presenter)
-    {
-        if (presenter is null)
-        {
-            return;
-        }
-        presenter.NotifyRepairReverseRange(true);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, RangeDatePickerPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, RangeStartSelectedDateProperty, presenter, RangeDatePickerPresenter.SelectedDateTimeProperty);
-        BindUtils.RelayBind(this, RangeEndSelectedDateProperty, presenter, RangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, RangeDatePickerPresenter.ClockIdentifierProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, RangeDatePickerPresenter.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, presenter, RangeDatePickerPresenter.IsShowNowProperty);
     }
     
     protected override void NotifyFlyoutOpened()
@@ -193,7 +182,6 @@ public class RangeDatePicker : RangeInfoPickerInput,
             {
                 _pickerPresenter.NotifySelectRangeStart(false);
             }
-
         }
     }
     

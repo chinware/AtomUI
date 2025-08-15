@@ -11,9 +11,7 @@
         <ResourceInclude Source="CalendarView/DualMonthRangeCalendarTheme.axaml"/>
         <ResourceInclude Source="CalendarView/DualMonthCalendarItemTheme.axaml"/>
         
-        <ResourceInclude Source="DatePickerFlyoutPresenterTheme.axaml"/>
         <ResourceInclude Source="DualMonthRangeDatePickerPresenterTheme.axaml"/>
-        <ResourceInclude Source="RangeDatePickerFlyoutPresenterTheme.axaml"/>
         <ResourceInclude Source="TimedRangeDatePickerPresenterTheme.axaml"/>
         <ResourceInclude Source="DatePickerTheme.axaml"/>
         <ResourceInclude Source="RangeDatePickerTheme.axaml"/>

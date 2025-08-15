@@ -165,36 +165,24 @@ public class DatePicker : InfoPickerInput,
         var flyout = new DatePickerFlyout();
         flyout.IsDetectMouseClickEnabled = false;
         BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerFlyout.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerPresenter.IsMotionEnabledProperty);
+        BindUtils.RelayBind(this, SelectedDateTimeProperty, flyout, DatePickerPresenter.SelectedDateTimeProperty);
+        BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, DatePickerPresenter.IsNeedConfirmProperty);
+        BindUtils.RelayBind(this, IsShowNowProperty, flyout, DatePickerPresenter.IsShowNowProperty);
+        BindUtils.RelayBind(this, IsShowTimeProperty, flyout, DatePickerPresenter.IsShowTimeProperty);
+        BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, DatePickerPresenter.ClockIdentifierProperty);
+        
         return flyout;
     }
 
     protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
-        if (flyoutPresenter is DatePickerFlyoutPresenter datePickerFlyoutPresenter)
+        if (PickerFlyout is DatePickerFlyout datePickerFlyout)
         {
-            datePickerFlyoutPresenter.AttachedToVisualTree += (sender, args) =>
-            {
-                _pickerPresenter = datePickerFlyoutPresenter.DatePickerPresenter;
-                ConfigurePickerPresenter(_pickerPresenter);
-            };
+            _pickerPresenter = datePickerFlyout.DatePickerPresenter;
         }
     }
-
-    private void ConfigurePickerPresenter(DatePickerPresenter? presenter)
-    {
-        if (presenter is null)
-        {
-            return;
-        }
-
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, DatePickerPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, DatePickerPresenter.SelectedDateTimeProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, DatePickerPresenter.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, presenter, DatePickerPresenter.IsShowNowProperty);
-        BindUtils.RelayBind(this, IsShowTimeProperty, presenter, DatePickerPresenter.IsShowTimeProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, DatePickerPresenter.ClockIdentifierProperty);
-    }
-
+    
     protected override void NotifyFlyoutOpened()
     {
         base.NotifyFlyoutOpened();
