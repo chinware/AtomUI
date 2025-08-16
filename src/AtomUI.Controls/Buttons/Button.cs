@@ -190,19 +190,19 @@ public class Button : AvaloniaButton,
         set => SetValue(IsIconVisibleProperty, value);
     }
 
-    public object? RightExtraContent
+    internal object? RightExtraContent
     {
         get => GetValue(RightExtraContentProperty);
         set => SetValue(RightExtraContentProperty, value);
     }
 
-    public IDataTemplate? RightExtraContentTemplate
+    internal IDataTemplate? RightExtraContentTemplate
     {
         get => GetValue(RightExtraContentTemplateProperty);
         set => SetValue(RightExtraContentTemplateProperty, value);
     }
 
-    public Thickness EffectiveBorderThickness
+    internal Thickness EffectiveBorderThickness
     {
         get => GetValue(EffectiveBorderThicknessProperty);
         set => SetValue(EffectiveBorderThicknessProperty, value);

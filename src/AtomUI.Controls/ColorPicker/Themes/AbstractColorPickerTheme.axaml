@@ -1,0 +1,57 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:Class="AtomUI.Controls.Themes.AbstractColorPickerTheme"
+    TargetType="atom:AbstractColorPicker"
+    x:ClassModifier="internal">
+
+    <Style Selector="^:is(atom|AbstractColorPicker)">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TriggerPadding}}" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|TextBlock#ColorText">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|TextBlock#ColorText">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+        </Style>
+    </Style>
+
+</ControlTheme>

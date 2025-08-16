@@ -21,6 +21,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.CheckBoxToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ChromeToken));
             tokenTypes.Add(typeof(AtomUI.Controls.CollapseToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.ColorPickerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ComboBoxToken));
             tokenTypes.Add(typeof(AtomUI.Controls.DatePickerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.DrawerToken));

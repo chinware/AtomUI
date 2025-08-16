@@ -234,6 +234,22 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightExpandButtonMargin = new TokenResourceKey("Collapse.RightExpandButtonMargin");
     }
 
+    public static class ColorPickerTokenKey
+    {
+        public static readonly TokenResourceKey ColorBlockInnerShadows = new TokenResourceKey("ColorPicker.ColorBlockInnerShadows");
+        public static readonly TokenResourceKey ColorPickerAlphaInputWidth = new TokenResourceKey("ColorPicker.ColorPickerAlphaInputWidth");
+        public static readonly TokenResourceKey ColorPickerHandlerSize = new TokenResourceKey("ColorPicker.ColorPickerHandlerSize");
+        public static readonly TokenResourceKey ColorPickerHandlerSizeSM = new TokenResourceKey("ColorPicker.ColorPickerHandlerSizeSM");
+        public static readonly TokenResourceKey ColorPickerInputNumberHandleWidth = new TokenResourceKey("ColorPicker.ColorPickerInputNumberHandleWidth");
+        public static readonly TokenResourceKey ColorPickerInsetShadow = new TokenResourceKey("ColorPicker.ColorPickerInsetShadow");
+        public static readonly TokenResourceKey ColorPickerPresetColorSize = new TokenResourceKey("ColorPicker.ColorPickerPresetColorSize");
+        public static readonly TokenResourceKey ColorPickerPreviewSize = new TokenResourceKey("ColorPicker.ColorPickerPreviewSize");
+        public static readonly TokenResourceKey ColorPickerSliderHeight = new TokenResourceKey("ColorPicker.ColorPickerSliderHeight");
+        public static readonly TokenResourceKey ColorPickerWidth = new TokenResourceKey("ColorPicker.ColorPickerWidth");
+        public static readonly TokenResourceKey TriggerPadding = new TokenResourceKey("ColorPicker.TriggerPadding");
+        public static readonly TokenResourceKey TriggerTextMargin = new TokenResourceKey("ColorPicker.TriggerTextMargin");
+    }
+
     public static class ComboBoxTokenKey
     {
         public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("ComboBox.ItemBgColor");
