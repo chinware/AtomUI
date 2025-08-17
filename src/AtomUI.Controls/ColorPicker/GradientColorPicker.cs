@@ -34,4 +34,8 @@ public class GradientColorPicker : AbstractColorPicker
     {
         
     }
+    
+    protected override void GenerateColorBlockBackground()
+    {
+    }
 }

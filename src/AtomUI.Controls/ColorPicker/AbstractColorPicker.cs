@@ -11,16 +11,17 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 
 public abstract class AbstractColorPicker : AvaloniaButton, 
-                                   ISizeTypeAware,
-                                   IMotionAwareControl,
-                                   IControlSharedTokenResourcesHost,
-                                   IResourceBindingManager
+                                            ISizeTypeAware,
+                                            IMotionAwareControl,
+                                            IControlSharedTokenResourcesHost,
+                                            IResourceBindingManager
 {
     #region 公共属性定义
     
@@ -123,6 +124,20 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<AbstractColorPicker, IBrush?> ColorBlockBackgroundProperty =
+        AvaloniaProperty.RegisterDirect<AbstractColorPicker, IBrush?>(
+            nameof(ColorBlockBackground),
+            o => o.ColorBlockBackground,
+            (o, v) => o.ColorBlockBackground = v);
+    
+    private IBrush? _colorBlockBackground;
+
+    internal IBrush? ColorBlockBackground
+    {
+        get => _colorBlockBackground;
+        set => SetAndRaise(ColorBlockBackgroundProperty, ref _colorBlockBackground, value);
+    }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -133,6 +148,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         get => _resourceBindingsDisposable;
         set => _resourceBindingsDisposable = value;
     }
+    
     #endregion
     
     private CompositeDisposable? _resourceBindingsDisposable;
@@ -140,7 +156,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     static AbstractColorPicker()
     {
         AffectsMeasure<AbstractColorPicker>(IsShowTextProperty, 
-            FormatProperty);
+            FormatProperty,
+            ColorBlockBackgroundProperty);
     }
     
     public AbstractColorPicker()
@@ -174,6 +191,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     }
 
     protected abstract void GenerateValueText();
+    protected abstract void GenerateColorBlockBackground();
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {

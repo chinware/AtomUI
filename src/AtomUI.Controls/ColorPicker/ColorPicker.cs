@@ -3,8 +3,10 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -63,7 +65,7 @@ public class ColorPicker : AbstractColorPicker
     
     static ColorPicker()
     {
-        AffectsMeasure<AbstractColorPicker>(ColorTextFormatterProperty);
+        AffectsMeasure<ColorPicker>(ColorTextFormatterProperty);
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -72,6 +74,15 @@ public class ColorPicker : AbstractColorPicker
         if (change.Property == ValueProperty)
         {
             GenerateValueText();
+            GenerateColorBlockBackground();
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == DefaultValueProperty)
+            {
+                Value ??= DefaultValue;
+            }
         }
     }
     
@@ -107,5 +118,23 @@ public class ColorPicker : AbstractColorPicker
                 this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, ColorTextProperty, ColorPickerLangResourceKey.EmptyColorText));
             }
         }
+    }
+
+    protected override void GenerateColorBlockBackground()
+    {
+        if (Value == null)
+        {
+            ColorBlockBackground = new SolidColorBrush(Colors.Transparent);
+        }
+        else
+        {
+            ColorBlockBackground = new SolidColorBrush(Value.Value);
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        Value ??= DefaultValue;
     }
 }

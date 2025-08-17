@@ -18,7 +18,9 @@
                         Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}">
                     <StackPanel>
-                        <atom:ColorBlock Name="ColorIndicator" />
+                        <atom:ColorBlock Name="ColorIndicator" 
+                                         SizeType="{TemplateBinding SizeType}"
+                                         Background="{TemplateBinding ColorBlockBackground}"/>
                         <atom:TextBlock Name="ColorText"
                                         IsVisible="{TemplateBinding IsShowText}"
                                         Text="{TemplateBinding ColorText}" />
