@@ -26,7 +26,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     #region 公共属性定义
     
     public static readonly StyledProperty<ColorFormat> FormatProperty =
-        AvaloniaProperty.Register<AbstractColorPicker, ColorFormat>(nameof(Format), ColorFormat.Hex);
+        AbstractColorPickerView.FormatProperty.AddOwner<AbstractColorPicker>();
 
     public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
         FlyoutStateHelper.TriggerTypeProperty.AddOwner<AbstractColorPicker>();
@@ -52,11 +52,11 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public static readonly StyledProperty<int> MouseLeaveDelayProperty =
         FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<AbstractColorPicker>();
     
-    public static readonly StyledProperty<bool> DisabledAlphaProperty =
-        AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(DisabledAlpha));
+    public static readonly StyledProperty<bool> IsAlphaEnabledProperty =
+        AbstractColorPickerView.IsAlphaEnabledProperty.AddOwner<AbstractColorPicker>();
     
-    public static readonly StyledProperty<bool> DisabledFormatProperty =
-        AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(DisabledFormat));
+    public static readonly StyledProperty<bool> IsFormatEnabledProperty =
+        AbstractColorPickerView.IsFormatEnabledProperty.AddOwner<AbstractColorPicker>();
     
     public static readonly StyledProperty<bool> IsShowTextProperty =
         AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(IsShowText));
@@ -91,16 +91,16 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(IsPointAtCenterProperty, value);
     }
     
-    public bool DisabledAlpha
+    public bool IsAlphaEnabled
     {
-        get => GetValue(DisabledAlphaProperty);
-        set => SetValue(DisabledAlphaProperty, value);
+        get => GetValue(IsAlphaEnabledProperty);
+        set => SetValue(IsAlphaEnabledProperty, value);
     }
     
-    public bool DisabledFormat
+    public bool IsFormatEnabled
     {
-        get => GetValue(DisabledFormatProperty);
-        set => SetValue(DisabledFormatProperty, value);
+        get => GetValue(IsFormatEnabledProperty);
+        set => SetValue(IsFormatEnabledProperty, value);
     }
     
     public bool IsShowText

@@ -16,6 +16,11 @@ public class ColorPickerToken : AbstractControlDesignToken
     public double ColorPickerWidth { get; set; }
     
     /// <summary>
+    /// 色谱高度
+    /// </summary>
+    public double ColorSpectrumHeight { get; set; }
+    
+    /// <summary>
     /// ColorPicker 内嵌阴影
     /// Inset shadow of ColorPicker
     /// </summary>
@@ -115,5 +120,7 @@ public class ColorPickerToken : AbstractControlDesignToken
         TriggerPadding    = new Thickness(SharedToken.UniformlyPaddingXXS - SharedToken.LineWidth);
         TriggerTextMargin = new Thickness(SharedToken.UniformlyMarginXS, 0, 
             SharedToken.UniformlyMarginXS - SharedToken.UniformlyPaddingXXS + SharedToken.LineWidth, 0);
+
+        ColorSpectrumHeight = SharedToken.ControlHeightLG * 4;
     }
 }
