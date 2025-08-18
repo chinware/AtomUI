@@ -18,8 +18,7 @@ public static class StyledElementTokenBindingsExtensions
     {
         var consumer = control as IResourceBindingManager;
         Debug.Assert(consumer != null, $"{control.GetType()} is not IResourceBindingManager");
-        Debug.Assert(consumer.ResourceBindingsDisposable != null,
-            $"The ResourceBindingsDisposable of IResourceBindingManager {control.GetType()} is null.");
+        consumer.ResourceBindingsDisposable ??= new CompositeDisposable();
         consumer.ResourceBindingsDisposable.Add(tokenBindingsDisposable);
     } 
 

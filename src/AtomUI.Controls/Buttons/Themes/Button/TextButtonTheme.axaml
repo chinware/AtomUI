@@ -9,7 +9,7 @@
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
 
-    <Style Selector="^:is(atom|Button):text">
+    <Style Selector="^:is(atom|Button)[ButtonType=Text]">
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}" />
             <Style Selector="^/template/ Border#PART_Frame">

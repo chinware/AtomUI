@@ -17,6 +17,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -379,13 +380,9 @@ public class Button : AvaloniaButton,
                 ConfigureTransitions();
             }
         }
-
-        if (this.IsAttachedToLogicalTree())
+        if (e.Property == ButtonTypeProperty)
         {
-            if (e.Property == ButtonTypeProperty)
-            {
-                SetupControlThemeBindings(true);
-            }
+            SetupControlThemeBindings(true);
         }
     }
 
@@ -393,25 +390,45 @@ public class Button : AvaloniaButton,
     {
         if (!ThemeConfigured || force)
         {
+            string? resourceKey = null;
             if (ButtonType == ButtonType.Default)
             {
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultButtonTheme.ID);
+                resourceKey = DefaultButtonTheme.ID;
             }
             else if (ButtonType == ButtonType.Primary)
             {
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryButtonTheme.ID);
+                resourceKey = PrimaryButtonTheme.ID;
             }
             else if (ButtonType == ButtonType.Text)
             {
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextButtonTheme.ID);
+                resourceKey = TextButtonTheme.ID;
             }
             else if (ButtonType == ButtonType.Link)
             {
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkButtonTheme.ID);
+                resourceKey = LinkButtonTheme.ID;
             }
 
+            resourceKey ??= DefaultButtonTheme.ID;
+
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        Theme = theme;
+                    }
+                }
+            }
+         
             ThemeConfigured = true;
         }
+    }
+
+    public override void EndInit()
+    {
+        SetupControlThemeBindings();
+        base.EndInit();
     }
 
     private void ConfigureTransitions()
@@ -473,26 +490,25 @@ public class Button : AvaloniaButton,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        SetupControlThemeBindings();
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    
+        SetupShadows();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
         SetupEffectiveBorderThickness();
-        SetupShadows();
         UpdatePseudoClasses();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
     }
 
     private void SetupEffectiveBorderThickness()

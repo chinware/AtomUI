@@ -9,7 +9,7 @@
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
 
-    <Style Selector="^:is(atom|Button):primary">
+    <Style Selector="^:is(atom|Button)[ButtonType=Primary]">
 
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryColor}}" />
