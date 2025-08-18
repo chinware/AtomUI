@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -85,6 +86,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         ItemsPanelProperty.OverrideDefaultValue<BaseTabStrip>(DefaultPanel);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabStrip>(false);
         AffectsRender<BaseTabStrip>(TabStripPlacementProperty, BorderBrushProperty);
+        AffectsMeasure<BaseTabStrip>(TabStripPlacementProperty);
     }
 
     public BaseTabStrip()
@@ -97,10 +99,6 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         base.OnApplyTemplate(e);
         _frame        = e.NameScope.Find<Border>(TabStripThemeConstants.FramePart);
         UpdatePseudoClasses();
-    }
-
-    private void SetupBorderBinding()
-    {
         if (_frame is not null)
         {
             this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
@@ -120,16 +118,9 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        SetupBorderBinding();
-    }
-    
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 

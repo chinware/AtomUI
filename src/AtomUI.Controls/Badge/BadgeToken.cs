@@ -78,7 +78,7 @@ internal class BadgeToken : AbstractControlDesignToken
         IndicatorHeightSM = SharedToken.FontSize;
         DotSize           = SharedToken.FontSizeSM / 2;
         TextFontSize      = SharedToken.FontSizeSM;
-        TextFontSizeSM    = SharedToken.FontSizeSM;
+        TextFontSizeSM    = SharedToken.FontSizeSM - 2;
         TextFontWeight    = FontWeight.Normal;
         StatusSize        = SharedToken.FontSizeSM / 2;
 

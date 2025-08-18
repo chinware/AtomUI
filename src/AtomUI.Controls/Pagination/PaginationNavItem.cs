@@ -14,7 +14,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -29,23 +28,25 @@ internal enum PaginationItemType
 
 internal class PaginationNavItem : ContentControl,
                                    ISelectable,
-                                   ICustomHitTest,
                                    IResourceBindingManager
 {
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<PaginationNavItem>();
     
-    public static readonly StyledProperty<PaginationItemType> PaginationItemTypeProperty
-        = AvaloniaProperty.Register<PaginationNavItem, PaginationItemType>(nameof(PaginationItemType));
+    public static readonly StyledProperty<PaginationItemType> PaginationItemTypeProperty =
+        AvaloniaProperty.Register<PaginationNavItem, PaginationItemType>(nameof(PaginationItemType));
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<PaginationNavItem>();
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PaginationNavItem>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PaginationNavItem>();
     
     public static readonly DirectProperty<PaginationNavItem, bool> IsPressedProperty =
         AvaloniaProperty.RegisterDirect<PaginationNavItem, bool>(nameof(IsPressed), b => b.IsPressed);
+    
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<PaginationNavItem, Icon?>(nameof(Icon));
     
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
         RoutedEvent.Register<PaginationNavItem, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
@@ -72,6 +73,12 @@ internal class PaginationNavItem : ContentControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public Icon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
     }
     
     public event EventHandler<RoutedEventArgs>? Click
@@ -105,25 +112,14 @@ internal class PaginationNavItem : ContentControl,
         AffectsMeasure<PaginationNavItem>(BorderThicknessProperty);
         AffectsRender<PaginationNavItem>(BackgroundProperty, BorderBrushProperty);
     }
-
-
-    public PaginationNavItem()
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _resourceBindingsDisposable = new CompositeDisposable();
-        Classes.CollectionChanged += (sender, args) =>
-        {
-            if (Content is Icon icon)
-            {
-                if (Classes.Contains(StdPseudoClass.Disabled))
-                {
-                    icon.IconMode = IconMode.Disabled;
-                }
-                else
-                {
-                    icon.IconMode = IconMode.Normal;
-                }
-            }
-        };
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -131,22 +127,7 @@ internal class PaginationNavItem : ContentControl,
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        if (Content is Icon icon)
-        {
-            SetupIconFillColors(icon);
-            SetupIconSizeType(icon);
-            SetupIconStatus(icon);
-        }
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-    }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -157,36 +138,11 @@ internal class PaginationNavItem : ContentControl,
             {
                 ConfigureTransitions();    
             }
-            
-            if (change.Property == ContentProperty)
-            {
-                if (change.NewValue is Icon newIcon)
-                {
-                    SetupIconFillColors(newIcon);
-                    SetupIconSizeType(newIcon);
-                    SetupIconStatus(newIcon);
-                }
-            }
-
-            else if (change.Property == SizeTypeProperty)
-            {
-                if (Content is Icon icon)
-                {
-                    SetupIconSizeType(icon);
-                }
-            }
         }
         
         if (change.Property == IsPressedProperty)
         {
             UpdatePseudoClasses();
-        }
-        else if (change.Property == IsEnabledProperty)
-        {
-            if (Content is Icon icon)
-            {
-                SetupIconStatus(icon);
-            }
         }
     }
 
@@ -194,43 +150,6 @@ internal class PaginationNavItem : ContentControl,
     {
         base.OnApplyTemplate(e);
         ConfigureTransitions();
-    }
-
-    private void SetupIconFillColors(Icon icon)
-    {
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.NormalFilledBrushProperty, SharedTokenKey.ColorText));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, Icon.DisabledFilledBrushProperty, SharedTokenKey.ColorTextDisabled));
-    }
-
-    private void SetupIconStatus(Icon icon)
-    {
-        if (IsEnabled && !Classes.Contains(StdPseudoClass.Disabled))
-        {
-            icon.IconMode = IconMode.Normal;
-        }
-        else
-        {
-            icon.IconMode = IconMode.Disabled;
-        }
-    }
-    
-    private void SetupIconSizeType(Icon icon)
-    {
-        if (SizeType == SizeType.Large)
-        {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeLG));
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeLG));
-        }
-        else if (SizeType == SizeType.Middle)
-        {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSize));
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSize));
-        }
-        else
-        {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, WidthProperty, SharedTokenKey.IconSizeSM));
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(icon, HeightProperty, SharedTokenKey.IconSizeSM));
-        }
     }
     
     private void ConfigureTransitions()
@@ -248,11 +167,6 @@ internal class PaginationNavItem : ContentControl,
         {
             Transitions = null;
         }
-    }
-    
-    public bool HitTest(Point point)
-    {
-        return true;
     }
 
     protected virtual void OnClick()

@@ -18,6 +18,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -201,11 +202,10 @@ public class Expander : AvaloniaExpander,
     private IconButton? _expandButton;
     private bool _animating;
     private bool _tempAnimationDisabled = false;
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
@@ -213,16 +213,15 @@ public class Expander : AvaloniaExpander,
         SetupExpanderBorderThickness();
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeResourceBindingActions();
         _motionActor     = e.NameScope.Find<BaseMotionActor>(ExpanderThemeConstants.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(ExpanderThemeConstants.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderThemeConstants.ExpandButtonPart);
@@ -255,10 +254,6 @@ public class Expander : AvaloniaExpander,
             {
                 SetupDefaultIcon();
             }
-            else if (change.Property == IsBorderlessProperty)
-            {
-                SetupEffectiveBorderThickness();
-            }
             else if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions();
@@ -275,6 +270,10 @@ public class Expander : AvaloniaExpander,
                  change.Property == ExpandDirectionProperty)
         {
             SetupExpanderBorderThickness();
+        }
+        else if (change.Property == IsBorderlessProperty)
+        {
+            SetupEffectiveBorderThickness();
         }
     }
 

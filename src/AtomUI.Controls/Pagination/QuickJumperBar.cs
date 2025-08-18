@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -19,8 +20,7 @@ internal class QuickJumpArgs
     public int PageNumber { get; set; }
 }
 
-internal class QuickJumperBar : TemplatedControl,
-                                IResourceBindingManager
+internal class QuickJumperBar : TemplatedControl, IResourceBindingManager
 {
     public event EventHandler<QuickJumpArgs>? JumpRequest;
     
@@ -94,16 +94,9 @@ internal class QuickJumperBar : TemplatedControl,
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
-    
 }

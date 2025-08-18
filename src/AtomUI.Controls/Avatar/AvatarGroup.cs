@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -286,10 +287,9 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
         return _foldCountAvatar;
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
@@ -302,6 +302,18 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
             AvatarTokenKey.AvatarColor));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, FoldInfoAvatarBackgroundProperty,
             AvatarTokenKey.AvatarBg));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        
         var foldCountAvatar = GetFoldCountAvatar();
         if (_foldCountFlyout == null)
         {
@@ -344,13 +356,7 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
             }
         }
     }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
-    }
-
+    
     private protected virtual void InvalidateMeasureOnChildrenChanged()
     {
         InvalidateMeasure();
