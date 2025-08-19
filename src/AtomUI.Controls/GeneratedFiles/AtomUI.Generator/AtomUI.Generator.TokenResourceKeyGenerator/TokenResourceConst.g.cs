@@ -238,7 +238,10 @@ namespace AtomUI.Theme.Styling
     {
         public static readonly TokenResourceKey ColorBlockInnerShadows = new TokenResourceKey("ColorPicker.ColorBlockInnerShadows");
         public static readonly TokenResourceKey ColorPickerAlphaInputWidth = new TokenResourceKey("ColorPicker.ColorPickerAlphaInputWidth");
+        public static readonly TokenResourceKey ColorPickerHandlerDarkColor = new TokenResourceKey("ColorPicker.ColorPickerHandlerDarkColor");
+        public static readonly TokenResourceKey ColorPickerHandlerLightColor = new TokenResourceKey("ColorPicker.ColorPickerHandlerLightColor");
         public static readonly TokenResourceKey ColorPickerHandlerSize = new TokenResourceKey("ColorPicker.ColorPickerHandlerSize");
+        public static readonly TokenResourceKey ColorPickerHandlerSizeLG = new TokenResourceKey("ColorPicker.ColorPickerHandlerSizeLG");
         public static readonly TokenResourceKey ColorPickerHandlerSizeSM = new TokenResourceKey("ColorPicker.ColorPickerHandlerSizeSM");
         public static readonly TokenResourceKey ColorPickerInputNumberHandleWidth = new TokenResourceKey("ColorPicker.ColorPickerInputNumberHandleWidth");
         public static readonly TokenResourceKey ColorPickerInsetShadow = new TokenResourceKey("ColorPicker.ColorPickerInsetShadow");

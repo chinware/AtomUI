@@ -3,6 +3,7 @@
 
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -20,11 +21,6 @@ namespace AtomUI.Controls;
 
 public class ColorSpectrum : TemplatedControl
 {
-    protected const string pcPressed       = ":pressed";
-    protected const string pcDarkSelector  = ":dark-selector";
-    protected const string pcLargeSelector = ":large-selector";
-    protected const string pcLightSelector = ":light-selector";
-    
     /// <summary>
     /// Defines the <see cref="Color"/> property.
     /// </summary>
@@ -290,7 +286,7 @@ public class ColorSpectrum : TemplatedControl
     // associated with the last call to CreateBitmapsAndColorMap(),
     // in order to function properly while the asynchronous bitmap creation
     // is in progress.
-    private ColorSpectrumComponents _componentsFromLastBitmapCreation = ColorSpectrumComponents.HueSaturation;
+    private ColorSpectrumComponents _componentsFromLastBitmapCreation = ColorSpectrumComponents.SaturationValue;
     private double _imageWidthFromLastBitmapCreation = 0.0;
     private double _imageHeightFromLastBitmapCreation = 0.0;
     private int _minHueFromLastBitmapCreation = 0;
@@ -326,12 +322,12 @@ public class ColorSpectrum : TemplatedControl
 
         UnregisterEvents(); // Failsafe
 
-        _inputTarget              = e.NameScope.Find<Canvas>("PART_InputTarget");
-        _layoutRoot               = e.NameScope.Find<Panel>("PART_LayoutRoot");
-        _selectionEllipsePanel    = e.NameScope.Find<Panel>("PART_SelectionEllipsePanel");
-        _sizingPanel              = e.NameScope.Find<Panel>("PART_SizingPanel");
-        _spectrumRectangle        = e.NameScope.Find<Rectangle>("PART_SpectrumRectangle");
-        _spectrumOverlayRectangle = e.NameScope.Find<Rectangle>("PART_SpectrumOverlayRectangle");
+        _inputTarget              = e.NameScope.Find<Canvas>(ColorSpectrumThemeConstants.InputTargetPart);
+        _layoutRoot               = e.NameScope.Find<Panel>(ColorSpectrumThemeConstants.LayoutRootPart);
+        _selectionEllipsePanel    = e.NameScope.Find<Panel>(ColorSpectrumThemeConstants.SelectionEllipsePanelPart);
+        _sizingPanel              = e.NameScope.Find<Panel>(ColorSpectrumThemeConstants.SizingPanelPart);
+        _spectrumRectangle        = e.NameScope.Find<Rectangle>(ColorSpectrumThemeConstants.SpectrumRectanglePart);
+        _spectrumOverlayRectangle = e.NameScope.Find<Rectangle>(ColorSpectrumThemeConstants.SpectrumOverlayRectanglePart);
 
         if (_inputTarget != null)
         {
@@ -774,27 +770,27 @@ public class ColorSpectrum : TemplatedControl
     /// </summary>
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(pcPressed, _isPointerPressed);
+        PseudoClasses.Set(ColorSpectrumPseudoClass.Pressed, _isPointerPressed);
         // Note: The ":pointerover" pseudo class is set in the base Control
 
         if (_isPointerPressed)
         {
-            PseudoClasses.Set(pcLargeSelector, _shouldShowLargeSelection);
+            PseudoClasses.Set(ColorSpectrumPseudoClass.LargeSelector, _shouldShowLargeSelection);
         }
         else
         {
-            PseudoClasses.Set(pcLargeSelector, false);
+            PseudoClasses.Set(ColorSpectrumPseudoClass.LargeSelector, false);
         }
 
         if (SelectionEllipseShouldBeLight())
         {
-            PseudoClasses.Set(pcDarkSelector, false);
-            PseudoClasses.Set(pcLightSelector, true);
+            PseudoClasses.Set(ColorSpectrumPseudoClass.DarkSelector, false);
+            PseudoClasses.Set(ColorSpectrumPseudoClass.LightSelector, true);
         }
         else
         {
-            PseudoClasses.Set(pcDarkSelector, true);
-            PseudoClasses.Set(pcLightSelector, false);
+            PseudoClasses.Set(ColorSpectrumPseudoClass.DarkSelector, true);
+            PseudoClasses.Set(ColorSpectrumPseudoClass.LightSelector, false);
         }
     }
 

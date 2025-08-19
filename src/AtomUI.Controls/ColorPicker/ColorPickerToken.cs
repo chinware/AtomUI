@@ -27,16 +27,32 @@ public class ColorPickerToken : AbstractControlDesignToken
     public BoxShadows ColorPickerInsetShadow { get; set; }
     
     /// <summary>
+    /// ColorPicker 处理器尺寸大号
+    /// Handler size of ColorPicker
+    /// </summary>
+    public double ColorPickerHandlerSizeLG { get; set; }
+    
+    /// <summary>
     /// ColorPicker 处理器尺寸
     /// Handler size of ColorPicker
     /// </summary>
     public double ColorPickerHandlerSize { get; set; }
     
     /// <summary>
-    /// ColorPicker 滑块高度
-    /// Slider height of ColorPicker
+    /// ColorPicker 小号处理器尺寸
+    /// Small handler size of ColorPicker
     /// </summary>
     public double ColorPickerHandlerSizeSM { get; set; }
+    
+    /// <summary>
+    /// ColorPicker 处理器边框的亮色颜色
+    /// </summary>
+    public Color ColorPickerHandlerLightColor { get; set; }
+    
+    /// <summary>
+    /// ColorPicker 处理器边框的暗色颜色
+    /// </summary>
+    public Color ColorPickerHandlerDarkColor { get; set; }
     
     /// <summary>
     /// ColorPicker 滑块高度
@@ -92,6 +108,7 @@ public class ColorPickerToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         ColorPickerWidth                  = 234;
+        ColorPickerHandlerSizeLG          = 32;
         ColorPickerHandlerSize            = 16;
         ColorPickerHandlerSizeSM          = 12;
         ColorPickerAlphaInputWidth        = 44;
@@ -121,6 +138,8 @@ public class ColorPickerToken : AbstractControlDesignToken
         TriggerTextMargin = new Thickness(SharedToken.UniformlyMarginXS, 0, 
             SharedToken.UniformlyMarginXS - SharedToken.UniformlyPaddingXXS + SharedToken.LineWidth, 0);
 
-        ColorSpectrumHeight = SharedToken.ControlHeightLG * 4;
+        ColorSpectrumHeight          = SharedToken.ControlHeightLG * 4;
+        ColorPickerHandlerLightColor = SharedToken.ColorBgElevated;
+        ColorPickerHandlerDarkColor = Color.Parse("#22075e");
     }
 }

@@ -89,7 +89,7 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         AvaloniaProperty.Register<AbstractColorPickerView, List<ColorPickerPalette>?>(
             nameof(PaletteGroup));
     
-    public Color? Value
+    public Color Value
     {
         get => GetValue(ValueProperty);
         set => SetValue(ValueProperty, value);
@@ -186,15 +186,43 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     }
     #endregion
     
+    #region 公共事件定义
+    public event EventHandler<ColorChangedEventArgs>? ColorChanged;
+    #endregion
+    
     #region 内部属性定义
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ColorPickerToken.ID;
     #endregion
+    
+    protected bool _ignorePropertyChanged = false;
 
     public AbstractColorPickerView()
     {
         this.RegisterResources();
+    }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (_ignorePropertyChanged)
+        {
+            base.OnPropertyChanged(change);
+            return;
+        }
+        if (change.Property == ValueProperty)
+        {
+            _ignorePropertyChanged = true;
+
+            SetCurrentValue(HsvValueProperty, Value.ToHsv());
+
+            NotifyColorChanged(new ColorChangedEventArgs(
+                change.GetOldValue<Color>(),
+                change.GetNewValue<Color>()));
+
+            _ignorePropertyChanged = false;
+        }
     }
     
     private static Color CoerceColor(AvaloniaObject instance, Color value)
@@ -236,4 +264,10 @@ public abstract class AbstractColorPickerView : TemplatedControl,
 
         return value;
     }
+
+    protected virtual void NotifyColorChanged(ColorChangedEventArgs e)
+    {
+        ColorChanged?.Invoke(this, e);
+    }
+
 }
