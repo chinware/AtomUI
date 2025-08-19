@@ -339,7 +339,7 @@ public class Popup : AvaloniaPopup,
     
     private void CreateBuddyLayer()
     {
-        _buddyLayer?.Detach();
+        Debug.Assert(_buddyLayer == null);
         var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
         Debug.Assert(topLevel is not null);
         _buddyLayer         = new PopupBuddyLayer(this, topLevel);
@@ -677,6 +677,7 @@ public class Popup : AvaloniaPopup,
         shadowAwareLayer.RunCloseMotion(null, () =>
         {
             _buddyLayer?.Detach();
+            _buddyLayer = null;
             Close();
             closed?.Invoke();
             _closeAnimating    = false;

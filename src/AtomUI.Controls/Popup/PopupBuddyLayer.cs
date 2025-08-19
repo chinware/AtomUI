@@ -202,13 +202,13 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 var arrowDecoratedBox = arrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox();
                 _popupArrowDecoratedBox = arrowDecoratedBox;
                 _popupArrowDecoratedBox.SetArrowOpacity(0.0);
-                this[!MaskShadowsContentCornerRadiusProperty]    = arrowDecoratedBox[!ArrowDecoratedBox.CornerRadiusProperty];
-                this[!ArrowIndicatorLayoutBoundsProperty] =
-                    arrowDecoratedBox[!ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty];
-                this[!ArrowSizeProperty]      = arrowDecoratedBox[!ArrowDecoratedBox.ArrowSizeProperty];
-                this[!ArrowDirectionProperty] = arrowDecoratedBox[!ArrowDecoratedBox.ArrowDirectionProperty];
-                this[!ArrowFillColorProperty] = arrowDecoratedBox[!ArrowDecoratedBox.BackgroundProperty];
-                this[!IsShowArrowProperty] = arrowDecoratedBox[!ArrowDecoratedBox.IsShowArrowProperty];
+                
+                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, this, MaskShadowsContentCornerRadiusProperty));
+                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty, this, ArrowIndicatorLayoutBoundsProperty));
+                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowSizeProperty, this, ArrowSizeProperty));
+                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowDirectionProperty, this, ArrowDirectionProperty));
+                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.BackgroundProperty, this, ArrowFillColorProperty));
+                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty, this, IsShowArrowProperty));
             }
             else if (content is Border bordered)
             {

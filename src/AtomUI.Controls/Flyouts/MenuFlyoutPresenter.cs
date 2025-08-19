@@ -1,4 +1,4 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Diagnostics;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -13,10 +13,9 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 public class MenuFlyoutPresenter : MenuBase,
-                                   IShadowMaskInfoProvider,
+                                   IArrowAwareShadowMaskInfoProvider,
                                    IMotionAwareControl,
-                                   IControlSharedTokenResourcesHost,
-                                   IResourceBindingManager
+                                   IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -74,15 +73,8 @@ public class MenuFlyoutPresenter : MenuBase,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private ArrowDecoratedBox? _arrowDecoratedBox;
 
     public MenuFlyoutPresenter()
@@ -173,12 +165,6 @@ public class MenuFlyoutPresenter : MenuBase,
         _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutThemeConstants.ArrowDecoratorPart);
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -189,7 +175,6 @@ public class MenuFlyoutPresenter : MenuBase,
                 menuItem.IsSubMenuOpen = false;
             }
         }
-        this.DisposeTokenBindings();
     }
     
     public CornerRadius GetMaskCornerRadius()
@@ -217,6 +202,42 @@ public class MenuFlyoutPresenter : MenuBase,
     public IBrush? GetMaskBackground()
     {
         return _arrowDecoratedBox?.Background;
+    }
+    
+    ArrowPosition IArrowAwareShadowMaskInfoProvider.GetArrowPosition()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowPosition;
+    }
+    
+    bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.IsShowArrow;
+    }
+
+    void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        _arrowDecoratedBox.ArrowOpacity = opacity;
+    }
+
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowIndicatorBounds;
+    }
+    
+    Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorLayoutBounds()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox.ArrowIndicatorLayoutBounds;
+    }
+    
+    ArrowDecoratedBox IArrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox()
+    {
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox;
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

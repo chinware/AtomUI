@@ -20,7 +20,8 @@
                                         <atom:ArrowIndicator
                                             Name="{x:Static atom:PopupBuddyLayerThemeConstants.ArrowIndicatorPart}"
                                             FilledColor="{TemplateBinding ArrowFillColor}" 
-                                            ArrowSize="{TemplateBinding ArrowSize}"/>
+                                            ArrowSize="{TemplateBinding ArrowSize}"
+                                            IsVisible="{TemplateBinding IsShowArrow}"/>
                                     </LayoutTransformControl>
                                 </Panel>
                             </Decorator>
