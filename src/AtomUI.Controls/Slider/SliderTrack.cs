@@ -1,11 +1,7 @@
 ﻿using System.Globalization;
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -18,7 +14,6 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
@@ -26,8 +21,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal)]
-public class SliderTrack : Control,
-                           IResourceBindingManager
+public class SliderTrack : TemplatedControl
 {
     #region 公共属性定义
 
@@ -210,9 +204,6 @@ public class SliderTrack : Control,
     internal static readonly StyledProperty<double> SliderMarkSizeProperty =
         AvaloniaProperty.Register<SliderTrack, double>(nameof(SliderMarkSize));
 
-    internal static readonly StyledProperty<Thickness> PaddingProperty =
-        Decorator.PaddingProperty.AddOwner<SliderTrack>();
-
     internal static readonly StyledProperty<IBrush?> MarkBorderBrushProperty =
         AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(MarkBorderBrush));
 
@@ -231,8 +222,8 @@ public class SliderTrack : Control,
     internal static readonly RoutedEvent<PointerReleasedEventArgs> TrailReleasedEvent =
         RoutedEvent.Register<SliderTrack, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderTrack>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderTrack>();
 
     internal double SliderTrackSize
     {
@@ -250,12 +241,6 @@ public class SliderTrack : Control,
     {
         get => GetValue(SliderMarkSizeProperty);
         set => SetValue(SliderMarkSizeProperty, value);
-    }
-
-    public Thickness Padding
-    {
-        get => GetValue(PaddingProperty);
-        set => SetValue(PaddingProperty, value);
     }
 
     internal IBrush? MarkBorderBrush
@@ -287,12 +272,7 @@ public class SliderTrack : Control,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    
     #endregion
 
     #region 事件定义
@@ -310,13 +290,11 @@ public class SliderTrack : Control,
     }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private VectorEventArgs? _deferredThumbDrag;
     private Vector _lastDrag;
     private RenderContextData? _renderContextData;
-
-
+    
     /// <summary>
     /// Gets the value of the <see cref="SliderThumb" />'s current position. This can differ from <see cref="Value" /> when
     /// <see cref="ScrollViewer.IsDeferredScrollingEnabled" /> is true.
@@ -425,18 +403,6 @@ public class SliderTrack : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, SliderTrackSizeProperty, SliderTokenKey.SliderTrackSize));
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, SliderMarkSizeProperty, SliderTokenKey.MarkSize));
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, SliderRailSizeProperty, SliderTokenKey.RailSize));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBackgroundBrushProperty,
-            SharedTokenKey.ColorBgElevated));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkBorderThicknessProperty,
-            SliderTokenKey.ThumbCircleBorderThickness));
-        
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _focusProcessDisposable = inputManager.Process.Subscribe(args =>
         {
@@ -456,7 +422,6 @@ public class SliderTrack : Control,
             }
         });
         HandleRangeModeChanged();
-        SetupMarkLabelBrush();
         CalculateMaxMarkSize();
         ConfigureTransitions();
     }
@@ -465,21 +430,6 @@ public class SliderTrack : Control,
     {
         base.OnDetachedFromVisualTree(e);
         _focusProcessDisposable?.Dispose();
-        this.DisposeTokenBindings();
-    }
-
-    private void SetupMarkLabelBrush()
-    {
-        if (IsEnabled)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, MarkLabelBrushProperty, SharedTokenKey.ColorText));
-        }
-        else
-        {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarkLabelBrushProperty,
-                SharedTokenKey.ColorTextDisabled));
-        }
     }
 
     private void HandleGlobalMousePressed(Point point)
@@ -599,10 +549,7 @@ public class SliderTrack : Control,
         var isVertical = Orientation == Orientation.Vertical;
 
         ComputeDensity(arrangeSize, isVertical);
-
-        // Layout the pieces of track
-        var isDirectionReversed = IsDirectionReversed;
-
+        
         var thumbCenterPoints = CalculateThumbCenterOffset(arrangeSize);
         StartThumbCenterOffset = thumbCenterPoints.Item1;
         EndThumbCenterOffset   = thumbCenterPoints.Item2;
@@ -735,7 +682,6 @@ public class SliderTrack : Control,
         {
             if (change.Property == IsEnabledProperty)
             {
-                SetupMarkLabelBrush();
                 CalculateMaxMarkSize(true);
             }
             else if (change.Property == MarksProperty)

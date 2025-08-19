@@ -16,8 +16,8 @@
                     MinHeight="{TemplateBinding MinHeight}">
                 <StackPanel Name="RootLayout"
                             Orientation="Horizontal">
-                    <atom:ColorPickerPaletteGroup Name="PaletteGroup"/>
-                    <StackPanel Orientation="Vertical">
+                    <atom:ColorPickerPaletteGroup Name="PaletteGroup" />
+                    <StackPanel Orientation="Vertical" Name="ColorPickerContainer">
                         <atom:ColorSpectrum
                             Name="ColorSpectrum"
                             Components="SaturationValue"
@@ -28,20 +28,43 @@
                             MinHue="{TemplateBinding MinHue}"
                             MinSaturation="{TemplateBinding MinSaturation}"
                             MinValue="{TemplateBinding MinValue}" />
+                        <DockPanel LastChildFill="True">
+                            <atom:ColorBlock Name="ColorPreview" Background="DarkRed" DockPanel.Dock="Right" />
+                            <DockPanel Name="SliderContainer" LastChildFill="True">
+                                <atom:ColorSlider Name="ColorSpectrumThirdComponentSlider" DockPanel.Dock="Top" />
+                                <atom:ColorSlider Name="ColorSpectrumAlphaSlider" DockPanel.Dock="Bottom" />
+                                <Control />
+                            </DockPanel>
+                        </DockPanel>
                     </StackPanel>
                 </StackPanel>
             </Border>
         </ControlTemplate>
     </Setter>
-    
+
     <Style Selector="^:is(atom|AbstractColorPickerView)">
-        <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerWidth}}"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerWidth}}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Style Selector="^ /template/ atom|ColorSpectrum#ColorSpectrum">
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorSpectrumHeight }}"/>
-            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerWidth}}"/>
+            <Setter Property="MinHeight"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorSpectrumHeight }}" />
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerWidth}}" />
         </Style>
-        
+
+        <Style Selector="^ /template/ atom|ColorBlock#ColorPreview">
+            <Setter Property="Height"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerPreviewSize}}" />
+            <Setter Property="Width"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerPreviewSize}}" />
+        </Style>
+
+        <Style Selector="^ /template/ StackPanel#ColorPickerContainer">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginSM}}" />
+        </Style>
+
+        <Style Selector="^ /template/ DockPanel#SliderContainer">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.SliderContainerMargin}}" />
+        </Style>
     </Style>
 </ControlTheme>

@@ -332,10 +332,10 @@ public class ColorSpectrum : TemplatedControl
         if (_inputTarget != null)
         {
             _inputTarget.PointerEntered  += InputTarget_PointerEntered;
-            _inputTarget.PointerExited   += InputTarget_PointerExited;
-            _inputTarget.PointerPressed  += InputTarget_PointerPressed;
-            _inputTarget.PointerMoved    += InputTarget_PointerMoved;
-            _inputTarget.PointerReleased += InputTarget_PointerReleased;
+            _inputTarget.PointerExited   += HandleInputTargetPointerExited;
+            _inputTarget.PointerPressed  += HandleInputTargetPointerPressed;
+            _inputTarget.PointerMoved    += HandleInputTargetPointerMoved;
+            _inputTarget.PointerReleased += HandleInputTargetPointerReleased;
         }
 
         if (_layoutRoot != null)
@@ -405,10 +405,10 @@ public class ColorSpectrum : TemplatedControl
         if (_inputTarget != null)
         {
             _inputTarget.PointerEntered  -= InputTarget_PointerEntered;
-            _inputTarget.PointerExited   -= InputTarget_PointerExited;
-            _inputTarget.PointerPressed  -= InputTarget_PointerPressed;
-            _inputTarget.PointerMoved    -= InputTarget_PointerMoved;
-            _inputTarget.PointerReleased -= InputTarget_PointerReleased;
+            _inputTarget.PointerExited   -= HandleInputTargetPointerExited;
+            _inputTarget.PointerPressed  -= HandleInputTargetPointerPressed;
+            _inputTarget.PointerMoved    -= HandleInputTargetPointerMoved;
+            _inputTarget.PointerReleased -= HandleInputTargetPointerReleased;
         }
     }
 
@@ -1082,14 +1082,14 @@ public class ColorSpectrum : TemplatedControl
     }
 
     /// <inheritdoc cref="InputElement.PointerExited"/>
-    private void InputTarget_PointerExited(object? sender, PointerEventArgs args)
+    private void HandleInputTargetPointerExited(object? sender, PointerEventArgs args)
     {
         UpdatePseudoClasses();
         args.Handled = true;
     }
 
     /// <inheritdoc cref="InputElement.PointerPressed"/>
-    private void InputTarget_PointerPressed(object? sender, PointerPressedEventArgs args)
+    private void HandleInputTargetPointerPressed(object? sender, PointerPressedEventArgs args)
     {
         var inputTarget = _inputTarget;
 
@@ -1110,7 +1110,7 @@ public class ColorSpectrum : TemplatedControl
     }
 
     /// <inheritdoc cref="InputElement.PointerMoved"/>
-    private void InputTarget_PointerMoved(object? sender, PointerEventArgs args)
+    private void HandleInputTargetPointerMoved(object? sender, PointerEventArgs args)
     {
         if (!_isPointerPressed)
         {
@@ -1122,7 +1122,7 @@ public class ColorSpectrum : TemplatedControl
     }
 
     /// <inheritdoc cref="InputElement.PointerReleased"/>
-    private void InputTarget_PointerReleased(object? sender, PointerReleasedEventArgs args)
+    private void HandleInputTargetPointerReleased(object? sender, PointerReleasedEventArgs args)
     {
         _isPointerPressed         = false;
         _shouldShowLargeSelection = false;

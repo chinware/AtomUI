@@ -10,15 +10,15 @@
     <ControlTheme x:Key="{x:Type atom:ColorSpectrum}" TargetType="atom:ColorSpectrum">
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type atom:ColorSpectrum}">
-                <Panel Name="{x:Static atom:ColorSpectrumThemeConstants.LayoutRootPart}"
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch">
-                    <Border Name="Frame" ClipToBounds="True"
-                            CornerRadius="{TemplateBinding CornerRadius}">
+                <Border Name="Frame" ClipToBounds="True"
+                        Padding="0.5"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel Name="{x:Static atom:ColorSpectrumThemeConstants.LayoutRootPart}"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch">
                         <Panel x:Name="PART_SizingPanel"
                                HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               ClipToBounds="True">
+                               VerticalAlignment="Center">
                             <Rectangle Name="{x:Static atom:ColorSpectrumThemeConstants.SpectrumRectanglePart}"
                                        IsHitTestVisible="False"
                                        HorizontalAlignment="Stretch"
@@ -51,13 +51,17 @@
                                 </Panel>
                             </Canvas>
                         </Panel>
-                    </Border>
-                </Panel>
+                    </Panel>
+                </Border>
             </ControlTemplate>
         </Setter>
 
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
-        
+
+        <Style Selector="^ /template/ Border#Frame">
+            <Setter Property="BoxShadow"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerInsetShadow}}" />
+        </Style>
 
         <!-- Focus -->
         <Style Selector="^ /template/ Ellipse#FocusEllipse">
@@ -69,24 +73,30 @@
 
         <!-- Selector Color -->
         <Style Selector="^ /template/ Ellipse#SelectionEllipse">
-            <Setter Property="Stroke" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerDarkColor}}" />
+            <Setter Property="Stroke"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerDarkColor}}" />
         </Style>
-        
+
         <Style Selector="^:light-selector /template/ Ellipse#SelectionEllipse">
-            <Setter Property="Stroke" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerLightColor}}" />
+            <Setter Property="Stroke"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerLightColor}}" />
         </Style>
 
         <!-- Selector Size -->
         <Style Selector="^ /template/ Panel#PART_SelectionEllipsePanel">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Width" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSize}}" />
-            <Setter Property="Height" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSize}}" />
+            <Setter Property="Width"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSize}}" />
+            <Setter Property="Height"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSize}}" />
         </Style>
-        
+
         <Style Selector="^:large-selector /template/ Panel#PART_SelectionEllipsePanel">
-            <Setter Property="Width" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSizeLG}}" />
-            <Setter Property="Height" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSizeLG}}" />
+            <Setter Property="Width"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSizeLG}}" />
+            <Setter Property="Height"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSizeLG}}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -55,10 +55,16 @@ public class ColorPickerToken : AbstractControlDesignToken
     public Color ColorPickerHandlerDarkColor { get; set; }
     
     /// <summary>
-    /// ColorPicker 滑块高度
+    /// ColorPicker 滑块高度或者宽度
     /// Slider height of ColorPicker
     /// </summary>
-    public double ColorPickerSliderHeight { get; set; }
+    public double ColorPickerSliderSize { get; set; }
+    
+    /// <summary>
+    /// ColorPicker 轨道的大小高度或者宽度
+    /// Slider height of ColorPicker Track
+    /// </summary>
+    public double ColorPickerSliderTrackSize { get; set; }
     
     /// <summary>
     /// ColorPicker 预览尺寸
@@ -99,6 +105,11 @@ public class ColorPickerToken : AbstractControlDesignToken
     /// </summary>
     public Thickness TriggerTextMargin { get; set; }
     
+    /// <summary>
+    /// 颜色滑块外间距
+    /// </summary>
+    public Thickness SliderContainerMargin { get; set; }
+    
     public ColorPickerToken()
         : base(ID)
     {
@@ -114,8 +125,9 @@ public class ColorPickerToken : AbstractControlDesignToken
         ColorPickerAlphaInputWidth        = 44;
         ColorPickerInputNumberHandleWidth = 16;
         ColorPickerPresetColorSize        = 24;
-        ColorPickerSliderHeight           = 8;
-        ColorPickerPreviewSize            = ColorPickerSliderHeight * 2 + SharedToken.UniformlyMarginSM;
+        ColorPickerSliderSize             = ColorPickerHandlerSizeSM;
+        ColorPickerSliderTrackSize        = 8;
+        ColorPickerPreviewSize            = ColorPickerSliderSize * 2 + SharedToken.UniformlyMarginSM;
         ColorPickerInsetShadow            = new BoxShadows(new BoxShadow()
         {
             IsInset = true,
@@ -140,6 +152,7 @@ public class ColorPickerToken : AbstractControlDesignToken
 
         ColorSpectrumHeight          = SharedToken.ControlHeightLG * 4;
         ColorPickerHandlerLightColor = SharedToken.ColorBgElevated;
-        ColorPickerHandlerDarkColor = Color.Parse("#22075e");
+        ColorPickerHandlerDarkColor  = Color.Parse("#22075e");
+        SliderContainerMargin        = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
     }
 }

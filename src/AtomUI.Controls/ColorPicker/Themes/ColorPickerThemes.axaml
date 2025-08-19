@@ -8,5 +8,6 @@
         <ResourceInclude Source="ColorPickerViewTheme.axaml"/>
         <ResourceInclude Source="GradientColorPickerViewTheme.axaml"/>
         <ResourceInclude Source="ColorSpectrumTheme.axaml"/>
+        <ResourceInclude Source="ColorSliderTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

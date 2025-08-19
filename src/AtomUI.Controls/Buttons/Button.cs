@@ -263,52 +263,55 @@ public class Button : AvaloniaButton,
         return new Size(targetWidth, targetHeight);
     }
 
-    private void SetupShadows()
+    private void SetupShadows(bool force = false)
     {
-        if (ButtonType == ButtonType.Default)
+        if (force || Effect == null)
         {
-            if (IsDanger)
+            if (ButtonType == ButtonType.Default)
             {
-                Effect = new DropShadowEffect
+                if (IsDanger)
                 {
-                    OffsetX    = DangerShadow.OffsetX,
-                    OffsetY    = DangerShadow.OffsetY,
-                    Color      = DangerShadow.Color,
-                    BlurRadius = DangerShadow.Blur
-                };
+                    Effect = new DropShadowEffect
+                    {
+                        OffsetX    = DangerShadow.OffsetX,
+                        OffsetY    = DangerShadow.OffsetY,
+                        Color      = DangerShadow.Color,
+                        BlurRadius = DangerShadow.Blur
+                    };
+                }
+                else
+                {
+                    Effect = new DropShadowEffect
+                    {
+                        OffsetX    = DefaultShadow.OffsetX,
+                        OffsetY    = DefaultShadow.OffsetY,
+                        Color      = DefaultShadow.Color,
+                        BlurRadius = DefaultShadow.Blur
+                    };
+                }
             }
-            else
+            else if (ButtonType == ButtonType.Primary)
             {
-                Effect = new DropShadowEffect
+                if (IsDanger)
                 {
-                    OffsetX    = DefaultShadow.OffsetX,
-                    OffsetY    = DefaultShadow.OffsetY,
-                    Color      = DefaultShadow.Color,
-                    BlurRadius = DefaultShadow.Blur
-                };
-            }
-        }
-        else if (ButtonType == ButtonType.Primary)
-        {
-            if (IsDanger)
-            {
-                Effect = new DropShadowEffect
+                    Effect = new DropShadowEffect
+                    {
+                        OffsetX    = DangerShadow.OffsetX,
+                        OffsetY    = DangerShadow.OffsetY,
+                        Color      = DangerShadow.Color,
+                        BlurRadius = DangerShadow.Blur
+                    };
+                }
+                else
                 {
-                    OffsetX    = DangerShadow.OffsetX,
-                    OffsetY    = DangerShadow.OffsetY,
-                    Color      = DangerShadow.Color,
-                    BlurRadius = DangerShadow.Blur
-                };
-            }
-            else
-            {
-                Effect = new DropShadowEffect
-                {
-                    OffsetX    = PrimaryShadow.OffsetX,
-                    OffsetY    = PrimaryShadow.OffsetY,
-                    Color      = PrimaryShadow.Color,
-                    BlurRadius = PrimaryShadow.Blur
-                };
+                    Effect = new DropShadowEffect
+                    {
+                        OffsetX    = PrimaryShadow.OffsetX,
+                        OffsetY    = PrimaryShadow.OffsetY,
+                        Color      = PrimaryShadow.Color,
+                        BlurRadius = PrimaryShadow.Blur
+                    };
+                }
             }
         }
     }
@@ -372,7 +375,7 @@ public class Button : AvaloniaButton,
                 e.Property == IsGhostProperty ||
                 e.Property == ButtonTypeProperty)
             {
-                SetupShadows();
+                SetupShadows(true);
             }
             else if (e.Property == IsMotionEnabledProperty ||
                      e.Property == IsWaveSpiritEnabledProperty)
