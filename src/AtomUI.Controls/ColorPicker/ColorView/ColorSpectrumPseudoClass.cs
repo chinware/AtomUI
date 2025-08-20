@@ -1,6 +1,6 @@
 namespace AtomUI.Controls;
 
-public static class ColorSpectrumPseudoClass
+internal static class ColorSpectrumPseudoClass
 {
     public const string Pressed       = ":pressed";
     public const string DarkSelector  = ":dark-selector";

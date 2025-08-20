@@ -21,3 +21,10 @@ internal static class ColorSpectrumThemeConstants
     public const string SpectrumRectanglePart = "PART_SpectrumRectangle";
     public const string SpectrumOverlayRectanglePart = "PART_SpectrumOverlayRectangle";
 }
+
+internal static class ColorSliderThemeConstants
+{
+    public const string TrackPart = "PART_Track";
+    public const string DecreaseButtonPart = "PART_DecreaseButton";
+    public const string IncreaseButtonPart = "PART_IncreaseButton";
+}

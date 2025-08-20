@@ -19,7 +19,7 @@ using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
 
-public class ColorSpectrum : TemplatedControl
+internal class ColorSpectrum : TemplatedControl
 {
     /// <summary>
     /// Defines the <see cref="Color"/> property.

@@ -64,7 +64,8 @@
         </Style>
 
         <Style Selector="^ /template/ DockPanel#SliderContainer">
-            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.SliderContainerMargin}}" />
+            <Setter Property="Margin"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.SliderContainerMargin}}" />
         </Style>
     </Style>
 </ControlTheme>

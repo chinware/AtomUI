@@ -5,9 +5,13 @@
         <ResourceInclude Source="ColorBlockTheme.axaml"/>
         <ResourceInclude Source="ColorPickerTheme.axaml"/>
         <ResourceInclude Source="GradientColorPickerTheme.axaml"/>
-        <ResourceInclude Source="ColorPickerViewTheme.axaml"/>
-        <ResourceInclude Source="GradientColorPickerViewTheme.axaml"/>
-        <ResourceInclude Source="ColorSpectrumTheme.axaml"/>
-        <ResourceInclude Source="ColorSliderTheme.axaml"/>
+        <ResourceInclude Source="ColorView/ColorPickerViewTheme.axaml"/>
+        <ResourceInclude Source="ColorView/GradientColorPickerViewTheme.axaml"/>
+        <ResourceInclude Source="ColorView/ColorSpectrumTheme.axaml"/>
+        <ResourceInclude Source="ColorSlider/ColorPickerSliderTrackTheme.axaml"/>
+        <ResourceInclude Source="ColorSlider/GradientColorPickerTrackTheme.axaml"/>
+        <ResourceInclude Source="ColorSlider/ColorSliderTheme.axaml"/>
+        <ResourceInclude Source="ColorSlider/GradientColorSliderTheme.axaml"/>
+        <ResourceInclude Source="ColorSlider/ColorSliderThumbTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

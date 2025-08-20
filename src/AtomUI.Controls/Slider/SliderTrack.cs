@@ -12,7 +12,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Utilities;
@@ -103,10 +102,7 @@ public class SliderTrack : TemplatedControl
         get => GetValue(RangeValueProperty);
         set => SetValue(RangeValueProperty, value);
     }
-
-    /// <summary>
-    /// Dual thumb mode
-    /// </summary>
+    
     public bool IsRangeMode
     {
         get => GetValue(IsRangeModeProperty);
@@ -216,12 +212,6 @@ public class SliderTrack : TemplatedControl
     internal static readonly StyledProperty<Thickness> MarkBorderThicknessProperty =
         AvaloniaProperty.Register<SliderTrack, Thickness>(nameof(MarkBorderThickness));
 
-    internal static readonly RoutedEvent<PointerPressedEventArgs> TrailPressedEvent =
-        RoutedEvent.Register<SliderTrack, PointerPressedEventArgs>(nameof(TrailPressed), RoutingStrategies.Bubble);
-
-    internal static readonly RoutedEvent<PointerReleasedEventArgs> TrailReleasedEvent =
-        RoutedEvent.Register<SliderTrack, PointerReleasedEventArgs>(nameof(TrailReleased), RoutingStrategies.Bubble);
-
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderTrack>();
 
@@ -274,31 +264,11 @@ public class SliderTrack : TemplatedControl
     }
     
     #endregion
-
-    #region 事件定义
-
-    public event EventHandler<PointerPressedEventArgs>? TrailPressed
-    {
-        add => AddHandler(TrailPressedEvent, value);
-        remove => RemoveHandler(TrailPressedEvent, value);
-    }
-
-    public event EventHandler<PointerReleasedEventArgs>? TrailReleased
-    {
-        add => AddHandler(TrailReleasedEvent, value);
-        remove => RemoveHandler(TrailReleasedEvent, value);
-    }
-
-    #endregion
     
     private VectorEventArgs? _deferredThumbDrag;
     private Vector _lastDrag;
     private RenderContextData? _renderContextData;
     
-    /// <summary>
-    /// Gets the value of the <see cref="SliderThumb" />'s current position. This can differ from <see cref="Value" /> when
-    /// <see cref="ScrollViewer.IsDeferredScrollingEnabled" /> is true.
-    /// </summary>
     private double ThumbValue => Value + (_deferredThumbDrag == null
         ? 0
         : ValueFromDistance(_deferredThumbDrag.Vector.X, _deferredThumbDrag.Vector.Y));
@@ -482,13 +452,7 @@ public class SliderTrack : TemplatedControl
             topLevel.FocusManager?.ClearFocus();
         }
     }
-
-    /// <summary>
-    /// Calculates the change in the <see cref="Value" /> of the <see cref="SliderTrack" /> when the
-    /// <see cref="SliderThumb" /> moves.
-    /// </summary>
-    /// <param name="horizontal">The horizontal displacement of the thumb.</param>
-    /// <param name="vertical">The vertical displacement of the thumb.</param>
+    
     public virtual double ValueFromDistance(double horizontal, double vertical)
     {
         double scale = IsDirectionReversed ? -1 : 1;
