@@ -17,8 +17,7 @@ namespace AtomUI.Controls;
 
 public class Drawer : Control,
                       IMotionAwareControl,
-                      IControlSharedTokenResourcesHost,
-                      IResourceBindingManager
+                      IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -28,26 +27,26 @@ public class Drawer : Control,
     public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty =
         AvaloniaProperty.Register<Drawer, IDataTemplate?>(nameof(ContentTemplate));
 
-    public static readonly StyledProperty<bool> IsOpenProperty = AvaloniaProperty
-        .Register<Drawer, bool>(nameof(IsOpen), false, false, BindingMode.TwoWay);
+    public static readonly StyledProperty<bool> IsOpenProperty = 
+        AvaloniaProperty.Register<Drawer, bool>(nameof(IsOpen), false, false, BindingMode.TwoWay);
 
-    public static readonly StyledProperty<DrawerPlacement> PlacementProperty = AvaloniaProperty
-        .Register<Drawer, DrawerPlacement>(nameof(Placement), DrawerPlacement.Right);
+    public static readonly StyledProperty<DrawerPlacement> PlacementProperty = 
+        AvaloniaProperty.Register<Drawer, DrawerPlacement>(nameof(Placement), DrawerPlacement.Right);
 
-    public static readonly StyledProperty<Visual?> OpenOnProperty = AvaloniaProperty
-        .Register<Drawer, Visual?>(nameof(OpenOn));
+    public static readonly StyledProperty<Visual?> OpenOnProperty =
+        AvaloniaProperty.Register<Drawer, Visual?>(nameof(OpenOn));
 
-    public static readonly StyledProperty<bool> IsShowMaskProperty = AvaloniaProperty
-        .Register<Drawer, bool>(nameof(IsShowMask), true);
+    public static readonly StyledProperty<bool> IsShowMaskProperty = 
+        AvaloniaProperty.Register<Drawer, bool>(nameof(IsShowMask), true);
 
-    public static readonly StyledProperty<bool> IsShowCloseButtonProperty = AvaloniaProperty
-        .Register<Drawer, bool>(nameof(IsShowCloseButton), true);
+    public static readonly StyledProperty<bool> IsShowCloseButtonProperty = 
+        AvaloniaProperty.Register<Drawer, bool>(nameof(IsShowCloseButton), true);
 
-    public static readonly StyledProperty<bool> CloseWhenClickOnMaskProperty = AvaloniaProperty
-        .Register<Drawer, bool>(nameof(CloseWhenClickOnMask), true);
+    public static readonly StyledProperty<bool> CloseWhenClickOnMaskProperty = 
+        AvaloniaProperty.Register<Drawer, bool>(nameof(CloseWhenClickOnMask), true);
 
-    public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty
-        .Register<Drawer, string>(nameof(Title));
+    public static readonly StyledProperty<string> TitleProperty = 
+        AvaloniaProperty.Register<Drawer, string>(nameof(Title));
 
     public static readonly StyledProperty<object?> FooterProperty =
         AvaloniaProperty.Register<Drawer, object?>(nameof(Footer));
@@ -70,8 +69,8 @@ public class Drawer : Control,
     public static readonly StyledProperty<double> PushOffsetPercentProperty =
         AvaloniaProperty.Register<Drawer, double>(nameof(PushOffsetPercent));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Drawer>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Drawer>();
     
     [Content]
     [DependsOn(nameof(ContentTemplate))]
@@ -193,17 +192,13 @@ public class Drawer : Control,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => DrawerToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
 
     #endregion
 
     private DrawerContainer? _container;
-    private CompositeDisposable? _resourceBindingsDisposable;
-
+    private CompositeDisposable? _relayBindingDisposables;
+    private CompositeDisposable? _containerDisposables;
+    
     static Drawer()
     {
         SizeTypeProperty.OverrideDefaultValue<Drawer>(SizeType.Small);
@@ -229,18 +224,18 @@ public class Drawer : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         var parentDrawer = FindParentDrawer();
+        _relayBindingDisposables = new CompositeDisposable();
         if (parentDrawer != null)
         {
-            this.AddResourceBindingDisposable(BindUtils.RelayBind(parentDrawer, OpenOnProperty, this, OpenOnProperty, BindingMode.Default,
+            _relayBindingDisposables.Add(BindUtils.RelayBind(parentDrawer, OpenOnProperty, this, OpenOnProperty, BindingMode.Default,
                 BindingPriority.Template));
-            this.AddResourceBindingDisposable(BindUtils.RelayBind(parentDrawer, IsMotionEnabledProperty, this, IsMotionEnabledProperty,
+            _relayBindingDisposables.Add(BindUtils.RelayBind(parentDrawer, IsMotionEnabledProperty, this, IsMotionEnabledProperty,
                 BindingMode.Default, BindingPriority.Template));
         }
         else
         {
-            this.AddResourceBindingDisposable(Bind(OpenOnProperty, new Binding()
+            _relayBindingDisposables.Add(Bind(OpenOnProperty, new Binding()
             {
                 Priority = BindingPriority.Template,
                 RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor)
@@ -249,7 +244,7 @@ public class Drawer : Control,
                 }
             }));
         }
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty,
+        _relayBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty,
             DrawerTokenKey.PushOffsetPercent));
         SetupDialogSizeTypeBindings();
     }
@@ -257,24 +252,25 @@ public class Drawer : Control,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
+        _relayBindingDisposables?.Dispose();
+        _containerDisposables?.Dispose();
     }
 
     private void SetupDialogSizeTypeBindings()
     {
         if (SizeType == SizeType.Large)
         {
-            this.AddResourceBindingDisposable(
+            _relayBindingDisposables?.Add(
                 TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.LargeSize));
         }
         else if (SizeType == SizeType.Middle)
         {
-            this.AddResourceBindingDisposable(
+            _relayBindingDisposables?.Add(
                 TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.MiddleSize));
         }
         else
         {
-            this.AddResourceBindingDisposable(
+            _relayBindingDisposables?.Add(
                 TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.SmallSize));
         }
     }
@@ -357,6 +353,7 @@ public class Drawer : Control,
         NotifyBeforeClose(layer);
         Debug.Assert(_container != null);
         _container.Close(layer);
+        _containerDisposables?.Dispose();
     }
 
     private void CreateDrawerContainer()
@@ -367,22 +364,23 @@ public class Drawer : Control,
             {
                 Drawer = new WeakReference<Drawer>(this)
             };
-            BindUtils.RelayBind(this, ContentProperty, _container, DrawerContainer.ContentProperty);
-            BindUtils.RelayBind(this, ContentTemplateProperty, _container, DrawerContainer.ContentTemplateProperty);
-            BindUtils.RelayBind(this, FooterProperty, _container, DrawerContainer.FooterProperty);
-            BindUtils.RelayBind(this, FooterTemplateProperty, _container, DrawerContainer.FooterTemplateProperty);
-            BindUtils.RelayBind(this, ExtraProperty, _container, DrawerContainer.ExtraProperty);
-            BindUtils.RelayBind(this, ExtraTemplateProperty, _container, DrawerContainer.ExtraTemplateProperty);
-            BindUtils.RelayBind(this, DialogSizeProperty, _container, DrawerContainer.DialogSizeProperty);
-            BindUtils.RelayBind(this, PlacementProperty, _container, DrawerContainer.PlacementProperty);
-            BindUtils.RelayBind(this, TitleProperty, _container, DrawerContainer.TitleProperty);
-            BindUtils.RelayBind(this, IsShowMaskProperty, _container, DrawerContainer.IsShowMaskProperty);
-            BindUtils.RelayBind(this, IsShowCloseButtonProperty, _container, DrawerContainer.IsShowCloseButtonProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, _container, DrawerContainer.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, CloseWhenClickOnMaskProperty, _container,
-                DrawerContainer.CloseWhenClickOnMaskProperty);
-            BindUtils.RelayBind(this, PushOffsetPercentProperty, _container,
-                DrawerContainer.PushOffsetPercentProperty);
+            _containerDisposables = new CompositeDisposable();
+            _containerDisposables.Add(BindUtils.RelayBind(this, ContentProperty, _container, DrawerContainer.ContentProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, _container, DrawerContainer.ContentTemplateProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, FooterProperty, _container, DrawerContainer.FooterProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, FooterTemplateProperty, _container, DrawerContainer.FooterTemplateProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, ExtraProperty, _container, DrawerContainer.ExtraProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, ExtraTemplateProperty, _container, DrawerContainer.ExtraTemplateProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, DialogSizeProperty, _container, DrawerContainer.DialogSizeProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, _container, DrawerContainer.PlacementProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, TitleProperty, _container, DrawerContainer.TitleProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, IsShowMaskProperty, _container, DrawerContainer.IsShowMaskProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, IsShowCloseButtonProperty, _container, DrawerContainer.IsShowCloseButtonProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _container, DrawerContainer.IsMotionEnabledProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, CloseWhenClickOnMaskProperty, _container,
+                DrawerContainer.CloseWhenClickOnMaskProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, PushOffsetPercentProperty, _container,
+                DrawerContainer.PushOffsetPercentProperty));
         }
     }
 
