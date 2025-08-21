@@ -108,11 +108,7 @@ internal class TimePickerPresenter : PickerPresenterBase, IResourceBindingManage
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
 
@@ -129,8 +125,7 @@ internal class TimePickerPresenter : PickerPresenterBase, IResourceBindingManage
     public event EventHandler<ChoosingStatusEventArgs>? ChoosingStatueChanged;
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private IDisposable? _choosingStateDisposable;
     private Button? _nowButton;
     private Button? _confirmButton;
@@ -302,6 +297,13 @@ internal class TimePickerPresenter : PickerPresenterBase, IResourceBindingManage
                 ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(args.GetNewValue<bool>()));
             });
         }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _choosingStateDisposable?.Dispose();
+        _choosingStateDisposable = null;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
