@@ -8,19 +8,21 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="UseLayoutRounding" Value="False" />
         <Setter Property="BorderBrush" Value="Red" />
-        <Setter Property="Height" Value="20" />
-        <Setter Property="Width" Value="20" />
-        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Width" Value="12" />
+        <Setter Property="Height" Value="12" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border
-                    Margin="1"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}" />
+                <Border Name="{x:Static atom:ColorSliderThumbThemeConstants.FramePart}" 
+                    Background="{TemplateBinding Background}">
+                    <Ellipse x:Name="SelectionEllipse"
+                             StrokeThickness="2"
+                             Stroke="{TemplateBinding BorderBrush}"
+                             IsHitTestVisible="False"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch" />
+                </Border>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

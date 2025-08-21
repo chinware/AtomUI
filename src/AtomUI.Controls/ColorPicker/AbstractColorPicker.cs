@@ -144,15 +144,9 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ColorPickerToken.ID;
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
-    
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static AbstractColorPicker()
     {
@@ -164,7 +158,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public AbstractColorPicker()
     {
         this.RegisterResources();
-        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

@@ -119,7 +119,7 @@ public class ColorPickerToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         ColorPickerWidth                  = 234;
-        ColorPickerHandlerSizeLG          = 32;
+        ColorPickerHandlerSizeLG          = 32; // 用在触摸屏上
         ColorPickerHandlerSize            = 16;
         ColorPickerHandlerSizeSM          = 12;
         ColorPickerAlphaInputWidth        = 44;

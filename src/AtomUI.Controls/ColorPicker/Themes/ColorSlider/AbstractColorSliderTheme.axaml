@@ -6,6 +6,7 @@
                x:ClassModifier="internal">
     <Style Selector="^:is(atom|AbstractColorSlider)">
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Height" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderSize}}" />
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type atom:ColorSlider}">
@@ -64,9 +65,7 @@
                             <atom:ColorSliderThumb Name="ColorSliderThumb"
                                                    Margin="0"
                                                    Padding="0"
-                                                   DataContext="{TemplateBinding Value}"
-                                                   Height="{TemplateBinding Height}"
-                                                   Width="{TemplateBinding Height}" />
+                                                   DataContext="{TemplateBinding Value}"/>
                         </atom:ColorPickerSliderTrack>
                     </Grid>
                 </Border>

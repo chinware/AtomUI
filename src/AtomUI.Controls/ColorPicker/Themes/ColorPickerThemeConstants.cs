@@ -28,3 +28,8 @@ internal static class ColorSliderThemeConstants
     public const string DecreaseButtonPart = "PART_DecreaseButton";
     public const string IncreaseButtonPart = "PART_IncreaseButton";
 }
+
+internal static class ColorSliderThumbThemeConstants
+{
+    public const string FramePart = "PART_Frame";
+}

@@ -68,7 +68,7 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
     
     static AbstractColorPickerSliderTrack()
     {
-        AffectsArrange<Track>(MinimumProperty, MaximumProperty, ValueProperty);
+        AffectsArrange<AbstractColorPickerSliderTrack>(MinimumProperty, MaximumProperty, ValueProperty);
     }
     
     public virtual double ValueFromPoint(Point point)
@@ -179,6 +179,5 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
         {
             ApplyThumbDrag(e);
         }
-
     }
 }

@@ -170,8 +170,8 @@ internal class AbstractColorSlider : RangeBase
     {
         PressedMixin.Attach<AbstractColorSlider>();
         FocusableProperty.OverrideDefaultValue<AbstractColorSlider>(true);
-        Thumb.DragStartedEvent.AddClassHandler<AbstractColorSlider>((x, e) => x.OnThumbDragStarted(e), RoutingStrategies.Bubble);
-        Thumb.DragCompletedEvent.AddClassHandler<AbstractColorSlider>((x, e) => x.OnThumbDragCompleted(e),
+        Thumb.DragStartedEvent.AddClassHandler<AbstractColorSlider>((x, e) => x.NotifyThumbDragStarted(e), RoutingStrategies.Bubble);
+        Thumb.DragCompletedEvent.AddClassHandler<AbstractColorSlider>((x, e) => x.NotifyThumbDragCompleted(e),
             RoutingStrategies.Bubble);
 
         ValueProperty.OverrideMetadata<AbstractColorSlider>(new(enableDataValidation: true));
@@ -189,7 +189,6 @@ internal class AbstractColorSlider : RangeBase
             IsDragging = false;
             return;
         }
-
         if (IsDragging)
         {
             MoveToPoint(e.GetCurrentPoint(Track));
@@ -223,7 +222,7 @@ internal class AbstractColorSlider : RangeBase
         var calcVal     = Math.Abs(-logicalPos);
         var range       = Maximum - Minimum;
         var finalValue  = calcVal * range + Minimum;
-
+        
         SetCurrentValue(ValueProperty, finalValue);
     }
     
@@ -238,12 +237,12 @@ internal class AbstractColorSlider : RangeBase
         }
     }
     
-    protected virtual void OnThumbDragStarted(VectorEventArgs e)
+    protected virtual void NotifyThumbDragStarted(VectorEventArgs e)
     {
         IsDragging = true;
     }
     
-    protected virtual void OnThumbDragCompleted(VectorEventArgs e)
+    protected virtual void NotifyThumbDragCompleted(VectorEventArgs e)
     {
         IsDragging = false;
     }

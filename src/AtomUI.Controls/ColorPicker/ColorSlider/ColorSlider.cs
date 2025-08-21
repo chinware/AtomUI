@@ -1,4 +1,5 @@
 using AtomUI.Controls.Themes;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -45,5 +46,15 @@ internal class ColorSlider : AbstractColorSlider
                 _increaseButtonReleaseDispose = _increaseButton.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
             }
         }
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size = base.MeasureOverride(availableSize);
+        if (Track is ColorPickerSliderTrack track)
+        {
+            ThumbSize = track.Thumb?.DesiredSize.Width ?? 0.0d;
+        }
+        return size;
     }
 }

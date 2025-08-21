@@ -15,9 +15,9 @@
                     MinWidth="{TemplateBinding MinWidth}"
                     MinHeight="{TemplateBinding MinHeight}">
                 <StackPanel Name="RootLayout"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal" ClipToBounds="False">
                     <atom:ColorPickerPaletteGroup Name="PaletteGroup" />
-                    <StackPanel Orientation="Vertical" Name="ColorPickerContainer">
+                    <StackPanel Orientation="Vertical" Name="ColorPickerContainer" ClipToBounds="False">
                         <atom:ColorSpectrum
                             Name="ColorSpectrum"
                             Components="SaturationValue"
@@ -28,14 +28,15 @@
                             MinHue="{TemplateBinding MinHue}"
                             MinSaturation="{TemplateBinding MinSaturation}"
                             MinValue="{TemplateBinding MinValue}" />
-                        <DockPanel LastChildFill="True">
+                        <DockPanel LastChildFill="True" ClipToBounds="False">
                             <atom:ColorBlock Name="ColorPreview" Background="DarkRed" DockPanel.Dock="Right" />
-                            <DockPanel Name="SliderContainer" LastChildFill="True">
+                            <DockPanel Name="SliderContainer" LastChildFill="True" ClipToBounds="False">
                                 <atom:ColorSlider Name="ColorSpectrumThirdComponentSlider" DockPanel.Dock="Top" />
                                 <atom:ColorSlider Name="ColorSpectrumAlphaSlider" DockPanel.Dock="Bottom" />
                                 <Control />
                             </DockPanel>
                         </DockPanel>
+                        <atom:LineEdit SizeType="Small"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
