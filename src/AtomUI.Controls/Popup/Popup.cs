@@ -146,16 +146,11 @@ public class Popup : AvaloniaPopup,
 
     Control IMotionAwareControl.PropertyBindTarget => this;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
 
     internal BaseMotionActor? MotionActor;
-    private CompositeDisposable? _resourceBindingsDisposable;
     private PopupBuddyLayer? _buddyLayer;
     private IDisposable? _selfLightDismissDisposable;
     private IManagedPopupPositionerPopup? _managedPopupPositioner;
@@ -205,11 +200,9 @@ public class Popup : AvaloniaPopup,
         }
     }
     
-    // Popup 好像不加入视觉树，所以我们放在逻辑树
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
