@@ -8,7 +8,7 @@
         <ResourceInclude Source="AdornerLayer/Themes/AdornerLayer.axaml" />
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
         <ResourceInclude Source="ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
-        <ResourceInclude Source="Avatar/Themes/AvatarTheme.axaml" />
+        <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" />
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
@@ -49,7 +49,7 @@
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />
         <ResourceInclude Source="Skeleton/Themes/SkeletonThemes.axaml" />
         <ResourceInclude Source="Slider/Themes/SliderThemes.axaml" />
-        <ResourceInclude Source="Switch/Themes/ToggleSwitchTheme.axaml" />
+        <ResourceInclude Source="Switch/Themes/ToggleSwitchThemes.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
         <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
         <ResourceInclude Source="TextBlock/Themes/HyperLinkTextBlockTheme.axaml" />
