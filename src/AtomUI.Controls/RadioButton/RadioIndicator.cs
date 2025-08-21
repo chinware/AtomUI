@@ -151,6 +151,12 @@ internal class RadioIndicator : Control,
             RadioBorderThicknessProperty,
             RadioDotEffectSizeProperty);
     }
+    
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        ConfigureTransitions(false);
+    }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
@@ -158,7 +164,6 @@ internal class RadioIndicator : Control,
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-        ConfigureTransitions();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -174,17 +179,20 @@ internal class RadioIndicator : Control,
         UpdatePseudoClasses();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
-                TransitionUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
-                    SharedTokenKey.MotionDurationFast)
-            };
+                Transitions = new Transitions
+                {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
+                        SharedTokenKey.MotionDurationFast)
+                };
+            }
         }
         else
         {
@@ -214,7 +222,7 @@ internal class RadioIndicator : Control,
         {
             if (e.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
             else if (e.Property == IsPointerOverProperty ||
                 e.Property == IsCheckedProperty ||

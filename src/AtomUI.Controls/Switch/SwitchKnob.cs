@@ -198,6 +198,12 @@ internal class SwitchKnob : TemplatedControl
         return KnobSize;
     }
 
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        ConfigureTransitions(false);
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -220,24 +226,11 @@ internal class SwitchKnob : TemplatedControl
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
 
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
-    {
-        base.OnSizeChanged(e);
-        this.EnableTransitions();
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        ConfigureTransitions();
-        this.DisableTransitions();
-    }
-    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -254,6 +247,7 @@ internal class SwitchKnob : TemplatedControl
         {
             _cancellationTokenSource?.Cancel();
         }
+        
     }
 
     public sealed override void Render(DrawingContext context)
@@ -292,15 +286,18 @@ internal class SwitchKnob : TemplatedControl
         }
     }
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
-                TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
-            };
+                Transitions = new Transitions
+                {
+                    TransitionUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
+                };
+            }
         }
         else
         {
