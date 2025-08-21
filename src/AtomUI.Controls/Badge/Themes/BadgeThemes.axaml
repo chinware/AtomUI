@@ -4,6 +4,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="CountBadgeAdornerTheme.axaml" />
         <ResourceInclude Source="DotBadgeAdornerTheme.axaml" />
-        <ResourceInclude Source="RibbonBadgeAdorner.axaml" />
+        <ResourceInclude Source="RibbonBadgeAdornerTheme.axaml" />
+        <ResourceInclude Source="DotBadgeIndicatorTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

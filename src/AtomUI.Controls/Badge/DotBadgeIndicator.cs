@@ -1,15 +1,10 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class DotBadgeIndicator : Control,
-                                   IResourceBindingManager
+internal class DotBadgeIndicator : Control
 {
     internal static readonly StyledProperty<IBrush?> BadgeDotColorProperty =
         AvaloniaProperty.Register<DotBadgeIndicator, IBrush?>(
@@ -41,14 +36,7 @@ internal class DotBadgeIndicator : Control,
         set => SetValue(BadgeShadowSizeProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-
     private BoxShadows _boxShadows;
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static DotBadgeIndicator()
     {
@@ -58,18 +46,7 @@ internal class DotBadgeIndicator : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, BadgeShadowSizeProperty, BadgeTokenKey.BadgeShadowSize));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BadgeShadowColorProperty,
-            BadgeTokenKey.BadgeShadowColor));
         BuildBoxShadow();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
