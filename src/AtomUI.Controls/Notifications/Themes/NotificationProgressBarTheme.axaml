@@ -1,0 +1,10 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:NotificationProgressBar}" TargetType="atom:NotificationProgressBar">
+        <Setter Property="ProgressIndicatorThickness" Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationProgressHeight}}"/>
+        <Setter Property="ProgressIndicatorBrush" Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationProgressBg}}"/>
+    </ControlTheme>
+</ResourceDictionary>

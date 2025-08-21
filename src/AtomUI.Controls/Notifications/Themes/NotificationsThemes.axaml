@@ -4,5 +4,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="NotificationCardTheme.axaml"/>
         <ResourceInclude Source="WindowNotificationManagerTheme.axaml"/>
+        <ResourceInclude Source="NotificationProgressBarTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

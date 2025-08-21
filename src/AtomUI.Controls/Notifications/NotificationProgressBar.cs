@@ -1,16 +1,11 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using AtomUI.Utils;
+﻿using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class NotificationProgressBar : Control,
-                                         IResourceBindingManager
+internal class NotificationProgressBar : TemplatedControl
 {
     #region 公共属性定义
 
@@ -51,19 +46,7 @@ internal class NotificationProgressBar : Control,
     }
 
     #endregion
-
-    #region 内部属性定义
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-
-    #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
-
+    
     static NotificationProgressBar()
     {
         AffectsMeasure<NotificationProgressBar>(ProgressIndicatorThicknessProperty);
@@ -75,22 +58,6 @@ internal class NotificationProgressBar : Control,
     protected override Size MeasureOverride(Size availableSize)
     {
         return new Size(availableSize.Width, ProgressIndicatorThickness);
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorThicknessProperty,
-            NotificationTokenKey.NotificationProgressHeight));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ProgressIndicatorBrushProperty,
-            NotificationTokenKey.NotificationProgressBg));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
     }
 
     public override void Render(DrawingContext context)
