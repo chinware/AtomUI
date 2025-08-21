@@ -98,15 +98,10 @@ public class GroupBox : ContentControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => GroupBoxToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private readonly BorderRenderHelper _borderRenderHelper;
     private Control? _headerContentContainer;
     private Border? _frame;
