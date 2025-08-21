@@ -820,9 +820,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IndicatorLeftModeMargin = new TokenResourceKey("Timeline.IndicatorLeftModeMargin");
         public static readonly TokenResourceKey IndicatorMiddleModeMargin = new TokenResourceKey("Timeline.IndicatorMiddleModeMargin");
         public static readonly TokenResourceKey IndicatorRightModeMargin = new TokenResourceKey("Timeline.IndicatorRightModeMargin");
+        public static readonly TokenResourceKey IndicatorSize = new TokenResourceKey("Timeline.IndicatorSize");
         public static readonly TokenResourceKey IndicatorTailColor = new TokenResourceKey("Timeline.IndicatorTailColor");
         public static readonly TokenResourceKey IndicatorTailWidth = new TokenResourceKey("Timeline.IndicatorTailWidth");
-        public static readonly TokenResourceKey IndicatorWidth = new TokenResourceKey("Timeline.IndicatorWidth");
         public static readonly TokenResourceKey ItemPaddingBottom = new TokenResourceKey("Timeline.ItemPaddingBottom");
         public static readonly TokenResourceKey ItemPaddingBottomLG = new TokenResourceKey("Timeline.ItemPaddingBottomLG");
         public static readonly TokenResourceKey LastItemContentMinHeight = new TokenResourceKey("Timeline.LastItemContentMinHeight");
