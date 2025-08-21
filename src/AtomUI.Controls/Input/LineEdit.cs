@@ -5,8 +5,7 @@ using Avalonia.Controls.Templates;
 
 namespace AtomUI.Controls;
 
-public class LineEdit : TextBox,
-                        IMotionAwareControl
+public class LineEdit : TextBox, IMotionAwareControl
 {
     #region 公共属性定义
 
