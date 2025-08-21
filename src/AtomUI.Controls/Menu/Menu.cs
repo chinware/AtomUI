@@ -44,15 +44,9 @@ public class Menu : AvaloniaMenu,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+    
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     public Menu()
     {
@@ -69,18 +63,18 @@ public class Menu : AvaloniaMenu,
 
         base.PrepareContainerForItemOverride(container, item, index);
     }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, "TopLevelMenuItemTheme"));
-    }
     
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+
+        this.AddResourceBindingDisposable(
+            TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, "TopLevelMenuItemTheme"));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 }
