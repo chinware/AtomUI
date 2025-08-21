@@ -17,6 +17,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -101,12 +102,13 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
     internal static readonly StyledProperty<double> HorizontalBorderThicknessProperty =
         AvaloniaProperty.Register<NavMenuItem, double>(nameof(HorizontalBorderThickness));
 
-    public double HorizontalBorderThickness
+    internal double HorizontalBorderThickness
     {
         get => GetValue(HorizontalBorderThicknessProperty);
         set => SetValue(HorizontalBorderThicknessProperty, value);
     }
 
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     #endregion
 
     private static readonly FuncTemplate<Panel?> DefaultPanel =
@@ -122,15 +124,8 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<NavMenu>(false);
     }
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private ItemsPresenter? _menuItemsPresenter;
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
 
     public NavMenu()
     {
@@ -173,6 +168,13 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
             Source      = this,
         });
     }
+    
+    public override void EndInit()
+    {
+        ConfigureControlTheme();
+        ConfigureItemContainerTheme();
+        base.EndInit();
+    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -188,30 +190,73 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         {
             if (change.Property == ModeProperty)
             {
-                SetupControlTheme();
+                ConfigureControlTheme(true);
                 HandleModeChanged();
             }
         }
     }
 
-    private void SetupControlTheme()
+    private void ConfigureControlTheme(bool force = false)
     {
-        if (Mode == NavMenuMode.Horizontal)
+        string? resourceKey = null;
+        if (Theme == null || force)
         {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, NavMenuThemeConstants.HorizontalNavMenuThemeId));
+            if (Mode == NavMenuMode.Horizontal)
+            {
+                resourceKey = NavMenuThemeConstants.HorizontalNavMenuThemeId;
+            }
+            else
+            {
+                resourceKey = NavMenuThemeConstants.VerticalNavMenuThemeId;
+            }
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        Theme = theme;
+                    }
+                }
+            }
         }
-        else
+    }
+    
+    private void ConfigureItemContainerTheme(bool force = false)
+    {
+        if (ItemContainerTheme is null || force)
         {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, NavMenuThemeConstants.VerticalNavMenuThemeId));
+            string resourceKey;
+            if (Mode == NavMenuMode.Vertical)
+            {
+                resourceKey = NavMenuThemeConstants.VerticalNavMenuItemThemeId;
+            }
+            else if (Mode == NavMenuMode.Inline)
+            {
+                resourceKey = NavMenuThemeConstants.InlineNavMenuItemThemeId;
+            }
+            else
+            {
+                resourceKey = NavMenuThemeConstants.TopLevelHorizontalNavMenuItemThemeId;
+            }
+
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        ItemContainerTheme = theme;
+                    }
+                }
+            }
         }
     }
 
     private void HandleModeChanged()
     {
         CloseChildItemsRecursively();
-        SetupItemContainerTheme(true);
+        ConfigureItemContainerTheme(true);
         RegenerateContainersRecursively();
         SetupMenuItemsPresenter();
         SetupInteractionHandler(true);
@@ -271,11 +316,11 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _resourceBindingsDisposable = new CompositeDisposable();
-        SetupControlTheme();
-        SetupItemContainerTheme();
         base.OnAttachedToLogicalTree(e);
-        
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
+            SharedTokenKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this)));
         SetupInteractionHandler();
     }
 
@@ -288,10 +333,6 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
-            SharedTokenKey.LineWidth,
-            BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this)));
         InteractionHandler?.Attach(this);
     }
 
@@ -320,29 +361,6 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         if (needMount)
         {
             InteractionHandler?.Attach(this);
-        }
-    }
-
-    private void SetupItemContainerTheme(bool force = false)
-    {
-        if (ItemContainerTheme is null || force)
-        {
-            string resourceKey;
-            if (Mode == NavMenuMode.Vertical)
-            {
-                resourceKey = NavMenuThemeConstants.VerticalNavMenuItemThemeId;
-            }
-            else if (Mode == NavMenuMode.Inline)
-            {
-                resourceKey = NavMenuThemeConstants.InlineNavMenuItemThemeId;
-            }
-            else
-            {
-                resourceKey = NavMenuThemeConstants.TopLevelHorizontalNavMenuItemThemeId;
-            }
-
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, resourceKey));
         }
     }
 
