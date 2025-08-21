@@ -12,8 +12,7 @@ namespace AtomUI.Controls;
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
 public class TextBox : AvaloniaTextBox,
-                       IControlSharedTokenResourcesHost,
-                       IResourceBindingManager
+                       IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -94,15 +93,9 @@ public class TextBox : AvaloniaTextBox,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private TextBoxInnerBox? _textBoxInnerBox;
 
     static TextBox()
@@ -173,18 +166,7 @@ public class TextBox : AvaloniaTextBox,
         {
             _textBoxInnerBox.OwningTextBox = this;
         }
-    }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         SetupEffectiveShowClearButton();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
     }
 }

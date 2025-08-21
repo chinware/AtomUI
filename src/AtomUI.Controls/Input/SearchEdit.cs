@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Themes;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -17,7 +18,7 @@ public enum SearchEditButtonStyle
     Primary
 }
 
-public class SearchEdit : LineEdit
+public class SearchEdit : LineEdit, IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -41,6 +42,13 @@ public class SearchEdit : LineEdit
 
     #endregion
 
+    
+    #region 内部属性定义
+    
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+
+    #endregion
+    
     #region 公共事件定义
 
     public static readonly RoutedEvent<RoutedEventArgs> SearchButtonClickEvent =
