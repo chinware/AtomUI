@@ -594,11 +594,7 @@ public class Calendar : TemplatedControl,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CalendarToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
     
@@ -607,7 +603,6 @@ public class Calendar : TemplatedControl,
     internal const int RowsPerYear = 3;
     internal const int ColumnsPerYear = 4;
     private bool _displayDateIsChanging;
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     private bool _isShiftPressed;
 

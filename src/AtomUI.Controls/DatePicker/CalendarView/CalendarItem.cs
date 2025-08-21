@@ -207,15 +207,10 @@ internal class CalendarItem : TemplatedControl,
         }
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     protected DateTime _currentMonth;
     protected UniformGrid? _headerLayout;
     protected bool _isMouseLeftButtonDownYearView;

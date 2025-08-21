@@ -40,13 +40,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-    
-    private CompositeDisposable? _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     /// <summary>
     /// Gets or sets the Calendar associated with this button.
