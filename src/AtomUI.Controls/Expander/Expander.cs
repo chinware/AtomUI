@@ -77,8 +77,8 @@ public class Expander : AvaloniaExpander,
     public static readonly StyledProperty<ExpanderIconPosition> ExpandIconPositionProperty =
         AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
     
     public SizeType SizeType
     {
@@ -182,15 +182,9 @@ public class Expander : AvaloniaExpander,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ExpanderToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
-    
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     public Expander()
     {
@@ -250,7 +244,7 @@ public class Expander : AvaloniaExpander,
         base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == AddOnContentProperty)
+            if (change.Property == ExpandIconProperty)
             {
                 SetupDefaultIcon();
             }
