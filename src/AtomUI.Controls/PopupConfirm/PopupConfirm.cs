@@ -1,7 +1,5 @@
-﻿using AtomUI.Controls.PopupConfirmLang;
-using AtomUI.IconPkg;
+﻿using AtomUI.IconPkg;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -151,8 +149,6 @@ public class PopupConfirm : FlyoutHost,
     {
         base.OnAttachedToVisualTree(e);
         Flyout                      ??= new PopupConfirmFlyout(this);
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, OkTextProperty, PopupConfirmLangResourceKey.Ok));
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, CancelTextProperty, PopupConfirmLangResourceKey.Cancel));
     }
 }
 

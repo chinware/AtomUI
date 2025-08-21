@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:popupConfirmLang="clr-namespace:AtomUI.Controls.PopupConfirmLang"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:PopupConfirm}" TargetType="atom:PopupConfirm">
+        <Setter Property="OkText" Value="{DynamicResource {x:Static popupConfirmLang:PopupConfirmLangResourceKey.Ok}}"/>
+        <Setter Property="CancelText" Value="{DynamicResource {x:Static popupConfirmLang:PopupConfirmLangResourceKey.Cancel}}"/>
+    </ControlTheme>
+</ResourceDictionary>

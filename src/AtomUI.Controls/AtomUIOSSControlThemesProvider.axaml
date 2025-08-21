@@ -39,7 +39,7 @@
         <ResourceInclude Source="OptionButtonBox/Themes/OptionButtonBoxThemes.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
-        <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
+        <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmThemes.axaml" />
         <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
         <ResourceInclude Source="Primitives/SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />
         <ResourceInclude Source="ProgressBar/Themes/ProgressBarThemes.axaml" />
