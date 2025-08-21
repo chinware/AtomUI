@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
@@ -12,7 +11,6 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -28,8 +26,8 @@ internal enum CheckBoxIndicatorState
 }
 
 internal class CheckBoxIndicator : TemplatedControl,
-                                    IWaveAdornerInfoProvider,
-                                    IResourceBindingManager
+                                   IWaveAdornerInfoProvider,
+                                   IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -91,16 +89,11 @@ internal class CheckBoxIndicator : TemplatedControl,
         set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
 
     private Icon? _checkedMark;
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static CheckBoxIndicator()
     {
