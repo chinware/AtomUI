@@ -110,11 +110,7 @@ internal class DatePickerPresenter : PickerPresenterBase,
         set => SetValue(TempSelectedTimeProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
 
@@ -137,7 +133,6 @@ internal class DatePickerPresenter : PickerPresenterBase,
     protected Button? ConfirmButton;
     protected PickerCalendar? CalendarView;
     protected TimeView? TimeView;
-    private CompositeDisposable? _resourceBindingsDisposable;
     private CompositeDisposable? _pointerDisposables;
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
