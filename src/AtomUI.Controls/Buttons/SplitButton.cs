@@ -274,15 +274,10 @@ public class SplitButton : ContentControl,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable  
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private Button? _primaryButton;
     private Button? _secondaryButton;
     private KeyGesture? _hotkey;
