@@ -73,6 +73,7 @@
         </Setter>
         
         <Style Selector="^:is(atom|ButtonSpinnerInnerBox)">
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="SpinnerBorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
             <Setter Property="SpinnerHandleWidthToken" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
         
