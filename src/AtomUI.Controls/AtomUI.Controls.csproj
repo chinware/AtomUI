@@ -28,22 +28,5 @@
         <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Avalonia.Base">
-        <HintPath>..\..\..\..\output\bin\Debug\net9.0\Avalonia.Base.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="ColorPicker\Themes\ColorSlider\AbstractColorPickerSliderTrackTheme.axaml" />
-      <AdditionalFiles Include="ColorPicker\Themes\ColorSlider\ColorPickerSliderTrackTheme.axaml" />
-      <AdditionalFiles Include="ColorPicker\Themes\ColorSlider\ColorSliderTheme.axaml" />
-      <AdditionalFiles Include="ColorPicker\Themes\ColorSlider\GradientColorPickerTrackTheme.axaml" />
-      <AdditionalFiles Include="ColorPicker\Themes\ColorView\AbstractColorPickerViewTheme.axaml" />
-      <AdditionalFiles Include="ColorPicker\Themes\ColorView\ColorPickerViewTheme.axaml" />
-      <AdditionalFiles Include="ColorPicker\Themes\ColorView\ColorSpectrumTheme.axaml" />
-      <AdditionalFiles Include="ColorPicker\Themes\ColorView\GradientColorPickerViewTheme.axaml" />
-    </ItemGroup>
-
+    
 </Project>

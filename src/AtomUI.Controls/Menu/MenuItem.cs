@@ -18,11 +18,9 @@ namespace AtomUI.Controls;
 
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
-[PseudoClasses(TopLevelPC)]
+[PseudoClasses(MenuItemPseudoClass.TopLevel)]
 public class MenuItem : AvaloniaMenuItem
 {
-    public const string TopLevelPC = ":toplevel";
-
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -86,6 +84,7 @@ public class MenuItem : AvaloniaMenuItem
         }
         else if (change.Property == IconProperty)
         {
+            // 不要删掉，因为父类添加了，删除这几行会导致 icon 到 icon presenter 失败
             if (change.OldValue is Icon oldIcon)
             {
                 oldIcon.SetTemplatedParent(null);
@@ -109,7 +108,7 @@ public class MenuItem : AvaloniaMenuItem
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(TopLevelPC, IsTopLevel);
+        PseudoClasses.Set(MenuItemPseudoClass.TopLevel, IsTopLevel);
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

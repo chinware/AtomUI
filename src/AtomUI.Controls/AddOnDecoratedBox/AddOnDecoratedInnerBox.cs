@@ -2,7 +2,6 @@
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -169,21 +168,8 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-    
-        if (change.Property == LeftAddOnContentProperty || 
-            change.Property == RightAddOnContentProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                oldControl.SetTemplatedParent(null);
-            }
-    
-            if (change.NewValue is Control newControl)
-            {
-                newControl.SetTemplatedParent(this);
-            }
-        }
-        else if (change.Property == StyleVariantProperty)
+        
+        if (change.Property == StyleVariantProperty)
         {
             UpdatePseudoClasses();
         }

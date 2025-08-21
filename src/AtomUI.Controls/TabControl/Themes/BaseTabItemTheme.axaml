@@ -6,7 +6,8 @@
               x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:TabItem">
-            <Border Name="{x:Static atom:TabItemThemeConstants.FramePart}">
+            <Border Name="{x:Static atom:TabItemThemeConstants.FramePart}"
+                    Background="{TemplateBinding Background}">
                 <StackPanel Name="{x:Static atom:TabItemThemeConstants.ContentLayoutPart}"
                             Orientation="Horizontal">
                     <atom:IconPresenter Name="{x:Static atom:TabItemThemeConstants.ItemIconPresenterPart}"
@@ -26,6 +27,7 @@
     <Style Selector="^:is(atom|TabItem)">
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
+        <Setter Property="Background" Value="Transparent" />
 
         <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CloseIconMargin}}" />

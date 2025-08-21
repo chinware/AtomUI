@@ -1,5 +1,4 @@
-﻿using AtomUI.Reflection;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
@@ -61,22 +60,4 @@ public class LineEdit : TextBox, IMotionAwareControl
     Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == LeftAddOnProperty ||
-            change.Property == RightAddOnProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                oldControl.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Control newControl)
-            {
-                newControl.SetTemplatedParent(this);
-            }
-        }
-    }
 }

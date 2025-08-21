@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -207,20 +206,8 @@ public class AddOnDecoratedBox : ContentControl,
                 SetupInnerBoxCornerRadius();
             }
         }
-
-        if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
-        {
-            if (change.OldValue is StyledElement oldValue)
-            {
-                oldValue.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is StyledElement newValue)
-            {
-                newValue.SetTemplatedParent(this);
-            }
-        }
-        else if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
+        
+        if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
         {
             SetupAddOnBorderInfo();
         }
