@@ -118,15 +118,9 @@ public class Alert : TemplatedControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AlertToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static Alert()
     {
@@ -203,8 +197,6 @@ public class Alert : TemplatedControl,
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
-        Debug.Assert(CloseIcon != null);
-        CloseIcon.SetTemplatedParent(this);
     }
     
     private void UpdatePseudoClasses()
