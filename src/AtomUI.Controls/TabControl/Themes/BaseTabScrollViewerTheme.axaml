@@ -38,6 +38,8 @@
         </Setter>
         
         <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="EdgeShadowStartColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}"/>
+        <Setter Property="MenuEdgeThickness" Value="{DynamicResource {x:Static atom:TabControlTokenKey.MenuEdgeThickness}}"/>
         
         <Style Selector="^ /template/ atom|IconButton#PART_ScrollMenuIndicator">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>

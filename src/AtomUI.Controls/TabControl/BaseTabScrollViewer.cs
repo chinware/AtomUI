@@ -1,9 +1,5 @@
 ﻿using System.Globalization;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
@@ -22,8 +18,7 @@ namespace AtomUI.Controls;
 [TemplatePart(TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart, typeof(Control))]
 [TemplatePart(TabScrollViewerThemeConstants.ScrollMenuIndicatorPart, typeof(IconButton))]
 [TemplatePart(TabScrollViewerThemeConstants.ScrollViewContentPart, typeof(ScrollContentPresenter))]
-internal abstract class BaseTabScrollViewer : ScrollViewer,
-                                              IResourceBindingManager
+internal abstract class BaseTabScrollViewer : ScrollViewer
 {
     private const int EdgeIndicatorZIndex = 1000;
 
@@ -44,8 +39,8 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
             o => o.MenuEdgeThickness,
             (o, v) => o.MenuEdgeThickness = v);
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabScrollViewer>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabScrollViewer>();
 
     private Dock _tabStripPlacement;
 
@@ -77,19 +72,12 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-
     #endregion
 
     private protected IconButton? _menuIndicator;
     private protected Border? _startEdgeIndicator;
     private protected Border? _endEdgeIndicator;
     private protected MenuFlyout? _menuFlyout;
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static BaseTabScrollViewer()
     {
@@ -211,22 +199,6 @@ internal abstract class BaseTabScrollViewer : ScrollViewer,
         _endEdgeIndicator   = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart);
 
         SetupIndicatorsVisibility();
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, EdgeShadowStartColorProperty,
-            SharedTokenKey.ColorFillSecondary));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MenuEdgeThicknessProperty,
-            TabControlTokenKey.MenuEdgeThickness));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
     }
 
     protected override Size MeasureOverride(Size availableSize)

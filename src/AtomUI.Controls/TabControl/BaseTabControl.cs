@@ -89,17 +89,12 @@ public class BaseTabControl : AvaloniaTabControl,
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
     
     #endregion
-
-    private Border? _frame;
+    
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
-    private CompositeDisposable? _resourceBindingsDisposable;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     static BaseTabControl()
     {
@@ -117,14 +112,7 @@ public class BaseTabControl : AvaloniaTabControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _frame = e.NameScope.Find<Border>(TabControlThemeConstants.FramePart);
         _alignWrapper   = e.NameScope.Find<Panel>(TabControlThemeConstants.AlignWrapperPart);
-        if (_frame is not null)
-        {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-                SharedTokenKey.BorderThickness, BindingPriority.Template,
-                new RenderScaleAwareThicknessConfigure(this)));
-        }
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -139,8 +127,9 @@ public class BaseTabControl : AvaloniaTabControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
-            TabControlTokenKey.TabAndContentGutter));
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
