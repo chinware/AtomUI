@@ -2,12 +2,10 @@
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Metadata;
 
@@ -21,9 +19,7 @@ public enum FlyoutTriggerType
     Click
 }
 
-public class FlyoutHost : Control,
-                          IMotionAwareControl,
-                          IResourceBindingManager
+public class FlyoutHost : TemplatedControl, IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -188,16 +184,12 @@ public class FlyoutHost : Control,
     #region 内部属性定义
 
     Control IMotionAwareControl.PropertyBindTarget => this;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private readonly FlyoutStateHelper _flyoutStateHelper;
+    private CompositeDisposable? _flyoutStateHelperDisposables;
+    private CompositeDisposable? _flyoutDisposables;
     
     static FlyoutHost()
     {
@@ -213,41 +205,42 @@ public class FlyoutHost : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty);
-        BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
-        BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
-            FlyoutStateHelper.MouseEnterDelayProperty);
-        BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
-            FlyoutStateHelper.MouseLeaveDelayProperty);
-        BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
+        _flyoutStateHelperDisposables = new CompositeDisposable();
+        _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty));
+        _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty));
+        _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
+            FlyoutStateHelper.MouseEnterDelayProperty));
+        _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
+            FlyoutStateHelper.MouseLeaveDelayProperty));
+        _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, TriggerProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty));
         SetupFlyoutProperties();
         _flyoutStateHelper.NotifyAttachedToVisualTree();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MarginToAnchorProperty, SharedTokenKey.UniformlyMarginXXS));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKey.MotionDurationMid));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
-        this.DisposeTokenBindings();
+        _flyoutStateHelperDisposables?.Dispose();
+        _flyoutStateHelperDisposables = null;
     }
 
     protected virtual void SetupFlyoutProperties()
     {
         if (Flyout is not null)
         {
-            BindUtils.RelayBind(this, PlacementProperty, Flyout, FlyoutControl.PlacementProperty);
-            BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout, FlyoutControl.PlacementAnchorProperty);
-            BindUtils.RelayBind(this, PlacementGravityProperty, Flyout, FlyoutControl.PlacementGravityProperty);
-            BindUtils.RelayBind(this, IsShowArrowProperty, Flyout, FlyoutControl.IsShowArrowProperty);
-            BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout, FlyoutControl.IsPointAtCenterProperty);
-            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout, PopupFlyoutBase.MarginToAnchorProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, PopupFlyoutBase.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, MotionDurationProperty, Flyout, PopupFlyoutBase.MotionDurationProperty);
-            BindUtils.RelayBind(this, OpenMotionProperty, Flyout, PopupFlyoutBase.OpenMotionProperty);
-            BindUtils.RelayBind(this, CloseMotionProperty, Flyout, PopupFlyoutBase.CloseMotionProperty);
+            _flyoutDisposables?.Dispose();
+            _flyoutDisposables = new CompositeDisposable();
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, Flyout, FlyoutControl.PlacementProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout, FlyoutControl.PlacementAnchorProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, Flyout, FlyoutControl.PlacementGravityProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, Flyout, FlyoutControl.IsShowArrowProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout, FlyoutControl.IsPointAtCenterProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout, PopupFlyoutBase.MarginToAnchorProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, PopupFlyoutBase.IsMotionEnabledProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, MotionDurationProperty, Flyout, PopupFlyoutBase.MotionDurationProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, OpenMotionProperty, Flyout, PopupFlyoutBase.OpenMotionProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, CloseMotionProperty, Flyout, PopupFlyoutBase.CloseMotionProperty));
             Flyout.IsDetectMouseClickEnabled = false;
         }
     }
