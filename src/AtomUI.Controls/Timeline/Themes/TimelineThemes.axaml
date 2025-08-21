@@ -4,5 +4,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="TimelineItemTheme.axaml"/>
         <ResourceInclude Source="TimelineTheme.axaml"/>
+        <ResourceInclude Source="TimelineIndicatorTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

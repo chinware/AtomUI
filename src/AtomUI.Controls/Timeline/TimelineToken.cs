@@ -45,9 +45,9 @@ internal class TimelineToken : AbstractControlDesignToken
     public double LastItemContentMinHeight { get; set; }
 
     /// <summary>
-    /// 节点指示器的宽度
+    /// 节点指示器的大小
     /// </summary>
-    public double IndicatorWidth { get; set; }
+    public double IndicatorSize { get; set; }
 
     /// <summary>
     /// 节点指示器内置圆形大小
@@ -87,12 +87,12 @@ internal class TimelineToken : AbstractControlDesignToken
         ItemPaddingBottom   = new Thickness(0, 0, 0, SharedToken.UniformlyPadding * 1.25);
         ItemPaddingBottomLG = ItemPaddingBottom * 2;
         
-        IndicatorLeftModeMargin  = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
-        IndicatorRightModeMargin = new Thickness(SharedToken.UniformlyMargin, 0, 0, 0);
+        IndicatorLeftModeMargin   = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
+        IndicatorRightModeMargin  = new Thickness(SharedToken.UniformlyMargin, 0, 0, 0);
         IndicatorMiddleModeMargin = new Thickness(SharedToken.UniformlyMargin, 0);
 
         LastItemContentMinHeight = SharedToken.ControlHeightLG * 1.2;
-        IndicatorWidth           = SharedToken.SizeMS;
+        IndicatorSize            = SharedToken.SizeMS;
         IndicatorDotSize         = 8;
     }
 }

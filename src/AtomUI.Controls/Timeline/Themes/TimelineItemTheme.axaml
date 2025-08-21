@@ -5,7 +5,8 @@
     xmlns:converters="using:AtomUI.Controls.Converters"
     x:ClassModifier="internal">
     <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
-                                           VerticalAlignment="Center" />
+                                           VerticalAlignment="Center" 
+                                           TextWrapping="Wrap"/>
     <ControlTheme x:Key="{x:Type atom:TimelineItem}" TargetType="atom:TimelineItem">
         <Setter Property="Template">
             <ControlTemplate>
@@ -32,7 +33,7 @@
         </Setter>
 
         <Style Selector="^ /template/ atom|TimelineIndicator#PART_Indicator">
-            <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorWidth}}" />
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}" />
         </Style>
 
         <Style Selector="^ /template/ atom|TextBlock#PART_Label">

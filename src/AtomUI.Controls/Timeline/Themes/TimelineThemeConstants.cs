@@ -14,3 +14,8 @@ internal static class TimelineItemThemeConstants
     public const string IndicatorPart = "PART_Indicator";
     public const string ContentPresenterPart = "PART_ContentPresenter";
 }
+
+internal static class TimelineIndicatorThemeConstants
+{
+    public const string IconPresenterPart = "PART_IconPresenter";
+}
