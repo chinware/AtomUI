@@ -1,13 +1,8 @@
-using System.Reactive.Disposables;
-using AtomUI.Controls.PaginationLang;
 using AtomUI.Controls.Themes;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -20,7 +15,7 @@ internal class QuickJumpArgs
     public int PageNumber { get; set; }
 }
 
-internal class QuickJumperBar : TemplatedControl, IResourceBindingManager
+internal class QuickJumperBar : TemplatedControl
 {
     public event EventHandler<QuickJumpArgs>? JumpRequest;
     
@@ -57,21 +52,12 @@ internal class QuickJumperBar : TemplatedControl, IResourceBindingManager
         set => SetValue(SizeTypeProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-    private CompositeDisposable? _resourceBindingsDisposable;
-    
     private LineEdit? _lineEdit;
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _lineEdit = e.NameScope.Find<LineEdit>(PaginationQuickJumperBarThemeConstants.PageLineEditPart);
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, JumpToTextProperty, PaginationLangResourceKey.JumpToText));
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, PageTextProperty, PaginationLangResourceKey.PageText));
 
         if (_lineEdit != null)
         {
@@ -92,11 +78,5 @@ internal class QuickJumperBar : TemplatedControl, IResourceBindingManager
                 lineEdit.Clear();
             }
         }
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }

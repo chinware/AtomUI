@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     xmlns:converters="using:AtomUI.Controls.Converters"
+    xmlns:paginationLang="clr-namespace:AtomUI.Controls.PaginationLang"
     x:ClassModifier="internal">
     <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center"/>
     <ControlTheme x:Key="{x:Type atom:QuickJumperBar}" TargetType="atom:QuickJumperBar">
@@ -19,6 +20,9 @@
                 </StackPanel>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="JumpToText" Value="{DynamicResource {x:Static paginationLang:PaginationLangResourceKey.JumpToText}}"/>
+        <Setter Property="PageText" Value="{DynamicResource {x:Static paginationLang:PaginationLangResourceKey.PageText}}"/>
         
         <Style Selector="^ /template/ StackPanel#PART_RootLayout">
             <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationLayoutSpacing}}"/>

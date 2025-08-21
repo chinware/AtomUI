@@ -1,5 +1,3 @@
-using System.Reactive.Disposables;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -7,10 +5,7 @@ using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
-public abstract class AbstractPagination : TemplatedControl,
-                                           ISizeTypeAware,
-                                           IMotionAwareControl,
-                                           IResourceBindingManager
+public abstract class AbstractPagination : TemplatedControl, ISizeTypeAware, IMotionAwareControl
 {
     public const int DefaultPageSize = 10;
     public const int DefaultCurrentPage = 1;
@@ -110,13 +105,6 @@ public abstract class AbstractPagination : TemplatedControl,
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-    private CompositeDisposable? _resourceBindingsDisposable;
     
     #endregion
     
@@ -174,15 +162,4 @@ public abstract class AbstractPagination : TemplatedControl,
         CurrentPageChanged?.Invoke(this, new PageChangedArgs(currentPage, pageCount, pageSize));
     }
     
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
-    }
 }

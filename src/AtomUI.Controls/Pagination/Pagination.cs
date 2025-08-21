@@ -1,10 +1,8 @@
 using System.Diagnostics;
-using AtomUI.Controls.PaginationLang;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -140,10 +138,6 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
         base.OnApplyTemplate(e);
         _paginationNav = e.NameScope.Find<PaginationNav>(PaginationThemeConstants.NavPart);
         Debug.Assert(_paginationNav is not null);
-        this.AddResourceBindingDisposable(
-            LanguageResourceBinder.CreateBinding(this, PageTextProperty, PaginationLangResourceKey.PageText));
-        this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, TotalInfoTemplateProperty,
-            PaginationLangResourceKey.TotalInfoFormat));
         _paginationNav.ContainerPrepared   += HandleContainerPrepared;
         _paginationNav.PageNavigateRequest += HandlePageNavRequest;
         if (IsShowQuickJumper)
