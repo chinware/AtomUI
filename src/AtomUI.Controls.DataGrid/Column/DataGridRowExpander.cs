@@ -44,13 +44,7 @@ internal class DataGridRowExpander : ToggleButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    private CompositeDisposable? _resourceBindingsDisposable;
-    
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;

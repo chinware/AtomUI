@@ -1026,7 +1026,6 @@ public partial class DataGrid : TemplatedControl,
         RowGroupHeaderHeightEstimate = DefaultRowHeight;
         RowGroupSublevelIndents      = [];
         _rowGroupHeightsByLevel      = [];
-        _resourceBindingsDisposable  = new CompositeDisposable();
         UpdatePseudoClasses();
     }
 
