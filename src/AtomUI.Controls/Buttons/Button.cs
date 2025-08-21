@@ -213,15 +213,10 @@ public class Button : AvaloniaButton,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private Border? _frame;
     protected bool ThemeConfigured;
 
@@ -238,7 +233,6 @@ public class Button : AvaloniaButton,
     public Button()
     {
         this.RegisterResources();
-        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     protected override Size MeasureOverride(Size availableSize)
