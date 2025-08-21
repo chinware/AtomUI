@@ -58,13 +58,10 @@ internal class DragPreview : Decorator,
         set => SetValue(BackgroundProperty, value);
     }
 
+
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+    
     private readonly VisualBrush _visualBrush;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     public DragPreview(Border previewControl)
     {
@@ -83,7 +80,6 @@ internal class DragPreview : Decorator,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         this.AddResourceBindingDisposable(
             TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, TreeViewTokenKey.NodeHoverBg));
     }
