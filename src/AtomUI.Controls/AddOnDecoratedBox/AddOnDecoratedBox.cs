@@ -178,17 +178,12 @@ public class AddOnDecoratedBox : ContentControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AddOnDecoratedBoxToken.ID;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
 
     protected Control? _leftAddOnPresenter;
     protected Control? _rightAddOnPresenter;
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static AddOnDecoratedBox()
     {
