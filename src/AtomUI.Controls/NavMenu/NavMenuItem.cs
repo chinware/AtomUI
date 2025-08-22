@@ -6,7 +6,6 @@ using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.MotionScene;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -755,10 +754,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions()
-            {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-            };
             if (_headerFrame != null)
             {
                 _headerFrame.Transitions = new Transitions()
@@ -788,9 +783,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
         else
         {
-            Transitions?.Clear();
-            Transitions = null;
-            
             if (_headerFrame != null)
             {
                 _headerFrame.Transitions?.Clear();
@@ -809,6 +801,46 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _activeIndicator.Transitions?.Clear();
                 _activeIndicator.Transitions = null;
             }
+        }
+    }
+
+    internal void DisableAllTransitions()
+    {
+        if (_headerFrame != null)
+        {
+            _headerFrame.DisableTransitions();
+        }
+            
+        // inline mode
+        if (_menuIndicatorIconFrame != null)
+        {
+            _menuIndicatorIconFrame.DisableTransitions();
+        }
+            
+        // toplevel horizontal
+        if (_activeIndicator != null)
+        {
+            _activeIndicator.DisableTransitions();
+        }
+    }
+
+    internal void EnableAllTransitions()
+    {
+        if (_headerFrame != null)
+        {
+            _headerFrame.EnableTransitions();
+        }
+            
+        // inline mode
+        if (_menuIndicatorIconFrame != null)
+        {
+            _menuIndicatorIconFrame.EnableTransitions();
+        }
+            
+        // toplevel horizontal
+        if (_activeIndicator != null)
+        {
+            _activeIndicator.EnableTransitions();
         }
     }
 
@@ -994,13 +1026,11 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             if (change.OldValue is Icon oldIcon)
             {
-                oldIcon.SetTemplatedParent(null);
                 PseudoClasses.Remove(IconPC);
             }
 
             if (change.NewValue is Icon newIcon)
             {
-                newIcon.SetTemplatedParent(this);
                 PseudoClasses.Add(IconPC);
             }
         }
@@ -1276,10 +1306,14 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     internal void SelectItemRecursively()
     {
+        this.DisableAllTransitions();
         IsSelected = true;
+        this.EnableAllTransitions();
         if (Parent is NavMenuItem parent)
         {
+            parent.DisableAllTransitions();
             parent.SelectItemRecursively();
+            parent.EnableAllTransitions();
         }
     }
 

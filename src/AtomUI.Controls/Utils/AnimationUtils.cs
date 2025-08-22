@@ -12,7 +12,8 @@ public sealed class TransitionUtils : BaseTransitionUtils
 {
     public static ITransition CreateTransition<T>(AvaloniaProperty targetProperty,
                                                   TokenResourceKey? durationResourceKey = null,
-                                                  Easing? easing = null)
+                                                  Easing? easing = null,
+                                                  TimeSpan? delay = null)
         where T : TransitionBase, new()
     {
         easing              ??= new LinearEasing();
@@ -20,7 +21,8 @@ public sealed class TransitionUtils : BaseTransitionUtils
         var transition = new T
         {
             Property = targetProperty,
-            Easing   = easing
+            Easing   = easing,
+            Delay = delay ??  TimeSpan.Zero,
         };
         var application = Application.Current;
         Debug.Assert(application != null);

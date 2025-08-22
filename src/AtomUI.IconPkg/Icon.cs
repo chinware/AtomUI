@@ -11,6 +11,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.IconPkg;
@@ -22,7 +23,7 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
 
     public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
         AvaloniaProperty.Register<Icon, IconAnimation>(
-            nameof(LoadingAnimation));
+            nameof(LoadingAnimation), IconAnimation.None);
 
     // Fill 和 Outline 支持的颜色
     public static readonly StyledProperty<IBrush?> NormalFilledBrushProperty =
@@ -153,8 +154,8 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
         set => SetValue(AngleAnimationRotateProperty, value);
     }
 
-    internal static readonly StyledProperty<IBrush?> FilledBrushProperty
-        = AvaloniaProperty.Register<Icon, IBrush?>(
+    internal static readonly StyledProperty<IBrush?> FilledBrushProperty = 
+        AvaloniaProperty.Register<Icon, IBrush?>(
             nameof(FilledBrush));
 
     /// <summary>
@@ -197,13 +198,16 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
         Classes.CollectionChanged += HandlePseudoClassesChanged;
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= [
-                BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
-            ];
+            if (force || Transitions == null)
+            {
+                Transitions = [
+                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
+                ];
+            }
         }
         else
         {
@@ -236,6 +240,10 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
             if (change.Property == LoadingAnimationProperty)
             {
                 SetupRotateAnimation();
+                if (_animation != null)
+                {
+                    StartLoadingAnimation();
+                }
             }
             else if (change.Property == NormalFilledBrushProperty ||
                      change.Property == ActiveFilledBrushProperty ||
@@ -246,11 +254,14 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
                      change.Property == IconModeProperty ||
                      change.Property == IconInfoProperty)
             {
-                SetupFilledBrush();
+                if (IsVisible)
+                {
+                    SetupFilledBrush();
+                }
             }
             else if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
@@ -286,12 +297,6 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
             if (LoadingAnimation == IconAnimation.Pulse)
             {
                 _animation.Easing = new PulseEasing();
-            }
-
-            if (VisualRoot is not null)
-            {
-                _animationCancellationTokenSource = new CancellationTokenSource();
-                _animation.RunAsync(this, _animationCancellationTokenSource.Token);
             }
         }
     }
@@ -421,6 +426,8 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
     {
         base.OnAttachedToLogicalTree(e);
         SetupRotateAnimation();
+        BuildSourceRenderData();
+        SetupFilledBrush();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -429,18 +436,33 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
 
         if (_animation is not null)
         {
-            _animationCancellationTokenSource = new CancellationTokenSource();
-            _animation.RunAsync(this, _animationCancellationTokenSource.Token);
+            DispatcherTimer.RunOnce(() =>
+            {
+                Dispatcher.UIThread.InvokeAsync(StartLoadingAnimationAsync);
+            }, TimeSpan.FromMilliseconds(500));
         }
-        BuildSourceRenderData();
-        SetupFilledBrush();
-        ConfigureTransitions();
+        ConfigureTransitions(false);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _animationCancellationTokenSource?.Cancel();
+        Transitions = null;
+    }
+
+    public async Task StartLoadingAnimationAsync()
+    {
+        if (_animation is not null)
+        {
+            _animationCancellationTokenSource = new CancellationTokenSource();
+            await _animation.RunAsync(this, _animationCancellationTokenSource.Token);
+        }
+    }
+
+    public void StartLoadingAnimation()
+    {
+        Dispatcher.UIThread.InvokeAsync(StartLoadingAnimationAsync);
     }
 
     private void HandlePseudoClassesChanged(object? sender, NotifyCollectionChangedEventArgs e)

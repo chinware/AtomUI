@@ -655,6 +655,8 @@ public class Popup : AvaloniaPopup,
             {
                 SetCurrentValue(IsMotionAwareOpenProperty, false);
             }
+
+            _buddyLayer = null;
             return;
         }
         

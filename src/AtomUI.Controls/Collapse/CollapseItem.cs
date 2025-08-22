@@ -4,7 +4,6 @@ using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -276,24 +275,6 @@ public class CollapseItem : HeaderedContentControl,
             else if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions();
-            }
-        }
-
-        if (change.Property == AddOnContentProperty ||
-            change.Property == ExpandIconProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                oldControl.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Control newControl)
-            {
-                newControl.SetTemplatedParent(this);
-            }
-            if (change.Property == ExpandIconProperty)
-            {
-                SetupDefaultExpandIcon();
             }
         }
         

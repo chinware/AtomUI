@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using AtomUI.Animations;
+﻿using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -92,8 +90,6 @@ public class TabItem : AvaloniaTabItem
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
-        Debug.Assert(CloseIcon is not null);
-        CloseIcon.SetTemplatedParent(this);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -182,22 +178,9 @@ public class TabItem : AvaloniaTabItem
             }
         }
         
-        if (change.Property == IconProperty ||
-            change.Property == CloseIconProperty)
+        if (change.Property == CloseIconProperty)
         {
-            if (change.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-            if (change.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-
-            if (change.Property == CloseIconProperty && CloseIcon is null)
-            {
-                SetupDefaultCloseIcon();
-            }
+            SetupDefaultCloseIcon();
         }
     }
 

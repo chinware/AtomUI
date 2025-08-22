@@ -154,7 +154,6 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     private StackPanel? _leftAddOnLayout;
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
-    private Border? _decorator;
     
     protected virtual void NotifyClearButtonClicked()
     {
@@ -189,7 +188,6 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         _leftAddOnLayout  = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart);
         _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxThemeConstants.RightAddOnLayoutPart);
         _clearButton      = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart);
-        _decorator        = e.NameScope.Find<Border>(AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart);
 
         if (_leftAddOnLayout is not null)
         {
@@ -207,7 +205,6 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         }
 
         SetupEffectiveContentPresenterMargin();
-        ConfigureTransitions();
         UpdatePseudoClasses();
     }
 
@@ -243,28 +240,28 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     {
         base.OnAttachedToVisualTree(e);
         BuildEffectiveInnerBoxPadding();
+        ConfigureTransitions();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        Transitions = null;
     }
 
     private void ConfigureTransitions()
     {
         if (IsMotionEnabled)
         {
-            if (_decorator != null)
+            Transitions = new Transitions()
             {
-                _decorator.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-                };
-            }
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+            };
         }
         else
         {
-            if (_decorator != null)
-            {
-                _decorator.Transitions?.Clear();
-                _decorator.Transitions = null;
-            }
+            Transitions = null;
         }
     }
 
@@ -274,4 +271,5 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
     }
+    
 }

@@ -256,60 +256,7 @@ public class Button : AvaloniaButton,
 
         return new Size(targetWidth, targetHeight);
     }
-
-    private void SetupShadows(bool force = false)
-    {
-        if (force || Effect == null)
-        {
-            if (ButtonType == ButtonType.Default)
-            {
-                if (IsDanger)
-                {
-                    Effect = new DropShadowEffect
-                    {
-                        OffsetX    = DangerShadow.OffsetX,
-                        OffsetY    = DangerShadow.OffsetY,
-                        Color      = DangerShadow.Color,
-                        BlurRadius = DangerShadow.Blur
-                    };
-                }
-                else
-                {
-                    Effect = new DropShadowEffect
-                    {
-                        OffsetX    = DefaultShadow.OffsetX,
-                        OffsetY    = DefaultShadow.OffsetY,
-                        Color      = DefaultShadow.Color,
-                        BlurRadius = DefaultShadow.Blur
-                    };
-                }
-            }
-            else if (ButtonType == ButtonType.Primary)
-            {
-                if (IsDanger)
-                {
-                    Effect = new DropShadowEffect
-                    {
-                        OffsetX    = DangerShadow.OffsetX,
-                        OffsetY    = DangerShadow.OffsetY,
-                        Color      = DangerShadow.Color,
-                        BlurRadius = DangerShadow.Blur
-                    };
-                }
-                else
-                {
-                    Effect = new DropShadowEffect
-                    {
-                        OffsetX    = PrimaryShadow.OffsetX,
-                        OffsetY    = PrimaryShadow.OffsetY,
-                        Color      = PrimaryShadow.Color,
-                        BlurRadius = PrimaryShadow.Blur
-                    };
-                }
-            }
-        }
-    }
-
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -365,14 +312,8 @@ public class Button : AvaloniaButton,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == IsDangerProperty ||
-                e.Property == IsGhostProperty ||
-                e.Property == ButtonTypeProperty)
-            {
-                SetupShadows(true);
-            }
-            else if (e.Property == IsMotionEnabledProperty ||
-                     e.Property == IsWaveSpiritEnabledProperty)
+            if (e.Property == IsMotionEnabledProperty ||
+                e.Property == IsWaveSpiritEnabledProperty)
             {
                 ConfigureTransitions();
             }
@@ -432,15 +373,10 @@ public class Button : AvaloniaButton,
     {
         if (IsMotionEnabled)
         {
-            if (_frame != null)
-            {
-                _frame.Transitions = new Transitions();
-                _frame.Transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-            }
-
             if (Transitions is null)
             {
                 var transitions = new Transitions();
+                transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
                 if (ButtonType == ButtonType.Primary)
                 {
                     if (IsGhost)
@@ -460,7 +396,7 @@ public class Button : AvaloniaButton,
                 {
                     transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                 }
-
+        
                 Transitions = transitions;
             }
         }
@@ -468,11 +404,6 @@ public class Button : AvaloniaButton,
         {
             Transitions?.Clear();
             Transitions = null;
-            if (_frame != null)
-            {
-                _frame.Transitions?.Clear();
-                _frame.Transitions = null;
-            }
         }
     }
 
@@ -491,8 +422,6 @@ public class Button : AvaloniaButton,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-    
-        SetupShadows();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

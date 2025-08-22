@@ -1,6 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
-using AtomUI.Reflection;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -122,19 +120,6 @@ public class TextBox : AvaloniaTextBox,
         else if (change.Property == StatusProperty || change.Property == StyleVariantProperty)
         {
             UpdatePseudoClasses();
-        }
-        else if (change.Property == InnerLeftContentProperty ||
-                 change.Property == InnerRightContentProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                oldControl.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Control newControl)
-            {
-                newControl.SetTemplatedParent(this);
-            }
         }
     }
 

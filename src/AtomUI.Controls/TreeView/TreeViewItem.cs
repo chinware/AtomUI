@@ -4,7 +4,6 @@ using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.MotionScene;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -398,18 +397,6 @@ public class TreeViewItem : AvaloniaTreeItem,
         if (change.Property == ItemCountProperty)
         {
             IsLeaf = ItemCount == 0;
-        }
-        else if (change.Property == IconProperty)
-        {
-            if (change.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
         }
         else if (change.Property == IsLoadingProperty ||
                  change.Property == IsLeafProperty ||

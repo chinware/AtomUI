@@ -1,8 +1,6 @@
-﻿using System.Diagnostics;
-using System.Reactive.Disposables;
+﻿using System.Reactive.Disposables;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -150,19 +148,8 @@ public class Alert : TemplatedControl,
                 SetupCloseButton();
             }
         }
-
-        if (e.Property == CloseIconProperty)
-        {
-            if (e.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (e.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-        } else if (e.Property == DescriptionProperty)
+        
+        if (e.Property == DescriptionProperty)
         {
             UpdatePseudoClasses();
         }

@@ -1,10 +1,8 @@
-using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -178,16 +176,6 @@ internal class NodeSwitcherButton : ToggleButton
                 change.Property == LoadingIconProperty ||
                 change.Property == RotationIconProperty)
             {
-                if (change.OldValue is Icon oldIcon)
-                {
-                    oldIcon.SetTemplatedParent(null);
-                }
-
-                if (change.NewValue is Icon newIcon)
-                {
-                    newIcon.SetTemplatedParent(this);
-                }
-
                 SetupDefaultIcons();
             }
             else if (change.Property == IsMotionEnabledProperty)
@@ -244,17 +232,6 @@ internal class NodeSwitcherButton : ToggleButton
             ClearValue(LeafIconProperty);
             SetValue(LeafIconProperty, AntDesignIconPackage.FileOutlined(), BindingPriority.Template);
         }
-        Debug.Assert(ExpandIcon != null);
-        ExpandIcon.SetTemplatedParent(this);
-        
-        Debug.Assert(CollapseIcon != null);
-        CollapseIcon.SetTemplatedParent(this);
-        
-        Debug.Assert(RotationIcon != null);
-        RotationIcon.SetTemplatedParent(this);
-        
-        Debug.Assert(LeafIcon != null);
-        LeafIcon.SetTemplatedParent(this);
     }
 
     protected override void Toggle()

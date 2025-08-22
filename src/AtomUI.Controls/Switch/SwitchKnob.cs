@@ -1,4 +1,3 @@
-using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
@@ -8,7 +7,6 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
@@ -247,7 +245,8 @@ internal class SwitchKnob : TemplatedControl
         {
             _cancellationTokenSource?.Cancel();
         }
-        
+
+        Transitions = null;
     }
 
     public sealed override void Render(DrawingContext context)

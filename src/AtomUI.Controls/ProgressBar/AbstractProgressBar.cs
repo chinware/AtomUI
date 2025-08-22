@@ -324,9 +324,9 @@ public abstract class AbstractProgressBar : RangeBase,
         _percentageLabel = e.NameScope.Find<Label>(ProgressBarThemeConstants.PercentageLabelPart);
         _exceptionCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.ExceptionCompletedIconPart);
         _successCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.SuccessCompletedIconPart);
-        ConfigureTransitions();
         NotifySetupUI();
         NotifyUiStructureReady();
+        ConfigureTransitions();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -334,7 +334,7 @@ public abstract class AbstractProgressBar : RangeBase,
         base.OnAttachedToVisualTree(e);
         UpdatePseudoClasses();
     }
-
+    
     protected abstract SizeType CalculateEffectiveSizeType(double size);
 
     protected abstract Rect GetProgressBarRect(Rect controlRect);

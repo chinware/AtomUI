@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -18,16 +16,11 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[PseudoClasses(ErrorPC, InformationPC, SuccessPC, WarningPC)]
+[PseudoClasses(StdPseudoClass.Error, StdPseudoClass.Information, StdPseudoClass.Success, StdPseudoClass.Warning)]
 public class NotificationCard : ContentControl,
                                 IMotionAwareControl,
                                 IControlSharedTokenResourcesHost
 {
-    public const string ErrorPC = ":error";
-    public const string InformationPC = ":information";
-    public const string SuccessPC = ":success";
-    public const string WarningPC = ":warning";
-
     internal const double AnimationMaxOffsetY = 150d;
     internal const double AnimationMaxOffsetX = 500d;
 
@@ -45,8 +38,8 @@ public class NotificationCard : ContentControl,
     public static readonly StyledProperty<NotificationType> NotificationTypeProperty =
         AvaloniaProperty.Register<NotificationCard, NotificationType>(nameof(NotificationType));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NotificationCard>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NotificationCard>();
     
     public static readonly RoutedEvent<RoutedEventArgs> NotificationClosedEvent =
         RoutedEvent.Register<NotificationCard, RoutedEventArgs>(nameof(NotificationClosed), RoutingStrategies.Bubble);
@@ -54,11 +47,11 @@ public class NotificationCard : ContentControl,
     public static readonly StyledProperty<string> TitleProperty =
         AvaloniaProperty.Register<NotificationCard, string>(nameof(Title));
 
-    public static readonly StyledProperty<Icon?> IconProperty
-        = AvaloniaProperty.Register<NotificationCard, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<NotificationCard, Icon?>(nameof(Icon));
     
-    public static readonly StyledProperty<TimeSpan?> ExpirationProperty
-        = AvaloniaProperty.Register<NotificationCard, TimeSpan?>(nameof(Expiration));
+    public static readonly StyledProperty<TimeSpan?> ExpirationProperty =
+        AvaloniaProperty.Register<NotificationCard, TimeSpan?>(nameof(Expiration));
     
     public bool IsClosing
     {
@@ -313,16 +306,6 @@ public class NotificationCard : ContentControl,
         } 
         else if (e.Property == IconProperty)
         {
-            if (e.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (e.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-
             if (Icon is null)
             {
                 SetupDefaultNotificationIcon();
@@ -335,19 +318,19 @@ public class NotificationCard : ContentControl,
         switch (NotificationType)
         {
             case NotificationType.Error:
-                PseudoClasses.Add(ErrorPC);
+                PseudoClasses.Add(StdPseudoClass.Error);
                 break;
 
             case NotificationType.Information:
-                PseudoClasses.Add(InformationPC);
+                PseudoClasses.Add(StdPseudoClass.Information);
                 break;
 
             case NotificationType.Success:
-                PseudoClasses.Add(SuccessPC);
+                PseudoClasses.Add(StdPseudoClass.Success);
                 break;
 
             case NotificationType.Warning:
-                PseudoClasses.Add(WarningPC);
+                PseudoClasses.Add(StdPseudoClass.Warning);
                 break;
         }
     }
@@ -377,9 +360,6 @@ public class NotificationCard : ContentControl,
             ClearValue(IconProperty);
             SetValue(IconProperty, icon, BindingPriority.Template);
         }
-        
-        Debug.Assert(Icon != null);
-        Icon.SetTemplatedParent(this);
     }
 
     internal bool NotifyCloseTick(TimeSpan cycleDuration)

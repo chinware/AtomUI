@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -370,7 +371,9 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         {
             if (item is NavMenuItem navMenuItem)
             {
+                navMenuItem.DisableAllTransitions();
                 ClearSelectionRecursively(navMenuItem);
+                navMenuItem.EnableAllTransitions();
             }
         }
     }
