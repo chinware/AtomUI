@@ -17,18 +17,15 @@
                     BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                    CornerRadius="{TemplateBinding CornerRadius}">
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Background="{TemplateBinding Background}">
                 <DockPanel Name="{x:Static atom:ButtonThemeConstants.RootLayoutPart}"
                            LastChildFill="True">
                     <atom:Icon Name="{x:Static atom:DropdownButtonThemeConstants.DropdownIndicatorPart}"
                                DockPanel.Dock="Right"
                                VerticalAlignment="Center"
                                IconInfo="{atom:IconInfoProvider DownOutlined}"
-                               IconMode="{Binding (atom:Icon.IconMode), ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
-                               NormalFilledBrush="{Binding (atom:Icon.NormalFilledBrush), ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
-                               ActiveFilledBrush="{Binding (atom:Icon.ActiveFilledBrush), ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
-                               SelectedFilledBrush="{Binding (atom:Icon.SelectedFilledBrush), ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
-                               DisabledFilledBrush="{Binding (atom:Icon.DisabledFilledBrush), ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" />
+                               NormalFilledBrush="{TemplateBinding Foreground}" />
                     <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
