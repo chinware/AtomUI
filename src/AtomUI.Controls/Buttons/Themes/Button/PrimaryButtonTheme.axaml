@@ -14,7 +14,7 @@
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryColor}}" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-
+            
             <Style Selector="^:pointerover">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
@@ -110,6 +110,15 @@
                     <Setter Property="atom:Icon.SelectedFilledBrush"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
                 </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ Border#ShadowsFrame">
+            <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryShadow}}" />
+        </Style>
+        <Style Selector="^[IsDanger=True]">
+            <Style Selector="^ /template/ Border#ShadowsFrame">
+                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DangerShadow}}" />
             </Style>
         </Style>
 

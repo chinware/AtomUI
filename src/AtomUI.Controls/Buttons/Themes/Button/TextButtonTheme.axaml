@@ -13,7 +13,7 @@
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}" />
             <Setter Property="Background" Value="Transparent" />
-
+            
             <Style Selector="^:pointerover">
                 <Setter Property="Background" Value="{DynamicResource {x:Static atom:ButtonTokenKey.TextHoverBg}}" />
             </Style>

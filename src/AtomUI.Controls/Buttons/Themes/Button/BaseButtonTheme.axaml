@@ -6,13 +6,17 @@
               x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:Button">
-            <Border Name="{x:Static atom:ButtonThemeConstants.FramePart}"
-                    Padding="{TemplateBinding Padding}"
-                    Background="{TemplateBinding Background}"
-                    BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                    CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+                <Border Name="ShadowsFrame"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}"/>
+                <Border Name="{x:Static atom:ButtonThemeConstants.FramePart}"
+                        Padding="{TemplateBinding Padding}"
+                        BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}">
                 <DockPanel Name="{x:Static atom:ButtonThemeConstants.RootLayoutPart}"
                            LastChildFill="True">
                     <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
@@ -21,7 +25,7 @@
                                 Orientation="Horizontal">
                         <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
                                    IconInfo="{atom:IconInfoProvider LoadingOutlined}"
-                                   Margin="{Binding (atom:IconPresenter.Margin),
+                                   Margin="{Binding (atom:IconPresenter.Margin), 
                                    ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" />
                         <atom:IconPresenter
                             Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
@@ -42,42 +46,18 @@
                     </StackPanel>
                 </DockPanel>
             </Border>
+            </Panel>
         </ControlTemplate>
     </Setter>
 
     <Style Selector="^:is(atom|Button)">
-        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="IsWaveSpiritEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="ClipToBounds" Value="False" />
-
-        <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-        </Style>
-
-        <Style Selector="^[ButtonType=Default]">
-            <Style Selector="^ /template/ Border#PART_Frame">
-                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultShadow}}" />
-            </Style>
-            <Style Selector="^[IsDanger=True]">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DangerShadow}}" />
-                </Style>
-            </Style>
-        </Style>
         
-        <Style Selector="^[ButtonType=Primary]">
-            <Style Selector="^ /template/ Border#PART_Frame">
-                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryShadow}}" />
-            </Style>
-            <Style Selector="^[IsDanger=True]">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DangerShadow}}" />
-                </Style>
-            </Style>
-        </Style>
-
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ Border#PART_Frame">
                 <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
@@ -230,7 +210,7 @@
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ButtonTokenKey.IconMargin}}" />
             </Style>
         </Style>
-
+        
         <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
             <Setter Property="NormalFilledBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}" />
@@ -251,7 +231,7 @@
             <Setter Property="DisabledFilledBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
-
+        
         <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
             <Setter Property="IsVisible" Value="True" />
         </Style>
@@ -269,7 +249,7 @@
             </Style>
             <Setter Property="Opacity" Value="{DynamicResource {x:Static atom:SharedTokenKey.OpacityLoading}}" />
         </Style>
-
+ 
         <Style Selector="^[Shape=Circle]">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.CirclePadding}}" />
         </Style>
@@ -280,10 +260,8 @@
             <Setter Property="BorderBrush"
                     Value="{DynamicResource {x:Static atom:ButtonTokenKey.BorderColorDisabled}}" />
 
-            <Style Selector="^/template/ Border#PART_Frame">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
-            </Style>
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
         </Style>
     </Style>
 

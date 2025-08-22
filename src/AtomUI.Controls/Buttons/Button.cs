@@ -142,18 +142,6 @@ public class Button : AvaloniaButton,
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<BoxShadow> DefaultShadowProperty =
-        AvaloniaProperty.Register<Button, BoxShadow>(
-            nameof(DefaultShadow));
-
-    internal static readonly StyledProperty<BoxShadow> PrimaryShadowProperty =
-        AvaloniaProperty.Register<Button, BoxShadow>(
-            nameof(PrimaryShadow));
-
-    internal static readonly StyledProperty<BoxShadow> DangerShadowProperty =
-        AvaloniaProperty.Register<Button, BoxShadow>(
-            nameof(DangerShadow));
-
     internal static readonly StyledProperty<bool> IsIconVisibleProperty =
         AvaloniaProperty.Register<Button, bool>(nameof(IsIconVisible), true);
 
@@ -166,24 +154,6 @@ public class Button : AvaloniaButton,
     internal static readonly StyledProperty<Thickness> EffectiveBorderThicknessProperty =
         AvaloniaProperty.Register<Button, Thickness>(
             nameof(EffectiveBorderThickness));
-
-    internal BoxShadow DefaultShadow
-    {
-        get => GetValue(DefaultShadowProperty);
-        set => SetValue(DefaultShadowProperty, value);
-    }
-
-    internal BoxShadow PrimaryShadow
-    {
-        get => GetValue(PrimaryShadowProperty);
-        set => SetValue(PrimaryShadowProperty, value);
-    }
-
-    internal BoxShadow DangerShadow
-    {
-        get => GetValue(DangerShadowProperty);
-        set => SetValue(DangerShadowProperty, value);
-    }
 
     internal bool IsIconVisible
     {
