@@ -439,7 +439,7 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
             DispatcherTimer.RunOnce(() =>
             {
                 Dispatcher.UIThread.InvokeAsync(StartLoadingAnimationAsync);
-            }, TimeSpan.FromMilliseconds(500));
+            }, TimeSpan.FromMilliseconds(200));
         }
         ConfigureTransitions(false);
     }
