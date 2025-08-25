@@ -7,7 +7,9 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:TabItem">
             <Border Name="{x:Static atom:TabItemThemeConstants.FramePart}"
-                    Background="{TemplateBinding Background}">
+                    Background="{TemplateBinding Background}"
+                    Padding="{TemplateBinding Padding}"
+                    Margin="{TemplateBinding Margin}">
                 <StackPanel Name="{x:Static atom:TabItemThemeConstants.ContentLayoutPart}"
                             Orientation="Horizontal">
                     <atom:IconPresenter Name="{x:Static atom:TabItemThemeConstants.ItemIconPresenterPart}"

@@ -2,9 +2,7 @@
 using AtomUI.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
-using Avalonia.Animation;
-using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -22,15 +20,17 @@ internal class HeadTextButton : AvaloniaButton
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                    SharedTokenKey.MotionDurationFast)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                        SharedTokenKey.MotionDurationFast)
+                ];
+            }
         }
         else
         {
@@ -38,20 +38,26 @@ internal class HeadTextButton : AvaloniaButton
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }

@@ -6,7 +6,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
@@ -126,11 +125,11 @@ internal class PaginationNavItem : ContentControl,
     {
         base.OnPropertyChanged(change);
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();    
+                ConfigureTransitions(true);    
             }
         }
         
@@ -139,23 +138,19 @@ internal class PaginationNavItem : ContentControl,
             UpdatePseudoClasses();
         }
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
-    }
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                ];
+            }
         }
         else
         {
@@ -214,5 +209,17 @@ internal class PaginationNavItem : ContentControl,
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Pressed, IsPressed);
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

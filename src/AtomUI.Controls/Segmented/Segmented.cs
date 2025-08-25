@@ -1,5 +1,4 @@
-﻿using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -8,6 +7,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -25,8 +25,8 @@ public class Segmented : SelectingItemsControl,
     public static readonly StyledProperty<bool> IsExpandingProperty =
         AvaloniaProperty.Register<Segmented, bool>(nameof(IsExpanding));
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Segmented>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Segmented>();
 
     public SizeType SizeType
     {
@@ -148,8 +148,6 @@ public class Segmented : SelectingItemsControl,
         }
         
         SetupSelectedThumbRect();
-        ConfigureTransitions();
-        this.DisableTransitions();
     }
     
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -164,7 +162,6 @@ public class Segmented : SelectingItemsControl,
     {
         base.OnSizeChanged(e);
         SetupSelectedThumbRect();
-        this.EnableTransitions();
     }
 
     private void SetupSelectedThumbRect()
@@ -203,15 +200,18 @@ public class Segmented : SelectingItemsControl,
         }
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<PointTransition>(SelectedThumbPosProperty),
-                TransitionUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty)
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<PointTransition>(SelectedThumbPosProperty),
+                    TransitionUtils.CreateTransition<SizeTransition>(SelectedThumbSizeProperty)
+                ];
+            }
         }
         else
         {
@@ -240,12 +240,24 @@ public class Segmented : SelectingItemsControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(false);
             }
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

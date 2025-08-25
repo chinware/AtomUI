@@ -9,7 +9,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.VisualTree;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -173,11 +173,11 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
             UpdatePseudoClasses();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
@@ -240,24 +240,31 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     {
         base.OnAttachedToVisualTree(e);
         BuildEffectiveInnerBoxPadding();
-        ConfigureTransitions();
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnUnloaded(RoutedEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnUnloaded(e);
         Transitions = null;
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions()
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                ];
+            }
         }
         else
         {

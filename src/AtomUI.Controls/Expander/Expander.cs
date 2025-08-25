@@ -234,9 +234,17 @@ public class Expander : AvaloniaExpander,
 
                 IsExpanded = !IsExpanded;
             };
+
+            _expandButton.Loaded += (sender, args) =>
+            {
+                ConfigureExpandButtonTransitions(false);
+            };
+            _expandButton.Unloaded += (sender, args) =>
+            {
+                _expandButton.Transitions = null;
+            };
         }
         SetupDefaultIcon();
-        ConfigureTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -248,9 +256,13 @@ public class Expander : AvaloniaExpander,
             {
                 SetupDefaultIcon();
             }
-            else if (change.Property == IsMotionEnabledProperty)
+        }
+
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureExpandButtonTransitions(true);
             }
         }
         
@@ -403,23 +415,25 @@ public class Expander : AvaloniaExpander,
         }
     }
     
-    private void ConfigureTransitions()
+    private void ConfigureExpandButtonTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
             if (_expandButton != null)
             {
-                _expandButton.Transitions = new Transitions()
+                if (force || _expandButton.Transitions == null)
                 {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-                };
+                    _expandButton.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                    ];
+                }
             }
         }
         else
         {
             if (_expandButton != null)
             {
-                _expandButton.Transitions?.Clear();
                 _expandButton.Transitions = null;
             }
         }

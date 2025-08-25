@@ -419,17 +419,21 @@ public class TreeViewItem : AvaloniaTreeItem,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == IsMotionEnabledProperty)
-            {
-                ConfigureTransitions();
-            }
-            else if (change.Property == NodeHoverModeProperty)
+            if (change.Property == NodeHoverModeProperty)
             {
                 CalculateEffectiveBgRect();
             }
             else if (change.Property == IsExpandedProperty)
             {
                 HandleExpandedChanged();
+            }
+        }
+
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
             }
         }
     }
@@ -582,7 +586,6 @@ public class TreeViewItem : AvaloniaTreeItem,
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemThemeConstants.NodeSwitcherButtonPart);
         _itemsPresenterMotionActor =
             e.NameScope.Find<BaseMotionActor>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
-        ConfigureTransitions();
         if (_frame is not null)
         {
             _frame.PointerEntered += HandleFrameEntered;
@@ -607,19 +610,34 @@ public class TreeViewItem : AvaloniaTreeItem,
         _tempAnimationDisabled = false;
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
+                ];
+            }
         }
         else
         {
             Transitions = null;
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     private void CalculateEffectiveBgRect()

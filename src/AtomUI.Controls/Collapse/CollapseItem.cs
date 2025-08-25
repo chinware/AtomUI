@@ -188,7 +188,7 @@ public class CollapseItem : HeaderedContentControl,
         DataContextProperty.Changed.AddClassHandler<CollapseItem>((x, e) => x.UpdateHeader(e));
     }
 
-    private bool _tempAnimationDisabled = false;
+    private bool _tempAnimationDisabled;
     private BaseMotionActor? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
@@ -243,7 +243,30 @@ public class CollapseItem : HeaderedContentControl,
         {
             _expandButton.Click += (sender, args) => { IsSelected = !IsSelected; };
         }
-        ConfigureTransitions();
+
+        if (_headerDecorator != null)
+        {
+            _headerDecorator.Loaded += (sender, args) =>
+            {
+                ConfigureHeaderDecoratorTransitions(false);
+            };
+            _headerDecorator.Unloaded += (sender, args) =>
+            {
+                _headerDecorator.Transitions = null;
+            };
+        }
+        
+        if (_expandButton != null)
+        {
+            _expandButton.Loaded += (sender, args) =>
+            {
+                ConfigureExpandButtonTransitions(false);
+            };
+            _expandButton.Unloaded += (sender, args) =>
+            {
+                _expandButton.Transitions = null;
+            };
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -272,12 +295,16 @@ public class CollapseItem : HeaderedContentControl,
             {
                 HandleSelectedChanged();
             }
-            else if (change.Property == IsMotionEnabledProperty)
+        }
+
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureHeaderDecoratorTransitions(true);
+                ConfigureExpandButtonTransitions(true);
             }
         }
-        
     }
 
     private void HandleSelectedChanged()
@@ -346,36 +373,50 @@ public class CollapseItem : HeaderedContentControl,
         return false;
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureHeaderDecoratorTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
             if (_headerDecorator != null)
             {
-                _headerDecorator.Transitions = new Transitions()
+                if (force || _headerDecorator.Transitions == null)
                 {
-                    TransitionUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
-                };
-            }
-
-            if (_expandButton != null)
-            {
-                _expandButton.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-                };
+                    _headerDecorator.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
+                    ];
+                }
             }
         }
         else
         {
             if (_headerDecorator != null)
             {
-                _headerDecorator.Transitions?.Clear();
+                _headerDecorator.Transitions = null;
             }
-
+        }
+    }
+    
+    private void ConfigureExpandButtonTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
             if (_expandButton != null)
             {
-                _expandButton.Transitions?.Clear();
+                if (force || _expandButton.Transitions == null)
+                {
+                    _expandButton.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                    ];
+                }
+            }
+        }
+        else
+        {
+            if (_expandButton != null)
+            {
+                _expandButton.Transitions = null;
             }
         }
     }

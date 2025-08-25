@@ -4,13 +4,11 @@ using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -81,8 +79,7 @@ public class TabItem : AvaloniaTabItem
     #endregion
 
     private IconButton? _closeButton;
-    private Border? _decorator;
-
+    
     private void SetupDefaultCloseIcon()
     {
         if (CloseIcon is null)
@@ -101,35 +98,26 @@ public class TabItem : AvaloniaTabItem
         {
             _closeButton.Click += HandleCloseRequest;
         }
-        _decorator = e.NameScope.Find<Border>(TabStripItemThemeConstants.DecoratorPart);
-        ConfigureTransitions();
+      
         SetupDefaultCloseIcon();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-            };
-            if (_decorator != null)
-            {
-                _decorator.Transitions = new Transitions()
-                {
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-                };
+                ];
             }
         }
         else
         {
             Transitions = null;
-            if (_decorator != null)
-            {
-                _decorator.Transitions?.Clear();
-                _decorator.Transitions = null;
-            }
         }
     }
 
@@ -170,11 +158,11 @@ public class TabItem : AvaloniaTabItem
             }
         }
         
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
         
@@ -208,6 +196,18 @@ public class TabItem : AvaloniaTabItem
                 }
             }
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     public override void EndInit()

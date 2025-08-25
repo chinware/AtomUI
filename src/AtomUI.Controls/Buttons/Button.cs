@@ -15,10 +15,10 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -280,12 +280,12 @@ public class Button : AvaloniaButton,
             SetupEffectiveBorderThickness();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (e.Property == IsMotionEnabledProperty ||
                 e.Property == IsWaveSpiritEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
         if (e.Property == ButtonTypeProperty)
@@ -339,11 +339,11 @@ public class Button : AvaloniaButton,
         base.EndInit();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (Transitions is null)
+            if (force || Transitions == null)
             {
                 var transitions = new Transitions();
                 transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
@@ -372,7 +372,6 @@ public class Button : AvaloniaButton,
         }
         else
         {
-            Transitions?.Clear();
             Transitions = null;
         }
     }
@@ -382,7 +381,18 @@ public class Button : AvaloniaButton,
         base.OnApplyTemplate(e);
         // 为了防止意外被用户改变背景，做了一个 frame
         _frame = e.NameScope.Find<Border>(ButtonThemeConstants.FramePart);
-        ConfigureTransitions();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

@@ -74,10 +74,10 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     
     #endregion
 
-    private protected IconButton? _menuIndicator;
-    private protected Border? _startEdgeIndicator;
-    private protected Border? _endEdgeIndicator;
-    private protected MenuFlyout? _menuFlyout;
+    private protected IconButton? MenuIndicator;
+    private protected Border? StartEdgeIndicator;
+    private protected Border? EndEdgeIndicator;
+    private protected MenuFlyout? MenuFlyout;
 
     static BaseTabScrollViewer()
     {
@@ -102,40 +102,40 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
         {
             if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom)
             {
-                if (_startEdgeIndicator is not null)
+                if (StartEdgeIndicator is not null)
                 {
-                    _startEdgeIndicator.Height     = Presenter.DesiredSize.Height;
-                    _startEdgeIndicator.Width      = _menuEdgeThickness;
-                    _startEdgeIndicator.ZIndex     = EdgeIndicatorZIndex;
-                    _startEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, true);
+                    StartEdgeIndicator.Height     = Presenter.DesiredSize.Height;
+                    StartEdgeIndicator.Width      = _menuEdgeThickness;
+                    StartEdgeIndicator.ZIndex     = EdgeIndicatorZIndex;
+                    StartEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, true);
                 }
 
-                if (_endEdgeIndicator is not null)
+                if (EndEdgeIndicator is not null)
                 {
-                    _endEdgeIndicator.Height     = Presenter.DesiredSize.Height;
-                    _endEdgeIndicator.Width      = _menuEdgeThickness;
-                    _endEdgeIndicator.Margin     = new Thickness(0, 0, _menuEdgeThickness, 0);
-                    _endEdgeIndicator.ZIndex     = EdgeIndicatorZIndex;
-                    _endEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, false);
+                    EndEdgeIndicator.Height     = Presenter.DesiredSize.Height;
+                    EndEdgeIndicator.Width      = _menuEdgeThickness;
+                    EndEdgeIndicator.Margin     = new Thickness(0, 0, _menuEdgeThickness, 0);
+                    EndEdgeIndicator.ZIndex     = EdgeIndicatorZIndex;
+                    EndEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, false);
                 }
             }
             else
             {
-                if (_startEdgeIndicator is not null)
+                if (StartEdgeIndicator is not null)
                 {
-                    _startEdgeIndicator.Width      = Presenter.DesiredSize.Width;
-                    _startEdgeIndicator.Height     = _menuEdgeThickness;
-                    _startEdgeIndicator.ZIndex     = EdgeIndicatorZIndex;
-                    _startEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, true);
+                    StartEdgeIndicator.Width      = Presenter.DesiredSize.Width;
+                    StartEdgeIndicator.Height     = _menuEdgeThickness;
+                    StartEdgeIndicator.ZIndex     = EdgeIndicatorZIndex;
+                    StartEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, true);
                 }
 
-                if (_endEdgeIndicator is not null)
+                if (EndEdgeIndicator is not null)
                 {
-                    _endEdgeIndicator.Width      = Presenter.DesiredSize.Width;
-                    _endEdgeIndicator.Height     = _menuEdgeThickness;
-                    _endEdgeIndicator.Margin     = new Thickness(0, 0, 0, _menuEdgeThickness);
-                    _endEdgeIndicator.ZIndex     = EdgeIndicatorZIndex;
-                    _endEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, false);
+                    EndEdgeIndicator.Width      = Presenter.DesiredSize.Width;
+                    EndEdgeIndicator.Height     = _menuEdgeThickness;
+                    EndEdgeIndicator.Margin     = new Thickness(0, 0, 0, _menuEdgeThickness);
+                    EndEdgeIndicator.ZIndex     = EdgeIndicatorZIndex;
+                    EndEdgeIndicator.Background = BuildEdgeIndicatorBrush(TabStripPlacement, false);
                 }
             }
         }
@@ -194,9 +194,9 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _menuIndicator      = e.NameScope.Find<IconButton>(TabScrollViewerThemeConstants.ScrollMenuIndicatorPart);
-        _startEdgeIndicator = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollStartEdgeIndicatorPart);
-        _endEdgeIndicator   = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart);
+        MenuIndicator      = e.NameScope.Find<IconButton>(TabScrollViewerThemeConstants.ScrollMenuIndicatorPart);
+        StartEdgeIndicator = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollStartEdgeIndicatorPart);
+        EndEdgeIndicator   = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart);
 
         SetupIndicatorsVisibility();
     }
@@ -237,25 +237,25 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
                 MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 100d, CultureInfo.CurrentCulture);
         }
 
-        if (_startEdgeIndicator is not null &&
+        if (StartEdgeIndicator is not null &&
             scrollUpVisibility is not null &&
             scrollUpVisibility != AvaloniaProperty.UnsetValue)
         {
-            _startEdgeIndicator.IsVisible = (bool)scrollUpVisibility;
+            StartEdgeIndicator.IsVisible = (bool)scrollUpVisibility;
         }
 
-        if (_endEdgeIndicator is not null &&
+        if (EndEdgeIndicator is not null &&
             scrollDownVisibility is not null &&
             scrollDownVisibility != AvaloniaProperty.UnsetValue)
         {
-            _endEdgeIndicator.IsVisible = (bool)scrollDownVisibility;
+            EndEdgeIndicator.IsVisible = (bool)scrollDownVisibility;
         }
 
-        if (_menuIndicator is not null)
+        if (MenuIndicator is not null)
         {
-            var startEdgeVisible = _startEdgeIndicator?.IsVisible ?? false;
-            var endEdgeVisible   = _endEdgeIndicator?.IsVisible ?? false;
-            _menuIndicator.IsVisible = startEdgeVisible || endEdgeVisible;
+            var startEdgeVisible = StartEdgeIndicator?.IsVisible ?? false;
+            var endEdgeVisible   = EndEdgeIndicator?.IsVisible ?? false;
+            MenuIndicator.IsVisible = startEdgeVisible || endEdgeVisible;
         }
     }
     
@@ -264,7 +264,7 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
         if (hostProvider.PopupHost != args.Root)
         {
             // 只有 TriggerType 为 Hover 的时候会判断
-            var secondaryButtonOrigin = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(_menuIndicator)!);
+            var secondaryButtonOrigin = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(MenuIndicator)!);
             var secondaryBounds = secondaryButtonOrigin.HasValue ? new Rect(secondaryButtonOrigin.Value, Bounds.Size) : new Rect();
             if (!secondaryBounds.Contains(args.Position))
             {

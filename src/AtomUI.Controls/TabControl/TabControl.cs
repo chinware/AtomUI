@@ -10,6 +10,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 
@@ -51,17 +52,20 @@ public class TabControl : BaseTabControl
         }
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureSelectedIndicatorTransitions(bool force)
     {
         if (_selectedIndicator is not null)
         {
             if (IsMotionEnabled)
             {
-                _selectedIndicator.Transitions ??= new Transitions
+                if (force || _selectedIndicator.Transitions == null)
                 {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
-                        SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
-                };
+                    _selectedIndicator.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
+                            SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
+                    ];
+                }
             }
             else
             {
@@ -69,7 +73,7 @@ public class TabControl : BaseTabControl
             }
         }
     }
-
+    
     private void SetupSelectedIndicator()
     {
         if (_selectedIndicator is not null && SelectedItem is TabItem tabStripItem)
@@ -147,12 +151,23 @@ public class TabControl : BaseTabControl
         {
             _scrollViewer.TabControl = this;
         }
-        ConfigureTransitions();
+
+        if (_selectedIndicator != null)
+        {
+            _selectedIndicator.Loaded += (sender, args) =>
+            {
+                ConfigureSelectedIndicatorTransitions(false);
+            };
+            _selectedIndicator.Unloaded += (sender, args) =>
+            {
+                _selectedIndicator.Transitions = null;
+            };
+        }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectedIndicatorThicknessProperty,
             SharedTokenKey.LineWidthBold));
     }
@@ -160,11 +175,11 @@ public class TabControl : BaseTabControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureSelectedIndicatorTransitions(true);
             }
         }
     }

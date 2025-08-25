@@ -8,7 +8,7 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input.Raw;
-using Avalonia.VisualTree;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls.Primitives;
 
@@ -92,8 +92,17 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         SecondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
         RangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
         RangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
-        
-        ConfigureTransitions();
+        if (RangePickerIndicator != null)
+        {
+            RangePickerIndicator.Loaded += (sender, args) =>
+            {
+                ConfigureRangePickerIndicatorTransitions(false);
+            };
+            RangePickerIndicator.Unloaded += (sender, args) =>
+            {
+                RangePickerIndicator.Transitions = null;
+            };
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -102,23 +111,21 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         _topLevel = TopLevel.GetTopLevel(this);
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureRangePickerIndicatorTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
             if (RangePickerIndicator != null)
             {
-                RangePickerIndicator.Transitions ??= new Transitions
+                if (force || RangePickerIndicator.Transitions == null)
                 {
-                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
-                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty)
-                };
+                    RangePickerIndicator.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
+                        TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty)
+                    ];
+                }
             }
-        
-            Transitions ??= new Transitions
-            {
-                TransitionUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
-            };
         }
         else
         {
@@ -126,11 +133,39 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             {
                 RangePickerIndicator.Transitions = null;
             }
+        }
+    }
 
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
+                ];
+            }
+        }
+        else
+        {
             Transitions = null;
         }
     }
-    
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
     protected override bool FlyoutOpenPredicate(Point position)
     {
         if (!IsEnabled)
@@ -261,9 +296,13 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             HandleRangeActivatedPartChanged();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
-            ConfigureTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
+                ConfigureRangePickerIndicatorTransitions(true);
+            }
         }
     }
     

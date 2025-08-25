@@ -12,7 +12,11 @@
             <ControlTemplate>
                 <Border Name="{x:Static atom:TabStripItemThemeConstants.DecoratorPart}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                        Margin="{TemplateBinding Margin}">
                     <StackPanel Name="{x:Static atom:TabStripItemThemeConstants.ContentLayoutPart}"
                                 Orientation="Horizontal">
                         <atom:IconPresenter Name="{x:Static atom:TabStripItemThemeConstants.ItemIconPresenterPart}"
@@ -29,56 +33,40 @@
             </ControlTemplate>
         </Setter>
         
-        <Style Selector="^ /template/ Border#PART_Decorator">
-            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemMargin}}"/>
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardBg}}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}"/>
-        </Style>
+        <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemMargin}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardBg}}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}"/>
         
         <Style Selector="^:selected">
-            <Style Selector="^ /template/ Border#PART_Decorator">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
-            </Style>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
         </Style>
         
         <Style Selector="^[TabStripPlacement=Top], ^[TabStripPlacement=Bottom]">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.HorizontalItemMargin}}" />
             <Style Selector="^[SizeType=Large]">
-                <Style Selector="^ /template/ Border#PART_Decorator">
-                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPaddingLG}}"/>
-                </Style>
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPaddingLG}}"/>
             </Style>
         
             <Style Selector="^[SizeType=Middle]">
-                <Style Selector="^ /template/ Border#PART_Decorator">
-                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPadding}}"/>
-                </Style>
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPadding}}"/>
             </Style>
         
             <Style Selector="^[SizeType=Small]">
-                <Style Selector="^ /template/ Border#PART_Decorator">
-                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPaddingSM}}"/>
-                </Style>
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardPaddingSM}}"/>
             </Style>
         </Style>
         
         <Style Selector="^[TabStripPlacement=Left], ^[TabStripPlacement=Right]">
             <Style Selector="^[SizeType=Large]">
-                <Style Selector="^ /template/ Border#PART_Decorator">
-                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
-                </Style>
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
             </Style>
         
             <Style Selector="^[SizeType=Middle]">
-                <Style Selector="^ /template/ Border#PART_Decorator">
-                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
-                </Style>
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
             </Style>
         
             <Style Selector="^[SizeType=Small]">
-                <Style Selector="^ /template/ Border#PART_Decorator">
-                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
-                </Style>
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}"/>
             </Style>
         </Style>
         
@@ -111,9 +99,7 @@
         <!-- BuildPlacementStyle end -->
         
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ Border#PART_Decorator">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}"/>
-            </Style>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}"/>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -94,6 +94,7 @@
             </Style>
         </Style>
 
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Style Selector="^:outline">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
             <Setter Property="Background"
