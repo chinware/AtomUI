@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -54,14 +52,14 @@ public class MessageCard : TemplatedControl,
     public static readonly RoutedEvent<RoutedEventArgs> MessageClosedEvent =
         RoutedEvent.Register<MessageCard, RoutedEventArgs>(nameof(MessageClosed), RoutingStrategies.Bubble);
 
-    public static readonly StyledProperty<Icon?> IconProperty
-        = AvaloniaProperty.Register<MessageCard, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty = 
+        AvaloniaProperty.Register<MessageCard, Icon?>(nameof(Icon));
 
     public static readonly StyledProperty<string> MessageProperty =
         AvaloniaProperty.Register<MessageCard, string>(nameof(Message));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageCard>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageCard>();
 
     /// <summary>
     /// Determines if the notification is already closing.
@@ -142,18 +140,12 @@ public class MessageCard : TemplatedControl,
 
     private bool _isClosing;
     private BaseMotionActor? _motionActor;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MessageCard" /> class.
-    /// </summary>
+    
     public MessageCard()
     {
         this.RegisterResources();
     }
-
-    /// <summary>
-    /// Closes the <see cref="MessageCard" />.
-    /// </summary>
+    
     public void Close()
     {
         if (IsClosing)
@@ -302,8 +294,6 @@ public class MessageCard : TemplatedControl,
             ClearValue(IconProperty);
             SetValue(IconProperty, icon, BindingPriority.Template);
         }
-        Debug.Assert(Icon != null);
-        Icon.SetTemplatedParent(this);
     }
     
 }

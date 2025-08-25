@@ -10,8 +10,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -33,8 +33,8 @@ public class BaseTabControl : AvaloniaTabControl,
     public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
         AvaloniaProperty.Register<BaseTabControl, bool>(nameof(TabAlignmentCenter));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabControl>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabControl>();
 
     public SizeType SizeType
     {
@@ -89,23 +89,19 @@ public class BaseTabControl : AvaloniaTabControl,
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
     
     #endregion
-
-    private Border? _frame;
+    
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
-    private CompositeDisposable? _resourceBindingsDisposable;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     static BaseTabControl()
     {
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabControl>(false);
         ItemsPanelProperty.OverrideDefaultValue<BaseTabControl>(DefaultPanel);
         AffectsRender<BaseTabControl>(BorderBrushProperty);
+        AffectsMeasure<BaseTabControl>(TabStripMarginProperty, TabAndContentGutterProperty);
     }
 
     public BaseTabControl()
@@ -116,7 +112,6 @@ public class BaseTabControl : AvaloniaTabControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _frame = e.NameScope.Find<Border>(TabControlThemeConstants.FramePart);
         _alignWrapper   = e.NameScope.Find<Panel>(TabControlThemeConstants.AlignWrapperPart);
     }
     
@@ -129,39 +124,27 @@ public class BaseTabControl : AvaloniaTabControl,
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        if (_frame is not null)
-        {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-                SharedTokenKey.BorderThickness, BindingPriority.Template,
-                new RenderScaleAwareThicknessConfigure(this)));
-        }
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, TabAndContentGutterProperty,
-            TabControlTokenKey.TabAndContentGutter));
-        UpdatePseudoClasses();
-        HandlePlacementChanged();
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
-
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == TabStripPlacementProperty || change.Property == TabAndContentGutterProperty)
         {
-            if (change.Property == TabStripPlacementProperty)
-            {
-                UpdatePseudoClasses();
-                HandlePlacementChanged();
-            }
+            UpdatePseudoClasses();
+            HandlePlacementChanged();
         }
     }
 

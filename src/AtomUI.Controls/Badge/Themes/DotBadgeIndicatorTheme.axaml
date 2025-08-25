@@ -1,0 +1,10 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:DotBadgeIndicator}" TargetType="atom:DotBadgeIndicator">
+        <Setter Property="BadgeShadowSize" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeShadowSize}}"/>
+        <Setter Property="BadgeShadowColor" Value="{DynamicResource {x:Static atom:BadgeTokenKey.BadgeShadowColor}}"/>
+    </ControlTheme>
+</ResourceDictionary>

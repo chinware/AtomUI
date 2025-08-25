@@ -274,15 +274,10 @@ public class SplitButton : ContentControl,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable  
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private Button? _primaryButton;
     private Button? _secondaryButton;
     private KeyGesture? _hotkey;
@@ -421,17 +416,11 @@ public class SplitButton : ContentControl,
     {
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
-        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
         _flyoutStateHelper.NotifyAttachedToVisualTree();
         UpdatePseudoClasses();
         SetupEffectiveButtonType();
@@ -501,6 +490,11 @@ public class SplitButton : ContentControl,
         BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty);
         BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
+        
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -515,7 +509,7 @@ public class SplitButton : ContentControl,
         {
             Command.CanExecuteChanged -= CanExecuteChanged;
         }
- 
+        this.DisposeTokenBindings();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

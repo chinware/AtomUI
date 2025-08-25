@@ -6,13 +6,13 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.VisualTree;
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls.CalendarView;
@@ -40,13 +40,7 @@ internal sealed class CalendarDayButton : AvaloniaButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-    
-    private CompositeDisposable? _resourceBindingsDisposable;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     /// <summary>
     /// Gets or sets the Calendar associated with this button.
@@ -197,25 +191,38 @@ internal sealed class CalendarDayButton : AvaloniaButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         UpdatePseudoClasses();
-        ConfigureTransitions();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                    SharedTokenKey.MotionDurationFast),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                    SharedTokenKey.MotionDurationFast)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                        SharedTokenKey.MotionDurationFast),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                        SharedTokenKey.MotionDurationFast)
+                ];
+            }
         }
         else
         {
             Transitions = null;
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     private void UpdatePseudoClasses()
@@ -301,28 +308,30 @@ internal sealed class CalendarDayButton : AvaloniaButton,
             CalendarDayButtonMouseUp?.Invoke(this, e);
         }
     }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (IsLoaded)
         {
-            ConfigureTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
+            }
         }
     }
 }

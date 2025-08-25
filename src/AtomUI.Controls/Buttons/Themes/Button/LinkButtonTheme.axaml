@@ -9,7 +9,7 @@
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
 
-    <Style Selector="^:is(atom|Button):link">
+    <Style Selector="^:is(atom|Button)[ButtonType=Link]">
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
             <Style Selector="^/template/ Border#PART_Frame">

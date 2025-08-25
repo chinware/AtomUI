@@ -11,6 +11,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -107,11 +108,7 @@ internal class TimePickerPresenter : PickerPresenterBase, IResourceBindingManage
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
 
@@ -128,8 +125,7 @@ internal class TimePickerPresenter : PickerPresenterBase, IResourceBindingManage
     public event EventHandler<ChoosingStatusEventArgs>? ChoosingStatueChanged;
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private IDisposable? _choosingStateDisposable;
     private Button? _nowButton;
     private Button? _confirmButton;
@@ -294,10 +290,6 @@ internal class TimePickerPresenter : PickerPresenterBase, IResourceBindingManage
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
         if (_timeView is not null)
         {
             _choosingStateDisposable = TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
@@ -312,6 +304,19 @@ internal class TimePickerPresenter : PickerPresenterBase, IResourceBindingManage
         base.OnDetachedFromVisualTree(e);
         _choosingStateDisposable?.Dispose();
         _choosingStateDisposable = null;
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 }

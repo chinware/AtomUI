@@ -1,6 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
-using AtomUI.Reflection;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -12,8 +10,7 @@ namespace AtomUI.Controls;
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
 public class TextBox : AvaloniaTextBox,
-                       IControlSharedTokenResourcesHost,
-                       IResourceBindingManager
+                       IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -94,15 +91,9 @@ public class TextBox : AvaloniaTextBox,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private TextBoxInnerBox? _textBoxInnerBox;
 
     static TextBox()
@@ -129,19 +120,6 @@ public class TextBox : AvaloniaTextBox,
         else if (change.Property == StatusProperty || change.Property == StyleVariantProperty)
         {
             UpdatePseudoClasses();
-        }
-        else if (change.Property == InnerLeftContentProperty ||
-                 change.Property == InnerRightContentProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                oldControl.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Control newControl)
-            {
-                newControl.SetTemplatedParent(this);
-            }
         }
     }
 
@@ -173,18 +151,7 @@ public class TextBox : AvaloniaTextBox,
         {
             _textBoxInnerBox.OwningTextBox = this;
         }
-    }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         SetupEffectiveShowClearButton();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
     }
 }

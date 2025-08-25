@@ -172,7 +172,6 @@ public class ArrowDecoratedBox : ContentControl,
     string IControlSharedTokenResourcesHost.TokenId => ArrowDecoratedBoxToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;
     
-    
     private Rect _arrowIndicatorBounds;
 
     internal Rect ArrowIndicatorBounds

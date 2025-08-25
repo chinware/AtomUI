@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
@@ -43,27 +44,26 @@ internal class DataGridRowExpander : ToggleButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    private CompositeDisposable? _resourceBindingsDisposable;
-    
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;
     private Border? _frame;
     private IDisposable? _disposable;
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -108,11 +108,7 @@ internal class DataGridRowExpander : ToggleButton,
         }
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
-    }
+
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

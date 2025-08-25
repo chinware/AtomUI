@@ -1,10 +1,8 @@
-using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -142,25 +140,38 @@ internal class NodeSwitcherButton : ToggleButton
         SetupDefaultIcons();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
-            {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-            };
-            if (_rotationIconPresenter != null)
-            {
-                _rotationIconPresenter.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(IconPresenter.RenderTransformProperty),
-                };
-            }
+            Transitions =
+            [
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+            ];
         }
         else
         {
             Transitions = null;
+        }
+    }
+
+    private void ConfigureRotationIconPresenterTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (_rotationIconPresenter != null)
+            {
+                if (force || _rotationIconPresenter.Transitions == null)
+                {
+                    _rotationIconPresenter.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                    ];
+                }
+            }
+        }
+        else
+        {
             if (_rotationIconPresenter != null)
             {
                 _rotationIconPresenter.Transitions = null;
@@ -178,21 +189,16 @@ internal class NodeSwitcherButton : ToggleButton
                 change.Property == LoadingIconProperty ||
                 change.Property == RotationIconProperty)
             {
-                if (change.OldValue is Icon oldIcon)
-                {
-                    oldIcon.SetTemplatedParent(null);
-                }
-
-                if (change.NewValue is Icon newIcon)
-                {
-                    newIcon.SetTemplatedParent(this);
-                }
-
                 SetupDefaultIcons();
             }
-            else if (change.Property == IsMotionEnabledProperty)
+        }
+
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
+                ConfigureRotationIconPresenterTransitions(true);
             }
         }
     }
@@ -216,7 +222,17 @@ internal class NodeSwitcherButton : ToggleButton
     {
         base.OnApplyTemplate(e);
         _rotationIconPresenter = e.NameScope.Find<IconPresenter>(NodeSwitcherButtonThemeConstants.RotationIconPresenterPart);
-        ConfigureTransitions();
+        if (_rotationIconPresenter != null)
+        {
+            _rotationIconPresenter.Loaded += (sender, args) =>
+            {
+                ConfigureRotationIconPresenterTransitions(false);
+            };
+            _rotationIconPresenter.Unloaded += (sender, args) =>
+            {
+                _rotationIconPresenter.Transitions = null;
+            };
+        }
     }
 
     private void SetupDefaultIcons()
@@ -244,17 +260,6 @@ internal class NodeSwitcherButton : ToggleButton
             ClearValue(LeafIconProperty);
             SetValue(LeafIconProperty, AntDesignIconPackage.FileOutlined(), BindingPriority.Template);
         }
-        Debug.Assert(ExpandIcon != null);
-        ExpandIcon.SetTemplatedParent(this);
-        
-        Debug.Assert(CollapseIcon != null);
-        CollapseIcon.SetTemplatedParent(this);
-        
-        Debug.Assert(RotationIcon != null);
-        RotationIcon.SetTemplatedParent(this);
-        
-        Debug.Assert(LeafIcon != null);
-        LeafIcon.SetTemplatedParent(this);
     }
 
     protected override void Toggle()

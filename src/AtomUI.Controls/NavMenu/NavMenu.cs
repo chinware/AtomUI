@@ -17,6 +17,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -122,15 +123,10 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<NavMenu>(false);
     }
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private ItemsPresenter? _menuItemsPresenter;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     public NavMenu()
     {
@@ -184,34 +180,24 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
             UpdatePseudoClasses();
         }
 
+        if (change.Property == ModeProperty)
+        {
+            ConfigureControlTheme(true);
+            ConfigureItemContainerTheme(true);
+        }
+
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == ModeProperty)
             {
-                SetupControlTheme();
                 HandleModeChanged();
             }
-        }
-    }
-
-    private void SetupControlTheme()
-    {
-        if (Mode == NavMenuMode.Horizontal)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, NavMenuThemeConstants.HorizontalNavMenuThemeId));
-        }
-        else
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, NavMenuThemeConstants.VerticalNavMenuThemeId));
         }
     }
 
     private void HandleModeChanged()
     {
         CloseChildItemsRecursively();
-        SetupItemContainerTheme(true);
         RegenerateContainersRecursively();
         SetupMenuItemsPresenter();
         SetupInteractionHandler(true);
@@ -268,14 +254,21 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         PseudoClasses.Set(NavMenuPseudoClass.DarkStyle, IsDarkStyle);
         PseudoClasses.Set(NavMenuPseudoClass.LightStyle, !IsDarkStyle);
     }
+    
+    public override void EndInit()
+    {
+        ConfigureControlTheme(false);
+        ConfigureItemContainerTheme(false);
+        base.EndInit();
+    }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        _resourceBindingsDisposable = new CompositeDisposable();
-        SetupControlTheme();
-        SetupItemContainerTheme();
         base.OnAttachedToLogicalTree(e);
-        
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
+            SharedTokenKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this)));
         SetupInteractionHandler();
     }
 
@@ -288,10 +281,6 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
-            SharedTokenKey.LineWidth,
-            BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this)));
         InteractionHandler?.Attach(this);
     }
 
@@ -322,8 +311,34 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
             InteractionHandler?.Attach(this);
         }
     }
-
-    private void SetupItemContainerTheme(bool force = false)
+    
+    private void ConfigureControlTheme(bool force)
+    {
+        string? resourceKey = null;
+        if (Theme == null || force)
+        {
+            if (Mode == NavMenuMode.Horizontal)
+            {
+                resourceKey = NavMenuThemeConstants.HorizontalNavMenuThemeId;
+            }
+            else
+            {
+                resourceKey = NavMenuThemeConstants.VerticalNavMenuThemeId;
+            }
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        Theme = theme;
+                    }
+                }
+            }
+        }
+    }
+    
+    private void ConfigureItemContainerTheme(bool force)
     {
         if (ItemContainerTheme is null || force)
         {
@@ -341,8 +356,16 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
                 resourceKey = NavMenuThemeConstants.TopLevelHorizontalNavMenuItemThemeId;
             }
 
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, resourceKey));
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        ItemContainerTheme = theme;
+                    }
+                }
+            }
         }
     }
 
@@ -428,5 +451,6 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         base.OnApplyTemplate(e);
         _menuItemsPresenter = e.NameScope.Find<ItemsPresenter>(NavMenuThemeConstants.ItemsPresenterPart);
         SetupMenuItemsPresenter();
+        HandleModeChanged();
     }
 }

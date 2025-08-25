@@ -2,7 +2,6 @@
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -10,7 +9,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.VisualTree;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -155,7 +154,6 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     private StackPanel? _leftAddOnLayout;
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
-    private Border? _decorator;
     
     protected virtual void NotifyClearButtonClicked()
     {
@@ -169,30 +167,17 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-    
-        if (change.Property == LeftAddOnContentProperty || 
-            change.Property == RightAddOnContentProperty)
-        {
-            if (change.OldValue is Control oldControl)
-            {
-                oldControl.SetTemplatedParent(null);
-            }
-    
-            if (change.NewValue is Control newControl)
-            {
-                newControl.SetTemplatedParent(this);
-            }
-        }
-        else if (change.Property == StyleVariantProperty)
+        
+        if (change.Property == StyleVariantProperty)
         {
             UpdatePseudoClasses();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
@@ -203,7 +188,6 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         _leftAddOnLayout  = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart);
         _rightAddOnLayout = e.NameScope.Find<StackPanel>(AddOnDecoratedInnerBoxThemeConstants.RightAddOnLayoutPart);
         _clearButton      = e.NameScope.Find<IconButton>(AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart);
-        _decorator        = e.NameScope.Find<Border>(AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart);
 
         if (_leftAddOnLayout is not null)
         {
@@ -221,7 +205,6 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         }
 
         SetupEffectiveContentPresenterMargin();
-        ConfigureTransitions();
         UpdatePseudoClasses();
     }
 
@@ -258,27 +241,34 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         base.OnAttachedToVisualTree(e);
         BuildEffectiveInnerBoxPadding();
     }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
 
-    private void ConfigureTransitions()
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (_decorator != null)
+            if (force || Transitions == null)
             {
-                _decorator.Transitions = new Transitions()
-                {
+                Transitions = [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-                };
+                ];
             }
         }
         else
         {
-            if (_decorator != null)
-            {
-                _decorator.Transitions?.Clear();
-                _decorator.Transitions = null;
-            }
+            Transitions = null;
         }
     }
 
@@ -288,4 +278,5 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
     }
+    
 }

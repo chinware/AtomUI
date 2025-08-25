@@ -11,7 +11,10 @@
                     Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
                     Padding="{TemplateBinding EffectiveInnerBoxPadding}"
                     BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}">
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    Background="{TemplateBinding Background}"
+                    >
                     <Grid
                         Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.MainLayoutPart}"
                         ColumnDefinitions="Auto, *, Auto">
@@ -91,148 +94,111 @@
             </Style>
         </Style>
 
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Style Selector="^:outline">
-            <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
-            </Style>
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
 
             <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.HoverBorderColor}}" />
-                </Style>
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.HoverBorderColor}}" />
             </Style>
 
             <Style Selector="^:focus-within">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
-                </Style>
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
             </Style>
 
             <Style Selector="^[Status=Error]">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-                </Style>
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
 
                 <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="BorderBrush"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorderHover}}" />
-                    </Style>
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorderHover}}" />
                 </Style>
 
                 <Style Selector="^:focus-within">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="BorderBrush"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-                    </Style>
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
                 </Style>
             </Style>
 
             <Style Selector="^[Status=Warning]">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
-                </Style>
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
 
                 <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="BorderBrush"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBorderHover}}" />
-                    </Style>
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBorderHover}}" />
                 </Style>
 
                 <Style Selector="^:focus-within">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="BorderBrush"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
-                    </Style>
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
                 </Style>
             </Style>
         </Style>
 
         <Style Selector="^:filled">
-            <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
-            </Style>
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
 
             <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
             </Style>
 
             <Style Selector="^:focus-within">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
-                    <Setter Property="Background" Value="Transparent" />
-                </Style>
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
+                <Setter Property="Background" Value="Transparent" />
             </Style>
 
             <Style Selector="^[Status=Error]">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="BorderBrush"
-                            Value="Transparent" />
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
-                </Style>
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
 
                 <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="Background"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgHover}}" />
-                    </Style>
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgHover}}" />
                 </Style>
 
                 <Style Selector="^:focus-within">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="BorderBrush"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-                        <Setter Property="Background"
-                                Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
-                    </Style>
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
                 </Style>
             </Style>
 
             <Style Selector="^[Status=Warning]">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="BorderBrush" Value="Transparent" />
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
-                </Style>
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
 
                 <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="Background"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBgHover}}" />
-                    </Style>
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBgHover}}" />
                 </Style>
 
                 <Style Selector="^:focus-within">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="BorderBrush"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
-                        <Setter Property="Background"
-                                Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
-                    </Style>
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
                 </Style>
             </Style>
         </Style>
-
-        <!-- BuildAddOnStyle 开始 -->
+        
         <Style Selector="^ /template/ StackPanel#PART_LeftAddOnLayout, ^ /template/ StackPanel#PART_RightAddOnLayout">
             <Setter Property="Spacing"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}" />
         </Style>
-        <!-- BuildAddOnStyle 结束 -->
 
         <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
@@ -245,10 +211,8 @@
         </Style>
 
         <Style Selector="^[IsEnabled=False]">
-            <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
-            </Style>
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
         </Style>
     </Style>
 </ControlTheme>

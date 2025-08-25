@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -97,15 +98,10 @@ public class GroupBox : ContentControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => GroupBoxToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     private readonly BorderRenderHelper _borderRenderHelper;
     private Control? _headerContentContainer;
     private Border? _frame;
@@ -172,19 +168,18 @@ public class GroupBox : ContentControl,
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 }

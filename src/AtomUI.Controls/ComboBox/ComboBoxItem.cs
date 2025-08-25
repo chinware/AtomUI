@@ -1,10 +1,8 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -35,18 +33,20 @@ public class ComboBoxItem : AvaloniaComboBoxItem
     
     protected override Type StyleKeyOverride { get; } = typeof(ComboBoxItem);
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty)
+                ];
+            }
         }
         else
         {
-            Transitions?.Clear();
             Transitions = null;
         }
     }
@@ -54,18 +54,24 @@ public class ComboBoxItem : AvaloniaComboBoxItem
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

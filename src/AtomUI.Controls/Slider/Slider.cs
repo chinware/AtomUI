@@ -86,38 +86,21 @@ public record SliderMark(string Label, double Value)
     internal FormattedText? FormattedText { get; set; }
 }
 
-/// <summary>
-/// A control that lets the user select from a range of values by moving a SliderThumb control along a SliderTrack.
-/// </summary>
-[TemplatePart(SliderThemeConstants.TrackPart, typeof(SliderTrack))]
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal, StdPseudoClass.Pressed)]
 public class Slider : RangeBase,
                       IMotionAwareControl,
                       IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="Orientation" /> property.
-    /// </summary>
     public static readonly StyledProperty<Orientation> OrientationProperty =
         ScrollBar.OrientationProperty.AddOwner<Slider>();
-
-    /// <summary>
-    /// Defines the <see cref="IsDirectionReversed" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> IsDirectionReversedProperty =
         SliderTrack.IsDirectionReversedProperty.AddOwner<Slider>();
-
-    /// <summary>
-    /// Defines the <see cref="IsSnapToTickEnabled" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> IsSnapToTickEnabledProperty =
         AvaloniaProperty.Register<Slider, bool>(nameof(IsSnapToTickEnabled));
 
-    /// <summary>
-    /// Defines the <see cref="TickFrequency" /> property.
-    /// </summary>
     public static readonly StyledProperty<double> TickFrequencyProperty =
         AvaloniaProperty.Register<Slider, double>(nameof(TickFrequency));
 
@@ -136,38 +119,24 @@ public class Slider : RangeBase,
     public static readonly StyledProperty<bool> IncludedProperty =
         SliderTrack.IncludedProperty.AddOwner<Slider>();
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
 
-    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Slider>();
-
-    /// <summary>
-    /// Gets or sets the orientation of a <see cref="Slider" />.
-    /// </summary>
+    public static readonly StyledProperty<bool> IsWaveAnimationEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Slider>();
+    
     public Orientation Orientation
     {
         get => GetValue(OrientationProperty);
         set => SetValue(OrientationProperty, value);
     }
 
-    /// <summary>
-    /// Gets or sets the direction of increasing value.
-    /// </summary>
-    /// <value>
-    /// true if the direction of increasing value is to the left for a horizontal slider or
-    /// down for a vertical slider; otherwise, false. The default is false.
-    /// </value>
     public bool IsDirectionReversed
     {
         get => GetValue(IsDirectionReversedProperty);
         set => SetValue(IsDirectionReversedProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets a value that indicates whether the <see cref="Slider" /> automatically moves the
-    /// <see cref="SliderThumb" /> to the closest tick mark.
-    /// </summary>
+    
     public bool IsSnapToTickEnabled
     {
         get => GetValue(IsSnapToTickEnabledProperty);
@@ -235,17 +204,10 @@ public class Slider : RangeBase,
 
     #endregion
     
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="Slider" /> is currently being dragged.
-    /// </summary>
     protected bool IsDragging { get; private set; }
-
-    /// <summary>
-    /// Gets the <see cref="SliderTrack" /> part of the <see cref="Slider" />.
-    /// </summary>
+    
     protected SliderTrack? SliderTrack { get; private set; }
-
-    // Slider required parts
+    
     private bool _isFocusEngaged;
     private SliderThumb? _graspedThumb;
     private IDisposable? _pointerMovedDispose;
@@ -254,10 +216,7 @@ public class Slider : RangeBase,
     private double _tipHostWidth;
 
     private const double Tolerance = 0.0001;
-
-    /// <summary>
-    /// Initializes static members of the <see cref="Slider" /> class.
-    /// </summary>
+    
     static Slider()
     {
         PressedMixin.Attach<Slider>();
@@ -271,16 +230,11 @@ public class Slider : RangeBase,
         ValueProperty.OverrideMetadata<Slider>(new StyledPropertyMetadata<double>(enableDataValidation: true));
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<Slider>(AutomationControlType.Slider);
     }
-
-    /// <summary>
-    /// Instantiates a new instance of the <see cref="Slider" /> class.
-    /// </summary>
     public Slider()
     {
         this.RegisterResources();
     }
-
-    /// <inheritdoc />
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -595,8 +549,7 @@ public class Slider : RangeBase,
 
         return SliderTrack.EndSliderThumb;
     }
-
-    /// <inheritdoc />
+    
     protected override void UpdateDataValidation(
         AvaloniaProperty property,
         BindingValueType state,
@@ -643,8 +596,7 @@ public class Slider : RangeBase,
             }
         }
     }
-
-    /// <inheritdoc />
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -691,29 +643,17 @@ public class Slider : RangeBase,
     {
         return string.Format(ValueFormatTemplate, value);
     }
-
-    /// <summary>
-    /// Called when user start dragging the <see cref="SliderThumb" />.
-    /// </summary>
-    /// <param name="e"></param>
+    
     protected virtual void OnThumbDragStarted(VectorEventArgs e)
     {
         IsDragging = true;
     }
 
-    /// <summary>
-    /// Called when user stop dragging the <see cref="SliderThumb" />.
-    /// </summary>
-    /// <param name="e"></param>
     protected virtual void OnThumbDragCompleted(VectorEventArgs e)
     {
         IsDragging = false;
     }
 
-    /// <summary>
-    /// Snap the input 'value' to the closest tick.
-    /// </summary>
-    /// <param name="value">Value that want to snap to closest Tick.</param>
     private double SnapToTick(double value)
     {
         if (IsSnapToTickEnabled)

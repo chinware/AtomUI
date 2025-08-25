@@ -12,6 +12,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -145,11 +146,7 @@ internal class TimeView : TemplatedControl, IResourceBindingManager
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
 
@@ -160,9 +157,7 @@ internal class TimeView : TemplatedControl, IResourceBindingManager
     public event EventHandler<TimeSelectedEventArgs>? HoverTimeChanged;
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
-
+    
     static TimeView()
     {
         KeyboardNavigation.TabNavigationProperty
@@ -228,24 +223,33 @@ internal class TimeView : TemplatedControl, IResourceBindingManager
         return new Rect(pos, selector.Bounds.Size);
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-        _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
-        SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerWidthProperty,
             SharedTokenKey.LineWidth,
             BindingPriority.Template,
             new RenderScaleAwareDoubleConfigure(this)));
     }
 
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+        _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
+        SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _pointerPositionDisposable?.Dispose();
-        this.DisposeTokenBindings();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

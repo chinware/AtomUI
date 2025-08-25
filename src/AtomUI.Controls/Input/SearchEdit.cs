@@ -1,4 +1,5 @@
-﻿﻿using AtomUI.Controls.Themes;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -7,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -16,7 +18,7 @@ public enum SearchEditButtonStyle
     Primary
 }
 
-public class SearchEdit : LineEdit
+public class SearchEdit : LineEdit, IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -40,6 +42,13 @@ public class SearchEdit : LineEdit
 
     #endregion
 
+    
+    #region 内部属性定义
+    
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+
+    #endregion
+    
     #region 公共事件定义
 
     public static readonly RoutedEvent<RoutedEventArgs> SearchButtonClickEvent =
@@ -53,13 +62,19 @@ public class SearchEdit : LineEdit
 
     #endregion
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

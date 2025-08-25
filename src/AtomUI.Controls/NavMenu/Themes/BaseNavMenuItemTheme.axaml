@@ -62,17 +62,14 @@
         <Style Selector="^ /template/ ContentPresenter#PART_ItemTextPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemMargin}}" />
         </Style>
-
-        <!-- HeaderDecorator style begin -->
+        
         <Style Selector="^ /template/ Border#PART_HeaderDecorator">
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemHeight}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemContentPadding}}" />
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemBorderRadius}}" />
         </Style>
-        <!-- HeaderDecorator style end -->
-
-        <!-- BuildNormalHeaderDecoratorStyle begin -->
+ 
         <Style Selector="^[HasSubMenu=False]">
             <Style Selector="^ /template/ Border#PART_HeaderDecorator">
                 <Setter Property="TemplatedControl.Foreground"
@@ -109,9 +106,7 @@
                 </Style>
             </Style>
         </Style>
-        <!-- BuildNormalHeaderDecoratorStyle end -->
 
-        <!-- BuildDarkHeaderDecoratorStyle begin -->
         <Style Selector="^[IsDarkStyle=True]">
             <Style Selector="^[HasSubMenu=False]">
                 <Style Selector="^ /template/ Border#PART_HeaderDecorator">
@@ -152,9 +147,7 @@
                 </Style>
             </Style>
         </Style>
-        <!-- BuildDarkHeaderDecoratorStyle end -->
-
-        <!-- BuildMenuIndicatorStyle begin -->
+  
         <Style Selector="^ /template/ atom|Icon#PART_MenuIndicatorIcon">
             <Setter Property="IsVisible" Value="True" />
             <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemColor}}" />
@@ -187,9 +180,7 @@
                 <Setter Property="IsVisible" Value="False" />
             </Style>
         </Style>
-        <!-- BuildMenuIndicatorStyle end -->
 
-        <!-- BuildMenuIconStyle begin -->
         <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
             <Setter Property="IsVisible" Value="False" />
             <Setter Property="Margin"
@@ -226,7 +217,6 @@
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>
-        <!-- BuildMenuIconStyle end -->
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground"

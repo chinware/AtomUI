@@ -1,20 +1,16 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
-using Avalonia.Rendering;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -27,9 +23,7 @@ public enum TabSharp
     Card
 }
 
-public class TabStripItem : AvaloniaTabStripItem,
-                            ICustomHitTest,
-                            IResourceBindingManager
+public class TabStripItem : AvaloniaTabStripItem
 {
     #region 公共属性定义
 
@@ -102,16 +96,9 @@ public class TabStripItem : AvaloniaTabStripItem,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-    
     #endregion
     
     private IconButton? _closeButton;
-    private CompositeDisposable? _resourceBindingsDisposable;
     private Border? _decorator;
     
     private void SetupDefaultCloseIcon()
@@ -200,7 +187,7 @@ public class TabStripItem : AvaloniaTabStripItem,
         {
             if (change.Property == ShapeProperty)
             {
-                SetupShapeThemeBindings();
+                SetupShapeThemeBindings(true);
             }
         }
 
@@ -222,35 +209,36 @@ public class TabStripItem : AvaloniaTabStripItem,
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    private void SetupShapeThemeBindings(bool force = false)
     {
-        _resourceBindingsDisposable = new CompositeDisposable();
-        SetupShapeThemeBindings();
-        base.OnAttachedToLogicalTree(e);
+        if (force || Theme == null)
+        {
+            string? resourceKey = null;
+            if (Shape == TabSharp.Line)
+            {
+                resourceKey = TabStripThemeConstants.TabStripItemThemeId;
+            }
+            else
+            {
+                resourceKey = TabStripThemeConstants.CardTabStripItemThemeId;
+            }
+            
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        Theme = theme;
+                    }
+                }
+            }
+        }
     }
     
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    public override void EndInit()
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
-    private void SetupShapeThemeBindings()
-    {
-        if (Shape == TabSharp.Line)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabStripThemeConstants.TabStripItemThemeId));
-        }
-        else
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabStripThemeConstants.CardTabStripItemThemeId));
-        }
-    }
-
-    public bool HitTest(Point point)
-    {
-        return true;
+        SetupShapeThemeBindings();
+        base.EndInit();
     }
 }

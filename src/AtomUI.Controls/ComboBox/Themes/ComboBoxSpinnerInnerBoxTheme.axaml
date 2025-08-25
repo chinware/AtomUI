@@ -15,7 +15,9 @@
                         Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
                         Padding="{TemplateBinding EffectiveInnerBoxPadding}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}">
                         <Grid
                             Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.MainLayoutPart}"
                             ColumnDefinitions="Auto, *, Auto">
@@ -77,13 +79,9 @@
             
             <Style Selector="^[IsEnabled=True]">
                 <Style Selector="^:not(:filled)">
-                    <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                        <Setter Property="Background" Value="Transparent"/>
-                    </Style>
+                    <Setter Property="Background" Value="Transparent"/>
                     <Style Selector="^:pointerover">
-                        <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}"/>
-                        </Style>
+                        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}"/>
                     </Style>
                 </Style>
             </Style>

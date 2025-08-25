@@ -1,5 +1,4 @@
 using System.Reactive.Disposables;
-using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
@@ -11,6 +10,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -108,8 +108,8 @@ public class Tag : TemplatedControl,
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<Thickness> TagTextPaddingInlineProperty
-        = AvaloniaProperty.Register<Tag, Thickness>(nameof(TagTextPaddingInline));
+    internal static readonly StyledProperty<Thickness> TagTextPaddingInlineProperty =
+        AvaloniaProperty.Register<Tag, Thickness>(nameof(TagTextPaddingInline));
 
     internal static readonly DirectProperty<Tag, Thickness> RenderScaleAwareBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<Tag, Thickness>(nameof(RenderScaleAwareBorderThickness),
@@ -158,22 +158,17 @@ public class Tag : TemplatedControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TagToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
-    private static readonly Dictionary<PresetColorType, TagCalcColor> _presetColorMap;
-    private static readonly Dictionary<TagStatus, TagStatusCalcColor> _statusColorMap;
+    
+    private static readonly Dictionary<PresetColorType, TagCalcColor> PresetColorMap;
+    private static readonly Dictionary<TagStatus, TagStatusCalcColor> StatusColorMap;
 
     static Tag()
     {
-        _presetColorMap = new Dictionary<PresetColorType, TagCalcColor>();
-        _statusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>();
+        PresetColorMap = new Dictionary<PresetColorType, TagCalcColor>();
+        StatusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>();
         AffectsMeasure<Tag>(BorderedProperty,
             IconProperty,
             IsClosableProperty);
@@ -187,31 +182,32 @@ public class Tag : TemplatedControl,
     {
         this.RegisterResources();
     }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
             RenderScaleAwareBorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+    }
 
-        SetupPresetColorMap();
-        SetupStatusColorMap();
-        if (TagColor is not null)
-        {
-            SetupTagColorInfo(TagColor);
-        }
-        SetupBorderThicknessBinding();
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         ThemeManager.Current.ThemeChanged += HandleActualThemeVariantChanged;
     }
     
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
         ThemeManager.Current.ThemeChanged -= HandleActualThemeVariantChanged;
     }
     
@@ -230,19 +226,22 @@ public class Tag : TemplatedControl,
     {
         base.OnApplyTemplate(e);
         SetupDefaultCloseIcon();
+        SetupPresetColorMap();
+        SetupStatusColorMap();
+        if (TagColor is not null)
+        {
+            SetupTagColorInfo(TagColor);
+        }
+        ConfigureBorderThickness();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
 
-        if (e.Property == IconProperty ||
-            e.Property == CloseIconProperty)
+        if (e.Property == CloseIconProperty)
         {
-            if (e.Property == CloseIconProperty)
-            {
-                SetupDefaultCloseIcon();
-            }
+            SetupDefaultCloseIcon();
         }
 
         if (this.IsAttachedToVisualTree())
@@ -254,14 +253,18 @@ public class Tag : TemplatedControl,
                     SetupTagColorInfo(TagColor); 
                 }
             }
+            else if (e.Property == BorderedProperty)
+            {
+                ConfigureBorderThickness();
+            }
         }
     }
 
-    private void SetupBorderThicknessBinding()
+    private void ConfigureBorderThickness()
     {
         if (Bordered)
         {
-            BindUtils.RelayBind(this, RenderScaleAwareBorderThicknessProperty, this, BorderThicknessProperty);
+            SetValue(BorderThicknessProperty, RenderScaleAwareBorderThickness, BindingPriority.Template);
         }
         else
         {
@@ -269,13 +272,14 @@ public class Tag : TemplatedControl,
         }
     }
 
+    // TODO 优化成静态变量
     private static void SetupPresetColorMap(bool force = false)
     {
-        if (_presetColorMap.Count == 0 || force)
+        if (PresetColorMap.Count == 0 || force)
         {
             if (force)
             {
-                _presetColorMap.Clear();
+                PresetColorMap.Clear();
             }
             var activatedTheme = ThemeManager.Current.ActivatedTheme;
             var sharedToken    = activatedTheme?.SharedToken;
@@ -295,18 +299,18 @@ public class Tag : TemplatedControl,
                     DarkColor        = colorMap.Color6,
                     TextColor        = colorMap.Color7
                 };
-                _presetColorMap.Add(entry.Type, calcColor);
+                PresetColorMap.Add(entry.Type, calcColor);
             }
         }
     }
 
     private static void SetupStatusColorMap(bool force = false)
     {
-        if (_statusColorMap.Count == 0 || force)
+        if (StatusColorMap.Count == 0 || force)
         {
             if (force)
             {
-                _statusColorMap.Clear();
+                StatusColorMap.Clear();
             }
             var activatedTheme = ThemeManager.Current.ActivatedTheme;
             var sharedToken    = activatedTheme?.SharedToken;
@@ -316,28 +320,28 @@ public class Tag : TemplatedControl,
                 return;
             }
 
-            _statusColorMap.Add(TagStatus.Success, new TagStatusCalcColor
+            StatusColorMap.Add(TagStatus.Success, new TagStatusCalcColor
             {
                 Color       = sharedToken.ColorSuccess,
                 Background  = sharedToken.ColorSuccessBg,
                 BorderColor = sharedToken.ColorSuccessBorder
             });
 
-            _statusColorMap.Add(TagStatus.Info, new TagStatusCalcColor
+            StatusColorMap.Add(TagStatus.Info, new TagStatusCalcColor
             {
                 Color       = sharedToken.ColorInfo,
                 Background  = sharedToken.ColorInfoBg,
                 BorderColor = sharedToken.ColorInfoBorder
             });
 
-            _statusColorMap.Add(TagStatus.Warning, new TagStatusCalcColor
+            StatusColorMap.Add(TagStatus.Warning, new TagStatusCalcColor
             {
                 Color       = sharedToken.ColorWarning,
                 Background  = sharedToken.ColorWarningBg,
                 BorderColor = sharedToken.ColorWarningBorder
             });
 
-            _statusColorMap.Add(TagStatus.Error, new TagStatusCalcColor
+            StatusColorMap.Add(TagStatus.Error, new TagStatusCalcColor
             {
                 Color       = sharedToken.ColorError,
                 Background  = sharedToken.ColorErrorBg,
@@ -352,28 +356,34 @@ public class Tag : TemplatedControl,
         IsColorSet       = false;
         colorStr          = colorStr.Trim().ToLower();
 
-        foreach (var entry in _presetColorMap)
+        foreach (var entry in PresetColorMap)
         {
             if (entry.Key.ToString().ToLower() == colorStr)
             {
-                var colorInfo = _presetColorMap[entry.Key];
+                var colorInfo = PresetColorMap[entry.Key];
                 Foreground        = new SolidColorBrush(colorInfo.TextColor);
                 BorderBrush       = new SolidColorBrush(colorInfo.LightBorderColor);
                 Background        = new SolidColorBrush(colorInfo.LightColor);
                 IsPresetColorTag = true;
+                PseudoClasses.Set(TagPseudoClass.PresetColor, true);
+                PseudoClasses.Set(TagPseudoClass.StatusColor, false);
+                PseudoClasses.Set(TagPseudoClass.CustomColor, false);
                 return;
             }
         }
 
-        foreach (var entry in _statusColorMap)
+        foreach (var entry in StatusColorMap)
         {
             if (entry.Key.ToString().ToLower() == colorStr)
             {
-                var colorInfo = _statusColorMap[entry.Key];
+                var colorInfo = StatusColorMap[entry.Key];
                 Foreground        = new SolidColorBrush(colorInfo.Color);
                 BorderBrush       = new SolidColorBrush(colorInfo.BorderColor);
                 Background        = new SolidColorBrush(colorInfo.Background);
                 IsPresetColorTag = true;
+                PseudoClasses.Set(TagPseudoClass.PresetColor, false);
+                PseudoClasses.Set(TagPseudoClass.StatusColor, true);
+                PseudoClasses.Set(TagPseudoClass.CustomColor, false);
                 return;
             }
         }
@@ -383,8 +393,9 @@ public class Tag : TemplatedControl,
             Bordered    = false;
             IsColorSet = true;
             Background  = new SolidColorBrush(color);
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, ForegroundProperty,
-                SharedTokenKey.ColorTextLightSolid));
+            PseudoClasses.Set(TagPseudoClass.PresetColor, false);
+            PseudoClasses.Set(TagPseudoClass.StatusColor, false);
+            PseudoClasses.Set(TagPseudoClass.CustomColor, true);
         }
     }
 

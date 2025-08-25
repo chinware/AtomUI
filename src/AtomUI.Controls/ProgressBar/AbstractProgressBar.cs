@@ -13,6 +13,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -289,6 +290,18 @@ public abstract class AbstractProgressBar : RangeBase,
         _effectiveSizeType = SizeType;
     }
 
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -306,11 +319,11 @@ public abstract class AbstractProgressBar : RangeBase,
             UpdatePseudoClasses();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         { 
             if (e.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
 
@@ -324,7 +337,6 @@ public abstract class AbstractProgressBar : RangeBase,
         _percentageLabel = e.NameScope.Find<Label>(ProgressBarThemeConstants.PercentageLabelPart);
         _exceptionCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.ExceptionCompletedIconPart);
         _successCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.SuccessCompletedIconPart);
-        ConfigureTransitions();
         NotifySetupUI();
         NotifyUiStructureReady();
     }
@@ -334,7 +346,7 @@ public abstract class AbstractProgressBar : RangeBase,
         base.OnAttachedToVisualTree(e);
         UpdatePseudoClasses();
     }
-
+    
     protected abstract SizeType CalculateEffectiveSizeType(double size);
 
     protected abstract Rect GetProgressBarRect(Rect controlRect);
@@ -380,22 +392,25 @@ public abstract class AbstractProgressBar : RangeBase,
         UpdateProgress();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            var transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<DoubleTransition>(ValueProperty,
-                    SharedTokenKey.MotionDurationVerySlow, new ExponentialEaseOut()),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
-                    SharedTokenKey.MotionDurationFast),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                    SharedTokenKey.MotionDurationFast)
-            };
+                Transitions transitions =
+                [
+                    TransitionUtils.CreateTransition<DoubleTransition>(ValueProperty,
+                        SharedTokenKey.MotionDurationVerySlow, new ExponentialEaseOut()),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
+                        SharedTokenKey.MotionDurationFast),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                        SharedTokenKey.MotionDurationFast)
+                ];
 
-            NotifyConfigureTransitions(ref transitions);
-            Transitions = transitions;
+                NotifyConfigureTransitions(ref transitions);
+                Transitions = transitions;
+            }
         }
         else
         {

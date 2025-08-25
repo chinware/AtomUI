@@ -1,0 +1,102 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:Avalonia.Controls.Converters"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+    <converters:CornerRadiusToDoubleConverter x:Key="TopLeftCornerRadiusConverter" Corner="TopLeft" />
+    <converters:CornerRadiusToDoubleConverter x:Key="BottomRightCornerRadiusConverter" Corner="BottomRight" />
+    <ControlTheme x:Key="{x:Type atom:ColorSpectrum}" TargetType="atom:ColorSpectrum">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="{x:Type atom:ColorSpectrum}">
+                <Border Name="Frame" ClipToBounds="True"
+                        Padding="0.5"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel Name="{x:Static atom:ColorSpectrumThemeConstants.LayoutRootPart}"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch">
+                        <Panel x:Name="PART_SizingPanel"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                            <Rectangle Name="{x:Static atom:ColorSpectrumThemeConstants.SpectrumRectanglePart}"
+                                       IsHitTestVisible="False"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       RadiusX="{TemplateBinding CornerRadius, Converter={StaticResource TopLeftCornerRadiusConverter}}"
+                                       RadiusY="{TemplateBinding CornerRadius, Converter={StaticResource BottomRightCornerRadiusConverter}}" />
+                            <Rectangle Name="{x:Static atom:ColorSpectrumThemeConstants.SpectrumOverlayRectanglePart}"
+                                       IsHitTestVisible="False"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       RadiusX="{TemplateBinding CornerRadius, Converter={StaticResource TopLeftCornerRadiusConverter}}"
+                                       RadiusY="{TemplateBinding CornerRadius, Converter={StaticResource BottomRightCornerRadiusConverter}}" />
+
+                            <Canvas Name="{x:Static atom:ColorSpectrumThemeConstants.InputTargetPart}"
+                                    Background="Transparent"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch">
+                                <!-- Note: ToolTip.VerticalOffset is for touch devices to keep the tip above fingers -->
+                                <Panel Name="{x:Static atom:ColorSpectrumThemeConstants.SelectionEllipsePanelPart}"
+                                       ToolTip.VerticalOffset="-10"
+                                       ToolTip.Placement="Top">
+                                    <Ellipse x:Name="SelectionEllipse"
+                                             StrokeThickness="2"
+                                             IsHitTestVisible="False"
+                                             HorizontalAlignment="Stretch"
+                                             VerticalAlignment="Stretch" />
+                                    <ToolTip.Tip>
+                                        <!-- Set in code-behind -->
+                                    </ToolTip.Tip>
+                                </Panel>
+                            </Canvas>
+                        </Panel>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+
+        <Style Selector="^ /template/ Border#Frame">
+            <Setter Property="BoxShadow"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerInsetShadow}}" />
+        </Style>
+
+        <!-- Focus -->
+        <Style Selector="^ /template/ Ellipse#FocusEllipse">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-visible /template/ Ellipse#FocusEllipse">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <!-- Selector Color -->
+        <Style Selector="^ /template/ Ellipse#SelectionEllipse">
+            <Setter Property="Stroke"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerDarkColor}}" />
+        </Style>
+
+        <Style Selector="^:light-selector /template/ Ellipse#SelectionEllipse">
+            <Setter Property="Stroke"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerLightColor}}" />
+        </Style>
+
+        <!-- Selector Size -->
+        <Style Selector="^ /template/ Panel#PART_SelectionEllipsePanel">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Width"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSize}}" />
+            <Setter Property="Height"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSize}}" />
+        </Style>
+
+        <Style Selector="^:large-selector /template/ Panel#PART_SelectionEllipsePanel">
+            <Setter Property="Width"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSizeLG}}" />
+            <Setter Property="Height"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerHandlerSizeLG}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

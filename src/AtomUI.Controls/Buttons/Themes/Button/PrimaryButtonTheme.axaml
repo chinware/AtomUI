@@ -9,45 +9,33 @@
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
 
-    <Style Selector="^:is(atom|Button):primary">
+    <Style Selector="^:is(atom|Button)[ButtonType=Primary]">
 
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryColor}}" />
-            <Style Selector="^/template/ Border#PART_Frame">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-            </Style>
-
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+            
             <Style Selector="^:pointerover">
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
             </Style>
 
             <Style Selector="^:pressed">
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
             </Style>
 
             <Style Selector="^:danger">
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-                </Style>
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
 
                 <Style Selector="^:pointerover">
-                    <Style Selector="^/template/ Border#PART_Frame">
-                        <Setter Property="Background"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorHover}}" />
-                    </Style>
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorHover}}" />
                 </Style>
 
                 <Style Selector="^:pressed">
-                    <Style Selector="^/template/ Border#PART_Frame">
-                        <Setter Property="Background"
-                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
-                    </Style>
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
                 </Style>
             </Style>
 
@@ -55,9 +43,7 @@
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
 
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="Transparent" />
-                </Style>
+                <Setter Property="Background" Value="Transparent" />
 
                 <Style Selector="^:pointerover">
                     <Setter Property="Foreground"
@@ -124,6 +110,15 @@
                     <Setter Property="atom:Icon.SelectedFilledBrush"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
                 </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ Border#ShadowsFrame">
+            <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.PrimaryShadow}}" />
+        </Style>
+        <Style Selector="^[IsDanger=True]">
+            <Style Selector="^ /template/ Border#ShadowsFrame">
+                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DangerShadow}}" />
             </Style>
         </Style>
 

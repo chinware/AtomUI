@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Animations;
-using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Reflection;
@@ -12,7 +11,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -176,34 +175,42 @@ public class IconButton : AvaloniaButton,
     {
         base.OnPropertyChanged(e);
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (e.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
     }
 
-    private void ConfigureTransitions()
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+    
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions()
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-                TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                ];
+            }
         }
         else
         {
-            Transitions?.Clear();
             Transitions = null;
         }
     }

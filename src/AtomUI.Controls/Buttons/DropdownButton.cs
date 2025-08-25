@@ -1,6 +1,5 @@
 ﻿using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -9,6 +8,7 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -146,25 +146,39 @@ public class DropdownButton : Button
         _flyoutStateHelper.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
     }
     
-    protected override void SetupControlThemeBindings(bool force = false)
+    protected override void ConfigureControlThemeBindings(bool force)
     {
         if (!ThemeConfigured || force)
         {
+            string? resourceKey = null;
             if (ButtonType == ButtonType.Default)
             {
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, DefaultDropdownButtonTheme.ID);
+                resourceKey = DefaultDropdownButtonTheme.ID;
             }
             else if (ButtonType == ButtonType.Primary)
             {
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, PrimaryDropdownButtonTheme.ID);
+                resourceKey = PrimaryDropdownButtonTheme.ID;
             }
             else if (ButtonType == ButtonType.Text)
             {
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TextDropdownButtonTheme.ID);
+                resourceKey = TextDropdownButtonTheme.ID;
             }
             else if (ButtonType == ButtonType.Link)
             {
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, LinkDropdownButtonTheme.ID);
+                resourceKey = LinkDropdownButtonTheme.ID;
+            }
+
+            resourceKey ??= DefaultDropdownButtonTheme.ID;
+
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        Theme = theme;
+                    }
+                }
             }
         }
     }

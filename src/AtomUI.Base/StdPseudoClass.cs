@@ -21,8 +21,6 @@ public static class StdPseudoClass
     public const string Vertical = ":vertical";
     public const string Active = ":active";
     public const string InActive = ":inactive";
-    public const string Error = ":error";
-    public const string Warning = ":warning";
     public const string Draggable = ":draggable";
     public const string Current = ":current";
     public const string Edited = ":edited";
@@ -34,4 +32,8 @@ public static class StdPseudoClass
     public const string Normal = ":normal";
     public const string Maximized = ":maximized";
     public const string Fullscreen = ":fullscreen";
+    public const string Error = ":error";
+    public const string Information = ":information";
+    public const string Success = ":success";
+    public const string Warning = ":warning";
 }

@@ -8,33 +8,56 @@
     <ControlTheme x:Key="{x:Type atom:PaginationNavItem}" TargetType="atom:PaginationNavItem">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel Name="{x:Static atom:PaginationNavItemThemeConstants.RootLayoutPart}">
-                    <Border Name="{x:Static atom:PaginationNavItemThemeConstants.MainFramePart}"
-                            Background="{TemplateBinding Background}"
+                <Panel>
+                    <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}"
                             BorderThickness="{TemplateBinding BorderThickness}" />
-                    <ContentPresenter Name="{x:Static atom:PaginationNavItemThemeConstants.ContentPart}"
+                    <atom:IconPresenter Name="IconPresenter"
+                                        IsVisible="False"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Icon="{TemplateBinding Icon}"
+                                        IsEnabled="{TemplateBinding IsEnabled}"/>
+                    <ContentPresenter Name="ContentPresenter"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       HorizontalContentAlignment="Center"
                                       VerticalContentAlignment="Center"
-                                      Content="{TemplateBinding Content, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}" />
+                                      Content="{TemplateBinding Content, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}"
+                                      IsVisible="False"/>
                 </Panel>
             </ControlTemplate>
         </Setter>
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
         <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         <Setter Property="Padding"
                 Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationItemPaddingInline}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
+        
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+        <Style Selector="^[PaginationItemType=PageIndicator]">
+            <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        <Style Selector="^:not(^[PaginationItemType=PageIndicator])">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        
         <Style Selector="^[IsEnabled=True]">
             <Style Selector="^:not(^[PaginationItemType=Ellipses])">
                 <Setter Property="Cursor" Value="Hand" />
             </Style>
-
-            <!-- BuildPageIndicatorEnabledStyle 开始 -->
+            
             <Style Selector="^[PaginationItemType=PageIndicator]">
                 <Style Selector="^:selected">
                     <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
@@ -63,9 +86,7 @@
                     </Style>
                 </Style>
             </Style>
-            <!-- BuildPageIndicatorEnabledStyle 结束 -->
 
-            <!-- BuildPreviousAndNextItemEnabledStyle 开始 -->
             <Style Selector="^[PaginationItemType=Previous], ^[PaginationItemType=Next]">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
@@ -80,25 +101,35 @@
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
                 </Style>
             </Style>
-            <!-- BuildPreviousAndNextItemEnabledStyle 结束 -->
         </Style>
-
-        <!-- BuildSizeTypeStyle 开始 -->
+        
         <Style Selector="^[SizeType=Large]">
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemSize}}" />
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemSize}}" />
+            
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            </Style>
+            
         </Style>
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemSize}}" />
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemSize}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemSizeSM}}" />
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemSizeSM}}" />
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            </Style>
         </Style>
-        <!-- BuildSizeTypeStyle 结束 -->
-
-        <!-- BuildDisabledStyle 开始 -->
+        
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
                     Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemActiveColorDisabled}}" />
@@ -107,7 +138,10 @@
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemActiveBgDisabled}}" />
             </Style>
+            
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="IconMode" Value="Disabled" />
+            </Style>
         </Style>
-        <!-- BuildDisabledStyle 结束 -->
     </ControlTheme>
 </ResourceDictionary>

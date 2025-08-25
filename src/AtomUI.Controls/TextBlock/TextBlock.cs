@@ -4,6 +4,7 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 using Avalonia.VisualTree;
@@ -16,32 +17,26 @@ public class TextBlock : AvaloniaTextBlock, IResourceBindingManager
 {
     #region 内部属性定义
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
     
-    private CompositeDisposable? _resourceBindingsDisposable;
     private double _deltaOffsetY;
 
     static TextBlock()
     {
         FontStyleProperty.OverrideDefaultValue<TextBlock>(FontStyle.Normal);
     }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.FontHeight));
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
     

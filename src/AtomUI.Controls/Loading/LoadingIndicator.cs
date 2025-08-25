@@ -170,18 +170,6 @@ public class LoadingIndicator : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.Property == CustomIndicatorIconProperty)
-        {
-            if (e.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (e.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-        }
         if (e.Property == IndicatorAngleProperty)
         {
             HandleIndicatorAngleChanged();

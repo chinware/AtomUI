@@ -35,6 +35,8 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="IsWaveSpiritEnabled"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
 
         <Style Selector="^ /template/ atom|TextBlock#PART_LabelText">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.TextMargin}}" />

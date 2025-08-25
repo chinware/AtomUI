@@ -1,0 +1,41 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:ColorBlock}" TargetType="atom:ColorBlock">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerInsetShadow}}"
+                        Background="{TemplateBinding TransparentBgBrush}">
+                    <Border Name="InnerBox"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="TransparentBgIntervalColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightXS}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightXS}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusXS}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

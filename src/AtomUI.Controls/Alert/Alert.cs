@@ -1,8 +1,6 @@
-﻿using System.Diagnostics;
-using System.Reactive.Disposables;
+﻿using System.Reactive.Disposables;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -12,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -117,15 +116,9 @@ public class Alert : TemplatedControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AlertToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static Alert()
     {
@@ -155,38 +148,25 @@ public class Alert : TemplatedControl,
                 SetupCloseButton();
             }
         }
-
-        if (e.Property == CloseIconProperty)
-        {
-            if (e.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (e.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
-        } else if (e.Property == DescriptionProperty)
+        
+        if (e.Property == DescriptionProperty)
         {
             UpdatePseudoClasses();
         }
     }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
-        SetupCloseButton();
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 
@@ -194,6 +174,7 @@ public class Alert : TemplatedControl,
     {
         base.OnApplyTemplate(e);
         UpdatePseudoClasses();
+        SetupCloseButton();
     }
 
     private void SetupCloseButton()
@@ -203,8 +184,6 @@ public class Alert : TemplatedControl,
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
-        Debug.Assert(CloseIcon != null);
-        CloseIcon.SetTemplatedParent(this);
     }
     
     private void UpdatePseudoClasses()

@@ -4,7 +4,6 @@ using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.MotionScene;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -326,17 +325,13 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     internal TreeView? OwnerTreeView { get; set; }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-    private bool _tempAnimationDisabled = false;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+
     private ITreeViewInteractionHandler? TreeViewInteractionHandler => this.FindLogicalAncestorOfType<TreeView>()?.InteractionHandler;
     
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
+    private bool _tempAnimationDisabled = false;
     private bool _animating;
     private ContentPresenter? _headerPresenter;
     private BaseMotionActor? _itemsPresenterMotionActor;
@@ -361,30 +356,33 @@ public class TreeViewItem : AvaloniaTreeItem,
     public TreeViewItem()
     {
         _borderRenderHelper         = new BorderRenderHelper();
-        _resourceBindingsDisposable = new CompositeDisposable();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
         OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault<TreeView>();
         if (IsChecked.HasValue && IsChecked.Value)
         {
             // 注册到 TreeView
             OwnerTreeView?.DefaultCheckedItems.Add(this);
         }
-
         SetupSwitcherButtonIconMode();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -399,18 +397,6 @@ public class TreeViewItem : AvaloniaTreeItem,
         if (change.Property == ItemCountProperty)
         {
             IsLeaf = ItemCount == 0;
-        }
-        else if (change.Property == IconProperty)
-        {
-            if (change.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
         }
         else if (change.Property == IsLoadingProperty ||
                  change.Property == IsLeafProperty ||
@@ -433,17 +419,21 @@ public class TreeViewItem : AvaloniaTreeItem,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == IsMotionEnabledProperty)
-            {
-                ConfigureTransitions();
-            }
-            else if (change.Property == NodeHoverModeProperty)
+            if (change.Property == NodeHoverModeProperty)
             {
                 CalculateEffectiveBgRect();
             }
             else if (change.Property == IsExpandedProperty)
             {
                 HandleExpandedChanged();
+            }
+        }
+
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
             }
         }
     }
@@ -596,7 +586,6 @@ public class TreeViewItem : AvaloniaTreeItem,
         _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemThemeConstants.NodeSwitcherButtonPart);
         _itemsPresenterMotionActor =
             e.NameScope.Find<BaseMotionActor>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
-        ConfigureTransitions();
         if (_frame is not null)
         {
             _frame.PointerEntered += HandleFrameEntered;
@@ -621,19 +610,34 @@ public class TreeViewItem : AvaloniaTreeItem,
         _tempAnimationDisabled = false;
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
+                ];
+            }
         }
         else
         {
             Transitions = null;
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     private void CalculateEffectiveBgRect()
@@ -678,7 +682,7 @@ public class TreeViewItem : AvaloniaTreeItem,
                 null,
                 default);
         }
-        if (IsShowLine && (IsExpanded || IsLeaf))
+        if (IsShowLine)
         {
             RenderTreeNodeLine(context);
         }
@@ -707,7 +711,7 @@ public class TreeViewItem : AvaloniaTreeItem,
             }
         }
 
-        if (!IsLeaf && !isLastChild)
+        if (!IsLeaf && !isLastChild && _itemsPresenterMotionActor?.IsVisible == true)
         {
             var switcherMiddleBottom =
                 _switcherButton.TranslatePoint(
@@ -715,7 +719,6 @@ public class TreeViewItem : AvaloniaTreeItem,
                 default;
             var blockStartPoint = new Point(switcherMiddleBottom.X, switcherMiddleBottom.Y);
             var blockEndPoint   = new Point(blockStartPoint.X, DesiredSize.Height);
-
             context.DrawLine(new Pen(BorderBrush, penWidth), blockStartPoint, blockEndPoint);
         }
 

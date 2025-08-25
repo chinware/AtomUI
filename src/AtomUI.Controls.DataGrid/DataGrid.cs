@@ -22,6 +22,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Utilities;
@@ -1025,7 +1026,6 @@ public partial class DataGrid : TemplatedControl,
         RowGroupHeaderHeightEstimate = DefaultRowHeight;
         RowGroupSublevelIndents      = [];
         _rowGroupHeightsByLevel      = [];
-        _resourceBindingsDisposable  = new CompositeDisposable();
         UpdatePseudoClasses();
     }
 
@@ -1184,13 +1184,24 @@ public partial class DataGrid : TemplatedControl,
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         if (DataConnection.DataSource != null && !DataConnection.EventsWired)
         {
             DataConnection.WireEvents(DataConnection.DataSource);
@@ -1206,8 +1217,6 @@ public partial class DataGrid : TemplatedControl,
         {
             DataConnection.UnWireEvents(DataConnection.DataSource);
         }
-
-        this.DisposeTokenBindings();
     }
 
     /// <summary>

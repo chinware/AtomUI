@@ -52,7 +52,7 @@
                                         IconInfo="{atom:IconInfoProvider RightOutlined}"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
-                                        IsEnabled="{TemplateBinding IsEnabled}" />
+                                        IsEnabled="{TemplateBinding IsEnabled}"/>
                                 </Border>
                             </Grid>
                         </Border>

@@ -1,0 +1,94 @@
+<ControlTheme  xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:atom="https://atomui.net"
+               x:Class="AtomUI.Controls.Themes.AbstractColorSliderTheme"
+               TargetType="atom:AbstractColorSlider"
+               x:ClassModifier="internal">
+    <Style Selector="^:is(atom|AbstractColorSlider)">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Height" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderSize}}" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="{x:Type atom:ColorSlider}">
+                <Border BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid Margin="{TemplateBinding Padding}">
+                        <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
+                                Background="Red"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+                        <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+                        <atom:ColorPickerSliderTrack Name="PART_Track"
+                                                     Height="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderTrackSize}}"
+                                                     HorizontalAlignment="Stretch"
+                                                     VerticalAlignment="Center"
+                                                     Minimum="{TemplateBinding Minimum}"
+                                                     Maximum="{TemplateBinding Maximum}"
+                                                     Value="{TemplateBinding Value, Mode=TwoWay}"
+                                                     ClipToBounds="False">
+                            <atom:ColorPickerSliderTrack.DecreaseButton>
+                                <RepeatButton Name="PART_DecreaseButton"
+                                              Background="Transparent"
+                                              Focusable="False"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate>
+                                            <Border Name="FocusTarget"
+                                                    Background="Transparent"
+                                                    Margin="0,-10" />
+                                        </ControlTemplate>
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </atom:ColorPickerSliderTrack.DecreaseButton>
+                            <atom:ColorPickerSliderTrack.IncreaseButton>
+                                <RepeatButton Name="PART_IncreaseButton"
+                                              Background="Transparent"
+                                              Focusable="False"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate>
+                                            <Border Name="FocusTarget"
+                                                    Background="Transparent"
+                                                    Margin="0,-10" />
+                                        </ControlTemplate>
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </atom:ColorPickerSliderTrack.IncreaseButton>
+                            <atom:ColorSliderThumb Name="ColorSliderThumb"
+                                                   Margin="0"
+                                                   Padding="0"
+                                                   DataContext="{TemplateBinding Value}"/>
+                        </atom:ColorPickerSliderTrack>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Selector/Thumb Color -->
+        <Style Selector="^:pointerover /template/ atom|Thumb#ColorSliderThumb">
+            <Setter Property="Opacity" Value="0.75" />
+        </Style>
+        <Style Selector="^:pointerover:dark-selector /template/ atom|Thumb#ColorSliderThumb">
+            <Setter Property="Opacity" Value="0.7" />
+        </Style>
+        <Style Selector="^:pointerover:light-selector /template/ atom|Thumb#ColorSliderThumb">
+            <Setter Property="Opacity" Value="0.8" />
+        </Style>
+
+        <Style Selector="^:dark-selector /template/ atom|Thumb#ColorSliderThumb">
+            <Setter Property="BorderBrush" Value="Red" />
+        </Style>
+        <Style Selector="^:light-selector /template/ atom|Thumb#ColorSliderThumb">
+            <Setter Property="BorderBrush" Value="FloralWhite" />
+        </Style>
+    </Style>
+
+</ControlTheme>

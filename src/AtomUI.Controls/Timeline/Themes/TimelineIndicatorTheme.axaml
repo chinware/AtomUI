@@ -1,0 +1,29 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:TimelineIndicator}" TargetType="atom:TimelineIndicator">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:IconPresenter
+                    Name="{x:Static atom:TimelineIndicatorThemeConstants.IconPresenterPart}"
+                    Icon="{TemplateBinding IndicatorIcon}"
+                    NormalFilledBrush="{TemplateBinding IndicatorColor}"/>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="LineHeightRatio" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineHeightRatio}}"/>
+        <Setter Property="IndicatorDotBorderWidth" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorDotBorderWidth}}"/>
+        <Setter Property="IndicatorDotSize" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorDotSize}}"/>
+        <Setter Property="DefaultIndicatorColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"/>
+        <Setter Property="IndicatorTailWidth" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorTailWidth}}"/>
+        <Setter Property="IndicatorTailColor" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorTailColor}}"/>
+        
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}"/>
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

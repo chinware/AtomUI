@@ -9,24 +9,18 @@
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
 
-    <Style Selector="^:is(atom|Button):text">
+    <Style Selector="^:is(atom|Button)[ButtonType=Text]">
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}" />
-            <Style Selector="^/template/ Border#PART_Frame">
-                <Setter Property="Background" Value="Transparent" />
-            </Style>
-
+            <Setter Property="Background" Value="Transparent" />
+            
             <Style Selector="^:pointerover">
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:ButtonTokenKey.TextHoverBg}}" />
-                </Style>
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:ButtonTokenKey.TextHoverBg}}" />
             </Style>
 
             <Style Selector="^:pressed">
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
             </Style>
 
             <Style Selector="^:danger">
@@ -46,9 +40,7 @@
         </Style>
         
         <Style Selector="^:disabled">
-            <Style Selector="^/template/ Border#PART_Frame">
-                <Setter Property="Background" Value="Transparent" />
-            </Style>
+            <Setter Property="Background" Value="Transparent" />
         </Style>
         
         <!-- icon 的各种颜色 -->

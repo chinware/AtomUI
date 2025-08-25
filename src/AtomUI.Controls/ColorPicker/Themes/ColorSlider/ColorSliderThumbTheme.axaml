@@ -1,0 +1,30 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+
+    <ControlTheme x:Key="{x:Type atom:ColorSliderThumb}" TargetType="atom:ColorSliderThumb">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="UseLayoutRounding" Value="False" />
+        <Setter Property="BorderBrush" Value="Red" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Width" Value="12" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="{x:Static atom:ColorSliderThumbThemeConstants.FramePart}" 
+                    Background="{TemplateBinding Background}">
+                    <Ellipse x:Name="SelectionEllipse"
+                             StrokeThickness="2"
+                             Stroke="{TemplateBinding BorderBrush}"
+                             IsHitTestVisible="False"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    
+</ResourceDictionary>

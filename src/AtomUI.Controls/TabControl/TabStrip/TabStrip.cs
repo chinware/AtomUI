@@ -50,17 +50,20 @@ public class TabStrip : BaseTabStrip
         }
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureSelectedIndicatorTransitions(bool force)
     {
         if (_selectedIndicator is not null)
         {
             if (IsMotionEnabled)
             {
-                _selectedIndicator.Transitions = new Transitions()
+                if (force || _selectedIndicator.Transitions == null)
                 {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
-                        SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
-                };
+                    _selectedIndicator.Transitions = new Transitions()
+                    {
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
+                            SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
+                    };
+                }
             }
             else
             {
@@ -145,7 +148,19 @@ public class TabStrip : BaseTabStrip
         {
             _scrollViewer.TabStrip = this;
         }
-        ConfigureTransitions();
+
+        if (_selectedIndicator != null)
+        {
+            _selectedIndicator.Loaded += (sender, args) =>
+            {
+                ConfigureSelectedIndicatorTransitions(false);
+            };
+
+            _selectedIndicator.Unloaded += (sender, args) =>
+            {
+                _selectedIndicator.Transitions = null;
+            };
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -158,9 +173,12 @@ public class TabStrip : BaseTabStrip
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (IsLoaded)
         {
-            ConfigureTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureSelectedIndicatorTransitions(true);
+            }
         }
     }
 }

@@ -7,9 +7,11 @@ using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -17,7 +19,7 @@ namespace AtomUI.Controls;
 
 using ControlList = Avalonia.Controls.Controls;
 
-public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenResourcesHost, IResourceBindingManager
+public class AvatarGroup : TemplatedControl, IMotionAwareControl, IControlSharedTokenResourcesHost, IResourceBindingManager
 {
     #region 公共属性定义
     
@@ -29,9 +31,6 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
     
     public static readonly StyledProperty<FlyoutTriggerType> FoldAvatarFlyoutTriggerTypeProperty =
         AvaloniaProperty.Register<AvatarGroup, FlyoutTriggerType>(nameof(FoldAvatarFlyoutTriggerType), FlyoutTriggerType.Hover);
-    
-    public static readonly StyledProperty<Thickness> BorderThicknessProperty = 
-        Border.BorderThicknessProperty.AddOwner<AvatarGroup>();
     
     public static readonly StyledProperty<int?> MaxDisplayCountProperty =
         AvaloniaProperty.Register<AvatarGroup, int?>(nameof(MaxDisplayCount));
@@ -64,12 +63,6 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
     {
         get => GetValue(FoldAvatarFlyoutTriggerTypeProperty);
         set => SetValue(FoldAvatarFlyoutTriggerTypeProperty, value);
-    }
-    
-    public Thickness BorderThickness
-    {
-        get => GetValue(BorderThicknessProperty);
-        set => SetValue(BorderThicknessProperty, value);
     }
     
     public int? MaxDisplayCount
@@ -108,54 +101,41 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
     
     #region 内部属性定义
     
-    internal static readonly DirectProperty<AvatarGroup, double> GroupSpaceProperty =
-        AvaloniaProperty.RegisterDirect<AvatarGroup, double>(
-            nameof(GroupSpace),
-            o => o.GroupSpace,
-            (o, v) => o.GroupSpace = v);
-
-    internal static readonly DirectProperty<AvatarGroup, double> GroupOverlappingProperty =
-        AvaloniaProperty.RegisterDirect<AvatarGroup, double>(
-            nameof(GroupOverlapping),
-            o => o.GroupOverlapping,
-            (o, v) => o.GroupOverlapping = v);
-
-    private double _groupSpace;
-
+    internal static readonly StyledProperty<double> GroupSpaceProperty = 
+        AvaloniaProperty.Register<AvatarGroup, double>(nameof (GroupSpace));
+    
+    internal static readonly StyledProperty<double> GroupOverlappingProperty = 
+        AvaloniaProperty.Register<AvatarGroup, double>(nameof (GroupOverlapping));
+    
     internal double GroupSpace
     {
-        get => _groupSpace;
-        set => SetAndRaise(GroupSpaceProperty, ref _groupSpace, value);
+        get => GetValue(GroupSpaceProperty);
+        set => SetValue(GroupSpaceProperty, value);
     }
     
-    private double _groupOverlapping;
-
     internal double GroupOverlapping
     {
-        get => _groupOverlapping;
-        set => SetAndRaise(GroupOverlappingProperty, ref _groupOverlapping, value);
+        get => GetValue(GroupOverlappingProperty);
+        set => SetValue(GroupOverlappingProperty, value);
     }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     #endregion
     
-    private CompositeDisposable? _resourceBindingsDisposable;
     private Avatar? _foldCountAvatar;
     private FlyoutHost? _foldCountFlyout;
     private StackPanel? _foldCountStackPanel;
-    private Dictionary<Control, CompositeDisposable> _disposables = new();
+    private Dictionary<Control, CompositeDisposable> _itemDisposables = new();
+    private CompositeDisposable? _foldCoundAvatarDisposables;
+    private CompositeDisposable? _flyoutDisposables;
 
     static AvatarGroup()
     {
-        AffectsMeasure<AvatarGroup>(GroupOverlappingProperty);
+        AffectsMeasure<AvatarGroup>(GroupOverlappingProperty, GroupSpaceProperty);
     }
     
     public AvatarGroup()
@@ -214,11 +194,11 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
                 VisualChildren.RemoveAll(items);
                 foreach (var child in items)
                 {
-                    if (_disposables.TryGetValue(child, out var disposable))
+                    if (_itemDisposables.TryGetValue(child, out var disposable))
                     {
                         disposable.Dispose();
                     }
-                    _disposables.Remove(child);
+                    _itemDisposables.Remove(child);
                 }
                 break;
 
@@ -271,48 +251,59 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
         disposable.Add(BindUtils.RelayBind(this, ShapeProperty, avatar, ShapeProperty));
         disposable.Add(BindUtils.RelayBind(this, SizeProperty, avatar, SizeProperty));
         disposable.Add(BindUtils.RelayBind(this, SizeTypeProperty, avatar, SizeTypeProperty));
-        _disposables.Add(avatar, disposable);
+        _itemDisposables.Add(avatar, disposable);
     }
 
     private Avatar GetFoldCountAvatar()
     {
-        _foldCountAvatar ??= new Avatar();
-        BindUtils.RelayBind(this, BorderThicknessProperty, _foldCountAvatar, BorderThicknessProperty);
-        BindUtils.RelayBind(this, ShapeProperty, _foldCountAvatar, ShapeProperty);
-        BindUtils.RelayBind(this, SizeProperty, _foldCountAvatar, SizeProperty);
-        BindUtils.RelayBind(this, SizeTypeProperty, _foldCountAvatar, SizeTypeProperty);
-        BindUtils.RelayBind(this, FoldInfoAvatarForegroundProperty, _foldCountAvatar, Avatar.ForegroundProperty);
-        BindUtils.RelayBind(this, FoldInfoAvatarBackgroundProperty, _foldCountAvatar, Avatar.BackgroundProperty);
+        if (_foldCountAvatar == null)
+        {
+            _foldCountAvatar = new Avatar();
+            _foldCoundAvatarDisposables?.Dispose();
+            _foldCoundAvatarDisposables = new CompositeDisposable();
+            _foldCoundAvatarDisposables.Add(BindUtils.RelayBind(this, BorderThicknessProperty, _foldCountAvatar, BorderThicknessProperty));
+            _foldCoundAvatarDisposables.Add(BindUtils.RelayBind(this, ShapeProperty, _foldCountAvatar, ShapeProperty));
+            _foldCoundAvatarDisposables.Add(BindUtils.RelayBind(this, SizeProperty, _foldCountAvatar, SizeProperty));
+            _foldCoundAvatarDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, _foldCountAvatar, SizeTypeProperty));
+            _foldCoundAvatarDisposables.Add(BindUtils.RelayBind(this, FoldInfoAvatarForegroundProperty, _foldCountAvatar, Avatar.ForegroundProperty));
+            _foldCoundAvatarDisposables.Add(BindUtils.RelayBind(this, FoldInfoAvatarBackgroundProperty, _foldCountAvatar, Avatar.BackgroundProperty));
+        }
+       
         return _foldCountAvatar;
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, GroupSpaceProperty,
-            AvatarTokenKey.GroupSpace));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, GroupOverlappingProperty,
-            AvatarTokenKey.GroupOverlapping));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, FoldInfoAvatarForegroundProperty,
-            AvatarTokenKey.AvatarColor));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, FoldInfoAvatarBackgroundProperty,
-            AvatarTokenKey.AvatarBg));
+        
         var foldCountAvatar = GetFoldCountAvatar();
         if (_foldCountFlyout == null)
         {
+            _flyoutDisposables?.Dispose();
+            _flyoutDisposables = new CompositeDisposable();
             _foldCountFlyout                 = new FlyoutHost();
             _foldCountFlyout.ZIndex          = Int32.MaxValue;
             _foldCountFlyout.AnchorTarget    = foldCountAvatar;
             _foldCountStackPanel             = new StackPanel();
             _foldCountStackPanel.Orientation = Orientation.Horizontal;
-            BindUtils.RelayBind(this, GroupSpaceProperty, _foldCountStackPanel, StackPanel.SpacingProperty);
-            BindUtils.RelayBind(this, FoldAvatarFlyoutTriggerTypeProperty, _foldCountFlyout, FlyoutHost.TriggerProperty);
-            _foldCountFlyout.Flyout = new Flyout()
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, GroupSpaceProperty, _foldCountStackPanel, StackPanel.SpacingProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, FoldAvatarFlyoutTriggerTypeProperty, _foldCountFlyout, FlyoutHost.TriggerProperty));
+            _foldCountFlyout.Flyout = new Flyout
             {
                 Content = _foldCountStackPanel
             };
@@ -344,13 +335,7 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
             }
         }
     }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
-    }
-
+    
     private protected virtual void InvalidateMeasureOnChildrenChanged()
     {
         InvalidateMeasure();
@@ -389,7 +374,7 @@ public class AvatarGroup : Control, IMotionAwareControl, IControlSharedTokenReso
             ConfigureFoldAvatarCursor();
         }
     }
-    
+
     private void ConfigureFoldAvatarCursor()
     {
         var foldCountAvatar = GetFoldCountAvatar();

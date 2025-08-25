@@ -8,7 +8,6 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
-using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
@@ -56,8 +55,8 @@ public class ComboBox : AvaloniaComboBox,
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         TextBox.IsEnableClearButtonProperty.AddOwner<ComboBox>();
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
 
     public object? LeftAddOn
     {

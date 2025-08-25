@@ -9,15 +9,13 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Rendering;
 
 namespace AtomUI.Controls;
 
 [TemplatePart(ButtonSpinnerThemeConstants.SpinnerHandlePart, typeof(ContentPresenter))]
-internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, 
-                                       ICustomHitTest,
-                                       IResourceBindingManager
+internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -99,15 +97,10 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
         set => SetAndRaise(SpinnerHandleWidthTokenProperty, ref _spinnerHandleWidthToken, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
     
-    private CompositeDisposable? _resourceBindingsDisposable;
     private ContentPresenter? _handleContentPresenter;
 
     static ButtonSpinnerInnerBox()
@@ -137,23 +130,17 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox,
         }
     }
 
-    public bool HitTest(Point point)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        return true;
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 

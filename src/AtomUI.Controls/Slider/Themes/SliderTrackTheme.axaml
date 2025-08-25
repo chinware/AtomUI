@@ -1,0 +1,21 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SliderTrack}" TargetType="atom:SliderTrack">
+        <Setter Property="SliderTrackSize" Value="{DynamicResource {x:Static atom:SliderTokenKey.SliderTrackSize}}" />
+        <Setter Property="SliderMarkSize" Value="{DynamicResource {x:Static atom:SliderTokenKey.MarkSize}}" />
+        <Setter Property="SliderRailSize" Value="{DynamicResource {x:Static atom:SliderTokenKey.RailSize}}" />
+        <Setter Property="MarkBackgroundBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
+        <Setter Property="MarkBorderThickness"
+                Value="{DynamicResource {x:Static atom:SliderTokenKey.ThumbCircleBorderThickness}}" />
+        <Setter Property="MarkLabelBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+
+        <Style Selector="^:disabled">
+            <Setter Property="MarkLabelBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

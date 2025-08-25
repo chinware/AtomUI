@@ -14,6 +14,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -127,15 +128,9 @@ public class Collapse : SelectingItemsControl,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CollapseToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
-    
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static Collapse()
     {
@@ -300,15 +295,11 @@ public class Collapse : SelectingItemsControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == IsBorderlessProperty)
         {
-            if (change.Property == IsBorderlessProperty)
-            {
-                SetupEffectiveBorderThickness();
-            }
+            SetupEffectiveBorderThickness();
         }
-
-        if (change.Property == IsAccordionProperty)
+        else if (change.Property == IsAccordionProperty)
         {
             SetupSelectionMode();
         }
@@ -343,20 +334,18 @@ public class Collapse : SelectingItemsControl,
         }
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
         SetupEffectiveBorderThickness();
-        SetupSelectionMode();
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 }

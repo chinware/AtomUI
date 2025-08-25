@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -13,6 +12,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -177,17 +177,12 @@ public class AddOnDecoratedBox : ContentControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AddOnDecoratedBoxToken.ID;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
 
     protected Control? _leftAddOnPresenter;
     protected Control? _rightAddOnPresenter;
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     static AddOnDecoratedBox()
     {
@@ -211,20 +206,8 @@ public class AddOnDecoratedBox : ContentControl,
                 SetupInnerBoxCornerRadius();
             }
         }
-
-        if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
-        {
-            if (change.OldValue is StyledElement oldValue)
-            {
-                oldValue.SetTemplatedParent(null);
-            }
-
-            if (change.NewValue is StyledElement newValue)
-            {
-                newValue.SetTemplatedParent(this);
-            }
-        }
-        else if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
+        
+        if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
         {
             SetupAddOnBorderInfo();
         }
@@ -279,19 +262,18 @@ public class AddOnDecoratedBox : ContentControl,
         NotifyAddOnBorderInfoCalculated();
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 

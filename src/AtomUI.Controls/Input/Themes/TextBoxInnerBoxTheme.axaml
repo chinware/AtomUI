@@ -15,7 +15,9 @@
                         Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
                         Padding="{TemplateBinding EffectiveInnerBoxPadding}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
                         <Grid
                             Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.MainLayoutPart}"
                             ColumnDefinitions="Auto, *, Auto">

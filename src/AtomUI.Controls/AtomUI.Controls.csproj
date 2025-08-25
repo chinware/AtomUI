@@ -5,6 +5,7 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <RootNamespace>AtomUI.Controls</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +14,7 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia" />
+        <PackageReference Include="Avalonia.Controls.ColorPicker" />
         <PackageReference Include="Avalonia.Svg" />
     </ItemGroup>
 
@@ -26,5 +28,5 @@
         <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     </ItemGroup>
-
+    
 </Project>

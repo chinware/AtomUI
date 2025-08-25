@@ -62,8 +62,7 @@ internal class CellDbClickedEventArgs : EventArgs
 }
 
 internal class DateTimePickerPanel : Panel,
-                                     ILogicalScrollable,
-                                     IResourceBindingManager
+                                     ILogicalScrollable
 {
     #region 公共属性定义
     
@@ -115,12 +114,7 @@ internal class DateTimePickerPanel : Panel,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    
     #endregion
 
     #region 内部事件定义
@@ -130,7 +124,6 @@ internal class DateTimePickerPanel : Panel,
 
     #endregion
     
-    private CompositeDisposable? _resourceBindingsDisposable;
     //Backing fields for properties
     private int _minimumValue = 1;
     private int _maximumValue = 2;
@@ -154,7 +147,6 @@ internal class DateTimePickerPanel : Panel,
         FormatDate = DateTime.Now;
         AddHandler(TappedEvent, HandleItemTapped, RoutingStrategies.Bubble);
         AddHandler(DoubleTappedEvent, HandleItemDoubleTapped, RoutingStrategies.Bubble);
-        _resourceBindingsDisposable = new CompositeDisposable();
     }
 
     static DateTimePickerPanel()
@@ -466,7 +458,6 @@ internal class DateTimePickerPanel : Panel,
         base.OnDetachedFromVisualTree(e);
         _parentScroller?.RemoveHandler(Gestures.ScrollGestureEndedEvent, OnScrollGestureEnded);
         _parentScroller = null;
-        this.DisposeTokenBindings();
     }
 
     protected override void OnKeyDown(KeyEventArgs e)

@@ -4,14 +4,13 @@ using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Animation;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -129,11 +128,11 @@ public class BreadcrumbItem : AvaloniaButton
             IsNavigateResponsive = NavigateUri != null || NavigateContext != null;
         }
         
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();    
+                ConfigureTransitions(true);
             }
         }
     }
@@ -141,19 +140,33 @@ public class BreadcrumbItem : AvaloniaButton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        ConfigureTransitions();
         UpdatePseudoClasses();
     }
 
-    private void ConfigureTransitions()
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                ];
+            }
         }
         else
         {

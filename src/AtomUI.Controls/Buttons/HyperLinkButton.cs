@@ -4,12 +4,11 @@ using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -132,11 +131,11 @@ public class HyperLinkButton : AvaloniaButton,
         {
             UpdatePseudoClasses();
         }
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         { 
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
@@ -164,31 +163,34 @@ public class HyperLinkButton : AvaloniaButton,
         }
     }
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (Transitions is null)
+            if (force || Transitions == null)
             {
-                var transitions = new Transitions
-                {
+                Transitions =
+                [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-                };
-
-                Transitions = transitions;
+                ];
             }
         }
         else
         {
-            Transitions?.Clear();
             Transitions = null;
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

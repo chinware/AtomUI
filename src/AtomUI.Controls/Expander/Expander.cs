@@ -18,6 +18,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -76,8 +77,8 @@ public class Expander : AvaloniaExpander,
     public static readonly StyledProperty<ExpanderIconPosition> ExpandIconPositionProperty =
         AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
     
     public SizeType SizeType
     {
@@ -181,15 +182,9 @@ public class Expander : AvaloniaExpander,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ExpanderToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
-    
-    private CompositeDisposable? _resourceBindingsDisposable;
 
     public Expander()
     {
@@ -201,11 +196,10 @@ public class Expander : AvaloniaExpander,
     private IconButton? _expandButton;
     private bool _animating;
     private bool _tempAnimationDisabled = false;
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
@@ -213,16 +207,15 @@ public class Expander : AvaloniaExpander,
         SetupExpanderBorderThickness();
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
+        base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.RunThemeResourceBindingActions();
         _motionActor     = e.NameScope.Find<BaseMotionActor>(ExpanderThemeConstants.ContentMotionActorPart);
         _headerDecorator = e.NameScope.Find<Border>(ExpanderThemeConstants.HeaderDecoratorPart);
         _expandButton    = e.NameScope.Find<IconButton>(ExpanderThemeConstants.ExpandButtonPart);
@@ -241,9 +234,17 @@ public class Expander : AvaloniaExpander,
 
                 IsExpanded = !IsExpanded;
             };
+
+            _expandButton.Loaded += (sender, args) =>
+            {
+                ConfigureExpandButtonTransitions(false);
+            };
+            _expandButton.Unloaded += (sender, args) =>
+            {
+                _expandButton.Transitions = null;
+            };
         }
         SetupDefaultIcon();
-        ConfigureTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -251,17 +252,17 @@ public class Expander : AvaloniaExpander,
         base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == AddOnContentProperty)
+            if (change.Property == ExpandIconProperty)
             {
                 SetupDefaultIcon();
             }
-            else if (change.Property == IsBorderlessProperty)
+        }
+
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
             {
-                SetupEffectiveBorderThickness();
-            }
-            else if (change.Property == IsMotionEnabledProperty)
-            {
-                ConfigureTransitions();
+                ConfigureExpandButtonTransitions(true);
             }
         }
         
@@ -275,6 +276,10 @@ public class Expander : AvaloniaExpander,
                  change.Property == ExpandDirectionProperty)
         {
             SetupExpanderBorderThickness();
+        }
+        else if (change.Property == IsBorderlessProperty)
+        {
+            SetupEffectiveBorderThickness();
         }
     }
 
@@ -410,23 +415,25 @@ public class Expander : AvaloniaExpander,
         }
     }
     
-    private void ConfigureTransitions()
+    private void ConfigureExpandButtonTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
             if (_expandButton != null)
             {
-                _expandButton.Transitions = new Transitions()
+                if (force || _expandButton.Transitions == null)
                 {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-                };
+                    _expandButton.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                    ];
+                }
             }
         }
         else
         {
             if (_expandButton != null)
             {
-                _expandButton.Transitions?.Clear();
                 _expandButton.Transitions = null;
             }
         }

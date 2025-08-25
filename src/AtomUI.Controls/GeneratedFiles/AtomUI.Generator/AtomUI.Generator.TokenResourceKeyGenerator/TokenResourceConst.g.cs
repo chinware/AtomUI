@@ -234,6 +234,28 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey RightExpandButtonMargin = new TokenResourceKey("Collapse.RightExpandButtonMargin");
     }
 
+    public static class ColorPickerTokenKey
+    {
+        public static readonly TokenResourceKey ColorBlockInnerShadows = new TokenResourceKey("ColorPicker.ColorBlockInnerShadows");
+        public static readonly TokenResourceKey ColorPickerAlphaInputWidth = new TokenResourceKey("ColorPicker.ColorPickerAlphaInputWidth");
+        public static readonly TokenResourceKey ColorPickerHandlerDarkColor = new TokenResourceKey("ColorPicker.ColorPickerHandlerDarkColor");
+        public static readonly TokenResourceKey ColorPickerHandlerLightColor = new TokenResourceKey("ColorPicker.ColorPickerHandlerLightColor");
+        public static readonly TokenResourceKey ColorPickerHandlerSize = new TokenResourceKey("ColorPicker.ColorPickerHandlerSize");
+        public static readonly TokenResourceKey ColorPickerHandlerSizeLG = new TokenResourceKey("ColorPicker.ColorPickerHandlerSizeLG");
+        public static readonly TokenResourceKey ColorPickerHandlerSizeSM = new TokenResourceKey("ColorPicker.ColorPickerHandlerSizeSM");
+        public static readonly TokenResourceKey ColorPickerInputNumberHandleWidth = new TokenResourceKey("ColorPicker.ColorPickerInputNumberHandleWidth");
+        public static readonly TokenResourceKey ColorPickerInsetShadow = new TokenResourceKey("ColorPicker.ColorPickerInsetShadow");
+        public static readonly TokenResourceKey ColorPickerPresetColorSize = new TokenResourceKey("ColorPicker.ColorPickerPresetColorSize");
+        public static readonly TokenResourceKey ColorPickerPreviewSize = new TokenResourceKey("ColorPicker.ColorPickerPreviewSize");
+        public static readonly TokenResourceKey ColorPickerSliderSize = new TokenResourceKey("ColorPicker.ColorPickerSliderSize");
+        public static readonly TokenResourceKey ColorPickerSliderTrackSize = new TokenResourceKey("ColorPicker.ColorPickerSliderTrackSize");
+        public static readonly TokenResourceKey ColorPickerWidth = new TokenResourceKey("ColorPicker.ColorPickerWidth");
+        public static readonly TokenResourceKey ColorSpectrumHeight = new TokenResourceKey("ColorPicker.ColorSpectrumHeight");
+        public static readonly TokenResourceKey SliderContainerMargin = new TokenResourceKey("ColorPicker.SliderContainerMargin");
+        public static readonly TokenResourceKey TriggerPadding = new TokenResourceKey("ColorPicker.TriggerPadding");
+        public static readonly TokenResourceKey TriggerTextMargin = new TokenResourceKey("ColorPicker.TriggerTextMargin");
+    }
+
     public static class ComboBoxTokenKey
     {
         public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("ComboBox.ItemBgColor");
@@ -798,9 +820,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey IndicatorLeftModeMargin = new TokenResourceKey("Timeline.IndicatorLeftModeMargin");
         public static readonly TokenResourceKey IndicatorMiddleModeMargin = new TokenResourceKey("Timeline.IndicatorMiddleModeMargin");
         public static readonly TokenResourceKey IndicatorRightModeMargin = new TokenResourceKey("Timeline.IndicatorRightModeMargin");
+        public static readonly TokenResourceKey IndicatorSize = new TokenResourceKey("Timeline.IndicatorSize");
         public static readonly TokenResourceKey IndicatorTailColor = new TokenResourceKey("Timeline.IndicatorTailColor");
         public static readonly TokenResourceKey IndicatorTailWidth = new TokenResourceKey("Timeline.IndicatorTailWidth");
-        public static readonly TokenResourceKey IndicatorWidth = new TokenResourceKey("Timeline.IndicatorWidth");
         public static readonly TokenResourceKey ItemPaddingBottom = new TokenResourceKey("Timeline.ItemPaddingBottom");
         public static readonly TokenResourceKey ItemPaddingBottomLG = new TokenResourceKey("Timeline.ItemPaddingBottomLG");
         public static readonly TokenResourceKey LastItemContentMinHeight = new TokenResourceKey("Timeline.LastItemContentMinHeight");

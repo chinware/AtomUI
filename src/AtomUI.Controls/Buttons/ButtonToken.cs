@@ -18,17 +18,17 @@ internal class ButtonToken : AbstractControlDesignToken
     /// <summary>
     /// 默认按钮阴影
     /// </summary>
-    public BoxShadow DefaultShadow { get; set; }
+    public BoxShadows DefaultShadow { get; set; }
 
     /// <summary>
     /// 主要按钮阴影
     /// </summary>
-    public BoxShadow PrimaryShadow { get; set; }
+    public BoxShadows PrimaryShadow { get; set; }
 
     /// <summary>
     /// 危险按钮阴影
     /// </summary>
-    public BoxShadow DangerShadow { get; set; }
+    public BoxShadows DangerShadow { get; set; }
 
     /// <summary>
     /// 主要按钮文本颜色
@@ -275,32 +275,32 @@ internal class ButtonToken : AbstractControlDesignToken
 
         var controlOutlineWidth = SharedToken.ControlOutlineWidth;
         FontWeight = 400;
-        DefaultShadow = new BoxShadow
-        {
-            OffsetX = 0,
-            OffsetY = controlOutlineWidth / 2,
-            Blur    = 3,
-            Spread  = 0,
-            Color   = SharedToken.ColorControlOutline
-        };
-
-        PrimaryShadow = new BoxShadow
+        DefaultShadow = new BoxShadows(new BoxShadow
         {
             OffsetX = 0,
             OffsetY = controlOutlineWidth,
             Blur    = 3,
             Spread  = 0,
             Color   = SharedToken.ColorControlOutline
-        };
+        });
 
-        DangerShadow = new BoxShadow
+        PrimaryShadow = new BoxShadows(new BoxShadow
+        {
+            OffsetX = 0,
+            OffsetY = controlOutlineWidth,
+            Blur    = 3,
+            Spread  = 0,
+            Color   = SharedToken.ColorControlOutline
+        });
+
+        DangerShadow = new BoxShadows(new BoxShadow
         {
             OffsetX = 0,
             OffsetY = controlOutlineWidth,
             Blur    = 3,
             Spread  = 0,
             Color   = SharedToken.ColorErrorOutline
-        };
+        });
         
         var lineWidth         = SharedToken.LineWidth;
 

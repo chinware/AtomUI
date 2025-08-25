@@ -7,7 +7,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -15,58 +14,58 @@ internal class DrawerInfoContainer : HeaderedContentControl
 {
     #region 内部属性定义
     
-    internal static readonly DirectProperty<DrawerInfoContainer, DrawerPlacement> PlacementProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, DrawerPlacement>(nameof(Placement),
+    internal static readonly DirectProperty<DrawerInfoContainer, DrawerPlacement> PlacementProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, DrawerPlacement>(nameof(Placement),
             o => o.Placement,
             (o, v) => o.Placement = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, bool> IsShowCloseButtonProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(IsShowCloseButton),
+    internal static readonly DirectProperty<DrawerInfoContainer, bool> IsShowCloseButtonProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(IsShowCloseButton),
             o => o.IsShowCloseButton,
             (o, v) => o.IsShowCloseButton = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, string> TitleProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, string>(nameof(Title),
+    internal static readonly DirectProperty<DrawerInfoContainer, string> TitleProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, string>(nameof(Title),
             o => o.Title,
             (o, v) => o.Title = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, object?> FooterProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, object?>(nameof(Footer),
+    internal static readonly DirectProperty<DrawerInfoContainer, object?> FooterProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, object?>(nameof(Footer),
             o => o.Footer,
             (o, v) => o.Footer = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, IDataTemplate?> FooterTemplateProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, IDataTemplate?>(nameof(FooterTemplate),
+    internal static readonly DirectProperty<DrawerInfoContainer, IDataTemplate?> FooterTemplateProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, IDataTemplate?>(nameof(FooterTemplate),
             o => o.FooterTemplate,
             (o, v) => o.FooterTemplate = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, object?> ExtraProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, object?>(nameof(Extra),
+    internal static readonly DirectProperty<DrawerInfoContainer, object?> ExtraProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, object?>(nameof(Extra),
             o => o.Extra,
             (o, v) => o.Extra = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, IDataTemplate?> ExtraTemplateProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, IDataTemplate?>(nameof(ExtraTemplate),
+    internal static readonly DirectProperty<DrawerInfoContainer, IDataTemplate?> ExtraTemplateProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, IDataTemplate?>(nameof(ExtraTemplate),
             o => o.ExtraTemplate,
             (o, v) => o.ExtraTemplate = v);
     
-    internal static readonly DirectProperty<DrawerInfoContainer, double> DialogSizeProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, double>(nameof(DialogSize),
+    internal static readonly DirectProperty<DrawerInfoContainer, double> DialogSizeProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, double>(nameof(DialogSize),
             o => o.DialogSize,
             (o, v) => o.DialogSize = v);
 
-    internal static readonly DirectProperty<DrawerInfoContainer, bool> HasFooterProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(HasFooter),
+    internal static readonly DirectProperty<DrawerInfoContainer, bool> HasFooterProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(HasFooter),
             o => o.HasFooter,
             (o, v) => o.HasFooter = v);
 
-    internal static readonly DirectProperty<DrawerInfoContainer, bool> HasExtraProperty
-        = AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(HasExtra),
+    internal static readonly DirectProperty<DrawerInfoContainer, bool> HasExtraProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, bool>(nameof(HasExtra),
             o => o.HasExtra,
             (o, v) => o.HasExtra = v);
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerInfoContainer>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerInfoContainer>();
 
     private DrawerPlacement _placement = DrawerPlacement.Right;
 
@@ -159,14 +158,16 @@ internal class DrawerInfoContainer : HeaderedContentControl
     internal event EventHandler? CloseRequested;
     private IconButton? _closeButton;
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                ];
+            }
         }
         else
         {
@@ -186,11 +187,11 @@ internal class DrawerInfoContainer : HeaderedContentControl
             HasExtra = Extra != null || ExtraTemplate != null;
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
@@ -222,11 +223,22 @@ internal class DrawerInfoContainer : HeaderedContentControl
         {
             _closeButton.Click += HandleCloseButtonClick;
         }
-        ConfigureTransitions();
     }
 
     private void HandleCloseButtonClick(object? sender, RoutedEventArgs e)
     {
         CloseRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

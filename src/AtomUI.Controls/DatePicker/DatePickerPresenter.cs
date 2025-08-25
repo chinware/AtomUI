@@ -10,7 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-
+using Avalonia.LogicalTree;
 using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
 
 namespace AtomUI.Controls;
@@ -110,11 +110,7 @@ internal class DatePickerPresenter : PickerPresenterBase,
         set => SetValue(TempSelectedTimeProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
 
@@ -137,23 +133,34 @@ internal class DatePickerPresenter : PickerPresenterBase,
     protected Button? ConfirmButton;
     protected PickerCalendar? CalendarView;
     protected TimeView? TimeView;
-    private CompositeDisposable? _resourceBindingsDisposable;
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    private CompositeDisposable? _pointerDisposables;
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
-        this.AddResourceBindingDisposable(PickerCalendar.IsPointerInMonthViewProperty.Changed.Subscribe(args =>
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _pointerDisposables = new CompositeDisposable(2);
+        _pointerDisposables.Add(PickerCalendar.IsPointerInMonthViewProperty.Changed.Subscribe(args =>
         {
             if (CalendarView is not null)
             {
                 EmitChoosingStatueChanged(args.GetNewValue<bool>());
             }
         }));
-        this.AddResourceBindingDisposable(TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
+        _pointerDisposables.Add(TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
         {
             if (TimeView is not null)
             {
@@ -165,7 +172,7 @@ internal class DatePickerPresenter : PickerPresenterBase,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
+        _pointerDisposables?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

@@ -15,8 +15,10 @@
                     <Border
                         Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
                         Padding="{TemplateBinding EffectiveInnerBoxPadding}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                        BorderThickness="1"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}">
                         <Grid
                             Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.MainLayoutPart}"
                             ColumnDefinitions="Auto, *, Auto">
@@ -73,6 +75,7 @@
         </Setter>
         
         <Style Selector="^:is(atom|ButtonSpinnerInnerBox)">
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="SpinnerBorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
             <Setter Property="SpinnerHandleWidthToken" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
         

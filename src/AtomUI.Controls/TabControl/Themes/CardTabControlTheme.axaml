@@ -10,7 +10,8 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:TabControlThemeConstants.FramePart}">
+                <Border Name="{x:Static atom:TabControlThemeConstants.FramePart}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
                     <DockPanel Name="{x:Static atom:TabControlThemeConstants.MainLayoutContainerPart}">
                         <Panel Name="{x:Static atom:TabControlThemeConstants.AlignWrapperPart}"
                                DockPanel.Dock="{TemplateBinding TabStripPlacement}"

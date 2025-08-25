@@ -15,6 +15,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls.CalendarView;
@@ -206,15 +207,10 @@ internal class CalendarItem : TemplatedControl,
         }
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
-
-    private CompositeDisposable? _resourceBindingsDisposable;
+    
     protected DateTime _currentMonth;
     protected UniformGrid? _headerLayout;
     protected bool _isMouseLeftButtonDownYearView;
@@ -1181,20 +1177,29 @@ internal class CalendarItem : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SetCalendarDayButtons();
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom))));
     }
     
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
         _pointerPositionDisposable?.Dispose();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom))));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
     }
 
     protected virtual bool IsPointerInMonthView(Point position)

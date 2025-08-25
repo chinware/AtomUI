@@ -8,7 +8,7 @@
         <ResourceInclude Source="AdornerLayer/Themes/AdornerLayer.axaml" />
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
         <ResourceInclude Source="ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
-        <ResourceInclude Source="Avatar/Themes/AvatarTheme.axaml" />
+        <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" />
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
@@ -17,6 +17,7 @@
         <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
         <ResourceInclude Source="Chrome/Themes/ChromeThemes.axaml" />
         <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" />
+        <ResourceInclude Source="ColorPicker/Themes/ColorPickerThemes.axaml" />
         <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
         <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" />
@@ -38,7 +39,7 @@
         <ResourceInclude Source="OptionButtonBox/Themes/OptionButtonBoxThemes.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
-        <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmContainerTheme.axaml" />
+        <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmThemes.axaml" />
         <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
         <ResourceInclude Source="Primitives/SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />
         <ResourceInclude Source="ProgressBar/Themes/ProgressBarThemes.axaml" />

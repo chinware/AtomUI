@@ -1,30 +1,20 @@
-﻿using System.Diagnostics;
-using System.Reactive.Disposables;
-using AtomUI.Animations;
+﻿using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
-using AtomUI.Reflection;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
-using Avalonia.Rendering;
-using Avalonia.VisualTree;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
 using AvaloniaTabItem = Avalonia.Controls.TabItem;
 
-public class TabItem : AvaloniaTabItem,
-                       ICustomHitTest,
-                       IResourceBindingManager
+public class TabItem : AvaloniaTabItem
 {
     #region 公共属性定义
 
@@ -86,18 +76,10 @@ public class TabItem : AvaloniaTabItem,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
-
     #endregion
 
     private IconButton? _closeButton;
-    private CompositeDisposable? _resourceBindingsDisposable;
-    private Border? _decorator;
-
+    
     private void SetupDefaultCloseIcon()
     {
         if (CloseIcon is null)
@@ -105,8 +87,6 @@ public class TabItem : AvaloniaTabItem,
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
-        Debug.Assert(CloseIcon is not null);
-        CloseIcon.SetTemplatedParent(this);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -118,35 +98,26 @@ public class TabItem : AvaloniaTabItem,
         {
             _closeButton.Click += HandleCloseRequest;
         }
-        _decorator = e.NameScope.Find<Border>(TabStripItemThemeConstants.DecoratorPart);
-        ConfigureTransitions();
+      
         SetupDefaultCloseIcon();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-            };
-            if (_decorator != null)
-            {
-                _decorator.Transitions = new Transitions()
-                {
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-                };
+                ];
             }
         }
         else
         {
             Transitions = null;
-            if (_decorator != null)
-            {
-                _decorator.Transitions?.Clear();
-                _decorator.Transitions = null;
-            }
         }
     }
 
@@ -183,66 +154,65 @@ public class TabItem : AvaloniaTabItem,
         {
             if (change.Property == ShapeProperty)
             {
-                SetupShapeThemeBindings();
+                SetupShapeThemeBindings(true);
             }
         }
         
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
         
-        if (change.Property == IconProperty ||
-            change.Property == CloseIconProperty)
+        if (change.Property == CloseIconProperty)
         {
-            if (change.OldValue is Icon oldIcon)
-            {
-                oldIcon.SetTemplatedParent(null);
-            }
-            if (change.NewValue is Icon newIcon)
-            {
-                newIcon.SetTemplatedParent(this);
-            }
+            SetupDefaultCloseIcon();
+        }
+    }
 
-            if (change.Property == CloseIconProperty && CloseIcon is null)
+    private void SetupShapeThemeBindings(bool force = false)
+    {
+        if (force || Theme == null)
+        {
+            string? resourceKey = null;
+            if (Shape == TabSharp.Line)
             {
-                SetupDefaultCloseIcon();
+                resourceKey = TabItemThemeConstants.TabItemThemeId;
+            }
+            else
+            {
+                resourceKey = TabItemThemeConstants.CardTabItemThemeId;
+            }
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        Theme = theme;
+                    }
+                }
             }
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        _resourceBindingsDisposable = new CompositeDisposable();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
+    public override void EndInit()
+    {
         SetupShapeThemeBindings();
-        base.OnAttachedToLogicalTree(e);
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
-    private void SetupShapeThemeBindings()
-    {
-        if (Shape == TabSharp.Line)
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabItemThemeConstants.TabItemThemeId));
-        }
-        else
-        {
-            this.AddResourceBindingDisposable(
-                TokenResourceBinder.CreateTokenBinding(this, ThemeProperty, TabItemThemeConstants.CardTabItemThemeId));
-        }
-    }
-
-    public bool HitTest(Point point)
-    {
-        return true;
+        base.EndInit();
     }
 }

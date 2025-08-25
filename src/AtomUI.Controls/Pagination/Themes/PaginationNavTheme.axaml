@@ -10,9 +10,19 @@
                         ClipToBounds="True"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}">
-                    <atom:NavItemsPresenter Name="{x:Static atom:PaginationNavThemeConstants.ItemsPresenterPart}" />
+                    <ItemsPresenter>
+                        <ItemsPresenter.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="{Binding ItemSpacing, RelativeSource={RelativeSource AncestorType=atom:PaginationNav}}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsPresenter.ItemsPanel>
+                    </ItemsPresenter>
                 </Border>
             </ControlTemplate>
         </Setter>
+        
+        <Style Selector="^[SizeType=Large], ^[SizeType=Middle]">
+            <Setter Property="ItemSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}"/>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
