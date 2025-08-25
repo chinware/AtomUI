@@ -3,13 +3,13 @@ using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -154,6 +154,7 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     private StackPanel? _leftAddOnLayout;
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
+    private IDisposable? _effectiveInnerBoxPaddingDisposable;
     
     protected virtual void NotifyClearButtonClicked()
     {
@@ -161,7 +162,8 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
 
     protected virtual void BuildEffectiveInnerBoxPadding()
     {
-        BindUtils.RelayBind(this, InnerBoxPaddingProperty, this, EffectiveInnerBoxPaddingProperty);
+        _effectiveInnerBoxPaddingDisposable?.Dispose();
+        _effectiveInnerBoxPaddingDisposable = BindUtils.RelayBind(this, InnerBoxPaddingProperty, this, EffectiveInnerBoxPaddingProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -236,12 +238,18 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         EffectiveContentPresenterMargin = new Thickness(marginLeft, 0, marginRight, 0);
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
         BuildEffectiveInnerBoxPadding();
     }
-    
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _effectiveInnerBoxPaddingDisposable?.Dispose();
+    }
+
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
@@ -278,5 +286,4 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
     }
-    
 }

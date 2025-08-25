@@ -45,12 +45,12 @@ public class SearchEditDecoratedBox : AddOnDecoratedBox
         var size = base.ArrangeOverride(finalSize);
         if (_originRect is null)
         {
-            _originRect = _rightAddOnPresenter?.Bounds;
+            _originRect = RightAddOnPresenter?.Bounds;
         }
 
-        if (_rightAddOnPresenter is not null && _originRect.HasValue)
+        if (RightAddOnPresenter is not null && _originRect.HasValue)
         {
-            _rightAddOnPresenter.Arrange(_originRect.Value.Inflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
+            RightAddOnPresenter.Arrange(_originRect.Value.Inflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
         }
 
         return size;

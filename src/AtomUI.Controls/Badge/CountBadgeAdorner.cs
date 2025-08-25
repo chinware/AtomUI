@@ -157,7 +157,7 @@ internal class CountBadgeAdorner : TemplatedControl
     {
         AffectsMeasure<CountBadgeAdorner>(OverflowCountProperty,
             SizeProperty,
-            CountProperty,
+            CountTextProperty,
             IsAdornerModeProperty,
             CornerRadiusProperty);
         AffectsRender<CountBadgeAdorner>(BadgeColorProperty, OffsetProperty);
@@ -217,12 +217,6 @@ internal class CountBadgeAdorner : TemplatedControl
     private void BuildCountText()
     {
         CountText = Count > OverflowCount ? $"{OverflowCount}+" : $"{Count}";
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var size = base.MeasureOverride(availableSize);
-        return size;
     }
 
     protected override Size ArrangeOverride(Size finalSize)

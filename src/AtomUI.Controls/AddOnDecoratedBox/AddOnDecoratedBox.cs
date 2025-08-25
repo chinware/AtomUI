@@ -181,8 +181,9 @@ public class AddOnDecoratedBox : ContentControl,
 
     #endregion
 
-    protected Control? _leftAddOnPresenter;
-    protected Control? _rightAddOnPresenter;
+    private protected Control? LeftAddOnPresenter;
+    private protected Control? RightAddOnPresenter;
+    private CompositeDisposable? _contentRelayBindingDisposables;
 
     static AddOnDecoratedBox()
     {
@@ -217,10 +218,15 @@ public class AddOnDecoratedBox : ContentControl,
         } 
         else if (change.Property == ContentProperty)
         {
+            if (change.OldValue != null)
+            {
+                _contentRelayBindingDisposables?.Dispose();
+            }
             if (Content is AddOnDecoratedInnerBox innerBox)
             {
-                BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty);
-                BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty);
+                _contentRelayBindingDisposables = new CompositeDisposable();
+                _contentRelayBindingDisposables.Add(BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty));
+                _contentRelayBindingDisposables.Add(BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty));
             }
         }
     }
@@ -228,8 +234,8 @@ public class AddOnDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _leftAddOnPresenter  = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
-        _rightAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
+        LeftAddOnPresenter  = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
+        RightAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
         SetupInnerBoxCornerRadius();
     }
 
@@ -288,13 +294,13 @@ public class AddOnDecoratedBox : ContentControl,
         var bottomLeftRadius  = CornerRadius.BottomLeft;
         var bottomRightRadius = CornerRadius.BottomRight;
 
-        if (_leftAddOnPresenter is not null && _leftAddOnPresenter.IsVisible)
+        if (LeftAddOnPresenter is not null && LeftAddOnPresenter.IsVisible)
         {
             topLeftRadius    = 0;
             bottomLeftRadius = 0;
         }
 
-        if (_rightAddOnPresenter is not null && _rightAddOnPresenter.IsVisible)
+        if (RightAddOnPresenter is not null && RightAddOnPresenter.IsVisible)
         {
             topRightRadius    = 0;
             bottomRightRadius = 0;
