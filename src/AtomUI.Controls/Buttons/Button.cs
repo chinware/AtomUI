@@ -290,11 +290,11 @@ public class Button : AvaloniaButton,
         }
         if (e.Property == ButtonTypeProperty)
         {
-            SetupControlThemeBindings(true);
+            ConfigureControlThemeBindings(true);
         }
     }
 
-    protected virtual void SetupControlThemeBindings(bool force = false)
+    protected virtual void ConfigureControlThemeBindings(bool force)
     {
         if (!ThemeConfigured || force)
         {
@@ -335,7 +335,7 @@ public class Button : AvaloniaButton,
 
     public override void EndInit()
     {
-        SetupControlThemeBindings();
+        ConfigureControlThemeBindings(false);
         base.EndInit();
     }
 
