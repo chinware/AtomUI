@@ -5,14 +5,13 @@ using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -120,8 +119,6 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
         {
             _captionButtonGroup?.Attach(window);
         }
-
-        ConfigureTransitions();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -151,29 +148,42 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions()
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                ];
+            }
         }
         else
         {
-            Transitions?.Clear();
             Transitions = null;
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

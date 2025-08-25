@@ -9,7 +9,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -101,17 +100,19 @@ public class SliderThumb : TemplatedControl
         set => SetValue(ThumbCircleSizeProperty, value);
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions()
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty),
-                TransitionUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty,
-                    SharedTokenKey.MotionDurationFast),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(OutlineBrushProperty),
+                    TransitionUtils.CreateTransition<ThicknessTransition>(OutlineThicknessProperty,
+                        SharedTokenKey.MotionDurationFast),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty)
+                ];
+            }
         }
         else
         {
@@ -119,20 +120,26 @@ public class SliderThumb : TemplatedControl
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }

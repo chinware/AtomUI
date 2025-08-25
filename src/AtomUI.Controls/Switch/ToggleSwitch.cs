@@ -13,6 +13,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -282,23 +283,37 @@ public class ToggleSwitch : ToggleButton,
         this.RegisterResources();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<RectTransition>(KnobMovingRectProperty),
-                TransitionUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
-                TransitionUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
-                TransitionUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<RectTransition>(KnobMovingRectProperty),
+                    TransitionUtils.CreateTransition<PointTransition>(OnContentOffsetProperty),
+                    TransitionUtils.CreateTransition<PointTransition>(OffContentOffsetProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(GrooveBackgroundProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(SwitchOpacityProperty)
+                ];
+            }
         }
         else
         {
             Transitions = null;
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -455,11 +470,11 @@ public class ToggleSwitch : ToggleButton,
             _isCheckedChanged = true;
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (e.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
         
@@ -479,8 +494,6 @@ public class ToggleSwitch : ToggleButton,
         _offContentPresenter = scope.Find<ContentPresenter>(ToggleSwitchThemeConstants.OffContentPresenterPart);
         
         HandleLoadingState(IsLoading);
-        ConfigureTransitions();
-        this.DisableTransitions();
     }
 
     public sealed override void Render(DrawingContext context)
@@ -613,12 +626,6 @@ public class ToggleSwitch : ToggleButton,
         }
 
         return targetRect;
-    }
-
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
-    {
-        base.OnSizeChanged(e);
-        this.EnableTransitions();
     }
     
     public Rect WaveGeometry()

@@ -1,4 +1,4 @@
-using System.Reactive.Disposables;
+﻿using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
@@ -12,6 +12,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
@@ -118,28 +119,42 @@ internal class CheckBoxIndicator : TemplatedControl,
         this.DisposeTokenBindings();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(TristateMarkBrushProperty),
-            };
-            if (_checkedMark != null)
-            {
-                _checkedMark.Transitions = new Transitions
-                {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty, SharedTokenKey.MotionDurationMid,
-                        new BackEaseOut()),
-                };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(TristateMarkBrushProperty)
+                ];
             }
         }
         else
         {
             Transitions = null;
+        }
+    }
+
+    private void ConfigureCheckedMarkTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (_checkedMark != null)
+            {
+                if (force || _checkedMark.Transitions == null)
+                {
+                    _checkedMark.Transitions = [
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty, SharedTokenKey.MotionDurationMid,
+                            new BackEaseOut()),
+                    ];
+                }
+            }
+        }
+        else
+        {
             if (_checkedMark != null)
             {
                 _checkedMark.Transitions = null;
@@ -171,21 +186,50 @@ internal class CheckBoxIndicator : TemplatedControl,
             }
         }
         
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (e.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
+                ConfigureCheckedMarkTransitions(true);
             }
-         
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _checkedMark = e.NameScope.Find<Icon>(CheckBoxIndicatorThemeConstants.CheckedMarkPart);
-        ConfigureTransitions();
+        if (_checkedMark != null)
+        {
+            _checkedMark.Loaded += HandleCheckedMarkLoaded;
+            _checkedMark.Unloaded += HandleCheckedMarkUnLoaded;
+        }
+    }
+
+    private void HandleCheckedMarkLoaded(object? sender, RoutedEventArgs e)
+    {
+        ConfigureCheckedMarkTransitions(false);
+    }
+
+    private void HandleCheckedMarkUnLoaded(object? sender, RoutedEventArgs e)
+    {
+        if (_checkedMark != null)
+        {
+            _checkedMark.Transitions = null;
+        }
     }
     
     public Rect WaveGeometry()

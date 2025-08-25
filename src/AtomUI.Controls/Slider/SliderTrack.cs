@@ -4,7 +4,6 @@ using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -12,10 +11,10 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Utilities;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -335,16 +334,18 @@ public class SliderTrack : TemplatedControl
                !double.IsInfinity(value.EndValue) && !double.IsNaN(value.EndValue);
     }
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(TrackGrooveBrushProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(TrackBarBrushProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(MarkBorderBrushProperty)
+                ];
+            }
         }
         else
         {
@@ -393,7 +394,6 @@ public class SliderTrack : TemplatedControl
         });
         HandleRangeModeChanged();
         CalculateMaxMarkSize();
-        ConfigureTransitions();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -655,13 +655,25 @@ public class SliderTrack : TemplatedControl
            
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     private Vector CalculateThumbAdjustment(SliderThumb thumb, Rect newThumbBounds)

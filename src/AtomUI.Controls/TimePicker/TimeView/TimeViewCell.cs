@@ -1,9 +1,7 @@
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using Avalonia;
-using Avalonia.Animation;
-using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -24,15 +22,17 @@ public class TimeViewCell : AvaloniaListBoxItem
 
     #endregion
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                ];
+            }
         }
         else
         {
@@ -43,18 +43,24 @@ public class TimeViewCell : AvaloniaListBoxItem
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

@@ -5,11 +5,10 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -163,11 +162,11 @@ public class OptionButton : AvaloniaRadioButton,
             }
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (e.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
@@ -188,22 +187,25 @@ public class OptionButton : AvaloniaRadioButton,
         return CornerRadius;
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            var transitions = new Transitions();
-            if (ButtonStyle == OptionButtonStyle.Solid)
+            if (force || Transitions == null)
             {
-                transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
-            }
-            else if (ButtonStyle == OptionButtonStyle.Outline)
-            {
-                transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
-            }
+                var transitions = new Transitions();
+                if (ButtonStyle == OptionButtonStyle.Solid)
+                {
+                    transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty));
+                }
+                else if (ButtonStyle == OptionButtonStyle.Outline)
+                {
+                    transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
+                }
 
-            transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
-            Transitions = transitions;
+                transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
+                Transitions = transitions;
+            }
         }
         else
         {
@@ -289,9 +291,15 @@ public class OptionButton : AvaloniaRadioButton,
             default);
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

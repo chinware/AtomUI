@@ -15,7 +15,7 @@
                     <Border
                         Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
                         Padding="{TemplateBinding EffectiveInnerBoxPadding}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderThickness="1"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}">

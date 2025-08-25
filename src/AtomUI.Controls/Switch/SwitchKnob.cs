@@ -1,5 +1,4 @@
 using System.Reactive.Disposables;
-using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
@@ -11,6 +10,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -119,15 +119,10 @@ internal class SwitchKnob : Control, IResourceBindingManager
         set => SetAndRaise(LoadingBgOpacityProperty, ref _loadingBgOpacity, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable 
-    {
-        get => _resourceBindingsDisposable;
-        set => _resourceBindingsDisposable = value;
-    }
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable {  get; set; }
     
     #endregion
     
-    private CompositeDisposable? _resourceBindingsDisposable;
     private bool _isLoading;
     private CancellationTokenSource? _cancellationTokenSource;
     
@@ -142,7 +137,19 @@ internal class SwitchKnob : Control, IResourceBindingManager
     {
         UseLayoutRounding = false;
     }
-    
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
     public void NotifyStartLoading()
     {
         if (_isLoading)
@@ -160,6 +167,7 @@ internal class SwitchKnob : Control, IResourceBindingManager
 
     private void StartLoadingAnimation()
     {
+        _cancellationTokenSource?.Cancel();
         var loadingAnimation = new Animation();
         BindUtils.RelayBind(this, LoadingAnimationDurationProperty, loadingAnimation, Animation.DurationProperty);
         loadingAnimation.Duration       = LoadingAnimationDuration;
@@ -232,19 +240,13 @@ internal class SwitchKnob : Control, IResourceBindingManager
             }
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
-    }
-
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
-    {
-        base.OnSizeChanged(e);
-        this.EnableTransitions();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -256,16 +258,19 @@ internal class SwitchKnob : Control, IResourceBindingManager
             ToggleSwitchTokenKey.LoadingAnimationDuration));
     }
 
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _resourceBindingsDisposable = new CompositeDisposable();
         if (_isLoading)
         {
             StartLoadingAnimation();
         }
-        ConfigureTransitions();
-        this.DisableTransitions();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -275,7 +280,6 @@ internal class SwitchKnob : Control, IResourceBindingManager
         {
             _cancellationTokenSource?.Cancel();
         }
-        this.DisposeTokenBindings();
     }
 
     public sealed override void Render(DrawingContext context)
@@ -314,15 +318,18 @@ internal class SwitchKnob : Control, IResourceBindingManager
         }
     }
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
-                TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<DoubleTransition>(KnobRenderWidthProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
+                ];
+            }
         }
         else
         {

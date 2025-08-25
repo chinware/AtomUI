@@ -21,43 +21,43 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_menuIndicator is not null)
+        if (MenuIndicator is not null)
         {
-            _menuIndicator.Click += HandleMenuIndicatorClicked;
+            MenuIndicator.Click += HandleMenuIndicatorClicked;
         }
     }
 
     private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
     {
-        if (_menuFlyout is null)
+        if (MenuFlyout is null)
         {
-            _menuFlyout = new MenuFlyout()
+            MenuFlyout = new MenuFlyout()
             {
                 IsShowArrow = false,
                 ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
             };
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, _menuFlyout, MenuFlyout.IsMotionEnabledProperty);
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
         }
 
         if (TabStripPlacement == Dock.Top)
         {
-            _menuFlyout.Placement = PlacementMode.BottomEdgeAlignedLeft;
+            MenuFlyout.Placement = PlacementMode.BottomEdgeAlignedLeft;
         }
         else if (TabStripPlacement == Dock.Bottom)
         {
-            _menuFlyout.Placement = PlacementMode.TopEdgeAlignedLeft;
+            MenuFlyout.Placement = PlacementMode.TopEdgeAlignedLeft;
         }
         else if (TabStripPlacement == Dock.Right)
         {
-            _menuFlyout.Placement = PlacementMode.LeftEdgeAlignedBottom;
+            MenuFlyout.Placement = PlacementMode.LeftEdgeAlignedBottom;
         }
         else
         {
-            _menuFlyout.Placement = PlacementMode.RightEdgeAlignedBottom;
+            MenuFlyout.Placement = PlacementMode.RightEdgeAlignedBottom;
         }
 
         // 收集没有完全显示的 Tab 列表
-        _menuFlyout.Items.Clear();
+        MenuFlyout.Items.Clear();
         if (TabStrip is not null)
         {
             for (var i = 0; i < TabStrip.ItemCount; i++)
@@ -98,14 +98,14 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                         BindUtils.RelayBind(TabStrip, TabStripControl.IsMotionEnabledProperty, menuItem, BaseOverflowMenuItem.IsMotionEnabledProperty);
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
-                        _menuFlyout.Items.Add(menuItem);
+                        MenuFlyout.Items.Add(menuItem);
                     }
                 }
             }
 
-            if (_menuFlyout.Items.Count > 0)
+            if (MenuFlyout.Items.Count > 0)
             {
-                _menuFlyout.ShowAt(_menuIndicator!);
+                MenuFlyout.ShowAt(MenuIndicator!);
             }
         }
     }

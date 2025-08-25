@@ -2,7 +2,6 @@ using System.Windows.Input;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -168,7 +167,18 @@ public class HyperLinkTextBlock : TemplatedControl, IMotionAwareControl
     {
         base.OnApplyTemplate(e);
         UpdatePseudoClasses();
-        ConfigureTransitions();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -179,11 +189,11 @@ public class HyperLinkTextBlock : TemplatedControl, IMotionAwareControl
             UpdatePseudoClasses();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
@@ -338,21 +348,19 @@ public class HyperLinkTextBlock : TemplatedControl, IMotionAwareControl
         }
     }
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (Transitions is null)
+            if (force || Transitions is null)
             {
-                Transitions = new Transitions()
-                {
+                Transitions = [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-                };
+                ];
             }
         }
         else
         {
-            Transitions?.Clear();
             Transitions = null;
         }
     }

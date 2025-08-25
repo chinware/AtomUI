@@ -140,25 +140,38 @@ internal class NodeSwitcherButton : ToggleButton
         SetupDefaultIcons();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
-            {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-            };
-            if (_rotationIconPresenter != null)
-            {
-                _rotationIconPresenter.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(IconPresenter.RenderTransformProperty),
-                };
-            }
+            Transitions =
+            [
+                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+            ];
         }
         else
         {
             Transitions = null;
+        }
+    }
+
+    private void ConfigureRotationIconPresenterTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (_rotationIconPresenter != null)
+            {
+                if (force || _rotationIconPresenter.Transitions == null)
+                {
+                    _rotationIconPresenter.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                    ];
+                }
+            }
+        }
+        else
+        {
             if (_rotationIconPresenter != null)
             {
                 _rotationIconPresenter.Transitions = null;
@@ -178,9 +191,14 @@ internal class NodeSwitcherButton : ToggleButton
             {
                 SetupDefaultIcons();
             }
-            else if (change.Property == IsMotionEnabledProperty)
+        }
+
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
+                ConfigureRotationIconPresenterTransitions(true);
             }
         }
     }
@@ -204,7 +222,17 @@ internal class NodeSwitcherButton : ToggleButton
     {
         base.OnApplyTemplate(e);
         _rotationIconPresenter = e.NameScope.Find<IconPresenter>(NodeSwitcherButtonThemeConstants.RotationIconPresenterPart);
-        ConfigureTransitions();
+        if (_rotationIconPresenter != null)
+        {
+            _rotationIconPresenter.Loaded += (sender, args) =>
+            {
+                ConfigureRotationIconPresenterTransitions(false);
+            };
+            _rotationIconPresenter.Unloaded += (sender, args) =>
+            {
+                _rotationIconPresenter.Transitions = null;
+            };
+        }
     }
 
     private void SetupDefaultIcons()

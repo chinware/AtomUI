@@ -10,6 +10,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
@@ -151,11 +152,17 @@ internal class RadioIndicator : Control,
             RadioBorderThicknessProperty,
             RadioDotEffectSizeProperty);
     }
-    
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
+
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnSizeChanged(e);
+        base.OnLoaded(e);
         ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -185,13 +192,12 @@ internal class RadioIndicator : Control,
         {
             if (force || Transitions == null)
             {
-                Transitions = new Transitions
-                {
+                Transitions = [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(RadioBorderBrushProperty),
                     TransitionUtils.CreateTransition<DoubleTransition>(RadioDotEffectSizeProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(RadioBackgroundProperty,
                         SharedTokenKey.MotionDurationFast)
-                };
+                ];
             }
         }
         else
@@ -220,15 +226,19 @@ internal class RadioIndicator : Control,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == IsMotionEnabledProperty)
-            {
-                ConfigureTransitions(true);
-            }
-            else if (e.Property == IsPointerOverProperty ||
+            if (e.Property == IsPointerOverProperty ||
                 e.Property == IsCheckedProperty ||
                 e.Property == IsEnabledProperty)
             {
                 RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
+            }
+        }
+
+        if (IsLoaded)
+        {
+            if (e.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
             }
         }
     }

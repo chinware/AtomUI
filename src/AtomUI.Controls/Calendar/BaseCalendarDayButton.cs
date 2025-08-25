@@ -6,14 +6,12 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
@@ -184,21 +182,30 @@ internal class BaseCalendarDayButton : AvaloniaButton,
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        UpdatePseudoClasses();
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
     }
 
-    private void ConfigureTransitions()
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                    SharedTokenKey.MotionDurationFast)
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                        SharedTokenKey.MotionDurationFast)
+                ];
+            }
         }
         else
         {
@@ -307,11 +314,11 @@ internal class BaseCalendarDayButton : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }

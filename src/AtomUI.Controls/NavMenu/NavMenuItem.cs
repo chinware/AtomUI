@@ -736,8 +736,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             _activeIndicator =
                 e.NameScope.Find<Rectangle>(TopLevelHorizontalNavMenuItemThemeConstants.ActiveIndicatorPart);
         }
-
-        // SetupItemIcon();
+        
         if (Mode == NavMenuMode.Inline)
         {
             _childItemsLayoutTransform =
@@ -747,58 +746,112 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, IsSubMenuOpen);
             }
         }
-        ConfigureTransitions();
+
+        if (_headerFrame != null)
+        {
+            _headerFrame.Loaded += (sender, args) =>
+            {
+                ConfigureHeaderFrameTransitions(false);
+            };
+            _headerFrame.Unloaded += (sender, args) =>
+            {
+                _headerFrame.Transitions = null;
+            };
+        }
+
+        if (_menuIndicatorIconFrame != null)
+        {
+            _menuIndicatorIconFrame.Loaded += (sender, args) =>
+            {
+                ConfigureMenuIndicatorIconFrameTransitions(false);
+            };
+            _menuIndicatorIconFrame.Unloaded += (sender, args) =>
+            {
+                _menuIndicatorIconFrame.Transitions = null;
+            };
+        }
+
+        if (_activeIndicator != null)
+        {
+            _activeIndicator.Loaded += (sender, args) =>
+            {
+                ConfigureActiveIndicatorTransitions(false);
+            };
+            _activeIndicator.Unloaded += (sender, args) =>
+            {
+                _activeIndicator.Transitions = null;
+            };
+        }
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureHeaderFrameTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
             if (_headerFrame != null)
             {
-                _headerFrame.Transitions = new Transitions()
+                if (force || _headerFrame.Transitions == null)
                 {
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-                };
-            }
-            
-            // inline mode
-            if (_menuIndicatorIconFrame != null)
-            {
-                _menuIndicatorIconFrame.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-                };
-            }
-            
-            // toplevel horizontal
-            if (_activeIndicator != null)
-            {
-                _activeIndicator.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty)
-                };
+                    _headerFrame.Transitions = [
+                        TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                        TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                    ];
+                }
             }
         }
         else
         {
             if (_headerFrame != null)
             {
-                _headerFrame.Transitions?.Clear();
                 _headerFrame.Transitions = null;
             }
-            
-            // inline mode
+        }
+    }
+    
+    private void ConfigureMenuIndicatorIconFrameTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
             if (_menuIndicatorIconFrame != null)
             {
-                _menuIndicatorIconFrame.Transitions?.Clear();
+                if (force || _menuIndicatorIconFrame.Transitions == null)
+                {
+                    // inline mode
+                    _menuIndicatorIconFrame.Transitions = [
+                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
+                    ];
+                }
+            }
+        }
+        else
+        {
+            if (_menuIndicatorIconFrame != null)
+            {
                 _menuIndicatorIconFrame.Transitions = null;
             }
-            
+        }
+    }
+    
+    private void ConfigureActiveIndicatorTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            // toplevel horizontal
             if (_activeIndicator != null)
             {
-                _activeIndicator.Transitions?.Clear();
+                if (force || _activeIndicator.Transitions == null)
+                {
+                    _activeIndicator.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty)
+                    ];
+                }
+            }
+        }
+        else
+        {
+            if (_activeIndicator != null)
+            {
                 _activeIndicator.Transitions = null;
             }
         }
@@ -1035,11 +1088,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             }
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureActiveIndicatorTransitions(true);
+                ConfigureHeaderFrameTransitions(true);
+                ConfigureMenuIndicatorIconFrameTransitions(true);
             }
         }
     }
@@ -1306,9 +1361,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     internal void SelectItemRecursively()
     {
-        this.DisableAllTransitions();
+        DisableAllTransitions();
         IsSelected = true;
-        this.EnableAllTransitions();
+        EnableAllTransitions();
         if (Parent is NavMenuItem parent)
         {
             parent.DisableAllTransitions();

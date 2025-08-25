@@ -6,12 +6,12 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
@@ -191,25 +191,38 @@ internal sealed class CalendarDayButton : AvaloniaButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         UpdatePseudoClasses();
-        ConfigureTransitions();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions ??= new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                    SharedTokenKey.MotionDurationFast),
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
-                    SharedTokenKey.MotionDurationFast)
-            };
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
+                        SharedTokenKey.MotionDurationFast),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
+                        SharedTokenKey.MotionDurationFast)
+                ];
+            }
         }
         else
         {
             Transitions = null;
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     private void UpdatePseudoClasses()
@@ -313,9 +326,12 @@ internal sealed class CalendarDayButton : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (IsLoaded)
         {
-            ConfigureTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
+            }
         }
     }
 }

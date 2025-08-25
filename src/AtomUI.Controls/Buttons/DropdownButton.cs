@@ -146,7 +146,7 @@ public class DropdownButton : Button
         _flyoutStateHelper.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
     }
     
-    protected override void SetupControlThemeBindings(bool force = false)
+    protected override void ConfigureControlThemeBindings(bool force)
     {
         if (!ThemeConfigured || force)
         {
