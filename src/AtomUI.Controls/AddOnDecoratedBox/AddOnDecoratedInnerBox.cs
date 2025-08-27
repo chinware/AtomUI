@@ -154,7 +154,7 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     private StackPanel? _leftAddOnLayout;
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
-    private IDisposable? _effectiveInnerBoxPaddingDisposable;
+    private IDisposable? _effectiveInnerBoxBindingDisposable;
     
     protected virtual void NotifyClearButtonClicked()
     {
@@ -162,8 +162,8 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
 
     protected virtual void BuildEffectiveInnerBoxPadding()
     {
-        _effectiveInnerBoxPaddingDisposable?.Dispose();
-        _effectiveInnerBoxPaddingDisposable = BindUtils.RelayBind(this, InnerBoxPaddingProperty, this, EffectiveInnerBoxPaddingProperty);
+        _effectiveInnerBoxBindingDisposable?.Dispose();
+        _effectiveInnerBoxBindingDisposable = BindUtils.RelayBind(this, InnerBoxPaddingProperty, this, EffectiveInnerBoxPaddingProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -247,7 +247,7 @@ public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-        _effectiveInnerBoxPaddingDisposable?.Dispose();
+        _effectiveInnerBoxBindingDisposable?.Dispose();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)

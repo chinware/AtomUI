@@ -182,7 +182,7 @@ public class AddOnDecoratedBox : ContentControl,
 
     private protected Control? LeftAddOnPresenter;
     private protected Control? RightAddOnPresenter;
-    private CompositeDisposable? _contentRelayBindings;
+    private CompositeDisposable? _contentRelayBindingDisposables;
 
     static AddOnDecoratedBox()
     {
@@ -219,13 +219,13 @@ public class AddOnDecoratedBox : ContentControl,
         {
             if (change.OldValue != null)
             {
-                _contentRelayBindings?.Dispose();
+                _contentRelayBindingDisposables?.Dispose();
             }
             if (Content is AddOnDecoratedInnerBox innerBox)
             {
-                _contentRelayBindings = new CompositeDisposable();
-                _contentRelayBindings.Add(BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty));
-                _contentRelayBindings.Add(BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty));
+                _contentRelayBindingDisposables = new CompositeDisposable();
+                _contentRelayBindingDisposables.Add(BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty));
+                _contentRelayBindingDisposables.Add(BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty));
             }
         }
     }
