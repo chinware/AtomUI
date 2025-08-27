@@ -14,7 +14,7 @@ using Avalonia.LogicalTree;
 namespace AtomUI.Controls;
 
 [TemplatePart(AddOnDecoratedInnerBoxThemeConstants.ContentPresenterPart, typeof(ContentPresenter), IsRequired = true)]
-public class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
+internal class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
 {
     #region 公共属性定义
 

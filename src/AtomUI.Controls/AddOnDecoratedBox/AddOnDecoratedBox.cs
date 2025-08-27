@@ -34,9 +34,9 @@ public enum AddOnDecoratedStatus
 [TemplatePart(AddOnDecoratedBoxThemeConstants.LeftAddOnPart, typeof(ContentPresenter))]
 [TemplatePart(AddOnDecoratedBoxThemeConstants.RightAddOnPart, typeof(ContentPresenter))]
 [TemplatePart(AddOnDecoratedBoxThemeConstants.InnerBoxContentPart, typeof(ContentPresenter), IsRequired = true)]
-public class AddOnDecoratedBox : ContentControl,
-                                 IControlSharedTokenResourcesHost,
-                                 IResourceBindingManager
+internal class AddOnDecoratedBox : ContentControl,
+                                   IControlSharedTokenResourcesHost,
+                                   IResourceBindingManager
 {
     #region 公共属性定义
 

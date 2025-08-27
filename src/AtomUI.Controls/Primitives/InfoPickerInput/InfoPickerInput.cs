@@ -215,7 +215,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     private protected Flyout? PickerFlyout;
     protected bool CurrentValidSelected;
     private IDisposable? _clearUpButtonDetectDisposable;
-    protected AddOnDecoratedInnerBox? PickerInnerBox;
+    private protected AddOnDecoratedInnerBox? PickerInnerBox;
     protected TextBox? InfoInputBox;
 
     private protected bool IsFlyoutOpen;
