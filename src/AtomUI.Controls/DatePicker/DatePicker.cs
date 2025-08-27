@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.TimePickerLang;
@@ -100,6 +101,7 @@ public class DatePicker : InfoPickerInput,
     }
 
     private DatePickerPresenter? _pickerPresenter;
+    private CompositeDisposable? _flyoutBindingDisposables;
 
     /// <summary>
     /// 清除时间选择器的值，不考虑默认值
@@ -164,13 +166,15 @@ public class DatePicker : InfoPickerInput,
     {
         var flyout = new DatePickerFlyout();
         flyout.IsDetectMouseClickEnabled = false;
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerFlyout.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, SelectedDateTimeProperty, flyout, DatePickerPresenter.SelectedDateTimeProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, DatePickerPresenter.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, flyout, DatePickerPresenter.IsShowNowProperty);
-        BindUtils.RelayBind(this, IsShowTimeProperty, flyout, DatePickerPresenter.IsShowTimeProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, DatePickerPresenter.ClockIdentifierProperty);
+        _flyoutBindingDisposables?.Dispose();
+        _flyoutBindingDisposables = new CompositeDisposable(7);
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerFlyout.IsMotionEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerPresenter.IsMotionEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, SelectedDateTimeProperty, flyout, DatePickerPresenter.SelectedDateTimeProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, DatePickerPresenter.IsNeedConfirmProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, flyout, DatePickerPresenter.IsShowNowProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowTimeProperty, flyout, DatePickerPresenter.IsShowTimeProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, DatePickerPresenter.ClockIdentifierProperty));
         
         return flyout;
     }

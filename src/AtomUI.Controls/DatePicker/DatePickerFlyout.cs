@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -52,23 +53,25 @@ internal class DatePickerFlyout : Flyout
     }
     
     internal DatePickerPresenter? DatePickerPresenter { get; set; }
+    private CompositeDisposable? _presenterBindingDisposables;
     
     protected override Control CreatePresenter()
     {
         DatePickerPresenter = new DatePickerPresenter();
-        
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, DatePickerPresenter, DatePickerPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, SelectedDateTimeProperty, DatePickerPresenter, DatePickerPresenter.SelectedDateTimeProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, DatePickerPresenter, DatePickerPresenter.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, DatePickerPresenter, DatePickerPresenter.IsShowNowProperty);
-        BindUtils.RelayBind(this, IsShowTimeProperty, DatePickerPresenter, DatePickerPresenter.IsShowTimeProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, DatePickerPresenter, DatePickerPresenter.ClockIdentifierProperty);
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new  CompositeDisposable(7);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, DatePickerPresenter, DatePickerPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, SelectedDateTimeProperty, DatePickerPresenter, DatePickerPresenter.SelectedDateTimeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, DatePickerPresenter, DatePickerPresenter.IsNeedConfirmProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, DatePickerPresenter, DatePickerPresenter.IsShowNowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowTimeProperty, DatePickerPresenter, DatePickerPresenter.IsShowTimeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, DatePickerPresenter, DatePickerPresenter.ClockIdentifierProperty));
         
         var flyoutPresenter = new FlyoutPresenter
         {
             Content = DatePickerPresenter
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, flyoutPresenter, IsShowArrowProperty);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, flyoutPresenter, IsShowArrowProperty));
         
         CalculateShowArrowEffective();
         SetupArrowPosition(Popup, flyoutPresenter);

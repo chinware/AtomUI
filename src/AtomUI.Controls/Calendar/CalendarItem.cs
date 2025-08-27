@@ -4,8 +4,6 @@ using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -66,11 +64,11 @@ internal class CalendarItem : TemplatedControl
             o => o.IsMonthViewMode,
             (o, v) => o.IsMonthViewMode = v);
     
-    public static readonly StyledProperty<GridLength> DayTitleHeightProperty =
+    internal static readonly StyledProperty<GridLength> DayTitleHeightProperty =
         AvaloniaProperty.Register<CalendarItem, GridLength>(
             nameof(DayTitleHeight));
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();
 
     /// <summary>
@@ -282,18 +280,10 @@ internal class CalendarItem : TemplatedControl
         {
             var       childCount = Calendar.RowsPerMonth + Calendar.RowsPerMonth * Calendar.ColumnsPerMonth;
             using var children   = new PooledList<Control>(childCount);
-            
-            _dayBtnBindingDisposables?.Dispose();
-            _dayBtnBindingDisposables = new CompositeDisposable(Calendar.RowsPerMonth * Calendar.ColumnsPerMonth + Calendar.ColumnsPerMonth);
 
             for (var i = 0; i < Calendar.ColumnsPerMonth; i++)
             {
                 var cell = DayTitleTemplate?.Build();
-                if (cell is TextBlock textBlockCell)
-                {
-                    _dayBtnBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(textBlockCell,
-                        HeightProperty, CalendarTokenKey.DayTitleHeight));
-                }
                 if (cell is not null)
                 {
                     cell.DataContext = string.Empty;
@@ -302,6 +292,9 @@ internal class CalendarItem : TemplatedControl
                     children.Add(cell);
                 }
             }
+            
+            _dayBtnBindingDisposables?.Dispose();
+            _dayBtnBindingDisposables = new CompositeDisposable(Calendar.RowsPerMonth * Calendar.ColumnsPerMonth);
 
             EventHandler<PointerPressedEventArgs>  cellMouseLeftButtonDown = HandleCellMouseLeftButtonDown;
             EventHandler<PointerReleasedEventArgs> cellMouseLeftButtonUp   = HandleCellMouseLeftButtonUp;
