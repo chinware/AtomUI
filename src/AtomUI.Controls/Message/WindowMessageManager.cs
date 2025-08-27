@@ -73,6 +73,7 @@ public class WindowMessageManager : TemplatedControl,
     #endregion
 
     private IList? _items;
+    private IDisposable? _bindingDisposable;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
@@ -119,7 +120,8 @@ public class WindowMessageManager : TemplatedControl,
             Message     = message.Content,
             MessageType = message.Type
         };
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, messageControl, MessageCard.IsMotionEnabledProperty);
+        _bindingDisposable?.Dispose();
+        _bindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, messageControl, MessageCard.IsMotionEnabledProperty);
 
         // Add style classes if any
         if (classes != null)
@@ -133,7 +135,7 @@ public class WindowMessageManager : TemplatedControl,
         messageControl.MessageClosed += (sender, args) =>
         {
             onClose?.Invoke();
-
+            _bindingDisposable?.Dispose();
             _items?.Remove(sender);
         };
 
