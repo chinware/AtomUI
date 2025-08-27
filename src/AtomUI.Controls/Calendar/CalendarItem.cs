@@ -26,8 +26,7 @@ namespace AtomUI.Controls;
 [TemplatePart(CalendarItemThemeConstants.PreviousMonthButtonPart, typeof(AvaloniaButton))]
 [TemplatePart(CalendarItemThemeConstants.YearViewPart, typeof(Grid))]
 [PseudoClasses(CalendarDisabledPC)]
-internal class CalendarItem : TemplatedControl,
-                              IResourceBindingManager
+internal class CalendarItem : TemplatedControl
 {
     internal const string CalendarDisabledPC = ":calendardisabled";
 
@@ -72,6 +71,9 @@ internal class CalendarItem : TemplatedControl,
     public static readonly StyledProperty<GridLength> DayTitleHeightProperty =
         AvaloniaProperty.Register<CalendarItem, GridLength>(
             nameof(DayTitleHeight));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();
 
     /// <summary>
     /// 主要方便在模板中控制导航按钮的显示和关闭
@@ -87,6 +89,12 @@ internal class CalendarItem : TemplatedControl,
     {
         get => GetValue(DayTitleHeightProperty);
         set => SetValue(DayTitleHeightProperty, value);
+    }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     /// <summary>
@@ -241,8 +249,7 @@ internal class CalendarItem : TemplatedControl,
             }
         }
     }
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+    
     #endregion
 
     protected DateTime _currentMonth;
@@ -258,7 +265,8 @@ internal class CalendarItem : TemplatedControl,
     protected Grid? _headerLayout;
 
     internal Calendar? Owner { get; set; }
-    internal CalendarDayButton? CurrentButton { get; set; }
+    private CompositeDisposable? _dayBtnBindingDisposables;
+    private CompositeDisposable? _monthBtnBindingDisposables;
 
     /// <summary>
     /// Gets the Grid that hosts the content when in month mode.
@@ -276,17 +284,17 @@ internal class CalendarItem : TemplatedControl,
         {
             var       childCount = Calendar.RowsPerMonth + Calendar.RowsPerMonth * Calendar.ColumnsPerMonth;
             using var children   = new PooledList<Control>(childCount);
+            
+            _dayBtnBindingDisposables?.Dispose();
+            _dayBtnBindingDisposables = new CompositeDisposable(Calendar.RowsPerMonth * Calendar.ColumnsPerMonth + Calendar.ColumnsPerMonth);
 
             for (var i = 0; i < Calendar.ColumnsPerMonth; i++)
             {
                 var cell = DayTitleTemplate?.Build();
                 if (cell is TextBlock textBlockCell)
                 {
-                    this.AddThemeResourceBindingAction(() =>
-                    {
-                        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(textBlockCell,
-                            HeightProperty, CalendarTokenKey.DayTitleHeight));
-                    });
+                    _dayBtnBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(textBlockCell,
+                        HeightProperty, CalendarTokenKey.DayTitleHeight));
                 }
                 if (cell is not null)
                 {
@@ -302,6 +310,7 @@ internal class CalendarItem : TemplatedControl,
             EventHandler<PointerEventArgs>         cellMouseEntered        = HandleCellMouseEntered;
             EventHandler<RoutedEventArgs>          cellClick               = HandleCellClick;
 
+
             for (var i = 1; i < Calendar.RowsPerMonth; i++)
             {
                 for (var j = 0; j < Calendar.ColumnsPerMonth; j++)
@@ -311,8 +320,8 @@ internal class CalendarItem : TemplatedControl,
                     if (Owner != null)
                     {
                         cell.Owner = Owner;
-                        BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, cell,
-                            BaseCalendarDayButton.IsMotionEnabledProperty);
+                        _dayBtnBindingDisposables.Add(BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, cell,
+                            BaseCalendarDayButton.IsMotionEnabledProperty));
                     }
 
                     cell.SetValue(Grid.RowProperty, i);
@@ -336,6 +345,9 @@ internal class CalendarItem : TemplatedControl,
             EventHandler<PointerPressedEventArgs>  monthCalendarButtonMouseDown = HandleMonthCalendarButtonMouseDown;
             EventHandler<PointerReleasedEventArgs> monthCalendarButtonMouseUp   = HandleMonthCalendarButtonMouseUp;
             EventHandler<PointerEventArgs>         monthMouseEntered            = HandleMonthMouseEntered;
+            
+            _monthBtnBindingDisposables?.Dispose();
+            _monthBtnBindingDisposables = new CompositeDisposable(Calendar.RowsPerYear * Calendar.ColumnsPerYear);
 
             for (var i = 0; i < Calendar.RowsPerYear; i++)
             {
@@ -345,8 +357,8 @@ internal class CalendarItem : TemplatedControl,
 
                     if (Owner != null)
                     {
-                        BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, month,
-                            BaseCalendarButton.IsMotionEnabledProperty);
+                        _monthBtnBindingDisposables.Add(BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, month,
+                            BaseCalendarButton.IsMotionEnabledProperty));
                         month.Owner = Owner;
                     }
 
@@ -384,10 +396,6 @@ internal class CalendarItem : TemplatedControl,
         if (Owner != null)
         {
             UpdateDisabled(Owner.IsEnabled);
-            if (HeaderButton != null)
-            {
-                BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, HeaderButton, HeadTextButton.IsMotionEnabledProperty);
-            }
         }
 
         PopulateGrids();
@@ -1372,11 +1380,5 @@ internal class CalendarItem : TemplatedControl,
     internal void UpdateDisabled(bool isEnabled)
     {
         PseudoClasses.Set(CalendarDisabledPC, !isEnabled);
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
     }
 }

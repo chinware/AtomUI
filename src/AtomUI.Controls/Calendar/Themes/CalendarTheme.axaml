@@ -14,7 +14,8 @@
                         Padding="{TemplateBinding Padding}">
                     <Panel Name="{x:Static atom:CalendarThemeConstants.RootPart}"
                            ClipToBounds="True">
-                        <atom:CalendarItem Name="{x:Static atom:CalendarThemeConstants.CalendarItemPart}"/>
+                        <atom:CalendarItem Name="{x:Static atom:CalendarThemeConstants.CalendarItemPart}"
+                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     </Panel>
                 </Border>
             </ControlTemplate>

@@ -27,7 +27,8 @@
                                 Grid.Column="1" />
                             <atom:HeadTextButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.HeaderButtonPart}"
-                                Grid.Column="2" />
+                                Grid.Column="2"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                             <atom:IconButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.NextMonthButtonPart}"
                                 Icon="{atom:IconProvider RightOutlined}"
