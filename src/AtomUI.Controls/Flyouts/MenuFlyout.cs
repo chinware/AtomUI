@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using Avalonia;
@@ -44,16 +45,16 @@ public class MenuFlyout : Flyout
         get => GetValue(ItemTemplateProperty);
         set => SetValue(ItemTemplateProperty, value);
     }
-
-    #endregion
-    
-    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
-    
-    private IDisposable? _detectMouseClickDisposable;
-    private MenuFlyoutPresenter? _presenter;
     
     [Content] 
     public ItemCollection Items { get; }
+    
+    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
+    #endregion
+    
+    private IDisposable? _detectMouseClickDisposable;
+    private MenuFlyoutPresenter? _presenter;
+    private CompositeDisposable? _presenterBindingDisposables;
     
     public MenuFlyout()
     {
@@ -63,16 +64,16 @@ public class MenuFlyout : Flyout
     
     protected override Control CreatePresenter()
     {
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new CompositeDisposable(4);
         _presenter = new MenuFlyoutPresenter
         {
-            ItemsSource                                    = Items,
-            [!ItemsControl.ItemTemplateProperty]           = this[!ItemTemplateProperty],
-            [!ItemsControl.ItemContainerThemeProperty]     = this[!ItemContainerThemeProperty],
-            [!MenuFlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty],
-            MenuFlyout                                     = this
+            MenuFlyout = this
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, MenuFlyoutPresenter.IsShowArrowProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, _presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, _presenter, MenuFlyoutPresenter.ItemTemplateProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, _presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, MenuFlyoutPresenter.IsShowArrowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
         SetupArrowPosition(Popup, _presenter);
         CalculateShowArrowEffective();
 
@@ -173,6 +174,7 @@ public class MenuFlyout : Flyout
             {
                 if (_detectMouseClickDisposable is not null) 
                 {
+                    _detectMouseClickDisposable.Dispose();
                     CompositeDisposable?.Remove(_detectMouseClickDisposable);
                 }
 
@@ -184,6 +186,7 @@ public class MenuFlyout : Flyout
             {
                 if (_detectMouseClickDisposable is not null) 
                 {
+                    _detectMouseClickDisposable.Dispose();
                     CompositeDisposable?.Remove(_detectMouseClickDisposable);
                 }
             }

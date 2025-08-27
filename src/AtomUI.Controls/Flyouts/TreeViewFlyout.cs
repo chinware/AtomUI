@@ -1,5 +1,6 @@
 using System.Collections;
 using System.ComponentModel;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using Avalonia;
@@ -44,15 +45,15 @@ public class TreeViewFlyout : Flyout
         get => GetValue(ItemTemplateProperty);
         set => SetValue(ItemTemplateProperty, value);
     }
-
-    #endregion
-
+    
+    [Content] public ItemCollection Items { get; }
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
 
+    #endregion
+    
     private IDisposable? _detectMouseClickDisposable;
-
-    [Content] public ItemCollection Items { get; }
-
+    private CompositeDisposable? _presenterBindingDisposables;
+    
     public TreeViewFlyout()
     {
         var itemCollectionType = typeof(ItemCollection);
@@ -61,16 +62,17 @@ public class TreeViewFlyout : Flyout
 
     protected override Control CreatePresenter()
     {
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new CompositeDisposable(4);
         var presenter = new TreeViewFlyoutPresenter
         {
-            ItemsSource                                = Items,
-            [!ItemsControl.ItemTemplateProperty]       = this[!ItemTemplateProperty],
-            [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
-      
+            ItemsSource                                = Items
         };
         presenter.TreeViewFlyout = this;
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, TreeViewFlyoutPresenter.IsShowArrowProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TreeViewFlyoutPresenter.IsMotionEnabledProperty);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, presenter, TreeViewFlyoutPresenter.ItemTemplateProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, presenter, TreeViewFlyoutPresenter.ItemContainerThemeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, TreeViewFlyoutPresenter.IsShowArrowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TreeViewFlyoutPresenter.IsMotionEnabledProperty));
         SetupArrowPosition(Popup, presenter);
         CalculateShowArrowEffective();
 
@@ -172,6 +174,7 @@ public class TreeViewFlyout : Flyout
             {
                 if (_detectMouseClickDisposable is not null)
                 {
+                    _detectMouseClickDisposable.Dispose();
                     CompositeDisposable?.Remove(_detectMouseClickDisposable);
                 }
 
@@ -183,6 +186,7 @@ public class TreeViewFlyout : Flyout
             {
                 if (_detectMouseClickDisposable is not null)
                 {
+                    _detectMouseClickDisposable.Dispose();
                     CompositeDisposable?.Remove(_detectMouseClickDisposable);
                 }
             }

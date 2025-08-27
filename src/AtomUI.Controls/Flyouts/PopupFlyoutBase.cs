@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
@@ -226,6 +227,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     private PixelRect? _enlargePopupRectScreenPixelRect;
     private IDisposable? _transientDisposable;
     private Action<IPopupHost?>? _popupHostChangedHandler;
+    private CompositeDisposable? _popupBindingDisposables;
 
     static PopupFlyoutBase()
     {
@@ -239,12 +241,14 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     protected internal virtual void NotifyPopupCreated(Popup popup)
     {
-        BindUtils.RelayBind(this, MarginToAnchorProperty, popup);
-        BindUtils.RelayBind(this, IsDetectMouseClickEnabledProperty, popup, Popup.IsDetectMouseClickEnabledProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, MotionDurationProperty, popup, Popup.MotionDurationProperty);
-        BindUtils.RelayBind(this, OpenMotionProperty, popup, Popup.OpenMotionProperty);
-        BindUtils.RelayBind(this, CloseMotionProperty, popup, Popup.CloseMotionProperty);
+        _popupBindingDisposables?.Dispose();
+        _popupBindingDisposables = new CompositeDisposable(6);
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, popup));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, IsDetectMouseClickEnabledProperty, popup, Popup.IsDetectMouseClickEnabledProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, MotionDurationProperty, popup, Popup.MotionDurationProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, OpenMotionProperty, popup, Popup.OpenMotionProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, CloseMotionProperty, popup, Popup.CloseMotionProperty));
         PopupCreated?.Invoke(this, new FlyoutPopupCreatedEventArgs(popup));
     }
 

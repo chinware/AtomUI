@@ -1,3 +1,5 @@
+using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -68,16 +70,41 @@ public class TreeViewFlyoutPresenter : FloatableTreeView,
 
     #endregion
     
+    private Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    
     public TreeViewFlyoutPresenter()
         : base(new DefaultTreeViewInteractionHandler(true))
     {
         this.RegisterResources();
+        Items.CollectionChanged += HandleCollectionChanged;
     }
 
     public TreeViewFlyoutPresenter(ITreeViewInteractionHandler menuInteractionHandler)
         : base(menuInteractionHandler)
     {
         this.RegisterResources();
+        Items.CollectionChanged += HandleCollectionChanged;
+    }
+
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is MenuItem menuItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(menuItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            _itemsBindingDisposables.Remove(menuItem);
+                        }
+                    }
+                }
+            }
+        }
     }
     
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
@@ -172,7 +199,14 @@ public class TreeViewFlyoutPresenter : FloatableTreeView,
     {
         if (container is MenuItem menuItem)
         {
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty);
+            var disposables = new CompositeDisposable(1);
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(menuItem);
+            }
+            _itemsBindingDisposables.Add(menuItem, disposables);
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
