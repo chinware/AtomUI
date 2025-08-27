@@ -46,7 +46,7 @@ public class Menu : AvaloniaMenu,
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
     #endregion
     
-    private Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public Menu()
     {

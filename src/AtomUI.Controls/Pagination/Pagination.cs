@@ -127,6 +127,8 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
     private PaginationNavItem? _nextPageItem;
     private int _nextPushItemIndex = 1;
     private int _selectedNavItemIndex = -1;
+    private IDisposable? _sizeChangerDisposable;
+    private IDisposable? _quickJumperDisposable;
 
     public Pagination()
     {
@@ -368,7 +370,8 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
         {
             var sizeChanger = new ComboBox();
             sizeChanger.VerticalAlignment = VerticalAlignment.Center;
-            BindUtils.RelayBind(this, SizeTypeProperty, sizeChanger, ComboBox.SizeTypeProperty);
+            _sizeChangerDisposable?.Dispose();
+            _sizeChangerDisposable = BindUtils.RelayBind(this, SizeTypeProperty, sizeChanger, ComboBox.SizeTypeProperty);
             sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"10 / {PageText}", PageSize  = 10 });
             sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"20 / {PageText}", PageSize  = 20 });
             sizeChanger.Items.Add(new PageSizeComboBoxItem { Content = $"50 / {PageText}", PageSize  = 50 });
@@ -392,7 +395,8 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
                 var pageCount = (int)Math.Ceiling(total / (double)pageSize);
                 CurrentPage = Math.Max(1, Math.Min(pageCount, args.PageNumber));
             };
-            BindUtils.RelayBind(this, SizeTypeProperty, QuickJumperBar, QuickJumperBar.SizeTypeProperty);
+            _quickJumperDisposable?.Dispose();
+            _quickJumperDisposable = BindUtils.RelayBind(this, SizeTypeProperty, QuickJumperBar, QuickJumperBar.SizeTypeProperty);
         }
     }
 

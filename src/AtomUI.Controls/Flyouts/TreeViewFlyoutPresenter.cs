@@ -70,7 +70,7 @@ public class TreeViewFlyoutPresenter : FloatableTreeView,
 
     #endregion
     
-    private Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
     
     public TreeViewFlyoutPresenter()
         : base(new DefaultTreeViewInteractionHandler(true))

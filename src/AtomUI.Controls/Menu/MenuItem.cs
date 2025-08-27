@@ -68,7 +68,7 @@ public class MenuItem : AvaloniaMenuItem
     private RadioButton? _radioButton;
     private CheckBox? _checkBox;
     private Popup? _popup;
-    private Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
     
     static MenuItem()
     {

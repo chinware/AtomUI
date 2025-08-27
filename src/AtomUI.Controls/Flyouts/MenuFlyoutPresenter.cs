@@ -78,7 +78,7 @@ public class MenuFlyoutPresenter : MenuBase,
     #endregion
     
     private ArrowDecoratedBox? _arrowDecoratedBox;
-    private Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public MenuFlyoutPresenter()
         : base(new DefaultMenuInteractionHandler(true))

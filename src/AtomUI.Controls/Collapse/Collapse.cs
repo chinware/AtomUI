@@ -133,7 +133,7 @@ public class Collapse : SelectingItemsControl,
 
     #endregion
     
-    private Dictionary<CollapseItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<CollapseItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     static Collapse()
     {

@@ -41,7 +41,7 @@ public class ContextMenu : AvaloniaContextMenu,
     #endregion
     
     private Popup? _popup;
-    private Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public ContextMenu()
     {

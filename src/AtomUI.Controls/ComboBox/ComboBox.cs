@@ -163,7 +163,7 @@ public class ComboBox : AvaloniaComboBox,
     #endregion
     
     private Popup? _popup;
-    private Dictionary<ComboBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<ComboBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public ComboBox()
     {

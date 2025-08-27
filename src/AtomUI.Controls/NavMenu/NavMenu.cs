@@ -116,7 +116,7 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel { Orientation = Orientation.Vertical });
     private ItemsPresenter? _menuItemsPresenter;
-    private Dictionary<NavMenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<NavMenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     static NavMenu()
     {

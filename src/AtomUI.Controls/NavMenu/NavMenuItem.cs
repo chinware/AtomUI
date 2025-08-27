@@ -442,7 +442,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     
     internal Popup? Popup => _popup;
 
-    private Dictionary<NavMenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<NavMenuItem, CompositeDisposable> _itemsBindingDisposables = new();
     
     static NavMenuItem()
     {

@@ -123,7 +123,7 @@ public class OptionButtonGroup : SelectingItemsControl,
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper = new();
-    private Dictionary<OptionButton, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<OptionButton, CompositeDisposable> _itemsBindingDisposables = new();
 
     static OptionButtonGroup()
     {

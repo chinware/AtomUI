@@ -60,7 +60,7 @@ public class ListBox : AvaloniaListBox,
 
     #endregion
     
-    private Dictionary<ListBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private readonly Dictionary<ListBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public ListBox()
     {
