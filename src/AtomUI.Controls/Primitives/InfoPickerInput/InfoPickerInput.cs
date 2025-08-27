@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives.Themes;
 using AtomUI.Data;
 using AtomUI.IconPkg;
@@ -220,6 +221,8 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     private protected bool IsFlyoutOpen;
     private protected bool IsChoosing;
+    private CompositeDisposable? _flyoutBindingDisposables;
+    private CompositeDisposable? _flyoutHelperBindingDisposables;
 
     static InfoPickerInput()
     {
@@ -402,11 +405,13 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         if (PickerFlyout is not null)
         {
-            BindUtils.RelayBind(this, PickerPlacementProperty, PickerFlyout, PopupFlyoutBase.PlacementProperty);
-            BindUtils.RelayBind(this, IsShowArrowProperty, PickerFlyout);
-            BindUtils.RelayBind(this, IsPointAtCenterProperty, PickerFlyout);
-            BindUtils.RelayBind(this, MarginToAnchorProperty, PickerFlyout);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, PickerFlyout, Flyout.IsMotionEnabledProperty);
+            _flyoutBindingDisposables?.Dispose();
+            _flyoutBindingDisposables = new CompositeDisposable(5);
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PickerPlacementProperty, PickerFlyout, PopupFlyoutBase.PlacementProperty));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, PickerFlyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, PickerFlyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, PickerFlyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, PickerFlyout, Flyout.IsMotionEnabledProperty));
         }
     }
 
@@ -421,12 +426,20 @@ public abstract class InfoPickerInput : TemplatedControl,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        BindUtils.RelayBind(this, MouseEnterDelayProperty, FlyoutStateHelper,
-            FlyoutStateHelper.MouseEnterDelayProperty);
-        BindUtils.RelayBind(this, MouseLeaveDelayProperty, FlyoutStateHelper,
-            FlyoutStateHelper.MouseLeaveDelayProperty);
+        _flyoutHelperBindingDisposables?.Dispose();
+        _flyoutHelperBindingDisposables = new CompositeDisposable(2);
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseEnterDelayProperty, FlyoutStateHelper,
+            FlyoutStateHelper.MouseEnterDelayProperty));
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseLeaveDelayProperty, FlyoutStateHelper,
+            FlyoutStateHelper.MouseLeaveDelayProperty));
     }
-    
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _flyoutHelperBindingDisposables?.Dispose();
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
