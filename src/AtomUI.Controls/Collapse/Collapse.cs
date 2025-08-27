@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -131,6 +132,8 @@ public class Collapse : SelectingItemsControl,
     CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
+    
+    private Dictionary<CollapseItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     static Collapse()
     {
@@ -142,8 +145,30 @@ public class Collapse : SelectingItemsControl,
 
     public Collapse()
     {
-        SelectionChanged += HandleSelectionChanged;
+        SelectionChanged        += HandleSelectionChanged;
+        Items.CollectionChanged += HandleCollectionChanged;
         this.RegisterResources();
+    }
+
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is CollapseItem collapseItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(collapseItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            _itemsBindingDisposables.Remove(collapseItem);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -180,15 +205,23 @@ public class Collapse : SelectingItemsControl,
         base.PrepareContainerForItemOverride(element, item, index);
         if (item is CollapseItem collapseItem)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, collapseItem, CollapseItem.SizeTypeProperty);
-            BindUtils.RelayBind(this, EffectiveBorderThicknessProperty, collapseItem, BorderThicknessProperty);
-            BindUtils.RelayBind(this, IsGhostStyleProperty, collapseItem, CollapseItem.IsGhostStyleProperty);
-            BindUtils.RelayBind(this, IsBorderlessProperty, collapseItem, CollapseItem.IsBorderlessProperty);
-            BindUtils.RelayBind(this, TriggerTypeProperty, collapseItem, CollapseItem.TriggerTypeProperty);
-            BindUtils.RelayBind(this, ExpandIconPositionProperty, collapseItem,
-                CollapseItem.ExpandIconPositionProperty);
-            BindUtils.RelayBind(this, IsEnabledProperty, collapseItem, IsEnabledProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, collapseItem, CollapseItem.IsMotionEnabledProperty);
+            var disposables = new CompositeDisposable(8);
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, collapseItem, CollapseItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, EffectiveBorderThicknessProperty, collapseItem, BorderThicknessProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsGhostStyleProperty, collapseItem, CollapseItem.IsGhostStyleProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsBorderlessProperty, collapseItem, CollapseItem.IsBorderlessProperty));
+            disposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, collapseItem, CollapseItem.TriggerTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, ExpandIconPositionProperty, collapseItem,
+                CollapseItem.ExpandIconPositionProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsEnabledProperty, collapseItem, IsEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, collapseItem, CollapseItem.IsMotionEnabledProperty));
+            if (_itemsBindingDisposables.TryGetValue(collapseItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(collapseItem);
+            }
+            _itemsBindingDisposables.Add(collapseItem, disposables);
+            
             SetupCollapseBorderThickness(collapseItem, index);
         }
     }

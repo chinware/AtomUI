@@ -4,7 +4,6 @@ using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -14,7 +13,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using AvaloniaButton = Avalonia.Controls.Button;
 
