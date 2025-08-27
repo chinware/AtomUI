@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
+using System.Windows.Input;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
@@ -482,6 +484,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     
     internal Popup? Popup => _popup;
 
+    private Dictionary<NavMenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    
     static NavMenuItem()
     {
         SelectableMixin.Attach<NavMenuItem>(IsSelectedProperty);
@@ -494,7 +498,28 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     public NavMenuItem()
     {
-        AffectsRender<MenuItem>(BackgroundProperty);
+        Items.CollectionChanged  += HandleItemsCollectionChanged;
+    }
+    
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is NavMenuItem menuItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(menuItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                        }
+                        _itemsBindingDisposables.Remove(menuItem);
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -1352,10 +1377,17 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         base.PrepareContainerForItemOverride(element, item, index);
         if (element is NavMenuItem navMenuItem)
         {
-            BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty);
-            BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty);
+            var disposables = new CompositeDisposable(4);
+            disposables.Add(BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty));
+            if (_itemsBindingDisposables.TryGetValue(navMenuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(navMenuItem);
+            }
+            _itemsBindingDisposables.Add(navMenuItem, disposables);
         }
     }
 
