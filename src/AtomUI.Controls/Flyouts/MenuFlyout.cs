@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Templates;
-using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Metadata;
 using Avalonia.Styling;
@@ -45,14 +44,13 @@ public class MenuFlyout : Flyout
         get => GetValue(ItemTemplateProperty);
         set => SetValue(ItemTemplateProperty, value);
     }
-    
+
     [Content] 
     public ItemCollection Items { get; }
     
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
     #endregion
     
-    private IDisposable? _detectMouseClickDisposable;
     private MenuFlyoutPresenter? _presenter;
     private CompositeDisposable? _presenterBindingDisposables;
     
@@ -68,7 +66,8 @@ public class MenuFlyout : Flyout
         _presenterBindingDisposables = new CompositeDisposable(4);
         _presenter = new MenuFlyoutPresenter
         {
-            MenuFlyout = this
+            ItemsSource = Items,
+            MenuFlyout  = this
         };
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, _presenter, MenuFlyoutPresenter.ItemTemplateProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, _presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
@@ -118,48 +117,6 @@ public class MenuFlyout : Flyout
         base.OnOpening(args);
     }
 
-    protected override void OnOpened()
-    {
-        base.OnOpened();
-        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-        if (IsDetectMouseClickEnabled)
-        {
-            _detectMouseClickDisposable = inputManager.Process.Subscribe(HandleMouseClick);
-            CompositeDisposable?.Add(_detectMouseClickDisposable);
-        }
-    }
-
-    private void HandleMouseClick(RawInputEventArgs args)
-    {
-        if (!IsOpen)
-        {
-            return;
-        }
-        if (args is RawPointerEventArgs pointerEventArgs)
-        {
-            if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
-            {
-                if (this is IPopupHostProvider popupHostProvider)
-                {
-                    if (ClickHideFlyoutPredicate is not null)
-                    {
-                        if (ClickHideFlyoutPredicate(popupHostProvider, pointerEventArgs))
-                        {
-                            Hide();
-                        }
-                    }
-                    else
-                    {
-                        if (popupHostProvider.PopupHost != pointerEventArgs.Root)
-                        {
-                            Hide();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -168,35 +125,13 @@ public class MenuFlyout : Flyout
         {
             Items.SetItemsSource(change.GetNewValue<IEnumerable?>());   
         }
-        else if (change.Property == IsDetectMouseClickEnabledProperty && IsOpen)
-        {
-            if (IsDetectMouseClickEnabled)
-            {
-                if (_detectMouseClickDisposable is not null) 
-                {
-                    _detectMouseClickDisposable.Dispose();
-                    CompositeDisposable?.Remove(_detectMouseClickDisposable);
-                }
-
-                var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-                _detectMouseClickDisposable = inputManager.Process.Subscribe(HandleMouseClick);
-                CompositeDisposable?.Add(_detectMouseClickDisposable);
-            }
-            else
-            {
-                if (_detectMouseClickDisposable is not null) 
-                {
-                    _detectMouseClickDisposable.Dispose();
-                    CompositeDisposable?.Remove(_detectMouseClickDisposable);
-                }
-            }
-        }
     }
 
     protected internal override void NotifyPopupCreated(Popup popup)
     {
         base.NotifyPopupCreated(popup);
         popup.IsLightDismissEnabled = false;
+        popup.ClickHidePredicate    = ClickHideFlyoutPredicate;
     }
     
     protected override void NotifyAboutToClose()

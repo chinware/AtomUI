@@ -34,16 +34,10 @@ public class Flyout : PopupFlyoutBase
     /// </summary>
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         AvaloniaProperty.Register<Flyout, bool>(nameof(IsPointAtCenter));
-
-    /// <summary>
-    /// Defines the <see cref="Content" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<object> ContentProperty =
         AvaloniaProperty.Register<Flyout, object>(nameof(Content));
-
-    /// <summary>
-    /// Defines the <see cref="FlyoutPresenterTheme" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<ControlTheme?> FlyoutPresenterThemeProperty =
         AvaloniaProperty.Register<Flyout, ControlTheme?>(nameof(FlyoutPresenterTheme));
 
@@ -58,20 +52,13 @@ public class Flyout : PopupFlyoutBase
         get => GetValue(IsPointAtCenterProperty);
         set => SetValue(IsPointAtCenterProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the <see cref="ControlTheme" /> that is applied to the container element generated for the flyout
-    /// presenter.
-    /// </summary>
+    
     public ControlTheme? FlyoutPresenterTheme
     {
         get => GetValue(FlyoutPresenterThemeProperty);
         set => SetValue(FlyoutPresenterThemeProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the content to display in this flyout
-    /// </summary>
+    
     [Content]
     public object Content
     {
@@ -107,9 +94,6 @@ public class Flyout : PopupFlyoutBase
     private CompositeDisposable? _presenterBindingDisposables;
     private CompositeDisposable? _popupBindingDisposables;
     
-    /// <summary>
-    /// Gets the Classes collection to apply to the FlyoutPresenter this Flyout is hosting
-    /// </summary>
     public Classes FlyoutPresenterClasses => _classes ??= new Classes();
 
     protected CompositeDisposable? CompositeDisposable;
