@@ -46,12 +46,11 @@ public class Menu : AvaloniaMenu,
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
     #endregion
     
-    private Dictionary<MenuItem, CompositeDisposable> _compositeDisposables;
+    private Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public Menu()
     {
-        _compositeDisposables   =  new Dictionary<MenuItem, CompositeDisposable>();
-        Items.CollectionChanged += HandleItemsCollectionChanged;
+        Items.CollectionChanged  += HandleItemsCollectionChanged;
         this.RegisterResources();
     }
 
@@ -65,11 +64,11 @@ public class Menu : AvaloniaMenu,
                 {
                     if (item is MenuItem menuItem)
                     {
-                        if (_compositeDisposables.TryGetValue(menuItem, out var disposable))
+                        if (_itemsBindingDisposables.TryGetValue(menuItem, out var disposable))
                         {
                             disposable.Dispose();
                         }
-                        _compositeDisposables.Remove(menuItem);
+                        _itemsBindingDisposables.Remove(menuItem);
                     }
                 }
             }
@@ -80,10 +79,15 @@ public class Menu : AvaloniaMenu,
     {
         if (container is MenuItem menuItem)
         {
-            var disposables = new CompositeDisposable();
+            var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
-            _compositeDisposables.Add(menuItem, disposables);
+            if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(menuItem);
+            }
+            _itemsBindingDisposables.Add(menuItem, disposables);
         }
 
         base.PrepareContainerForItemOverride(container, item, index);

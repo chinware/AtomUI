@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -39,10 +41,12 @@ public class ContextMenu : AvaloniaContextMenu,
     #endregion
     
     private Popup? _popup;
+    private Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public ContextMenu()
     {
         this.RegisterResources();
+        Items.CollectionChanged  += HandleItemsCollectionChanged;
         // 我们在这里有一次初始化的机会
         _popup = new Popup
         {
@@ -72,6 +76,27 @@ public class ContextMenu : AvaloniaContextMenu,
             _popup.SetIgnoreIsOpenChanged(true);
             _popup.IsMotionAwareOpen = true;
         };
+    }
+    
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is MenuItem menuItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(menuItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                        }
+                        _itemsBindingDisposables.Remove(menuItem);
+                    }
+                }
+            }
+        }
     }
     
     private void HandlePopupHostChanged(IPopupHost? host)
@@ -110,7 +135,14 @@ public class ContextMenu : AvaloniaContextMenu,
     {
         if (container is MenuItem menuItem)
         {
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty);
+            var disposables = new CompositeDisposable(1);
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(menuItem);
+            }
+            _itemsBindingDisposables.Add(menuItem, disposables);
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
