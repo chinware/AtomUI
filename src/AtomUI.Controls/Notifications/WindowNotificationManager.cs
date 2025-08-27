@@ -25,24 +25,19 @@ public class WindowNotificationManager : TemplatedControl,
                                          IMotionAwareControl,
                                          IControlSharedTokenResourcesHost
 {
-    public const string TopLeftPC = ":topleft";
-    public const string TopRightPC = ":topright";
-    public const string BottomLeftPC = ":bottomleft";
-    public const string BottomRightPC = ":bottomright";
-    public const string TopCenterPC = ":topcenter";
-    public const string BottomCenterPC = ":bottomcenter";
     private IList? _items;
     private readonly Queue<NotificationCard> _cleanupQueue;
     private readonly DispatcherTimer _cardExpiredTimer;
     private readonly DispatcherTimer _cleanupTimer;
+    private IDisposable? _bindingDisposable;
 
     #region 公共属性定义
     public static readonly StyledProperty<NotificationPosition> PositionProperty =
         AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
             nameof(Position), NotificationPosition.TopRight);
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowNotificationManager>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowNotificationManager>();
 
     public static readonly StyledProperty<int> MaxItemsProperty =
         AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
@@ -189,14 +184,15 @@ public class WindowNotificationManager : TemplatedControl,
             Expiration       = expiration == TimeSpan.Zero ? null : expiration,
             IsShowProgress   = notification.ShowProgress
         };
-        BindUtils.RelayBind(this, PositionProperty, notificationControl, NotificationCard.PositionProperty);
+        _bindingDisposable?.Dispose();
+        _bindingDisposable = BindUtils.RelayBind(this, PositionProperty, notificationControl, NotificationCard.PositionProperty);
 
         // Add style classes if any
         if (classes != null)
         {
-            foreach (var @class in classes)
+            foreach (var cls in classes)
             {
-                notificationControl.Classes.Add(@class);
+                notificationControl.Classes.Add(cls);
             }
         }
 
@@ -205,7 +201,7 @@ public class WindowNotificationManager : TemplatedControl,
         notificationControl.NotificationClosed += (sender, args) =>
         {
             onClose?.Invoke();
-
+            _bindingDisposable?.Dispose();
             _items?.Remove(sender);
         };
 
