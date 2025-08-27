@@ -144,6 +144,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     private IDisposable? _openMotionForceDisposable;
     private IDisposable? _closeMotionForceDisposable;
     
+    private CompositeDisposable? _shadowBindingDisposables;
+    
     internal Popup BuddyPopup => _buddyPopup;
     
     static PopupBuddyLayer()
@@ -417,6 +419,9 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
             {
                 if (_shadowRendererPanel != null)
                 {
+                    _shadowRendererPanel.Children.Clear();
+                    var shadowControls = BuildShadowRenderers(MaskShadows);
+                    _shadowRendererPanel.Children.AddRange(shadowControls);
                     for (var i = 0; i < MaskShadows.Count; ++i)
                     {
                         if (_shadowRendererPanel.Children[i] is Border shadowControl)
@@ -500,6 +505,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     {
         // 不知道这里为啥不行
         var renderers = new List<Control>();
+        _shadowBindingDisposables?.Dispose();
+        _shadowBindingDisposables = new CompositeDisposable(shadows.Count);
         for (var i = 0; i < shadows.Count; ++i)
         {
             var renderer = new Border
@@ -508,7 +515,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 BorderThickness = new Thickness(0),
                 BoxShadow       = new BoxShadows(shadows[i]),
             };
-            renderer[!CornerRadiusProperty] = this[!MaskShadowsContentCornerRadiusProperty];
+
+            _shadowBindingDisposables.Add(BindUtils.RelayBind(this, MaskShadowsContentCornerRadiusProperty, renderer, Border.CornerRadiusProperty));
             renderers.Add(renderer);
         }
 

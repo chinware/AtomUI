@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
+using AtomUI.Data;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
@@ -24,7 +25,7 @@ public sealed class DataGridDetailExpanderColumn : DataGridColumn
     {
         Debug.Assert(OwningGrid != null);
         var expander = new DataGridRowExpander();
-        expander[!DataGridRowExpander.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
+        BindUtils.RelayBind(OwningGrid, DataGrid.IsMotionEnabledProperty, expander, DataGridRowExpander.IsMotionEnabledProperty);
         return expander;
     }
     

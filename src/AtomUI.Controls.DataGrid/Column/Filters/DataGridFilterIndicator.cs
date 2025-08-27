@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -113,14 +114,18 @@ internal class DataGridFilterIndicator : IconButton
             SetValue(IconProperty, AntDesignIconPackage.FilterFilled(), BindingPriority.Template);
         }
         base.OnApplyTemplate(e);
+        CreateFlyout();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs changed)
     {
         base.OnPropertyChanged(changed);
-        if (changed.Property == FilterModeProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            CreateFlyout();
+            if (changed.Property == FilterModeProperty)
+            {
+                CreateFlyout();
+            }
         }
     }
 
@@ -129,10 +134,11 @@ internal class DataGridFilterIndicator : IconButton
         Debug.Assert(OwningColumn is not null);
         Debug.Assert(OwningColumn.OwningGrid is not null);
         var owningGrid = OwningColumn.OwningGrid;
-        _bindingDisposables?.Dispose();
-        _bindingDisposables = new CompositeDisposable();
+       
         if (FilterMode == DataGridFilterMode.Menu && Flyout is not DataGridMenuFilterFlyout)
         {
+            _bindingDisposables?.Dispose();
+            _bindingDisposables = new CompositeDisposable();
             var menuFlyout = new DataGridMenuFilterFlyout
             {
                 IsShowArrow               = false,
@@ -153,6 +159,8 @@ internal class DataGridFilterIndicator : IconButton
         }
         else if (FilterMode == DataGridFilterMode.Tree && Flyout is not DataGridTreeFilterFlyout)
         {
+            _bindingDisposables?.Dispose();
+            _bindingDisposables = new CompositeDisposable();
             var treeFlyout = new DataGridTreeFilterFlyout
             {
                 IsShowArrow               = false,

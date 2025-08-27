@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
@@ -28,10 +30,10 @@ public class DataGridColumnGroupItem : AvaloniaObject,
             (o, v) => o.HeaderTemplate = v);
     
     public static readonly StyledProperty<HorizontalAlignment> HorizontalAlignmentProperty =
-        Layoutable.HorizontalAlignmentProperty.AddOwner<DataGridColumn>();
+        Layoutable.HorizontalAlignmentProperty.AddOwner<DataGridColumnGroupItem>();
     
     public static readonly StyledProperty<VerticalAlignment> VerticalAlignmentProperty =
-        Layoutable.VerticalAlignmentProperty.AddOwner<DataGridColumn>();
+        Layoutable.VerticalAlignmentProperty.AddOwner<DataGridColumnGroupItem>();
 
     public object? _header;
     public object? Header
@@ -98,6 +100,7 @@ public class DataGridColumnGroupItem : AvaloniaObject,
     #endregion
     
     private DataGridColumnGroupHeader? _headerCell;
+    private CompositeDisposable? _headerBindingDisposables;
 
     static DataGridColumnGroupItem()
     {
@@ -157,11 +160,14 @@ public class DataGridColumnGroupItem : AvaloniaObject,
         var result = new DataGridColumnGroupHeader();
         result.OwningGroupItem = this;
         Debug.Assert(OwningGrid != null);
-        result[!DataGridColumnGroupHeader.HeaderProperty]         = this[!HeaderProperty];
-        result[!DataGridColumnGroupHeader.HeaderTemplateProperty] = this[!HeaderTemplateProperty];
-        result[!DataGridColumnGroupHeader.SizeTypeProperty]       = OwningGrid[!DataGrid.SizeTypeProperty];
-        result[!DataGridColumnGroupHeader.HorizontalContentAlignmentProperty]       = this[!HorizontalAlignmentProperty];
-        result[!DataGridColumnGroupHeader.VerticalContentAlignmentProperty]       = this[!VerticalAlignmentProperty];
+        _headerBindingDisposables?.Dispose();
+        _headerBindingDisposables = new CompositeDisposable(5);
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HeaderProperty, result, DataGridColumnGroupHeader.HeaderProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HeaderTemplateProperty, result, DataGridColumnGroupHeader.HeaderTemplateProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HorizontalAlignmentProperty, result, DataGridColumnGroupHeader.HorizontalContentAlignmentProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, VerticalAlignmentProperty, result, DataGridColumnGroupHeader.VerticalContentAlignmentProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.SizeTypeProperty, result, DataGridColumnGroupHeader.SizeTypeProperty));
+        
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
         return result;

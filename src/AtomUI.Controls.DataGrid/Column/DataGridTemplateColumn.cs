@@ -76,11 +76,11 @@ public class DataGridTemplateColumn : DataGridColumn
     
     private bool _forceGenerateCellFromTemplate;
     
-    protected override void EndCellEdit()
+    protected override void EndCellEdit(Control editingElement)
     {
         //the next call to generate element should not resuse the current content as we need to exit edit mode
         _forceGenerateCellFromTemplate = true;
-        base.EndCellEdit();
+        base.EndCellEdit(editingElement);
     }
 
     protected override Control? GenerateElement(DataGridCell cell, object dataItem)

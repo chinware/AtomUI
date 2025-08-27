@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -28,8 +29,8 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
         Debug.Assert(OwningGrid != null);
         var handle = new DataGridRowReorderHandle();
         handle.OwningGrid                                         = OwningGrid;
-        handle[!DataGridRowReorderHandle.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
-        handle[!InputElement.IsEnabledProperty]                   = OwningGrid[!InputElement.IsEnabledProperty];
+        BindUtils.RelayBind(OwningGrid, DataGrid.IsMotionEnabledProperty, handle, DataGridRowReorderHandle.IsMotionEnabledProperty);
+        BindUtils.RelayBind(OwningGrid, DataGrid.IsEnabledProperty, handle, DataGridRowReorderHandle.IsEnabledProperty);
         return handle;
     }
     

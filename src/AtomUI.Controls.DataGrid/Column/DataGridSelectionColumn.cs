@@ -1,5 +1,7 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -12,6 +14,7 @@ public sealed class DataGridSelectionColumn : DataGridColumn
 {
     private DataGrid? _owningGrid;
     private CheckBox? _headerCheckBox;
+    private CompositeDisposable? _headerBindingDisposables;
 
     public DataGridSelectionColumn()
     {
@@ -268,11 +271,14 @@ public sealed class DataGridSelectionColumn : DataGridColumn
                 OwningColumn           = this,
                 IndicatorLayoutVisible = false
             };
-            header[!DataGridColumnHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
-            header[!DataGridColumnHeader.SupportedSortDirectionsProperty]    = this[!SupportedSortDirectionsProperty];
-            header[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
-            header[!DataGridColumnHeader.VerticalContentAlignmentProperty]   = this[!VerticalAlignmentProperty];
-            header[!DataGridColumnHeader.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
+            
+            _headerBindingDisposables?.Dispose();
+            _headerBindingDisposables = new CompositeDisposable();
+            _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.SizeTypeProperty, header, DataGridColumnHeader.SizeTypeProperty));
+            _headerBindingDisposables.Add(BindUtils.RelayBind(this, SupportedSortDirectionsProperty, header, DataGridColumnHeader.SupportedSortDirectionsProperty));
+            _headerBindingDisposables.Add(BindUtils.RelayBind(this, HorizontalAlignmentProperty, header, DataGridColumnHeader.HorizontalContentAlignmentProperty));
+            _headerBindingDisposables.Add(BindUtils.RelayBind(this, VerticalAlignmentProperty, header, DataGridColumnHeader.VerticalContentAlignmentProperty));
+            _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.IsMotionEnabledProperty, header, DataGridColumnHeader.IsMotionEnabledProperty));
             
             _headerCheckBox       =  new CheckBox();
             _headerCheckBox.Click += HandleSelectedAllChanged;
