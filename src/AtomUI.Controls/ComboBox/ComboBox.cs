@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls.Themes;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -161,10 +163,33 @@ public class ComboBox : AvaloniaComboBox,
     #endregion
     
     private Popup? _popup;
+    private Dictionary<ComboBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public ComboBox()
     {
         this.RegisterResources();
+        Items.CollectionChanged += HandleCollectionChanged;
+    }
+    
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is ComboBoxItem comboBoxItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(comboBoxItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            _itemsBindingDisposables.Remove(comboBoxItem);
+                        }
+                    }
+                }
+            }
+        }
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -208,8 +233,15 @@ public class ComboBox : AvaloniaComboBox,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is ComboBoxItem comboBoxItem)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, comboBoxItem, ComboBoxItem.SizeTypeProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, comboBoxItem, ComboBoxItem.IsMotionEnabledProperty);
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, comboBoxItem, ComboBoxItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, comboBoxItem, ComboBoxItem.IsMotionEnabledProperty));
+            if (_itemsBindingDisposables.TryGetValue(comboBoxItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(comboBoxItem);
+            }
+            _itemsBindingDisposables.Add(comboBoxItem, disposables);
         }
     }
 
