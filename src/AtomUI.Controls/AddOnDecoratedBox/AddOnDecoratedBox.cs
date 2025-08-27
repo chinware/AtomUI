@@ -38,7 +38,6 @@ public class AddOnDecoratedBox : ContentControl,
                                  IControlSharedTokenResourcesHost,
                                  IResourceBindingManager
 {
-
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -183,7 +182,7 @@ public class AddOnDecoratedBox : ContentControl,
 
     private protected Control? LeftAddOnPresenter;
     private protected Control? RightAddOnPresenter;
-    private CompositeDisposable? _contentRelayBindingDisposables;
+    private CompositeDisposable? _contentRelayBindings;
 
     static AddOnDecoratedBox()
     {
@@ -220,13 +219,13 @@ public class AddOnDecoratedBox : ContentControl,
         {
             if (change.OldValue != null)
             {
-                _contentRelayBindingDisposables?.Dispose();
+                _contentRelayBindings?.Dispose();
             }
             if (Content is AddOnDecoratedInnerBox innerBox)
             {
-                _contentRelayBindingDisposables = new CompositeDisposable();
-                _contentRelayBindingDisposables.Add(BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty));
-                _contentRelayBindingDisposables.Add(BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty));
+                _contentRelayBindings = new CompositeDisposable();
+                _contentRelayBindings.Add(BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty));
+                _contentRelayBindings.Add(BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty));
             }
         }
     }

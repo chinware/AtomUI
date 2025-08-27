@@ -295,7 +295,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl, IControlShared
         if (_foldCountFlyout == null)
         {
             _flyoutDisposables?.Dispose();
-            _flyoutDisposables = new CompositeDisposable();
+            _flyoutDisposables               = new CompositeDisposable();
             _foldCountFlyout                 = new FlyoutHost();
             _foldCountFlyout.ZIndex          = Int32.MaxValue;
             _foldCountFlyout.AnchorTarget    = foldCountAvatar;
@@ -345,7 +345,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl, IControlShared
     {
         var size = base.MeasureOverride(availableSize);
         // 理论上是统一的，我们的孩子都一样大
-		var count = LogicalChildren.Count;
+        var count      = LogicalChildren.Count;
         var totalWidth = count * size.Width - (count - 1) * GroupOverlapping;
         return size.WithWidth(totalWidth);
     }
