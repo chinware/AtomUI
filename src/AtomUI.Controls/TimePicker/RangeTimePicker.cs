@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Primitives;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
@@ -130,6 +131,7 @@ public class RangeTimePicker : RangeInfoPickerInput,
     #endregion
     
     private TimePickerPresenter? _pickerPresenter;
+    private CompositeDisposable? _flyoutBindingDisposables;
     
     static RangeTimePicker()
     {
@@ -164,12 +166,14 @@ public class RangeTimePicker : RangeInfoPickerInput,
     protected override Flyout CreatePickerFlyout()
     {
         var timePickerFlyout = new TimePickerFlyout();
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, timePickerFlyout, TimePickerPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, MinuteIncrementProperty, timePickerFlyout, TimePickerPresenter.MinuteIncrementProperty);
-        BindUtils.RelayBind(this, SecondIncrementProperty, timePickerFlyout, TimePickerPresenter.SecondIncrementProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, timePickerFlyout, TimePickerPresenter.ClockIdentifierProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, timePickerFlyout, TimePickerPresenter.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, timePickerFlyout, TimePickerPresenter.IsShowNowProperty);
+        _flyoutBindingDisposables?.Dispose();
+        _flyoutBindingDisposables = new CompositeDisposable(6);
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, timePickerFlyout, TimePickerPresenter.IsMotionEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MinuteIncrementProperty, timePickerFlyout, TimePickerPresenter.MinuteIncrementProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, SecondIncrementProperty, timePickerFlyout, TimePickerPresenter.SecondIncrementProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, timePickerFlyout, TimePickerPresenter.ClockIdentifierProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, timePickerFlyout, TimePickerPresenter.IsNeedConfirmProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, timePickerFlyout, TimePickerPresenter.IsShowNowProperty));
         return timePickerFlyout;
     }
     

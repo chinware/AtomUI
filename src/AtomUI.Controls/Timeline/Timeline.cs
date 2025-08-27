@@ -1,4 +1,5 @@
 using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
@@ -70,6 +71,8 @@ public class Timeline : ItemsControl,
     private WeakReference<TimelineItem>? _pendingItemReference;
 
     #endregion
+    
+    private readonly Dictionary<TimelineItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     static Timeline()
     {
@@ -102,6 +105,24 @@ public class Timeline : ItemsControl,
             if (item is TimelineItem timelineItem)
             {
                 timelineItem.IsLabelLayout = isLabelLayout;
+            }
+        }
+        
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is TimelineItem timelineItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(timelineItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            _itemsBindingDisposables.Remove(timelineItem);
+                        }
+                    }
+                }
             }
         }
     }
@@ -155,8 +176,15 @@ public class Timeline : ItemsControl,
         base.PrepareContainerForItemOverride(element, item, index);
         if (element is TimelineItem timelineItem)
         {
-            BindUtils.RelayBind(this, ModeProperty, timelineItem, TimelineItem.ModeProperty);
-            BindUtils.RelayBind(this, IsReverseProperty, timelineItem, TimelineItem.IsReverseProperty);
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, ModeProperty, timelineItem, TimelineItem.ModeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsReverseProperty, timelineItem, TimelineItem.IsReverseProperty));
+            if (_itemsBindingDisposables.TryGetValue(timelineItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(timelineItem);
+            }
+            _itemsBindingDisposables.Add(timelineItem, disposables);
         }
     }
 
