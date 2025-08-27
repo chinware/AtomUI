@@ -125,6 +125,7 @@ internal class SwitchKnob : Control, IResourceBindingManager
     
     private bool _isLoading;
     private CancellationTokenSource? _cancellationTokenSource;
+    private IDisposable? _bindingDisposable;
     
     static SwitchKnob()
     {
@@ -169,7 +170,8 @@ internal class SwitchKnob : Control, IResourceBindingManager
     {
         _cancellationTokenSource?.Cancel();
         var loadingAnimation = new Animation();
-        BindUtils.RelayBind(this, LoadingAnimationDurationProperty, loadingAnimation, Animation.DurationProperty);
+        _bindingDisposable?.Dispose();
+        _bindingDisposable = BindUtils.RelayBind(this, LoadingAnimationDurationProperty, loadingAnimation, Animation.DurationProperty);
         loadingAnimation.Duration       = LoadingAnimationDuration;
         loadingAnimation.IterationCount = IterationCount.Infinite;
         loadingAnimation.Easing         = new LinearEasing();

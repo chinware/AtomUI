@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -93,6 +94,7 @@ public class BaseTabControl : AvaloniaTabControl,
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
+    private protected readonly Dictionary<TabItem, CompositeDisposable> ItemsBindingDisposables = new();
 
     CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
@@ -107,6 +109,28 @@ public class BaseTabControl : AvaloniaTabControl,
     public BaseTabControl()
     {
         this.RegisterResources();
+        Items.CollectionChanged += HandleCollectionChanged;
+    }
+    
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is TabItem tabItem)
+                    {
+                        if (ItemsBindingDisposables.TryGetValue(tabItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            ItemsBindingDisposables.Remove(tabItem);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -120,7 +144,15 @@ public class BaseTabControl : AvaloniaTabControl,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is TabItem tabItem)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, tabItem, TabItem.SizeTypeProperty);
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, tabItem, TabItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, tabItem, TabItem.IsMotionEnabledProperty));
+            if (ItemsBindingDisposables.TryGetValue(tabItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                ItemsBindingDisposables.Remove(tabItem);
+            }
+            ItemsBindingDisposables.Add(tabItem, disposables);
         }
     }
 

@@ -9,6 +9,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 
@@ -162,10 +163,10 @@ public class TabStrip : BaseTabStrip
             };
         }
     }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectedIndicatorThicknessProperty,
             SharedTokenKey.LineWidthBold));
     }

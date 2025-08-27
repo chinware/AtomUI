@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -17,6 +18,9 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
     #endregion
     
     protected override Type StyleKeyOverride => typeof(BaseTabScrollViewer);
+    
+    private IDisposable? _flyoutBindingDisposable;
+    private CompositeDisposable? _itemBindingDisposables;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -36,7 +40,8 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                 IsShowArrow = false,
                 ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
             };
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
+            _flyoutBindingDisposable?.Dispose();
+            _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
         }
 
         if (TabStripPlacement == Dock.Top)
@@ -60,6 +65,8 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         MenuFlyout.Items.Clear();
         if (TabStrip is not null)
         {
+            _itemBindingDisposables?.Dispose();
+            _itemBindingDisposables = new CompositeDisposable(TabStrip.ItemCount);
             for (var i = 0; i < TabStrip.ItemCount; i++)
             {
                 var itemContainer = TabStrip.ContainerFromIndex(i)!;
@@ -95,7 +102,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                             TabStripItem = tabStripItem,
                             IsClosable   = tabStripItem.IsClosable
                         };
-                        BindUtils.RelayBind(TabStrip, TabStripControl.IsMotionEnabledProperty, menuItem, BaseOverflowMenuItem.IsMotionEnabledProperty);
+                        _itemBindingDisposables.Add(BindUtils.RelayBind(TabStrip, TabStripControl.IsMotionEnabledProperty, menuItem, BaseOverflowMenuItem.IsMotionEnabledProperty));
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
                         MenuFlyout.Items.Add(menuItem);

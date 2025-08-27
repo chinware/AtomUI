@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -23,6 +24,8 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
 {
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
+    
+    private protected readonly Dictionary<TabStripItem, CompositeDisposable> ItemsBindingDisposables = new();
 
     #region 公共属性定义
 
@@ -83,6 +86,28 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     public BaseTabStrip()
     {
         this.RegisterResources();
+        Items.CollectionChanged += HandleCollectionChanged;
+    }
+    
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is TabStripItem tabItem)
+                    {
+                        if (ItemsBindingDisposables.TryGetValue(tabItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            ItemsBindingDisposables.Remove(tabItem);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -90,9 +115,16 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is TabStripItem tabStripItem)
         {
+            var disposables = new CompositeDisposable(2);
             tabStripItem.TabStripPlacement = TabStripPlacement;
-            BindUtils.RelayBind(this, SizeTypeProperty, tabStripItem, TabStripItem.SizeTypeProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, tabStripItem, TabStripItem.IsMotionEnabledProperty);
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, tabStripItem, TabStripItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, tabStripItem, TabStripItem.IsMotionEnabledProperty));
+            if (ItemsBindingDisposables.TryGetValue(tabStripItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                ItemsBindingDisposables.Remove(tabStripItem);
+            }
+            ItemsBindingDisposables.Add(tabStripItem, disposables);
         }
     }
 
