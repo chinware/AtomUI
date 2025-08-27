@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -88,6 +89,7 @@ public class LoadingMaskHost : Control
     #endregion
 
     private LoadingMask? _loadingMask;
+    private CompositeDisposable? _bindingDisposables;
     
     public void ShowLoading()
     {
@@ -100,12 +102,14 @@ public class LoadingMaskHost : Control
         {
             _loadingMask = new LoadingMask();
             _loadingMask.Attach(this);
-            BindUtils.RelayBind(this, SizeTypeProperty, _loadingMask, SizeTypeProperty);
-            BindUtils.RelayBind(this, LoadingMsgProperty, _loadingMask, LoadingMsgProperty);
-            BindUtils.RelayBind(this, IsShowLoadingMsgProperty, _loadingMask, IsShowLoadingMsgProperty);
-            BindUtils.RelayBind(this, CustomIndicatorIconProperty, _loadingMask, CustomIndicatorIconProperty);
-            BindUtils.RelayBind(this, MotionDurationProperty, _loadingMask, MotionDurationProperty);
-            BindUtils.RelayBind(this, MotionEasingCurveProperty, _loadingMask, MotionEasingCurveProperty);
+            _bindingDisposables?.Dispose();
+            _bindingDisposables = new CompositeDisposable(6);
+            _bindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, _loadingMask, SizeTypeProperty));
+            _bindingDisposables.Add(BindUtils.RelayBind(this, LoadingMsgProperty, _loadingMask, LoadingMsgProperty));
+            _bindingDisposables.Add(BindUtils.RelayBind(this, IsShowLoadingMsgProperty, _loadingMask, IsShowLoadingMsgProperty));
+            _bindingDisposables.Add(BindUtils.RelayBind(this, CustomIndicatorIconProperty, _loadingMask, CustomIndicatorIconProperty));
+            _bindingDisposables.Add(BindUtils.RelayBind(this, MotionDurationProperty, _loadingMask, MotionDurationProperty));
+            _bindingDisposables.Add(BindUtils.RelayBind(this, MotionEasingCurveProperty, _loadingMask, MotionEasingCurveProperty));
         }
 
         _loadingMask!.Show();
