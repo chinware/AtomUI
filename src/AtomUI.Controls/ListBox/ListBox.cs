@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -58,10 +59,34 @@ public class ListBox : AvaloniaListBox,
     CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
+    
+    private Dictionary<ListBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public ListBox()
     {
         this.RegisterResources();
+        Items.CollectionChanged += HandleCollectionChanged;
+    }
+    
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is ListBoxItem listBoxItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(listBoxItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            _itemsBindingDisposables.Remove(listBoxItem);
+                        }
+                    }
+                }
+            }
+        }
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -82,10 +107,17 @@ public class ListBox : AvaloniaListBox,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is ListBoxItem listBoxItem)
         {
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, listBoxItem, ListBoxItem.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, SizeTypeProperty, listBoxItem, ListBoxItem.SizeTypeProperty);
-            BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listBoxItem,
-                ListBoxItem.DisabledItemHoverEffectProperty);
+            var disposables = new CompositeDisposable(3);
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, listBoxItem, ListBoxItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, listBoxItem, ListBoxItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listBoxItem,
+                ListBoxItem.DisabledItemHoverEffectProperty));
+            if (_itemsBindingDisposables.TryGetValue(listBoxItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(listBoxItem);
+            }
+            _itemsBindingDisposables.Add(listBoxItem, disposables);
         }
     }
 
