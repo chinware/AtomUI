@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.MotionScene;
 using Avalonia;
@@ -20,6 +21,8 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
     }
 
     public event EventHandler<DataGridFilterValuesSelectedEventArgs>? FilterValuesSelected;
+    
+    private CompositeDisposable? _presenterBindingDisposables;
 
     public DataGridTreeFilterFlyout()
     {
@@ -35,11 +38,13 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
             ItemsSource        = Items,
             TreeViewFlyout     = this
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter,
-            DataGridTreeFilterFlyoutPresenter.IsShowArrowProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter,
-            DataGridTreeFilterFlyoutPresenter.IsMotionEnabledProperty);
-        BindUtils.RelayBind(this, ToggleTypeProperty, presenter, DataGridTreeFilterFlyoutPresenter.ToggleTypeProperty);
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new CompositeDisposable(3);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter,
+            DataGridTreeFilterFlyoutPresenter.IsShowArrowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter,
+            DataGridTreeFilterFlyoutPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ToggleTypeProperty, presenter, DataGridTreeFilterFlyoutPresenter.ToggleTypeProperty));
         return presenter;
     }
 
@@ -52,7 +57,7 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
     protected override void NotifyPopupClosed(object? sender, EventArgs e)
     {
         base.NotifyPopupClosed(sender, e);
-        List<string> selectedItems = new List<string>();
+        var selectedItems = new List<string>();
         if (Popup.Child is DataGridTreeFilterFlyoutPresenter presenter)
         {
             selectedItems = presenter.GetFilterValues();

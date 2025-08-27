@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.DataGridLocalization;
 using AtomUI.Data;
@@ -55,6 +56,7 @@ internal class DataGridFilterIndicator : IconButton
     private DataGridColumn? _owningColumn;
     private static int _indicatorSeed = 0;
     private string _treeRadioCheckGroupName;
+    private CompositeDisposable? _bindingDisposables;
 
     internal DataGridColumn? OwningColumn
     {
@@ -110,8 +112,6 @@ internal class DataGridFilterIndicator : IconButton
         {
             SetValue(IconProperty, AntDesignIconPackage.FilterFilled(), BindingPriority.Template);
         }
-
-        CreateFlyout();
         base.OnApplyTemplate(e);
     }
 
@@ -129,16 +129,18 @@ internal class DataGridFilterIndicator : IconButton
         Debug.Assert(OwningColumn is not null);
         Debug.Assert(OwningColumn.OwningGrid is not null);
         var owningGrid = OwningColumn.OwningGrid;
+        _bindingDisposables?.Dispose();
+        _bindingDisposables = new CompositeDisposable();
         if (FilterMode == DataGridFilterMode.Menu && Flyout is not DataGridMenuFilterFlyout)
         {
-            var menuFlyout = new DataGridMenuFilterFlyout()
+            var menuFlyout = new DataGridMenuFilterFlyout
             {
                 IsShowArrow               = false,
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
                 IsDetectMouseClickEnabled = false
             };
-            BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, menuFlyout,
-                MotionAwareControlProperty.IsMotionEnabledProperty);
+            _bindingDisposables.Add(BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, menuFlyout,
+                MotionAwareControlProperty.IsMotionEnabledProperty));
             var menuItems = BuildMenuItems(OwningColumn.Filters.ToList());
             foreach (var menuItem in menuItems)
             {
@@ -151,18 +153,18 @@ internal class DataGridFilterIndicator : IconButton
         }
         else if (FilterMode == DataGridFilterMode.Tree && Flyout is not DataGridTreeFilterFlyout)
         {
-            var treeFlyout = new DataGridTreeFilterFlyout()
+            var treeFlyout = new DataGridTreeFilterFlyout
             {
                 IsShowArrow               = false,
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
                 IsDetectMouseClickEnabled = false
             };
-            BindUtils.RelayBind(this, FilterMultipleProperty, treeFlyout, DataGridTreeFilterFlyout.ToggleTypeProperty, (v) =>
+            _bindingDisposables.Add(BindUtils.RelayBind(this, FilterMultipleProperty, treeFlyout, DataGridTreeFilterFlyout.ToggleTypeProperty, (v) =>
             {
                 return v ? ItemToggleType.CheckBox : ItemToggleType.Radio;
-            });
-            BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, treeFlyout,
-                MotionAwareControlProperty.IsMotionEnabledProperty);
+            }));
+            _bindingDisposables.Add(BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, treeFlyout,
+                MotionAwareControlProperty.IsMotionEnabledProperty));
             var treeItems         = BuildTreeItems(OwningColumn.Filters.ToList());
             if (FilterMultiple)
             {
@@ -201,10 +203,10 @@ internal class DataGridFilterIndicator : IconButton
                 FilterValue      = item.Value,
                 StaysOpenOnClick = true
             };
-            BindUtils.RelayBind(this, FilterMultipleProperty, menuItem, MenuItem.ToggleTypeProperty, (v) =>
+            _bindingDisposables?.Add(BindUtils.RelayBind(this, FilterMultipleProperty, menuItem, MenuItem.ToggleTypeProperty, (v) =>
             {
                 return v ? MenuItemToggleType.CheckBox : MenuItemToggleType.Radio;
-            }, BindingPriority.Template);
+            }, BindingPriority.Template));
             menuItems.Add(menuItem);
             if (item.Children.Count > 0)
             {

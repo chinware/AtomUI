@@ -178,7 +178,7 @@ public class DataGridCell : ContentControl
     #endregion
 
     private Rectangle? _rightGridLine;
-    private CompositeDisposable _compositeDisposable;
+    private CompositeDisposable? _bindingDisposables;
 
     static DataGridCell()
     {
@@ -189,11 +189,6 @@ public class DataGridCell : ContentControl
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridCell>(
             IsOffscreenBehavior.FromClip);
         AffectsRender<DataGridCell>(IsShowFrozenShadowProperty);
-    }
-
-    public DataGridCell()
-    {
-        _compositeDisposable = new CompositeDisposable(3);
     }
 
     /// <summary>
@@ -212,7 +207,6 @@ public class DataGridCell : ContentControl
         {
             EnsureGridLine(null);
         }
-        
     }
 
     protected override void OnPointerEntered(PointerEventArgs e)
@@ -348,7 +342,9 @@ public class DataGridCell : ContentControl
         // 可能会影响性能
         if (OwningGrid != null && OwningColumn != null && OwningGrid.DataConnection.AllowSort)
         {
-            _compositeDisposable.Add(BindUtils.RelayBind(OwningColumn.HeaderCell,
+            _bindingDisposables?.Dispose();
+            _bindingDisposables = new CompositeDisposable(2);
+            _bindingDisposables.Add(BindUtils.RelayBind(OwningColumn.HeaderCell,
                 DataGridColumnHeader.CurrentSortingStateProperty,
                 this,
                 IsSortingProperty,
@@ -362,7 +358,7 @@ public class DataGridCell : ContentControl
                     return false;
                 },
                 BindingPriority.Template));
-            _compositeDisposable.Add(BindUtils.RelayBind(OwningColumn.HeaderCell,
+            _bindingDisposables.Add(BindUtils.RelayBind(OwningColumn.HeaderCell,
                 DataGridColumnHeader.HeaderDragModeProperty,
                 this,
                 OwningColumnDraggingProperty,
@@ -382,7 +378,7 @@ public class DataGridCell : ContentControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _compositeDisposable.Dispose();
-        _compositeDisposable.Clear();
+        _bindingDisposables?.Dispose();
+        _bindingDisposables = null;
     }
 }
