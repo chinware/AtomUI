@@ -99,7 +99,6 @@ public class TabStripItem : AvaloniaTabStripItem
     #endregion
     
     private IconButton? _closeButton;
-    private Border? _decorator;
     
     private void SetupDefaultCloseIcon()
     {
@@ -122,23 +121,17 @@ public class TabStripItem : AvaloniaTabStripItem
         {
             _closeButton.Click += HandleCloseRequest;
         }
-
-        _decorator = e.NameScope.Find<Border>(TabStripItemThemeConstants.DecoratorPart);
-        ConfigureTransitions();
     }
 
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
-            };
-            if (_decorator != null)
-            {
-                _decorator.Transitions = new Transitions()
+                Transitions = new Transitions
                 {
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
                 };
             }
@@ -146,14 +139,21 @@ public class TabStripItem : AvaloniaTabStripItem
         else
         {
             Transitions = null;
-            if (_decorator != null)
-            {
-                _decorator.Transitions?.Clear();
-                _decorator.Transitions = null;
-            }
         }
     }
-    
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
     private void HandleCloseRequest(object? sender, RoutedEventArgs args)
     {
         if (Parent is BaseTabStrip tabStrip)
@@ -191,11 +191,11 @@ public class TabStripItem : AvaloniaTabStripItem
             }
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
         

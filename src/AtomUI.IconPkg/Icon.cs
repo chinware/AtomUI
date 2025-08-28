@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -259,7 +260,12 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
                     SetupFilledBrush();
                 }
             }
-            else if (change.Property == IsMotionEnabledProperty)
+            
+        }
+
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
             }
@@ -441,13 +447,24 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
                 Dispatcher.UIThread.InvokeAsync(StartLoadingAnimationAsync);
             }, TimeSpan.FromMilliseconds(200));
         }
-        ConfigureTransitions(false);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _animationCancellationTokenSource?.Cancel();
+        Transitions = null;
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
         Transitions = null;
     }
 
