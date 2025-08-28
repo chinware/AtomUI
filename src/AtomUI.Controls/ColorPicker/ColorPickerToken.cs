@@ -67,6 +67,16 @@ public class ColorPickerToken : AbstractControlDesignToken
     public double ColorPickerSliderTrackSize { get; set; }
     
     /// <summary>
+    /// ColorPicker 轨道 handle 的大小
+    /// </summary>
+    public double ColorPickerSliderThumbSize { get; set; }
+    
+    /// <summary>
+    /// ColorPicker 轨道 handle 的阴影
+    /// </summary>
+    public BoxShadows ColorPickerSliderThumbShadow { get; set; }
+    
+    /// <summary>
     /// ColorPicker 预览尺寸
     /// Preview size of ColorPicker
     /// </summary>
@@ -127,6 +137,7 @@ public class ColorPickerToken : AbstractControlDesignToken
         ColorPickerPresetColorSize        = 24;
         ColorPickerSliderSize             = ColorPickerHandlerSizeSM;
         ColorPickerSliderTrackSize        = 8;
+        ColorPickerSliderThumbSize        = ColorPickerHandlerSizeSM + SharedToken.LineWidth * 2;
         ColorPickerPreviewSize            = ColorPickerSliderSize * 2 + SharedToken.UniformlyMarginSM;
         ColorPickerInsetShadow            = new BoxShadows(new BoxShadow()
         {
@@ -137,6 +148,25 @@ public class ColorPickerToken : AbstractControlDesignToken
             Spread = 0,
             Color = SharedToken.ColorTextQuaternary
         });
+
+        ColorPickerSliderThumbShadow = new BoxShadows(new BoxShadow()
+        {
+            IsInset = true,
+            OffsetX = 0,
+            OffsetY = 0,
+            Blur    = 1,
+            Spread  = 0,
+            Color   = SharedToken.ColorTextQuaternary
+        }, [
+            new BoxShadow
+            {
+                OffsetX = 0,
+                OffsetY = 0,
+                Blur    = 0,
+                Spread  = 1,
+                Color   = SharedToken.ColorFillSecondary
+            }
+        ]);
         ColorBlockInnerShadows = new BoxShadows(new BoxShadow()
         {
             IsInset = true,

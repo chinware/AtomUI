@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -178,12 +179,15 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsMotionEnabledProperty)
+        if (IsLoaded)
         {
-            ConfigureTransitions();
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
+            }
         }
-        else if (change.Property == IsShowTextProperty ||
-                 change.Property == FormatProperty)
+
+        if (change.Property == IsShowTextProperty || change.Property == FormatProperty)
         {
             GenerateValueText();
         }
@@ -192,25 +196,33 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected abstract void GenerateValueText();
     protected abstract void GenerateColorBlockBackground();
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            Transitions = new Transitions()
+            if (force || Transitions == null)
             {
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty)
-            };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty)
+                ];
+            }
         }
         else
         {
-            Transitions?.Clear();
             Transitions = null;
         }
     }
-    
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        ConfigureTransitions();
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }
