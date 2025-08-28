@@ -23,18 +23,18 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
     {
         _presenterBindingDisposables?.Dispose();
         _presenterBindingDisposables = new CompositeDisposable(4);
-        var presenter = new DataGridMenuFilterFlyoutPresenter
+        Presenter = new DataGridMenuFilterFlyoutPresenter
         {
             ItemsSource                                = Items,
             MenuFlyout                                 = this
         };
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, presenter, MenuFlyoutPresenter.ItemTemplateProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
-        SetupArrowPosition(Popup, presenter);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, Presenter, MenuFlyoutPresenter.ItemTemplateProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, Presenter, MenuFlyoutPresenter.IsShowArrowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
+        SetupArrowPosition(Popup, Presenter);
         CalculateShowArrowEffective();
-        return presenter;
+        return Presenter;
     }
 
     protected override void NotifyPopupOpened(object? sender, EventArgs e)

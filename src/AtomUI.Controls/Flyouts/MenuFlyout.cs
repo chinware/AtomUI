@@ -53,7 +53,7 @@ public class MenuFlyout : Flyout
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
     #endregion
     
-    private MenuFlyoutPresenter? _presenter;
+    private protected MenuFlyoutPresenter? Presenter;
     private CompositeDisposable? _presenterBindingDisposables;
     
     public MenuFlyout()
@@ -66,19 +66,19 @@ public class MenuFlyout : Flyout
     {
         _presenterBindingDisposables?.Dispose();
         _presenterBindingDisposables = new CompositeDisposable(4);
-        _presenter = new MenuFlyoutPresenter
+        Presenter = new MenuFlyoutPresenter
         {
             ItemsSource = Items,
             MenuFlyout  = this
         };
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, _presenter, MenuFlyoutPresenter.ItemTemplateProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, _presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, MenuFlyoutPresenter.IsShowArrowProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
-        SetupArrowPosition(Popup, _presenter);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, Presenter, MenuFlyoutPresenter.ItemTemplateProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, Presenter, MenuFlyoutPresenter.IsShowArrowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
+        SetupArrowPosition(Popup, Presenter);
         CalculateShowArrowEffective();
 
-        return _presenter;
+        return Presenter;
     }
 
     protected void SetupArrowPosition(Popup popup, MenuFlyoutPresenter? flyoutPresenter = null)
@@ -165,13 +165,13 @@ public class MenuFlyout : Flyout
         
         NotifyAboutToClose();
         
-        if (_presenter != null)
+        if (Presenter != null)
         {
             if (IsMotionEnabled)
             {
                 Dispatcher.UIThread.InvokeAsync(async () =>
                 {
-                    foreach (var childItem in _presenter.Items)
+                    foreach (var childItem in Presenter.Items)
                     {
                         if (childItem is MenuItem menuItem)
                         {
@@ -184,7 +184,7 @@ public class MenuFlyout : Flyout
             }
             else
             {
-                foreach (var childItem in _presenter.Items)
+                foreach (var childItem in Presenter.Items)
                 {
                     if (childItem is MenuItem menuItem)
                     {
