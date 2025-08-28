@@ -5,7 +5,9 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -129,6 +131,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
     private ControlTheme? _cellTheme;
     private Classes? _cellStyleClasses;
     private bool _setWidthInternalNoCallback;
+    private CompositeDisposable? _headerBindingDisposables;
 
     /// <summary>
     /// Gets the value of a cell according to the specified binding.
@@ -236,9 +239,9 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
         CancelCellEdit(editingElement, uneditedValue);
     }
 
-    internal void EndCellEditInternal()
+    internal void EndCellEditInternal(Control editingElement)
     {
-        EndCellEdit();
+        EndCellEdit(editingElement);
     }
 
     /// <summary>
@@ -269,13 +272,16 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
             OwningColumn = this
         };
         Debug.Assert(OwningGrid != null);
-        result[!ContentControl.ContentProperty] = this[!HeaderProperty];
-        result[!ContentControl.ContentTemplateProperty] = this[!HeaderTemplateProperty];
-        result[!DataGridColumnHeader.SizeTypeProperty] = OwningGrid[!DataGrid.SizeTypeProperty];
-        result[!DataGridColumnHeader.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
-        result[!DataGridColumnHeader.SupportedSortDirectionsProperty] = this[!SupportedSortDirectionsProperty];
-        result[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
-        result[!DataGridColumnHeader.VerticalContentAlignmentProperty] = this[!VerticalAlignmentProperty];
+        _headerBindingDisposables?.Dispose();
+        _headerBindingDisposables = new CompositeDisposable(7);
+        
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HeaderProperty, result, DataGridColumnHeader.ContentProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HeaderTemplateProperty, result, DataGridColumnHeader.ContentTemplateProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.SizeTypeProperty, result, DataGridColumnHeader.SizeTypeProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.IsMotionEnabledProperty, result, DataGridColumnHeader.IsMotionEnabledProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, SupportedSortDirectionsProperty, result, DataGridColumnHeader.SupportedSortDirectionsProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HorizontalAlignmentProperty, result, DataGridColumnHeader.HorizontalContentAlignmentProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, VerticalAlignmentProperty, result, DataGridColumnHeader.VerticalContentAlignmentProperty));
 
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };

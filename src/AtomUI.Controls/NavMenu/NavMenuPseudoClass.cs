@@ -8,3 +8,10 @@ public static class NavMenuPseudoClass
     public const string DarkStyle = ":dark";
     public const string LightStyle = ":light";
 }
+
+public static class NavMenuItemPseudoClass
+{
+    public const string TopLevel = ":toplevel";
+    public const string Separator = ":separator";
+    public const string Icon = ":icon";
+}

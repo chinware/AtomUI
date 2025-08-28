@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -67,10 +69,11 @@ public class DataGridNumericColumn : DataGridAbstractTextColumn
         {                
             Name  = "CellNumberUpDown",
         };
-        numericUpDown[!NumericUpDown.NumberFormatProperty] = this[!NumericUpDown.NumberFormatProperty];
-        numericUpDown[!NumericUpDown.FormatStringProperty] = this[!NumericUpDown.FormatStringProperty];
-        numericUpDown[!NumericUpDown.MaximumProperty]      = this[!NumericUpDown.MaximumProperty];
-        numericUpDown[!NumericUpDown.MinimumProperty]      = this[!NumericUpDown.MinimumProperty];
+        
+        BindUtils.RelayBind(this, NumberFormatProperty, numericUpDown, NumericUpDown.NumberFormatProperty);
+        BindUtils.RelayBind(this, FormatStringProperty, numericUpDown, NumericUpDown.FormatStringProperty);
+        BindUtils.RelayBind(this, MaximumProperty, numericUpDown, NumericUpDown.MaximumProperty);
+        BindUtils.RelayBind(this, MinimumProperty, numericUpDown, NumericUpDown.MinimumProperty);
         SyncProperties(numericUpDown);
         return numericUpDown;
     }

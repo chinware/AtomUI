@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -139,7 +140,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
     private CaptionButton? _maximizeButton;
     private CaptionButton? _closeButton;
     
-    private IDisposable? _disposables;
+    private CompositeDisposable? _disposables;
     private readonly List<Action> _disposeActions = new();
 
     static CaptionButtonGroup()
@@ -164,29 +165,28 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         }
            
         HostWindow                                      = hostWindow;
-        this[!IsFullScreenCaptionButtonEnabledProperty] = hostWindow[!IsFullScreenCaptionButtonEnabledProperty];
-        this[!IsPinCaptionButtonEnabledProperty]        = hostWindow[!IsPinCaptionButtonEnabledProperty];
-        this[!IsMaximizeCaptionButtonEnabledProperty]   = hostWindow[!IsMaximizeCaptionButtonEnabledProperty];
-        this[!IsMinimizeCaptionButtonEnabledProperty]   = hostWindow[!IsMinimizeCaptionButtonEnabledProperty];
-        this[!IsCloseCaptionButtonEnabledProperty]      = hostWindow[!IsCloseCaptionButtonEnabledProperty];
-        _disposables = new CompositeDisposable
-        {
-            HostWindow.GetObservable(Window.WindowStateProperty)
-                      .Subscribe(x =>
-                      {
-                          PseudoClasses.Set(StdPseudoClass.Minimized, x == WindowState.Minimized);
-                          PseudoClasses.Set(StdPseudoClass.Normal, x == WindowState.Normal);
-                          PseudoClasses.Set(StdPseudoClass.Maximized, x == WindowState.Maximized);
-                          PseudoClasses.Set(StdPseudoClass.Fullscreen, x == WindowState.FullScreen);
-                          IsWindowMaximized  = x == WindowState.Maximized;
-                          IsWindowFullScreen = x == WindowState.FullScreen;
-                      }),
-            HostWindow.GetObservable(Window.TopmostProperty)
-                      .Subscribe(x =>
-                      {
-                          IsWindowPinned     = HostWindow.Topmost;
-                      })
-        };
+        
+        _disposables = new CompositeDisposable(7);
+        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsFullScreenCaptionButtonEnabledProperty, this, IsFullScreenCaptionButtonEnabledProperty));
+        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsPinCaptionButtonEnabledProperty, this, IsPinCaptionButtonEnabledProperty));
+        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsMaximizeCaptionButtonEnabledProperty, this, IsMaximizeCaptionButtonEnabledProperty));
+        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsMinimizeCaptionButtonEnabledProperty, this, IsMinimizeCaptionButtonEnabledProperty));
+        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsCloseCaptionButtonEnabledProperty, this, IsCloseCaptionButtonEnabledProperty));
+        _disposables.Add(HostWindow.GetObservable(Window.WindowStateProperty)
+                                   .Subscribe(x =>
+                                   {
+                                       PseudoClasses.Set(StdPseudoClass.Minimized, x == WindowState.Minimized);
+                                       PseudoClasses.Set(StdPseudoClass.Normal, x == WindowState.Normal);
+                                       PseudoClasses.Set(StdPseudoClass.Maximized, x == WindowState.Maximized);
+                                       PseudoClasses.Set(StdPseudoClass.Fullscreen, x == WindowState.FullScreen);
+                                       IsWindowMaximized  = x == WindowState.Maximized;
+                                       IsWindowFullScreen = x == WindowState.FullScreen;
+                                   }));
+        _disposables.Add(HostWindow.GetObservable(Window.TopmostProperty)
+                                   .Subscribe(x =>
+                                   {
+                                       IsWindowPinned = HostWindow.Topmost;
+                                   }));
     }
 
     public virtual void Detach()

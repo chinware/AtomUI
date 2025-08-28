@@ -7,7 +7,8 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="{x:Static atom:ContextMenuThemeConstants.RootContainerPart}">
-                    <atom:MenuScrollViewer IsScrollChainingEnabled="False">
+                    <atom:MenuScrollViewer IsScrollChainingEnabled="False"
+                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                         <ItemsPresenter Name="{x:Static atom:ContextMenuThemeConstants.ItemsPresenterPart}"
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
                                         KeyboardNavigation.TabNavigation="Continue"

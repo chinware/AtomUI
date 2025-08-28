@@ -137,12 +137,14 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     private Panel? _shadowRendererPanel;
     private LayoutTransformControl? _arrowIndicatorLayout;
     private ContentPresenter? _ghostContentPresenter;
-    private CompositeDisposable? _disposables;
+    private CompositeDisposable? _bindingDisposables;
     private IArrowAwareShadowMaskInfoProvider? _popupArrowDecoratedBox;
     
     // 用于保证动画状态最终一致性
     private IDisposable? _openMotionForceDisposable;
     private IDisposable? _closeMotionForceDisposable;
+    
+    private CompositeDisposable? _shadowBindingDisposables;
     
     internal Popup BuddyPopup => _buddyPopup;
     
@@ -203,12 +205,12 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 _popupArrowDecoratedBox = arrowDecoratedBox;
                 _popupArrowDecoratedBox.SetArrowOpacity(0.0);
                 
-                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, this, MaskShadowsContentCornerRadiusProperty));
-                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty, this, ArrowIndicatorLayoutBoundsProperty));
-                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowSizeProperty, this, ArrowSizeProperty));
-                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowDirectionProperty, this, ArrowDirectionProperty));
-                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.BackgroundProperty, this, ArrowFillColorProperty));
-                _disposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty, this, IsShowArrowProperty));
+                _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, this, MaskShadowsContentCornerRadiusProperty));
+                _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty, this, ArrowIndicatorLayoutBoundsProperty));
+                _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowSizeProperty, this, ArrowSizeProperty));
+                _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowDirectionProperty, this, ArrowDirectionProperty));
+                _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.BackgroundProperty, this, ArrowFillColorProperty));
+                _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.IsShowArrowProperty, this, IsShowArrowProperty));
             }
             else if (content is Border bordered)
             {
@@ -294,19 +296,20 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
 
     public void Attach()
     {
-        _disposables = new CompositeDisposable();
-        _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.MaskShadowsProperty, this, MaskShadowsProperty));
-        _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.MotionDurationProperty, this, MotionDurationProperty));
-        _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.OpenMotionProperty, this, OpenMotionProperty));
-        _disposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.CloseMotionProperty, this, CloseMotionProperty));
+        _bindingDisposables?.Dispose();
+        _bindingDisposables = new CompositeDisposable();
+        _bindingDisposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.MaskShadowsProperty, this, MaskShadowsProperty));
+        _bindingDisposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.MotionDurationProperty, this, MotionDurationProperty));
+        _bindingDisposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.OpenMotionProperty, this, OpenMotionProperty));
+        _bindingDisposables.Add(BindUtils.RelayBind(_buddyPopup, Popup.CloseMotionProperty, this, CloseMotionProperty));
         SetupPopupHost();
     }
     
     public void Detach()
     {
         Hide();
-        _disposables?.Dispose();
-        _disposables = null;
+        _bindingDisposables?.Dispose();
+        _bindingDisposables = null;
         if (this is IDisposable disposable)
         {
             disposable.Dispose();
@@ -416,6 +419,9 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
             {
                 if (_shadowRendererPanel != null)
                 {
+                    _shadowRendererPanel.Children.Clear();
+                    var shadowControls = BuildShadowRenderers(MaskShadows);
+                    _shadowRendererPanel.Children.AddRange(shadowControls);
                     for (var i = 0; i < MaskShadows.Count; ++i)
                     {
                         if (_shadowRendererPanel.Children[i] is Border shadowControl)
@@ -499,6 +505,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     {
         // 不知道这里为啥不行
         var renderers = new List<Control>();
+        _shadowBindingDisposables?.Dispose();
+        _shadowBindingDisposables = new CompositeDisposable(shadows.Count);
         for (var i = 0; i < shadows.Count; ++i)
         {
             var renderer = new Border
@@ -507,7 +515,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 BorderThickness = new Thickness(0),
                 BoxShadow       = new BoxShadows(shadows[i]),
             };
-            renderer[!CornerRadiusProperty] = this[!MaskShadowsContentCornerRadiusProperty];
+
+            _shadowBindingDisposables.Add(BindUtils.RelayBind(this, MaskShadowsContentCornerRadiusProperty, renderer, Border.CornerRadiusProperty));
             renderers.Add(renderer);
         }
 

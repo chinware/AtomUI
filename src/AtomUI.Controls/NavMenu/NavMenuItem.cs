@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
+using System.Windows.Input;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
@@ -27,7 +29,12 @@ using Point = Avalonia.Point;
 
 namespace AtomUI.Controls;
 
-[PseudoClasses(SeparatorPC, IconPC, StdPseudoClass.Open, StdPseudoClass.Pressed, StdPseudoClass.Selected, TopLevelPC)]
+[PseudoClasses(NavMenuItemPseudoClass.Separator, 
+    NavMenuItemPseudoClass.Icon, 
+    StdPseudoClass.Open,
+    StdPseudoClass.Pressed, 
+    StdPseudoClass.Selected, 
+    NavMenuItemPseudoClass.TopLevel)]
 public class NavMenuItem : HeaderedSelectingItemsControl,
                            INavMenuItem,
                            ISelectable,
@@ -35,98 +42,54 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                            IClickableControl,
                            ICustomHitTest
 {
-    public const string TopLevelPC = ":toplevel";
-    public const string SeparatorPC = ":separator";
-    public const string IconPC = ":icon";
-
     #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="Command"/> property.
-    /// </summary>
+    
     public static readonly StyledProperty<ICommand?> CommandProperty =
         Button.CommandProperty.AddOwner<NavMenuItem>(new(enableDataValidation: true));
-
-    /// <summary>
-    /// Defines the <see cref="HotKey"/> property.
-    /// </summary>
+    
     public static readonly StyledProperty<KeyGesture?> HotKeyProperty =
         HotKeyManager.HotKeyProperty.AddOwner<NavMenuItem>();
-
-    /// <summary>
-    /// Defines the <see cref="CommandParameter"/> property.
-    /// </summary>
+    
     public static readonly StyledProperty<object?> CommandParameterProperty =
         Button.CommandParameterProperty.AddOwner<NavMenuItem>();
-
-    /// <summary>
-    /// Defines the <see cref="Icon"/> property.
-    /// </summary>
+    
     public static readonly StyledProperty<Icon?> IconProperty =
         AvaloniaProperty.Register<NavMenuItem, Icon?>(nameof(Icon));
-
-    /// <summary>
-    /// Defines the <see cref="InputGesture"/> property.
-    /// </summary>
+    
     public static readonly StyledProperty<KeyGesture?> InputGestureProperty =
         AvaloniaProperty.Register<NavMenuItem, KeyGesture?>(nameof(InputGesture));
-
-    /// <summary>
-    /// Defines the <see cref="IsSubMenuOpen"/> property.                                                              
-    /// </summary>
+    
     public static readonly StyledProperty<bool> IsSubMenuOpenProperty =
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof(IsSubMenuOpen));
-
-    /// <summary>
-    /// Defines the <see cref="StaysOpenOnClick"/> property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> StaysOpenOnClickProperty =
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof(StaysOpenOnClick));
-
-    /// <summary>
-    /// Defines the <see cref="IsChecked"/> property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> IsCheckedProperty =
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof(IsChecked));
-
-    /// <summary>
-    /// Defines the <see cref="Level"/> property.
-    /// </summary>
+    
     public static readonly DirectProperty<NavMenuItem, int> LevelProperty =
         AvaloniaProperty.RegisterDirect<NavMenuItem, int>(
             nameof(Level), o => o.Level);
-
-    /// <summary>
-    /// Gets or sets the command associated with the menu item.
-    /// </summary>
+    
     public ICommand? Command
     {
         get => GetValue(CommandProperty);
         set => SetValue(CommandProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets an <see cref="KeyGesture"/> associated with this control
-    /// </summary>
+    
     public KeyGesture? HotKey
     {
         get => GetValue(HotKeyProperty);
         set => SetValue(HotKeyProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the parameter to pass to the <see cref="Command"/> property of a
-    /// <see cref="NavMenuItem"/>.
-    /// </summary>
+    
     public object? CommandParameter
     {
         get => GetValue(CommandParameterProperty);
         set => SetValue(CommandParameterProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the icon that appears in a <see cref="NavMenuItem"/>.
-    /// </summary>
+    
     public Icon? Icon
     {
         get => GetValue(IconProperty);
@@ -456,10 +419,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     #endregion
     
     internal static PlatformKeyGestureConverter KeyGestureConverter = new();
-
-    /// <summary>
-    /// The default value for the <see cref="ItemsControl.ItemsPanel"/> property.
-    /// </summary>
+    
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
 
@@ -482,6 +442,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     
     internal Popup? Popup => _popup;
 
+    private readonly Dictionary<NavMenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    
     static NavMenuItem()
     {
         SelectableMixin.Attach<NavMenuItem>(IsSelectedProperty);
@@ -494,7 +456,28 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     public NavMenuItem()
     {
-        AffectsRender<MenuItem>(BackgroundProperty);
+        Items.CollectionChanged  += HandleItemsCollectionChanged;
+    }
+    
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is NavMenuItem menuItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(menuItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                        }
+                        _itemsBindingDisposables.Remove(menuItem);
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -1079,12 +1062,12 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             if (change.OldValue is Icon oldIcon)
             {
-                PseudoClasses.Remove(IconPC);
+                PseudoClasses.Remove(NavMenuItemPseudoClass.Icon);
             }
 
             if (change.NewValue is Icon newIcon)
             {
-                PseudoClasses.Add(IconPC);
+                PseudoClasses.Add(NavMenuItemPseudoClass.Icon);
             }
         }
 
@@ -1137,19 +1120,19 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         var (oldValue, newValue) = e.GetOldAndNewValue<object?>();
         if (Equals(newValue, "-"))
         {
-            PseudoClasses.Add(SeparatorPC);
+            PseudoClasses.Add(NavMenuItemPseudoClass.Separator);
             Focusable = false;
         }
         else if (Equals(oldValue, "-"))
         {
-            PseudoClasses.Remove(SeparatorPC);
+            PseudoClasses.Remove(NavMenuItemPseudoClass.Separator);
             Focusable = true;
         }
     }
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(TopLevelPC, IsTopLevel);
+        PseudoClasses.Set(NavMenuItemPseudoClass.TopLevel, IsTopLevel);
     }
 
     /// <summary>
@@ -1352,10 +1335,17 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         base.PrepareContainerForItemOverride(element, item, index);
         if (element is NavMenuItem navMenuItem)
         {
-            BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty);
-            BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty);
+            var disposables = new CompositeDisposable(4);
+            disposables.Add(BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty));
+            if (_itemsBindingDisposables.TryGetValue(navMenuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(navMenuItem);
+            }
+            _itemsBindingDisposables.Add(navMenuItem, disposables);
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
@@ -107,6 +108,7 @@ public class DotBadge : Control,
 
     private DotBadgeAdorner? _dotBadgeAdorner;
     private AdornerLayer? _adornerLayer;
+    private CompositeDisposable? _adornerBindingDisposables;
 
     static DotBadge()
     {
@@ -199,10 +201,12 @@ public class DotBadge : Control,
     {
         if (_dotBadgeAdorner is not null)
         {
-            BindUtils.RelayBind(this, StatusProperty, _dotBadgeAdorner, DotBadgeAdorner.StatusProperty);
-            BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty);
-            BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, _dotBadgeAdorner, DotBadgeAdorner.IsMotionEnabledProperty);
+            _adornerBindingDisposables?.Dispose();
+            _adornerBindingDisposables = new CompositeDisposable(4);
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, StatusProperty, _dotBadgeAdorner, DotBadgeAdorner.StatusProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, TextProperty, _dotBadgeAdorner, DotBadgeAdorner.TextProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, OffsetProperty, _dotBadgeAdorner, DotBadgeAdorner.OffsetProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _dotBadgeAdorner, DotBadgeAdorner.IsMotionEnabledProperty));
         }
     }
 

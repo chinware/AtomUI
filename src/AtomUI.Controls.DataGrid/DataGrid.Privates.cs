@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -1561,7 +1562,7 @@ public partial class DataGrid
         {
             newCell.OwningColumn       = column;
             newCell.IsVisible          = column.IsVisible;
-            newCell[!SizeTypeProperty] = this[!SizeTypeProperty];
+            BindUtils.RelayBind(this, SizeTypeProperty, newCell, DataGridCell.SizeTypeProperty);
         }
 
         row.Cells.Insert(column.Index, newCell);
@@ -2534,7 +2535,7 @@ public partial class DataGrid
         Debug.Assert(CurrentColumn != null);
         if (exitEditingMode)
         {
-            CurrentColumn.EndCellEditInternal();
+            CurrentColumn.EndCellEditInternal(editingElement);
             _editingColumnIndex = -1;
             editingCell.UpdatePseudoClasses();
 

@@ -43,7 +43,6 @@
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextButtonPart}"
                                     Icon="{atom:IconProvider DoubleRightOutlined}"
-                                  
                                     Grid.Column="4" />
                             </Grid>
                         </UniformGrid>

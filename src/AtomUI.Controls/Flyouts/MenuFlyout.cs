@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Templates;
-using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Metadata;
 using Avalonia.Styling;
@@ -45,15 +45,14 @@ public class MenuFlyout : Flyout
         set => SetValue(ItemTemplateProperty, value);
     }
 
-    #endregion
-    
-    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
-    
-    private IDisposable? _detectMouseClickDisposable;
-    private MenuFlyoutPresenter? _presenter;
-    
     [Content] 
     public ItemCollection Items { get; }
+    
+    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHideFlyoutPredicate;
+    #endregion
+    
+    private MenuFlyoutPresenter? _presenter;
+    private CompositeDisposable? _presenterBindingDisposables;
     
     public MenuFlyout()
     {
@@ -63,16 +62,17 @@ public class MenuFlyout : Flyout
     
     protected override Control CreatePresenter()
     {
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new CompositeDisposable(4);
         _presenter = new MenuFlyoutPresenter
         {
-            ItemsSource                                    = Items,
-            [!ItemsControl.ItemTemplateProperty]           = this[!ItemTemplateProperty],
-            [!ItemsControl.ItemContainerThemeProperty]     = this[!ItemContainerThemeProperty],
-            [!MenuFlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty],
-            MenuFlyout                                     = this
+            ItemsSource = Items,
+            MenuFlyout  = this
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, MenuFlyoutPresenter.IsShowArrowProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, _presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, _presenter, MenuFlyoutPresenter.ItemTemplateProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, _presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _presenter, MenuFlyoutPresenter.IsShowArrowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
         SetupArrowPosition(Popup, _presenter);
         CalculateShowArrowEffective();
 
@@ -117,48 +117,6 @@ public class MenuFlyout : Flyout
         base.OnOpening(args);
     }
 
-    protected override void OnOpened()
-    {
-        base.OnOpened();
-        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-        if (IsDetectMouseClickEnabled)
-        {
-            _detectMouseClickDisposable = inputManager.Process.Subscribe(HandleMouseClick);
-            CompositeDisposable?.Add(_detectMouseClickDisposable);
-        }
-    }
-
-    private void HandleMouseClick(RawInputEventArgs args)
-    {
-        if (!IsOpen)
-        {
-            return;
-        }
-        if (args is RawPointerEventArgs pointerEventArgs)
-        {
-            if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
-            {
-                if (this is IPopupHostProvider popupHostProvider)
-                {
-                    if (ClickHideFlyoutPredicate is not null)
-                    {
-                        if (ClickHideFlyoutPredicate(popupHostProvider, pointerEventArgs))
-                        {
-                            Hide();
-                        }
-                    }
-                    else
-                    {
-                        if (popupHostProvider.PopupHost != pointerEventArgs.Root)
-                        {
-                            Hide();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -167,33 +125,13 @@ public class MenuFlyout : Flyout
         {
             Items.SetItemsSource(change.GetNewValue<IEnumerable?>());   
         }
-        else if (change.Property == IsDetectMouseClickEnabledProperty && IsOpen)
-        {
-            if (IsDetectMouseClickEnabled)
-            {
-                if (_detectMouseClickDisposable is not null) 
-                {
-                    CompositeDisposable?.Remove(_detectMouseClickDisposable);
-                }
-
-                var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-                _detectMouseClickDisposable = inputManager.Process.Subscribe(HandleMouseClick);
-                CompositeDisposable?.Add(_detectMouseClickDisposable);
-            }
-            else
-            {
-                if (_detectMouseClickDisposable is not null) 
-                {
-                    CompositeDisposable?.Remove(_detectMouseClickDisposable);
-                }
-            }
-        }
     }
 
     protected internal override void NotifyPopupCreated(Popup popup)
     {
         base.NotifyPopupCreated(popup);
         popup.IsLightDismissEnabled = false;
+        popup.ClickHidePredicate    = ClickHideFlyoutPredicate;
     }
     
     protected override void NotifyAboutToClose()

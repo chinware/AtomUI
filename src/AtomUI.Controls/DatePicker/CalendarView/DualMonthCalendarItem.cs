@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Themes;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -217,7 +218,12 @@ internal class DualMonthCalendarItem : RangeCalendarItem
 
     protected override void PopulateMonthViewsGrid()
     {
-        base.PopulateMonthViewsGrid();
+        DayBtnBindingDisposables?.Dispose();
+        DayBtnBindingDisposables = new CompositeDisposable(Calendar.RowsPerMonth * Calendar.ColumnsPerMonth * 2);
+        if (MonthView != null)
+        {
+            PopulateMonthViewGrid(MonthView);
+        }
         if (SecondaryMonthView != null)
         {
             PopulateMonthViewGrid(SecondaryMonthView);

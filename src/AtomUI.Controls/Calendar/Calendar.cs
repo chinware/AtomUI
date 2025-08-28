@@ -274,8 +274,8 @@ public class Calendar : TemplatedControl,
         AvaloniaProperty.Register<Calendar, DateTime?>(nameof(DisplayDateEnd),
             defaultBindingMode: BindingMode.TwoWay);
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
 
     /// <summary>
     /// Gets or sets the day that is considered the beginning of the week.

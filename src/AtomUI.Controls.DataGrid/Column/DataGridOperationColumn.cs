@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
+using AtomUI.Data;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
@@ -25,7 +26,7 @@ internal class DataGridOperationColumn : DataGridColumn
         Debug.Assert(OwningGrid != null);
         var operationButtons = new DataGridOperationButtons();
         operationButtons.OwningGrid = OwningGrid;
-        operationButtons[!DataGridOperationButtons.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
+        BindUtils.RelayBind(OwningGrid, DataGrid.IsMotionEnabledProperty, operationButtons, DataGridOperationButtons.IsMotionEnabledProperty);
         return operationButtons;
     }
 

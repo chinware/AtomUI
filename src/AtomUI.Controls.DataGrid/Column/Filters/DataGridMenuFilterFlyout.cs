@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.MotionScene;
 using Avalonia;
@@ -10,6 +11,7 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
 {
     public event EventHandler<DataGridFilterValuesSelectedEventArgs>? FilterValuesSelected;
     internal bool IsActiveShutdown = false;
+    private CompositeDisposable? _presenterBindingDisposables;
     
     public DataGridMenuFilterFlyout()
     {
@@ -19,15 +21,17 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
     
     protected override Control CreatePresenter()
     {
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new CompositeDisposable(4);
         var presenter = new DataGridMenuFilterFlyoutPresenter
         {
             ItemsSource                                = Items,
-            [!ItemsControl.ItemTemplateProperty]       = this[!ItemTemplateProperty],
-            [!ItemsControl.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty],
             MenuFlyout                                 = this
         };
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, presenter, MenuFlyoutPresenter.ItemTemplateProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, MenuFlyoutPresenter.IsShowArrowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
         SetupArrowPosition(Popup, presenter);
         CalculateShowArrowEffective();
         return presenter;
@@ -42,7 +46,7 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
     protected override void NotifyPopupClosed(object? sender, EventArgs e)
     {
         base.NotifyPopupClosed(sender, e);
-        List<string> selectedItems = new List<string>();
+        var selectedItems = new List<string>();
         if (Popup.Child is DataGridMenuFilterFlyoutPresenter presenter)
         {
             selectedItems = presenter.GetFilterValues();

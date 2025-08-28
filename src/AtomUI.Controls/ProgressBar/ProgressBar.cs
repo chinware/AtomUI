@@ -58,6 +58,8 @@ public class ProgressBar : AbstractLineProgress
 
     #endregion
 
+    private IDisposable? _percentageLabelBindingDisposable;
+    
     static ProgressBar()
     {
         AffectsMeasure<ProgressBar>(IndicatorThicknessProperty, PercentPositionProperty);
@@ -614,7 +616,8 @@ public class ProgressBar : AbstractLineProgress
     {
         if (!PercentPosition.IsInner)
         {
-            BindUtils.RelayBind(this, ForegroundProperty, _percentageLabel!, ForegroundProperty);
+            _percentageLabelBindingDisposable?.Dispose();
+            _percentageLabelBindingDisposable = BindUtils.RelayBind(this, ForegroundProperty, _percentageLabel!, ForegroundProperty);
         }
         else
         {

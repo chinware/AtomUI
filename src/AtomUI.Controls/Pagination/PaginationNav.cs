@@ -1,3 +1,5 @@
+using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +9,7 @@ namespace AtomUI.Controls;
 
 internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
 {
-    #region 公共属性
+    #region 公共属性定义
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<PaginationNav>();
@@ -44,6 +46,8 @@ internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
 
     #endregion
     
+    private readonly Dictionary<PaginationNavItem, CompositeDisposable> _itemsBindingDisposables = new();
+    
     static PaginationNav()
     {
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<PaginationNav>(false);
@@ -52,12 +56,34 @@ internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
 
     public PaginationNav()
     {
+        Items.CollectionChanged += HandleCollectionChanged;
         for (var i = 0; i < Pagination.MaxNavItemCount; i++)
         {
             Items.Add(new PaginationNavItem());
         }
 
-        SelectionMode = SelectionMode.Single;
+        SelectionMode           =  SelectionMode.Single;
+    }
+    
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is PaginationNavItem collapseItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(collapseItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            _itemsBindingDisposables.Remove(collapseItem);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -75,8 +101,15 @@ internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is PaginationNavItem navItem)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, navItem, PaginationNavItem.SizeTypeProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, navItem, PaginationNavItem.IsMotionEnabledProperty);
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, navItem, PaginationNavItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navItem, PaginationNavItem.IsMotionEnabledProperty));
+            if (_itemsBindingDisposables.TryGetValue(navItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(navItem);
+            }
+            _itemsBindingDisposables.Add(navItem, disposables);
             navItem.Click += (sender, args) =>
             {
                 if (sender is PaginationNavItem navItemSender)

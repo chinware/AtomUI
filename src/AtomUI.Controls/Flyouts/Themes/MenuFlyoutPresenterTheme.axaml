@@ -10,7 +10,8 @@
                                     IsShowArrow="{TemplateBinding IsShowArrow}"
                                     ArrowPosition="{TemplateBinding ArrowPosition}">
                 <atom:MenuScrollViewer HorizontalAlignment="Stretch"
-                                       VerticalAlignment="Stretch">
+                                       VerticalAlignment="Stretch"
+                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                     <ItemsPresenter Name="{x:Static atom:MenuFlyoutThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     KeyboardNavigation.TabNavigation="Continue"

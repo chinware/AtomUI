@@ -95,8 +95,8 @@ public class ArrowDecoratedBox : ContentControl,
         AvaloniaProperty.Register<ArrowDecoratedBox, ArrowPosition>(
             nameof(ArrowPosition));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ArrowDecoratedBox>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ArrowDecoratedBox>();
 
     /// <summary>
     /// 是否显示指示箭头

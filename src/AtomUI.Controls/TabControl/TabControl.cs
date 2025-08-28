@@ -137,7 +137,6 @@ public class TabControl : BaseTabControl
         if (container is TabItem tabItem)
         {
             tabItem.Shape = TabSharp.Line;
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, tabItem, TabItem.IsMotionEnabledProperty);
         }
     }
 

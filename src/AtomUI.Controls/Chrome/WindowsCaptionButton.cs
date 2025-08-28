@@ -7,8 +7,8 @@ namespace AtomUI.Controls;
 
 internal class WindowsCaptionButton : CaptionButton
 {
-    internal static readonly DirectProperty<WindowsCaptionButton, bool> IsCloseButtonProperty
-        = AvaloniaProperty.RegisterDirect<WindowsCaptionButton, bool>(nameof(IsCloseButton),
+    internal static readonly DirectProperty<WindowsCaptionButton, bool> IsCloseButtonProperty =
+        AvaloniaProperty.RegisterDirect<WindowsCaptionButton, bool>(nameof(IsCloseButton),
             o => o.IsCloseButton,
             (o, v) => o.IsCloseButton = v);
 

@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -108,10 +109,14 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         set => SetValue(HorizontalBorderThicknessProperty, value);
     }
 
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+
     #endregion
 
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel { Orientation = Orientation.Vertical });
+    private ItemsPresenter? _menuItemsPresenter;
+    private readonly Dictionary<NavMenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     static NavMenu()
     {
@@ -124,13 +129,31 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<NavMenu>(false);
     }
     
-    private ItemsPresenter? _menuItemsPresenter;
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     public NavMenu()
     {
         UpdatePseudoClasses();
+        Items.CollectionChanged  += HandleItemsCollectionChanged;
+    }
+    
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is NavMenuItem menuItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(menuItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                        }
+                        _itemsBindingDisposables.Remove(menuItem);
+                    }
+                }
+            }
+        }
     }
 
     public override void Close()
@@ -230,19 +253,27 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
 
         if (element is NavMenuItem navMenuItem)
         {
+            var disposables = new CompositeDisposable(6);
             if (Mode == NavMenuMode.Horizontal)
             {
-                BindUtils.RelayBind(this, ActiveBarHeightProperty, navMenuItem, NavMenuItem.ActiveBarHeightProperty);
-                BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty);
+                disposables.Add(BindUtils.RelayBind(this, ActiveBarHeightProperty, navMenuItem, NavMenuItem.ActiveBarHeightProperty));
+                disposables.Add(BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty));
             }
             else
             {
-                BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty);
+                disposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty));
             }
 
-            BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty);
-            BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, NavMenuItem.IsMotionEnabledProperty);
+            disposables.Add(BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, NavMenuItem.IsMotionEnabledProperty));
+            
+            if (_itemsBindingDisposables.TryGetValue(navMenuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(navMenuItem);
+            }
+            _itemsBindingDisposables.Add(navMenuItem, disposables);
         }
     }
 

@@ -1,6 +1,7 @@
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -33,9 +34,6 @@ internal class DataGridHeaderViewItem : ContentControl
             o => o.IsShowRightFrozenShadow, 
             (o, v) => o.IsShowRightFrozenShadow = v);
     
-    /// <summary>
-    /// Gets the level/indentation of the item.
-    /// </summary>
     public int Level
     {
         get => _level;
@@ -93,10 +91,24 @@ internal class DataGridHeaderViewItem : ContentControl
     
     #endregion
     
+    private IDisposable? _bindingDisposable;
+    
     public DataGridHeaderViewItem(DataGrid owningGrid)
     {
         OwningGrid = owningGrid;
-        BindUtils.RelayBind(OwningGrid, BorderThicknessProperty, this, BorderThicknessProperty);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _bindingDisposable?.Dispose();
+        _bindingDisposable = BindUtils.RelayBind(OwningGrid, BorderThicknessProperty, this, BorderThicknessProperty);
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _bindingDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -129,5 +141,4 @@ internal class DataGridHeaderViewItem : ContentControl
             EffectiveBorderThickness = new Thickness(0, 0, BorderThickness.Right, BorderThickness.Bottom);
         }
     }
-    
 }

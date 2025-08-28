@@ -1,11 +1,12 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -14,8 +15,7 @@ using AvaloniaMenu = Avalonia.Controls.Menu;
 public class Menu : AvaloniaMenu,
                     ISizeTypeAware,
                     IMotionAwareControl,
-                    IControlSharedTokenResourcesHost,
-                    IResourceBindingManager
+                    IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -44,37 +44,75 @@ public class Menu : AvaloniaMenu,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-    
     #endregion
+    
+    private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     public Menu()
     {
+        Items.CollectionChanged  += HandleItemsCollectionChanged;
         this.RegisterResources();
+    }
+
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is MenuItem menuItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(menuItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                        }
+                        _itemsBindingDisposables.Remove(menuItem);
+                    }
+                }
+            }
+        }
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         if (container is MenuItem menuItem)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty);
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(menuItem);
+            }
+            _itemsBindingDisposables.Add(menuItem, disposables);
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
     }
-    
+
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, ItemContainerThemeProperty, "TopLevelMenuItemTheme"));
+        ConfigureItemContainerTheme(false);
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    private void ConfigureItemContainerTheme(bool force)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        if (Theme == null || force)
+        {
+            if (Application.Current != null)
+            {
+                if (Application.Current.TryFindResource("TopLevelMenuItemTheme", out var resource))
+                {
+                    if (resource is ControlTheme theme)
+                    {
+                        ItemContainerTheme = theme;
+                    }
+                }
+            }
+        }
     }
 }

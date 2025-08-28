@@ -1,6 +1,8 @@
+using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -14,11 +16,9 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Rendering;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -264,7 +264,8 @@ public class ToggleSwitch : ToggleButton,
     
     private bool _isCheckedChanged = false;
     private SwitchKnob? _switchKnob;
-
+    private CompositeDisposable? _onBindingDisposables;
+    private CompositeDisposable? _offBindingDisposables;
     static ToggleSwitch()
     {
         AffectsMeasure<ToggleSwitch>(SizeTypeProperty, IsCheckedProperty);
@@ -463,7 +464,7 @@ public class ToggleSwitch : ToggleButton,
         if (e.Property == OffContentProperty ||
             e.Property == OnContentProperty)
         {
-            SetupContent(e.OldValue, e.NewValue);
+            SetupContent(e.OldValue, e.NewValue, e.Property == OnContentProperty);
         }
         else if (e.Property == IsCheckedProperty)
         {
@@ -514,19 +515,35 @@ public class ToggleSwitch : ToggleButton,
         return grooveRect.Contains(point);
     }
 
-    private void SetupContent(object? oldContent, object? newContent)
+    private void SetupContent(object? oldContent, object? newContent, bool isOnContent)
     {
-        if (oldContent is Icon oldIcon)
+        if (oldContent != null)
         {
-            oldIcon.ClearValue(WidthProperty);
-            oldIcon.ClearValue(HeightProperty);
-            oldIcon.ClearValue(Icon.NormalFilledBrushProperty);
+            if (isOnContent)
+            {
+                _onBindingDisposables?.Dispose();
+                _onBindingDisposables = null;
+            }
+            else
+            {
+                _offBindingDisposables?.Dispose();
+                _offBindingDisposables = null;
+            }
         }
         if (newContent is Icon newIcon)
         {
-            newIcon[!WidthProperty]  = this[!IconSizeProperty];
-            newIcon[!HeightProperty] = this[!IconSizeProperty];
-            newIcon[!Icon.NormalFilledBrushProperty] = this[!ForegroundProperty];
+            var disposables = new CompositeDisposable(3);
+            disposables.Add(BindUtils.RelayBind(this, IconSizeProperty, newIcon, Icon.WidthProperty));
+            disposables.Add(BindUtils.RelayBind(this, IconSizeProperty, newIcon, Icon.HeightProperty));
+            disposables.Add(BindUtils.RelayBind(this, ForegroundProperty, newIcon, Icon.NormalFilledBrushProperty));
+            if (isOnContent)
+            {
+                _onBindingDisposables = disposables;
+            }
+            else
+            {
+                _offBindingDisposables = disposables;
+            }
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -16,45 +17,47 @@ internal class RangeDatePickerFlyout : DatePickerFlyout
     }
     
     internal FlyoutPresenter? _flyoutPresenter;
-    
+    private CompositeDisposable? _flyoutPresenterBindingDisposables;
+    private CompositeDisposable? _presenterBindingDisposables;
     protected override Control CreatePresenter()
     {
         _flyoutPresenter = new FlyoutPresenter();
-        ConfigureDatePickerPresenter();
-        BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _flyoutPresenter, IsShowArrowProperty);
+        _flyoutPresenterBindingDisposables?.Dispose();
+        _flyoutPresenterBindingDisposables = new CompositeDisposable(1);
+        ConfigureDatePickerPresenter(_flyoutPresenter);
+        _flyoutPresenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _flyoutPresenter, IsShowArrowProperty));
         CalculateShowArrowEffective();
         SetupArrowPosition(Popup, _flyoutPresenter);
         return _flyoutPresenter;
     }
     
-    private void ConfigureDatePickerPresenter()
+    private void ConfigureDatePickerPresenter(FlyoutPresenter flyoutPresenter)
     {
-        if (_flyoutPresenter != null)
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new CompositeDisposable(7);
+        DatePickerPresenter? presenter;
+        if (IsShowTime)
         {
-            DatePickerPresenter? presenter;
-            if (IsShowTime)
+            presenter = new TimedRangeDatePickerPresenter()
             {
-                presenter = new TimedRangeDatePickerPresenter()
-                {
-                    IsShowTime = true
-                };
-            }
-            else
-            {
-                presenter = new DualMonthRangeDatePickerPresenter();
-            }
-        
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, RangeDatePickerPresenter.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, RangeDatePickerPresenter.SelectedDateTimeProperty);
-            BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, RangeDatePickerPresenter.IsNeedConfirmProperty);
-            BindUtils.RelayBind(this, IsShowNowProperty, presenter, RangeDatePickerPresenter.IsShowNowProperty);
-            BindUtils.RelayBind(this, IsShowTimeProperty, presenter, RangeDatePickerPresenter.IsShowTimeProperty);
-            BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, RangeDatePickerPresenter.ClockIdentifierProperty);
-            BindUtils.RelayBind(this, SecondarySelectedDateTimeProperty, presenter, RangeDatePickerPresenter.SecondarySelectedDateTimeProperty);
-
-            _flyoutPresenter.Content = presenter;
-            DatePickerPresenter      = presenter;
+                IsShowTime = true
+            };
         }
+        else
+        {
+            presenter = new DualMonthRangeDatePickerPresenter();
+        }
+        
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, RangeDatePickerPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, RangeDatePickerPresenter.SelectedDateTimeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, RangeDatePickerPresenter.IsNeedConfirmProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, presenter, RangeDatePickerPresenter.IsShowNowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowTimeProperty, presenter, RangeDatePickerPresenter.IsShowTimeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, RangeDatePickerPresenter.ClockIdentifierProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, SecondarySelectedDateTimeProperty, presenter, RangeDatePickerPresenter.SecondarySelectedDateTimeProperty));
+
+        flyoutPresenter.Content = presenter;
+        DatePickerPresenter      = presenter;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
@@ -62,7 +65,10 @@ internal class RangeDatePickerFlyout : DatePickerFlyout
         base.OnPropertyChanged(e);
         if (e.Property == IsShowTimeProperty)
         {
-            ConfigureDatePickerPresenter();
+            if (_flyoutPresenter != null)
+            {
+                ConfigureDatePickerPresenter(_flyoutPresenter);
+            }
         }
     }
 }

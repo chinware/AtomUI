@@ -1,4 +1,5 @@
-﻿using AtomUI.Data;
+﻿using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -74,6 +75,7 @@ internal class LoadingMask : AvaloniaObject, IDisposable
     private Control? _attachTarget;
     private LoadingIndicatorAdorner? _loadingIndicatorAdorner;
     private AdornerLayer? _adornerLayer;
+    private CompositeDisposable? _indicatorBindingDisposables;
 
     public LoadingMask(Control? attachTarget = null)
     {
@@ -140,12 +142,14 @@ internal class LoadingMask : AvaloniaObject, IDisposable
     private void HandleLoadingIndicatorCreated(object? sender, LoadingIndicatorCreatedEventArgs args)
     {
         var indicator = args.LoadingIndicator;
-        BindUtils.RelayBind(this, SizeTypeProperty, indicator, SizeTypeProperty);
-        BindUtils.RelayBind(this, LoadingMsgProperty, indicator, LoadingMsgProperty);
-        BindUtils.RelayBind(this, IsShowLoadingMsgProperty, indicator, IsShowLoadingMsgProperty);
-        BindUtils.RelayBind(this, CustomIndicatorIconProperty, indicator, CustomIndicatorIconProperty);
-        BindUtils.RelayBind(this, MotionDurationProperty, indicator, MotionDurationProperty);
-        BindUtils.RelayBind(this, MotionEasingCurveProperty, indicator, MotionEasingCurveProperty);
+        _indicatorBindingDisposables?.Dispose();
+        _indicatorBindingDisposables = new CompositeDisposable(6);
+        _indicatorBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, indicator, SizeTypeProperty));
+        _indicatorBindingDisposables.Add(BindUtils.RelayBind(this, LoadingMsgProperty, indicator, LoadingMsgProperty));
+        _indicatorBindingDisposables.Add(BindUtils.RelayBind(this, IsShowLoadingMsgProperty, indicator, IsShowLoadingMsgProperty));
+        _indicatorBindingDisposables.Add(BindUtils.RelayBind(this, CustomIndicatorIconProperty, indicator, CustomIndicatorIconProperty));
+        _indicatorBindingDisposables.Add(BindUtils.RelayBind(this, MotionDurationProperty, indicator, MotionDurationProperty));
+        _indicatorBindingDisposables.Add(BindUtils.RelayBind(this, MotionEasingCurveProperty, indicator, MotionEasingCurveProperty));
     }
 
     public void Hide()

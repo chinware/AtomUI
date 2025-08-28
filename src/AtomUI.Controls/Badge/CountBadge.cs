@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
@@ -121,6 +122,7 @@ public class CountBadge : Control,
 
     private CountBadgeAdorner? _badgeAdorner;
     private AdornerLayer? _adornerLayer;
+    private CompositeDisposable? _adornerBindingDisposables;
 
     static CountBadge()
     {
@@ -217,12 +219,14 @@ public class CountBadge : Control,
     {
         if (_badgeAdorner is not null)
         {
-            BindUtils.RelayBind(this, OffsetProperty, _badgeAdorner, CountBadgeAdorner.OffsetProperty);
-            BindUtils.RelayBind(this, SizeProperty, _badgeAdorner, CountBadgeAdorner.SizeProperty);
-            BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty);
-            BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, _badgeAdorner,
-                CountBadgeAdorner.IsMotionEnabledProperty);
+            _adornerBindingDisposables?.Dispose();
+            _adornerBindingDisposables = new CompositeDisposable(5);
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, OffsetProperty, _badgeAdorner, CountBadgeAdorner.OffsetProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, SizeProperty, _badgeAdorner, CountBadgeAdorner.SizeProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, OverflowCountProperty, _badgeAdorner, CountBadgeAdorner.OverflowCountProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, CountProperty, _badgeAdorner, CountBadgeAdorner.CountProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _badgeAdorner,
+                CountBadgeAdorner.IsMotionEnabledProperty));
         }
     }
 

@@ -1,4 +1,6 @@
+using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -121,6 +123,7 @@ public class OptionButtonGroup : SelectingItemsControl,
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper = new();
+    private readonly Dictionary<OptionButton, CompositeDisposable> _itemsBindingDisposables = new();
 
     static OptionButtonGroup()
     {
@@ -138,9 +141,31 @@ public class OptionButtonGroup : SelectingItemsControl,
     public OptionButtonGroup()
     {
         this.RegisterResources();
+        Items.CollectionChanged += HandleCollectionChanged;
         if (this is IChildIndexProvider childIndexProvider)
         {
             childIndexProvider.ChildIndexChanged += (sender, args) => { UpdateOptionButtonsPosition(); };
+        }
+    }
+    
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is OptionButton optionButton)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(optionButton, out var disposable))
+                        {
+                            disposable.Dispose();
+                            _itemsBindingDisposables.Remove(optionButton);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -164,12 +189,18 @@ public class OptionButtonGroup : SelectingItemsControl,
         base.PrepareContainerForItemOverride(element, item, index);
         if (item is OptionButton optionButton)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, optionButton, OptionButton.SizeTypeProperty);
-            BindUtils.RelayBind(this, ButtonStyleProperty, optionButton, OptionButton.ButtonStyleProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, optionButton, OptionButton.IsMotionEnabledProperty);
-            BindUtils.RelayBind(this, IsWaveSpiritEnabledProperty, optionButton,
-                OptionButton.IsWaveSpiritEnabledProperty);
-
+            var disposables = new CompositeDisposable(4);
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, optionButton, OptionButton.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, ButtonStyleProperty, optionButton, OptionButton.ButtonStyleProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, optionButton, OptionButton.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsWaveSpiritEnabledProperty, optionButton,
+                OptionButton.IsWaveSpiritEnabledProperty));
+            if (_itemsBindingDisposables.TryGetValue(optionButton, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(optionButton);
+            }
+            _itemsBindingDisposables.Add(optionButton, disposables);
             optionButton.IsCheckedChanged += HandleOptionButtonChecked;
         }
     }

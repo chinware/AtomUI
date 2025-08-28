@@ -34,16 +34,10 @@ public class Flyout : PopupFlyoutBase
     /// </summary>
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         AvaloniaProperty.Register<Flyout, bool>(nameof(IsPointAtCenter));
-
-    /// <summary>
-    /// Defines the <see cref="Content" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<object> ContentProperty =
         AvaloniaProperty.Register<Flyout, object>(nameof(Content));
-
-    /// <summary>
-    /// Defines the <see cref="FlyoutPresenterTheme" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<ControlTheme?> FlyoutPresenterThemeProperty =
         AvaloniaProperty.Register<Flyout, ControlTheme?>(nameof(FlyoutPresenterTheme));
 
@@ -58,20 +52,13 @@ public class Flyout : PopupFlyoutBase
         get => GetValue(IsPointAtCenterProperty);
         set => SetValue(IsPointAtCenterProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the <see cref="ControlTheme" /> that is applied to the container element generated for the flyout
-    /// presenter.
-    /// </summary>
+    
     public ControlTheme? FlyoutPresenterTheme
     {
         get => GetValue(FlyoutPresenterThemeProperty);
         set => SetValue(FlyoutPresenterThemeProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the content to display in this flyout
-    /// </summary>
+    
     [Content]
     public object Content
     {
@@ -104,10 +91,9 @@ public class Flyout : PopupFlyoutBase
     #endregion
 
     private Classes? _classes;
-
-    /// <summary>
-    /// Gets the Classes collection to apply to the FlyoutPresenter this Flyout is hosting
-    /// </summary>
+    private CompositeDisposable? _presenterBindingDisposables;
+    private CompositeDisposable? _popupBindingDisposables;
+    
     public Classes FlyoutPresenterClasses => _classes ??= new Classes();
 
     protected CompositeDisposable? CompositeDisposable;
@@ -150,12 +136,12 @@ public class Flyout : PopupFlyoutBase
 
     protected override Control CreatePresenter()
     {
-        var presenter = new FlyoutPresenter
-        {
-            [!FlyoutPresenter.ContentProperty]         = this[!ContentProperty],
-            [!FlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty],
-            [!FlyoutPresenter.IsShowArrowProperty]     = this[!IsShowArrowEffectiveProperty],
-        };
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new CompositeDisposable(3);
+        var presenter = new FlyoutPresenter();
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ContentProperty, presenter, FlyoutPresenter.ContentProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, FlyoutPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, FlyoutPresenter.IsShowArrowProperty));
         CalculateShowArrowEffective();
         SetupArrowPosition(Popup, presenter);
         return presenter;
@@ -164,11 +150,13 @@ public class Flyout : PopupFlyoutBase
     protected internal override void NotifyPopupCreated(Popup popup)
     {
         base.NotifyPopupCreated(popup);
-        BindUtils.RelayBind(this, PlacementProperty, popup, Popup.PlacementProperty);
-        BindUtils.RelayBind(this, PlacementAnchorProperty, popup, Popup.PlacementAnchorProperty);
-        BindUtils.RelayBind(this, PlacementGravityProperty, popup, Popup.PlacementGravityProperty);
-        BindUtils.RelayBind(this, MaskShadowsProperty, popup, Popup.MaskShadowsProperty);
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty);
+        _popupBindingDisposables?.Dispose();
+        _popupBindingDisposables = new CompositeDisposable(5);
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, popup, Popup.PlacementProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, popup, Popup.PlacementAnchorProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, popup, Popup.PlacementGravityProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, MaskShadowsProperty, popup, Popup.MaskShadowsProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty));
         SetupArrowPosition(popup);
     }
 

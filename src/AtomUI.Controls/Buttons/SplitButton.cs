@@ -286,8 +286,9 @@ public class SplitButton : ContentControl,
     private bool _isFlyoutOpen;
     private bool _isKeyboardPressed;
     private readonly FlyoutStateHelper _flyoutStateHelper;
-
-    private IDisposable? _flyoutPropertyChangedDisposable;
+    
+    private CompositeDisposable? _flyoutBindingDisposables;
+    private CompositeDisposable? _flyoutHelperBindingDisposables;
 
     static SplitButton()
     {
@@ -373,10 +374,22 @@ public class SplitButton : ContentControl,
                 menuFlyout.IsDetectMouseClickEnabled = false;
                 menuFlyout.ClickHideFlyoutPredicate  = ClickHideFlyoutPredicate;
             }
+            
+            _flyoutBindingDisposables?.Dispose();
+            _flyoutBindingDisposables = new CompositeDisposable(9);
+            
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout));
 
-            _flyoutPropertyChangedDisposable = flyout.GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
-                                                         .PlacementProperty)
-                                                     .Subscribe(HandleFlyoutPlacementPropertyChanged);
+            _flyoutBindingDisposables.Add(flyout.GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
+                                                    .PlacementProperty)
+                                                .Subscribe(HandleFlyoutPlacementPropertyChanged));
         }
     }
 
@@ -396,8 +409,8 @@ public class SplitButton : ContentControl,
                 menuFlyout.ClickHideFlyoutPredicate = null;
             }
 
-            _flyoutPropertyChangedDisposable?.Dispose();
-            _flyoutPropertyChangedDisposable = null;
+            _flyoutBindingDisposables?.Dispose();
+            _flyoutBindingDisposables = null;
         }
     }
 
@@ -412,24 +425,22 @@ public class SplitButton : ContentControl,
         }
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _flyoutStateHelper.NotifyDetachedFromVisualTree();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         _flyoutStateHelper.NotifyAttachedToVisualTree();
         UpdatePseudoClasses();
-        SetupEffectiveButtonType();
-
-        SetupDefaultFlyoutButtonIcon();
-        SetupFlyoutProperties();
         RegisterFlyoutEvents(Flyout);
+        SetupDefaultFlyoutButtonIcon();
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _flyoutStateHelper.NotifyDetachedFromVisualTree();
+        UnregisterFlyoutEvents(Flyout);
+    }
+    
     private void SetupDefaultFlyoutButtonIcon()
     {
         if (FlyoutButtonIcon == null)
@@ -444,7 +455,6 @@ public class SplitButton : ContentControl,
         base.OnApplyTemplate(e);
 
         UnregisterEvents();
-        UnregisterFlyoutEvents(Flyout);
 
         _primaryButton                  = e.NameScope.Find<Button>(SplitButtonThemeConstants.PrimaryButtonPart);
         _secondaryButton                = e.NameScope.Find<Button>(SplitButtonThemeConstants.SecondaryButtonPart);
@@ -453,21 +463,6 @@ public class SplitButton : ContentControl,
         if (_primaryButton != null)
         {
             _primaryButton.Click += HandlePrimaryButtonClick;
-        }
-    }
-
-    private void SetupFlyoutProperties()
-    {
-        if (Flyout is not null)
-        {
-            BindUtils.RelayBind(this, PlacementProperty, Flyout);
-            BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout);
-            BindUtils.RelayBind(this, PlacementGravityProperty, Flyout);
-            BindUtils.RelayBind(this, IsShowArrowProperty, Flyout);
-            BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout);
-            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
-            BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout);
         }
     }
 
@@ -484,12 +479,14 @@ public class SplitButton : ContentControl,
             CanExecuteChanged(this, EventArgs.Empty);
         }
 
-        BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty);
-        BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
-            FlyoutStateHelper.MouseEnterDelayProperty);
-        BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
-            FlyoutStateHelper.MouseLeaveDelayProperty);
-        BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty);
+        _flyoutHelperBindingDisposables?.Dispose();
+        _flyoutHelperBindingDisposables = new CompositeDisposable();
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty));
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
+            FlyoutStateHelper.MouseEnterDelayProperty));
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
+            FlyoutStateHelper.MouseLeaveDelayProperty));
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty));
         
         this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
@@ -509,6 +506,7 @@ public class SplitButton : ContentControl,
         {
             Command.CanExecuteChanged -= CanExecuteChanged;
         }
+        _flyoutHelperBindingDisposables?.Dispose();
         this.DisposeTokenBindings();
     }
     
@@ -552,7 +550,6 @@ public class SplitButton : ContentControl,
 
             // Must unregister events here while a reference to the old flyout still exists
             UnregisterFlyoutEvents(oldFlyout);
-
             RegisterFlyoutEvents(newFlyout);
             UpdatePseudoClasses();
         }

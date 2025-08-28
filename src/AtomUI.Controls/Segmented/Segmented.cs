@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -103,6 +105,8 @@ public class Segmented : SelectingItemsControl,
     string IControlSharedTokenResourcesHost.TokenId => SegmentedToken.ID;
     
     #endregion
+    
+    private readonly Dictionary<SegmentedItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     static Segmented()
     {
@@ -119,10 +123,32 @@ public class Segmented : SelectingItemsControl,
     public Segmented()
     {
         this.RegisterResources();
-        SelectionChanged += HandleSelectionChanged;
-        SelectionMode    =  SelectionMode.Single;
+        SelectionChanged        += HandleSelectionChanged;
+        Items.CollectionChanged += HandleCollectionChanged;
+        SelectionMode           =  SelectionMode.Single;
     }
 
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is SegmentedItem segmentedItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(segmentedItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                            _itemsBindingDisposables.Remove(segmentedItem);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -195,8 +221,15 @@ public class Segmented : SelectingItemsControl,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is SegmentedItem segmentedItem)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem, SegmentedItem.SizeTypeProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, segmentedItem, SegmentedItem.IsMotionEnabledProperty);
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem, SegmentedItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, segmentedItem, SegmentedItem.IsMotionEnabledProperty));
+            if (_itemsBindingDisposables.TryGetValue(segmentedItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(segmentedItem);
+            }
+            _itemsBindingDisposables.Add(segmentedItem, disposables);
         }
     }
 

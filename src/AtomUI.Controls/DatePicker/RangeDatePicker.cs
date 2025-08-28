@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.TimePickerLang;
@@ -117,6 +118,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
     
     private RangeDatePickerPresenter? _pickerPresenter;
     private bool? _isNeedConfirmedBackup;
+    private CompositeDisposable? _flyoutBindingDisposables;
 
     public RangeDatePicker()
     {
@@ -127,14 +129,15 @@ public class RangeDatePicker : RangeInfoPickerInput,
     {
         var flyout = new RangeDatePickerFlyout();
         flyout.IsDetectMouseClickEnabled = false;
-        BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, RangeDatePickerFlyout.IsMotionEnabledProperty);
-        
-        BindUtils.RelayBind(this, RangeStartSelectedDateProperty, flyout, RangeDatePickerFlyout.SelectedDateTimeProperty);
-        BindUtils.RelayBind(this, RangeEndSelectedDateProperty, flyout, RangeDatePickerFlyout.SecondarySelectedDateTimeProperty);
-        BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, RangeDatePickerFlyout.ClockIdentifierProperty);
-        BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, RangeDatePickerFlyout.IsNeedConfirmProperty);
-        BindUtils.RelayBind(this, IsShowNowProperty, flyout, RangeDatePickerFlyout.IsShowNowProperty);
-        BindUtils.RelayBind(this, IsShowTimeProperty, flyout, RangeDatePickerFlyout.IsShowTimeProperty);
+        _flyoutBindingDisposables?.Dispose();
+        _flyoutBindingDisposables = new CompositeDisposable(7);
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, RangeDatePickerFlyout.IsMotionEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, RangeStartSelectedDateProperty, flyout, RangeDatePickerFlyout.SelectedDateTimeProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, RangeEndSelectedDateProperty, flyout, RangeDatePickerFlyout.SecondarySelectedDateTimeProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, RangeDatePickerFlyout.ClockIdentifierProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, RangeDatePickerFlyout.IsNeedConfirmProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, flyout, RangeDatePickerFlyout.IsShowNowProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowTimeProperty, flyout, RangeDatePickerFlyout.IsShowTimeProperty));
         
         return flyout;
     }

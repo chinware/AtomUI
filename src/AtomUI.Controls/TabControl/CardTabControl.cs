@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Themes;
+﻿using System.Diagnostics;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -106,9 +107,10 @@ public class CardTabControl : BaseTabControl
         if (container is TabItem tabItem)
         {
             tabItem.Shape = TabSharp.Card;
-            BindUtils.RelayBind(this, CardBorderRadiusProperty, tabItem, TabItem.CornerRadiusProperty);
-            BindUtils.RelayBind(this, CardBorderThicknessProperty, tabItem, TabItem.BorderThicknessProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, tabItem, TabItem.IsMotionEnabledProperty);
+            Debug.Assert(ItemsBindingDisposables.ContainsKey(tabItem));
+            var disposables = ItemsBindingDisposables[tabItem];
+            disposables.Add(BindUtils.RelayBind(this, CardBorderRadiusProperty, tabItem, TabItem.CornerRadiusProperty));
+            disposables.Add(BindUtils.RelayBind(this, CardBorderThicknessProperty, tabItem, TabItem.BorderThicknessProperty));
         }
     }
 

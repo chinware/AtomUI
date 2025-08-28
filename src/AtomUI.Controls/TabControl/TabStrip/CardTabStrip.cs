@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Themes;
+﻿using System.Diagnostics;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -106,8 +107,10 @@ public class CardTabStrip : BaseTabStrip
         if (container is TabStripItem tabStripItem)
         {
             tabStripItem.Shape = TabSharp.Card;
-            BindUtils.RelayBind(this, CardBorderRadiusProperty, tabStripItem, CornerRadiusProperty);
-            BindUtils.RelayBind(this, CardBorderThicknessProperty, tabStripItem, BorderThicknessProperty);
+            Debug.Assert(ItemsBindingDisposables.ContainsKey(tabStripItem));
+            var disposables = ItemsBindingDisposables[tabStripItem];
+            disposables.Add(BindUtils.RelayBind(this, CardBorderRadiusProperty, tabStripItem, CornerRadiusProperty));
+            disposables.Add(BindUtils.RelayBind(this, CardBorderThicknessProperty, tabStripItem, BorderThicknessProperty));
         }
     }
 

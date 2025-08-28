@@ -1,4 +1,6 @@
-﻿using AtomUI.Animations;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -66,13 +68,40 @@ public class MenuItem : AvaloniaMenuItem
     private RadioButton? _radioButton;
     private CheckBox? _checkBox;
     private Popup? _popup;
+    private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
     
     static MenuItem()
     {
         AffectsRender<MenuItem>(BackgroundProperty);
         AffectsMeasure<MenuItem>(IconProperty);
     }
-    
+
+    public MenuItem()
+    {
+        Items.CollectionChanged  += HandleItemsCollectionChanged;
+    }
+        
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is MenuItem menuItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(menuItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                        }
+                        _itemsBindingDisposables.Remove(menuItem);
+                    }
+                }
+            }
+        }
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -118,8 +147,15 @@ public class MenuItem : AvaloniaMenuItem
     {
         if (container is MenuItem menuItem)
         {
-            BindUtils.RelayBind(this, SizeTypeProperty, menuItem, SizeTypeProperty);
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, IsMotionEnabledProperty);
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
+            if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(menuItem);
+            }
+            _itemsBindingDisposables.Add(menuItem, disposables);
         }
 
         base.PrepareContainerForItemOverride(container, item, index);

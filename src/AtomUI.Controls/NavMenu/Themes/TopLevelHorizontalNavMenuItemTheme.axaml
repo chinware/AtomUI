@@ -47,7 +47,7 @@
                                 IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                         <Border Name="{x:Static atom:TopLevelHorizontalNavMenuItemThemeConstants.PopupFramePart}"
                                 MinWidth="{TemplateBinding EffectivePopupMinWidth}">
-                            <atom:MenuScrollViewer>
+                            <atom:MenuScrollViewer IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                 <ItemsPresenter
                                     Name="{x:Static atom:TopLevelHorizontalNavMenuItemThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"

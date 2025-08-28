@@ -15,7 +15,6 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 

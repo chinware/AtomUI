@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Primitives;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.IconPkg;
@@ -140,6 +141,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     
     private ButtonSpinnerDecoratedBox? _decoratedBox;
     private ButtonSpinnerInnerBox? _buttonSpinnerInnerBox;
+    private CompositeDisposable? _addOnBindingDisposables;
 
     public ButtonSpinner()
     {
@@ -186,13 +188,15 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
 
     private void ConfigureAddOns()
     {
+        _addOnBindingDisposables?.Dispose();
+        _addOnBindingDisposables = new CompositeDisposable();
         if (LeftAddOn is Icon leftAddOnIcon)
         {
             var iconPresenter = new SizeTypeAwareIconPresenter()
             {
                 Icon = leftAddOnIcon
             };
-            BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty);
+            _addOnBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty));
             LeftAddOn = iconPresenter;
         }
         if (InnerLeftContent is Icon innerLeftContent)
@@ -201,7 +205,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
             {
                 Icon = innerLeftContent
             };
-            BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty);
+            _addOnBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty));
             InnerLeftContent = iconPresenter;
         }
         if (RightAddOn is Icon rightAddOnIcon)
@@ -210,7 +214,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
             {
                 Icon = rightAddOnIcon
             };
-            BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty);
+            _addOnBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty));
             RightAddOn = iconPresenter;
         }
         if (InnerRightContent is Icon innerRightContent)
@@ -219,7 +223,7 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
             {
                 Icon = innerRightContent
             };
-            BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty);
+            _addOnBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty));
             InnerRightContent = iconPresenter;
         }
     }

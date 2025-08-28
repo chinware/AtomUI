@@ -225,6 +225,7 @@ public class Drawer : Control,
     {
         base.OnAttachedToVisualTree(e);
         var parentDrawer = FindParentDrawer();
+        _relayBindingDisposables?.Dispose();
         _relayBindingDisposables = new CompositeDisposable();
         if (parentDrawer != null)
         {
@@ -363,6 +364,7 @@ public class Drawer : Control,
         {
             Drawer = new WeakReference<Drawer>(this)
         };
+        _containerDisposables?.Dispose();
         _containerDisposables = new CompositeDisposable();
         _containerDisposables.Add(BindUtils.RelayBind(this, ContentProperty, _container, DrawerContainer.ContentProperty));
         _containerDisposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, _container, DrawerContainer.ContentTemplateProperty));

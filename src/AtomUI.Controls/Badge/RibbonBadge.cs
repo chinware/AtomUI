@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Utils;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
@@ -98,6 +99,7 @@ public class RibbonBadge : Control,
     
     private RibbonBadgeAdorner? _ribbonBadgeAdorner;
     private AdornerLayer? _adornerLayer;
+    private CompositeDisposable? _adornerBindingDisposables;
 
     public RibbonBadge()
     {
@@ -148,9 +150,11 @@ public class RibbonBadge : Control,
     {
         if (_ribbonBadgeAdorner is not null)
         {
-            BindUtils.RelayBind(this, TextProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.TextProperty);
-            BindUtils.RelayBind(this, OffsetProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.OffsetProperty);
-            BindUtils.RelayBind(this, PlacementProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.PlacementProperty);
+            _adornerBindingDisposables?.Dispose();
+            _adornerBindingDisposables = new CompositeDisposable(3);
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, TextProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.TextProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, OffsetProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.OffsetProperty));
+            _adornerBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, _ribbonBadgeAdorner, RibbonBadgeAdorner.PlacementProperty));
         }
     }
 

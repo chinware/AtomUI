@@ -790,6 +790,6 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <summary>
     /// When overridden in a derived class, called when a cell in the column exits editing mode.
     /// </summary>
-    protected virtual void EndCellEdit()
+    protected virtual void EndCellEdit(Control editingElement)
     { }
 }
