@@ -45,7 +45,7 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
         IncreaseButtonProperty.Changed.AddClassHandler<ColorPickerSliderTrack>((x, e) => x.ButtonChanged(e));
         DecreaseButtonProperty.Changed.AddClassHandler<ColorPickerSliderTrack>((x, e) => x.ButtonChanged(e));
     }
-    
+
     protected override Size MeasureOverride(Size availableSize)
     {
         Size desiredSize = new Size(0.0, 0.0);
@@ -64,10 +64,9 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
     protected override Size ArrangeOverride(Size arrangeSize)
     {
         double decreaseButtonLength;
-        double thumbLength;
         double increaseButtonLength;
-    
-        ComputeSliderLengths(arrangeSize, Thumb, out decreaseButtonLength, out thumbLength, out increaseButtonLength);
+        double thumbLength = Thumb?.DesiredSize.Width ?? 0;
+        ComputeSliderLengths(arrangeSize, out decreaseButtonLength, out increaseButtonLength);
     
         // Layout the pieces of track
         var offset    = new Point();
@@ -81,12 +80,12 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
     
         DecreaseButton?.Arrange(new Rect(offset, pieceSize));
     
-        offset    = offset.WithX(decreaseButtonLength + thumbLength);
+        offset    = offset.WithX(decreaseButtonLength);
         pieceSize = pieceSize.WithWidth(increaseButtonLength);
     
         IncreaseButton?.Arrange(new Rect(offset, pieceSize));
     
-        offset    = offset.WithX(decreaseButtonLength);
+        offset    = offset.WithX(decreaseButtonLength - thumbLength / 2);
         pieceSize = pieceSize.WithWidth(thumbLength);
     
         if (Thumb != null)
@@ -97,7 +96,7 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
             Thumb.AdjustDrag(adjust);
         }
     
-        ThumbCenterOffset = offset.X + (thumbLength * 0.5);
+        ThumbCenterOffset = offset.X;
         LastDrag          = default;
         return arrangeSize;
     }

@@ -62,7 +62,7 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
     protected double ThumbCenterOffset { get; set; }
     protected double Density { get; set; }
     
-    private double ThumbValue => Value + (DeferredThumbDrag == null ? 0 : ValueFromDistance(DeferredThumbDrag.Vector.X, DeferredThumbDrag.Vector.Y));
+    protected double ThumbValue => Value + (DeferredThumbDrag == null ? 0 : ValueFromDistance(DeferredThumbDrag.Vector.X, DeferredThumbDrag.Vector.Y));
     protected VectorEventArgs? DeferredThumbDrag;
     protected Vector LastDrag;
     
@@ -140,7 +140,7 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
         LastDrag = (Value - oldValue) * factor;
     }
     
-    protected void ComputeSliderLengths(Size arrangeSize, Thumb? thumb, out double decreaseButtonLength, out double thumbLength, out double increaseButtonLength)
+    protected void ComputeSliderLengths(Size arrangeSize, out double decreaseButtonLength, out double increaseButtonLength)
     {
         double min    = Minimum;
         double range  = Math.Max(0.0, Maximum - min);
@@ -148,11 +148,7 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
 
         // Compute thumb size
         double trackLength = arrangeSize.Width;
-        thumbLength = thumb == null ? 0 : thumb.DesiredSize.Width;
-
-        CoerceLength(ref thumbLength, trackLength);
-
-        double remainingTrackLength = trackLength - thumbLength;
+        double remainingTrackLength = trackLength;
 
         decreaseButtonLength = remainingTrackLength * offset / range;
         CoerceLength(ref decreaseButtonLength, remainingTrackLength);

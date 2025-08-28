@@ -32,4 +32,5 @@ internal static class ColorSliderThemeConstants
 internal static class ColorSliderThumbThemeConstants
 {
     public const string FramePart = "PART_Frame";
+    public const string InnerEllipsePart = "PART_InnerEllipse";
 }

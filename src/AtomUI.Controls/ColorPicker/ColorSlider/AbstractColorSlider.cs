@@ -12,6 +12,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Utilities;
+using Avalonia.VisualTree;
 using Thumb = AtomUI.Controls.Primitives.Thumb;
 
 namespace AtomUI.Controls;
@@ -127,20 +128,51 @@ internal class AbstractColorSlider : RangeBase
 
     #region 内部属性定义
 
-    public static readonly DirectProperty<AbstractColorSlider, double> ThumbSizeProperty =
+    internal static readonly DirectProperty<AbstractColorSlider, double> ThumbSizeProperty =
         AvaloniaProperty.RegisterDirect<AbstractColorSlider, double>(
             nameof(ThumbSize),
             o => o.ThumbSize,
             (o, v) => o.ThumbSize = v);
     
+    internal static readonly DirectProperty<AbstractColorSlider, IBrush?> TransparentBgBrushProperty =
+        AvaloniaProperty.RegisterDirect<AbstractColorSlider, IBrush?>(
+            nameof(TransparentBgBrush),
+            o => o.TransparentBgBrush,
+            (o, v) => o.TransparentBgBrush = v);
+    
+    internal static readonly StyledProperty<IBrush?> TransparentBgIntervalColorProperty =
+        AvaloniaProperty.Register<AbstractColorSlider, IBrush?>(nameof(TransparentBgIntervalColor));
+    
+    internal static readonly StyledProperty<double> TransparentBgSizeProperty =
+        AvaloniaProperty.Register<AbstractColorSlider, double>(nameof(TransparentBgSize), 4.0);
+    
     private double _thumbSize = 0.0d;
 
-    public double ThumbSize
+    internal double ThumbSize
     {
         get => _thumbSize;
         set => SetAndRaise(ThumbSizeProperty, ref _thumbSize, value);
     }
     
+    private IBrush? _transparentBgBrush;
+
+    internal IBrush? TransparentBgBrush
+    {
+        get => _transparentBgBrush;
+        set => SetAndRaise(TransparentBgBrushProperty, ref _transparentBgBrush, value);
+    }
+    
+    internal IBrush? TransparentBgIntervalColor
+    {
+        get => GetValue(TransparentBgIntervalColorProperty);
+        set => SetValue(TransparentBgIntervalColorProperty, value);
+    }
+    
+    internal double TransparentBgSize
+    {
+        get => GetValue(TransparentBgSizeProperty);
+        set => SetValue(TransparentBgSizeProperty, value);
+    }
     #endregion
     
     public event EventHandler<ColorChangedEventArgs>? ColorChanged;
@@ -675,6 +707,18 @@ internal class AbstractColorSlider : RangeBase
         {
             ConfigureCornerRadius();
         }
+        
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == TransparentBgIntervalColorProperty ||
+                change.Property == TransparentBgSizeProperty)
+            {
+                if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
+                {
+                    TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
+                }
+            }
+        }
 
         base.OnPropertyChanged(change);
     }
@@ -689,5 +733,11 @@ internal class AbstractColorSlider : RangeBase
         base.OnApplyTemplate(e);
         _pointerMovedDispose?.Dispose();
         _pointerMovedDispose = this.AddDisposableHandler(PointerMovedEvent, TrackMoved, RoutingStrategies.Tunnel);
+        
+        if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
+        {
+            TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
+        }
     }
+    
 }

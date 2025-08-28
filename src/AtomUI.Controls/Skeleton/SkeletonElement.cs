@@ -3,8 +3,7 @@ using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
-public abstract class SkeletonElement : AbstractSkeleton,
-                                        ISizeTypeAware
+public abstract class SkeletonElement : AbstractSkeleton, ISizeTypeAware
 {
     #region 公共属性定义
     

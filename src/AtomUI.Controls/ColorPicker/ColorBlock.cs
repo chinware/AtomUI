@@ -1,6 +1,7 @@
+using AtomUI.Controls.Primitives;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -13,10 +14,19 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ColorBlock>();
     
+    public static readonly StyledProperty<double> SizeProperty =
+        AvaloniaProperty.Register<ColorBlock, double>(nameof(Size), Double.NaN);
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+    
+    public double Size
+    {
+        get => GetValue(SizeProperty);
+        set => SetValue(SizeProperty, value);
     }
 
     #endregion
@@ -29,8 +39,17 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
             o => o.TransparentBgBrush,
             (o, v) => o.TransparentBgBrush = v);
     
-    public static readonly StyledProperty<IBrush?> TransparentBgIntervalColorProperty =
-        AvaloniaProperty.Register<StyledElement, IBrush?>(nameof(TransparentBgIntervalColor));
+    internal static readonly StyledProperty<IBrush?> TransparentBgIntervalColorProperty =
+        AvaloniaProperty.Register<ColorBlock, IBrush?>(nameof(TransparentBgIntervalColor));
+    
+    internal static readonly StyledProperty<double> TransparentBgSizeProperty =
+        AvaloniaProperty.Register<ColorBlock, double>(nameof(TransparentBgSize), 4.0);
+    
+    internal static readonly DirectProperty<ColorBlock, bool> IsCustomSizeProperty =
+        AvaloniaProperty.RegisterDirect<ColorBlock, bool>(
+            nameof(IsCustomSize),
+            o => o.IsCustomSize,
+            (o, v) => o.IsCustomSize = v);
     
     private IBrush? _transparentBgBrush;
 
@@ -40,11 +59,26 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         set => SetAndRaise(TransparentBgBrushProperty, ref _transparentBgBrush, value);
     }
     
-    public IBrush? TransparentBgIntervalColor
+    internal IBrush? TransparentBgIntervalColor
     {
         get => GetValue(TransparentBgIntervalColorProperty);
         set => SetValue(TransparentBgIntervalColorProperty, value);
     }
+    
+    internal double TransparentBgSize
+    {
+        get => GetValue(TransparentBgSizeProperty);
+        set => SetValue(TransparentBgSizeProperty, value);
+    }
+    
+    private bool _isCustomSize;
+
+    internal bool IsCustomSize
+    {
+        get => _isCustomSize;
+        set => SetAndRaise(IsCustomSizeProperty, ref _isCustomSize, value);
+    }
+
     #endregion
 
     static ColorBlock()
@@ -52,49 +86,12 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         AffectsRender<ColorBlock>(TransparentBgBrushProperty);
     }
 
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnSizeChanged(e);
-        var size = e.NewSize.Width / 2.0;
-        BuildTransparentBgBrush(size);
-    }
-    
-    protected void BuildTransparentBgBrush(double size)
-    {
+        base.OnApplyTemplate(e);
         if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
         {
-            var color    = solidColorBrush.Color;
-            var destRect = new Rect(0, 0, size, size);
-            TransparentBgBrush = new DrawingBrush()
-            {
-                TileMode = TileMode.Tile,
-                Stretch = Stretch.None,
-                AlignmentX = AlignmentX.Left,
-                AlignmentY = AlignmentY.Top,
-                DestinationRect  = new RelativeRect(0, 0, size, size, RelativeUnit.Absolute),
-                Drawing = new GeometryDrawing()
-                {
-                    Brush = new ConicGradientBrush()
-                    {
-                        Center = RelativePoint.Center,
-                        GradientStops = new GradientStops()
-                        {
-                            new GradientStop(color, 0.00),
-                            new GradientStop(color, 0.25),
-                            new GradientStop(Colors.Transparent, 0.25),
-                            new GradientStop(Colors.Transparent, 0.50),
-                            new GradientStop(color, 0.50),
-                            new GradientStop(color, 0.75),
-                            new GradientStop(Colors.Transparent, 0.75),
-                            new GradientStop(Colors.Transparent, 1.00),
-                        }
-                    },
-                    Geometry = new RectangleGeometry()
-                    {
-                        Rect = destRect
-                    },
-                }
-            };
+            TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
         }
     }
 
@@ -103,10 +100,30 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == TransparentBgIntervalColorProperty)
+            if (change.Property == TransparentBgIntervalColorProperty ||
+                change.Property == TransparentBgSizeProperty)
             {
-                BuildTransparentBgBrush(DesiredSize.Width / 2.0);
+                if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
+                {
+                    TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
+                }
             }
+        }
+        
+        if (change.Property == SizeProperty)
+        {
+            ConfigureSize();
+            IsCustomSize = !double.IsNaN(Size);
+        }
+    }
+    
+    private void ConfigureSize()
+    {
+        if (!double.IsNaN(Size))
+        {
+            // 不影响模板设置
+            SetValue(WidthProperty, Size, BindingPriority.Template);
+            SetValue(HeightProperty, Size, BindingPriority.Template);
         }
     }
 }

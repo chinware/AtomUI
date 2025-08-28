@@ -72,11 +72,6 @@ public class ColorPickerToken : AbstractControlDesignToken
     public double ColorPickerSliderThumbSize { get; set; }
     
     /// <summary>
-    /// ColorPicker 轨道 handle 的阴影
-    /// </summary>
-    public BoxShadows ColorPickerSliderThumbShadow { get; set; }
-    
-    /// <summary>
     /// ColorPicker 预览尺寸
     /// Preview size of ColorPicker
     /// </summary>
@@ -120,6 +115,11 @@ public class ColorPickerToken : AbstractControlDesignToken
     /// </summary>
     public Thickness SliderContainerMargin { get; set; }
     
+    /// <summary>
+    /// 透明时候颜色色块大小
+    /// </summary>
+    public double TransparentBgSize { get; set; }
+    
     public ColorPickerToken()
         : base(ID)
     {
@@ -138,7 +138,7 @@ public class ColorPickerToken : AbstractControlDesignToken
         ColorPickerSliderSize             = ColorPickerHandlerSizeSM;
         ColorPickerSliderTrackSize        = 8;
         ColorPickerSliderThumbSize        = ColorPickerHandlerSizeSM + SharedToken.LineWidth * 2;
-        ColorPickerPreviewSize            = ColorPickerSliderSize * 2 + SharedToken.UniformlyMarginSM;
+        ColorPickerPreviewSize            = ColorPickerSliderTrackSize * 2 + SharedToken.UniformlyMarginSM;
         ColorPickerInsetShadow            = new BoxShadows(new BoxShadow()
         {
             IsInset = true,
@@ -149,24 +149,6 @@ public class ColorPickerToken : AbstractControlDesignToken
             Color = SharedToken.ColorTextQuaternary
         });
 
-        ColorPickerSliderThumbShadow = new BoxShadows(new BoxShadow()
-        {
-            IsInset = true,
-            OffsetX = 0,
-            OffsetY = 0,
-            Blur    = 1,
-            Spread  = 0,
-            Color   = SharedToken.ColorTextQuaternary
-        }, [
-            new BoxShadow
-            {
-                OffsetX = 0,
-                OffsetY = 0,
-                Blur    = 0,
-                Spread  = 1,
-                Color   = SharedToken.ColorFillSecondary
-            }
-        ]);
         ColorBlockInnerShadows = new BoxShadows(new BoxShadow()
         {
             IsInset = true,
@@ -184,5 +166,6 @@ public class ColorPickerToken : AbstractControlDesignToken
         ColorPickerHandlerLightColor = SharedToken.ColorBgElevated;
         ColorPickerHandlerDarkColor  = Color.Parse("#22075e");
         SliderContainerMargin        = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
+        TransparentBgSize            = SharedToken.SizeXS;
     }
 }

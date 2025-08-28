@@ -248,12 +248,12 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ColorPickerPresetColorSize = new TokenResourceKey("ColorPicker.ColorPickerPresetColorSize");
         public static readonly TokenResourceKey ColorPickerPreviewSize = new TokenResourceKey("ColorPicker.ColorPickerPreviewSize");
         public static readonly TokenResourceKey ColorPickerSliderSize = new TokenResourceKey("ColorPicker.ColorPickerSliderSize");
-        public static readonly TokenResourceKey ColorPickerSliderThumbShadow = new TokenResourceKey("ColorPicker.ColorPickerSliderThumbShadow");
         public static readonly TokenResourceKey ColorPickerSliderThumbSize = new TokenResourceKey("ColorPicker.ColorPickerSliderThumbSize");
         public static readonly TokenResourceKey ColorPickerSliderTrackSize = new TokenResourceKey("ColorPicker.ColorPickerSliderTrackSize");
         public static readonly TokenResourceKey ColorPickerWidth = new TokenResourceKey("ColorPicker.ColorPickerWidth");
         public static readonly TokenResourceKey ColorSpectrumHeight = new TokenResourceKey("ColorPicker.ColorSpectrumHeight");
         public static readonly TokenResourceKey SliderContainerMargin = new TokenResourceKey("ColorPicker.SliderContainerMargin");
+        public static readonly TokenResourceKey TransparentBgSize = new TokenResourceKey("ColorPicker.TransparentBgSize");
         public static readonly TokenResourceKey TriggerPadding = new TokenResourceKey("ColorPicker.TriggerPadding");
         public static readonly TokenResourceKey TriggerTextMargin = new TokenResourceKey("ColorPicker.TriggerTextMargin");
     }

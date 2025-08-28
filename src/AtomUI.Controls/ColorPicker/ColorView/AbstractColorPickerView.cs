@@ -52,6 +52,11 @@ public abstract class AbstractColorPickerView : TemplatedControl,
             nameof(IsColorPaletteVisible),
             true);
     
+    public static readonly StyledProperty<bool> IsColorSpectrumSliderVisibleProperty =
+        AvaloniaProperty.Register<AbstractColorPickerView, bool>(
+            nameof(IsColorSpectrumSliderVisible),
+            true);
+    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractColorPickerView>();
     
@@ -141,6 +146,12 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     {
         get => GetValue(IsColorPaletteVisibleProperty);
         set => SetValue(IsColorPaletteVisibleProperty, value);
+    }
+    
+    public bool IsColorSpectrumSliderVisible
+    {
+        get => GetValue(IsColorSpectrumSliderVisibleProperty);
+        set => SetValue(IsColorSpectrumSliderVisibleProperty, value);
     }
     
     public int MaxHue
@@ -269,5 +280,4 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     {
         ColorChanged?.Invoke(this, e);
     }
-
 }
