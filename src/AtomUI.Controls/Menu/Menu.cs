@@ -5,8 +5,10 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -114,5 +116,54 @@ public class Menu : AvaloniaMenu,
                 }
             }
         }
+    }
+    
+    public override void Close()
+    {
+        if (!IsOpen)
+        {
+            return;
+        }
+
+        if (IsMotionEnabled)
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                for (var i = 0; i < ItemCount; i++)
+                {
+                    var container = ContainerFromIndex(i);
+                    if (container is MenuItem menuItem)
+                    {
+                        await menuItem.CloseItemAsync();
+                    }
+                }
+
+                HandleMenuClosed();
+            });
+        }
+        else
+        {
+            for (var i = 0; i < ItemCount; i++)
+            {
+                var container = ContainerFromIndex(i);
+                if (container is MenuItem menuItem)
+                {
+                    menuItem.Close();
+                }
+            }
+
+            HandleMenuClosed();
+        }
+    }
+
+    private void HandleMenuClosed()
+    {
+        IsOpen        = false;
+        SelectedIndex = -1;
+        RaiseEvent(new RoutedEventArgs()
+        {
+            RoutedEvent = ClosedEvent,
+            Source      = this
+        });
     }
 }

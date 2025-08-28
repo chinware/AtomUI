@@ -10,6 +10,8 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input.Raw;
 using Avalonia.Metadata;
 using Avalonia.Styling;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -130,21 +132,71 @@ public class MenuFlyout : Flyout
     protected internal override void NotifyPopupCreated(Popup popup)
     {
         base.NotifyPopupCreated(popup);
-        popup.IsLightDismissEnabled = false;
-        popup.ClickHidePredicate    = ClickHideFlyoutPredicate;
+        popup.IsLightDismissEnabled     = false;
+        popup.IsDetectMouseClickEnabled = true;
+        popup.ClickHidePredicate        = ClickHideFlyoutPredicate;
+        popup.CloseAction               = PopupCloseAction;
+    }
+
+    private void PopupCloseAction(Popup popup)
+    {
+        Hide();
     }
     
-    protected override void NotifyAboutToClose()
+    protected override bool HideCore(bool canCancel = true)
     {
-        if (_presenter != null)
+        if (!IsOpen)
         {
-            foreach (var childItem in _presenter.Items)
+            return false;
+        }
+
+        if (canCancel)
+        {
+            if (CancelClosing())
             {
-                if (childItem is MenuItem menuItem)
-                {
-                    menuItem.IsSubMenuOpen = false;
-                }
+                return false;
             }
         }
+
+        if (Popup.PlacementTarget?.GetVisualRoot() is null)
+        {
+            return base.HideCore(false);
+        }
+        
+        NotifyAboutToClose();
+        
+        if (_presenter != null)
+        {
+            if (IsMotionEnabled)
+            {
+                Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    foreach (var childItem in _presenter.Items)
+                    {
+                        if (childItem is MenuItem menuItem)
+                        {
+                            await menuItem.CloseItemAsync();
+                        }
+                    }
+                    IsOpen                  = false;
+                    Popup.MotionAwareClose(HandlePopupClosed);
+                });
+            }
+            else
+            {
+                foreach (var childItem in _presenter.Items)
+                {
+                    if (childItem is MenuItem menuItem)
+                    {
+                        menuItem.Close();
+                    }
+                }
+            
+                IsOpen = false;
+                Popup.MotionAwareClose(HandlePopupClosed);
+            }
+        }
+
+        return true;
     }
 }

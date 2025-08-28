@@ -132,6 +132,7 @@ public class Popup : AvaloniaPopup,
     #endregion
     
     public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHidePredicate;
+    public Action<Popup>? CloseAction;
 
     #region 内部属性定义
 
@@ -314,14 +315,28 @@ public class Popup : AvaloniaPopup,
                         {
                             if (ClickHidePredicate(popupHostProvider, pointerEventArgs))
                             {
-                                MotionAwareClose();
+                                if (CloseAction != null)
+                                {
+                                    CloseAction.Invoke(this);
+                                }
+                                else
+                                {
+                                    MotionAwareClose();
+                                }
                             }
                         }
                         else
                         {
                             if (popupHostProvider.PopupHost != pointerEventArgs.Root)
                             {
-                                MotionAwareClose();
+                                if (CloseAction != null)
+                                {
+                                    CloseAction.Invoke(this);
+                                }
+                                else
+                                {
+                                    MotionAwareClose();
+                                }
                             }
                         }
                     }

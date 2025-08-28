@@ -10,6 +10,7 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -60,6 +61,7 @@ public class ContextMenu : AvaloniaContextMenu,
         _popup.Opened             += this.CreateEventHandler("PopupOpened");
         _popup.Closed             += this.CreateEventHandler<EventArgs>("PopupClosed");
         _popup.ClickHidePredicate =  MenuPopupClosePredicate;
+        _popup.CloseAction        =  MenuPopupCloseAction;
         _popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
         _popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
         if (_popup is IPopupHostProvider popupHostProvider)
@@ -131,6 +133,11 @@ public class ContextMenu : AvaloniaContextMenu,
         return !popupRoots.Contains(args.Root);
     }
 
+    private void MenuPopupCloseAction(Popup popup)
+    {
+        Close();
+    }
+
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         if (container is MenuItem menuItem)
@@ -151,14 +158,34 @@ public class ContextMenu : AvaloniaContextMenu,
     public override void Close()
     {
         _popup?.SetIgnoreIsOpenChanged(true);
-        base.Close();
-        if (_popup != null)
+        if (!IsOpen || _popup == null || !_popup.IsVisible)
         {
-            foreach (var childItem in Items)
+            return;
+        }
+        
+        if (IsMotionEnabled)
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                if (childItem is MenuItem menuItem)
+                for (var i = 0; i < ItemCount; i++)
                 {
-                    menuItem.IsSubMenuOpen = false;
+                    var container = ContainerFromIndex(i);
+                    if (container is MenuItem menuItem)
+                    {
+                        await menuItem.CloseItemAsync();
+                    }
+                }
+                _popup.IsMotionAwareOpen = false;
+            });
+        }
+        else
+        {
+            for (var i = 0; i < ItemCount; i++)
+            {
+                var container = ContainerFromIndex(i);
+                if (container is MenuItem menuItem)
+                {
+                    menuItem.Close();
                 }
             }
             _popup.IsMotionAwareOpen = false;

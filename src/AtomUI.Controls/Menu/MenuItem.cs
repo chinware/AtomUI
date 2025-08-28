@@ -300,4 +300,23 @@ public class MenuItem : AvaloniaMenuItem
             }
         }
     }
+    
+    public async Task CloseItemAsync()
+    {
+        for (var i = 0; i < ItemCount; i++)
+        {
+            var container = ContainerFromIndex(i);
+            if (container is MenuItem childMenuItem)
+            {
+                await childMenuItem.CloseItemAsync();
+            }
+        }
+
+        if (_popup != null && _popup.IsMotionAwareOpen)
+        {
+            await _popup.MotionAwareCloseAsync();
+        }
+
+        IsSubMenuOpen = false;
+    }
 }

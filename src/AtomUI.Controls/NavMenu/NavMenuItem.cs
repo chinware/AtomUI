@@ -514,7 +514,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 return;
             }                                       
         }
-
+        
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
             await CloseItemAsync(this);
@@ -534,7 +534,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
         if (navMenuItem is NavMenuItem navMenuItem2)
         {
-            if (navMenuItem2._popup != null)
+            if (navMenuItem2._popup != null && navMenuItem2._popup.IsMotionAwareOpen)
             {
                 await navMenuItem2._popup.MotionAwareCloseAsync();
             }
@@ -1039,6 +1039,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
         else if (change.Property == CommandProperty)
         {
+            CommandChanged(change);
             CommandChanged(change);
         }
         else if (change.Property == CommandParameterProperty)
