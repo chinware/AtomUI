@@ -3,6 +3,7 @@ using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
@@ -272,12 +273,17 @@ internal class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
                 ];
+                NotifyCreateTransitions(Transitions);
             }
         }
         else
         {
             Transitions = null;
         }
+    }
+
+    protected virtual void NotifyCreateTransitions(Transitions transitions)
+    {
     }
 
     protected virtual void UpdatePseudoClasses()

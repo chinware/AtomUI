@@ -1,9 +1,11 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls; 
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
@@ -26,10 +28,10 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
 
     public static readonly StyledProperty<bool> IsShowHandleProperty =
         AvaloniaProperty.Register<ButtonSpinnerInnerBox, bool>(nameof(IsShowHandle), true);
-    
+
     public static readonly StyledProperty<bool> IsHandleFloatableProperty =
         AvaloniaProperty.Register<ButtonSpinnerInnerBox, bool>(nameof(IsHandleFloatable), true);
-    
+
     public static readonly StyledProperty<Location> ButtonSpinnerLocationProperty =
         AvaloniaProperty.Register<ButtonSpinnerInnerBox, Location>(nameof(ButtonSpinnerLocation));
 
@@ -38,19 +40,19 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
         get => GetValue(SpinnerContentProperty);
         set => SetValue(SpinnerContentProperty, value);
     }
-    
+
     public bool IsShowHandle
     {
         get => GetValue(IsShowHandleProperty);
         set => SetValue(IsShowHandleProperty, value);
     }
-    
+
     public bool IsHandleFloatable
     {
         get => GetValue(IsHandleFloatableProperty);
         set => SetValue(IsHandleFloatableProperty, value);
     }
-    
+
     public Location ButtonSpinnerLocation
     {
         get => GetValue(ButtonSpinnerLocationProperty);
@@ -66,16 +68,14 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
             o => o.SpinnerBorderThickness,
             (o, v) => o.SpinnerBorderThickness = v);
     
-    internal static readonly DirectProperty<ButtonSpinnerInnerBox, bool> HandleEffectiveVisibleProperty =
-        AvaloniaProperty.RegisterDirect<ButtonSpinnerInnerBox, bool>(nameof(HandleEffectiveVisible),
-            o => o.HandleEffectiveVisible,
-            (o, v) => o.HandleEffectiveVisible = v);
+    public static readonly StyledProperty<double> HandleOpacityProperty =
+        AvaloniaProperty.Register<ButtonSpinnerInnerBox, double>(nameof(HandleOpacity));
 
     internal static readonly DirectProperty<ButtonSpinnerInnerBox, double> SpinnerHandleWidthProperty =
         AvaloniaProperty.RegisterDirect<ButtonSpinnerInnerBox, double>(nameof(SpinnerHandleWidth),
             o => o.SpinnerHandleWidth,
             (o, v) => o.SpinnerHandleWidth = v);
-    
+
     private Thickness _spinnerBorderThickness;
 
     internal Thickness SpinnerBorderThickness
@@ -83,15 +83,13 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
         get => _spinnerBorderThickness;
         set => SetAndRaise(SpinnerBorderThicknessProperty, ref _spinnerBorderThickness, value);
     }
-    
-    private bool _handleEffectiveVisible;
 
-    internal bool HandleEffectiveVisible
+    public double HandleOpacity
     {
-        get => _handleEffectiveVisible;
-        set => SetAndRaise(HandleEffectiveVisibleProperty, ref _handleEffectiveVisible, value);
+        get => GetValue(HandleOpacityProperty);
+        set => SetValue(HandleOpacityProperty, value);
     }
-    
+
     private double _spinnerHandleWidth;
 
     internal double SpinnerHandleWidth
@@ -99,13 +97,13 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
         get => _spinnerHandleWidth;
         set => SetAndRaise(SpinnerHandleWidthProperty, ref _spinnerHandleWidth, value);
     }
-    
+
     CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
 
     private IDisposable? _mouseMoveDisposable;
-    
+
     protected override void BuildEffectiveInnerBoxPadding()
     {
         EffectiveInnerBoxPadding = InnerBoxPadding;
@@ -170,7 +168,7 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
             _mouseMoveDisposable = inputManager.Process.Subscribe(HandleMouseMove);
         }
     }
-    
+
     private void HandleMouseMove(RawInputEventArgs args)
     {
         if (args is RawPointerEventArgs pointerEventArgs)
@@ -180,24 +178,24 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
             {
                 return;
             }
+
             var bounds = new Rect(pos.Value, Bounds.Size);
             if (bounds.Contains(pointerEventArgs.Position))
             {
                 if (IsShowHandle && IsHandleFloatable)
                 {
-                    HandleEffectiveVisible = true;
+                    HandleOpacity = 1.0;
                 }
             }
             else
             {
                 if (IsShowHandle && IsHandleFloatable)
                 {
-                    HandleEffectiveVisible = false;
+                    HandleOpacity = 0.0;
                 }
             }
         }
     }
-
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -207,11 +205,11 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
         {
             if (IsShowHandle && !IsHandleFloatable)
             {
-                HandleEffectiveVisible = true;
+                HandleOpacity = 1.0;
             }
             else if (!IsShowHandle)
             {
-                HandleEffectiveVisible = false;
+                HandleOpacity = 0.0;
             }
         }
 
@@ -240,5 +238,11 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
         {
             BuildEffectiveInnerBoxPadding();
         }
+    }
+    
+    protected override void NotifyCreateTransitions(Transitions transitions)
+    {
+        base.NotifyCreateTransitions(transitions);
+        transitions.Add(TransitionUtils.CreateTransition<DoubleTransition>(HandleOpacityProperty));
     }
 }

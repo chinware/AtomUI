@@ -29,11 +29,6 @@
                 </Border>
             </ControlTemplate>
         </Setter>
-
-        <Style Selector="^ /template/ UniformGrid#PART_SpinnerButtonsLayout">
-            <Setter Property="Width"
-                    Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}" />
-        </Style>
         
         <Setter Property="ClipToBounds" Value="True"/>
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>

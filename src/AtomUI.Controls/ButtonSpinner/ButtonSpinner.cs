@@ -142,6 +142,15 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
 
     #region 内部属性定义
 
+    internal static readonly StyledProperty<double> SpinnerHandleWidthProperty =
+        AvaloniaProperty.Register<ButtonSpinner, double>(nameof (SpinnerHandleWidth));
+    
+    internal double SpinnerHandleWidth
+    {
+        get => GetValue(SpinnerHandleWidthProperty);
+        set => SetValue(SpinnerHandleWidthProperty, value);
+    }
+    
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonSpinnerToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;

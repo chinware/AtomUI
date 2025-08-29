@@ -17,7 +17,8 @@
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     InnerLeftContent="{TemplateBinding InnerLeftContent}"
                     RightAddOn="{TemplateBinding RightAddOn}"
-                    InnerRightContent="{TemplateBinding InnerRightContent}">
+                    InnerRightContent="{TemplateBinding InnerRightContent}"
+                    SpinnerHandleWidth="{TemplateBinding SpinnerHandleWidth}">
                     <atom:TextBox
                         Name="PART_TextBox"
                         VerticalContentAlignment="Center"
@@ -39,5 +40,8 @@
         
         <Setter Property="IsMotionEnabled"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="SpinnerHandleWidth"
+                Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}" />
+        
     </ControlTheme>
 </ResourceDictionary>

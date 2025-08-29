@@ -68,7 +68,7 @@
                         Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandlePart}"
                         ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
                         Content="{TemplateBinding SpinnerContent}"
-                        IsVisible="{TemplateBinding HandleEffectiveVisible}"/>
+                        Opacity="{TemplateBinding HandleOpacity}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>

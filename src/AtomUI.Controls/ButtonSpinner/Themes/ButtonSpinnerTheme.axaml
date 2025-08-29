@@ -21,6 +21,7 @@
                     ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}">
                     <atom:ButtonSpinnerInnerBox
                         Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerInnerBoxPart}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         IsEnabled="{TemplateBinding IsEnabled}"
                         LeftAddOnContent="{TemplateBinding InnerLeftContent}"
                         LeftAddOnContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
@@ -39,13 +40,15 @@
                                 ButtonSpinnerLocation="{Binding (atom:ButtonSpinner.ButtonSpinnerLocation), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
                                 IsMotionEnabled="{Binding (atom:ButtonSpinner.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
                                 CornerRadius="{Binding (atom:ButtonSpinner.CornerRadius), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
+                                Width="{Binding (atom:ButtonSpinner.SpinnerHandleWidth), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
                                 />
                         </atom:ButtonSpinnerInnerBox.SpinnerContent>
                     </atom:ButtonSpinnerInnerBox>
                 </atom:ButtonSpinnerDecoratedBox>
             </ControlTemplate>
         </Setter>
-
+        <Setter Property="SpinnerHandleWidth"
+                Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Style Selector="^[SizeType=Large]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
