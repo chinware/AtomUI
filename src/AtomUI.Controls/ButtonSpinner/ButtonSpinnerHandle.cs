@@ -1,17 +1,30 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class ButtonSpinnerHandle : TemplatedControl
+internal class ButtonSpinnerHandle : TemplatedControl, IResourceBindingManager
 {
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ButtonSpinnerHandle>();
     
     public static readonly StyledProperty<Location> ButtonSpinnerLocationProperty =
         ButtonSpinner.ButtonSpinnerLocationProperty.AddOwner<ButtonSpinnerHandle>();
+    
+    public static readonly DirectProperty<ButtonSpinnerHandle, Thickness> SpinnerBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<ButtonSpinnerHandle, Thickness>(nameof(SpinnerBorderThickness),
+            o => o.SpinnerBorderThickness,
+            (o, v) => o.SpinnerBorderThickness = v);
     
     public bool IsMotionEnabled
     {
@@ -25,50 +38,103 @@ internal class ButtonSpinnerHandle : TemplatedControl
         set => SetValue(ButtonSpinnerLocationProperty, value);
     }
     
+    private Thickness _spinnerBorderThickness;
+
+    internal Thickness SpinnerBorderThickness
+    {
+        get => _spinnerBorderThickness;
+        set => SetAndRaise(SpinnerBorderThicknessProperty, ref _spinnerBorderThickness, value);
+    }
+    
     public IconButton? IncreaseButton { get; private set; }
     public IconButton? DecreaseButton { get; private set; }
     
     public event EventHandler? ButtonsCreated;
     
-    private Border? _spinnerHandleDecorator;
+    private BorderRenderHelper _borderRenderHelper;
     
-    private void SetupSpinnerHandleCornerRadius()
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+
+    static ButtonSpinnerHandle()
     {
-        if (_spinnerHandleDecorator is not null)
-        {
-            if (ButtonSpinnerLocation == Location.Left)
-            {
-                _spinnerHandleDecorator.CornerRadius = new CornerRadius(CornerRadius.TopLeft,
-                    0,
-                    0,
-                    CornerRadius.BottomLeft);
-            }
-            else
-            {
-                _spinnerHandleDecorator.CornerRadius = new CornerRadius(0,
-                    CornerRadius.TopRight,
-                    CornerRadius.BottomRight,
-                    0);
-            }
-        }
+        AffectsRender<ButtonSpinnerHandle>(ButtonSpinnerLocationProperty);
     }
     
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    public ButtonSpinnerHandle()
     {
-        base.OnPropertyChanged(change);
-        if (change.Property == CornerRadiusProperty || change.Property == ButtonSpinnerLocationProperty)
-        {
-            SetupSpinnerHandleCornerRadius();
-        }
+        _borderRenderHelper = new BorderRenderHelper();
     }
+    
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+    
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _spinnerHandleDecorator = e.NameScope.Find<Border>(ButtonSpinnerThemeConstants.SpinnerHandleDecoratorPart);
         IncreaseButton          = e.NameScope.Find<IconButton>(ButtonSpinnerThemeConstants.IncreaseButtonPart);
         DecreaseButton          = e.NameScope.Find<IconButton>(ButtonSpinnerThemeConstants.DecreaseButtonPart);
         ButtonsCreated?.Invoke(this, EventArgs.Empty);
-        SetupSpinnerHandleCornerRadius();
+    }
+    
+    public override void Render(DrawingContext context)
+    {
+        var          lineWidth = SpinnerBorderThickness.Left;
+        CornerRadius cornerRadius;
+        if (ButtonSpinnerLocation == Location.Left)
+        {
+            cornerRadius = new CornerRadius(CornerRadius.TopLeft,
+                0,
+                0,
+                CornerRadius.BottomLeft);
+        }
+        else
+        {
+            cornerRadius = new CornerRadius(0,
+                CornerRadius.TopRight,
+                CornerRadius.BottomRight,
+                0);
+        }
+     
+        {
+            using var optionState = context.PushTransform(Matrix.CreateTranslation(lineWidth, lineWidth));
+            _borderRenderHelper.Render(context, Bounds.Size.Deflate(new Thickness(lineWidth)),
+                new Thickness(0), 
+                cornerRadius, BackgroundSizing.OuterBorderEdge,
+                Background, null, 
+                new BoxShadows());
+        }
+        
+        {
+            var handleOffsetY = Bounds.Height / 2;
+            using var optionState = context.PushRenderOptions(new RenderOptions
+            {
+                EdgeMode = EdgeMode.Aliased
+            });
+            {
+                // 画竖线
+                var startPoint = new Point(lineWidth / 2, lineWidth);
+                var endPoint   = new Point(lineWidth / 2, Bounds.Height - lineWidth);
+                context.DrawLine(new Pen(BorderBrush, lineWidth), startPoint, endPoint);
+            }
+            {
+                // 画横线
+                var startPoint = new Point(0, handleOffsetY); 
+                var endPoint   = new Point(Bounds.Width - lineWidth, handleOffsetY);
+                context.DrawLine(new Pen(BorderBrush, SpinnerBorderThickness.Left), startPoint, endPoint);
+            }
+        }
     }
 }

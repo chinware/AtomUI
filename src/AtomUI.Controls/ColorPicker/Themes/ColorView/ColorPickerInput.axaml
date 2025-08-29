@@ -1,0 +1,35 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:ColorPickerInput}" TargetType="atom:ColorPickerInput">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="RootLayout" LastChildFill="True">
+                    <atom:ComboBox StyleVariant="Borderless" SizeType="Small" SelectedIndex="0" DockPanel.Dock="Left">
+                        <atom:ComboBoxItem>HEX</atom:ComboBoxItem>
+                        <atom:ComboBoxItem>HSV</atom:ComboBoxItem>
+                        <atom:ComboBoxItem>RGB</atom:ComboBoxItem>
+                    </atom:ComboBox>
+                    <atom:NumericUpDown Name="AlphaInput" SizeType="Small" DockPanel.Dock="Right" Width="60" 
+                                        Margin="5, 0, 0, 0" />
+                    <Panel>
+                        <!-- <atom:LineEdit SizeType="Small"/> -->
+                        <StackPanel Name="HvbValuePanel" Spacing="5" Orientation="Horizontal">
+                            <atom:NumericUpDown SizeType="Small" Width="65" />
+                            <atom:NumericUpDown SizeType="Small" Width="65" />
+                            <atom:NumericUpDown SizeType="Small" Width="65" />
+                        </StackPanel>
+                        <!-- <StackPanel Name="RgbValuePanel" Spacing="5" Orientation="Horizontal"> -->
+                        <!--     <atom:NumericUpDown SizeType="Small" Width="65" /> -->
+                        <!--     <atom:NumericUpDown SizeType="Small" Width="65" /> -->
+                        <!--     <atom:NumericUpDown SizeType="Small" Width="65" /> -->
+                        <!-- </StackPanel> -->
+                    </Panel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="Width" Value="327"/>
+    </ControlTheme>
+</ResourceDictionary>

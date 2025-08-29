@@ -20,8 +20,7 @@
                     Padding="{TemplateBinding Padding}" />
             </ControlTemplate>
         </Setter>
-
-        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+        
         <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemMargin}}" />
 
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemColor}}" />
@@ -41,6 +40,7 @@
                     Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemSelectedColor}}" />
             <Setter Property="Background"
                     Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemSelectedBgColor}}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
         <Style Selector="^:disabled">

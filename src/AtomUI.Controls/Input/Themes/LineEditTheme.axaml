@@ -47,6 +47,7 @@
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Text="{TemplateBinding Watermark}"
+                                LineHeight="{TemplateBinding LineHeight}"
                                 TextAlignment="{TemplateBinding TextAlignment}"
                                 TextWrapping="{TemplateBinding TextWrapping}"
                                 IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
@@ -66,7 +67,7 @@
                                 SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
                                 Text="{TemplateBinding Text, Mode=TwoWay}"
                                 TextAlignment="{TemplateBinding TextAlignment}"
-                                TextWrapping="{TemplateBinding TextWrapping}" />
+                                TextWrapping="{TemplateBinding TextWrapping}"/>
                         </Panel>
                     </ScrollViewer>
                 </atom:TextBoxInnerBox>

@@ -56,10 +56,13 @@ public class ComboBox : AvaloniaComboBox,
 
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         TextBox.IsEnableClearButtonProperty.AddOwner<ComboBox>();
+    
+    public static readonly StyledProperty<double> OptionFontSizeProperty =
+        AvaloniaProperty.Register<ComboBox, double>(nameof(OptionFontSize));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
-
+    
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -130,6 +133,12 @@ public class ComboBox : AvaloniaComboBox,
     {
         get => GetValue(IsEnableClearButtonProperty);
         set => SetValue(IsEnableClearButtonProperty, value);
+    }
+    
+    public double OptionFontSize
+    {
+        get => GetValue(OptionFontSizeProperty);
+        set => SetValue(OptionFontSizeProperty, value);
     }
 
     public bool IsMotionEnabled
@@ -235,6 +244,7 @@ public class ComboBox : AvaloniaComboBox,
         {
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, comboBoxItem, ComboBoxItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, OptionFontSizeProperty, comboBoxItem, ComboBoxItem.FontSizeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, comboBoxItem, ComboBoxItem.IsMotionEnabledProperty));
             if (_itemsBindingDisposables.TryGetValue(comboBoxItem, out var oldDisposables))
             {

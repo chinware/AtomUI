@@ -15,7 +15,7 @@
                     <Border
                         Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
                         Padding="{TemplateBinding EffectiveInnerBoxPadding}"
-                        BorderThickness="1"
+                        BorderThickness="{TemplateBinding SpinnerBorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}">
@@ -68,17 +68,14 @@
                         Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandlePart}"
                         ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
                         Content="{TemplateBinding SpinnerContent}"
-                        IsVisible="{TemplateBinding ShowButtonSpinner}"
-                        />
+                        IsVisible="{TemplateBinding HandleEffectiveVisible}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>
         
         <Style Selector="^:is(atom|ButtonSpinnerInnerBox)">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="SpinnerBorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
-            <Setter Property="SpinnerHandleWidthToken" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
-        
+            <Setter Property="SpinnerHandleWidth" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
             <Style Selector="^[ButtonSpinnerLocation=Left]">
                 <Style Selector="^ /template/ ContentPresenter#PART_SpinnerHandle">
                     <Setter Property="HorizontalAlignment" Value="Left"/>

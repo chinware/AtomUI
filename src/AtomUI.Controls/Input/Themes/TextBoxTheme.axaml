@@ -31,6 +31,7 @@
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             Text="{TemplateBinding Watermark}"
+                            LineHeight="{TemplateBinding LineHeight}"
                             TextAlignment="{TemplateBinding TextAlignment}"
                             TextWrapping="{TemplateBinding TextWrapping}"
                             IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
@@ -74,6 +75,9 @@
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightSM}}" />
+            <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+                <Setter Property="Margin" Value="0, 1, 0, 1" />
+            </Style>
         </Style>
 
         <Style Selector="^ /template/ atom|TextBlock#PART_Watermark">

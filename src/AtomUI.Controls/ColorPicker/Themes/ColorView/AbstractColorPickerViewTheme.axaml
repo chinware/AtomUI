@@ -52,7 +52,7 @@
                                 <Control />
                             </DockPanel>
                         </DockPanel>
-                        <atom:LineEdit SizeType="Small"/>
+                        <atom:ColorPickerInput/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -60,7 +60,6 @@
     </Setter>
 
     <Style Selector="^:is(atom|AbstractColorPickerView)">
-        <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerWidth}}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXS}}" />

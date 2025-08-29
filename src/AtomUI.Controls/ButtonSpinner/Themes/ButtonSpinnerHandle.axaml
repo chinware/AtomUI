@@ -6,30 +6,27 @@
     <ControlTheme x:Key="{x:Type atom:ButtonSpinnerHandle}" TargetType="atom:ButtonSpinnerHandle">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
-                    <Border
-                        Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandleDecoratorPart}"
-                        BackgroundSizing="InnerBorderEdge"
-                        ClipToBounds="True" />
+                <Border
+                    Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandleDecoratorPart}"
+                    BackgroundSizing="InnerBorderEdge">
                     <UniformGrid
                         Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerButtonsLayoutPart}"
-                        Columns="1" Rows="2">
+                        Columns="1" Rows="2"
+                        RowSpacing="1">
                         <atom:IconButton
                             Name="{x:Static atom:ButtonSpinnerThemeConstants.IncreaseButtonPart}"
                             Icon="{atom:IconProvider UpOutlined}"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
-                            BackgroundSizing="InnerBorderEdge"
-                            Background="Transparent" />
+                            BackgroundSizing="InnerBorderEdge"/>
                         <atom:IconButton
                             Name="{x:Static atom:ButtonSpinnerThemeConstants.DecreaseButtonPart}"
                             Icon="{atom:IconProvider DownOutlined}"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
-                            BackgroundSizing="InnerBorderEdge"
-                            Background="Transparent" />
+                            BackgroundSizing="InnerBorderEdge"/>
                     </UniformGrid>
-                </Panel>
+                </Border>
             </ControlTemplate>
         </Setter>
 
@@ -37,7 +34,10 @@
             <Setter Property="Width"
                     Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}" />
         </Style>
-
+        
+        <Setter Property="ClipToBounds" Value="True"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
         <Style
             Selector="^ /template/ atom|IconButton#PART_IncreaseButton, ^ /template/ atom|IconButton#PART_DecreaseButton">
             <Setter Property="ActiveIconBrush"

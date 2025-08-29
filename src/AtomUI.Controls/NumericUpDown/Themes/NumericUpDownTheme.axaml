@@ -12,6 +12,8 @@
                     SizeType="{TemplateBinding SizeType}"
                     StyleVariant="{TemplateBinding StyleVariant}"
                     Status="{TemplateBinding Status}"
+                    ShowButtonSpinner="True"
+                    IsButtonSpinnerFloatable="True"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     InnerLeftContent="{TemplateBinding InnerLeftContent}"
                     RightAddOn="{TemplateBinding RightAddOn}"

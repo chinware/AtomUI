@@ -54,6 +54,9 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
         AddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
     
+    public static readonly StyledProperty<bool> IsButtonSpinnerFloatableProperty =
+        AvaloniaProperty.Register<ButtonSpinner, bool>(nameof (IsButtonSpinnerFloatable), false);
+    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ButtonSpinner>();
 
@@ -121,6 +124,12 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     {
         get => GetValue(StatusProperty);
         set => SetValue(StatusProperty, value);
+    }
+    
+    public bool IsButtonSpinnerFloatable
+    {
+        get => GetValue(IsButtonSpinnerFloatableProperty);
+        set => SetValue(IsButtonSpinnerFloatableProperty, value);
     }
     
     public bool IsMotionEnabled
