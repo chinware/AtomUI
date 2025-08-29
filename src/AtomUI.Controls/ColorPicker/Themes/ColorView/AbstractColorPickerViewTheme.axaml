@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
     x:Class="AtomUI.Controls.Themes.AbstractColorPickerViewTheme"
     TargetType="atom:AbstractColorPickerView"
     x:ClassModifier="internal">
@@ -29,20 +30,25 @@
                             MinSaturation="{TemplateBinding MinSaturation}"
                             MinValue="{TemplateBinding MinValue}" />
                         <DockPanel LastChildFill="True" ClipToBounds="False">
-                            <atom:ColorBlock Name="ColorPreview" Background="DarkRed" DockPanel.Dock="Right"
+                            <atom:ColorBlock Name="ColorPreview" 
+                                             Background="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}" 
+                                             DockPanel.Dock="Right"
                                              Margin="0, 2, 0, 2"/>
                             <DockPanel Name="SliderContainer" LastChildFill="True" ClipToBounds="False">
                                 <atom:ColorSlider Name="ColorSpectrumThirdComponentSlider" DockPanel.Dock="Top"
                                                   ColorModel="Hsva"
                                                   HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
-                                                  IsVisible="{TemplateBinding IsColorSpectrumSliderVisible}"/>
+                                                  IsVisible="{TemplateBinding IsColorSpectrumSliderVisible}"
+                                                  ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.WithoutAlpha}}"/>
                                 <atom:ColorSlider Name="ColorSpectrumAlphaSlider" DockPanel.Dock="Bottom" 
                                                   ColorComponent="Alpha"
                                                   ColorModel="Hsva"
                                                   HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
                                                   IsEnabled="{TemplateBinding IsAlphaEnabled}"
                                                   IsVisible="{TemplateBinding IsAlphaVisible}"
-                                                  IsRoundingEnabled="True"/>
+                                                  IsRoundingEnabled="True"
+                                                  ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}"
+                                                  />
                                 <Control />
                             </DockPanel>
                         </DockPanel>

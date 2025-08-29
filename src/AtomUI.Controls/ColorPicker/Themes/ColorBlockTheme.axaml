@@ -6,14 +6,14 @@
     <ControlTheme x:Key="{x:Type atom:ColorBlock}" TargetType="atom:ColorBlock">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
+                <Border Name="ColorPreviewFrame"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerInsetShadow}}"
-                        Background="{TemplateBinding TransparentBgBrush}">
-                    <Border Name="InnerBox"
+                        Background="{TemplateBinding TransparentBgBrush}"
+                        BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}">
+                    <Border Name="ColorPreview"
                             Background="{TemplateBinding Background}"
                             CornerRadius="{TemplateBinding CornerRadius}"
-                            BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}"/>
+                            IsVisible="{TemplateBinding EmptyColorMode, Converter={x:Static BoolConverters.Not}}"/>
                 </Border>
             </ControlTemplate>
         </Setter>

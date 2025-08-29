@@ -17,6 +17,9 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<double> SizeProperty =
         AvaloniaProperty.Register<ColorBlock, double>(nameof(Size), Double.NaN);
     
+    public static readonly StyledProperty<bool> EmptyColorModeProperty =
+        AvaloniaProperty.Register<ColorBlock, bool>(nameof(EmptyColorMode));
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -27,6 +30,12 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
     {
         get => GetValue(SizeProperty);
         set => SetValue(SizeProperty, value);
+    }
+    
+    public bool EmptyColorMode
+    {
+        get => GetValue(EmptyColorModeProperty);
+        set => SetValue(EmptyColorModeProperty, value);
     }
 
     #endregion
@@ -89,10 +98,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
-        {
-            TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
-        }
+        ConfigureTransparentBgBrush();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -101,12 +107,10 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == TransparentBgIntervalColorProperty ||
-                change.Property == TransparentBgSizeProperty)
+                change.Property == TransparentBgSizeProperty ||
+                change.Property == EmptyColorModeProperty)
             {
-                if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
-                {
-                    TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
-                }
+                ConfigureTransparentBgBrush();
             }
         }
         
@@ -114,6 +118,21 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         {
             ConfigureSize();
             IsCustomSize = !double.IsNaN(Size);
+        }
+    }
+
+    private void ConfigureTransparentBgBrush()
+    {
+        if (EmptyColorMode)
+        {
+            TransparentBgBrush = Brushes.Transparent;
+        }
+        else
+        {
+            if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
+            {
+                TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
+            }
         }
     }
     

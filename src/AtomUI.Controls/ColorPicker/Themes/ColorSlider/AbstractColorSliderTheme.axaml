@@ -1,6 +1,7 @@
 <ControlTheme  xmlns="https://github.com/avaloniaui"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:atom="https://atomui.net"
+               xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
                x:Class="AtomUI.Controls.Themes.AbstractColorSliderTheme"
                TargetType="atom:AbstractColorSlider"
                x:ClassModifier="internal">
@@ -65,7 +66,7 @@
                                                    Margin="0"
                                                    Padding="0"
                                                    DataContext="{TemplateBinding Value}"
-                                                   ColorValueBrush="{TemplateBinding HsvColor, Converter={x:Static atom:AbstractColorSliderTheme.HsvColorToBrushConverter}}"/>
+                                                   ColorValueBrush="{TemplateBinding ThumbColorValueBrush}"/>
                         </atom:ColorPickerSliderTrack>
                     </Panel>
                 </Border>

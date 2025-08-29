@@ -127,6 +127,9 @@ internal class AbstractColorSlider : RangeBase
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<IBrush?> ThumbColorValueBrushProperty = 
+        AvaloniaProperty.Register<AbstractColorSlider, IBrush?>(nameof (ThumbColorValueBrush));
 
     internal static readonly DirectProperty<AbstractColorSlider, double> ThumbSizeProperty =
         AvaloniaProperty.RegisterDirect<AbstractColorSlider, double>(
@@ -139,6 +142,12 @@ internal class AbstractColorSlider : RangeBase
             nameof(TransparentBgBrush),
             o => o.TransparentBgBrush,
             (o, v) => o.TransparentBgBrush = v);
+    
+    internal IBrush? ThumbColorValueBrush
+    {
+        get => GetValue(ThumbColorValueBrushProperty);
+        set => SetValue(ThumbColorValueBrushProperty, value);
+    }
     
     internal static readonly StyledProperty<IBrush?> TransparentBgIntervalColorProperty =
         AvaloniaProperty.Register<AbstractColorSlider, IBrush?>(nameof(TransparentBgIntervalColor));

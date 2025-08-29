@@ -6,11 +6,23 @@ namespace AtomUI.Controls.Converters;
 
 internal class HsvColorToBrushConverter : IValueConverter
 {
+    public static readonly HsvColorToBrushConverter Default = new();
+    public static readonly HsvColorToBrushConverter WithoutAlpha = new()
+    {
+        EnableAlpha = false
+    };
+    
+    public bool EnableAlpha { get; set; } = true;
+    
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is HsvColor color)
         {
-            return new SolidColorBrush(color.ToRgb());
+            if (EnableAlpha)
+            {
+                return new SolidColorBrush(color.ToRgb());
+            }
+            return new SolidColorBrush(HsvColor.ToRgb(color.H, color.S, color.V));
         }
         return value;
     }
