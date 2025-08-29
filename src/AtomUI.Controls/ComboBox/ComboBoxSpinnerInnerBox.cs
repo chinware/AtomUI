@@ -34,11 +34,6 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox
             o => o.SpinnerBorderBrush,
             (o, v) => o.SpinnerBorderBrush = v);
 
-    internal static readonly DirectProperty<ComboBoxSpinnerInnerBox, double> SpinnerHandleWidthTokenProperty =
-        AvaloniaProperty.RegisterDirect<ComboBoxSpinnerInnerBox, double>(nameof(SpinnerHandleWidthToken),
-            o => o.SpinnerHandleWidthToken,
-            (o, v) => o.SpinnerHandleWidthToken = v);
-
     private Thickness _spinnerBorderThickness;
 
     internal Thickness SpinnerBorderThickness
@@ -55,20 +50,5 @@ internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox
         set => SetAndRaise(SpinnerBorderBrushProperty, ref _spinnerBorderBrush, value);
     }
 
-    private double _spinnerHandleWidthToken;
-
-    internal double SpinnerHandleWidthToken
-    {
-        get => _spinnerHandleWidthToken;
-        set => SetAndRaise(SpinnerHandleWidthTokenProperty, ref _spinnerHandleWidthToken, value);
-    }
-
     #endregion
-
-    protected override void BuildEffectiveInnerBoxPadding()
-    {
-        var padding = _spinnerHandleWidthToken + InnerBoxPadding.Right;
-        EffectiveInnerBoxPadding =
-            new Thickness(InnerBoxPadding.Left, InnerBoxPadding.Top, padding, InnerBoxPadding.Bottom);
-    }
 }

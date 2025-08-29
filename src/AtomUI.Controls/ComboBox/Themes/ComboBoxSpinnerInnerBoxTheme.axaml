@@ -10,14 +10,20 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
-                    <Border
-                        Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
-                        Padding="{TemplateBinding EffectiveInnerBoxPadding}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}">
+                <Border
+                    Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
+                    Padding="{TemplateBinding EffectiveInnerBoxPadding}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}">
+                    <DockPanel LastChildFill="True">
+                        <ContentPresenter
+                            Name="{x:Static atom:ComboBoxThemeConstants.SpinnerHandlePart}"
+                            ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
+                            HorizontalAlignment="Right"
+                            Content="{TemplateBinding SpinnerContent}"
+                            DockPanel.Dock="Right"/>
                         <Grid
                             Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.MainLayoutPart}"
                             ColumnDefinitions="Auto, *, Auto">
@@ -62,26 +68,22 @@
                                     ContentTemplate="{TemplateBinding RightAddOnContentTemplate}" />
                             </StackPanel>
                         </Grid>
-                    </Border>
-                    <ContentPresenter
-                        Name="{x:Static atom:ComboBoxThemeConstants.SpinnerHandlePart}"
-                        ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
-                        HorizontalAlignment="Right"
-                        Content="{TemplateBinding SpinnerContent}" />
-                </Panel>
+                   
+                    </DockPanel>
+                </Border>
             </ControlTemplate>
         </Setter>
 
         <Style Selector="^:is(atom|ComboBoxSpinnerInnerBox)">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="SpinnerBorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
-            <Setter Property="SpinnerHandleWidthToken" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
-            
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="SpinnerBorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+
             <Style Selector="^[IsEnabled=True]">
                 <Style Selector="^:not(:filled)">
-                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Background" Value="Transparent" />
                     <Style Selector="^:pointerover">
-                        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}"/>
+                        <Setter Property="Background"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
                     </Style>
                 </Style>
             </Style>

@@ -16,8 +16,7 @@
                         LeftAddOn="{TemplateBinding LeftAddOn}"
                         LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                         RightAddOn="{TemplateBinding RightAddOn}"
-                        RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
-                        >
+                        RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}">
                         <atom:ComboBoxSpinnerInnerBox
                             Name="{x:Static atom:ComboBoxThemeConstants.SpinnerInnerBoxPart}"
                             Focusable="False"
@@ -28,12 +27,10 @@
                             RightAddOnContentTemplate="{TemplateBinding InnerRightContentTemplate}"
                             StyleVariant="{TemplateBinding StyleVariant}"
                             SizeType="{TemplateBinding SizeType}"
-                            Status="{TemplateBinding Status}"
-                            >
+                            Status="{TemplateBinding Status}">
                             <atom:ComboBoxSpinnerInnerBox.SpinnerContent>
                                 <atom:ComboBoxHandle
-                                    IsMotionEnabled="{Binding (atom:ComboBox.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"
-                                    />
+                                    IsMotionEnabled="{Binding (atom:ComboBox.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"/>
                             </atom:ComboBoxSpinnerInnerBox.SpinnerContent>
                             
                             <Panel>
@@ -67,7 +64,7 @@
                         <Border
                             Name="{x:Static atom:ComboBoxThemeConstants.PopupFramePart}"
                             HorizontalAlignment="Stretch"
-                            Width="{TemplateBinding EffectivePopupWidth}">
+                            MinWidth="{TemplateBinding EffectivePopupWidth}">
                             <atom:MenuScrollViewer>
                                 <ItemsPresenter
                                     Name="{x:Static atom:ComboBoxThemeConstants.ItemsPresenterPart}"
@@ -94,8 +91,11 @@
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}"/>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}"/>
+            <Style Selector="^ /template/ ContentPresenter#PART_SelectedContentPresenter">
+                <Setter Property="Margin" Value="0, 1, 0, 1" />
+            </Style>
         </Style>
         
         <Style Selector="^ /template/ atom|Popup#PART_Popup">

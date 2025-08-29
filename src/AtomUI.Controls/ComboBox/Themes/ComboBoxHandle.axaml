@@ -30,10 +30,10 @@
             <Setter Property="DisabledIconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             
-            <Setter Property="Width" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.OpenIndicatorWidth}}" />
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="IconHeight"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.OpenIndicatorPadding}}"/>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

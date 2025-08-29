@@ -13,11 +13,11 @@ internal class ComboBoxToken : ButtonSpinnerToken
         : base(ID)
     {
     }
-
+    
     /// <summary>
-    /// 打开按钮宽度
+    /// 打开按钮宽度内间距
     /// </summary>
-    public double OpenIndicatorWidth { get; set; }
+    public Thickness OpenIndicatorPadding { get; set; }
 
     /// <summary>
     /// 菜单的圆角
@@ -87,11 +87,11 @@ internal class ComboBoxToken : ButtonSpinnerToken
     protected internal override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        OpenIndicatorWidth  = SharedToken.IconSizeSM * 2.5;
-        PopupBorderRadius   = SharedToken.BorderRadiusLG;
-        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, PopupBorderRadius.TopLeft / 2);
-        PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
-        PopupMarginToAnchor = SharedToken.UniformlyMarginXXS;
+        OpenIndicatorPadding = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
+        PopupBorderRadius    = SharedToken.BorderRadiusLG;
+        PopupContentPadding  = new Thickness(SharedToken.UniformlyPaddingXXS, PopupBorderRadius.TopLeft / 2);
+        PopupBoxShadows      = SharedToken.BoxShadowsSecondary;
+        PopupMarginToAnchor  = SharedToken.UniformlyMarginXXS;
         
         var colorTextDisabled  = SharedToken.ColorTextDisabled;
         var colorTextSecondary = SharedToken.ColorTextSecondary;
