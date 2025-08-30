@@ -79,7 +79,19 @@
                 <Setter Property="Margin" Value="0, 1, 0, 1" />
             </Style>
         </Style>
-
+        
+        <Style Selector="^[IsCustomFontSize=False]">
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:LineEditTokenKey.InputFontSizeLG}}" />
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:LineEditTokenKey.InputFontSize}}" />
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:LineEditTokenKey.InputFontSizeSM}}" />
+            </Style>
+        </Style>
+        
         <Style Selector="^ /template/ atom|TextBlock#PART_Watermark">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
         </Style>

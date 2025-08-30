@@ -2,7 +2,7 @@ namespace AtomUI.Controls;
 
 public enum ColorFormat
 {
-    Rgba,
+    Hex,
     Hsva,
-    Hex
+    Rgba
 }

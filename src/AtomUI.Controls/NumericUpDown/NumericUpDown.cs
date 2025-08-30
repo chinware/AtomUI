@@ -81,12 +81,21 @@ public class NumericUpDown : AvaloniaNumericUpDown, IMotionAwareControl, IContro
     internal static readonly StyledProperty<double> SpinnerHandleWidthProperty =
         ButtonSpinner.SpinnerHandleWidthProperty.AddOwner<NumericUpDown>();
     
+    internal static readonly StyledProperty<bool> IsCustomFontSizeProperty =
+        AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsCustomFontSize));
+    
     internal double SpinnerHandleWidth
     {
         get => GetValue(SpinnerHandleWidthProperty);
         set => SetValue(SpinnerHandleWidthProperty, value);
     }
     
+    public bool IsCustomFontSize
+    {
+        get => GetValue(IsCustomFontSizeProperty);
+        set => SetValue(IsCustomFontSizeProperty, value);
+    }
+
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => NumericUpDownToken.ID;

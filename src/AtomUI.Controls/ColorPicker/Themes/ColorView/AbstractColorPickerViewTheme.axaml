@@ -47,12 +47,11 @@
                                                   IsEnabled="{TemplateBinding IsAlphaEnabled}"
                                                   IsVisible="{TemplateBinding IsAlphaVisible}"
                                                   IsRoundingEnabled="True"
-                                                  ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}"
-                                                  />
+                                                  ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}"/>
                                 <Control />
                             </DockPanel>
                         </DockPanel>
-                        <atom:ColorPickerInput/>
+                        <atom:ColorPickerInput ColorValue="{TemplateBinding HsvValue, Mode=TwoWay}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>

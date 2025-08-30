@@ -28,6 +28,9 @@ public class TextBox : AvaloniaTextBox,
 
     public static readonly StyledProperty<bool> IsEnableRevealButtonProperty =
         AvaloniaProperty.Register<TextBox, bool>(nameof(IsEnableRevealButton));
+    
+    public static readonly StyledProperty<bool> IsCustomFontSizeProperty =
+        AvaloniaProperty.Register<TextBox, bool>(nameof(IsCustomFontSize));
 
     public SizeType SizeType
     {
@@ -57,6 +60,12 @@ public class TextBox : AvaloniaTextBox,
     {
         get => GetValue(IsEnableRevealButtonProperty);
         set => SetValue(IsEnableRevealButtonProperty, value);
+    }
+    
+    public bool IsCustomFontSize
+    {
+        get => GetValue(IsCustomFontSizeProperty);
+        set => SetValue(IsCustomFontSizeProperty, value);
     }
 
     #endregion

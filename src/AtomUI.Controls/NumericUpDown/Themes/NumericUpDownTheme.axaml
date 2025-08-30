@@ -28,6 +28,7 @@
                         TextWrapping="NoWrap"
                         AcceptsReturn="False"
                         EmbedMode="True"
+                        IsCustomFontSize="{Binding (atom:NumericUpDown.IsCustomFontSize), RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"
                         DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                         SizeType="{TemplateBinding SizeType}"
                         IsReadOnly="{TemplateBinding IsReadOnly}"

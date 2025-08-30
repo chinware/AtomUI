@@ -162,7 +162,7 @@ public class ColorPickerToken : AbstractControlDesignToken
         TriggerTextMargin = new Thickness(SharedToken.UniformlyMarginXS, 0, 
             SharedToken.UniformlyMarginXS - SharedToken.UniformlyPaddingXXS + SharedToken.LineWidth, 0);
 
-        ColorSpectrumHeight          = SharedToken.ControlHeightLG * 5;
+        ColorSpectrumHeight          = SharedToken.ControlHeightLG * 4;
         ColorPickerHandlerLightColor = SharedToken.ColorBgElevated;
         ColorPickerHandlerDarkColor  = Color.Parse("#22075e");
         SliderContainerMargin        = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);

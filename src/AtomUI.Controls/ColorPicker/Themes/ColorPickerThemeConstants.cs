@@ -34,3 +34,16 @@ internal static class ColorSliderThumbThemeConstants
     public const string FramePart = "PART_Frame";
     public const string InnerEllipsePart = "PART_InnerEllipse";
 }
+
+internal static class ColorPickerInputThemeConstants
+{
+    public const string ColorFormatComboBoxPart = "PART_ColorFormatComboBox";
+    public const string AlphaInputPart = "PART_AlphaInput";
+    public const string HexValueInputPart = "PART_HexValueInput";
+    public const string HValueInputPart = "PART_HValueInput";
+    public const string SValueInputPart = "PART_SValueInput";
+    public const string VValueInputPart = "PART_VValueInput";
+    public const string RValueInputPart = "PART_RValueInput";
+    public const string GValueInputPart = "PART_GValueInput";
+    public const string BValueInputPart = "PART_BValueInput";
+}
