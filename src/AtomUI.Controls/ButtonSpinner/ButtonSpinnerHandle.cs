@@ -80,7 +80,6 @@ internal class ButtonSpinnerHandle : TemplatedControl, IResourceBindingManager
         this.DisposeTokenBindings();
     }
     
-    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);

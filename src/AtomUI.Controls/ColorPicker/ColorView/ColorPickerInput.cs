@@ -13,21 +13,48 @@ internal class ColorPickerInput : TemplatedControl
    #region 公共属性定义
    public static readonly StyledProperty<ColorFormat> FormatProperty =
       AbstractColorPickerView.FormatProperty.AddOwner<ColorPickerInput>();
+   
+   public static readonly StyledProperty<bool> IsFormatEnabledProperty =
+      AbstractColorPickerView.IsFormatEnabledProperty.AddOwner<ColorPickerInput>();
     
    public static readonly StyledProperty<HsvColor> ColorValueProperty =
       AvaloniaProperty.Register<ColorPickerInput, HsvColor>(nameof(ColorValue),
          Colors.White.ToHsv());
-    
+   
+   public static readonly StyledProperty<bool> IsClearEnabledProperty =
+      AbstractColorPickerView.IsClearEnabledProperty.AddOwner<ColorPickerInput>();
+   
+   public static readonly StyledProperty<bool> IsAlphaVisibleProperty =
+      AbstractColorPickerView.IsAlphaVisibleProperty.AddOwner<ColorPickerInput>();
+   
    public ColorFormat Format
    {
       get => GetValue(FormatProperty);
       set => SetValue(FormatProperty, value);
+   }
+   
+   public bool IsFormatEnabled
+   {
+      get => GetValue(IsFormatEnabledProperty);
+      set => SetValue(IsFormatEnabledProperty, value);
    }
     
    public HsvColor ColorValue
    {
       get => GetValue(ColorValueProperty);
       set => SetValue(ColorValueProperty, value);
+   }
+   
+   public bool IsClearEnabled
+   {
+      get => GetValue(IsClearEnabledProperty);
+      set => SetValue(IsClearEnabledProperty, value);
+   }
+   
+   public bool IsAlphaVisible
+   {
+      get => GetValue(IsAlphaVisibleProperty);
+      set => SetValue(IsAlphaVisibleProperty, value);
    }
    #endregion
 

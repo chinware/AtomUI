@@ -26,7 +26,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
                                             IResourceBindingManager
 {
     #region 公共属性定义
-    
     public static readonly StyledProperty<ColorFormat> FormatProperty =
         AbstractColorPickerView.FormatProperty.AddOwner<AbstractColorPicker>();
 

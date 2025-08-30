@@ -1,13 +1,22 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class ColorBlock : TemplatedControl, ISizeTypeAware
+internal class ColorBlock : TemplatedControl,
+                            ISizeTypeAware,
+                            IResourceBindingManager
 {
     #region 公共属性定义
 
@@ -17,8 +26,8 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<double> SizeProperty =
         AvaloniaProperty.Register<ColorBlock, double>(nameof(Size), Double.NaN);
     
-    public static readonly StyledProperty<bool> EmptyColorModeProperty =
-        AvaloniaProperty.Register<ColorBlock, bool>(nameof(EmptyColorMode));
+    public static readonly StyledProperty<bool> IsEmptyColorModeProperty =
+        AvaloniaProperty.Register<ColorBlock, bool>(nameof(IsEmptyColorMode));
     
     public SizeType SizeType
     {
@@ -32,10 +41,25 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         set => SetValue(SizeProperty, value);
     }
     
-    public bool EmptyColorMode
+    public bool IsEmptyColorMode
     {
-        get => GetValue(EmptyColorModeProperty);
-        set => SetValue(EmptyColorModeProperty, value);
+        get => GetValue(IsEmptyColorModeProperty);
+        set => SetValue(IsEmptyColorModeProperty, value);
+    }
+
+    #endregion
+
+    #region 公共属性定义
+
+    public static readonly RoutedEvent<RoutedEventArgs> ClearRequestEvent =
+        RoutedEvent.Register<SplitButton, RoutedEventArgs>(
+            nameof(ClearRequest),
+            RoutingStrategies.Bubble);
+    
+    public event EventHandler<RoutedEventArgs>? ClearRequest
+    {
+        add => AddHandler(ClearRequestEvent, value);
+        remove => RemoveHandler(ClearRequestEvent, value);
     }
 
     #endregion
@@ -88,11 +112,12 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         set => SetAndRaise(IsCustomSizeProperty, ref _isCustomSize, value);
     }
 
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     #endregion
 
     static ColorBlock()
     {
-        AffectsRender<ColorBlock>(TransparentBgBrushProperty);
+        AffectsRender<ColorBlock>(TransparentBgBrushProperty, IsEmptyColorModeProperty);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -108,7 +133,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         {
             if (change.Property == TransparentBgIntervalColorProperty ||
                 change.Property == TransparentBgSizeProperty ||
-                change.Property == EmptyColorModeProperty)
+                change.Property == IsEmptyColorModeProperty)
             {
                 ConfigureTransparentBgBrush();
             }
@@ -123,7 +148,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
 
     private void ConfigureTransparentBgBrush()
     {
-        if (EmptyColorMode)
+        if (IsEmptyColorMode)
         {
             TransparentBgBrush = Brushes.Transparent;
         }
@@ -144,5 +169,40 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
             SetValue(WidthProperty, Size, BindingPriority.Template);
             SetValue(HeightProperty, Size, BindingPriority.Template);
         }
+    }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        if (IsEmptyColorMode)
+        {
+            using var optionState = context.PushRenderOptions(new RenderOptions
+            {
+                EdgeMode = EdgeMode.Antialias
+            });
+            var startPoint = new Point(2, DesiredSize.Height - 2);
+            var endPoint   = new Point(DesiredSize.Width - 2, 2);
+            context.DrawLine(new Pen(Brushes.Red, 2), startPoint, endPoint);
+        }
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        RaiseEvent(new RoutedEventArgs(ClearRequestEvent));
     }
 }

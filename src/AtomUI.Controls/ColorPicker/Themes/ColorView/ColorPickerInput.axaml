@@ -11,7 +11,8 @@
                                    StyleVariant="Borderless" 
                                    SizeType="Small" 
                                    SelectedIndex="0"
-                                   DockPanel.Dock="Left">
+                                   DockPanel.Dock="Left"
+                                   IsVisible="{TemplateBinding IsFormatEnabled}">
                         <atom:ComboBoxItem Tag="{x:Static atom:ColorFormat.Hex}">HEX</atom:ComboBoxItem>
                         <atom:ComboBoxItem Tag="{x:Static atom:ColorFormat.Hsva}">HSV</atom:ComboBoxItem>
                         <atom:ComboBoxItem Tag="{x:Static atom:ColorFormat.Rgba}">RGB</atom:ComboBoxItem>
@@ -23,7 +24,7 @@
                                         Maximum="100"
                                         FormatString="0'%'"
                                         Increment="1"
-                                        />
+                                        IsVisible="{TemplateBinding IsAlphaVisible}"/>
                     <Panel>
                         <atom:LineEdit Name="{x:Static atom:ColorPickerInputThemeConstants.HexValueInputPart}"
                                        SizeType="Small" 

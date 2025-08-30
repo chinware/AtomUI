@@ -15,43 +15,53 @@
                     Margin="{TemplateBinding Margin}"
                     MinWidth="{TemplateBinding MinWidth}"
                     MinHeight="{TemplateBinding MinHeight}">
-                <StackPanel Name="RootLayout"
+                <StackPanel Name="{x:Static atom:ColorPickerThemeConstants.LayoutRootPart}"
                             Orientation="Horizontal" ClipToBounds="False">
                     <atom:ColorPickerPaletteGroup Name="PaletteGroup" />
-                    <StackPanel Orientation="Vertical" Name="ColorPickerContainer" ClipToBounds="False">
-                        <atom:ColorSpectrum
-                            Name="ColorSpectrum"
-                            Components="SaturationValue"
-                            HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
-                            MaxHue="{TemplateBinding MaxHue}"
-                            MaxSaturation="{TemplateBinding MaxSaturation}"
-                            MaxValue="{TemplateBinding MaxValue}"
-                            MinHue="{TemplateBinding MinHue}"
-                            MinSaturation="{TemplateBinding MinSaturation}"
-                            MinValue="{TemplateBinding MinValue}" />
-                        <DockPanel LastChildFill="True" ClipToBounds="False">
-                            <atom:ColorBlock Name="ColorPreview" 
-                                             Background="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}" 
-                                             DockPanel.Dock="Right"
-                                             Margin="0, 2, 0, 2"/>
-                            <DockPanel Name="SliderContainer" LastChildFill="True" ClipToBounds="False">
-                                <atom:ColorSlider Name="ColorSpectrumThirdComponentSlider" DockPanel.Dock="Top"
-                                                  ColorModel="Hsva"
-                                                  HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
-                                                  IsVisible="{TemplateBinding IsColorSpectrumSliderVisible}"
-                                                  ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.WithoutAlpha}}"/>
-                                <atom:ColorSlider Name="ColorSpectrumAlphaSlider" DockPanel.Dock="Bottom" 
-                                                  ColorComponent="Alpha"
-                                                  ColorModel="Hsva"
-                                                  HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
-                                                  IsEnabled="{TemplateBinding IsAlphaEnabled}"
-                                                  IsVisible="{TemplateBinding IsAlphaVisible}"
-                                                  IsRoundingEnabled="True"
-                                                  ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}"/>
-                                <Control />
+                    <StackPanel Orientation="Vertical" ClipToBounds="False"
+                                Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
+                        <atom:ColorBlock Name="{x:Static atom:ColorPickerThemeConstants.ClearColorPart}"
+                                         HorizontalAlignment="Right" 
+                                         IsEmptyColorMode="True"/>
+                        <StackPanel Orientation="Vertical" Name="ColorPickerContainer" ClipToBounds="False">
+                            <atom:ColorSpectrum
+                                Name="ColorSpectrum"
+                                Components="SaturationValue"
+                                HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
+                                MaxHue="{TemplateBinding MaxHue}"
+                                MaxSaturation="{TemplateBinding MaxSaturation}"
+                                MaxValue="{TemplateBinding MaxValue}"
+                                MinHue="{TemplateBinding MinHue}"
+                                MinSaturation="{TemplateBinding MinSaturation}"
+                                MinValue="{TemplateBinding MinValue}" />
+                            <DockPanel LastChildFill="True" ClipToBounds="False">
+                                <atom:ColorBlock Name="ColorPreview"
+                                                 Background="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}"
+                                                 DockPanel.Dock="Right"
+                                                 Margin="0, 2, 0, 2" />
+                                <Panel Name="SliderContainer" ClipToBounds="False">
+                                    <atom:ColorSlider Name="ColorSpectrumThirdComponentSlider" DockPanel.Dock="Top"
+                                                      ColorModel="Hsva"
+                                                      VerticalAlignment="Top"
+                                                      HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
+                                                      IsVisible="{TemplateBinding IsColorSpectrumSliderVisible}"
+                                                      ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.WithoutAlpha}}" />
+                                    <atom:ColorSlider Name="ColorSpectrumAlphaSlider" DockPanel.Dock="Bottom"
+                                                      ColorComponent="Alpha"
+                                                      ColorModel="Hsva"
+                                                      VerticalAlignment="Bottom"
+                                                      HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
+                                                      IsVisible="{TemplateBinding IsAlphaEffectiveVisible}"
+                                                      IsRoundingEnabled="True"
+                                                      ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}" />
+                                </Panel>
                             </DockPanel>
-                        </DockPanel>
-                        <atom:ColorPickerInput ColorValue="{TemplateBinding HsvValue, Mode=TwoWay}"/>
+                            <atom:ColorPickerInput ColorValue="{TemplateBinding HsvValue, Mode=TwoWay}"
+                                                   Format="{TemplateBinding Format, Mode=TwoWay}"
+                                                   IsFormatEnabled="{TemplateBinding IsFormatEnabled, Mode=TwoWay}"
+                                                   IsAlphaVisible="{TemplateBinding IsAlphaEffectiveVisible}"
+                                                   IsClearEnabled="{TemplateBinding IsClearEnabled}" />
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -74,12 +84,18 @@
         </Style>
 
         <Style Selector="^ /template/ StackPanel#ColorPickerContainer">
-            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginSM}}" />
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingSM}}" />
         </Style>
 
-        <Style Selector="^ /template/ DockPanel#SliderContainer">
+        <Style Selector="^ /template/ Panel#SliderContainer">
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.SliderContainerMargin}}" />
+        </Style>
+
+        <Style Selector="^[IsAlphaEffectiveVisible=False]">
+            <Style Selector="^ /template/ atom|ColorSlider#ColorSpectrumThirdComponentSlider">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
         </Style>
     </Style>
 </ControlTheme>

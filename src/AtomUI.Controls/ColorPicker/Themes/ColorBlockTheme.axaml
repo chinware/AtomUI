@@ -6,20 +6,41 @@
     <ControlTheme x:Key="{x:Type atom:ColorBlock}" TargetType="atom:ColorBlock">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="ColorPreviewFrame"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Background="{TemplateBinding TransparentBgBrush}"
-                        BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}">
-                    <Border Name="ColorPreview"
-                            Background="{TemplateBinding Background}"
+                <Panel>
+                    <Border Name="ColorPreviewFrame"
                             CornerRadius="{TemplateBinding CornerRadius}"
-                            IsVisible="{TemplateBinding EmptyColorMode, Converter={x:Static BoolConverters.Not}}"/>
-                </Border>
+                            Background="{TemplateBinding TransparentBgBrush}"
+                            BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}"
+                            IsVisible="{TemplateBinding IsEmptyColorMode, Converter={x:Static BoolConverters.Not}}">
+                        <Border Name="ColorPreview"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                    </Border>
+                    <Border Name="EmptyColorFrame" 
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            IsVisible="{TemplateBinding IsEmptyColorMode}"
+                            Background="Transparent"/>
+                </Panel>
+                
             </ControlTemplate>
         </Setter>
         
         <Setter Property="TransparentBgIntervalColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
         <Setter Property="TransparentBgSize" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TransparentBgSize}}" />
+        
+        <Style Selector="^[IsEmptyColorMode=True]">
+            <Setter Property="Cursor" Value="Hand" />
+            <Style Selector="^ /template/ Border#EmptyColorFrame">
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
+            </Style>
+            
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ Border#EmptyColorFrame">
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                </Style>
+            </Style>
+        </Style>
         
         <Style Selector="^[IsCustomSize=False]">
             <Style Selector="^[SizeType=Large]">

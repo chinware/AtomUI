@@ -1,3 +1,4 @@
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -36,6 +37,9 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     
     public static readonly StyledProperty<bool> IsFormatEnabledProperty =
         AvaloniaProperty.Register<AbstractColorPickerView, bool>(nameof(IsFormatEnabled));
+    
+    public static readonly StyledProperty<bool> IsClearEnabledProperty =
+        AvaloniaProperty.Register<AbstractColorPickerView, bool>(nameof(IsClearEnabled));
     
     public static readonly StyledProperty<bool> IsAlphaEnabledProperty =
         AvaloniaProperty.Register<AbstractColorPickerView, bool>(
@@ -124,6 +128,12 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         set => SetValue(IsFormatEnabledProperty, value);
     }
     
+    public bool IsClearEnabled
+    {
+        get => GetValue(IsClearEnabledProperty);
+        set => SetValue(IsClearEnabledProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -202,12 +212,28 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     #endregion
     
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<AbstractColorPickerView, bool> IsAlphaEffectiveVisibleProperty =
+        AvaloniaProperty.RegisterDirect<AbstractColorPickerView, bool>(
+            nameof(IsAlphaEffectiveVisible),
+            o => o.IsAlphaEffectiveVisible,
+            (o, v) => o.IsAlphaEffectiveVisible = v);
+    
+    private bool _isAlphaEffectiveVisible;
+
+    internal bool IsAlphaEffectiveVisible
+    {
+        get => _isAlphaEffectiveVisible;
+        set => SetAndRaise(IsAlphaEffectiveVisibleProperty, ref _isAlphaEffectiveVisible, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ColorPickerToken.ID;
     #endregion
     
     protected bool _ignorePropertyChanged = false;
+    private ColorBlock? _clearColorButton;
 
     public AbstractColorPickerView()
     {
@@ -233,6 +259,30 @@ public abstract class AbstractColorPickerView : TemplatedControl,
                 change.GetNewValue<Color>()));
 
             _ignorePropertyChanged = false;
+        }
+
+        if (change.Property == IsAlphaEnabledProperty || change.Property == IsAlphaVisibleProperty)
+        {
+            ConfigureAlphaEffectiveVisible();
+        }
+        else if (change.Property == IsFormatEnabledProperty)
+        {
+            if (!IsFormatEnabled)
+            {
+                SetCurrentValue(FormatProperty, Format == ColorFormat.Hex);
+            }
+        }
+    }
+
+    private void ConfigureAlphaEffectiveVisible()
+    {
+        if (!IsAlphaEnabled)
+        {
+            IsAlphaEffectiveVisible = false;
+        }
+        else
+        {
+            IsAlphaEffectiveVisible = IsAlphaVisible;
         }
     }
     
@@ -279,5 +329,19 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     protected virtual void NotifyColorChanged(ColorChangedEventArgs e)
     {
         ColorChanged?.Invoke(this, e);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureAlphaEffectiveVisible();
+        _clearColorButton = e.NameScope.Find<ColorBlock>(ColorPickerThemeConstants.ClearColorPart);
+        if (_clearColorButton != null)
+        {
+            _clearColorButton.ClearRequest += (sender, args) =>
+            {
+                HsvValue = new HsvColor(0.0, HsvValue.H, HsvValue.S, HsvValue.V);
+            };
+        }
     }
 }
