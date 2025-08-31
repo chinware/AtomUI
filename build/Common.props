@@ -7,6 +7,9 @@
         <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
         <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
 
+        <AtomUITargetFrameworks Condition=" '$(Configuration)' == 'Debug' ">$(AtomUIDevelopTargetFramework)</AtomUITargetFrameworks>
+        <AtomUITargetFrameworks Condition=" '$(Configuration)' == 'Release' ">$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</AtomUITargetFrameworks>
+
         <!-- 'bin/ref/' https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/compiler-options/output#producereferenceassembly -->
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <!-- 'win-x64' https://learn.microsoft.com/zh-cn/dotnet/core/project-sdk/msbuild-props#appendruntimeidentifiertooutputpath -->

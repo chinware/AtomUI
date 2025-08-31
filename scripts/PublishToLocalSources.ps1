@@ -58,6 +58,9 @@ if (!$nativeOnly) {
     dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
     dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
 
+    dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
+    dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
+
     Push-NuGetPackages -Source $localSourcesDir
 }
 
