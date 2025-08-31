@@ -15,14 +15,16 @@
                     Margin="{TemplateBinding Margin}"
                     MinWidth="{TemplateBinding MinWidth}"
                     MinHeight="{TemplateBinding MinHeight}">
-                <StackPanel Name="{x:Static atom:ColorPickerThemeConstants.LayoutRootPart}"
+                <StackPanel Name="{x:Static atom:ColorPickerViewThemeConstants.LayoutRootPart}"
                             Orientation="Horizontal" ClipToBounds="False">
                     <atom:ColorPickerPaletteGroup Name="PaletteGroup" />
                     <StackPanel Orientation="Vertical" ClipToBounds="False"
                                 Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
-                        <atom:ColorBlock Name="{x:Static atom:ColorPickerThemeConstants.ClearColorPart}"
+                        <atom:ColorBlock Name="{x:Static atom:ColorPickerViewThemeConstants.ClearColorPart}"
                                          HorizontalAlignment="Right" 
-                                         IsEmptyColorMode="True"/>
+                                         IsEmptyColorMode="True"
+                                         IsVisible="{TemplateBinding IsClearEnabled}"/>
+                        <atom:GradientColorSlider Name="{x:Static atom:ColorPickerViewThemeConstants.GradientColorSliderPart}"/>
                         <StackPanel Orientation="Vertical" Name="ColorPickerContainer" ClipToBounds="False">
                             <atom:ColorSpectrum
                                 Name="ColorSpectrum"
@@ -72,6 +74,9 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXS}}" />
+        <Style Selector="^ /template/ atom|GradientColorSlider#PART_GradientColorSlider">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
         <Style Selector="^ /template/ atom|ColorSpectrum#ColorSpectrum">
             <Setter Property="MinHeight"
                     Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorSpectrumHeight }}" />

@@ -248,7 +248,7 @@ internal class DataGridToken : AbstractControlDesignToken
     
     #endregion
     
-    protected override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var colorFillSecondarySolid = ColorUtils.OnBackground(SharedToken.ColorFillSecondary, SharedToken.ColorBgContainer);

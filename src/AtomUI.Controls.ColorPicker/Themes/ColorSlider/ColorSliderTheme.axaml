@@ -1,29 +1,25 @@
-<ControlTheme  xmlns="https://github.com/avaloniaui"
-               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-               xmlns:atom="https://atomui.net"
-               xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
-               x:Class="AtomUI.Controls.Themes.AbstractColorSliderTheme"
-               TargetType="atom:AbstractColorSlider"
-               x:ClassModifier="internal">
-    <Style Selector="^:is(atom|AbstractColorSlider)">
-      
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:ColorSlider}" TargetType="atom:ColorSlider">
         <Setter Property="Template">
-            <ControlTemplate TargetType="{x:Type atom:ColorSlider}">
+            <ControlTemplate>
                 <Border CornerRadius="{TemplateBinding CornerRadius}"
                         Margin="{TemplateBinding Padding}">
                     <Panel>
                         <Border HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
-                                CornerRadius="{TemplateBinding CornerRadius}" 
-                                Background="{TemplateBinding TransparentBgBrush}"
-                                />
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{TemplateBinding TransparentBgBrush}" />
                         <Border HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="{TemplateBinding CornerRadius}" 
-                                BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerInsetShadow}}"/>
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerInsetShadow}}" />
                         <atom:ColorPickerSliderTrack Name="PART_Track"
                                                      Height="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderTrackSize}}"
                                                      HorizontalAlignment="Stretch"
@@ -66,18 +62,19 @@
                                                    Margin="0"
                                                    Padding="0"
                                                    DataContext="{TemplateBinding Value}"
-                                                   ColorValueBrush="{TemplateBinding ThumbColorValueBrush}"/>
+                                                   ColorValueBrush="{TemplateBinding ThumbColorValueBrush}" />
                         </atom:ColorPickerSliderTrack>
                     </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>
-        
-        <Setter Property="TransparentBgIntervalColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
-        <Setter Property="TransparentBgSize" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TransparentBgSize}}" />
+
+        <Setter Property="TransparentBgIntervalColor"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
+        <Setter Property="TransparentBgSize"
+                Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TransparentBgSize}}" />
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Height" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderSize}}" />
-        
-    </Style>
 
-</ControlTheme>
+    </ControlTheme>
+</ResourceDictionary>

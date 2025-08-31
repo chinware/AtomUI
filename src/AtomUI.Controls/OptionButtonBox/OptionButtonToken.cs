@@ -111,7 +111,7 @@ public class OptionButtonToken : AbstractControlDesignToken
     {
     }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         ButtonSolidCheckedColor            = SharedToken.ColorTextLightSolid;

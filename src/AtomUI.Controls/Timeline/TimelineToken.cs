@@ -74,7 +74,7 @@ internal class TimelineToken : AbstractControlDesignToken
     /// </summary>
     public double IndicatorDotBorderWidth { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
 

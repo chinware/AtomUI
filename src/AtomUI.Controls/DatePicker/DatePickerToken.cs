@@ -120,7 +120,7 @@ internal class DatePickerToken : AbstractControlDesignToken
     /// </summary>
     public Thickness ButtonsPanelMargin { get; set; }
     
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
 

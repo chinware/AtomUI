@@ -36,7 +36,7 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         AvaloniaProperty.Register<AbstractColorPickerView, ColorFormat>(nameof(Format), ColorFormat.Hex);
     
     public static readonly StyledProperty<bool> IsFormatEnabledProperty =
-        AvaloniaProperty.Register<AbstractColorPickerView, bool>(nameof(IsFormatEnabled));
+        AvaloniaProperty.Register<AbstractColorPickerView, bool>(nameof(IsFormatEnabled), true);
     
     public static readonly StyledProperty<bool> IsClearEnabledProperty =
         AvaloniaProperty.Register<AbstractColorPickerView, bool>(nameof(IsClearEnabled));
@@ -335,7 +335,7 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     {
         base.OnApplyTemplate(e);
         ConfigureAlphaEffectiveVisible();
-        _clearColorButton = e.NameScope.Find<ColorBlock>(ColorPickerThemeConstants.ClearColorPart);
+        _clearColorButton = e.NameScope.Find<ColorBlock>(ColorPickerViewThemeConstants.ClearColorPart);
         if (_clearColorButton != null)
         {
             _clearColorButton.ClearRequest += (sender, args) =>

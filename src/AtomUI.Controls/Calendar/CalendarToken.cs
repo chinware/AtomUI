@@ -101,7 +101,7 @@ internal class CalendarToken : AbstractControlDesignToken
     /// </summary>
     public double RangeCalendarSpacing { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
 

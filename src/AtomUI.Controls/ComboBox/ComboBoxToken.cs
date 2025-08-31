@@ -84,7 +84,7 @@ internal class ComboBoxToken : ButtonSpinnerToken
     /// </summary>
     public double PopupMarginToAnchor { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         OpenIndicatorPadding = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);

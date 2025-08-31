@@ -159,7 +159,7 @@ internal class TabControlToken : AbstractControlDesignToken
     /// </summary>
     public double TabAndContentGutter { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var lineHeight = SharedToken.LineHeightRatio;

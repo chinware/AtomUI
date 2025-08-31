@@ -33,7 +33,7 @@ internal class TagToken : AbstractControlDesignToken
     {
     }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         TagFontSize      = SharedToken.FontSizeSM;

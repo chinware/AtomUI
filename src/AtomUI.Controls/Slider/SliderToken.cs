@@ -131,7 +131,7 @@ public class SliderToken : AbstractControlDesignToken
     public Thickness SliderPaddingVertical { get; set; }
     public Thickness MarginPartWithMark { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         // Thumb line width is always width-er 1px

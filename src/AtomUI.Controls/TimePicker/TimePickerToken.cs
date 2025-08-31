@@ -53,7 +53,7 @@ internal class TimePickerToken : AbstractControlDesignToken
     /// </summary>
     public Thickness HeaderMargin { get; set; }
     
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         ItemWidth                     = 40;

@@ -120,7 +120,7 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     /// </summary>
     public Color OffStateLoadIndicatorColor { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var fontSize      = SharedToken.FontSize;

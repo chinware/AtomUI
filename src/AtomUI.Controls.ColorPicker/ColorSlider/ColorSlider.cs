@@ -1,5 +1,6 @@
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -14,48 +15,49 @@ using Avalonia.Media.Imaging;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 using Thumb = AtomUI.Controls.Primitives.Thumb;
+using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
-[PseudoClasses(StdPseudoClass.Pressed, ColorSliderPseudoClass.DarkSelector, ColorSliderPseudoClass.LightSelector)]
-internal class AbstractColorSlider : RangeBase
+[PseudoClasses(StdPseudoClass.Pressed)]
+internal class ColorSlider : RangeBase
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<Color> ColorProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, Color>(
+        AvaloniaProperty.Register<ColorSlider, Color>(
             nameof(Color),
             Colors.White,
             defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<ColorComponent> ColorComponentProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, ColorComponent>(
+        AvaloniaProperty.Register<ColorSlider, ColorComponent>(
             nameof(ColorComponent),
             ColorComponent.Component1);
     
     public static readonly StyledProperty<ColorModel> ColorModelProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, ColorModel>(
+        AvaloniaProperty.Register<ColorSlider, ColorModel>(
             nameof(ColorModel),
             ColorModel.Rgba);
     
     public static readonly StyledProperty<HsvColor> HsvColorProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, HsvColor>(
+        AvaloniaProperty.Register<ColorSlider, HsvColor>(
             nameof(HsvColor),
             Colors.White.ToHsv(),
             defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<bool> IsAlphaVisibleProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, bool>(
+        AvaloniaProperty.Register<ColorSlider, bool>(
             nameof(IsAlphaVisible),
             false);
     
     public static readonly StyledProperty<bool> IsPerceptiveProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, bool>(
+        AvaloniaProperty.Register<ColorSlider, bool>(
             nameof(IsPerceptive),
             true);
     
     public static readonly StyledProperty<bool> IsRoundingEnabledProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, bool>(
+        AvaloniaProperty.Register<ColorSlider, bool>(
             nameof(IsRoundingEnabled),
             false);
     
@@ -129,16 +131,16 @@ internal class AbstractColorSlider : RangeBase
     #region 内部属性定义
     
     internal static readonly StyledProperty<IBrush?> ThumbColorValueBrushProperty = 
-        AvaloniaProperty.Register<AbstractColorSlider, IBrush?>(nameof (ThumbColorValueBrush));
+        AvaloniaProperty.Register<ColorSlider, IBrush?>(nameof (ThumbColorValueBrush));
 
-    internal static readonly DirectProperty<AbstractColorSlider, double> ThumbSizeProperty =
-        AvaloniaProperty.RegisterDirect<AbstractColorSlider, double>(
+    internal static readonly DirectProperty<ColorSlider, double> ThumbSizeProperty =
+        AvaloniaProperty.RegisterDirect<ColorSlider, double>(
             nameof(ThumbSize),
             o => o.ThumbSize,
             (o, v) => o.ThumbSize = v);
     
-    internal static readonly DirectProperty<AbstractColorSlider, IBrush?> TransparentBgBrushProperty =
-        AvaloniaProperty.RegisterDirect<AbstractColorSlider, IBrush?>(
+    internal static readonly DirectProperty<ColorSlider, IBrush?> TransparentBgBrushProperty =
+        AvaloniaProperty.RegisterDirect<ColorSlider, IBrush?>(
             nameof(TransparentBgBrush),
             o => o.TransparentBgBrush,
             (o, v) => o.TransparentBgBrush = v);
@@ -150,10 +152,10 @@ internal class AbstractColorSlider : RangeBase
     }
     
     internal static readonly StyledProperty<IBrush?> TransparentBgIntervalColorProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, IBrush?>(nameof(TransparentBgIntervalColor));
+        AvaloniaProperty.Register<ColorSlider, IBrush?>(nameof(TransparentBgIntervalColor));
     
     internal static readonly StyledProperty<double> TransparentBgSizeProperty =
-        AvaloniaProperty.Register<AbstractColorSlider, double>(nameof(TransparentBgSize), 4.0);
+        AvaloniaProperty.Register<ColorSlider, double>(nameof(TransparentBgSize), 4.0);
     
     private double _thumbSize = 0.0d;
 
@@ -203,19 +205,26 @@ internal class AbstractColorSlider : RangeBase
     protected internal bool IsDragging;
     protected internal bool IsFocusEngaged;
     protected internal AbstractColorPickerSliderTrack? Track;
+    
     private IDisposable? _pointerMovedDispose;
-
+    private AvaloniaButton? _decreaseButton;
+    private AvaloniaButton? _increaseButton;
+    private IDisposable? _decreaseButtonPressDispose;
+    private IDisposable? _decreaseButtonReleaseDispose;
+    private IDisposable? _increaseButtonSubscription;
+    private IDisposable? _increaseButtonReleaseDispose;
+    
     private const double Tolerance = 0.0001;
 
-    static AbstractColorSlider()
+    static ColorSlider()
     {
-        PressedMixin.Attach<AbstractColorSlider>();
-        FocusableProperty.OverrideDefaultValue<AbstractColorSlider>(true);
-        Thumb.DragStartedEvent.AddClassHandler<AbstractColorSlider>((x, e) => x.NotifyThumbDragStarted(e), RoutingStrategies.Bubble);
-        Thumb.DragCompletedEvent.AddClassHandler<AbstractColorSlider>((x, e) => x.NotifyThumbDragCompleted(e),
+        PressedMixin.Attach<ColorSlider>();
+        FocusableProperty.OverrideDefaultValue<ColorSlider>(true);
+        Thumb.DragStartedEvent.AddClassHandler<ColorSlider>((x, e) => x.NotifyThumbDragStarted(e), RoutingStrategies.Bubble);
+        Thumb.DragCompletedEvent.AddClassHandler<ColorSlider>((x, e) => x.NotifyThumbDragCompleted(e),
             RoutingStrategies.Bubble);
 
-        ValueProperty.OverrideMetadata<AbstractColorSlider>(new(enableDataValidation: true));
+        ValueProperty.OverrideMetadata<ColorSlider>(new(enableDataValidation: true));
     }
 
     protected void ConfigureCornerRadius()
@@ -747,6 +756,41 @@ internal class AbstractColorSlider : RangeBase
         {
             TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
         }
+        _decreaseButtonPressDispose?.Dispose();
+        _decreaseButtonReleaseDispose?.Dispose();
+        _increaseButtonSubscription?.Dispose();
+        _increaseButtonReleaseDispose?.Dispose();
+
+        Track = e.NameScope.Find<ColorPickerSliderTrack>(ColorSliderThemeConstants.TrackPart);
+
+        if (Track != null)
+        {
+            Track.IgnoreThumbDrag = true;
+
+            _decreaseButton = e.NameScope.Find<AvaloniaButton>(ColorSliderThemeConstants.DecreaseButtonPart);
+            _increaseButton = e.NameScope.Find<AvaloniaButton>(ColorSliderThemeConstants.IncreaseButtonPart);
+
+            if (_decreaseButton != null)
+            {
+                _decreaseButtonPressDispose = _decreaseButton.AddDisposableHandler(PointerPressedEvent, TrackPressed, RoutingStrategies.Tunnel);
+                _decreaseButtonReleaseDispose = _decreaseButton.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
+            }
+
+            if (_increaseButton != null)
+            {
+                _increaseButtonSubscription = _increaseButton.AddDisposableHandler(PointerPressedEvent, TrackPressed, RoutingStrategies.Tunnel);
+                _increaseButtonReleaseDispose = _increaseButton.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
+            }
+        }
     }
-    
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size = base.MeasureOverride(availableSize);
+        if (Track is ColorPickerSliderTrack track)
+        {
+            ThumbSize = track.Thumb?.DesiredSize.Width ?? 0.0d;
+        }
+        return size;
+    }
 }

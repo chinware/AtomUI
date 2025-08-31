@@ -1,9 +1,10 @@
 namespace AtomUI.Controls.Themes;
 
-internal static class ColorPickerThemeConstants
+internal static class ColorPickerViewThemeConstants
 {
     public const string LayoutRootPart = "PART_LayoutRoot";
     public const string ClearColorPart = "PART_ClearColor";
+    public const string GradientColorSliderPart = "PART_GradientColorSlider";
 }
 
 internal static class ColorSpectrumThemeConstants

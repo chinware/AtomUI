@@ -63,7 +63,7 @@ internal class AlertToken : AbstractControlDesignToken
     /// </summary>
     public Thickness DescriptionLabelMargin { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         const double paddingHorizontal = 12; // Fixed value here.

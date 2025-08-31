@@ -54,7 +54,7 @@ internal class ToolTipToken : AbstractControlDesignToken
     /// </summary>
     public double ToolTipArrowSize { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
 

@@ -59,7 +59,7 @@ internal class BreadcrumbToken : AbstractControlDesignToken
     {
     }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         IconSize                    = SharedToken.IconSize;

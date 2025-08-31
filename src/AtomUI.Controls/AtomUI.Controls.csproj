@@ -21,6 +21,7 @@
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI" />
         <InternalsVisibleTo Include="AtomUI.Controls.DataGrid" />
+        <InternalsVisibleTo Include="AtomUI.Controls.ColorPicker" />
     </ItemGroup>
 
     <ItemGroup>

@@ -254,7 +254,7 @@ internal class ButtonToken : AbstractControlDesignToken
     {
     }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var fontSize   = SharedToken.FontSize;

@@ -47,7 +47,7 @@ internal class LoadingIndicatorToken : AbstractControlDesignToken
     /// </summary>
     public TimeSpan IndicatorDuration { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var controlHeightLG = SharedToken.ControlHeightLG;

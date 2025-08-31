@@ -79,7 +79,7 @@ internal class ListBoxToken : AbstractControlDesignToken
     /// </summary>
     public Thickness ItemMargin { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         var colorTextDisabled  = SharedToken.ColorTextDisabled;

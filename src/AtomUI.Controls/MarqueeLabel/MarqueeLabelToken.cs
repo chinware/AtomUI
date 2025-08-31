@@ -22,7 +22,7 @@ internal class MarqueeLabelToken : AbstractControlDesignToken
     {
     }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         CycleSpace   = 200;

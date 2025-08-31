@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        <RootNamespace>AtomUI.Controls</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <ProjectReference Include="../AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj"/>
+        <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj"/>
+        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all"/>
+        <ProjectReference Include="../AtomUI.Controls/AtomUI.Controls.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PackageReference Include="AtomUI"/>
+        <PackageReference Include="AtomUI.Generator" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
+                          PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Themes\AbstractColorPickerTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorBlockTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorPickerTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorPickerThemes.axaml" />
+      <AdditionalFiles Include="Themes\ColorSlider\AbstractColorPickerSliderTrackTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorSlider\ColorPickerSliderTrackTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorSlider\ColorSliderTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorSlider\ColorSliderThumbTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorSlider\GradientColorPickerTrackTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorSlider\GradientColorSliderTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorView\AbstractColorPickerViewTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorView\ColorPickerInput.axaml" />
+      <AdditionalFiles Include="Themes\ColorView\ColorPickerViewTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorView\ColorSpectrumTheme.axaml" />
+      <AdditionalFiles Include="Themes\ColorView\GradientColorPickerViewTheme.axaml" />
+      <AdditionalFiles Include="Themes\GradientColorPickerTheme.axaml" />
+    </ItemGroup>
+</Project>

@@ -15,7 +15,7 @@ internal class AdornerLayerToken : AbstractControlDesignToken
     
     public Thickness FocusVisualMargin { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         FocusVisualMargin = new Thickness(0);

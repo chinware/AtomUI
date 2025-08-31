@@ -98,7 +98,7 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
         return type.GetProperty(tokenName, BindingFlags.Instance | BindingFlags.Public) is not null;
     }
 
-    protected internal virtual void CalculateFromAlias()
+    public virtual void CalculateFromAlias()
     {
     }
 

@@ -23,7 +23,7 @@ public class ArrowDecoratedBoxToken : AbstractControlDesignToken
     {
     }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         ArrowSize = SharedToken.SizePopupArrow / 1.3;

@@ -246,7 +246,7 @@ internal class MenuToken : AbstractControlDesignToken
     /// </summary>
     public double SeparatorItemHeight { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
 

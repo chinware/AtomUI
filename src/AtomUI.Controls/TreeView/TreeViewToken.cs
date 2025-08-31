@@ -74,7 +74,7 @@ internal class TreeViewToken : AbstractControlDesignToken
     /// </summary>
     public double DragIndicatorLineWidth { get; set; }
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         TitleHeight = SharedToken.ControlHeightSM;

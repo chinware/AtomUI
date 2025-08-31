@@ -98,7 +98,7 @@ internal class PaginationToken : AbstractControlDesignToken
     {
     }
     
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         ItemBg                    = SharedToken.ColorBgContainer;

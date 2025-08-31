@@ -64,7 +64,7 @@ internal class ExpanderToken : AbstractControlDesignToken
 
     #endregion
 
-    protected internal override void CalculateFromAlias()
+    public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
         HeaderPadding            = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingSM);
