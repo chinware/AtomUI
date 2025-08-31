@@ -6,6 +6,31 @@
     <ControlTheme x:Key="{x:Type atom:GradientColorSlider}" TargetType="atom:GradientColorSlider">
         <Setter Property="Template">
             <ControlTemplate>
+                <Border CornerRadius="{TemplateBinding CornerRadius}"
+                        Margin="{TemplateBinding Padding}">
+                    <Panel>
+                        <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{TemplateBinding TransparentBgBrush}" />
+                        <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerInsetShadow}}" />
+                        <atom:ColorPickerSliderTrack Name="PART_Track"
+                                                     Height="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderTrackSize}}"
+                                                     HorizontalAlignment="Stretch"
+                                                     VerticalAlignment="Center"
+                                                     Minimum="{TemplateBinding Minimum}"
+                                                     Maximum="{TemplateBinding Maximum}"
+                                                     Value="{TemplateBinding Value, Mode=TwoWay}"
+                                                     ClipToBounds="False">
+                        </atom:ColorPickerSliderTrack>
+                    </Panel>
+                </Border>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

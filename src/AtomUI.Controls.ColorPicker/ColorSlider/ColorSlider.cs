@@ -4,7 +4,6 @@ using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -13,14 +12,13 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Utilities;
-using Avalonia.VisualTree;
 using Thumb = AtomUI.Controls.Primitives.Thumb;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed)]
-internal class ColorSlider : RangeBase
+internal class ColorSlider : AbstractColorSlider
 {
     #region 公共属性定义
 
@@ -139,23 +137,11 @@ internal class ColorSlider : RangeBase
             o => o.ThumbSize,
             (o, v) => o.ThumbSize = v);
     
-    internal static readonly DirectProperty<ColorSlider, IBrush?> TransparentBgBrushProperty =
-        AvaloniaProperty.RegisterDirect<ColorSlider, IBrush?>(
-            nameof(TransparentBgBrush),
-            o => o.TransparentBgBrush,
-            (o, v) => o.TransparentBgBrush = v);
-    
     internal IBrush? ThumbColorValueBrush
     {
         get => GetValue(ThumbColorValueBrushProperty);
         set => SetValue(ThumbColorValueBrushProperty, value);
     }
-    
-    internal static readonly StyledProperty<IBrush?> TransparentBgIntervalColorProperty =
-        AvaloniaProperty.Register<ColorSlider, IBrush?>(nameof(TransparentBgIntervalColor));
-    
-    internal static readonly StyledProperty<double> TransparentBgSizeProperty =
-        AvaloniaProperty.Register<ColorSlider, double>(nameof(TransparentBgSize), 4.0);
     
     private double _thumbSize = 0.0d;
 
@@ -165,25 +151,6 @@ internal class ColorSlider : RangeBase
         set => SetAndRaise(ThumbSizeProperty, ref _thumbSize, value);
     }
     
-    private IBrush? _transparentBgBrush;
-
-    internal IBrush? TransparentBgBrush
-    {
-        get => _transparentBgBrush;
-        set => SetAndRaise(TransparentBgBrushProperty, ref _transparentBgBrush, value);
-    }
-    
-    internal IBrush? TransparentBgIntervalColor
-    {
-        get => GetValue(TransparentBgIntervalColorProperty);
-        set => SetValue(TransparentBgIntervalColorProperty, value);
-    }
-    
-    internal double TransparentBgSize
-    {
-        get => GetValue(TransparentBgSizeProperty);
-        set => SetValue(TransparentBgSizeProperty, value);
-    }
     #endregion
     
     public event EventHandler<ColorChangedEventArgs>? ColorChanged;
@@ -195,15 +162,11 @@ internal class ColorSlider : RangeBase
     /// <remarks>
     /// This should match the default <see cref="ColorSpectrum.MaxHue"/> property.
     /// </remarks>
-    private const double MaxHue = 359;
+    internal const double MaxHue = 359;
     
-    protected bool IgnorePropertyChanged = false;
-
     private Bitmap? _backgroundBitmap;
     
     // Slider required parts
-    protected internal bool IsDragging;
-    protected internal bool IsFocusEngaged;
     protected internal AbstractColorPickerSliderTrack? Track;
     
     private IDisposable? _pointerMovedDispose;
@@ -213,23 +176,13 @@ internal class ColorSlider : RangeBase
     private IDisposable? _decreaseButtonReleaseDispose;
     private IDisposable? _increaseButtonSubscription;
     private IDisposable? _increaseButtonReleaseDispose;
-    
-    private const double Tolerance = 0.0001;
 
     static ColorSlider()
     {
-        PressedMixin.Attach<ColorSlider>();
-        FocusableProperty.OverrideDefaultValue<ColorSlider>(true);
         Thumb.DragStartedEvent.AddClassHandler<ColorSlider>((x, e) => x.NotifyThumbDragStarted(e), RoutingStrategies.Bubble);
         Thumb.DragCompletedEvent.AddClassHandler<ColorSlider>((x, e) => x.NotifyThumbDragCompleted(e),
             RoutingStrategies.Bubble);
-
         ValueProperty.OverrideMetadata<ColorSlider>(new(enableDataValidation: true));
-    }
-
-    protected void ConfigureCornerRadius()
-    {
-        CornerRadius = new CornerRadius(Height / 2);
     }
     
     private void TrackMoved(object? sender, PointerEventArgs e)
@@ -245,10 +198,6 @@ internal class ColorSlider : RangeBase
         }
     }
     
-    protected void TrackReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        IsDragging = false;
-    }
     
     protected void TrackPressed(object? sender, PointerPressedEventArgs e)
     {
@@ -274,27 +223,6 @@ internal class ColorSlider : RangeBase
         var finalValue  = calcVal * range + Minimum;
         
         SetCurrentValue(ValueProperty, finalValue);
-    }
-    
-    protected override void UpdateDataValidation(
-        AvaloniaProperty property,
-        BindingValueType state,
-        Exception? error)
-    {
-        if (property == ValueProperty)
-        {
-            DataValidationErrors.SetError(this, error);
-        }
-    }
-    
-    protected virtual void NotifyThumbDragStarted(VectorEventArgs e)
-    {
-        IsDragging = true;
-    }
-    
-    protected virtual void NotifyThumbDragCompleted(VectorEventArgs e)
-    {
-        IsDragging = false;
     }
     
     /// <summary>
@@ -620,10 +548,7 @@ internal class ColorSlider : RangeBase
                     return rgbColor;
             }
         }
-        else
-        {
-            return rgbColor;
-        }
+        return rgbColor;
     }
         
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -720,23 +645,6 @@ internal class ColorSlider : RangeBase
 
             IgnorePropertyChanged = false;
         }
-        else if (change.Property == HeightProperty ||
-                 change.Property == WidthProperty)
-        {
-            ConfigureCornerRadius();
-        }
-        
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == TransparentBgIntervalColorProperty ||
-                change.Property == TransparentBgSizeProperty)
-            {
-                if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
-                {
-                    TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
-                }
-            }
-        }
 
         base.OnPropertyChanged(change);
     }
@@ -751,11 +659,6 @@ internal class ColorSlider : RangeBase
         base.OnApplyTemplate(e);
         _pointerMovedDispose?.Dispose();
         _pointerMovedDispose = this.AddDisposableHandler(PointerMovedEvent, TrackMoved, RoutingStrategies.Tunnel);
-        
-        if (TransparentBgIntervalColor != null && TransparentBgIntervalColor is ISolidColorBrush solidColorBrush)
-        {
-            TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
-        }
         _decreaseButtonPressDispose?.Dispose();
         _decreaseButtonReleaseDispose?.Dispose();
         _increaseButtonSubscription?.Dispose();
