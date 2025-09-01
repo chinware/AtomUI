@@ -68,6 +68,14 @@ internal class ColorPickerInput : TemplatedControl
    private NumericUpDown? _gValueInput;
    private NumericUpDown? _bValueInput;
    private bool _ignoringConfigureValues;
+   private bool _alphaInputPassiveChanged;
+   private bool _hexValueInputPassiveChanged;
+   private bool _hValueInputPassiveChanged;
+   private bool _sValueInputPassiveChanged;
+   private bool _vValueInputPassiveChanged;
+   private bool _rValueInputPassiveChanged;
+   private bool _gValueInputPassiveChanged;
+   private bool _bValueInputPassiveChanged;
    
    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
    {
@@ -107,6 +115,11 @@ internal class ColorPickerInput : TemplatedControl
       {
          _alphaInput.ValueChanged += (sender, args) =>
          {
+            if (_alphaInputPassiveChanged)
+            {
+               _alphaInputPassiveChanged = false;
+               return;
+            }
             SyncInputValue();
          };
       }
@@ -115,6 +128,11 @@ internal class ColorPickerInput : TemplatedControl
       {
          _hexValueInput.TextChanged += (sender, args) =>
          {
+            if (_hexValueInputPassiveChanged)
+            {
+               _hexValueInputPassiveChanged = false;
+               return;
+            }
             SyncInputValue();
          };
       }
@@ -123,6 +141,11 @@ internal class ColorPickerInput : TemplatedControl
       {
          _hValueInput.ValueChanged += (sender, args) =>
          {
+            if (_hValueInputPassiveChanged)
+            {
+               _hValueInputPassiveChanged = false;
+               return;
+            }
             SyncInputValue();
          };
       }
@@ -131,6 +154,11 @@ internal class ColorPickerInput : TemplatedControl
       {
          _sValueInput.ValueChanged += (sender, args) =>
          {
+            if (_sValueInputPassiveChanged)
+            {
+               _sValueInputPassiveChanged = false;
+               return;
+            }
             SyncInputValue();
          };
       }
@@ -139,6 +167,11 @@ internal class ColorPickerInput : TemplatedControl
       {
          _vValueInput.ValueChanged += (sender, args) =>
          {
+            if (_vValueInputPassiveChanged)
+            {
+               _vValueInputPassiveChanged = false;
+               return;
+            }
             SyncInputValue();
          };
       }
@@ -147,6 +180,11 @@ internal class ColorPickerInput : TemplatedControl
       {
          _rValueInput.ValueChanged += (sender, args) =>
          {
+            if (_rValueInputPassiveChanged)
+            {
+               _rValueInputPassiveChanged = false;
+               return;
+            }
             SyncInputValue();
          };
       }
@@ -155,6 +193,11 @@ internal class ColorPickerInput : TemplatedControl
       {
          _gValueInput.ValueChanged += (sender, args) =>
          {
+            if (_gValueInputPassiveChanged)
+            {
+               _gValueInputPassiveChanged = false;
+               return;
+            }
             SyncInputValue();
          };
       }
@@ -163,6 +206,11 @@ internal class ColorPickerInput : TemplatedControl
       {
          _bValueInput.ValueChanged += (sender, args) =>
          {
+            if (_bValueInputPassiveChanged)
+            {
+               _bValueInputPassiveChanged = false;
+               return;
+            }
             SyncInputValue();
          };
       }
@@ -182,6 +230,14 @@ internal class ColorPickerInput : TemplatedControl
 
    private void ConfigureColorValues()
    {
+      _alphaInputPassiveChanged    = true;
+      _hexValueInputPassiveChanged = true;
+      _hValueInputPassiveChanged   = true;
+      _sValueInputPassiveChanged   = true;
+      _vValueInputPassiveChanged   = true;
+      _rValueInputPassiveChanged   = true;
+      _gValueInputPassiveChanged   = true;
+      _bValueInputPassiveChanged   = true;
       if (Format == ColorFormat.Hex)
       {
          var rgbValue = ColorValue.ToRgb();
@@ -196,12 +252,10 @@ internal class ColorPickerInput : TemplatedControl
          {
             _hValueInput.Value = (int)ColorValue.H;
          }
-
          if (_sValueInput != null)
          {
             _sValueInput.Value = new decimal(ColorValue.S * 100);
          }
-         
          if (_vValueInput != null)
          {
             _vValueInput.Value = new decimal(ColorValue.V * 100);

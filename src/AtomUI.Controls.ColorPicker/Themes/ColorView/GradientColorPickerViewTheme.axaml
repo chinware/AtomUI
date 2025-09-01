@@ -9,7 +9,7 @@
             <themes:AbstractColorPickerViewTheme TargetType="atom:GradientColorPickerView" />
         </ControlTheme.BasedOn>
         <Style Selector="^ /template/ atom|GradientColorSlider#PART_GradientColorSlider">
-            <Setter Property="IsVisible" Value="False"/>
+            <Setter Property="IsVisible" Value="True"/>
         </Style>
       
     </ControlTheme>

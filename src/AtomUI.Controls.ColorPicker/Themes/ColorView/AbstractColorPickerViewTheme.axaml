@@ -24,7 +24,8 @@
                                          HorizontalAlignment="Right" 
                                          IsEmptyColorMode="True"
                                          IsVisible="{TemplateBinding IsClearEnabled}"/>
-                        <atom:GradientColorSlider Name="{x:Static atom:ColorPickerViewThemeConstants.GradientColorSliderPart}"/>
+                        <atom:GradientColorSlider Name="{x:Static atom:ColorPickerViewThemeConstants.GradientColorSliderPart}"
+                                                  ActivatedHsvValue="{TemplateBinding HsvValue, Mode=TwoWay}"/>
                         <StackPanel Orientation="Vertical" Name="ColorPickerContainer" ClipToBounds="False">
                             <atom:ColorSpectrum
                                 Name="ColorSpectrum"

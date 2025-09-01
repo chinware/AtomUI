@@ -14,18 +14,6 @@ public abstract class AbstractColorPickerView : TemplatedControl,
                                                 IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
-    public static readonly StyledProperty<Color> ValueProperty =
-        AvaloniaProperty.Register<AbstractColorPickerView, Color>(nameof(Value),
-            Colors.White,
-            defaultBindingMode: BindingMode.TwoWay,
-            coerce: CoerceColor);
-    
-    public static readonly StyledProperty<HsvColor> HsvValueProperty =
-        AvaloniaProperty.Register<AbstractColorPickerView, HsvColor>(
-            nameof(HsvValue),
-            Colors.White.ToHsv(),
-            defaultBindingMode: BindingMode.TwoWay,
-            coerce: CoerceHsvColor);
     
     public static readonly StyledProperty<ColorSpectrumComponents> ColorSpectrumComponentsProperty =
         AvaloniaProperty.Register<AbstractColorPickerView, ColorSpectrumComponents>(
@@ -97,18 +85,6 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     public static readonly StyledProperty<List<ColorPickerPalette>?> PaletteGroupProperty =
         AvaloniaProperty.Register<AbstractColorPickerView, List<ColorPickerPalette>?>(
             nameof(PaletteGroup));
-    
-    public Color Value
-    {
-        get => GetValue(ValueProperty);
-        set => SetValue(ValueProperty, value);
-    }
-    
-    public HsvColor HsvValue
-    {
-        get => GetValue(HsvValueProperty);
-        set => SetValue(HsvValueProperty, value);
-    }
     
     public ColorSpectrumComponents ColorSpectrumComponents
     {
@@ -207,17 +183,26 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     }
     #endregion
     
-    #region 公共事件定义
-    public event EventHandler<ColorChangedEventArgs>? ColorChanged;
-    #endregion
-    
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<HsvColor> HsvValueProperty =
+        AvaloniaProperty.Register<AbstractColorPickerView, HsvColor>(
+            nameof(HsvValue),
+            Colors.White.ToHsv(),
+            defaultBindingMode: BindingMode.TwoWay,
+            coerce: CoerceHsvColor);
     
     internal static readonly DirectProperty<AbstractColorPickerView, bool> IsAlphaEffectiveVisibleProperty =
         AvaloniaProperty.RegisterDirect<AbstractColorPickerView, bool>(
             nameof(IsAlphaEffectiveVisible),
             o => o.IsAlphaEffectiveVisible,
             (o, v) => o.IsAlphaEffectiveVisible = v);
+    
+    internal HsvColor HsvValue
+    {
+        get => GetValue(HsvValueProperty);
+        set => SetValue(HsvValueProperty, value);
+    }
     
     private bool _isAlphaEffectiveVisible;
 
@@ -232,8 +217,8 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     string IControlSharedTokenResourcesHost.TokenId => ColorPickerToken.ID;
     #endregion
     
-    protected bool _ignorePropertyChanged = false;
     private ColorBlock? _clearColorButton;
+    private protected bool IgnorePropertyChanged = false;
 
     public AbstractColorPickerView()
     {
@@ -243,23 +228,6 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (_ignorePropertyChanged)
-        {
-            base.OnPropertyChanged(change);
-            return;
-        }
-        if (change.Property == ValueProperty)
-        {
-            _ignorePropertyChanged = true;
-
-            SetCurrentValue(HsvValueProperty, Value.ToHsv());
-
-            NotifyColorChanged(new ColorChangedEventArgs(
-                change.GetOldValue<Color>(),
-                change.GetNewValue<Color>()));
-
-            _ignorePropertyChanged = false;
-        }
 
         if (change.Property == IsAlphaEnabledProperty || change.Property == IsAlphaVisibleProperty)
         {
@@ -286,7 +254,7 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         }
     }
     
-    private static Color CoerceColor(AvaloniaObject instance, Color value)
+    internal static Color CoerceColor(AvaloniaObject instance, Color value)
     {
         if (instance is AbstractColorPickerView colorView)
         {
@@ -326,10 +294,6 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         return value;
     }
 
-    protected virtual void NotifyColorChanged(ColorChangedEventArgs e)
-    {
-        ColorChanged?.Invoke(this, e);
-    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

@@ -17,6 +17,8 @@ namespace AtomUI.Controls;
 
 internal class ColorSliderThumb : Thumb, IResourceBindingManager
 {
+    protected override Type StyleKeyOverride { get; } = typeof(ColorSliderThumb);
+    
     public static readonly StyledProperty<IBrush?> ColorValueBrushProperty = 
         AvaloniaProperty.Register<ColorSliderThumb, IBrush?>(nameof (ColorValueBrush));
     

@@ -10,11 +10,11 @@
                     <Border Name="ColorPreviewFrame"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Background="{TemplateBinding TransparentBgBrush}"
-                            BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}"
                             IsVisible="{TemplateBinding IsEmptyColorMode, Converter={x:Static BoolConverters.Not}}">
                         <Border Name="ColorPreview"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}"/>
                     </Border>
                     <Border Name="EmptyColorFrame" 
                             CornerRadius="{TemplateBinding CornerRadius}"

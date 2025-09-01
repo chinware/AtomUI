@@ -33,27 +33,5 @@
         <PackageReference Include="AtomUI.Generator" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
                           PrivateAssets="all"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Avalonia"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Themes\AbstractColorPickerTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorBlockTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorPickerTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorPickerThemes.axaml" />
-      <AdditionalFiles Include="Themes\ColorSlider\AbstractColorPickerSliderTrackTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorSlider\ColorPickerSliderTrackTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorSlider\ColorSliderTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorSlider\ColorSliderThumbTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorSlider\GradientColorPickerTrackTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorSlider\GradientColorSliderTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorView\AbstractColorPickerViewTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorView\ColorPickerInput.axaml" />
-      <AdditionalFiles Include="Themes\ColorView\ColorPickerViewTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorView\ColorSpectrumTheme.axaml" />
-      <AdditionalFiles Include="Themes\ColorView\GradientColorPickerViewTheme.axaml" />
-      <AdditionalFiles Include="Themes\GradientColorPickerTheme.axaml" />
-    </ItemGroup>
+    
 </Project>
