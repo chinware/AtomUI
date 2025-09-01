@@ -9,13 +9,14 @@
     <Style Selector="^:is(atom|AbstractColorPicker)">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Placement" Value="BottomEdgeAlignedLeft" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TriggerPadding}}" />
 
-        <Style Selector="^:pointerover">
+        <Style Selector="^:pointerover, ^:flyout-open">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
         </Style>
 

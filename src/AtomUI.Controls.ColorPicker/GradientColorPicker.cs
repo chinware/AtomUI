@@ -37,4 +37,9 @@ public class GradientColorPicker : AbstractColorPicker
     protected override void GenerateColorBlockBackground()
     {
     }
+
+    protected override Flyout CreatePickerFlyout()
+    {
+        return default!;
+    }
 }

@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -43,6 +44,16 @@ public class ColorPickerView : AbstractColorPickerView
                 change.GetNewValue<Color>()));
 
             IgnorePropertyChanged = false;
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == HsvValueProperty)
+            {
+                NotifyColorChanged(new ColorChangedEventArgs(
+                    change.GetOldValue<HsvColor>().ToRgb(),
+                    change.GetNewValue<HsvColor>().ToRgb()));
+            }
         }
     }
     

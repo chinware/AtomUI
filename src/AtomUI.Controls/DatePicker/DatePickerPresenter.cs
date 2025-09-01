@@ -87,8 +87,8 @@ internal class DatePickerPresenter : PickerPresenterBase,
     public static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
         AvaloniaProperty.Register<DatePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DatePickerPresenter>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DatePickerPresenter>();
 
     internal bool IsMotionEnabled
     {

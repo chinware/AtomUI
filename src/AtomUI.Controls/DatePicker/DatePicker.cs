@@ -167,14 +167,13 @@ public class DatePicker : InfoPickerInput,
         var flyout = new DatePickerFlyout();
         flyout.IsDetectMouseClickEnabled = false;
         _flyoutBindingDisposables?.Dispose();
-        _flyoutBindingDisposables = new CompositeDisposable(7);
+        _flyoutBindingDisposables = new CompositeDisposable(6);
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerFlyout.IsMotionEnabledProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, DatePickerPresenter.IsMotionEnabledProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, SelectedDateTimeProperty, flyout, DatePickerPresenter.SelectedDateTimeProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, DatePickerPresenter.IsNeedConfirmProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, flyout, DatePickerPresenter.IsShowNowProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowTimeProperty, flyout, DatePickerPresenter.IsShowTimeProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, DatePickerPresenter.ClockIdentifierProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, SelectedDateTimeProperty, flyout, DatePickerFlyout.SelectedDateTimeProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, flyout, DatePickerFlyout.IsNeedConfirmProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, flyout, DatePickerFlyout.IsShowNowProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowTimeProperty, flyout, DatePickerFlyout.IsShowTimeProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, flyout, DatePickerFlyout.ClockIdentifierProperty));
         
         return flyout;
     }

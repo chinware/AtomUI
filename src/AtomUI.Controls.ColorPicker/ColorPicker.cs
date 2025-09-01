@@ -1,4 +1,6 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls.ColorPickerLang;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using Avalonia;
@@ -31,7 +33,7 @@ public class ColorPicker : AbstractColorPicker
     public Color? Value
     {
         get => GetValue(ValueProperty);
-        set => SetValue(ValueProperty, value);
+        private set => SetValue(ValueProperty, value);
     }
     
     public static Func<Color, ColorFormat, string>? GetColorTextFormatter(ColorPicker colorPicker)
@@ -62,6 +64,9 @@ public class ColorPicker : AbstractColorPicker
     }
 
     #endregion
+    
+    private ColorPickerView? _presenter;
+    private CompositeDisposable? _flyoutBindingDisposables;
     
     static ColorPicker()
     {
@@ -136,5 +141,55 @@ public class ColorPicker : AbstractColorPicker
     {
         base.OnApplyTemplate(e);
         Value ??= DefaultValue;
+    }
+    
+    protected override Flyout CreatePickerFlyout()
+    {
+        var flyout = new ColorPickerFlyout();
+        flyout.IsDetectMouseClickEnabled = false;
+        _flyoutBindingDisposables?.Dispose();
+        _flyoutBindingDisposables = new CompositeDisposable(7);
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, ColorPickerFlyout.IsMotionEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, FormatProperty, flyout, ColorPickerFlyout.FormatProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsAlphaEnabledProperty, flyout, ColorPickerFlyout.IsAlphaEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsFormatEnabledProperty, flyout, ColorPickerFlyout.IsFormatEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PaletteGroupProperty, flyout, ColorPickerFlyout.PaletteGroupProperty));
+        
+        return flyout;
+    }
+    
+    protected override void NotifyFlyoutPresenterCreated(Control control)
+    {
+        if (control is FlyoutPresenter flyoutPresenter && flyoutPresenter.Content is ColorPickerView presenter)
+        {
+            _presenter              =  presenter;
+            _presenter.ValueChanged += HandleColorPickerViewValueChanged;
+        }
+    }
+
+    private void HandleColorPickerViewValueChanged(object? sender, ColorChangedEventArgs args)
+    {
+        SetCurrentValue(ValueProperty, args.NewColor);
+    }
+
+    protected override void NotifyFlyoutOpened()
+    {
+        if (PickerFlyout is ColorPickerFlyout colorPickerFlyout)
+        {
+            var effectiveColor = Value ?? DefaultValue;
+            if (effectiveColor != null)
+            {
+                colorPickerFlyout.SetCurrentValue(ColorPickerFlyout.ValueProperty, effectiveColor);
+            }
+        }
+    }
+    
+    protected override void NotifyFlyoutClosed()
+    {
+        if (_presenter != null)
+        {
+            _presenter.ValueChanged -= HandleColorPickerViewValueChanged;
+            _presenter              =  null;
+        }
     }
 }

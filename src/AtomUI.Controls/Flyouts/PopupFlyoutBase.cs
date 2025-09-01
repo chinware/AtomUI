@@ -338,6 +338,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     protected void HandlePopupClosed()
     {
         Popup.SetLogicalParent(null);
+        Popup.Child = null;
 
         // Ensure this isn't active
         _transientDisposable?.Dispose();

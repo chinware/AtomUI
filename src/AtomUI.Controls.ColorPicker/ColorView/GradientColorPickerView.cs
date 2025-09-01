@@ -10,23 +10,27 @@ namespace AtomUI.Controls;
 public class GradientColorPickerView : AbstractColorPickerView
 {
     #region 公共属性定义
-    public static readonly StyledProperty<GradientBrush?> DefaultValueProperty =
-        AvaloniaProperty.Register<GradientColorPickerView, GradientBrush?>(nameof(DefaultValue));
+    public static readonly StyledProperty<LinearGradientBrush?> DefaultValueProperty =
+        AvaloniaProperty.Register<GradientColorPickerView, LinearGradientBrush?>(nameof(DefaultValue));
     
-    public static readonly StyledProperty<GradientBrush?> ValueProperty =
-        AvaloniaProperty.Register<GradientColorPickerView, GradientBrush?>(nameof(Value));
+    public static readonly StyledProperty<LinearGradientBrush?> ValueProperty =
+        AvaloniaProperty.Register<GradientColorPickerView, LinearGradientBrush?>(nameof(Value));
     
-    public GradientBrush? DefaultValue
+    public LinearGradientBrush? DefaultValue
     {
         get => GetValue(DefaultValueProperty);
         set => SetValue(DefaultValueProperty, value);
     }
     
-    public GradientBrush? Value
+    public LinearGradientBrush? Value
     {
         get => GetValue(ValueProperty);
         set => SetValue(ValueProperty, value);
     }
+    #endregion
+    
+    #region 公共事件定义
+    public event EventHandler<GradientColorChangedEventArgs>? GradientValueChanged;
     #endregion
 
     private GradientColorSlider? _gradientColorSlider;
@@ -38,22 +42,21 @@ public class GradientColorPickerView : AbstractColorPickerView
             base.OnPropertyChanged(change);
             return;
         }
-        // if (change.Property == ValueProperty)
-        // {
-        //     IgnorePropertyChanged = true;
-        //
-        //     SetCurrentValue(HsvValueProperty, Value.ToHsv());
-        //
-        //     NotifyColorChanged(new ColorChangedEventArgs(
-        //         change.GetOldValue<Color>(),
-        //         change.GetNewValue<Color>()));
-        //
-        //     IgnorePropertyChanged = false;
-        // }
+        if (change.Property == ValueProperty)
+        {
+            NotifyGradientValueChanged(new GradientColorChangedEventArgs(
+                change.GetOldValue<LinearGradientBrush>(),
+                change.GetNewValue<LinearGradientBrush>()));
+        }
         if (change.Property == DefaultValueProperty)
         {
             Value ??= DefaultValue;
         }
+    }
+    
+    protected virtual void NotifyGradientValueChanged(GradientColorChangedEventArgs e)
+    {
+        GradientValueChanged?.Invoke(this, e);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

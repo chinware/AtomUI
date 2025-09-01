@@ -302,7 +302,7 @@ internal class ColorSpectrum : TemplatedControl
     /// <summary>
     /// Initializes a new instance of the <see cref="ColorSpectrum"/> class.
     /// </summary>
-    public ColorSpectrum() : base()
+    public ColorSpectrum()
     {
         _componentsFromLastBitmapCreation    = Components;
         _imageWidthFromLastBitmapCreation    = 0;
@@ -331,7 +331,7 @@ internal class ColorSpectrum : TemplatedControl
 
         if (_inputTarget != null)
         {
-            _inputTarget.PointerEntered  += InputTarget_PointerEntered;
+            _inputTarget.PointerEntered  += HandleInputTargetPointerEntered;
             _inputTarget.PointerExited   += HandleInputTargetPointerExited;
             _inputTarget.PointerPressed  += HandleInputTargetPointerPressed;
             _inputTarget.PointerMoved    += HandleInputTargetPointerMoved;
@@ -385,7 +385,7 @@ internal class ColorSpectrum : TemplatedControl
         //  See discussion: https://github.com/AvaloniaUI/Avalonia/discussions/9077
         //
         // To work-around this issue the selection ellipse is refreshed here.
-        UpdateEllipse();
+        Dispatcher.UIThread.Post(UpdateEllipse);
 
         // OnAttachedToVisualTree is called after OnApplyTemplate so events cannot be connected here
     }
@@ -404,7 +404,7 @@ internal class ColorSpectrum : TemplatedControl
 
         if (_inputTarget != null)
         {
-            _inputTarget.PointerEntered  -= InputTarget_PointerEntered;
+            _inputTarget.PointerEntered  -= HandleInputTargetPointerEntered;
             _inputTarget.PointerExited   -= HandleInputTargetPointerExited;
             _inputTarget.PointerPressed  -= HandleInputTargetPointerPressed;
             _inputTarget.PointerMoved    -= HandleInputTargetPointerMoved;
@@ -731,7 +731,6 @@ internal class ColorSpectrum : TemplatedControl
         SetCurrentValue(ColorProperty, newRgb.ToColor(hsvColor.A));
 
         _updatingColor = false;
-
         UpdateEllipse();
         UpdateBitmapSources();
         RaiseColorChanged();
@@ -1062,7 +1061,6 @@ internal class ColorSpectrum : TemplatedControl
         var scale = LayoutHelper.GetLayoutScale(this);
         Canvas.SetLeft(_selectionEllipsePanel, (xPosition / scale) - (_selectionEllipsePanel.Width / 2));
         Canvas.SetTop(_selectionEllipsePanel, (yPosition / scale) - (_selectionEllipsePanel.Height / 2));
-
         // We only want to bother with the color name tool tip if we can provide color names.
         if (IsFocused &&
             _selectionEllipsePanel != null &&
@@ -1070,12 +1068,12 @@ internal class ColorSpectrum : TemplatedControl
         {
             ToolTip.SetIsOpen(_selectionEllipsePanel, true);
         }
-
+     
         UpdatePseudoClasses();
     }
 
     /// <inheritdoc cref="InputElement.PointerEntered"/>
-    private void InputTarget_PointerEntered(object? sender, PointerEventArgs args)
+    private void HandleInputTargetPointerEntered(object? sender, PointerEventArgs args)
     {
         UpdatePseudoClasses();
         args.Handled = true;
@@ -1246,7 +1244,6 @@ internal class ColorSpectrum : TemplatedControl
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             ColorSpectrumComponents components2 = Components;
-
             _minBitmap = ColorPickerHelpers.CreateBitmapFromPixelData(bgraMinPixelData, pixelWidth, pixelHeight);
             _maxBitmap = ColorPickerHelpers.CreateBitmapFromPixelData(bgraMaxPixelData, pixelWidth, pixelHeight);
 
@@ -1466,7 +1463,6 @@ internal class ColorSpectrum : TemplatedControl
         {
             return;
         }
-
         HsvColor                hsvColor   = HsvColor;
         ColorSpectrumComponents components = Components;
 

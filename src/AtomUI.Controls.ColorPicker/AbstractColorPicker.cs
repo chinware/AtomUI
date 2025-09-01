@@ -1,21 +1,27 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Data;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
+using AtomUIFlyout = AtomUI.Controls.Flyout;
 
 public abstract class AbstractColorPicker : AvaloniaButton, 
                                             ISizeTypeAware,
@@ -34,13 +40,13 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         ArrowDecoratedBox.IsShowArrowProperty.AddOwner<AbstractColorPicker>();
 
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
-        AtomUI.Controls.Flyout.IsPointAtCenterProperty.AddOwner<AbstractColorPicker>();
+        AtomUIFlyout.IsPointAtCenterProperty.AddOwner<AbstractColorPicker>();
     
     public static readonly StyledProperty<PlacementMode> PlacementProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<AbstractColorPicker>();
+        Popup.PlacementProperty.AddOwner<AbstractColorPicker>();
     
     public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<AbstractColorPicker>();
+        Popup.PlacementGravityProperty.AddOwner<AbstractColorPicker>();
 
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         Popup.MarginToAnchorProperty.AddOwner<AbstractColorPicker>();
@@ -66,6 +72,9 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractColorPicker>();
 
+    public static readonly StyledProperty<List<ColorPickerPalette>?> PaletteGroupProperty =
+        AbstractColorPickerView.PaletteGroupProperty.AddOwner<AbstractColorPicker>();
+
     public ColorFormat Format
     {
         get => GetValue(FormatProperty);
@@ -88,6 +97,36 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         get => GetValue(IsPointAtCenterProperty);
         set => SetValue(IsPointAtCenterProperty, value);
+    }
+    
+    public PlacementMode Placement
+    {
+        get => GetValue(PlacementProperty);
+        set => SetValue(PlacementProperty, value);
+    }
+    
+    public PopupGravity PlacementGravity
+    {
+        get => GetValue(PlacementGravityProperty);
+        set => SetValue(PlacementGravityProperty, value);
+    }
+    
+    public double MarginToAnchor
+    {
+        get => GetValue(MarginToAnchorProperty);
+        set => SetValue(MarginToAnchorProperty, value);
+    }
+    
+    public int MouseEnterDelay
+    {
+        get => GetValue(MouseEnterDelayProperty);
+        set => SetValue(MouseEnterDelayProperty, value);
+    }
+
+    public int MouseLeaveDelay
+    {
+        get => GetValue(MouseLeaveDelayProperty);
+        set => SetValue(MouseLeaveDelayProperty, value);
     }
     
     public bool IsAlphaEnabled
@@ -120,6 +159,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
+    public List<ColorPickerPalette>? PaletteGroup
+    {
+        get => GetValue(PaletteGroupProperty);
+        set => SetValue(PaletteGroupProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -145,6 +190,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
+    
+    private protected readonly FlyoutStateHelper FlyoutStateHelper;
+    private protected Flyout? PickerFlyout;
+    private protected bool IsFlyoutOpen;
+    private CompositeDisposable? _flyoutBindingDisposables;
+    private CompositeDisposable? _flyoutHelperBindingDisposables;
 
     static AbstractColorPicker()
     {
@@ -156,6 +207,13 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public AbstractColorPicker()
     {
         this.RegisterResources();
+        FlyoutStateHelper = new FlyoutStateHelper();
+        FlyoutStateHelper.FlyoutAboutToShow        += HandleFlyoutAboutToShow;
+        FlyoutStateHelper.FlyoutAboutToClose       += HandleFlyoutAboutToClose;
+        FlyoutStateHelper.FlyoutOpened             += HandleFlyoutOpened;
+        FlyoutStateHelper.FlyoutClosed             += HandleFlyoutClosed;
+        FlyoutStateHelper.OpenFlyoutPredicate      =  FlyoutOpenPredicate;
+        FlyoutStateHelper.ClickHideFlyoutPredicate =  ClickHideFlyoutPredicate;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -165,12 +223,33 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this)));
+        _flyoutHelperBindingDisposables?.Dispose();
+        _flyoutHelperBindingDisposables = new CompositeDisposable(3);
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, FlyoutStateHelper,
+            FlyoutStateHelper.TriggerTypeProperty));
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseEnterDelayProperty, FlyoutStateHelper,
+            FlyoutStateHelper.MouseEnterDelayProperty));
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseLeaveDelayProperty, FlyoutStateHelper,
+            FlyoutStateHelper.MouseLeaveDelayProperty));
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+        _flyoutHelperBindingDisposables?.Dispose();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        FlyoutStateHelper.NotifyAttachedToVisualTree();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        FlyoutStateHelper.NotifyDetachedFromVisualTree();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -221,5 +300,137 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         base.OnUnloaded(e);
         Transitions = null;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        if (PickerFlyout is null)
+        {
+            PickerFlyout = CreatePickerFlyout();
+            PickerFlyout.Opened += (sender, args) =>
+            {
+                IsFlyoutOpen = true;
+                UpdatePseudoClasses();
+            };
+            PickerFlyout.Closed += (sender, args) =>
+            {
+                IsFlyoutOpen = false;
+                UpdatePseudoClasses();
+            };
+            PickerFlyout.PresenterCreated += (sender, args) => { NotifyFlyoutPresenterCreated(args.Presenter); };
+            FlyoutStateHelper.Flyout      =  PickerFlyout;
+        }
+        FlyoutStateHelper.AnchorTarget = this;
+        SetupFlyoutProperties();
+    }
+
+    protected virtual void SetupFlyoutProperties()
+    {
+        if (PickerFlyout is not null)
+        {
+            _flyoutBindingDisposables?.Dispose();
+            _flyoutBindingDisposables = new CompositeDisposable(5);
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, PickerFlyout, PopupFlyoutBase.PlacementProperty));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, PickerFlyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, PickerFlyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, PickerFlyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, PickerFlyout, AtomUIFlyout.IsMotionEnabledProperty));
+        }
+    }
+    
+    protected abstract Flyout CreatePickerFlyout();
+    
+    protected virtual void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
+    {
+    }
+    
+    protected virtual void NotifyFlyoutClosed()
+    {
+    }
+    
+    private void HandleFlyoutClosed(object? sender, EventArgs args)
+    {
+        NotifyFlyoutClosed();
+    }
+    
+    private void HandleFlyoutOpened(object? sender, EventArgs args)
+    {
+        NotifyFlyoutOpened();
+    }
+
+    protected virtual void NotifyFlyoutOpened()
+    {
+    }
+    
+    private void HandleFlyoutAboutToClose(object? sender, EventArgs args)
+    {
+        NotifyFlyoutAboutToClose();
+    }
+
+    protected virtual void NotifyFlyoutAboutToClose()
+    {
+    }
+    
+    private void HandleFlyoutAboutToShow(object? sender, EventArgs args)
+    {
+        NotifyFlyoutAboutToShow();
+    }
+
+    protected virtual void NotifyFlyoutAboutToShow()
+    {
+    }
+    
+    public void ClosePickerFlyout()
+    {
+        FlyoutStateHelper.HideFlyout(true);
+    }
+    
+    protected virtual bool FlyoutOpenPredicate(Point position)
+    {
+        if (!IsEnabled)
+        {
+            return false;
+        }
+        var pos = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+        if (!pos.HasValue)
+        {
+            return false;
+        }
+
+        var region = new Rect(pos.Value, Bounds.Size);
+        return region.Contains(position);
+    }
+    
+    protected virtual bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        if (hostProvider.PopupHost != args.Root)
+        {
+            if (args.Root is PopupRoot root)
+            {
+                var parent = root.Parent;
+                while (parent != null)
+                {
+                    if (parent == hostProvider.PopupHost)
+                    {
+                        return false;
+                    }
+
+                    if (parent is Control parentControl && parentControl.GetVisualRoot() == hostProvider.PopupHost)
+                    {
+                        return false;
+                    }
+                    parent = parent.Parent;
+                }
+            }
+  
+            return true;
+        }
+        return false;
+    }
+    
+    protected virtual void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(StdPseudoClass.FlyoutOpen, IsFlyoutOpen);
     }
 }
