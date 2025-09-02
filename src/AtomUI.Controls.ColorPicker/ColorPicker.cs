@@ -5,6 +5,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Converters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Media;
@@ -23,6 +24,9 @@ public class ColorPicker : AbstractColorPicker
     
     public static readonly AttachedProperty<Func<Color, ColorFormat, string>?> ColorTextFormatterProperty =
         AvaloniaProperty.RegisterAttached<ColorPicker, Control, Func<Color, ColorFormat, string>?>("ColorTextFormatter");
+    
+    public static readonly StyledProperty<ColorPickerValueSyncMode> ValueSyncStrategyProperty =
+        AvaloniaProperty.Register<ColorPicker, ColorPickerValueSyncMode>(nameof(ValueSyncStrategy), ColorPickerValueSyncMode.Immediate);
     
     public Color? DefaultValue
     {
@@ -45,6 +49,16 @@ public class ColorPicker : AbstractColorPicker
     {
         colorPicker.SetValue(ColorTextFormatterProperty, formatter);
     }
+    
+    public ColorPickerValueSyncMode ValueSyncStrategy
+    {
+        get => GetValue(ValueSyncStrategyProperty);
+        set => SetValue(ValueSyncStrategyProperty, value);
+    }
+    #endregion
+    
+    #region 公共事件定义
+    public event EventHandler<ColorChangedEventArgs>? ValueChanged;
     #endregion
 
     #region 内部属性定义
@@ -67,6 +81,7 @@ public class ColorPicker : AbstractColorPicker
     
     private ColorPickerView? _presenter;
     private CompositeDisposable? _flyoutBindingDisposables;
+    private Color? _latestSyncValue;
     
     static ColorPicker()
     {
@@ -80,6 +95,7 @@ public class ColorPicker : AbstractColorPicker
         {
             GenerateValueText();
             GenerateColorBlockBackground();
+            NotifyValueChanged(new ColorChangedEventArgs(change.GetOldValue<Color?>(), change.GetNewValue<Color?>()));
         }
 
         if (this.IsAttachedToVisualTree())
@@ -100,27 +116,16 @@ public class ColorPicker : AbstractColorPicker
                 var customFormatter = GetColorTextFormatter(this);
                 if (customFormatter != null)
                 {
-                    SetValue(ColorTextProperty, customFormatter(Value.Value, Format), BindingPriority.Template);
+                    SetCurrentValue(ColorTextProperty, customFormatter(Value.Value, Format));
                 }
                 else
                 {
-                    if (Format == ColorFormat.Hex)
-                    {
-                        SetValue(ColorTextProperty, Value.ToString(), BindingPriority.Template);
-                    }
-                    else if (Format == ColorFormat.Rgba)
-                    {
-                        SetValue(ColorTextProperty, $"rgb({(int)Value.Value.R},{(int)Value.Value.G},{(int)Value.Value.B})", BindingPriority.Template);
-                    }
-                    else if (Format == ColorFormat.Hsva)
-                    {
-                        SetValue(ColorTextProperty, Value.Value.ToHsv().ToString(), BindingPriority.Template);
-                    }
+                    SetCurrentValue(ColorTextProperty, FormatColor(Value.Value));
                 }
             }
             else
             {
-                this.AddResourceBindingDisposable(LanguageResourceBinder.CreateBinding(this, ColorTextProperty, ColorPickerLangResourceKey.EmptyColorText));
+                SetCurrentValue(ColorTextProperty, EmptyColorText);
             }
         }
     }
@@ -129,11 +134,11 @@ public class ColorPicker : AbstractColorPicker
     {
         if (Value == null)
         {
-            ColorBlockBackground = new SolidColorBrush(Colors.Transparent);
+            SetCurrentValue(ColorBlockBackgroundProperty, new SolidColorBrush(Colors.Transparent));
         }
         else
         {
-            ColorBlockBackground = new SolidColorBrush(Value.Value);
+            SetCurrentValue(ColorBlockBackgroundProperty, new SolidColorBrush(Value.Value));
         }
     }
 
@@ -150,6 +155,7 @@ public class ColorPicker : AbstractColorPicker
         _flyoutBindingDisposables?.Dispose();
         _flyoutBindingDisposables = new CompositeDisposable(7);
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, ColorPickerFlyout.IsMotionEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsClearEnabledProperty, flyout, ColorPickerFlyout.IsClearEnabledProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, FormatProperty, flyout, ColorPickerFlyout.FormatProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsAlphaEnabledProperty, flyout, ColorPickerFlyout.IsAlphaEnabledProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsFormatEnabledProperty, flyout, ColorPickerFlyout.IsFormatEnabledProperty));
@@ -169,7 +175,14 @@ public class ColorPicker : AbstractColorPicker
 
     private void HandleColorPickerViewValueChanged(object? sender, ColorChangedEventArgs args)
     {
-        SetCurrentValue(ValueProperty, args.NewColor);
+        if (ValueSyncStrategy == ColorPickerValueSyncMode.Immediate)
+        {
+            SetCurrentValue(ValueProperty, args.NewColor);
+        }
+        else
+        {
+            _latestSyncValue = args.NewColor;
+        }
     }
 
     protected override void NotifyFlyoutOpened()
@@ -188,8 +201,17 @@ public class ColorPicker : AbstractColorPicker
     {
         if (_presenter != null)
         {
+            if (ValueSyncStrategy == ColorPickerValueSyncMode.OnCompleted)
+            {
+                SetCurrentValue(ValueProperty, _latestSyncValue);
+            }
             _presenter.ValueChanged -= HandleColorPickerViewValueChanged;
             _presenter              =  null;
         }
+    }
+    
+    internal void NotifyValueChanged(ColorChangedEventArgs e)
+    {
+        ValueChanged?.Invoke(this, e);
     }
 }

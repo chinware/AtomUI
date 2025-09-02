@@ -11,12 +11,12 @@
                     <Panel>
                         <Border HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
+                                Height="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderTrackSize}}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 Background="{TemplateBinding TransparentBgBrush}" />
                         <Border HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
+                                Height="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderTrackSize}}"
                                 Background="{TemplateBinding GradientValue}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerInsetShadow}}" />

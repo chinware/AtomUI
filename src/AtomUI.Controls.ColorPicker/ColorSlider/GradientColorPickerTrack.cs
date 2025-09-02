@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -29,34 +28,38 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
     }
     
     internal List<GradientColorSliderThumb> Thumbs { get; } = new ();
-    private double? _originActivatedOffset; // 用在渐变重新配置的适合
     private bool _ignoringPropertyChanged;
     
     #endregion
 
     static GradientColorPickerTrack()
     {
-        AffectsArrange<GradientColorPickerTrack>(GradientValueProperty);
+        AffectsArrange<GradientColorPickerTrack>(GradientValueProperty, ActivatedThumbProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(change);
         if (_ignoringPropertyChanged)
         {
+            base.OnPropertyChanged(change);
             return;
         }
+
         if (change.Property == GradientValueProperty)
         {
-            if (ActivatedThumb != null)
-            {
-                _originActivatedOffset = ActivatedThumb.Value;
-            }
             ConfigureThumbs();
         }
+   
         else if (change.Property == ValueProperty)
         {
             SyncGradientValueFromThumbs();
+        }
+        else if (change.Property == ActivatedThumbProperty)
+        {
+            foreach (var thumb in Thumbs)
+            {
+                ConfigureActivatedThumb(thumb, ActivatedThumb == thumb);
+            }
         }
     }
 
@@ -102,6 +105,12 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
                         LogicalChildren.Remove(thumb);
                         VisualChildren.Remove(thumb);
                     }
+
+                    if (ActivatedThumb != null && !Thumbs.Contains(ActivatedThumb))
+                    {
+                        Debug.Assert(Thumbs.Count > 0);
+                        SetCurrentValue(ActivatedThumbProperty, Thumbs.First());
+                    }
                 }
             }
             else
@@ -117,31 +126,6 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
         }
 
         ConfigureThumbsColor();
-
-        if (_originActivatedOffset != null)
-        {
-            foreach (var thumb in Thumbs)
-            {
-                if (MathUtils.AreClose(thumb.Value, _originActivatedOffset.Value))
-                {
-                    ActivatedThumb = thumb;
-                }
-            }
-
-            _originActivatedOffset = null;
-        }
-        else
-        {
-            if (Thumbs.Count > 0)
-            {
-                ActivatedThumb = Thumbs[0];
-            }
-        }
-        
-        foreach (var thumb in Thumbs)
-        {
-            ConfigureActivatedThumb(thumb, ActivatedThumb == thumb);
-        }
         
         InvalidateArrange();
     }
@@ -194,16 +178,26 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
                 VisualChildren.Add(thumb);
             }
 
+            SetCurrentValue(ActivatedThumbProperty, thumb);
             using var scope = BeginIgnoringPropertyChanged();
             SetCurrentValue(ValueProperty, thumb.Value);
-            ActivatedThumb = thumb;
         }
         foreach (var thumb in Thumbs)
         {
             ConfigureActivatedThumb(thumb, ActivatedThumb == thumb);
         }
         InvalidateMeasure();
+        Debug.Assert(ActivatedThumb != null);
         return ActivatedThumb;
+    }
+
+    internal void SetActiveThumb(int index)
+    {
+        if (index >= 0 && index < Thumbs.Count)
+        {
+            SetCurrentValue(ActivatedThumbProperty, Thumbs[index]);
+            SetCurrentValue(ValueProperty, Thumbs[index].Value);
+        }
     }
 
     private void ConfigureActivatedThumb(GradientColorSliderThumb thumb, bool isActivated)
@@ -334,9 +328,20 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
         {
             newLinearGradients.GradientStops.Add(new GradientStop(thumb.Color, thumb.Value));
         }
+
+        using var scope = BeginIgnoringPropertyChanged();
         SetCurrentValue(GradientValueProperty, newLinearGradients);
     }
     
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (GradientValue != null)
+        {
+            ConfigureThumbs();
+        }
+    }
+
     private IgnorePropertyChanged BeginIgnoringPropertyChanged() => new IgnorePropertyChanged(this);
     
     private readonly struct IgnorePropertyChanged : IDisposable
@@ -351,4 +356,5 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
 
         public void Dispose() => _owner._ignoringPropertyChanged = false;
     }
+    
 }

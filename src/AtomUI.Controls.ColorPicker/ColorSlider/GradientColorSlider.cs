@@ -1,4 +1,5 @@
 using AtomUI.Controls.Themes;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -17,17 +18,27 @@ internal class GradientColorSlider : AbstractColorSlider
     public static readonly StyledProperty<LinearGradientBrush?> GradientValueProperty =
         AvaloniaProperty.Register<GradientColorSlider, LinearGradientBrush?>(nameof(GradientValue));
     
-    internal static readonly StyledProperty<HsvColor> ActivatedHsvValueProperty =
-        AvaloniaProperty.Register<AbstractColorPickerView, HsvColor>(
-            nameof(ActivatedHsvValue),
-            Colors.White.ToHsv(),
-            defaultBindingMode: BindingMode.TwoWay);
-    
     public LinearGradientBrush? GradientValue
     {
         get => GetValue(GradientValueProperty);
         set => SetValue(GradientValueProperty, value);
     }
+    
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<HsvColor> ActivatedHsvValueProperty =
+        AvaloniaProperty.Register<GradientColorSlider, HsvColor>(
+            nameof(ActivatedHsvValue),
+            Colors.White.ToHsv(),
+            defaultBindingMode: BindingMode.TwoWay);
+    
+    internal static readonly DirectProperty<GradientColorSlider, int?> ActivatedStopIndexProperty =
+        AvaloniaProperty.RegisterDirect<GradientColorSlider, int?>(
+            nameof(ActivatedStopIndex),
+            o => o.ActivatedStopIndex,
+            (o, v) => o.ActivatedStopIndex = v);
     
     internal HsvColor ActivatedHsvValue
     {
@@ -35,15 +46,33 @@ internal class GradientColorSlider : AbstractColorSlider
         set => SetValue(ActivatedHsvValueProperty, value);
     }
     
+    private int? _activatedStopIndex;
+
+    internal int? ActivatedStopIndex
+    {
+        get => _activatedStopIndex;
+        set => SetAndRaise(ActivatedStopIndexProperty, ref _activatedStopIndex, value);
+    }
+
     #endregion
     
     #region 公共事件定义
     public event EventHandler<GradientColorChangedEventArgs>? GradientValueChanged;
     #endregion
     
+    internal static readonly RoutedEvent<GradientActiveStopChangedEventArgs> GradientActiveStopChangedEvent =
+        RoutedEvent.Register<Thumb, GradientActiveStopChangedEventArgs>(nameof(GradientActiveStopChanged), RoutingStrategies.Bubble);
+    
+    public event EventHandler<GradientActiveStopChangedEventArgs>? GradientActiveStopChanged
+    {
+        add => AddHandler(GradientActiveStopChangedEvent, value);
+        remove => RemoveHandler(GradientActiveStopChangedEvent, value);
+    }
+    
     private IDisposable? _pressDispose;
     private IDisposable? _releaseDispose;
     private IDisposable? _activatedThumbDispose;
+    private bool _ignoreSetActiveThumb;
 
     static GradientColorSlider()
     {
@@ -71,9 +100,9 @@ internal class GradientColorSlider : AbstractColorSlider
             _pressDispose = this.AddDisposableHandler(PointerPressedEvent, TrackPressed, RoutingStrategies.Tunnel);
             _releaseDispose = this.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
             _activatedThumbDispose = GradientColorPickerTrack.ActivatedThumbProperty.Changed.Subscribe(HandleActivatedThumbChanged);
-            if (track.ActivatedThumb != null)
+            if (ActivatedStopIndex != null)
             {
-                SyncValueFromActivatedThumb(track.ActivatedThumb);
+                track.SetActiveThumb(ActivatedStopIndex.Value);
             }
         }
     }
@@ -115,9 +144,28 @@ internal class GradientColorSlider : AbstractColorSlider
 
             if (thumb != null)
             {
-                IsDragging = true;
+                IsDragging            = true;
+                _ignoreSetActiveThumb = true;
+                SetCurrentValue(ActivatedStopIndexProperty, GetActivatedStopIndex());
             }
         }
+    }
+
+    private int? GetActivatedStopIndex()
+    {
+        if (Track is GradientColorPickerTrack track && track.ActivatedThumb != null)
+        {
+            var stops = track.Thumbs.OrderBy(thumb => thumb.Value).ToList();
+            for (int i = 0; i < stops.Count; i++)
+            {
+                if (MathUtils.AreClose(stops[i].Value, track.ActivatedThumb.Value))
+                {
+                    return i;
+                }
+            }
+        }
+
+        return null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -134,6 +182,26 @@ internal class GradientColorSlider : AbstractColorSlider
                 track.NotifyActivateStopColorChanged(ActivatedHsvValue);
             }
         }
+        else if (change.Property == ActivatedStopIndexProperty)
+        {
+            RaiseEvent(new GradientActiveStopChangedEventArgs(GradientActiveStopChangedEvent, this)
+            {
+                OldIndex = change.GetOldValue<int?>(),
+                NewIndex = change.GetNewValue<int?>()
+            });
+            if (_ignoreSetActiveThumb)
+            {
+                _ignoreSetActiveThumb = false;
+                return;
+            }
+            if (Track is GradientColorPickerTrack track)
+            {
+                if (ActivatedStopIndex != null)
+                {
+                    track.SetActiveThumb(ActivatedStopIndex.Value);
+                }
+            }
+        }
     }
     
     protected override Size MeasureOverride(Size availableSize)
@@ -147,5 +215,15 @@ internal class GradientColorSlider : AbstractColorSlider
             }
         }
         return size;
+    }
+    
+    protected override void TrackMoved(object? sender, PointerEventArgs e)
+    {
+        base.TrackMoved(sender, e);
+        if (IsDragging)
+        {
+            _ignoreSetActiveThumb = true;
+            SetCurrentValue(ActivatedStopIndexProperty, GetActivatedStopIndex());
+        }
     }
 }

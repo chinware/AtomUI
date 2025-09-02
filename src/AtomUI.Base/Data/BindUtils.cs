@@ -30,14 +30,14 @@ public static class BindUtils
             }
         }
 
-        var descriptor = new IndexerDescriptor
+        var binding = new Binding()
         {
             Source   = source,
-            Property = sourceProperty,
+            Path     = sourceProperty.Name,
             Priority = priority,
             Mode     = mode
         };
-        return target.Bind(targetProperty, descriptor);
+        return target.Bind(targetProperty, binding);
     }
 
     public static IDisposable RelayBind<TSource, TResult>(AvaloniaObject source,

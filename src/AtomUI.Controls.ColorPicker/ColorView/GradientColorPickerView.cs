@@ -3,7 +3,9 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -32,6 +34,24 @@ public class GradientColorPickerView : AbstractColorPickerView
     #region 公共事件定义
     public event EventHandler<GradientColorChangedEventArgs>? GradientValueChanged;
     #endregion
+    
+    #region 内部属性定义
+    
+    internal static readonly DirectProperty<GradientColorPickerView, int?> ActivatedStopIndexProperty =
+        AvaloniaProperty.RegisterDirect<GradientColorPickerView, int?>(
+            nameof(ActivatedStopIndex),
+            o => o.ActivatedStopIndex,
+            (o, v) => o.ActivatedStopIndex = v);
+    
+    private int? _activatedStopIndex;
+
+    internal int? ActivatedStopIndex
+    {
+        get => _activatedStopIndex;
+        set => SetAndRaise(ActivatedStopIndexProperty, ref _activatedStopIndex, value);
+    }
+
+    #endregion
 
     private GradientColorSlider? _gradientColorSlider;
     
@@ -48,9 +68,16 @@ public class GradientColorPickerView : AbstractColorPickerView
                 change.GetOldValue<LinearGradientBrush>(),
                 change.GetNewValue<LinearGradientBrush>()));
         }
-        if (change.Property == DefaultValueProperty)
+
+        if (this.IsAttachedToVisualTree())
         {
-            Value ??= DefaultValue;
+            if (change.Property == DefaultValueProperty)
+            {
+                if (Value == null)
+                {
+                    SetCurrentValue(ValueProperty, DefaultValue);
+                }
+            }
         }
     }
     
@@ -63,11 +90,16 @@ public class GradientColorPickerView : AbstractColorPickerView
     {
         base.OnApplyTemplate(e);
         _gradientColorSlider = e.NameScope.Find<GradientColorSlider>(ColorPickerViewThemeConstants.GradientColorSliderPart);
+     
         if (_gradientColorSlider != null)
         {
-            BindUtils.RelayBind(this, ValueProperty, _gradientColorSlider, GradientColorSlider.GradientValueProperty);
+            BindUtils.RelayBind(this, ValueProperty, _gradientColorSlider, GradientColorSlider.GradientValueProperty, BindingMode.TwoWay);
+            BindUtils.RelayBind(this, ActivatedStopIndexProperty, _gradientColorSlider, GradientColorSlider.ActivatedStopIndexProperty, BindingMode.TwoWay);
         }
 
-        Value ??= DefaultValue;
+        if (Value == null)
+        {
+            SetCurrentValue(ValueProperty, DefaultValue);
+        }
     }
 }

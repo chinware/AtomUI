@@ -8,6 +8,7 @@ using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Converters;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
@@ -22,6 +23,12 @@ namespace AtomUI.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 using AtomUIFlyout = AtomUI.Controls.Flyout;
+
+public enum ColorPickerValueSyncMode
+{
+    Immediate,
+    OnCompleted
+}
 
 public abstract class AbstractColorPicker : AvaloniaButton, 
                                             ISizeTypeAware,
@@ -66,11 +73,17 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public static readonly StyledProperty<bool> IsShowTextProperty =
         AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(IsShowText));
     
+    public static readonly StyledProperty<bool> IsClearEnabledProperty =
+        AbstractColorPickerView.IsClearEnabledProperty.AddOwner<AbstractColorPicker>();
+    
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AbstractColorPicker>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractColorPicker>();
+    
+    public static readonly StyledProperty<string> EmptyColorTextProperty =
+        AvaloniaProperty.Register<AbstractColorPicker, string>(nameof(EmptyColorText), string.Empty);
 
     public static readonly StyledProperty<List<ColorPickerPalette>?> PaletteGroupProperty =
         AbstractColorPickerView.PaletteGroupProperty.AddOwner<AbstractColorPicker>();
@@ -147,6 +160,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(IsShowTextProperty, value);
     }
     
+    public bool IsClearEnabled
+    {
+        get => GetValue(IsClearEnabledProperty);
+        set => SetValue(IsClearEnabledProperty, value);
+    }
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -157,6 +176,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public string EmptyColorText
+    {
+        get => GetValue(EmptyColorTextProperty);
+        set => SetValue(EmptyColorTextProperty, value);
     }
     
     public List<ColorPickerPalette>? PaletteGroup
@@ -432,5 +457,18 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected virtual void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.FlyoutOpen, IsFlyoutOpen);
+    }
+
+    protected string FormatColor(Color color)
+    {
+        if (Format == ColorFormat.Hex)
+        {
+            return ColorToHexConverter.ToHexString(color, AlphaComponentPosition.Leading, false, true);
+        }
+        if (Format == ColorFormat.Rgba)
+        {
+            return $"rgb({(int)color.R},{(int)color.G},{(int)color.B})";
+        }
+        return color.ToHsv().ToString();
     }
 }

@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:colorPickerLang="clr-namespace:AtomUI.Controls.ColorPickerLang"
     x:Class="AtomUI.Controls.Themes.AbstractColorPickerTheme"
     TargetType="atom:AbstractColorPicker"
     x:ClassModifier="internal">
@@ -15,6 +16,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TriggerPadding}}" />
+        <Setter Property="EmptyColorText" Value="{DynamicResource {x:Static colorPickerLang:ColorPickerLangResourceKey.EmptyColorText}}" />
 
         <Style Selector="^:pointerover, ^:flyout-open">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />
@@ -41,12 +43,13 @@
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         </Style>
 
-        <Style Selector="^ /template/ atom|TextBlock#ColorText">
+        <Style Selector="^ /template/ TextBlock#PART_ColorText">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TriggerTextMargin}}"/>
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|TextBlock#ColorText">
+            <Style Selector="^ /template/ TextBlock#PART_ColorText">
                 <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             </Style>

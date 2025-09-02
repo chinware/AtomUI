@@ -8,5 +8,43 @@
         <ControlTheme.BasedOn>
             <themes:AbstractColorPickerTheme TargetType="atom:GradientColorPicker" />
         </ControlTheme.BasedOn>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}">
+                    <DockPanel LastChildFill="True">
+                        <atom:ColorBlock Name="{x:Static atom:ColorPickerThemeConstants.ColorIndicatorPart}"
+                                         SizeType="{TemplateBinding SizeType}"
+                                         Background="{TemplateBinding ColorBlockBackground}"
+                                         VerticalAlignment="Top"
+                                         DockPanel.Dock="Left"/>
+                        <Panel VerticalAlignment="Center">
+                            <WrapPanel Name="{x:Static atom:ColorPickerThemeConstants.ColorTextPanelPart}"
+                                       IsVisible="{TemplateBinding IsShowText}" />
+                        </Panel>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="InactiveStopTextColor"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        <Style Selector="^ /template/ WrapPanel#PART_ColorTextPanel">
+            <Setter Property="TextElement.Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TriggerTextMargin}}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ TextBlock#PART_ColorTextPanel">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
