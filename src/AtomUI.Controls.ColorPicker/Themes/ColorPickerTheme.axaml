@@ -29,6 +29,5 @@
                 </Border>
             </ControlTemplate>
         </Setter>
-
     </ControlTheme>
 </ResourceDictionary>

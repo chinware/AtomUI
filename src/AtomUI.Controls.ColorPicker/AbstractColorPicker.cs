@@ -2,6 +2,7 @@ using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -216,7 +217,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     
     #endregion
     
-    private protected readonly FlyoutStateHelper FlyoutStateHelper;
+    private readonly FlyoutStateHelper _flyoutStateHelper;
     private protected Flyout? PickerFlyout;
     private protected bool IsFlyoutOpen;
     private CompositeDisposable? _flyoutBindingDisposables;
@@ -232,13 +233,13 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public AbstractColorPicker()
     {
         this.RegisterResources();
-        FlyoutStateHelper = new FlyoutStateHelper();
-        FlyoutStateHelper.FlyoutAboutToShow        += HandleFlyoutAboutToShow;
-        FlyoutStateHelper.FlyoutAboutToClose       += HandleFlyoutAboutToClose;
-        FlyoutStateHelper.FlyoutOpened             += HandleFlyoutOpened;
-        FlyoutStateHelper.FlyoutClosed             += HandleFlyoutClosed;
-        FlyoutStateHelper.OpenFlyoutPredicate      =  FlyoutOpenPredicate;
-        FlyoutStateHelper.ClickHideFlyoutPredicate =  ClickHideFlyoutPredicate;
+        _flyoutStateHelper = new FlyoutStateHelper();
+        _flyoutStateHelper.FlyoutAboutToShow        += HandleFlyoutAboutToShow;
+        _flyoutStateHelper.FlyoutAboutToClose       += HandleFlyoutAboutToClose;
+        _flyoutStateHelper.FlyoutOpened             += HandleFlyoutOpened;
+        _flyoutStateHelper.FlyoutClosed             += HandleFlyoutClosed;
+        _flyoutStateHelper.OpenFlyoutPredicate      =  FlyoutOpenPredicate;
+        _flyoutStateHelper.ClickHideFlyoutPredicate =  ClickHideFlyoutPredicate;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -250,11 +251,11 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             new RenderScaleAwareThicknessConfigure(this)));
         _flyoutHelperBindingDisposables?.Dispose();
         _flyoutHelperBindingDisposables = new CompositeDisposable(3);
-        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, FlyoutStateHelper,
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper,
             FlyoutStateHelper.TriggerTypeProperty));
-        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseEnterDelayProperty, FlyoutStateHelper,
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseEnterDelayProperty));
-        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseLeaveDelayProperty, FlyoutStateHelper,
+        _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty));
     }
 
@@ -268,13 +269,13 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        FlyoutStateHelper.NotifyAttachedToVisualTree();
+        _flyoutStateHelper.NotifyAttachedToVisualTree();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        FlyoutStateHelper.NotifyDetachedFromVisualTree();
+        _flyoutStateHelper.NotifyDetachedFromVisualTree();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -344,9 +345,9 @@ public abstract class AbstractColorPicker : AvaloniaButton,
                 UpdatePseudoClasses();
             };
             PickerFlyout.PresenterCreated += (sender, args) => { NotifyFlyoutPresenterCreated(args.Presenter); };
-            FlyoutStateHelper.Flyout      =  PickerFlyout;
+            _flyoutStateHelper.Flyout      =  PickerFlyout;
         }
-        FlyoutStateHelper.AnchorTarget = this;
+        _flyoutStateHelper.AnchorTarget = this;
         SetupFlyoutProperties();
     }
 
@@ -408,7 +409,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     
     public void ClosePickerFlyout()
     {
-        FlyoutStateHelper.HideFlyout(true);
+        _flyoutStateHelper.HideFlyout(true);
     }
     
     protected virtual bool FlyoutOpenPredicate(Point position)
@@ -459,16 +460,18 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         PseudoClasses.Set(StdPseudoClass.FlyoutOpen, IsFlyoutOpen);
     }
 
-    protected string FormatColor(Color color)
+    public static string FormatColor(Color color, ColorFormat format)
     {
-        if (Format == ColorFormat.Hex)
+        if (format == ColorFormat.Hex)
         {
             return ColorToHexConverter.ToHexString(color, AlphaComponentPosition.Leading, false, true);
         }
-        if (Format == ColorFormat.Rgba)
+        if (format == ColorFormat.Rgba)
         {
-            return $"rgb({(int)color.R},{(int)color.G},{(int)color.B})";
+            return $"rgba({(int)color.R}, {(int)color.G}, {(int)color.B}, {color.GetAlphaF():0.00})";
         }
-        return color.ToHsv().ToString();
+
+        var hsvColor = color.ToHsv();
+        return $"hsva({hsvColor.H:0}, {hsvColor.S * 100:0}%, {hsvColor.V * 100:0}%,  {hsvColor.A:0.00})";
     }
 }

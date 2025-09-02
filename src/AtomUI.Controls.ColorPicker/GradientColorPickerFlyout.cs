@@ -28,6 +28,7 @@ internal class GradientColorPickerFlyout : AbstractColorPickerFlyout
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, GradientColorPickerView.IsMotionEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ValueProperty, Presenter, GradientColorPickerView.ValueProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, FormatProperty, Presenter, GradientColorPickerView.FormatProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsClearEnabledProperty, Presenter, GradientColorPickerView.IsClearEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsAlphaEnabledProperty, Presenter, GradientColorPickerView.IsAlphaEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsFormatEnabledProperty, Presenter, GradientColorPickerView.IsFormatEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, PaletteGroupProperty, Presenter, GradientColorPickerView.PaletteGroupProperty));

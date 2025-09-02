@@ -28,6 +28,7 @@ internal class ColorPickerFlyout : AbstractColorPickerFlyout
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, ColorPickerView.IsMotionEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ValueProperty, Presenter, ColorPickerView.ValueProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, FormatProperty, Presenter, ColorPickerView.FormatProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsClearEnabledProperty, Presenter, ColorPickerView.IsClearEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsAlphaEnabledProperty, Presenter, ColorPickerView.IsAlphaEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsFormatEnabledProperty, Presenter, ColorPickerView.IsFormatEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, PaletteGroupProperty, Presenter, ColorPickerView.PaletteGroupProperty));

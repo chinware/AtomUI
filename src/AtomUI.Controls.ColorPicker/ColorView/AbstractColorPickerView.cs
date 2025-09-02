@@ -182,6 +182,8 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         set => SetValue(PaletteGroupProperty, value);
     }
     #endregion
+
+    public event EventHandler? ColorValueCleared;
     
     #region 内部属性定义
     
@@ -290,10 +292,8 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         {
             return new HsvColor(1.0, value.H, value.S, value.V);
         }
-
         return value;
     }
-
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -302,10 +302,23 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         _clearColorButton = e.NameScope.Find<ColorBlock>(ColorPickerViewThemeConstants.ClearColorPart);
         if (_clearColorButton != null)
         {
-            _clearColorButton.ClearRequest += (sender, args) =>
-            {
-                HsvValue = new HsvColor(0.0, HsvValue.H, HsvValue.S, HsvValue.V);
-            };
+            _clearColorButton.ClearRequest += HandleColorClearRequest;
         }
+    }
+
+    private void HandleColorClearRequest(object? sender, EventArgs args)
+    {
+        NotifyColorClearRequest();
+    }
+
+    protected virtual void NotifyColorClearRequest()
+    {
+        HsvValue = new HsvColor(0.0, HsvValue.H, HsvValue.S, HsvValue.V);
+        InvokeColorValueClearedEvent();
+    }
+
+    protected void InvokeColorValueClearedEvent()
+    {
+        ColorValueCleared?.Invoke(this, EventArgs.Empty);
     }
 }

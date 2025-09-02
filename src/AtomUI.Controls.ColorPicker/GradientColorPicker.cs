@@ -85,6 +85,8 @@ public class GradientColorPicker : AbstractColorPicker
     private WrapPanel? _textPanel;
     private IDisposable? _activeStopIndexChangedDisposable;
     private int? _latestActivatedStopIndex;
+    private IDisposable? _emptyTextBindingDisposable;
+    private ColorBlock? _colorIndicator;
     
     static GradientColorPicker()
     {
@@ -100,6 +102,11 @@ public class GradientColorPicker : AbstractColorPicker
                 change.GetNewValue<LinearGradientBrush?>()));
         }
 
+        if (change.Property == ColorTextFormatterProperty)
+        {
+            GenerateValueText();
+        }
+        
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == DefaultValueProperty)
@@ -162,10 +169,10 @@ public class GradientColorPicker : AbstractColorPicker
         textRunCount = _textPanel.Children.Count;
         if (Value == null || Value.GradientStops.Count == 0)
         {
-            _textPanel.Children.Add(new AvaloniaTextBlock()
-            {
-                Text = EmptyColorText
-            });
+            var emptyTextBlock = new AvaloniaTextBlock();
+            _emptyTextBindingDisposable?.Dispose();
+            _emptyTextBindingDisposable = BindUtils.RelayBind(this, EmptyColorTextProperty, emptyTextBlock, AvaloniaTextBlock.TextProperty);
+            _textPanel.Children.Add(emptyTextBlock);
         }
         else
         {
@@ -180,7 +187,7 @@ public class GradientColorPicker : AbstractColorPicker
                 {
                     var stop      = Value.GradientStops[i];
                     var textBlock       = _textPanel.Children[i] as AvaloniaTextBlock;
-                    var colorText = FormatColor(stop.Color);
+                    var colorText = FormatColor(stop.Color, Format);
                     var percent   = $"{stop.Offset * 100:0}%";
                     if (textBlock != null)
                     {
@@ -201,6 +208,10 @@ public class GradientColorPicker : AbstractColorPicker
     
     protected override void GenerateColorBlockBackground()
     {
+        if (_colorIndicator != null)
+        {
+            _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, false);
+        }
         if (Value == null)
         {
             SetCurrentValue(ColorBlockBackgroundProperty, new SolidColorBrush(Colors.Transparent));
@@ -233,6 +244,7 @@ public class GradientColorPicker : AbstractColorPicker
         {
             _presenter                      =  presenter;
             _presenter.GradientValueChanged += HandleColorPickerViewValueChanged;
+            _presenter.ColorValueCleared    += HandleColorCleared;
             var effectiveColor = Value ?? DefaultValue;
             if (effectiveColor != null)
             {
@@ -257,6 +269,7 @@ public class GradientColorPicker : AbstractColorPicker
         {
             _latestActivatedStopIndex       =  ActivatedStopIndex;
             _presenter.GradientValueChanged -= HandleColorPickerViewValueChanged;
+            _presenter.ColorValueCleared    -= HandleColorCleared;
             _presenter                      =  null;
             _activeStopIndexChangedDisposable?.Dispose();
             _activeStopIndexChangedDisposable = null;
@@ -294,9 +307,23 @@ public class GradientColorPicker : AbstractColorPicker
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        Value      ??= DefaultValue;
-        _textPanel =   e.NameScope.Find<WrapPanel>(ColorPickerThemeConstants.ColorTextPanelPart);
+        Value           ??= DefaultValue;
+        _textPanel      =   e.NameScope.Find<WrapPanel>(ColorPickerThemeConstants.ColorTextPanelPart);
+        _colorIndicator =   e.NameScope.Find<ColorBlock>(ColorPickerThemeConstants.ColorIndicatorPart);
         GenerateValueText();
         GenerateColorBlockBackground();
+    }
+    
+    private void HandleColorCleared(object? sender, EventArgs args)
+    {
+        if (_colorIndicator != null)
+        {
+            _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, true);
+            _textPanel?.Children.Clear();
+            _emptyTextBindingDisposable?.Dispose();
+            var emptyTextBlock = new AvaloniaTextBlock();
+            _emptyTextBindingDisposable = BindUtils.RelayBind(this, EmptyColorTextProperty, emptyTextBlock, AvaloniaTextBlock.TextProperty);
+            _textPanel?.Children.Add(emptyTextBlock);
+        }
     }
 }

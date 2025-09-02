@@ -102,4 +102,19 @@ public class GradientColorPickerView : AbstractColorPickerView
             SetCurrentValue(ValueProperty, DefaultValue);
         }
     }
+    
+    protected override void NotifyColorClearRequest()
+    {
+        SetCurrentValue(ValueProperty, new LinearGradientBrush()
+        {
+            StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
+            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
+            GradientStops = new GradientStops()
+            {
+                new GradientStop(Color.FromArgb(0,0, 0, 0), 0.0)
+            }
+        });
+        HsvValue = new HsvColor(0.0, 0, 0, 0);
+        InvokeColorValueClearedEvent();
+    }
 }

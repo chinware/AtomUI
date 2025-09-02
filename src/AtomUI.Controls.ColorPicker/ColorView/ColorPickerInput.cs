@@ -90,6 +90,28 @@ internal class ColorPickerInput : TemplatedControl
             }
             ConfigureColorValues();
          }
+         else if (change.Property == FormatProperty)
+         {
+            ConfigureComboBoxSelected();
+         }
+      }
+   }
+
+   private void ConfigureComboBoxSelected()
+   {
+      if (_colorFormatComboBox != null)
+      {
+         if (Format == ColorFormat.Hex)
+         {
+            _colorFormatComboBox.SelectedIndex = 0;
+         }
+         else if (Format == ColorFormat.Hsva)
+         {
+            _colorFormatComboBox.SelectedIndex = 1;
+         } else if (Format == ColorFormat.Rgba)
+         {
+            _colorFormatComboBox.SelectedIndex = 2;
+         }
       }
    }
 
@@ -109,6 +131,7 @@ internal class ColorPickerInput : TemplatedControl
       if (_colorFormatComboBox != null)
       {
          _colorFormatComboBox.SelectionChanged += HandleFormatChanged;
+         ConfigureComboBoxSelected();
       }
       
       if (_alphaInput != null)

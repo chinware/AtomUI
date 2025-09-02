@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.ColorPickerLang;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -45,7 +46,7 @@ public class ColorPicker : AbstractColorPicker
         return colorPicker.GetValue(ColorTextFormatterProperty);
     }
 
-    public static void SetPresetColor(ColorPicker colorPicker, Func<Color, ColorFormat, string> formatter)
+    public static void SetColorTextFormatter(ColorPicker colorPicker, Func<Color, ColorFormat, string> formatter)
     {
         colorPicker.SetValue(ColorTextFormatterProperty, formatter);
     }
@@ -82,6 +83,8 @@ public class ColorPicker : AbstractColorPicker
     private ColorPickerView? _presenter;
     private CompositeDisposable? _flyoutBindingDisposables;
     private Color? _latestSyncValue;
+    private ColorBlock? _colorIndicator;
+    private IDisposable? _emptyTextBindingDisposable;
     
     static ColorPicker()
     {
@@ -98,6 +101,11 @@ public class ColorPicker : AbstractColorPicker
             NotifyValueChanged(new ColorChangedEventArgs(change.GetOldValue<Color?>(), change.GetNewValue<Color?>()));
         }
 
+        if (change.Property == ColorTextFormatterProperty)
+        {
+            GenerateValueText();
+        }
+        
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == DefaultValueProperty)
@@ -120,18 +128,24 @@ public class ColorPicker : AbstractColorPicker
                 }
                 else
                 {
-                    SetCurrentValue(ColorTextProperty, FormatColor(Value.Value));
+                    SetCurrentValue(ColorTextProperty, FormatColor(Value.Value, Format));
                 }
             }
             else
             {
                 SetCurrentValue(ColorTextProperty, EmptyColorText);
+                _emptyTextBindingDisposable?.Dispose();
+                _emptyTextBindingDisposable = BindUtils.RelayBind(this, EmptyColorTextProperty, this, ColorTextProperty);
             }
         }
     }
 
     protected override void GenerateColorBlockBackground()
     {
+        if (_colorIndicator != null)
+        {
+            _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, false);
+        }
         if (Value == null)
         {
             SetCurrentValue(ColorBlockBackgroundProperty, new SolidColorBrush(Colors.Transparent));
@@ -146,6 +160,7 @@ public class ColorPicker : AbstractColorPicker
     {
         base.OnApplyTemplate(e);
         Value ??= DefaultValue;
+        _colorIndicator =  e.NameScope.Find<ColorBlock>(ColorPickerThemeConstants.ColorIndicatorPart);
     }
     
     protected override Flyout CreatePickerFlyout()
@@ -168,8 +183,9 @@ public class ColorPicker : AbstractColorPicker
     {
         if (control is FlyoutPresenter flyoutPresenter && flyoutPresenter.Content is ColorPickerView presenter)
         {
-            _presenter              =  presenter;
-            _presenter.ValueChanged += HandleColorPickerViewValueChanged;
+            _presenter                   =  presenter;
+            _presenter.ValueChanged      += HandleColorPickerViewValueChanged;
+            _presenter.ColorValueCleared += HandleColorCleared;
         }
     }
 
@@ -205,13 +221,24 @@ public class ColorPicker : AbstractColorPicker
             {
                 SetCurrentValue(ValueProperty, _latestSyncValue);
             }
-            _presenter.ValueChanged -= HandleColorPickerViewValueChanged;
-            _presenter              =  null;
+            _presenter.ValueChanged      -= HandleColorPickerViewValueChanged;
+            _presenter.ColorValueCleared -= HandleColorCleared;
+            _presenter                   =  null;
         }
     }
     
     internal void NotifyValueChanged(ColorChangedEventArgs e)
     {
         ValueChanged?.Invoke(this, e);
+    }
+
+    private void HandleColorCleared(object? sender, EventArgs args)
+    {
+        if (_colorIndicator != null)
+        {
+            _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, true);
+            _emptyTextBindingDisposable?.Dispose();
+            _emptyTextBindingDisposable = BindUtils.RelayBind(this, EmptyColorTextProperty, this, ColorTextProperty);
+        }
     }
 }
