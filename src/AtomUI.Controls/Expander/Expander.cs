@@ -76,6 +76,12 @@ public class Expander : AvaloniaExpander,
 
     public static readonly StyledProperty<ExpanderIconPosition> ExpandIconPositionProperty =
         AvaloniaProperty.Register<Expander, ExpanderIconPosition>(nameof(ExpandIconPosition));
+    
+    public static readonly StyledProperty<Thickness?> HeaderPaddingProperty =
+        AvaloniaProperty.Register<Expander, Thickness?>(nameof(HeaderPadding));
+    
+    public static readonly StyledProperty<Thickness?> ContentPaddingProperty =
+        AvaloniaProperty.Register<Expander, Thickness?>(nameof(ContentPadding));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
@@ -132,6 +138,18 @@ public class Expander : AvaloniaExpander,
     {
         get => GetValue(ExpandIconPositionProperty);
         set => SetValue(ExpandIconPositionProperty, value);
+    }
+    
+    public Thickness? HeaderPadding
+    {
+        get => GetValue(HeaderPaddingProperty);
+        set => SetValue(HeaderPaddingProperty, value);
+    }
+
+    public Thickness? ContentPadding
+    {
+        get => GetValue(ContentPaddingProperty);
+        set => SetValue(ContentPaddingProperty, value);
     }
     
     public bool IsMotionEnabled
@@ -245,6 +263,7 @@ public class Expander : AvaloniaExpander,
             };
         }
         SetupDefaultIcon();
+        UpdatePseudoClasses();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -281,6 +300,12 @@ public class Expander : AvaloniaExpander,
         {
             SetupEffectiveBorderThickness();
         }
+        else if (change.Property == ContentPaddingProperty ||
+                 change.Property == HeaderPaddingProperty)
+        {
+            UpdatePseudoClasses();
+        }
+
     }
 
     private void SetupDefaultIcon()
@@ -437,5 +462,11 @@ public class Expander : AvaloniaExpander,
                 _expandButton.Transitions = null;
             }
         }
+    }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(ExpanderPseudoClass.CustomHeaderPadding, HeaderPadding != null);
+        PseudoClasses.Set(ExpanderPseudoClass.CustomContentPadding, ContentPadding != null);
     }
 }
