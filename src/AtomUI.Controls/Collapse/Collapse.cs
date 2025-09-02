@@ -58,8 +58,14 @@ public class Collapse : SelectingItemsControl,
     public static readonly StyledProperty<CollapseExpandIconPosition> ExpandIconPositionProperty =
         AvaloniaProperty.Register<Collapse, CollapseExpandIconPosition>(nameof(ExpandIconPosition));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Collapse>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Collapse>();
+    
+    public static readonly StyledProperty<Thickness?> ItemHeaderPaddingProperty =
+        AvaloniaProperty.Register<Collapse, Thickness?>(nameof(ItemHeaderPadding));
+    
+    public static readonly StyledProperty<Thickness?> ItemContentPaddingProperty =
+        AvaloniaProperty.Register<Collapse, Thickness?>(nameof(ItemContentPadding));
 
     public SizeType SizeType
     {
@@ -101,6 +107,18 @@ public class Collapse : SelectingItemsControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public Thickness? ItemHeaderPadding
+    {
+        get => GetValue(ItemHeaderPaddingProperty);
+        set => SetValue(ItemHeaderPaddingProperty, value);
+    }
+
+    public Thickness? ItemContentPadding
+    {
+        get => GetValue(ItemContentPaddingProperty);
+        set => SetValue(ItemContentPaddingProperty, value);
     }
 
     #endregion
@@ -223,6 +241,7 @@ public class Collapse : SelectingItemsControl,
             _itemsBindingDisposables.Add(collapseItem, disposables);
             
             SetupCollapseBorderThickness(collapseItem, index);
+            ConfigureItemPaddings(collapseItem);
         }
     }
 
@@ -341,6 +360,21 @@ public class Collapse : SelectingItemsControl,
         {
             SetupItemsBorderThickness();
         }
+        if (change.Property == ItemHeaderPaddingProperty ||
+            change.Property == ItemContentPaddingProperty)
+        {
+            if (Items.Count > 0)
+            {
+                for (int i = 0; i < ItemCount; i++)
+                {
+                    var item = Items[i];
+                    if (item is CollapseItem collapseItem)
+                    {
+                        ConfigureItemPaddings(collapseItem);
+                    }
+                }
+            }
+        }
     }
 
     private void SetupEffectiveBorderThickness()
@@ -380,5 +414,18 @@ public class Collapse : SelectingItemsControl,
     {
         base.OnDetachedFromLogicalTree(e);
         this.DisposeTokenBindings();
+    }
+    
+    private void ConfigureItemPaddings(CollapseItem collapseItem)
+    {
+        if (collapseItem.HeaderPadding == null)
+        {
+            collapseItem.SetCurrentValue(CollapseItem.HeaderPaddingProperty, ItemHeaderPadding);
+        }
+
+        if (collapseItem.ContentPadding == null)
+        {
+            collapseItem.SetCurrentValue(CollapseItem.ContentPaddingProperty, ItemContentPadding);
+        }
     }
 }

@@ -38,6 +38,12 @@ public class CollapseItem : HeaderedContentControl,
 
     public static readonly StyledProperty<IDataTemplate?> AddOnContentTemplateProperty =
         AvaloniaProperty.Register<CollapseItem, IDataTemplate?>(nameof(AddOnContentTemplate));
+    
+    public static readonly StyledProperty<Thickness?> HeaderPaddingProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness?>(nameof(HeaderPadding));
+    
+    public static readonly StyledProperty<Thickness?> ContentPaddingProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness?>(nameof(ContentPadding));
 
     public bool IsSelected
     {
@@ -68,7 +74,18 @@ public class CollapseItem : HeaderedContentControl,
         get => GetValue(AddOnContentTemplateProperty);
         set => SetValue(AddOnContentTemplateProperty, value);
     }
+    
+    public Thickness? HeaderPadding
+    {
+        get => GetValue(HeaderPaddingProperty);
+        set => SetValue(HeaderPaddingProperty, value);
+    }
 
+    public Thickness? ContentPadding
+    {
+        get => GetValue(ContentPaddingProperty);
+        set => SetValue(ContentPaddingProperty, value);
+    }
     #endregion
 
     #region 内部属性定义
@@ -267,6 +284,8 @@ public class CollapseItem : HeaderedContentControl,
                 _expandButton.Transitions = null;
             };
         }
+
+        UpdatePseudoClasses();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -295,6 +314,12 @@ public class CollapseItem : HeaderedContentControl,
             {
                 HandleSelectedChanged();
             }
+        }
+
+        if (change.Property == ContentPaddingProperty ||
+            change.Property == HeaderPaddingProperty)
+        {
+            UpdatePseudoClasses();
         }
 
         if (IsLoaded)
@@ -419,5 +444,11 @@ public class CollapseItem : HeaderedContentControl,
                 _expandButton.Transitions = null;
             }
         }
+    }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(CollapseItemPseudoClass.CustomHeaderPadding, HeaderPadding != null);
+        PseudoClasses.Set(CollapseItemPseudoClass.CustomContentPadding, ContentPadding != null);
     }
 }

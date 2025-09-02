@@ -135,12 +135,12 @@ public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotio
     {
         if (breadcrumbItem.Separator == null)
         {
-            breadcrumbItem.SetValue(SeparatorProperty, Separator, BindingPriority.Template);
+            breadcrumbItem.SetCurrentValue(SeparatorProperty, Separator);
         }
 
         if (breadcrumbItem.SeparatorTemplate == null)
         {
-            breadcrumbItem.SetValue(SeparatorTemplateProperty, SeparatorTemplate, BindingPriority.Template);
+            breadcrumbItem.SetCurrentValue(SeparatorTemplateProperty, SeparatorTemplate);
         }
     }
 
@@ -149,7 +149,7 @@ public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotio
         base.OnApplyTemplate(e);
         if (Separator == null)
         {
-            SetValue(SeparatorProperty, DefaultSeparator, BindingPriority.Template);
+            SetCurrentValue(SeparatorProperty, DefaultSeparator);
         }
     }
 

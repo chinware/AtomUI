@@ -381,6 +381,7 @@ public class Button : AvaloniaButton,
         base.OnApplyTemplate(e);
         // 为了防止意外被用户改变背景，做了一个 frame
         _frame = e.NameScope.Find<Border>(ButtonThemeConstants.FramePart);
+        UpdatePseudoClasses();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -414,7 +415,6 @@ public class Button : AvaloniaButton,
     {
         base.OnAttachedToVisualTree(e);
         SetupEffectiveBorderThickness();
-        UpdatePseudoClasses();
     }
 
     private void SetupEffectiveBorderThickness()
