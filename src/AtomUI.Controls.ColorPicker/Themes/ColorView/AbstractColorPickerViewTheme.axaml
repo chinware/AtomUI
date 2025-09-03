@@ -21,7 +21,9 @@
                                                   PaletteGroup="{TemplateBinding PaletteGroup}"
                                                   IsVisible="{TemplateBinding IsPaletteGroupEnabled}"
                                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
-                    <Rectangle Name="Separator" VerticalAlignment="Stretch" Width="1" />
+                    <Rectangle Name="Separator" 
+                               VerticalAlignment="Stretch" Width="1" 
+                               IsVisible="{TemplateBinding IsPaletteGroupEnabled}"/>
                     <StackPanel Orientation="Vertical" ClipToBounds="False"
                                 Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                         <atom:ColorBlock Name="{x:Static atom:ColorPickerViewThemeConstants.ClearColorPart}"
