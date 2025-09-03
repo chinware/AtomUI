@@ -29,18 +29,12 @@ public class MenuFlyout : Flyout
     public static readonly StyledProperty<ControlTheme?> ItemContainerThemeProperty =
         ItemsControl.ItemContainerThemeProperty.AddOwner<MenuFlyout>();
     
-    /// <summary>
-    /// Gets or sets the items of the MenuFlyout
-    /// </summary>
     public IEnumerable? ItemsSource
     {
         get => GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
     }
-
-    /// <summary>
-    /// Gets or sets the template used for the items
-    /// </summary>
+    
     public IDataTemplate? ItemTemplate
     {
         get => GetValue(ItemTemplateProperty);
@@ -66,11 +60,23 @@ public class MenuFlyout : Flyout
     {
         _presenterBindingDisposables?.Dispose();
         _presenterBindingDisposables = new CompositeDisposable(4);
+        
         Presenter = new MenuFlyoutPresenter
         {
             ItemsSource = Items,
             MenuFlyout  = this
         };
+        
+        // 会二次创建
+        foreach (var item in Items)
+        {
+            if (item is Control control)
+            {
+                control.SetLogicalParent(null);
+                control.SetVisualParent(null);
+            }
+        }
+        
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, Presenter, MenuFlyoutPresenter.ItemTemplateProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, Presenter, MenuFlyoutPresenter.IsShowArrowProperty));
@@ -134,6 +140,7 @@ public class MenuFlyout : Flyout
         base.NotifyPopupCreated(popup);
         popup.IsLightDismissEnabled     = false;
         popup.IsDetectMouseClickEnabled = true;
+        popup.IgnoreFirstDetected       = false;
         popup.ClickHidePredicate        = ClickHideFlyoutPredicate;
         popup.CloseAction               = PopupCloseAction;
     }

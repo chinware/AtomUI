@@ -50,6 +50,8 @@ public class Menu : AvaloniaMenu,
     
     private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
 
+    private bool _isClosing;
+
     public Menu()
     {
         Items.CollectionChanged  += HandleItemsCollectionChanged;
@@ -120,11 +122,12 @@ public class Menu : AvaloniaMenu,
     
     public override void Close()
     {
-        if (!IsOpen)
+        if (!IsOpen || _isClosing)
         {
             return;
         }
 
+        _isClosing = true;
         if (IsMotionEnabled)
         {
             Dispatcher.UIThread.InvokeAsync(async () =>
@@ -139,6 +142,7 @@ public class Menu : AvaloniaMenu,
                 }
 
                 HandleMenuClosed();
+                _isClosing = false;
             });
         }
         else
@@ -153,6 +157,7 @@ public class Menu : AvaloniaMenu,
             }
 
             HandleMenuClosed();
+            _isClosing = false;
         }
     }
 

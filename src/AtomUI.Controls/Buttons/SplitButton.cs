@@ -437,8 +437,8 @@ public class SplitButton : ContentControl,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _flyoutStateHelper.NotifyDetachedFromVisualTree();
         UnregisterFlyoutEvents(Flyout);
+        _flyoutStateHelper.NotifyDetachedFromVisualTree();
     }
     
     private void SetupDefaultFlyoutButtonIcon()

@@ -14,6 +14,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -172,6 +173,7 @@ public class MenuItem : AvaloniaMenuItem
         if (_popup != null)
         {
             _popup.ClickHidePredicate = MenuPopupClosePredicate;
+            _popup.CloseAction        = MenuCloseAction;
         }
         if (_radioButton != null)
         {
@@ -227,6 +229,13 @@ public class MenuItem : AvaloniaMenuItem
         var popupRoots = CollectPopupRoots(this);
         
         return !popupRoots.Contains(args.Root);
+    }
+
+    private void MenuCloseAction(Popup popup)
+    {
+        // 找最上层的 Menu 进行关闭
+        var menu = this.FindAncestorOfType<Menu>();
+        menu?.Close();
     }
 
     internal static HashSet<PopupRoot> CollectPopupRoots(MenuItem menuItem)
