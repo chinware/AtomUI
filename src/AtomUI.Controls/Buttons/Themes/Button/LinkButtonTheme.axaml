@@ -39,16 +39,12 @@
             </Style>
 
             <Style Selector="^[IsGhost=True]">
-                <Style Selector="^/template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="Transparent" />
-                </Style>
+                <Setter Property="Background" Value="Transparent" />
             </Style>
         </Style>
         
         <Style Selector="^:disabled">
-            <Style Selector="^/template/ Border#PART_Frame">
-                <Setter Property="Background" Value="Transparent" />
-            </Style>
+            <Setter Property="Background" Value="Transparent" />
         </Style>
 
         <!-- icon 的各种颜色 -->
