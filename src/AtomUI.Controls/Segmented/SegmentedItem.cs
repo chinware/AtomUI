@@ -21,8 +21,8 @@ public class SegmentedItem : ContentControl, ISelectable
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<SegmentedItem>();
 
-    public static readonly StyledProperty<Icon?> IconProperty
-        = AvaloniaProperty.Register<SegmentedItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<Icon?> IconProperty =
+        AvaloniaProperty.Register<SegmentedItem, Icon?>(nameof(Icon));
 
     public Icon? Icon
     {
@@ -66,12 +66,6 @@ public class SegmentedItem : ContentControl, ISelectable
         PressedMixin.Attach<SegmentedItem>();
         FocusableProperty.OverrideDefaultValue<SegmentedItem>(true);
         AffectsRender<SegmentedItem>(BackgroundProperty);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        Debug.Assert(Parent is Segmented, "SegmentedItem's Parent must be Segmented Control.");
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)

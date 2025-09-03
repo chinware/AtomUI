@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -212,7 +213,7 @@ public class Collapse : SelectingItemsControl,
     private CollapseItem? GetCollapseItem(Control? item)
     {
         Control? result = item;
-        if (item is CollapseItemContainer container)
+        if (item is SelectableItemContainer container)
         {
             result = container.Child;
         }
@@ -222,7 +223,7 @@ public class Collapse : SelectingItemsControl,
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new CollapseItemContainer();
+        return new SelectableItemContainer();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
@@ -237,26 +238,26 @@ public class Collapse : SelectingItemsControl,
         {
             ConfigureCollapseItemBindings(collapseItem, index);
         }
-        else if (container is CollapseItemContainer collapseItemContainer)
+        else if (container is SelectableItemContainer selectableItemContainer)
         {
-            collapseItemContainer.PropertyChanged += (sender, args) =>
+            selectableItemContainer.PropertyChanged += (sender, args) =>
             {
                 if (args.Property == ContentPresenter.ChildProperty)
                 {
                     if (args.NewValue is CollapseItem newCollapseItem)
                     {
-                        ConfigureCollapseItemBindings(newCollapseItem, index, collapseItemContainer);
+                        ConfigureCollapseItemBindings(newCollapseItem, index, selectableItemContainer);
                     }
                 }
             };
         }
         else
         {
-            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type CollapseItemContainer or type CollapseItem.");
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type SelectableItemContainer or type CollapseItem.");
         }
     }
 
-    internal void ConfigureCollapseItemBindings(CollapseItem collapseItem, int index, CollapseItemContainer? container = null)
+    private void ConfigureCollapseItemBindings(CollapseItem collapseItem, int index, SelectableItemContainer? container = null)
     {
         var disposables = new CompositeDisposable(8);
         disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, collapseItem, CollapseItem.SizeTypeProperty));
@@ -271,7 +272,7 @@ public class Collapse : SelectingItemsControl,
 
         if (container != null)
         {
-            disposables.Add(BindUtils.RelayBind(container, CollapseItemContainer.IsSelectedProperty, collapseItem, CollapseItem.IsSelectedProperty));
+            disposables.Add(BindUtils.RelayBind(container, SelectableItemContainer.IsSelectedProperty, collapseItem, CollapseItem.IsSelectedProperty));
         }
         
         if (_itemsBindingDisposables.TryGetValue(collapseItem, out var oldDisposables))

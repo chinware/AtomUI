@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -7,6 +8,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -208,7 +210,7 @@ public class Segmented : SelectingItemsControl,
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new SegmentedItem();
+        return new SelectableItemContainer();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
@@ -221,16 +223,42 @@ public class Segmented : SelectingItemsControl,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is SegmentedItem segmentedItem)
         {
-            var disposables = new CompositeDisposable(2);
-            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem, SegmentedItem.SizeTypeProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, segmentedItem, SegmentedItem.IsMotionEnabledProperty));
-            if (_itemsBindingDisposables.TryGetValue(segmentedItem, out var oldDisposables))
-            {
-                oldDisposables.Dispose();
-                _itemsBindingDisposables.Remove(segmentedItem);
-            }
-            _itemsBindingDisposables.Add(segmentedItem, disposables);
+            ConfigureSegmentedItemBindings(segmentedItem, index);
         }
+        else if (container is SelectableItemContainer selectableItemContainer)
+        {
+            selectableItemContainer.PropertyChanged += (sender, args) =>
+            {
+                if (args.Property == ContentPresenter.ChildProperty)
+                {
+                    if (args.NewValue is SegmentedItem newSegmentedItem)
+                    {
+                        ConfigureSegmentedItemBindings(newSegmentedItem, index, selectableItemContainer);
+                    }
+                }
+            };
+        }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type SelectableItemContainer or type SegmentedItem.");
+        }
+    }
+
+    private void ConfigureSegmentedItemBindings(SegmentedItem segmentedItem, int index, SelectableItemContainer? container = null)
+    {
+        var disposables = new CompositeDisposable(2);
+        disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem, SegmentedItem.SizeTypeProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, segmentedItem, SegmentedItem.IsMotionEnabledProperty));
+        if (container != null)
+        {
+            disposables.Add(BindUtils.RelayBind(container, SelectableItemContainer.IsSelectedProperty, segmentedItem, SegmentedItem.IsSelectedProperty));
+        }
+        if (_itemsBindingDisposables.TryGetValue(segmentedItem, out var oldDisposables))
+        {
+            oldDisposables.Dispose();
+            _itemsBindingDisposables.Remove(segmentedItem);
+        }
+        _itemsBindingDisposables.Add(segmentedItem, disposables);
     }
 
     private void ConfigureTransitions(bool force)
@@ -260,6 +288,17 @@ public class Segmented : SelectingItemsControl,
             false,
             false,
             e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
+    }
+    
+    private SegmentedItem? GetSegmentedItem(Control? item)
+    {
+        Control? result = item;
+        if (item is SelectableItemContainer container)
+        {
+            result = container.Child;
+        }
+
+        return result as SegmentedItem;
     }
 
     public sealed override void Render(DrawingContext context)
