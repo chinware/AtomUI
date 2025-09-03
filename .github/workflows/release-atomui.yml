@@ -5,7 +5,7 @@ on:
          TargetBranch:
             description: 'Target branch to build'
             type: string
-            default: 'develop'
+            default: 'main'
          BuildConfiguration:
             description: 'Build configuration'
             type: string

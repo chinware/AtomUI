@@ -17,6 +17,10 @@
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
     </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Controls.ColorPicker" />
+    </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
         <ProjectReference Include="../AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj"/>
