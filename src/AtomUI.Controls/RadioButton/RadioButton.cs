@@ -13,11 +13,11 @@ public class RadioButton : AvaloniaRadioButton,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<RadioButton>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<RadioButton>();
 
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<RadioButton>();
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<RadioButton>();
     
     public bool IsMotionEnabled
     {

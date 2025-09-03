@@ -49,5 +49,9 @@ internal static class ColorPickerThemeConstants
     public const string ColorIndicatorPart = "PART_ColorIndicator";
     public const string ColorTextPart = "PART_ColorText";
     public const string ColorTextPanelPart = "PART_ColorTextPanel";
-    
+}
+
+internal static class PaletteColorItemThemeConstants
+{
+    public const string CheckedMarkPart = "PART_CheckedMark";
 }

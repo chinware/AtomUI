@@ -62,4 +62,8 @@ public class ColorPickerView : AbstractColorPickerView
         ValueChanged?.Invoke(this, e);
     }
 
+    protected override void NotifyPaletteColorSelected(Color color)
+    {
+        SetCurrentValue(ValueProperty, color);
+    }
 }

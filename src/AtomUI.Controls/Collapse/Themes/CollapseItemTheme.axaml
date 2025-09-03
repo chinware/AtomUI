@@ -167,18 +167,52 @@
         </Style>
 
         <Style Selector="^[ExpandIconPosition=Start]">
-            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
-                <Setter Property="Grid.Column" Value="0" />
-                <Setter Property="Margin"
-                        Value="{DynamicResource {x:Static atom:CollapseTokenKey.LeftExpandButtonMargin}}" />
+            
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="0" />
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:CollapseTokenKey.LeftExpandButtonMarginLG}}" />
+                </Style>
             </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="0" />
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:CollapseTokenKey.LeftExpandButtonMargin}}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="0" />
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:CollapseTokenKey.LeftExpandButtonMarginSM}}" />
+                </Style>
+            </Style>
+           
         </Style>
 
         <Style Selector="^[ExpandIconPosition=End]">
-            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
-                <Setter Property="Grid.Column" Value="3" />
-                <Setter Property="Margin"
-                        Value="{DynamicResource {x:Static atom:CollapseTokenKey.RightExpandButtonMargin}}" />
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="3" />
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:CollapseTokenKey.RightExpandButtonMarginLG}}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="3" />
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:CollapseTokenKey.RightExpandButtonMargin}}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="3" />
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:CollapseTokenKey.RightExpandButtonMarginSM}}" />
+                </Style>
             </Style>
         </Style>
 

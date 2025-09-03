@@ -19,7 +19,9 @@
                             Orientation="Horizontal" ClipToBounds="False">
                     <atom:ColorPickerPaletteGroup Name="{x:Static atom:ColorPickerViewThemeConstants.PaletteGroupPart}" 
                                                   PaletteGroup="{TemplateBinding PaletteGroup}"
-                                                  IsVisible="{TemplateBinding IsPaletteGroupEnabled}"/>
+                                                  IsVisible="{TemplateBinding IsPaletteGroupEnabled}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    <Rectangle Name="Separator" VerticalAlignment="Stretch" Width="1" />
                     <StackPanel Orientation="Vertical" ClipToBounds="False"
                                 Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                         <atom:ColorBlock Name="{x:Static atom:ColorPickerViewThemeConstants.ClearColorPart}"
@@ -76,6 +78,7 @@
     <Style Selector="^:is(atom|AbstractColorPickerView)">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXS}}" />
         <Style Selector="^ /template/ atom|GradientColorSlider#PART_GradientColorSlider">
             <Setter Property="IsVisible" Value="False"/>
@@ -104,6 +107,14 @@
             <Style Selector="^ /template/ atom|ColorSlider#ColorSpectrumThirdComponentSlider">
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ Rectangle#Separator">
+            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ StackPanel#PART_LayoutRoot">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}"/>
         </Style>
     </Style>
 </ControlTheme>

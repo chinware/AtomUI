@@ -7,8 +7,9 @@
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Themes/ColorBlockTheme.axaml"/>
         <ResourceInclude Source="Themes/ColorPickerTheme.axaml"/>
-        <ResourceInclude Source="Themes/ColorPickerPaletteGroup.axaml"/>
+        <ResourceInclude Source="Themes/ColorPickerPaletteGroupTheme.axaml"/>
         <ResourceInclude Source="Themes/GradientColorPickerTheme.axaml"/>
+        <ResourceInclude Source="Themes/PaletteColorItemTheme.axaml"/>
         <ResourceInclude Source="Themes/ColorView/ColorPickerInput.axaml"/>
         <ResourceInclude Source="Themes/ColorView/ColorPickerViewTheme.axaml"/>
         <ResourceInclude Source="Themes/ColorView/GradientColorPickerViewTheme.axaml"/>

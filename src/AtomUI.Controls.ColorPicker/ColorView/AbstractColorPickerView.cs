@@ -221,6 +221,7 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     #endregion
     
     private ColorBlock? _clearColorButton;
+    private ColorPickerPaletteGroup? _paletteGroup;
     private protected bool IgnorePropertyChanged = false;
 
     public AbstractColorPickerView()
@@ -320,6 +321,15 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         {
             ConfigureDefaultPaletteGroup();
         }
+
+        _paletteGroup = e.NameScope.Find<ColorPickerPaletteGroup>(ColorPickerViewThemeConstants.PaletteGroupPart);
+        if (_paletteGroup != null)
+        {
+            _paletteGroup.ColorSelected += (sender, args) =>
+            {
+                NotifyPaletteColorSelected(args.SelectedColor);
+            };
+        }
     }
     
     private void ConfigureDefaultPaletteGroup()
@@ -357,5 +367,9 @@ public abstract class AbstractColorPickerView : TemplatedControl,
     protected void InvokeColorValueClearedEvent()
     {
         ColorValueCleared?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected virtual void NotifyPaletteColorSelected(Color color)
+    {
     }
 }

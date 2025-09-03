@@ -117,4 +117,9 @@ public class GradientColorPickerView : AbstractColorPickerView
         HsvValue = new HsvColor(0.0, 0, 0, 0);
         InvokeColorValueClearedEvent();
     }
+    
+    protected override void NotifyPaletteColorSelected(Color color)
+    {
+        SetCurrentValue(HsvValueProperty, color.ToHsv());
+    }
 }

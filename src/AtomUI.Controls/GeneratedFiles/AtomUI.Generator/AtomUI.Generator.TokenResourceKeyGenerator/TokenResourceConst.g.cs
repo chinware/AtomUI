@@ -231,7 +231,11 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("Collapse.HeaderBg");
         public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Collapse.HeaderPadding");
         public static readonly TokenResourceKey LeftExpandButtonMargin = new TokenResourceKey("Collapse.LeftExpandButtonMargin");
+        public static readonly TokenResourceKey LeftExpandButtonMarginLG = new TokenResourceKey("Collapse.LeftExpandButtonMarginLG");
+        public static readonly TokenResourceKey LeftExpandButtonMarginSM = new TokenResourceKey("Collapse.LeftExpandButtonMarginSM");
         public static readonly TokenResourceKey RightExpandButtonMargin = new TokenResourceKey("Collapse.RightExpandButtonMargin");
+        public static readonly TokenResourceKey RightExpandButtonMarginLG = new TokenResourceKey("Collapse.RightExpandButtonMarginLG");
+        public static readonly TokenResourceKey RightExpandButtonMarginSM = new TokenResourceKey("Collapse.RightExpandButtonMarginSM");
     }
 
     public static class ComboBoxTokenKey

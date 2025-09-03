@@ -96,6 +96,21 @@ public class ColorPickerToken : AbstractControlDesignToken
     public double ColorPickerPresetColorSize { get; set; }
     
     /// <summary>
+    /// ColorPicker 预设颜色面板宽度
+    /// </summary>
+    public double ColorPickerPresetPanelWidth { get; set; }
+    
+    /// <summary>
+    /// ColorPicker 预设颜色选中勾勾的大小
+    /// </summary>
+    public double CheckedMarkSize { get; set; }
+    
+    /// <summary>
+    /// ColorPicker 预设颜色序列项内容内间距
+    /// </summary>
+    public Thickness ColorPickerPresetColorGroupPadding { get; set; }
+    
+    /// <summary>
     /// 颜色显示内部的阴影
     /// </summary>
     public BoxShadows ColorBlockInnerShadows { get; set; }
@@ -135,6 +150,8 @@ public class ColorPickerToken : AbstractControlDesignToken
         ColorPickerAlphaInputWidth        = 44;
         ColorPickerInputNumberHandleWidth = 16;
         ColorPickerPresetColorSize        = 24;
+        CheckedMarkSize                   = ColorPickerPresetColorSize * 0.6;
+        ColorPickerPresetPanelWidth       = 220;
         ColorPickerSliderSize             = ColorPickerHandlerSizeSM;
         ColorPickerSliderTrackSize        = 8;
         ColorPickerSliderThumbSize        = ColorPickerHandlerSizeSM + SharedToken.LineWidth * 2;
@@ -162,10 +179,11 @@ public class ColorPickerToken : AbstractControlDesignToken
         TriggerTextMargin = new Thickness(SharedToken.UniformlyMarginXS, 0, 
             SharedToken.UniformlyMarginXS - SharedToken.UniformlyPaddingXXS + SharedToken.LineWidth, 0);
 
-        ColorSpectrumHeight          = SharedToken.ControlHeightLG * 4;
-        ColorPickerHandlerLightColor = SharedToken.ColorBgElevated;
-        ColorPickerHandlerDarkColor  = Color.Parse("#22075e");
-        SliderContainerMargin        = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
-        TransparentBgSize            = SharedToken.SizeXS;
+        ColorSpectrumHeight                = SharedToken.ControlHeightLG * 4;
+        ColorPickerHandlerLightColor       = SharedToken.ColorBgElevated;
+        ColorPickerHandlerDarkColor        = Color.Parse("#22075e");
+        SliderContainerMargin              = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
+        TransparentBgSize                  = SharedToken.SizeXS;
+        ColorPickerPresetColorGroupPadding = new Thickness(0, SharedToken.UniformlyPaddingXXS);
     }
 }

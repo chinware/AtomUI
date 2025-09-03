@@ -41,8 +41,12 @@ internal class CollapseToken : AbstractControlDesignToken
     public Thickness CollapseContentPaddingSM { get; set; }
     public Thickness CollapseContentPaddingLG { get; set; }
     public CornerRadius CollapsePanelBorderRadius { get; set; }
+    public Thickness LeftExpandButtonMarginSM { get; set; }
     public Thickness LeftExpandButtonMargin { get; set; }
+    public Thickness LeftExpandButtonMarginLG { get; set; }
+    public Thickness RightExpandButtonMarginSM { get; set; }
     public Thickness RightExpandButtonMargin { get; set; }
+    public Thickness RightExpandButtonMarginLG { get; set; }
 
     #endregion
 
@@ -58,7 +62,11 @@ internal class CollapseToken : AbstractControlDesignToken
         CollapseHeaderPaddingSM   = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingXS);
         CollapseHeaderPaddingLG   = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPadding);
         CollapsePanelBorderRadius = SharedToken.BorderRadiusLG;
-        LeftExpandButtonMargin    = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
-        RightExpandButtonMargin   = new Thickness(SharedToken.UniformlyMarginSM, 0, 0, 0);
+        LeftExpandButtonMarginSM  = new Thickness(0, 0, SharedToken.UniformlyMarginXXS, 0);
+        LeftExpandButtonMargin    = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
+        LeftExpandButtonMarginLG  = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
+        RightExpandButtonMarginSM = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
+        RightExpandButtonMargin   = new Thickness(SharedToken.UniformlyMarginXS, 0, 0, 0);
+        RightExpandButtonMarginLG   = new Thickness(SharedToken.UniformlyMarginSM, 0, 0, 0);
     }
 }

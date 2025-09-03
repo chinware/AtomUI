@@ -71,11 +71,11 @@ internal class CheckBoxIndicator : TemplatedControl,
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBoxIndicator>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CheckBoxIndicator>();
 
-    internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<CheckBoxIndicator>();
+    internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<CheckBoxIndicator>();
 
     internal bool IsMotionEnabled
     {

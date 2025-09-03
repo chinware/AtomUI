@@ -1,0 +1,69 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:PaletteColorItem}" TargetType="atom:PaletteColorItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Padding="1">
+                    <Border Name="ColorPreview"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Background="{TemplateBinding Background}"
+                            BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}">
+                        <atom:Icon Name="{x:Static atom:PaletteColorItemThemeConstants.CheckedMarkPart}"
+                                   IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   IsVisible="False" />
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ Border#Frame">
+            <Setter Property="Width"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerPresetColorSize}}" />
+            <Setter Property="Height"
+                    Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerPresetColorSize}}" />
+        </Style>
+
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFill}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.CheckedMarkSize}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.CheckedMarkSize}}" />
+            <Setter Property="RenderTransform" Value="scale(0.1)"/>
+        </Style>
+        
+        <Style Selector="^[IsChecked=True]">
+            <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="RenderTransform" Value="scale(1.0)"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IsLightColor=True]">
+            <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
+                <Setter Property="NormalFilledBrush" Value="rgba(0, 0, 0, 0.45)" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IsLightColor=False]">
+            <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
+                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWhite}}" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

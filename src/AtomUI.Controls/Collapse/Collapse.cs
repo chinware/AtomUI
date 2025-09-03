@@ -272,6 +272,8 @@ public class Collapse : SelectingItemsControl,
 
         if (container != null)
         {
+            // 先同步默认值
+            container.SetCurrentValue(SelectableItemContainer.IsSelectedProperty, collapseItem.IsSelected);
             disposables.Add(BindUtils.RelayBind(container, SelectableItemContainer.IsSelectedProperty, collapseItem, CollapseItem.IsSelectedProperty));
         }
         
