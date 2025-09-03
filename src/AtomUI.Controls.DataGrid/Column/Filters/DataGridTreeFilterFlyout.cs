@@ -1,4 +1,5 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
 using Avalonia;
@@ -38,6 +39,14 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
             ItemsSource        = Items,
             TreeViewFlyout     = this
         };
+        foreach (var item in Items)
+        {
+            if (item is Control control) 
+            {
+                control.SetLogicalParent(null);
+                control.SetVisualParent(null);
+            }
+        }
         _presenterBindingDisposables?.Dispose();
         _presenterBindingDisposables = new CompositeDisposable(3);
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter,

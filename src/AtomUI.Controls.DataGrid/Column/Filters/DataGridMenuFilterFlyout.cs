@@ -1,4 +1,5 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
 using Avalonia;
@@ -23,6 +24,16 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
     {
         _presenterBindingDisposables?.Dispose();
         _presenterBindingDisposables = new CompositeDisposable(4);
+
+        foreach (var item in Items)
+        {
+            if (item is Control control) 
+            {
+                control.SetLogicalParent(null);
+                control.SetVisualParent(null);
+            }
+        }
+        
         Presenter = new DataGridMenuFilterFlyoutPresenter
         {
             ItemsSource                                = Items,
