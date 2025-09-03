@@ -187,7 +187,7 @@ public class OptionButtonGroup : SelectingItemsControl,
     protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
     {
         base.PrepareContainerForItemOverride(element, item, index);
-        if (item is OptionButton optionButton)
+        if (element is OptionButton optionButton)
         {
             var disposables = new CompositeDisposable(4);
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, optionButton, OptionButton.SizeTypeProperty));

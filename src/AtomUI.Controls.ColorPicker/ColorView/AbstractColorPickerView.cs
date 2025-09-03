@@ -1,11 +1,13 @@
 using AtomUI.Controls.Themes;
 using AtomUI.Theme;
+using AtomUI.Theme.Palette;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -39,9 +41,9 @@ public abstract class AbstractColorPickerView : TemplatedControl,
             nameof(IsAlphaVisible),
             true);
     
-    public static readonly StyledProperty<bool> IsColorPaletteVisibleProperty =
+    public static readonly StyledProperty<bool> IsPaletteGroupEnabledProperty =
         AvaloniaProperty.Register<AbstractColorPickerView, bool>(
-            nameof(IsColorPaletteVisible),
+            nameof(IsPaletteGroupEnabled),
             true);
     
     public static readonly StyledProperty<bool> IsColorSpectrumSliderVisibleProperty =
@@ -81,10 +83,9 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         AvaloniaProperty.Register<AbstractColorPickerView, int>(
             nameof(MinValue),
             0);
-    
+
     public static readonly StyledProperty<List<ColorPickerPalette>?> PaletteGroupProperty =
-        AvaloniaProperty.Register<AbstractColorPickerView, List<ColorPickerPalette>?>(
-            nameof(PaletteGroup));
+        ColorPickerPaletteGroup.PaletteGroupProperty.AddOwner<AbstractColorPickerView>();
     
     public ColorSpectrumComponents ColorSpectrumComponents
     {
@@ -128,10 +129,10 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         set => SetValue(IsAlphaVisibleProperty, value);
     }
     
-    public bool IsColorPaletteVisible
+    public bool IsPaletteGroupEnabled
     {
-        get => GetValue(IsColorPaletteVisibleProperty);
-        set => SetValue(IsColorPaletteVisibleProperty, value);
+        get => GetValue(IsPaletteGroupEnabledProperty);
+        set => SetValue(IsPaletteGroupEnabledProperty, value);
     }
     
     public bool IsColorSpectrumSliderVisible
@@ -242,6 +243,17 @@ public abstract class AbstractColorPickerView : TemplatedControl,
                 SetCurrentValue(FormatProperty, Format == ColorFormat.Hex);
             }
         }
+        
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsPaletteGroupEnabledProperty)
+            {
+                if (IsPaletteGroupEnabled && PaletteGroup == null)
+                {
+                    ConfigureDefaultPaletteGroup();
+                }
+            }
+        }
     }
 
     private void ConfigureAlphaEffectiveVisible()
@@ -303,6 +315,31 @@ public abstract class AbstractColorPickerView : TemplatedControl,
         if (_clearColorButton != null)
         {
             _clearColorButton.ClearRequest += HandleColorClearRequest;
+        }
+        if (IsPaletteGroupEnabled && PaletteGroup == null)
+        {
+            ConfigureDefaultPaletteGroup();
+        }
+    }
+    
+    private void ConfigureDefaultPaletteGroup()
+    {
+        PaletteGroup = new List<ColorPickerPalette>();
+        {
+            var paletteInfo = PresetPalettes.GetPresetPalette(PresetPrimaryColor.Blue);
+            PaletteGroup.Add(new ColorPickerPalette("primary", true, paletteInfo.ColorSequence));
+        }
+        {
+            var paletteInfo = PresetPalettes.GetPresetPalette(PresetPrimaryColor.Red);
+            PaletteGroup.Add(new ColorPickerPalette("red", true, paletteInfo.ColorSequence));
+        }
+        {
+            var paletteInfo = PresetPalettes.GetPresetPalette(PresetPrimaryColor.Green);
+            PaletteGroup.Add(new ColorPickerPalette("green", true, paletteInfo.ColorSequence));
+        }
+        {
+            var paletteInfo = PresetPalettes.GetPresetPalette(PresetPrimaryColor.Cyan);
+            PaletteGroup.Add(new ColorPickerPalette("cyan", true, paletteInfo.ColorSequence));
         }
     }
 

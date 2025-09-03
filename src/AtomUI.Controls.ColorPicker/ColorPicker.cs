@@ -174,6 +174,7 @@ public class ColorPicker : AbstractColorPicker
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, FormatProperty, flyout, ColorPickerFlyout.FormatProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsAlphaEnabledProperty, flyout, ColorPickerFlyout.IsAlphaEnabledProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsFormatEnabledProperty, flyout, ColorPickerFlyout.IsFormatEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPaletteGroupEnabledProperty, flyout, ColorPickerFlyout.IsPaletteGroupEnabledProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PaletteGroupProperty, flyout, ColorPickerFlyout.PaletteGroupProperty));
         
         return flyout;

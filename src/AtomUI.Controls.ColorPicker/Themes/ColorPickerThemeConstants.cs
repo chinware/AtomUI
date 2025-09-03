@@ -5,6 +5,7 @@ internal static class ColorPickerViewThemeConstants
     public const string LayoutRootPart = "PART_LayoutRoot";
     public const string ClearColorPart = "PART_ClearColor";
     public const string GradientColorSliderPart = "PART_GradientColorSlider";
+    public const string PaletteGroupPart = "PART_PaletteGroup";
 }
 
 internal static class ColorSpectrumThemeConstants
@@ -48,4 +49,5 @@ internal static class ColorPickerThemeConstants
     public const string ColorIndicatorPart = "PART_ColorIndicator";
     public const string ColorTextPart = "PART_ColorText";
     public const string ColorTextPanelPart = "PART_ColorTextPanel";
+    
 }

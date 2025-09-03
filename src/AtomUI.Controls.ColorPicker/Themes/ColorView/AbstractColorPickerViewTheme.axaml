@@ -17,7 +17,9 @@
                     MinHeight="{TemplateBinding MinHeight}">
                 <StackPanel Name="{x:Static atom:ColorPickerViewThemeConstants.LayoutRootPart}"
                             Orientation="Horizontal" ClipToBounds="False">
-                    <atom:ColorPickerPaletteGroup Name="PaletteGroup" />
+                    <atom:ColorPickerPaletteGroup Name="{x:Static atom:ColorPickerViewThemeConstants.PaletteGroupPart}" 
+                                                  PaletteGroup="{TemplateBinding PaletteGroup}"
+                                                  IsVisible="{TemplateBinding IsPaletteGroupEnabled}"/>
                     <StackPanel Orientation="Vertical" ClipToBounds="False"
                                 Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                         <atom:ColorBlock Name="{x:Static atom:ColorPickerViewThemeConstants.ClearColorPart}"

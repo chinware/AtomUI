@@ -5,6 +5,7 @@ using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
+using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -85,9 +86,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     
     public static readonly StyledProperty<string> EmptyColorTextProperty =
         AvaloniaProperty.Register<AbstractColorPicker, string>(nameof(EmptyColorText), string.Empty);
+    
+    public static readonly StyledProperty<bool> IsPaletteGroupEnabledProperty =
+        AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(IsPaletteGroupEnabled));
 
     public static readonly StyledProperty<List<ColorPickerPalette>?> PaletteGroupProperty =
-        AbstractColorPickerView.PaletteGroupProperty.AddOwner<AbstractColorPicker>();
+        ColorPickerPaletteGroup.PaletteGroupProperty.AddOwner<AbstractColorPicker>();
 
     public ColorFormat Format
     {
@@ -184,7 +188,13 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         get => GetValue(EmptyColorTextProperty);
         set => SetValue(EmptyColorTextProperty, value);
     }
-    
+
+    public bool IsPaletteGroupEnabled
+    {
+        get => GetValue(IsPaletteGroupEnabledProperty);
+        set => SetValue(IsPaletteGroupEnabledProperty, value);
+    }
+
     public List<ColorPickerPalette>? PaletteGroup
     {
         get => GetValue(PaletteGroupProperty);

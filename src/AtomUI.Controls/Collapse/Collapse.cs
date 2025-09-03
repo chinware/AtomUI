@@ -176,7 +176,8 @@ public class Collapse : SelectingItemsControl,
             {
                 foreach (var item in e.OldItems)
                 {
-                    if (item is CollapseItem collapseItem)
+                    var collapseItem = GetCollapseItem(item as Control);
+                    if (collapseItem != null)
                     {
                         if (_itemsBindingDisposables.TryGetValue(collapseItem, out var disposable))
                         {
@@ -207,10 +208,21 @@ public class Collapse : SelectingItemsControl,
             }
         }
     }
+
+    private CollapseItem? GetCollapseItem(Control? item)
+    {
+        Control? result = item;
+        if (item is CollapseItemContainer container)
+        {
+            result = container.Child;
+        }
+
+        return result as CollapseItem;
+    }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new CollapseItem();
+        return new CollapseItemContainer();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
@@ -218,36 +230,65 @@ public class Collapse : SelectingItemsControl,
         return NeedsContainer<CollapseItem>(item, out recycleKey);
     }
 
-    protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
-        base.PrepareContainerForItemOverride(element, item, index);
-        if (item is CollapseItem collapseItem)
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (container is CollapseItem collapseItem)
         {
-            var disposables = new CompositeDisposable(8);
-            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, collapseItem, CollapseItem.SizeTypeProperty));
-            disposables.Add(BindUtils.RelayBind(this, EffectiveBorderThicknessProperty, collapseItem, BorderThicknessProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsGhostStyleProperty, collapseItem, CollapseItem.IsGhostStyleProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsBorderlessProperty, collapseItem, CollapseItem.IsBorderlessProperty));
-            disposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, collapseItem, CollapseItem.TriggerTypeProperty));
-            disposables.Add(BindUtils.RelayBind(this, ExpandIconPositionProperty, collapseItem,
-                CollapseItem.ExpandIconPositionProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsEnabledProperty, collapseItem, IsEnabledProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, collapseItem, CollapseItem.IsMotionEnabledProperty));
-            if (_itemsBindingDisposables.TryGetValue(collapseItem, out var oldDisposables))
-            {
-                oldDisposables.Dispose();
-                _itemsBindingDisposables.Remove(collapseItem);
-            }
-            _itemsBindingDisposables.Add(collapseItem, disposables);
-            
-            SetupCollapseBorderThickness(collapseItem, index);
-            ConfigureItemPaddings(collapseItem);
+            ConfigureCollapseItemBindings(collapseItem, index);
         }
+        else if (container is CollapseItemContainer collapseItemContainer)
+        {
+            collapseItemContainer.PropertyChanged += (sender, args) =>
+            {
+                if (args.Property == ContentPresenter.ChildProperty)
+                {
+                    if (args.NewValue is CollapseItem newCollapseItem)
+                    {
+                        ConfigureCollapseItemBindings(newCollapseItem, index, collapseItemContainer);
+                    }
+                }
+            };
+        }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type CollapseItemContainer or type CollapseItem.");
+        }
+    }
+
+    internal void ConfigureCollapseItemBindings(CollapseItem collapseItem, int index, CollapseItemContainer? container = null)
+    {
+        var disposables = new CompositeDisposable(8);
+        disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, collapseItem, CollapseItem.SizeTypeProperty));
+        disposables.Add(BindUtils.RelayBind(this, EffectiveBorderThicknessProperty, collapseItem, BorderThicknessProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsGhostStyleProperty, collapseItem, CollapseItem.IsGhostStyleProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsBorderlessProperty, collapseItem, CollapseItem.IsBorderlessProperty));
+        disposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, collapseItem, CollapseItem.TriggerTypeProperty));
+        disposables.Add(BindUtils.RelayBind(this, ExpandIconPositionProperty, collapseItem,
+            CollapseItem.ExpandIconPositionProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsEnabledProperty, collapseItem, IsEnabledProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, collapseItem, CollapseItem.IsMotionEnabledProperty));
+
+        if (container != null)
+        {
+            disposables.Add(BindUtils.RelayBind(container, CollapseItemContainer.IsSelectedProperty, collapseItem, CollapseItem.IsSelectedProperty));
+        }
+        
+        if (_itemsBindingDisposables.TryGetValue(collapseItem, out var oldDisposables))
+        {
+            oldDisposables.Dispose();
+            _itemsBindingDisposables.Remove(collapseItem);
+        }
+        _itemsBindingDisposables.Add(collapseItem, disposables);
+            
+        SetupCollapseBorderThickness(collapseItem, index);
+        ConfigureItemPaddings(collapseItem);
     }
 
     protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
     {
-        if (container is CollapseItem collapseItem)
+        var collapseItem = GetCollapseItem(container);
+        if (collapseItem != null)
         {
             SetupCollapseBorderThickness(collapseItem, newIndex);
         }
@@ -297,7 +338,8 @@ public class Collapse : SelectingItemsControl,
         if (e.NavigationMethod == NavigationMethod.Directional)
         {
             var containerFromEventSource = GetContainerFromEventSource(e.Source);
-            if (containerFromEventSource is CollapseItem collapseItem)
+            var collapseItem             = GetCollapseItem(containerFromEventSource);
+            if (collapseItem != null)
             {
                 if (!collapseItem.InAnimating)
                 {
@@ -313,7 +355,8 @@ public class Collapse : SelectingItemsControl,
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
         {
             var containerFromEventSource = GetContainerFromEventSource(e.Source);
-            if (containerFromEventSource is CollapseItem collapseItem)
+            var collapseItem = GetCollapseItem(containerFromEventSource);
+            if (collapseItem != null)
             {
                 if (!collapseItem.InAnimating && collapseItem.IsPointInHeaderBounds(e.GetPosition(collapseItem)))
                 {
@@ -333,7 +376,8 @@ public class Collapse : SelectingItemsControl,
                             .Any(c => container == c || container.IsVisualAncestorOf(c)))
             {
                 var containerFromEventSource = GetContainerFromEventSource(e.Source);
-                if (containerFromEventSource is CollapseItem collapseItem)
+                var collapseItem             = GetCollapseItem(containerFromEventSource);
+                if (collapseItem != null)
                 {
                     if (!collapseItem.InAnimating && collapseItem.IsPointInHeaderBounds(e.GetPosition(collapseItem)))
                     {

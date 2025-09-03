@@ -16,6 +16,9 @@ internal abstract class AbstractColorPickerFlyout : Flyout
     public static readonly StyledProperty<bool> IsClearEnabledProperty =
         AbstractColorPickerView.IsClearEnabledProperty.AddOwner<AbstractColorPickerFlyout>();
     
+    public static readonly StyledProperty<bool> IsPaletteGroupEnabledProperty =
+        AbstractColorPickerView.IsPaletteGroupEnabledProperty.AddOwner<AbstractColorPickerFlyout>();
+    
     public static readonly StyledProperty<List<ColorPickerPalette>?> PaletteGroupProperty =
         AbstractColorPickerView.PaletteGroupProperty.AddOwner<AbstractColorPickerFlyout>();
     
@@ -48,4 +51,11 @@ internal abstract class AbstractColorPickerFlyout : Flyout
         get => GetValue(PaletteGroupProperty);
         set => SetValue(PaletteGroupProperty, value);
     }
+    
+    public bool IsPaletteGroupEnabled
+    {
+        get => GetValue(IsPaletteGroupEnabledProperty);
+        set => SetValue(IsPaletteGroupEnabledProperty, value);
+    }
+
 }

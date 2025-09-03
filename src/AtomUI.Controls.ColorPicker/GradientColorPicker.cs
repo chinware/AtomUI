@@ -233,6 +233,7 @@ public class GradientColorPicker : AbstractColorPicker
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, FormatProperty, flyout, GradientColorPickerFlyout.FormatProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsAlphaEnabledProperty, flyout, GradientColorPickerFlyout.IsAlphaEnabledProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsFormatEnabledProperty, flyout, GradientColorPickerFlyout.IsFormatEnabledProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPaletteGroupEnabledProperty, flyout, GradientColorPickerFlyout.IsPaletteGroupEnabledProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PaletteGroupProperty, flyout, GradientColorPickerFlyout.PaletteGroupProperty));
         
         return flyout;
