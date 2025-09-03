@@ -1,14 +1,9 @@
 using System.Reactive.Disposables;
-using AtomUI.Controls.ColorPickerLang;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Converters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -187,6 +182,8 @@ public class ColorPicker : AbstractColorPicker
             _presenter                   =  presenter;
             _presenter.ValueChanged      += HandleColorPickerViewValueChanged;
             _presenter.ColorValueCleared += HandleColorCleared;
+            var effectiveColor = Value ?? DefaultValue;
+            _presenter.SetCurrentValue(ColorPickerView.ValueProperty, effectiveColor);
         }
     }
 
@@ -199,18 +196,6 @@ public class ColorPicker : AbstractColorPicker
         else
         {
             _latestSyncValue = args.NewColor;
-        }
-    }
-
-    protected override void NotifyFlyoutOpened()
-    {
-        if (PickerFlyout is ColorPickerFlyout colorPickerFlyout)
-        {
-            var effectiveColor = Value ?? DefaultValue;
-            if (effectiveColor != null)
-            {
-                colorPickerFlyout.SetCurrentValue(ColorPickerFlyout.ValueProperty, effectiveColor);
-            }
         }
     }
     
