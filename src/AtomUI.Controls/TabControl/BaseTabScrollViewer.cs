@@ -212,8 +212,8 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     {
         var args = new List<object?>();
 
-        object? scrollUpVisibility   = default;
-        object? scrollDownVisibility = default;
+        object? scrollUpVisibility;
+        object? scrollDownVisibility;
         if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom)
         {
             args.Add(ScrollBarVisibility.Auto);
@@ -263,10 +263,9 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     {
         if (hostProvider.PopupHost != args.Root)
         {
-            // 只有 TriggerType 为 Hover 的时候会判断
-            var secondaryButtonOrigin = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(MenuIndicator)!);
-            var secondaryBounds = secondaryButtonOrigin.HasValue ? new Rect(secondaryButtonOrigin.Value, Bounds.Size) : new Rect();
-            if (!secondaryBounds.Contains(args.Position))
+            var menuIndicatorOrigin = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(MenuIndicator)!);
+            var menuIndicatorBounds = menuIndicatorOrigin.HasValue ? new Rect(menuIndicatorOrigin.Value, Bounds.Size) : new Rect();
+            if (!menuIndicatorBounds.Contains(args.Position))
             {
                 return true;
             }

@@ -15,7 +15,7 @@
                     <DockPanel Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollViewLayoutPart}">
                         <atom:IconButton Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollMenuIndicatorPart}"
                                          HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
+                                         VerticalAlignment="Stretch"
                                          Icon="{atom:IconProvider EllipsisOutlined}" />
                         <atom:TabScrollContentPresenter
                             Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollViewContentPart}"

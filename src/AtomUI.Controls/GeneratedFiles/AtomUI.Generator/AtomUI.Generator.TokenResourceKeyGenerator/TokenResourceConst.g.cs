@@ -185,6 +185,27 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("Calendar.WithoutTimeCellHeight");
     }
 
+    public static class CardTokenKey
+    {
+        public static readonly TokenResourceKey ActionsBg = new TokenResourceKey("Card.ActionsBg");
+        public static readonly TokenResourceKey ActionsSpacing = new TokenResourceKey("Card.ActionsSpacing");
+        public static readonly TokenResourceKey BodyPadding = new TokenResourceKey("Card.BodyPadding");
+        public static readonly TokenResourceKey BodyPaddingSM = new TokenResourceKey("Card.BodyPaddingSM");
+        public static readonly TokenResourceKey CardActionsIconSize = new TokenResourceKey("Card.CardActionsIconSize");
+        public static readonly TokenResourceKey CardHeadPadding = new TokenResourceKey("Card.CardHeadPadding");
+        public static readonly TokenResourceKey CardPaddingBase = new TokenResourceKey("Card.CardPaddingBase");
+        public static readonly TokenResourceKey CardShadows = new TokenResourceKey("Card.CardShadows");
+        public static readonly TokenResourceKey ExtraColor = new TokenResourceKey("Card.ExtraColor");
+        public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("Card.HeaderBg");
+        public static readonly TokenResourceKey HeaderFontSize = new TokenResourceKey("Card.HeaderFontSize");
+        public static readonly TokenResourceKey HeaderFontSizeSM = new TokenResourceKey("Card.HeaderFontSizeSM");
+        public static readonly TokenResourceKey HeaderHeight = new TokenResourceKey("Card.HeaderHeight");
+        public static readonly TokenResourceKey HeaderHeightSM = new TokenResourceKey("Card.HeaderHeightSM");
+        public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Card.HeaderPadding");
+        public static readonly TokenResourceKey HeaderPaddingSM = new TokenResourceKey("Card.HeaderPaddingSM");
+        public static readonly TokenResourceKey TabsMarginBottom = new TokenResourceKey("Card.TabsMarginBottom");
+    }
+
     public static class CheckBoxTokenKey
     {
         public static readonly TokenResourceKey CheckedMarkSize = new TokenResourceKey("CheckBox.CheckedMarkSize");

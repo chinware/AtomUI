@@ -43,6 +43,11 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
             _flyoutBindingDisposable?.Dispose();
             _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
         }
+        
+        if (MenuFlyout.IsOpen)
+        {
+            return;
+        }
 
         if (TabStripPlacement == Dock.Top)
         {
