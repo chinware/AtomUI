@@ -3,5 +3,7 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="Card.axaml" />
+        <ResourceInclude Source="CardTabsContentTheme.axaml" />
+        <ResourceInclude Source="CardMetaContentTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

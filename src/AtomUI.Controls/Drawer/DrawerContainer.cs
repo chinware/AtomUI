@@ -24,56 +24,56 @@ internal class DrawerContainer : ContentControl
 {
     #region 内部属性定义
 
-    internal static readonly DirectProperty<DrawerContainer, DrawerPlacement> PlacementProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, DrawerPlacement>(nameof(Placement),
+    internal static readonly DirectProperty<DrawerContainer, DrawerPlacement> PlacementProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, DrawerPlacement>(nameof(Placement),
             o => o.Placement,
             (o, v) => o.Placement = v);
 
-    internal static readonly DirectProperty<DrawerContainer, bool> IsShowCloseButtonProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(IsShowCloseButton),
+    internal static readonly DirectProperty<DrawerContainer, bool> IsShowCloseButtonProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(IsShowCloseButton),
             o => o.IsShowCloseButton,
             (o, v) => o.IsShowCloseButton = v);
 
-    internal static readonly DirectProperty<DrawerContainer, bool> IsShowMaskProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(IsShowMask),
+    internal static readonly DirectProperty<DrawerContainer, bool> IsShowMaskProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(IsShowMask),
             o => o.IsShowMask,
             (o, v) => o.IsShowMask = v);
 
-    internal static readonly DirectProperty<DrawerContainer, string> TitleProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, string>(nameof(Title),
+    internal static readonly DirectProperty<DrawerContainer, string> TitleProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, string>(nameof(Title),
             o => o.Title,
             (o, v) => o.Title = v);
 
-    internal static readonly DirectProperty<DrawerContainer, object?> FooterProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, object?>(nameof(Footer),
+    internal static readonly DirectProperty<DrawerContainer, object?> FooterProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, object?>(nameof(Footer),
             o => o.Footer,
             (o, v) => o.Footer = v);
 
-    internal static readonly DirectProperty<DrawerContainer, IDataTemplate?> FooterTemplateProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, IDataTemplate?>(nameof(FooterTemplate),
+    internal static readonly DirectProperty<DrawerContainer, IDataTemplate?> FooterTemplateProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, IDataTemplate?>(nameof(FooterTemplate),
             o => o.FooterTemplate,
             (o, v) => o.FooterTemplate = v);
 
-    internal static readonly DirectProperty<DrawerContainer, object?> ExtraProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, object?>(nameof(Extra),
+    internal static readonly DirectProperty<DrawerContainer, object?> ExtraProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, object?>(nameof(Extra),
             o => o.Extra,
             (o, v) => o.Extra = v);
 
-    internal static readonly DirectProperty<DrawerContainer, IDataTemplate?> ExtraTemplateProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, IDataTemplate?>(nameof(ExtraTemplate),
+    internal static readonly DirectProperty<DrawerContainer, IDataTemplate?> ExtraTemplateProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, IDataTemplate?>(nameof(ExtraTemplate),
             o => o.ExtraTemplate,
             (o, v) => o.ExtraTemplate = v);
 
-    internal static readonly DirectProperty<DrawerContainer, double> DialogSizeProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, double>(nameof(DialogSize),
+    internal static readonly DirectProperty<DrawerContainer, double> DialogSizeProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, double>(nameof(DialogSize),
             o => o.DialogSize,
             (o, v) => o.DialogSize = v);
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerContainer>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerContainer>();
 
-    internal static readonly DirectProperty<DrawerContainer, bool> CloseWhenClickOnMaskProperty
-        = AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(CloseWhenClickOnMask),
+    internal static readonly DirectProperty<DrawerContainer, bool> CloseWhenClickOnMaskProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(CloseWhenClickOnMask),
             o => o.CloseWhenClickOnMask,
             (o, v) => o.CloseWhenClickOnMask = v);
     

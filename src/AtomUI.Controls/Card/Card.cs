@@ -45,15 +45,6 @@ public class Card : HeaderedContentControl
     public static readonly StyledProperty<List<Control>?> ActionsProperty = 
         AvaloniaProperty.Register<Card, List<Control>?>(nameof (Actions));
     
-    public static readonly StyledProperty<object?> TabBarExtraContentProperty = 
-        AvaloniaProperty.Register<Card, object?>(nameof (TabBarExtraContent));
-    
-    public static readonly StyledProperty<IDataTemplate?> TabBarExtraContentTemplateProperty = 
-        AvaloniaProperty.Register<Card, IDataTemplate?>(nameof (TabBarExtraContentTemplate));
-    
-    public static readonly StyledProperty<List<Control>?> TabListProperty = 
-        AvaloniaProperty.Register<Card, List<Control>?>(nameof (TabList));
-    
     public object? Extra
     {
         get => GetValue(ExtraProperty);
@@ -112,24 +103,6 @@ public class Card : HeaderedContentControl
     {
         get => GetValue(ActionsProperty);
         set => SetValue(ActionsProperty, value);
-    }
-    
-    public object? TabBarExtraContent
-    {
-        get => GetValue(TabBarExtraContentProperty);
-        set => SetValue(TabBarExtraContentProperty, value);
-    }
-    
-    public IDataTemplate? TabBarExtraContentTemplate
-    {
-        get => GetValue(TabBarExtraContentTemplateProperty);
-        set => SetValue(TabBarExtraContentTemplateProperty, value);
-    }
-    
-    public List<Control>? TabList
-    {
-        get => GetValue(TabListProperty);
-        set => SetValue(TabListProperty, value);
     }
     #endregion
 }
