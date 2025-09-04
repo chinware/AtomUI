@@ -1,6 +1,5 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -8,7 +7,6 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -21,6 +19,7 @@ public class Segmented : SelectingItemsControl,
                          IMotionAwareControl,
                          IControlSharedTokenResourcesHost
 {
+    protected override Type StyleKeyOverride { get; } = typeof(Segmented);
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -210,7 +209,7 @@ public class Segmented : SelectingItemsControl,
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new SelectableItemContainer();
+        return new SegmentedItem();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
@@ -223,42 +222,41 @@ public class Segmented : SelectingItemsControl,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is SegmentedItem segmentedItem)
         {
-            ConfigureSegmentedItemBindings(segmentedItem, index);
-        }
-        else if (container is SelectableItemContainer selectableItemContainer)
-        {
-            selectableItemContainer.PropertyChanged += (sender, args) =>
+            var disposables = new CompositeDisposable(2);
+            
+            if (item != null && item is not Visual)
             {
-                if (args.Property == ContentPresenter.ChildProperty)
+                if (!segmentedItem.IsSet(SegmentedItem.ContentProperty))
                 {
-                    if (args.NewValue is SegmentedItem newSegmentedItem)
-                    {
-                        ConfigureSegmentedItemBindings(newSegmentedItem, index, selectableItemContainer);
-                    }
+                    segmentedItem.SetCurrentValue(SegmentedItem.ContentProperty, item);
                 }
-            };
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, segmentedItem, SegmentedItem.ContentTemplateProperty));
+            }
+            
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem, SegmentedItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, segmentedItem, SegmentedItem.IsMotionEnabledProperty));
+            
+            PrepareSegmentedItem(segmentedItem, item, index, disposables);
+            
+            if (_itemsBindingDisposables.TryGetValue(segmentedItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(segmentedItem);
+            }
+            _itemsBindingDisposables.Add(segmentedItem, disposables);
         }
         else
         {
-            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type SelectableItemContainer or type SegmentedItem.");
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type SegmentedItem.");
         }
     }
-
-    private void ConfigureSegmentedItemBindings(SegmentedItem segmentedItem, int index, SelectableItemContainer? container = null)
+    
+    protected virtual void PrepareSegmentedItem(SegmentedItem segmentedItem, object? item, int index, CompositeDisposable compositeDisposable)
     {
-        var disposables = new CompositeDisposable(2);
-        disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, segmentedItem, SegmentedItem.SizeTypeProperty));
-        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, segmentedItem, SegmentedItem.IsMotionEnabledProperty));
-        if (container != null)
-        {
-            disposables.Add(BindUtils.RelayBind(container, SelectableItemContainer.IsSelectedProperty, segmentedItem, SegmentedItem.IsSelectedProperty));
-        }
-        if (_itemsBindingDisposables.TryGetValue(segmentedItem, out var oldDisposables))
-        {
-            oldDisposables.Dispose();
-            _itemsBindingDisposables.Remove(segmentedItem);
-        }
-        _itemsBindingDisposables.Add(segmentedItem, disposables);
     }
 
     private void ConfigureTransitions(bool force)
@@ -290,17 +288,6 @@ public class Segmented : SelectingItemsControl,
             e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
     }
     
-    private SegmentedItem? GetSegmentedItem(Control? item)
-    {
-        Control? result = item;
-        if (item is SelectableItemContainer container)
-        {
-            result = container.Child;
-        }
-
-        return result as SegmentedItem;
-    }
-
     public sealed override void Render(DrawingContext context)
     {
         context.DrawRectangle(Background, null, new RoundedRect(new Rect(DesiredSize.Deflate(Margin)), CornerRadius));

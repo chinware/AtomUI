@@ -228,6 +228,13 @@ public class CollapseItem : HeaderedContentControl,
                     SetCurrentValue(HeaderProperty, headered.Header);
                 }
             }
+            else if (obj.NewValue is IReadOnlyHeadered readOnlyHeadered)
+            {
+                if (Header != readOnlyHeadered.Header)
+                {
+                    SetCurrentValue(HeaderProperty, readOnlyHeadered.Header);
+                }
+            }
             else
             {
                 if (!(obj.NewValue is Control))

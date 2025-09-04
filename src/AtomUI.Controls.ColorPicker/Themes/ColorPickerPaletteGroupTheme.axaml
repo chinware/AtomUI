@@ -6,39 +6,34 @@
     <ControlTheme x:Key="{x:Type atom:ColorPickerPaletteGroup}" TargetType="atom:ColorPickerPaletteGroup">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:Collapse ItemsSource="{TemplateBinding PaletteGroup}"
-                               ItemContentPadding="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerPresetColorGroupPadding}}"
-                               ItemHeaderPadding="0"
-                               SizeType="Small"
-                               IsGhostStyle="True"
-                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                    <atom:Collapse.ItemTemplate>
+                <atom:ColorPickerCollapse ItemsSource="{TemplateBinding PaletteGroup}"
+                                          ItemContentPadding="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerPresetColorGroupPadding}}"
+                                          ItemHeaderPadding="0"
+                                          SizeType="Small"
+                                          IsGhostStyle="True"
+                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                    <atom:ColorPickerCollapse.ItemTemplate>
                         <DataTemplate>
-                            <atom:CollapseItem Header="{Binding Label}"
-                                               IsSelected="{Binding IsOpen}">
-                                <atom:CollapseItem.Content>
-                                    <ItemsControl ItemsSource="{Binding Colors}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel
-                                                    ItemSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}"
-                                                    LineSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <atom:PaletteColorItem
-                                                    Color="{Binding}"
-                                                    GroupName="{Binding GroupName, RelativeSource={RelativeSource AncestorType=atom:ColorPickerPaletteGroup}}"
-                                                    IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:CollapseItem}}" />
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </atom:CollapseItem.Content>
-                            </atom:CollapseItem>
+                            <ItemsControl ItemsSource="{Binding Colors}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel
+                                            ItemSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}"
+                                            LineSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <atom:PaletteColorItem
+                                            Color="{Binding}"
+                                            GroupName="{Binding GroupName, RelativeSource={RelativeSource AncestorType=atom:ColorPickerPaletteGroup}}"
+                                            IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:CollapseItem}}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </DataTemplate>
-                    </atom:Collapse.ItemTemplate>
-                </atom:Collapse>
+                    </atom:ColorPickerCollapse.ItemTemplate>
+                </atom:ColorPickerCollapse>
             </ControlTemplate>
         </Setter>
 

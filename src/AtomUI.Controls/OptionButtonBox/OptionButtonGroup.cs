@@ -35,6 +35,7 @@ public class OptionButtonGroup : SelectingItemsControl,
                                  IWaveSpiritAwareControl,
                                  IControlSharedTokenResourcesHost
 {
+    protected override Type StyleKeyOverride { get; } = typeof(OptionButtonGroup);
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -184,17 +185,34 @@ public class OptionButtonGroup : SelectingItemsControl,
         }
     }
 
-    protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
-        base.PrepareContainerForItemOverride(element, item, index);
-        if (element is OptionButton optionButton)
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (container is OptionButton optionButton)
         {
             var disposables = new CompositeDisposable(4);
+            
+            if (item != null && item is not Visual)
+            {
+                if (!optionButton.IsSet(OptionButton.ContentProperty))
+                {
+                    optionButton.SetCurrentValue(OptionButton.ContentProperty, item);
+                }
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, optionButton, OptionButton.ContentTemplateProperty));
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, optionButton, OptionButton.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, ButtonStyleProperty, optionButton, OptionButton.ButtonStyleProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, optionButton, OptionButton.IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, IsWaveSpiritEnabledProperty, optionButton,
                 OptionButton.IsWaveSpiritEnabledProperty));
+            
+            PrepareOptionButton(optionButton, item, index, disposables);
+            
             if (_itemsBindingDisposables.TryGetValue(optionButton, out var oldDisposables))
             {
                 oldDisposables.Dispose();
@@ -202,7 +220,15 @@ public class OptionButtonGroup : SelectingItemsControl,
             }
             _itemsBindingDisposables.Add(optionButton, disposables);
             optionButton.IsCheckedChanged += HandleOptionButtonChecked;
+        }  
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type OptionButton.");
         }
+    }
+    
+    protected virtual void PrepareOptionButton(OptionButton optionButton, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
