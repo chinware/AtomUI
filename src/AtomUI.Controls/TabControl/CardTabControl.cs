@@ -17,6 +17,7 @@ namespace AtomUI.Controls;
 
 public class CardTabControl : BaseTabControl
 {
+    protected override Type StyleKeyOverride { get; } = typeof(CardTabControl);
     #region 公共属性实现
 
     public static readonly StyledProperty<bool> IsShowAddTabButtonProperty =

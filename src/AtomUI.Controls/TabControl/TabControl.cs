@@ -18,6 +18,7 @@ namespace AtomUI.Controls;
 
 public class TabControl : BaseTabControl
 {
+    protected override Type StyleKeyOverride { get; } = typeof(TabControl);
     #region 内部属性定义
 
     internal static readonly DirectProperty<TabControl, double> SelectedIndicatorThicknessProperty =
