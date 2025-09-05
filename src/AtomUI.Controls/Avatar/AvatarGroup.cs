@@ -11,7 +11,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -19,7 +18,9 @@ namespace AtomUI.Controls;
 
 using ControlList = Avalonia.Controls.Controls;
 
-public class AvatarGroup : TemplatedControl, IMotionAwareControl, IControlSharedTokenResourcesHost, IResourceBindingManager
+public class AvatarGroup : TemplatedControl, 
+                           IMotionAwareControl,
+                           IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
     
@@ -122,8 +123,6 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl, IControlShared
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
-    
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     #endregion
     
     private Avatar? _foldCountAvatar;
@@ -132,6 +131,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl, IControlShared
     private readonly Dictionary<Control, CompositeDisposable> _itemBindingDisposables = new();
     private CompositeDisposable? _foldAvatarBindingDisposables;
     private CompositeDisposable? _flyoutBindingDisposables;
+    private IDisposable? _borderThicknessDisposable;
 
     static AvatarGroup()
     {
@@ -272,25 +272,13 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl, IControlShared
         return _foldCountAvatar;
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         var foldCountAvatar = GetFoldCountAvatar();
         if (_foldCountFlyout == null)
         {
@@ -310,6 +298,12 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl, IControlShared
         }
 
         ConfigureFoldInfo();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     private void ConfigureFoldInfo()
