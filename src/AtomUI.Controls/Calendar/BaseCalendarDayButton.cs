@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -11,7 +9,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Controls;
@@ -23,8 +20,7 @@ namespace AtomUI.Controls;
     TodayPC,
     BlackoutPC,
     DayfocusedPC)]
-internal class BaseCalendarDayButton : AvaloniaButton,
-                                       IResourceBindingManager
+internal class BaseCalendarDayButton : AvaloniaButton
 {
     internal const string TodayPC = ":today";
     internal const string BlackoutPC = ":blackout";
@@ -39,8 +35,6 @@ internal class BaseCalendarDayButton : AvaloniaButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     /// <summary>
     /// Default content for the CalendarDayButton.
     /// </summary>
@@ -53,12 +47,8 @@ internal class BaseCalendarDayButton : AvaloniaButton,
     private bool _isInactive;
     private bool _isSelected;
     private bool _isToday;
-
-    /// <summary>
-    /// Initializes a new instance of the
-    /// <see cref="T:Avalonia.Controls.Primitives.CalendarDayButton" />
-    /// class.
-    /// </summary>
+    private IDisposable? _borderThicknessDisposable;
+    
     public BaseCalendarDayButton()
     {
         //Focusable = false;
@@ -297,18 +287,19 @@ internal class BaseCalendarDayButton : AvaloniaButton,
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
