@@ -1,7 +1,5 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
-using AtomUI.Theme;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils; 
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -13,13 +11,12 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 [TemplatePart(ButtonSpinnerThemeConstants.SpinnerHandlePart, typeof(ContentPresenter))]
-internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingManager
+internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox
 {
     #region 公共属性定义
 
@@ -98,11 +95,10 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
         set => SetAndRaise(SpinnerHandleWidthProperty, ref _spinnerHandleWidth, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     #endregion
 
     private IDisposable? _mouseMoveDisposable;
+    private IDisposable? _borderThicknessDisposable;
 
     protected override void BuildEffectiveInnerBoxPadding()
     {
@@ -127,23 +123,13 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         ConfigureMoveProcessor();
     }
 
@@ -151,6 +137,7 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox, IResourceBindingM
     {
         base.OnDetachedFromVisualTree(e);
         _mouseMoveDisposable?.Dispose();
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
