@@ -4,7 +4,6 @@ using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -16,8 +15,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class CardActionPanel : TemplatedControl,
-                                 IResourceBindingManager
+internal class CardActionPanel : TemplatedControl
 {
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CardActionPanel>();
@@ -28,12 +26,12 @@ internal class CardActionPanel : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     public Avalonia.Controls.Controls Actions { get; } = new ();
 
     private UniformGrid? _uniformGrid;
     private readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
-
+    private IDisposable? _borderThicknessDisposable;
+    
     static CardActionPanel()
     {
         AffectsRender<CardActionPanel>();
@@ -65,16 +63,16 @@ internal class CardActionPanel : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
