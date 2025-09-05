@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Themes;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -10,7 +9,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
 
 namespace AtomUI.Controls;
@@ -25,8 +23,7 @@ public class ChoosingStatusEventArgs : EventArgs
     }
 }
 
-internal class DatePickerPresenter : PickerPresenterBase,
-                                     IResourceBindingManager
+internal class DatePickerPresenter : PickerPresenterBase
 {
     #region 公共属性定义
 
@@ -110,8 +107,6 @@ internal class DatePickerPresenter : PickerPresenterBase,
         set => SetValue(TempSelectedTimeProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     #endregion
 
     #region 公共事件定义
@@ -134,20 +129,7 @@ internal class DatePickerPresenter : PickerPresenterBase,
     protected PickerCalendar? CalendarView;
     protected TimeView? TimeView;
     private CompositeDisposable? _pointerDisposables;
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0))));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
+    private IDisposable? _borderThicknessDisposable;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -167,12 +149,16 @@ internal class DatePickerPresenter : PickerPresenterBase,
                 EmitChoosingStatueChanged(args.GetNewValue<bool>());
             }
         }));
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness, BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0)));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _pointerDisposables?.Dispose();
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

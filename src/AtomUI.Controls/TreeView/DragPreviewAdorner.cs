@@ -1,6 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
+﻿using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -46,8 +44,7 @@ internal class DragPreviewAdorner : Decorator
     }
 }
 
-internal class DragPreview : Decorator,
-                             IResourceBindingManager
+internal class DragPreview : Decorator
 {
     public static readonly StyledProperty<IBrush?> BackgroundProperty =
         Border.BackgroundProperty.AddOwner<DragPreviewAdorner>();
@@ -57,12 +54,10 @@ internal class DragPreview : Decorator,
         get => GetValue(BackgroundProperty);
         set => SetValue(BackgroundProperty, value);
     }
-
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     private readonly VisualBrush _visualBrush;
-
+    private IDisposable? _backgroundBindingDisposable;
+    
     public DragPreview(Border previewControl)
     {
         Width               = previewControl.Bounds.Width;
@@ -80,14 +75,14 @@ internal class DragPreview : Decorator,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, TreeViewTokenKey.NodeHoverBg));
+        _backgroundBindingDisposable =
+            TokenResourceBinder.CreateTokenBinding(this, BackgroundProperty, TreeViewTokenKey.NodeHoverBg);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        this.DisposeTokenBindings();
+        _backgroundBindingDisposable?.Dispose();
     }
 
     public override void Render(DrawingContext context)
