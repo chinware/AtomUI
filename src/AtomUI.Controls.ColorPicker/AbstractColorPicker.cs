@@ -5,7 +5,6 @@ using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
-using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -35,8 +34,7 @@ public enum ColorPickerValueSyncMode
 public abstract class AbstractColorPicker : AvaloniaButton, 
                                             ISizeTypeAware,
                                             IMotionAwareControl,
-                                            IControlSharedTokenResourcesHost,
-                                            IResourceBindingManager
+                                            IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
     public static readonly StyledProperty<ColorFormat> FormatProperty =
@@ -223,8 +221,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ColorPickerToken.ID;
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-    
     #endregion
     
     private readonly FlyoutStateHelper _flyoutStateHelper;
@@ -232,7 +228,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     private protected bool IsFlyoutOpen;
     private CompositeDisposable? _flyoutBindingDisposables;
     private CompositeDisposable? _flyoutHelperBindingDisposables;
-
+    private IDisposable? _borderThicknessDisposable;
+    
     static AbstractColorPicker()
     {
         AffectsMeasure<AbstractColorPicker>(IsShowTextProperty, 
@@ -255,10 +252,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
         _flyoutHelperBindingDisposables?.Dispose();
         _flyoutHelperBindingDisposables = new CompositeDisposable(3);
         _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper,
@@ -272,13 +265,16 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
         _flyoutHelperBindingDisposables?.Dispose();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         _flyoutStateHelper.NotifyAttachedToVisualTree();
     }
 
@@ -286,6 +282,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
