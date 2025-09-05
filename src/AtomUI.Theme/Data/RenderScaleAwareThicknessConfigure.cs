@@ -30,12 +30,11 @@ public class RenderScaleAwareThicknessConfigure
                     renderScaling = visualRoot.RenderScaling;
                 }
             }
-
+        
             if (MathUtils.AreClose(renderScaling, Math.Floor(renderScaling)))
             {
                 renderScaling = 1.0d; // 这种情况很清晰
             }
-
             var result = BorderUtils.BuildRenderScaleAwareThickness(thickness, renderScaling);
             if (_postProcessor is not null)
             {

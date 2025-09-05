@@ -17,7 +17,13 @@ internal class CardToken : AbstractControlDesignToken
     public Color HeaderBg { get; set; }
     
     /// <summary>
-    /// 卡片头部文字大小
+    /// 卡片头部文字大小，大号尺寸
+    /// Font size of card header
+    /// </summary>
+    public double HeaderFontSizeLG { get; set; }
+    
+    /// <summary>
+    /// 卡片头部文字大小，默认尺寸
     /// Font size of card header
     /// </summary>
     public double HeaderFontSize { get; set; }
@@ -29,7 +35,13 @@ internal class CardToken : AbstractControlDesignToken
     public double HeaderFontSizeSM { get; set; }
     
     /// <summary>
-    /// 卡片头部高度
+    /// 卡片头部高度，大号尺寸
+    /// Height of card header
+    /// </summary>
+    public double HeaderHeightLG { get; set; }
+    
+    /// <summary>
+    /// 卡片头部高度，默认尺寸
     /// Height of card header
     /// </summary>
     public double HeaderHeight { get; set; }
@@ -41,16 +53,10 @@ internal class CardToken : AbstractControlDesignToken
     public double HeaderHeightSM { get; set; }
     
     /// <summary>
-    /// 小号卡片内边距
-    /// Padding of small card body
+    /// 卡片内边距，大号
+    /// Padding of card body
     /// </summary>
-    public Thickness BodyPaddingSM { get; set; }
-    
-    /// <summary>
-    /// 小号卡片头部内边距
-    /// Padding of small card head
-    /// </summary>
-    public Thickness HeaderPaddingSM { get; set; }
+    public Thickness BodyPaddingLG { get; set; }
     
     /// <summary>
     /// 卡片内边距
@@ -59,10 +65,28 @@ internal class CardToken : AbstractControlDesignToken
     public Thickness BodyPadding { get; set; }
     
     /// <summary>
+    /// 小号卡片内边距
+    /// Padding of small card body
+    /// </summary>
+    public Thickness BodyPaddingSM { get; set; }
+    
+    /// <summary>
+    /// 卡片头部内边距,大号
+    /// Padding of card head
+    /// </summary>
+    public Thickness HeaderPaddingLG { get; set; }
+    
+    /// <summary>
     /// 卡片头部内边距
     /// Padding of card head
     /// </summary>
     public Thickness HeaderPadding { get; set; }
+    
+    /// <summary>
+    /// 小号卡片头部内边距
+    /// Padding of small card head
+    /// </summary>
+    public Thickness HeaderPaddingSM { get; set; }
     
     /// <summary>
     /// 操作区背景色
@@ -120,20 +144,26 @@ internal class CardToken : AbstractControlDesignToken
     public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        HeaderBg = Colors.Transparent;
-        HeaderFontSize = SharedToken.FontSizeLG;
+        HeaderBg         = Colors.Transparent;
+        HeaderFontSizeLG = SharedToken.FontSizeLG;
+        HeaderFontSize   = SharedToken.FontSize;
         HeaderFontSizeSM = SharedToken.FontSize;
 
-        HeaderHeight     = SharedToken.FontSizeLG * SharedToken.FontHeightLG + SharedToken.UniformlyPadding * 2;
-        HeaderHeightSM   = SharedToken.FontSize * SharedToken.FontHeight + SharedToken.UniformlyPaddingXS * 2;
+        HeaderHeightLG   = SharedToken.FontHeightLG + SharedToken.UniformlyPadding * 2;
+        HeaderHeight     = SharedToken.FontHeight + SharedToken.UniformlyPaddingXS * 2;
+        HeaderHeightSM   = SharedToken.FontHeightSM;
         ActionsBg        = SharedToken.ColorBgContainer;
         ActionsSpacing   = SharedToken.SpacingSM;
         TabsMarginBottom = new Thickness(0, 0, 0, -SharedToken.UniformlyPadding - SharedToken.LineWidth);
         ExtraColor       = SharedToken.ColorText;
-        BodyPaddingSM    = new Thickness(12);
-        HeaderPaddingSM  = new Thickness(12);
-        BodyPadding      = SharedToken.PaddingLG;
-        HeaderPadding      = SharedToken.PaddingLG;
+        
+        BodyPaddingLG = SharedToken.PaddingLG;
+        BodyPadding   = SharedToken.PaddingSM;
+        BodyPaddingSM = SharedToken.PaddingXS;
+        
+        HeaderPaddingLG  = new Thickness(SharedToken.UniformlyPaddingLG, 0);
+        HeaderPadding    = new Thickness(SharedToken.UniformlyPaddingSM, 0);
+        HeaderPaddingSM  = new Thickness(SharedToken.UniformlyPaddingXS, 0);
 
         CardShadows         = new BoxShadows(new BoxShadow()
         {

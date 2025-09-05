@@ -132,7 +132,7 @@ internal class ButtonSpinnerHandle : TemplatedControl, IResourceBindingManager
                 // 画横线
                 var startPoint = new Point(0, handleOffsetY); 
                 var endPoint   = new Point(Bounds.Width - lineWidth, handleOffsetY);
-                context.DrawLine(new Pen(BorderBrush, SpinnerBorderThickness.Left), startPoint, endPoint);
+                context.DrawLine(new Pen(BorderBrush, lineWidth), startPoint, endPoint);
             }
         }
     }

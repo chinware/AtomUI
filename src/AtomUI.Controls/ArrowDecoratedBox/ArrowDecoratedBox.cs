@@ -146,10 +146,7 @@ public class ArrowDecoratedBox : ContentControl,
             nameof(ArrowIndicatorLayoutBounds),
             o => o.ArrowIndicatorLayoutBounds,
             (o, v) => o.ArrowIndicatorLayoutBounds = v);
-
-    /// <summary>
-    /// 箭头的大小
-    /// </summary>
+    
     internal double ArrowSize
     {
         get => GetValue(ArrowSizeProperty);

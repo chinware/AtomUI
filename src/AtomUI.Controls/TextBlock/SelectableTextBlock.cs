@@ -266,7 +266,7 @@ public class SelectableTextBlock : TextBlock
 
         var handled   = false;
         var modifiers = e.KeyModifiers;
-        var keymap    = Application.Current!.PlatformSettings!.HotkeyConfiguration;
+        var keymap    = AtomApplication.Current!.PlatformSettings!.HotkeyConfiguration;
 
         bool Match(List<KeyGesture> gestures) => gestures.Any(g => g.Matches(e));
 

@@ -10,7 +10,7 @@ public class CardMetaContent : HeaderedContentControl
     public static readonly StyledProperty<Avatar?> AvatarProperty = 
         AvaloniaProperty.Register<CardMetaContent, Avatar?>(nameof (Avatar));
     
-    public object? Avatar
+    public Avatar? Avatar
     {
         get => GetValue(AvatarProperty);
         set => SetValue(AvatarProperty, value);

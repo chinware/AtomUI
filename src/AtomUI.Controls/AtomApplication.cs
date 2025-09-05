@@ -8,29 +8,27 @@ using Avalonia.Styling;
 
 namespace AtomUI;
 
-using AvaloniaApplication = Avalonia.Application;
-
-public class Application : AvaloniaApplication, IApplication
+public class AtomApplication : Application, IAtomApplication
 {
     #region 公共属性定义
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Application>();
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AtomApplication>();
     
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
-        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Application>();
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<AtomApplication>();
     
     public static readonly StyledProperty<bool> IsDarkThemeModeProperty =
-        AvaloniaProperty.Register<Application, bool>(nameof(IsDarkThemeMode));
+        AvaloniaProperty.Register<AtomApplication, bool>(nameof(IsDarkThemeMode));
     
     public static readonly StyledProperty<bool> IsCompactThemeModeProperty =
-        AvaloniaProperty.Register<Application, bool>(nameof(IsCompactThemeMode));
+        AvaloniaProperty.Register<AtomApplication, bool>(nameof(IsCompactThemeMode));
     
     public static readonly StyledProperty<LanguageVariant> ActualLanguageVariantProperty =
-        LanguageVariant.ActualLanguageVariantProperty.AddOwner<Application>();
+        LanguageVariant.ActualLanguageVariantProperty.AddOwner<AtomApplication>();
 
     public static readonly StyledProperty<LanguageVariant?> RequestedLanguageProperty = 
-        LanguageVariant.RequestedLanguageVariantProperty.AddOwner<Application>();
+        LanguageVariant.RequestedLanguageVariantProperty.AddOwner<AtomApplication>();
 
     public bool IsMotionEnabled
     {
@@ -211,8 +209,8 @@ public class Application : AvaloniaApplication, IApplication
     
     // TODO 目前系统主题变化，我们没有想到合适的处理方式
 
-    public static Application? GetInstance()
+    public static AtomApplication? GetInstance()
     {
-        return Application.Current as Application;
+        return AtomApplication.Current as AtomApplication;
     }
 }

@@ -6,7 +6,34 @@
     <ControlTheme x:Key="{x:Type atom:CardMetaContent}" TargetType="atom:CardMetaContent">
         <Setter Property="Template">
             <ControlTemplate>
+                <DockPanel LastChildFill="True" 
+                           HorizontalSpacing="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}">
+                    <ContentPresenter Name="AvatarContentPresenter" 
+                                      DockPanel.Dock="Left"
+                                      Content="{TemplateBinding Avatar}"
+                                      VerticalAlignment="Top"/>
+                    <DockPanel LastChildFill="True"
+                               VerticalSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
+                        <ContentPresenter Name="TitleContentPresenter"
+                                          DockPanel.Dock="Top"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"/>
+                        <ContentPresenter Name="DescriptionContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                    </DockPanel>
+                </DockPanel>
             </ControlTemplate>
         </Setter>
+        
+        <Style Selector="^ /template/ ContentPresenter#TitleContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextHeading}}" />
+            <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#DescriptionContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

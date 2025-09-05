@@ -1,0 +1,126 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Card}" TargetType="atom:Card">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="ShadowsFrame"
+                            ClipToBounds="False"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BoxShadow="{TemplateBinding BoxShadow}"/>
+                    <Border Name="Frame" 
+                            BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Background="{TemplateBinding Background}"
+                            ClipToBounds="True">
+                        <DockPanel LastChildFill="True">
+                            <Border Name="HeaderFrame" DockPanel.Dock="Top"
+                                    BorderThickness="{TemplateBinding HeaderBorderThickness}">
+                                <DockPanel LastChildFill="True">
+                                    <ContentPresenter Name="HeaderExtra" DockPanel.Dock="Right" VerticalAlignment="Center"
+                                                      Content="{TemplateBinding Extra}"
+                                                      ContentTemplate="{TemplateBinding ExtraTemplate}"/>
+                                    <ContentPresenter Name="TitlePresenter"
+                                                      Content="{TemplateBinding Header}"
+                                                      ContentTemplate="{TemplateBinding HeaderTemplate}" 
+                                                      VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </Border>
+                            <atom:CardActionPanel Name="{x:Static atom:CardThemeConstants.ActionPanelPart}"
+                                                  DockPanel.Dock="Bottom"
+                                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                            <ContentPresenter Name="CoverContentPresenter"
+                                              Content="{TemplateBinding Cover}"
+                                              ContentTemplate="{TemplateBinding CoverTemplate}"
+                                              VerticalContentAlignment="Stretch"
+                                              HorizontalContentAlignment="Stretch"
+                                              DockPanel.Dock="Top"/>
+                            <ContentPresenter Name="CardContent"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </DockPanel>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        
+        <Style Selector="^:headerless">
+            <Style Selector="^ /template/ Border#HeaderFrame">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+        <Setter Property="BoxShadow" Value="0 1 2 -1 #00000000, 0 3 6 0 #00000000, 0 5 12 4 #00000000"/>
+        <Style Selector="^[StyleVariant=Borderless]">
+            <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadowsTertiary}}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#HeaderFrame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#TitlePresenter">
+            <Setter Property="TextElement.FontWeight"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#HeaderFrame">
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderHeightLG}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderPaddingLG}}" />
+                <Setter Property="TextElement.FontSize"
+                        Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderFontSizeLG}}" />
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#CardContent">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingLG}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Border#HeaderFrame">
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderHeight}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderPadding}}" />
+                <Setter Property="TextElement.FontSize"
+                        Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderFontSize}}" />
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#CardContent">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPadding}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Border#HeaderFrame">
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderHeightSM}}" />
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderPaddingSM}}" />
+                <Setter Property="TextElement.FontSize"
+                        Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderFontSizeSM}}" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#CardContent">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingSM}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IsHoverable=True]">
+            <Setter Property="Cursor" Value="Hand" />
+            <Style Selector="^:pointerover">
+                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:CardTokenKey.CardShadows}}" />
+            </Style>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

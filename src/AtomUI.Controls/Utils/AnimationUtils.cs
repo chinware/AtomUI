@@ -24,7 +24,7 @@ public sealed class TransitionUtils : BaseTransitionUtils
             Easing   = easing,
             Delay = delay ??  TimeSpan.Zero,
         };
-        var application = Application.Current;
+        var application = AtomApplication.Current;
         Debug.Assert(application != null);
         var themeVariant = application.ActualThemeVariant;
         if (application.TryGetResource(durationResourceKey, themeVariant, out var value))

@@ -287,7 +287,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     {
         base.OnLoaded(e);
 
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (AtomApplication.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
         }

@@ -185,9 +185,9 @@ public class TabItem : AvaloniaTabItem
             {
                 resourceKey = TabItemThemeConstants.CardTabItemThemeId;
             }
-            if (Application.Current != null)
+            if (AtomApplication.Current != null)
             {
-                if (Application.Current.TryFindResource(resourceKey, out var resource))
+                if (AtomApplication.Current.TryFindResource(resourceKey, out var resource))
                 {
                     if (resource is ControlTheme theme)
                     {

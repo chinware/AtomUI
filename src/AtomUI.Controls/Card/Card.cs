@@ -1,7 +1,21 @@
+using System.Collections.Specialized;
+using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
+using AtomUI.Theme;
+using AtomUI.Theme.Data;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
+using BoxShadowsTransition = AtomUI.Animations.BoxShadowsTransition;
 
 namespace AtomUI.Controls;
 
@@ -11,9 +25,16 @@ public enum CardStyleVariant
     Borderless
 }
 
-public class Card : HeaderedContentControl
+public class Card : HeaderedContentControl,
+                    IControlSharedTokenResourcesHost,
+                    ISizeTypeAware,
+                    IMotionAwareControl,
+                    IResourceBindingManager
 {
     #region 公共属性定义
+    
+    public static readonly StyledProperty<BoxShadows> BoxShadowProperty = 
+        AvaloniaProperty.Register<Card, BoxShadows>(nameof (BoxShadow));
     
     public static readonly StyledProperty<object?> ExtraProperty = 
         AvaloniaProperty.Register<Card, object?>(nameof (Extra));
@@ -42,8 +63,17 @@ public class Card : HeaderedContentControl
     public static readonly StyledProperty<IDataTemplate?> CoverTemplateProperty = 
         AvaloniaProperty.Register<Card, IDataTemplate?>(nameof (CoverTemplate));
     
-    public static readonly StyledProperty<List<Control>?> ActionsProperty = 
-        AvaloniaProperty.Register<Card, List<Control>?>(nameof (Actions));
+    public static readonly StyledProperty<List<Control>> ActionsProperty = 
+        AvaloniaProperty.Register<Card, List<Control>>(nameof (Actions), new List<Control>());
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Card>();
+    
+    public BoxShadows BoxShadow
+    {
+        get => GetValue(BoxShadowProperty);
+        set => SetValue(BoxShadowProperty, value);
+    }
     
     public object? Extra
     {
@@ -98,11 +128,198 @@ public class Card : HeaderedContentControl
         get => GetValue(CoverTemplateProperty);
         set => SetValue(CoverTemplateProperty, value);
     }
+
+    public Avalonia.Controls.Controls Actions { get; } = new ();
     
-    public List<Control>? Actions
+    public bool IsMotionEnabled
     {
-        get => GetValue(ActionsProperty);
-        set => SetValue(ActionsProperty, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
+
     #endregion
+    
+    #region 内部属性定义
+
+    Control IControlSharedTokenResourcesHost.HostControl => this;
+    string IControlSharedTokenResourcesHost.TokenId => CardToken.ID;
+    Control IMotionAwareControl.PropertyBindTarget => this;
+    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+    
+    internal static readonly DirectProperty<Card, Thickness> HeaderBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<Card, Thickness>(
+            nameof(HeaderBorderThickness),
+            o => o.HeaderBorderThickness,
+            (o, v) => o.HeaderBorderThickness = v);
+    
+    internal static readonly DirectProperty<Card, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<Card, Thickness>(
+            nameof(EffectiveBorderThickness),
+            o => o.EffectiveBorderThickness,
+            (o, v) => o.EffectiveBorderThickness = v);
+    
+    private Thickness _headerBorderThickness;
+
+    internal Thickness HeaderBorderThickness
+    {
+        get => _headerBorderThickness;
+        set => SetAndRaise(HeaderBorderThicknessProperty, ref _headerBorderThickness, value);
+    }
+    
+    private Thickness _effectiveBorderThickness;
+
+    internal Thickness EffectiveBorderThickness
+    {
+        get => _effectiveBorderThickness;
+        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
+    }
+    
+    #endregion
+
+    private CardActionPanel? _cardActionPanel;
+
+    static Card()
+    {
+        AffectsRender<Card>(IsHoverableProperty, IsInnerModeProperty, BoxShadowProperty);
+        AffectsMeasure<Card>(SizeTypeProperty, StyleVariantProperty);
+    }
+    
+    public Card()
+    {
+        this.RegisterResources();
+        Actions.CollectionChanged += new NotifyCollectionChangedEventHandler(this.HandleActionsChanged);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == BorderThicknessProperty)
+        {
+            SetCurrentValue(HeaderBorderThicknessProperty, new Thickness(0, 0, 0, BorderThickness.Bottom));
+        }
+        else if (change.Property == HeaderProperty ||
+                 change.Property == HeaderTemplateProperty ||
+                 change.Property == ExtraProperty ||
+                 change.Property == ExtraTemplateProperty)
+        {
+            UpdatePseudoClasses();
+        }
+        if (this.IsAttachedToLogicalTree())
+        {
+            ConfigureBorderThickness();
+        }
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
+            }
+        }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this)));
+        ConfigureBorderThickness();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        this.DisposeTokenBindings();
+    }
+    
+    private void ConfigureBorderThickness()
+    {
+        if (StyleVariant == CardStyleVariant.Outline)
+        {
+            SetCurrentValue(EffectiveBorderThicknessProperty, BorderThickness);
+        }
+        else if (StyleVariant == CardStyleVariant.Borderless)
+        {
+            SetCurrentValue(EffectiveBorderThicknessProperty, new Thickness(0));
+        }
+    }
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        UpdatePseudoClasses();
+        _cardActionPanel = e.NameScope.Find<CardActionPanel>(CardThemeConstants.ActionPanelPart);
+        if (_cardActionPanel != null)
+        {
+            foreach (var action in Actions)
+            {
+                _cardActionPanel.Actions.Add(action);
+            }
+        }
+    }
+    
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                Transitions = new Transitions
+                {
+                    TransitionUtils.CreateTransition<BoxShadowsTransition>(BoxShadowProperty, SharedTokenKey.MotionDurationFast)
+                };
+            }
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(CardPseudoClass.Headerless, Header == null && HeaderTemplate == null && Extra == null && ExtraTemplate == null);
+    }
+    
+    private void HandleActionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_cardActionPanel != null)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    _cardActionPanel.Actions.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    _cardActionPanel.Actions.RemoveAll(e.OldItems!.OfType<Control>());
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    for (int index1 = 0; index1 < e.OldItems!.Count; ++index1)
+                    {
+                        int     index2  = index1 + e.OldStartingIndex;
+                        Control newItem = (Control) e.NewItems![index1]!;
+                        _cardActionPanel.Actions[index2] = newItem;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    _cardActionPanel.Actions.MoveRange(e.OldStartingIndex, e.OldItems!.Count, e.NewStartingIndex);
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotSupportedException();
+            }
+        }
+    }
 }

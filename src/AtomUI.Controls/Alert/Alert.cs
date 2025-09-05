@@ -122,7 +122,7 @@ public class Alert : TemplatedControl,
 
     static Alert()
     {
-        AffectsMeasure<Segmented>(IsClosableProperty,
+        AffectsMeasure<Alert>(IsClosableProperty,
             IsShowIconProperty,
             MessageProperty,
             DescriptionProperty,
@@ -130,7 +130,7 @@ public class Alert : TemplatedControl,
             PaddingProperty,
             ExtraActionProperty,
             IsMessageMarqueEnabledProperty);
-        AffectsRender<Segmented>(TypeProperty);
+        AffectsRender<Alert>(TypeProperty);
     }
 
     public Alert()

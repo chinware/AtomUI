@@ -5,7 +5,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls.Converters;
 
-public class StringToTextBlockConverter : IValueConverter
+internal class StringToTextBlockConverter : IValueConverter
 {
     public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Stretch;
     public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Stretch;

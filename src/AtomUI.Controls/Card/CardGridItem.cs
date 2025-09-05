@@ -1,5 +1,6 @@
 namespace AtomUI.Controls;
 
-public interface IApplication
+public class CardGridItem
 {
+    
 }

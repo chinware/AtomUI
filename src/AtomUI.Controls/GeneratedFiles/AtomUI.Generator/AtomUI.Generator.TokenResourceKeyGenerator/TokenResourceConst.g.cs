@@ -190,6 +190,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ActionsBg = new TokenResourceKey("Card.ActionsBg");
         public static readonly TokenResourceKey ActionsSpacing = new TokenResourceKey("Card.ActionsSpacing");
         public static readonly TokenResourceKey BodyPadding = new TokenResourceKey("Card.BodyPadding");
+        public static readonly TokenResourceKey BodyPaddingLG = new TokenResourceKey("Card.BodyPaddingLG");
         public static readonly TokenResourceKey BodyPaddingSM = new TokenResourceKey("Card.BodyPaddingSM");
         public static readonly TokenResourceKey CardActionsIconSize = new TokenResourceKey("Card.CardActionsIconSize");
         public static readonly TokenResourceKey CardHeadPadding = new TokenResourceKey("Card.CardHeadPadding");
@@ -198,10 +199,13 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ExtraColor = new TokenResourceKey("Card.ExtraColor");
         public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("Card.HeaderBg");
         public static readonly TokenResourceKey HeaderFontSize = new TokenResourceKey("Card.HeaderFontSize");
+        public static readonly TokenResourceKey HeaderFontSizeLG = new TokenResourceKey("Card.HeaderFontSizeLG");
         public static readonly TokenResourceKey HeaderFontSizeSM = new TokenResourceKey("Card.HeaderFontSizeSM");
         public static readonly TokenResourceKey HeaderHeight = new TokenResourceKey("Card.HeaderHeight");
+        public static readonly TokenResourceKey HeaderHeightLG = new TokenResourceKey("Card.HeaderHeightLG");
         public static readonly TokenResourceKey HeaderHeightSM = new TokenResourceKey("Card.HeaderHeightSM");
         public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Card.HeaderPadding");
+        public static readonly TokenResourceKey HeaderPaddingLG = new TokenResourceKey("Card.HeaderPaddingLG");
         public static readonly TokenResourceKey HeaderPaddingSM = new TokenResourceKey("Card.HeaderPaddingSM");
         public static readonly TokenResourceKey TabsMarginBottom = new TokenResourceKey("Card.TabsMarginBottom");
     }
