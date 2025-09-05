@@ -12,7 +12,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -34,9 +33,7 @@ public enum AddOnDecoratedStatus
 [TemplatePart(AddOnDecoratedBoxThemeConstants.LeftAddOnPart, typeof(ContentPresenter))]
 [TemplatePart(AddOnDecoratedBoxThemeConstants.RightAddOnPart, typeof(ContentPresenter))]
 [TemplatePart(AddOnDecoratedBoxThemeConstants.InnerBoxContentPart, typeof(ContentPresenter), IsRequired = true)]
-internal class AddOnDecoratedBox : ContentControl,
-                                   IControlSharedTokenResourcesHost,
-                                   IResourceBindingManager
+internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -176,13 +173,12 @@ internal class AddOnDecoratedBox : ContentControl,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AddOnDecoratedBoxToken.ID;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     #endregion
 
     private protected Control? LeftAddOnPresenter;
     private protected Control? RightAddOnPresenter;
     private CompositeDisposable? _contentRelayBindingDisposables;
+    private IDisposable? _borderThicknessDisposable;
 
     static AddOnDecoratedBox()
     {
@@ -267,19 +263,19 @@ internal class AddOnDecoratedBox : ContentControl,
         NotifyAddOnBorderInfoCalculated();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected virtual void NotifyAddOnBorderInfoCalculated()
