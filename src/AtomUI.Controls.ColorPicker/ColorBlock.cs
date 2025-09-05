@@ -1,6 +1,4 @@
-using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -8,15 +6,12 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class ColorBlock : TemplatedControl,
-                            ISizeTypeAware,
-                            IResourceBindingManager
+internal class ColorBlock : TemplatedControl, ISizeTypeAware
 {
     #region 公共属性定义
 
@@ -111,10 +106,11 @@ internal class ColorBlock : TemplatedControl,
         get => _isCustomSize;
         set => SetAndRaise(IsCustomSizeProperty, ref _isCustomSize, value);
     }
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+    
     #endregion
 
+    private IDisposable? _borderThicknessDisposable;
+    
     static ColorBlock()
     {
         AffectsRender<ColorBlock>(TransparentBgBrushProperty, IsEmptyColorModeProperty);
@@ -171,19 +167,19 @@ internal class ColorBlock : TemplatedControl,
         }
     }
     
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     public override void Render(DrawingContext context)

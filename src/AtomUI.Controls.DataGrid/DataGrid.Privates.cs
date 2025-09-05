@@ -8,7 +8,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -229,8 +228,6 @@ public partial class DataGrid
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => DataGridToken.ID;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     #endregion
 
     /// <summary>
@@ -328,6 +325,7 @@ public partial class DataGrid
     private bool _templatedApplied;
     private Pagination? _topPagination;
     private Pagination? _bottomPagination;
+    private IDisposable? _borderThicknessDisposable;
 
     private void FlushCurrentCellChanged()
     {

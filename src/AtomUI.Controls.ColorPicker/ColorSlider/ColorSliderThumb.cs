@@ -8,14 +8,13 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 using Thumb = AtomUI.Controls.Primitives.Thumb;
 
 namespace AtomUI.Controls;
 
-internal class ColorSliderThumb : Thumb, IResourceBindingManager
+internal class ColorSliderThumb : Thumb
 {
     protected override Type StyleKeyOverride { get; } = typeof(ColorSliderThumb);
     
@@ -29,7 +28,6 @@ internal class ColorSliderThumb : Thumb, IResourceBindingManager
     }
     
     #region 内部属性定义
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     internal static readonly StyledProperty<CornerRadius> InnerCornerRadiusProperty = 
         AvaloniaProperty.Register<ColorSliderThumb, CornerRadius>(nameof (InnerCornerRadius));
@@ -43,6 +41,7 @@ internal class ColorSliderThumb : Thumb, IResourceBindingManager
     #endregion
 
     private Border? _innerEllipse;
+    private IDisposable? _borderThicknessDisposable;
     
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
@@ -51,19 +50,19 @@ internal class ColorSliderThumb : Thumb, IResourceBindingManager
         CornerRadius = new CornerRadius(e.NewSize.Width / 2);
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

@@ -1,8 +1,6 @@
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -11,15 +9,12 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class DataGridRowExpander : ToggleButton,
-                                     IResourceBindingManager,
-                                     ICustomHitTest
+internal class DataGridRowExpander : ToggleButton, ICustomHitTest
 {
     internal static readonly DirectProperty<DataGridRowExpander, double> IndicatorThicknessProperty =
         AvaloniaProperty.RegisterDirect<DataGridRowExpander, double>(
@@ -44,26 +39,25 @@ internal class DataGridRowExpander : ToggleButton,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;
     private Border? _frame;
     private IDisposable? _disposable;
+    private IDisposable? _borderThicknessDisposable;
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -107,9 +101,7 @@ internal class DataGridRowExpander : ToggleButton,
             }
         }
     }
-
-
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);

@@ -39,8 +39,7 @@ namespace AtomUI.Controls;
 public partial class DataGrid : TemplatedControl,
                                 ISizeTypeAware,
                                 IMotionAwareControl,
-                                IControlSharedTokenResourcesHost,
-                                IResourceBindingManager
+                                IControlSharedTokenResourcesHost
 {
     public const int DEFAULT_PAGE_SIZE = 10;
     
@@ -1184,24 +1183,13 @@ public partial class DataGrid : TemplatedControl,
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         if (DataConnection.DataSource != null && !DataConnection.EventsWired)
         {
             DataConnection.WireEvents(DataConnection.DataSource);
@@ -1212,6 +1200,7 @@ public partial class DataGrid : TemplatedControl,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
         // When wired to INotifyCollectionChanged, the DataGrid will be cleaned up by GC
         if (DataConnection.DataSource != null && DataConnection.EventsWired)
         {
