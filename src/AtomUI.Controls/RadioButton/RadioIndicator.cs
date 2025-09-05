@@ -11,15 +11,12 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class RadioIndicator : Control,
-                                IWaveAdornerInfoProvider,
-                                IResourceBindingManager
+internal class RadioIndicator : Control, IWaveAdornerInfoProvider
 {
     #region 公共属性定义
 
@@ -136,11 +133,11 @@ internal class RadioIndicator : Control,
         get => GetValue(IsWaveAnimationEnabledProperty);
         set => SetValue(IsWaveAnimationEnabledProperty, value);
     }
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+    
     #endregion
 
     private IPen? _cachedPen;
+    private IDisposable? _borderThicknessDisposable;
 
     static RadioIndicator()
     {
@@ -164,28 +161,24 @@ internal class RadioIndicator : Control,
         base.OnUnloaded(e);
         Transitions = null;
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, RadioBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
         UpdatePseudoClasses();
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
+    }
+    
     private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)

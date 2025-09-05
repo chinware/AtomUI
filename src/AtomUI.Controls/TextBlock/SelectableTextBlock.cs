@@ -1,12 +1,13 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Media.TextFormatting;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 using Avalonia.Utilities;
@@ -43,6 +44,7 @@ public class SelectableTextBlock : TextBlock
 
     private bool _canCopy;
     private int _wordSelectionStart = -1;
+    private CompositeDisposable? _tokenBindingDisposables;
 
     static SelectableTextBlock()
     {
@@ -496,12 +498,19 @@ public class SelectableTextBlock : TextBlock
         return selectedText;
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectionBrushProperty,
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingDisposables = new CompositeDisposable(2);
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, SelectionBrushProperty,
             SharedTokenKey.SelectionBackground));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectionForegroundBrushProperty,
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, SelectionForegroundBrushProperty,
             SharedTokenKey.SelectionForeground));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _tokenBindingDisposables?.Dispose();
     }
 }

@@ -2,7 +2,6 @@ using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -18,7 +17,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class SwitchKnob : Control, IResourceBindingManager
+internal class SwitchKnob : Control
 {
     #region 公共属性定义
     
@@ -119,13 +118,12 @@ internal class SwitchKnob : Control, IResourceBindingManager
         set => SetAndRaise(LoadingBgOpacityProperty, ref _loadingBgOpacity, value);
     }
     
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable {  get; set; }
-    
     #endregion
     
     private bool _isLoading;
     private CancellationTokenSource? _cancellationTokenSource;
     private IDisposable? _bindingDisposable;
+    private CompositeDisposable? _tokenBindingDisposables;
     
     static SwitchKnob()
     {
@@ -254,16 +252,17 @@ internal class SwitchKnob : Control, IResourceBindingManager
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityProperty,
+        _tokenBindingDisposables = new CompositeDisposable(2);
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, LoadingBgOpacityProperty,
             ToggleSwitchTokenKey.SwitchDisabledOpacity));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, LoadingAnimationDurationProperty,
             ToggleSwitchTokenKey.LoadingAnimationDuration));
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        _tokenBindingDisposables?.Dispose();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

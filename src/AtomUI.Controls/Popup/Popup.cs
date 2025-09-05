@@ -24,9 +24,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
-public class Popup : AvaloniaPopup,
-                     IWaveSpiritAwareControl,
-                     IResourceBindingManager
+public class Popup : AvaloniaPopup, IWaveSpiritAwareControl
 {
     #region 公共属性定义
 
@@ -147,8 +145,6 @@ public class Popup : AvaloniaPopup,
 
     Control IMotionAwareControl.PropertyBindTarget => this;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     #endregion
 
     internal BaseMotionActor? MotionActor;
@@ -157,6 +153,7 @@ public class Popup : AvaloniaPopup,
     private IManagedPopupPositionerPopup? _managedPopupPositioner;
     private bool _isNeedDetectFlip = true;
     private bool _ignoreIsOpenChanged;
+    private CompositeDisposable? _tokenBindingDisposables;
 
     // 在翻转之后或者恢复正常，会有属性的变动，在变动之后捕捉动画需要等一个事件循环，保证布局已经生效
     private bool _isNeedWaitFlipSync;
@@ -204,16 +201,16 @@ public class Popup : AvaloniaPopup,
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
+        _tokenBindingDisposables = new CompositeDisposable(2);
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary));
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationMid));
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        _tokenBindingDisposables?.Dispose();
     }
     
     protected Control? GetEffectivePlacementTarget()

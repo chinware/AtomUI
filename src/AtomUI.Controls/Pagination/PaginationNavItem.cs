@@ -1,8 +1,6 @@
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -12,7 +10,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -25,9 +22,7 @@ internal enum PaginationItemType
     Ellipses
 }
 
-internal class PaginationNavItem : ContentControl,
-                                   ISelectable,
-                                   IResourceBindingManager
+internal class PaginationNavItem : ContentControl, ISelectable
 {
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<PaginationNavItem>();
@@ -93,9 +88,8 @@ internal class PaginationNavItem : ContentControl,
         private set => SetAndRaise(IsPressedProperty, ref _isPressed, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     internal int PageNumber { get; set; } = -1;
+    private IDisposable? _borderThicknessDisposable;
     
     static PaginationNavItem()
     {
@@ -106,19 +100,19 @@ internal class PaginationNavItem : ContentControl,
         AffectsRender<PaginationNavItem>(BackgroundProperty, BorderBrushProperty);
     }
     
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
-    
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

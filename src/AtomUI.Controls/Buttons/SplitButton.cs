@@ -31,8 +31,7 @@ public class SplitButton : ContentControl,
                            ICommandSource, 
                            ISizeTypeAware,
                            IControlSharedTokenResourcesHost,
-                           IWaveSpiritAwareControl,
-                           IResourceBindingManager
+                           IWaveSpiritAwareControl
 {
     #region 公共属性定义
 
@@ -274,7 +273,6 @@ public class SplitButton : ContentControl,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
     
@@ -289,6 +287,7 @@ public class SplitButton : ContentControl,
     
     private CompositeDisposable? _flyoutBindingDisposables;
     private CompositeDisposable? _flyoutHelperBindingDisposables;
+    private IDisposable? _borderThicknessDisposable;
 
     static SplitButton()
     {
@@ -312,8 +311,7 @@ public class SplitButton : ContentControl,
     {
         CanExecuteChanged(sender, e);
     }
-
-    /// <inheritdoc cref="ICommandSource.CanExecuteChanged" />
+    
     private void CanExecuteChanged(object? sender, EventArgs e)
     {
         var (command, parameter) = (Command, CommandParameter);
@@ -424,22 +422,6 @@ public class SplitButton : ContentControl,
             _primaryButton.Click -= HandlePrimaryButtonClick;
         }
     }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _flyoutStateHelper.NotifyAttachedToVisualTree();
-        UpdatePseudoClasses();
-        RegisterFlyoutEvents(Flyout);
-        SetupDefaultFlyoutButtonIcon();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        UnregisterFlyoutEvents(Flyout);
-        _flyoutStateHelper.NotifyDetachedFromVisualTree();
-    }
     
     private void SetupDefaultFlyoutButtonIcon()
     {
@@ -465,6 +447,27 @@ public class SplitButton : ContentControl,
             _primaryButton.Click += HandlePrimaryButtonClick;
         }
     }
+    
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
+        _flyoutStateHelper.NotifyAttachedToVisualTree();
+        UpdatePseudoClasses();
+        RegisterFlyoutEvents(Flyout);
+        SetupDefaultFlyoutButtonIcon();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        UnregisterFlyoutEvents(Flyout);
+        _flyoutStateHelper.NotifyDetachedFromVisualTree();
+        _borderThicknessDisposable?.Dispose();
+    }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
@@ -487,11 +490,6 @@ public class SplitButton : ContentControl,
         _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, MouseLeaveDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseLeaveDelayProperty));
         _flyoutHelperBindingDisposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, _flyoutStateHelper, FlyoutStateHelper.TriggerTypeProperty));
-        
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, Border.BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -507,7 +505,6 @@ public class SplitButton : ContentControl,
             Command.CanExecuteChanged -= CanExecuteChanged;
         }
         _flyoutHelperBindingDisposables?.Dispose();
-        this.DisposeTokenBindings();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

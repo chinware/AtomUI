@@ -1,6 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
-using AtomUI.Theme;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -8,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -18,7 +15,7 @@ public enum SearchEditButtonStyle
     Primary
 }
 
-public class SearchEdit : LineEdit, IResourceBindingManager
+public class SearchEdit : LineEdit
 {
     #region 公共属性定义
 
@@ -41,13 +38,6 @@ public class SearchEdit : LineEdit, IResourceBindingManager
     }
 
     #endregion
-
-    
-    #region 内部属性定义
-    
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
-    #endregion
     
     #region 公共事件定义
 
@@ -61,20 +51,22 @@ public class SearchEdit : LineEdit, IResourceBindingManager
     }
 
     #endregion
+    
+    private IDisposable? _borderThicknessDisposable;
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

@@ -2,7 +2,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -40,7 +39,7 @@ public class NavMenuItemClickEventArgs : RoutedEventArgs
     NavMenuPseudoClass.VerticalMode,
     NavMenuPseudoClass.DarkStyle,
     NavMenuPseudoClass.LightStyle)]
-public class NavMenu : NavMenuBase, IResourceBindingManager
+public class NavMenu : NavMenuBase
 {
     #region 公共属性定义
 
@@ -108,15 +107,14 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
         get => GetValue(HorizontalBorderThicknessProperty);
         set => SetValue(HorizontalBorderThicknessProperty, value);
     }
-
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
+    
     #endregion
 
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel { Orientation = Orientation.Vertical });
     private ItemsPresenter? _menuItemsPresenter;
     private readonly Dictionary<NavMenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private IDisposable? _borderThicknessDisposable;
 
     static NavMenu()
     {
@@ -296,28 +294,23 @@ public class NavMenu : NavMenuBase, IResourceBindingManager
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
-            SharedTokenKey.LineWidth,
-            BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this)));
         SetupInteractionHandler();
     }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, HorizontalBorderThicknessProperty,
+            SharedTokenKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this));
         InteractionHandler?.Attach(this);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
         InteractionHandler?.Detach(this);
     }
 
