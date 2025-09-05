@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -7,6 +8,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -14,8 +16,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class MarqueeLabel : TextBlock,
-                            IControlSharedTokenResourcesHost
+public class MarqueeLabel : TextBlock, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -70,6 +71,7 @@ public class MarqueeLabel : TextBlock,
     private double _lastDesiredWidth;
     private double _lastTextWidth;
     private double _pivotOffsetStartValue;
+    private CompositeDisposable? _tokenBindingDisposables;
 
     static MarqueeLabel()
     {
@@ -82,10 +84,25 @@ public class MarqueeLabel : TextBlock,
         HorizontalAlignment = HorizontalAlignment.Stretch;
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingDisposables = new CompositeDisposable(2);
+        _tokenBindingDisposables.Add(
+            TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace));
+        _tokenBindingDisposables.Add(
+            TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed));
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _tokenBindingDisposables?.Dispose();
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupTokenBindings();
         HandleStartupMarqueeAnimation();
     }
 
@@ -149,14 +166,6 @@ public class MarqueeLabel : TextBlock,
     {
         // 计算持续时间，确保至少有一毫秒的持续时间以避免除以零的错误
         return 4 * Math.Max(1, distance / MoveSpeed * 1000);
-    }
-
-    private void SetupTokenBindings()
-    {
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace));
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed));
     }
 
     private void HandleStartupMarqueeAnimation()

@@ -1,5 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
@@ -11,7 +10,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -23,9 +21,7 @@ public enum GroupBoxTitlePosition
     Center
 }
 
-public class GroupBox : ContentControl,
-                        IControlSharedTokenResourcesHost,
-                        IResourceBindingManager
+public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -98,7 +94,6 @@ public class GroupBox : ContentControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => GroupBoxToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
     
@@ -106,6 +101,7 @@ public class GroupBox : ContentControl,
     private Control? _headerContentContainer;
     private Border? _frame;
     private Rect _borderBounds;
+    private IDisposable? _borderThicknessDisposable;
 
     static GroupBox()
     {
@@ -168,18 +164,19 @@ public class GroupBox : ContentControl,
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
+
 }

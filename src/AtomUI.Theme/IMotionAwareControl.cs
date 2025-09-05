@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -42,7 +41,6 @@ public abstract class MotionAwareControlProperty
     
     internal static void AddTokenResourceBindingDisposable(StyledElement element, IDisposable disposable)
     {
-        Debug.Assert(element is IResourceBindingManager);
         var compositeDisposable = element.GetValue(TokenResourceBindingDisposablesProperty);
         if (compositeDisposable == null)
         {

@@ -8,7 +8,6 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -16,8 +15,7 @@ using AvaloniaListBox = Avalonia.Controls.ListBox;
 
 public class ListBox : AvaloniaListBox,
                        IMotionAwareControl,
-                       IControlSharedTokenResourcesHost,
-                       IResourceBindingManager
+                       IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -56,11 +54,10 @@ public class ListBox : AvaloniaListBox,
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ListBoxToken.ID;
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     #endregion
     
     private readonly Dictionary<ListBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private IDisposable? _borderThicknessDisposable;
 
     public ListBox()
     {
@@ -121,18 +118,18 @@ public class ListBox : AvaloniaListBox,
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
@@ -18,7 +17,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -45,8 +43,7 @@ public enum ExpanderIconPosition
     ExpanderPseudoClass.ExpandRight)]
 public class Expander : AvaloniaExpander,
                         IMotionAwareControl,
-                        IControlSharedTokenResourcesHost,
-                        IResourceBindingManager
+                        IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -200,7 +197,6 @@ public class Expander : AvaloniaExpander,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ExpanderToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
 
@@ -214,23 +210,25 @@ public class Expander : AvaloniaExpander,
     private IconButton? _expandButton;
     private bool _animating;
     private bool _tempAnimationDisabled = false;
+    private IDisposable? _borderThicknessDisposable;
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
-            BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
