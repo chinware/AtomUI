@@ -15,7 +15,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -35,8 +34,7 @@ public enum CollapseExpandIconPosition
 [TemplatePart(CollapseThemeConstants.ItemsPresenterPart, typeof(ItemsPresenter))]
 public class Collapse : SelectingItemsControl,
                         IMotionAwareControl,
-                        IControlSharedTokenResourcesHost,
-                        IResourceBindingManager
+                        IControlSharedTokenResourcesHost
 {
     protected override Type StyleKeyOverride { get; } = typeof(Collapse);
     
@@ -149,11 +147,11 @@ public class Collapse : SelectingItemsControl,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => CollapseToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
     
     private readonly Dictionary<CollapseItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private IDisposable? _borderThicknessDisposable;
 
     static Collapse()
     {
@@ -426,20 +424,21 @@ public class Collapse : SelectingItemsControl,
             SelectionMode = SelectionMode.Multiple | SelectionMode.Toggle;
         }
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
-            BindingPriority.Template, new RenderScaleAwareThicknessConfigure(this)));
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
     
     private void ConfigureItemPaddings(CollapseItem collapseItem)
