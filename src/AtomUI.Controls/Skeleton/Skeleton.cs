@@ -193,6 +193,7 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
         {
             StartActiveAnimation();
         }
+        IsContentVisible = !IsLoading && (Content != null || ContentTemplate != null);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -205,4 +206,5 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
             IsContentVisible = !IsLoading && (Content != null || ContentTemplate != null);
         }
     }
+    
 }

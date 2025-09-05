@@ -4,7 +4,6 @@ using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -15,7 +14,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls.CalendarView;

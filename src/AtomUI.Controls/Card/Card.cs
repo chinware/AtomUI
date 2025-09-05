@@ -154,6 +154,12 @@ public class Card : HeaderedContentControl,
             o => o.EffectiveBorderThickness,
             (o, v) => o.EffectiveBorderThickness = v);
     
+    internal static readonly DirectProperty<Card, bool> ActionsPanelVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Card, bool>(
+            nameof(ActionsPanelVisible),
+            o => o.ActionsPanelVisible,
+            (o, v) => o.ActionsPanelVisible = v);
+    
     private Thickness _headerBorderThickness;
 
     internal Thickness HeaderBorderThickness
@@ -170,6 +176,13 @@ public class Card : HeaderedContentControl,
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
     
+    private bool _actionsPanelVisible;
+
+    internal bool ActionsPanelVisible
+    {
+        get => _actionsPanelVisible;
+        set => SetAndRaise(ActionsPanelVisibleProperty, ref _actionsPanelVisible, value);
+    }
     #endregion
 
     private CardActionPanel? _cardActionPanel;
@@ -318,5 +331,12 @@ public class Card : HeaderedContentControl,
                     throw new NotSupportedException();
             }
         }
+        SetCurrentValue(ActionsPanelVisibleProperty, Actions.Count > 0);
     }
+    
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        return base.MeasureOverride(availableSize);
+    }
+
 }

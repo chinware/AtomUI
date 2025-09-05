@@ -22,6 +22,8 @@
     </Setter>
     
     <Style Selector="^:is(atom|AbstractSkeleton)">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.GradientFromColor}}"/>
         <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingMotionDuration}}"/>
         <Setter Property="LoadingBackgroundStart" Value="{DynamicResource {x:Static atom:SkeletonTokenKey.LoadingBackgroundStart}}"/>

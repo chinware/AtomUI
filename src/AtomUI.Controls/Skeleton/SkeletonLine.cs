@@ -40,22 +40,25 @@ public class SkeletonLine : AbstractSkeleton
         {
             actualWidth = LineWidth.Value;
         }
-        else if (!double.IsInfinity(actualWidth))
-        {
-            actualWidth = Math.Min(actualWidth, actualWidth * (LineWidth.Value / 100.0));
-        }
-
         var actualSize = new Size(actualWidth, availableSize.Height);
-        var size = base.MeasureOverride(actualSize);
-        return actualSize.WithHeight(size.Height);
+        return base.MeasureOverride(actualSize);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var size = base.ArrangeOverride(finalSize);
+        var size        = base.ArrangeOverride(finalSize);
+        var actualWidth = finalSize.Width;
+        if (!LineWidth.IsPixel)
+        {
+            if (!double.IsInfinity(actualWidth))
+            {
+                actualWidth = Math.Min(actualWidth, actualWidth * (LineWidth.Value / 100.0));
+            }
+        }
+        
         if (_rootLayout != null)
         {
-            _rootLayout.Arrange(new Rect(0, 0, DesiredSize.Width, DesiredSize.Height));
+            _rootLayout.Arrange(new Rect(0, 0, actualWidth, DesiredSize.Height));
         }
         return size;
     }
