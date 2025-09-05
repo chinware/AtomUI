@@ -1,7 +1,5 @@
 ﻿using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
@@ -9,7 +7,6 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 
@@ -20,17 +17,13 @@ public class TabControl : BaseTabControl
     protected override Type StyleKeyOverride { get; } = typeof(TabControl);
     #region 内部属性定义
 
-    internal static readonly DirectProperty<TabControl, double> SelectedIndicatorThicknessProperty =
-        AvaloniaProperty.RegisterDirect<TabControl, double>(nameof(SelectedIndicatorThickness),
-            o => o.SelectedIndicatorThickness,
-            (o, v) => o.SelectedIndicatorThickness = v);
-
-    private double _selectedIndicatorThickness;
-
+    internal static readonly StyledProperty<double> SelectedIndicatorThicknessProperty =
+        AvaloniaProperty.Register<TabControl, double>(nameof(SelectedIndicatorThickness));
+    
     internal double SelectedIndicatorThickness
     {
-        get => _selectedIndicatorThickness;
-        set => SetAndRaise(SelectedIndicatorThicknessProperty, ref _selectedIndicatorThickness, value);
+        get => GetValue(SelectedIndicatorThicknessProperty);
+        set => SetValue(SelectedIndicatorThicknessProperty, value);
     }
 
     #endregion
@@ -85,25 +78,25 @@ public class TabControl : BaseTabControl
             if (TabStripPlacement == Dock.Top)
             {
                 _selectedIndicator.SetValue(WidthProperty, tabStripItem.DesiredSize.Width);
-                _selectedIndicator.SetValue(HeightProperty, _selectedIndicatorThickness);
+                _selectedIndicator.SetValue(HeightProperty, SelectedIndicatorThickness);
                 builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
             }
             else if (TabStripPlacement == Dock.Right)
             {
                 _selectedIndicator.SetValue(HeightProperty, tabStripItem.DesiredSize.Height);
-                _selectedIndicator.SetValue(WidthProperty, _selectedIndicatorThickness);
+                _selectedIndicator.SetValue(WidthProperty, SelectedIndicatorThickness);
                 builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
             }
             else if (TabStripPlacement == Dock.Bottom)
             {
                 _selectedIndicator.SetValue(WidthProperty, tabStripItem.DesiredSize.Width);
-                _selectedIndicator.SetValue(HeightProperty, _selectedIndicatorThickness);
+                _selectedIndicator.SetValue(HeightProperty, SelectedIndicatorThickness);
                 builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
             }
             else
             {
                 _selectedIndicator.SetValue(HeightProperty, tabStripItem.DesiredSize.Height);
-                _selectedIndicator.SetValue(WidthProperty, _selectedIndicatorThickness);
+                _selectedIndicator.SetValue(WidthProperty, SelectedIndicatorThickness);
                 builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
             }
 
@@ -163,14 +156,7 @@ public class TabControl : BaseTabControl
             };
         }
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SelectedIndicatorThicknessProperty,
-            SharedTokenKey.LineWidthBold));
-    }
-
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

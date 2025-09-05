@@ -1,4 +1,3 @@
-using System.Reactive.Disposables;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
@@ -10,7 +9,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -41,9 +39,7 @@ internal struct TagStatusCalcColor
     public Color BorderColor { get; set; }
 }
 
-public class Tag : TemplatedControl,
-                   IControlSharedTokenResourcesHost,
-                   IResourceBindingManager
+public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -158,13 +154,13 @@ public class Tag : TemplatedControl,
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TagToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
 
     #endregion
     
     private static readonly Dictionary<PresetColorType, TagCalcColor> PresetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> StatusColorMap;
-
+    private IDisposable? _borderThicknessDisposable;
+    
     static Tag()
     {
         PresetColorMap = new Dictionary<PresetColorType, TagCalcColor>();
@@ -183,25 +179,14 @@ public class Tag : TemplatedControl,
         this.RegisterResources();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this,
-            RenderScaleAwareBorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this,
+            RenderScaleAwareBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         ThemeManager.Current.ThemeChanged += HandleActualThemeVariantChanged;
     }
     
@@ -209,6 +194,7 @@ public class Tag : TemplatedControl,
     {
         base.OnDetachedFromVisualTree(e);
         ThemeManager.Current.ThemeChanged -= HandleActualThemeVariantChanged;
+        _borderThicknessDisposable?.Dispose();
     }
     
     private void HandleActualThemeVariantChanged(object? sender, ThemeChangedEventArgs e)

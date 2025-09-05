@@ -28,6 +28,8 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="SelectedIndicatorThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidthBold}}" />
 
         <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:TabControlTokenKey.InkBarColor}}" />

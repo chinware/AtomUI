@@ -1,15 +1,12 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Animations;
+﻿using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -27,9 +24,7 @@ namespace AtomUI.Controls;
 using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
 [PseudoClasses(TreeViewPseudoClass.NodeToggleTypeCheckBox, TreeViewPseudoClass.NodeToggleTypeRadio, TreeViewPseudoClass.TreeNodeHover)]
-public class TreeViewItem : AvaloniaTreeItem,
-                            IResourceBindingManager,
-                            IRadioButton
+public class TreeViewItem : AvaloniaTreeItem, IRadioButton
 {
     #region 公共属性定义
     public static readonly StyledProperty<Icon?> IconProperty =
@@ -325,8 +320,6 @@ public class TreeViewItem : AvaloniaTreeItem,
 
     internal TreeView? OwnerTreeView { get; set; }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     private ITreeViewInteractionHandler? TreeViewInteractionHandler => this.FindLogicalAncestorOfType<TreeView>()?.InteractionHandler;
     
     #endregion
@@ -340,6 +333,7 @@ public class TreeViewItem : AvaloniaTreeItem,
     private NodeSwitcherButton? _switcherButton;
     private Rect _effectiveBgRect;
     private readonly BorderRenderHelper _borderRenderHelper;
+    private IDisposable? _borderThicknessDisposable;
 
     static TreeViewItem()
     {
@@ -357,25 +351,14 @@ public class TreeViewItem : AvaloniaTreeItem,
     {
         _borderRenderHelper         = new BorderRenderHelper();
     }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
         OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault<TreeView>();
         if (IsChecked.HasValue && IsChecked.Value)
         {
@@ -383,6 +366,12 @@ public class TreeViewItem : AvaloniaTreeItem,
             OwnerTreeView?.DefaultCheckedItems.Add(this);
         }
         SetupSwitcherButtonIconMode();
+    }
+    
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

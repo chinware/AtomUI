@@ -1,7 +1,5 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -12,7 +10,6 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -34,7 +31,7 @@ internal class TimeSelectedEventArgs : EventArgs
 [TemplatePart(TimeViewThemeConstants.PeriodSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
 [TemplatePart(TimeViewThemeConstants.PickerSelectorContainerPart, typeof(Grid), IsRequired = true)]
 [TemplatePart(TimeViewThemeConstants.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
-internal class TimeView : TemplatedControl, IResourceBindingManager
+internal class TimeView : TemplatedControl
 {
     #region 公共属性定义
 
@@ -146,8 +143,6 @@ internal class TimeView : TemplatedControl, IResourceBindingManager
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
-
     #endregion
 
     #region 公共事件定义
@@ -173,7 +168,7 @@ internal class TimeView : TemplatedControl, IResourceBindingManager
     private DateTimePickerPanel? _minuteSelector;
     private DateTimePickerPanel? _secondSelector;
     private DateTimePickerPanel? _periodSelector;
-
+    private IDisposable? _spacerWidthDisposable;
     private IDisposable? _pointerPositionDisposable;
 
     private void DetectPointerPosition(RawInputEventArgs args)
@@ -223,24 +218,13 @@ internal class TimeView : TemplatedControl, IResourceBindingManager
         return new Rect(pos, selector.Bounds.Size);
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpacerWidthProperty,
-            SharedTokenKey.LineWidth,
-            BindingPriority.Template,
-            new RenderScaleAwareDoubleConfigure(this)));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _spacerWidthDisposable =  TokenResourceBinder.CreateTokenBinding(this, SpacerWidthProperty,
+            SharedTokenKey.LineWidth,
+            BindingPriority.Template,
+            new RenderScaleAwareDoubleConfigure(this));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
@@ -250,6 +234,7 @@ internal class TimeView : TemplatedControl, IResourceBindingManager
     {
         base.OnDetachedFromVisualTree(e);
         _pointerPositionDisposable?.Dispose();
+        _spacerWidthDisposable?.Dispose();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
