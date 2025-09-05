@@ -9,7 +9,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -19,8 +18,7 @@ using AvaloniaTabStrip = Avalonia.Controls.Primitives.TabStrip;
 public abstract class BaseTabStrip : AvaloniaTabStrip, 
                                      ISizeTypeAware,
                                      IMotionAwareControl,
-                                     IControlSharedTokenResourcesHost,
-                                     IResourceBindingManager
+                                     IControlSharedTokenResourcesHost
 {
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
@@ -71,9 +69,10 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
     
     #endregion
+    
+    private IDisposable? _borderThicknessDisposable;
 
     static BaseTabStrip()
     {
@@ -128,18 +127,19 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
