@@ -1,19 +1,16 @@
-using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class ButtonSpinnerHandle : TemplatedControl, IResourceBindingManager
+internal class ButtonSpinnerHandle : TemplatedControl
 {
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ButtonSpinnerHandle>();
@@ -52,8 +49,7 @@ internal class ButtonSpinnerHandle : TemplatedControl, IResourceBindingManager
     public event EventHandler? ButtonsCreated;
     
     private BorderRenderHelper _borderRenderHelper;
-    
-    CompositeDisposable? IResourceBindingManager.ResourceBindingsDisposable { get; set; }
+    private IDisposable? _borderThicknessDisposable;
 
     static ButtonSpinnerHandle()
     {
@@ -65,19 +61,19 @@ internal class ButtonSpinnerHandle : TemplatedControl, IResourceBindingManager
         _borderRenderHelper = new BorderRenderHelper();
     }
     
-    
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToLogicalTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
+        base.OnAttachedToVisualTree(e);
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
+            SharedTokenKey.BorderThickness,
+            BindingPriority.Template,
+            new RenderScaleAwareThicknessConfigure(this));
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnDetachedFromLogicalTree(e);
-        this.DisposeTokenBindings();
+        base.OnDetachedFromVisualTree(e);
+        _borderThicknessDisposable?.Dispose();
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
