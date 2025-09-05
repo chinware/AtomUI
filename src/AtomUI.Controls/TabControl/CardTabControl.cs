@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -11,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -93,7 +94,9 @@ public class CardTabControl : BaseTabControl
     private IconButton? _addTabButton;
     private ItemsPresenter? _itemsPresenter;
     private TabControlScrollViewer? _scrollViewer;
-
+    private CompositeDisposable? _tokenBindingDisposables;
+    private IDisposable? _borderBindingDisposable;
+    
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         return new TabItem
@@ -139,7 +142,7 @@ public class CardTabControl : BaseTabControl
         {
             if (change.Property == SizeTypeProperty)
             {
-                SetupSizeTypeBinding();
+                HandleSizeTypeChanged();
             }
         }
 
@@ -153,35 +156,52 @@ public class CardTabControl : BaseTabControl
     {
         RaiseEvent(new RoutedEventArgs(AddTabRequestEvent));
     }
-
-    private void SetupSizeTypeBinding()
+    
+    private void HandleSizeTypeChanged()
     {
         if (SizeType == SizeType.Large)
         {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+            _tokenBindingDisposables?.Add(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
                 SharedTokenKey.BorderRadiusLG));
         }
         else if (SizeType == SizeType.Middle)
         {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+            _tokenBindingDisposables?.Add(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
                 SharedTokenKey.BorderRadius));
         }
         else
         {
-            this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
+            _tokenBindingDisposables?.Add(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
                 SharedTokenKey.BorderRadiusSM));
         }
     }
+    
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        _tokenBindingDisposables = new CompositeDisposable();
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
+        HandleSizeTypeChanged();
+    }
 
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _tokenBindingDisposables?.Dispose();
+    }
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        this.AddResourceBindingDisposable(TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
+        _borderBindingDisposable = TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
             SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this)));
-        this.AddResourceBindingDisposable(
-            TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
-        SetupSizeTypeBinding();
+            new RenderScaleAwareThicknessConfigure(this));
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _borderBindingDisposable?.Dispose();
     }
 
     protected override Size ArrangeOverride(Size finalSize)
