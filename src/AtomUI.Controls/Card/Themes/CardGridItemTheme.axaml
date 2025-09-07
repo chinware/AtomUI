@@ -1,0 +1,47 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:CardGridItem}" TargetType="atom:CardGridItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame" Padding="{TemplateBinding Padding}"
+                        BoxShadow="{TemplateBinding BoxShadow}"
+                        Background="Transparent">
+                    <ContentPresenter Name="ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:CardTokenKey.CardGridItemShadows}}" />
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingLG}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPadding}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingSM}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:CardTokenKey.CardShadows}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

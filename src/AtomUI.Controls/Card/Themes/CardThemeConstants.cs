@@ -9,3 +9,9 @@ internal class CardActionPanelThemeConstants
 {
     public const string GridPanelPart = "PART_GridPanel";
 }
+
+internal class CardGridContentThemeConstants
+{
+    public const string ItemsPresenterPart = "PART_ItemsPresenter";
+}
+

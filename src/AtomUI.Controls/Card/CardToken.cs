@@ -136,6 +136,11 @@ internal class CardToken : AbstractControlDesignToken
     /// </summary>
     public double CardActionsIconSize { get; set; }
     
+    /// <summary>
+    /// 表格内容的默认阴影
+    /// </summary>
+    public BoxShadows CardGridItemShadows { get; set; }
+    
     public CardToken()
         : base(ID)
     {
@@ -173,7 +178,7 @@ internal class CardToken : AbstractControlDesignToken
             Spread  = -1,
             Color   = ColorUtils.FromRgbF(0.16, 0, 0, 0)
         }, [
-            new BoxShadow()
+            new BoxShadow
             {
                 OffsetX = 0,
                 OffsetY = 3,
@@ -181,7 +186,7 @@ internal class CardToken : AbstractControlDesignToken
                 Spread  = 0,
                 Color   = ColorUtils.FromRgbF(0.12, 0, 0, 0)
             },
-            new BoxShadow()
+            new BoxShadow
             {
                 OffsetX = 0,
                 OffsetY = 5,
@@ -189,6 +194,50 @@ internal class CardToken : AbstractControlDesignToken
                 Spread  = 4,
                 Color   = ColorUtils.FromRgbF(0.09, 0, 0, 0)
             }
+        ]);
+        var lineWidth = SharedToken.LineWidth;
+        CardGridItemShadows = new BoxShadows(new BoxShadow()
+        {
+            OffsetX = lineWidth,
+            OffsetY = 0,
+            Blur    = 0,
+            Spread  = 0,
+            Color   = SharedToken.ColorBorderSecondary
+        }, [
+            new BoxShadow
+            {
+                OffsetX = 0,
+                OffsetY = lineWidth,
+                Blur    = 0,
+                Spread  = 0,
+                Color   = SharedToken.ColorBorderSecondary
+            },
+            new BoxShadow
+            {
+                OffsetX = lineWidth,
+                OffsetY = lineWidth,
+                Blur    = 0,
+                Spread  = 0,
+                Color   = SharedToken.ColorBorderSecondary
+            },
+            new BoxShadow
+            {
+                IsInset = true,
+                OffsetX = lineWidth,
+                OffsetY = 0,
+                Blur    = 0,
+                Spread  = 0,
+                Color   = SharedToken.ColorBorderSecondary
+            },
+            new BoxShadow
+            {
+                IsInset = true,
+                OffsetX = 0,
+                OffsetY = lineWidth,
+                Blur    = 0,
+                Spread  = 0,
+                Color   = SharedToken.ColorBorderSecondary
+            },
         ]);
         CardHeadPadding     = SharedToken.Padding;
         CardPaddingBase     = SharedToken.PaddingLG;

@@ -4,8 +4,7 @@
     xmlns:atom="https://atomui.net"
     xmlns:converters="using:Avalonia.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:CornerRadiusFilterConverter x:Key="CornerRadiusFilterConverter"
-                                            Filter="TopLeft, TopRight" />
+    <converters:CornerRadiusFilterConverter x:Key="CornerRadiusFilterConverter" Filter="TopLeft, TopRight" />
     <ControlTheme x:Key="{x:Type atom:Card}" TargetType="atom:Card">
         <Setter Property="Template">
             <ControlTemplate>
@@ -13,7 +12,7 @@
                     <Border Name="Frame"
                             BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
+                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                             Background="{TemplateBinding Background}"
                             ClipToBounds="False"
                             BoxShadow="{TemplateBinding BoxShadow}">
@@ -51,6 +50,7 @@
                                            IsActive="True"
                                            ParagraphRows="4"
                                            IsShowTitle="False"
+                                           ClipToBounds = "False"
                                            Content="{TemplateBinding Content}"
                                            ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </Border>
@@ -95,10 +95,6 @@
                 <Setter Property="TextElement.FontSize"
                         Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderFontSizeLG}}" />
             </Style>
-
-            <Style Selector="^ /template/ Border#CardContent">
-                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingLG}}" />
-            </Style>
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
@@ -107,10 +103,6 @@
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderPadding}}" />
                 <Setter Property="TextElement.FontSize"
                         Value="{DynamicResource {x:Static atom:CardTokenKey.HeaderFontSize}}" />
-            </Style>
-
-            <Style Selector="^ /template/ Border#CardContent">
-                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPadding}}" />
             </Style>
         </Style>
 
@@ -123,6 +115,26 @@
             </Style>
             <Style Selector="^ /template/ Border#CardContent">
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingSM}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ContentType=Meta],^[ContentType=Default]">
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ Border#CardContent">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingLG}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ Border#CardContent">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPadding}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ Border#CardContent">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingSM}}" />
+                </Style>
             </Style>
         </Style>
 

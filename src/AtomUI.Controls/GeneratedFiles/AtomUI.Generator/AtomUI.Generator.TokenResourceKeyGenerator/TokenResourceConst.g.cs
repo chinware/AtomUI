@@ -193,6 +193,7 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey BodyPaddingLG = new TokenResourceKey("Card.BodyPaddingLG");
         public static readonly TokenResourceKey BodyPaddingSM = new TokenResourceKey("Card.BodyPaddingSM");
         public static readonly TokenResourceKey CardActionsIconSize = new TokenResourceKey("Card.CardActionsIconSize");
+        public static readonly TokenResourceKey CardGridItemShadows = new TokenResourceKey("Card.CardGridItemShadows");
         public static readonly TokenResourceKey CardHeadPadding = new TokenResourceKey("Card.CardHeadPadding");
         public static readonly TokenResourceKey CardPaddingBase = new TokenResourceKey("Card.CardPaddingBase");
         public static readonly TokenResourceKey CardShadows = new TokenResourceKey("Card.CardShadows");

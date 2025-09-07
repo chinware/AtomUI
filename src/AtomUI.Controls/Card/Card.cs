@@ -1,6 +1,8 @@
 using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -23,6 +25,14 @@ public enum CardStyleVariant
     Borderless
 }
 
+internal enum CardContentType
+{
+    Default,
+    Meta,
+    Grid,
+    Tabs
+}
+
 public class Card : HeaderedContentControl,
                     IControlSharedTokenResourcesHost,
                     ISizeTypeAware,
@@ -31,7 +41,7 @@ public class Card : HeaderedContentControl,
     #region 公共属性定义
     
     public static readonly StyledProperty<BoxShadows> BoxShadowProperty = 
-        AvaloniaProperty.Register<Card, BoxShadows>(nameof (BoxShadow));
+        Border.BoxShadowProperty.AddOwner<Card>();
     
     public static readonly StyledProperty<object?> ExtraProperty = 
         AvaloniaProperty.Register<Card, object?>(nameof (Extra));
@@ -43,7 +53,7 @@ public class Card : HeaderedContentControl,
         AvaloniaProperty.Register<Card, CardStyleVariant>(nameof (StyleVariant));
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty = 
-        AvaloniaProperty.Register<Card, SizeType>(nameof (SizeType));
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Card>();
     
     public static readonly StyledProperty<bool> IsLoadingProperty = 
         AvaloniaProperty.Register<Card, bool>(nameof (IsLoading));
@@ -154,11 +164,23 @@ public class Card : HeaderedContentControl,
             o => o.EffectiveBorderThickness,
             (o, v) => o.EffectiveBorderThickness = v);
     
+    internal static readonly DirectProperty<Card, CornerRadius> EffectiveCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<Card, CornerRadius>(
+            nameof(EffectiveCornerRadius),
+            o => o.EffectiveCornerRadius,
+            (o, v) => o.EffectiveCornerRadius = v);
+    
     internal static readonly DirectProperty<Card, bool> ActionsPanelVisibleProperty =
         AvaloniaProperty.RegisterDirect<Card, bool>(
             nameof(ActionsPanelVisible),
             o => o.ActionsPanelVisible,
             (o, v) => o.ActionsPanelVisible = v);
+    
+    internal static readonly DirectProperty<Card, CardContentType> ContentTypeProperty =
+        AvaloniaProperty.RegisterDirect<Card, CardContentType>(
+            nameof(ContentType),
+            o => o.ContentType,
+            (o, v) => o.ContentType = v);
     
     private Thickness _headerBorderThickness;
 
@@ -176,6 +198,14 @@ public class Card : HeaderedContentControl,
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
     
+    private CornerRadius _effectiveCornerRadius;
+
+    internal CornerRadius EffectiveCornerRadius
+    {
+        get => _effectiveCornerRadius;
+        set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
+    }
+    
     private bool _actionsPanelVisible;
 
     internal bool ActionsPanelVisible
@@ -183,10 +213,19 @@ public class Card : HeaderedContentControl,
         get => _actionsPanelVisible;
         set => SetAndRaise(ActionsPanelVisibleProperty, ref _actionsPanelVisible, value);
     }
+    
+    private CardContentType _contentType;
+
+    internal CardContentType ContentType
+    {
+        get => _contentType;
+        set => SetAndRaise(ContentTypeProperty, ref _contentType, value);
+    }
     #endregion
 
     private CardActionPanel? _cardActionPanel;
     private IDisposable? _borderThicknessDisposable;
+    private CompositeDisposable? _contentBindingDisposables;
     
     static Card()
     {
@@ -205,7 +244,12 @@ public class Card : HeaderedContentControl,
         base.OnPropertyChanged(change);
         if (change.Property == BorderThicknessProperty)
         {
-            SetCurrentValue(HeaderBorderThicknessProperty, new Thickness(0, 0, 0, BorderThickness.Bottom));
+            ConfigureHeaderBorderThickness();
+            ConfigureContentBorderThickness();
+        }
+        else if (change.Property == CornerRadiusProperty)
+        {
+            ConfigureContentCornerRadius();
         }
         else if (change.Property == HeaderProperty ||
                  change.Property == HeaderTemplateProperty ||
@@ -214,9 +258,11 @@ public class Card : HeaderedContentControl,
         {
             UpdatePseudoClasses();
         }
-        if (this.IsAttachedToLogicalTree())
+        else if (change.Property == ContentProperty)
         {
-            ConfigureBorderThickness();
+            ConfigureContentType();
+            ConfigureContentCornerRadius();
+            ConfigureHeaderBorderThickness();
         }
         if (IsLoaded)
         {
@@ -224,6 +270,27 @@ public class Card : HeaderedContentControl,
             {
                 ConfigureTransitions(true);
             }
+        }
+    }
+
+    private void ConfigureContentType()
+    {
+        _contentBindingDisposables?.Dispose();
+        // 暂时只能探测 Content 直接指定的情况
+        if (Content is CardMetaContent)
+        {
+            SetCurrentValue(ContentTypeProperty, CardContentType.Meta);
+        }
+        else if (Content is CardTabsContent)
+        {
+            SetCurrentValue(ContentTypeProperty, CardContentType.Tabs);
+        }
+        else if (Content is CardGridContent cardGridContent)
+        {
+            SetCurrentValue(ContentTypeProperty, CardContentType.Grid);
+            _contentBindingDisposables = new CompositeDisposable();
+            _contentBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, cardGridContent, CardGridContent.IsMotionEnabledProperty));
+            _contentBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, cardGridContent, CardGridContent.SizeTypeProperty));
         }
     }
     
@@ -234,7 +301,7 @@ public class Card : HeaderedContentControl,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
-        ConfigureBorderThickness();
+        ConfigureContentBorderThickness();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -243,7 +310,7 @@ public class Card : HeaderedContentControl,
         _borderThicknessDisposable?.Dispose();
     }
     
-    private void ConfigureBorderThickness()
+    private void ConfigureContentBorderThickness()
     {
         if (StyleVariant == CardStyleVariant.Outline)
         {
@@ -254,7 +321,31 @@ public class Card : HeaderedContentControl,
             SetCurrentValue(EffectiveBorderThicknessProperty, new Thickness(0));
         }
     }
-    
+
+    private void ConfigureHeaderBorderThickness()
+    {
+        if (ContentType == CardContentType.Grid)
+        {
+            SetCurrentValue(HeaderBorderThicknessProperty, new Thickness(0));
+        }
+        else
+        {
+            SetCurrentValue(HeaderBorderThicknessProperty, new Thickness(0, 0, 0, BorderThickness.Bottom));
+        }
+    }
+
+    private void ConfigureContentCornerRadius()
+    {
+        if (ContentType == CardContentType.Grid)
+        {
+            SetCurrentValue(EffectiveCornerRadiusProperty, new CornerRadius(CornerRadius.TopLeft, CornerRadius.TopRight, 0, 0));
+        }
+        else
+        {
+            SetCurrentValue(EffectiveCornerRadiusProperty, CornerRadius);
+        }
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -267,6 +358,9 @@ public class Card : HeaderedContentControl,
                 _cardActionPanel.Actions.Add(action);
             }
         }
+        ConfigureContentType();
+        ConfigureContentCornerRadius();
+        ConfigureHeaderBorderThickness();
     }
     
     private void ConfigureTransitions(bool force)
@@ -333,10 +427,4 @@ public class Card : HeaderedContentControl,
         }
         SetCurrentValue(ActionsPanelVisibleProperty, Actions.Count > 0);
     }
-    
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        return base.MeasureOverride(availableSize);
-    }
-
 }

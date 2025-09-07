@@ -6,5 +6,7 @@
         <ResourceInclude Source="CardActionPanelTheme.axaml" />
         <ResourceInclude Source="CardTabsContentTheme.axaml" />
         <ResourceInclude Source="CardMetaContentTheme.axaml" />
+        <ResourceInclude Source="CardGridItemTheme.axaml" />
+        <ResourceInclude Source="CardGridContentTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
