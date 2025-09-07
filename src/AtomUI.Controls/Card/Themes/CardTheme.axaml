@@ -118,6 +118,12 @@
             </Style>
         </Style>
 
+        <Style Selector="^[IsInnerMode=True]">
+            <Style Selector="^ /template/ Border#HeaderFrame">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillAlter}}" />
+            </Style>
+        </Style>
+
         <Style Selector="^[ContentType=Meta],^[ContentType=Default]">
             <Style Selector="^[SizeType=Large]">
                 <Style Selector="^ /template/ Border#CardContent">

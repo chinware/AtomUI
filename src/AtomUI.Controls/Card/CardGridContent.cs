@@ -2,13 +2,10 @@ using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 
 namespace AtomUI.Controls;
 

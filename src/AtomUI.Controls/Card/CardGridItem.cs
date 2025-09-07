@@ -25,6 +25,9 @@ public class CardGridItem : ContentControl
     public static readonly StyledProperty<int> ColumnSpanProperty = 
         AvaloniaProperty.Register<CardGridItem, int>(nameof (ColumnSpan));
     
+    public static readonly StyledProperty<bool> IsHoverableProperty = 
+        AvaloniaProperty.Register<CardGridItem, bool>(nameof (IsHoverable), true);
+    
     public BoxShadows BoxShadow
     {
         get => GetValue(BoxShadowProperty);
@@ -53,6 +56,12 @@ public class CardGridItem : ContentControl
     {
         get => GetValue(ColumnSpanProperty);
         set => SetValue(ColumnSpanProperty, value);
+    }
+    
+    public bool IsHoverable
+    {
+        get => GetValue(IsHoverableProperty);
+        set => SetValue(IsHoverableProperty, value);
     }
     
     #region 内部属性定义

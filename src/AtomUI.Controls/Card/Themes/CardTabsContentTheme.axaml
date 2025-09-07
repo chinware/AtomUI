@@ -6,7 +6,41 @@
     <ControlTheme x:Key="{x:Type atom:CardTabsContent}" TargetType="atom:CardTabsContent">
         <Setter Property="Template">
             <ControlTemplate>
+                <atom:TabControl Name="{x:Static atom:CardTabsContentThemeConstants.TabControlPart}"
+                                 SizeType="{TemplateBinding SizeType}"
+                                 ItemsSource="{TemplateBinding TabItemsSource}"
+                                 ItemTemplate="{TemplateBinding TabItemTemplate}"
+                                 TabAndContentGutter="0"
+                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                 HeaderEndExtraContent="{TemplateBinding TabBarExtraContent}"
+                                 HeaderEndExtraContentTemplate="{TemplateBinding TabBarExtraContentTemplate}"
+                                 />
             </ControlTemplate>
         </Setter>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ atom|TabControl">
+                <Setter Property="ContentPadding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingLG}}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingLG}}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingLG}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ atom|TabControl">
+                <Setter Property="ContentPadding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPadding}}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingSM}}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingSM}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ atom|TabControl">
+                <Setter Property="ContentPadding" Value="{DynamicResource {x:Static atom:CardTokenKey.BodyPaddingSM}}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXS}}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXS}}" />
+            </Style>
+        </Style>
+        
     </ControlTheme>
 </ResourceDictionary>

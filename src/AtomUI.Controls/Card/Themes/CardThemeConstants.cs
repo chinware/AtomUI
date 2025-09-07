@@ -15,3 +15,7 @@ internal class CardGridContentThemeConstants
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 }
 
+internal class CardTabsContentThemeConstants
+{
+    public const string TabControlPart = "PART_TabControl";
+}

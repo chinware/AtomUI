@@ -70,9 +70,6 @@ public class Card : HeaderedContentControl,
     public static readonly StyledProperty<IDataTemplate?> CoverTemplateProperty = 
         AvaloniaProperty.Register<Card, IDataTemplate?>(nameof (CoverTemplate));
     
-    public static readonly StyledProperty<List<Control>> ActionsProperty = 
-        AvaloniaProperty.Register<Card, List<Control>>(nameof (Actions), new List<Control>());
-    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Card>();
     
@@ -236,7 +233,7 @@ public class Card : HeaderedContentControl,
     public Card()
     {
         this.RegisterResources();
-        Actions.CollectionChanged += new NotifyCollectionChangedEventHandler(this.HandleActionsChanged);
+        Actions.CollectionChanged += new NotifyCollectionChangedEventHandler(HandleActionsChanged);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -281,9 +278,12 @@ public class Card : HeaderedContentControl,
         {
             SetCurrentValue(ContentTypeProperty, CardContentType.Meta);
         }
-        else if (Content is CardTabsContent)
+        else if (Content is CardTabsContent cardTabsContent)
         {
             SetCurrentValue(ContentTypeProperty, CardContentType.Tabs);
+            _contentBindingDisposables = new CompositeDisposable();
+            _contentBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, cardTabsContent, CardTabsContent.IsMotionEnabledProperty));
+            _contentBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, cardTabsContent, CardTabsContent.SizeTypeProperty));
         }
         else if (Content is CardGridContent cardGridContent)
         {
