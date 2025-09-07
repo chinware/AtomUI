@@ -7,13 +7,13 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <LayoutTransformControl LayoutTransform="{TemplateBinding Transform}">
-                    <VisualLayerManager IsPopup="True">
+                    <atom:VisualLayerManager IsPopup="True">
                         <ContentPresenter Name="{x:Static atom:OverlayPopupHostThemeConstants.ContentPresenterPart}"
                                           Background="{TemplateBinding Background}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Content="{TemplateBinding Content}"
                                           Padding="{TemplateBinding Padding}" />
-                    </VisualLayerManager>
+                    </atom:VisualLayerManager>
                 </LayoutTransformControl>
             </ControlTemplate>
         </Setter>

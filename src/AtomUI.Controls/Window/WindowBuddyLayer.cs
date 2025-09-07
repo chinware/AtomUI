@@ -18,13 +18,6 @@ namespace AtomUI.Controls;
 
 internal class WindowBuddyLayer : AvaloniaWindow
 {
-    #region 反射信息定义
-    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(RawPointerEventArgs))]
-    private static readonly Lazy<MemberInfo> InputHitTestResultPropertyInfo = new Lazy<MemberInfo>(() => 
-        typeof(RawPointerEventArgs).GetPropertyInfoOrThrow("InputHitTestResult",
-            BindingFlags.Instance | BindingFlags.NonPublic));
-    #endregion
-    
     protected override Type StyleKeyOverride { get; } = typeof(WindowBuddyLayer);
     
     public static readonly StyledProperty<BoxShadows> FrameShadowsProperty =

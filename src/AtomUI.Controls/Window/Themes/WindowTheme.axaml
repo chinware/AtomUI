@@ -11,11 +11,11 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BackgroundSizing="InnerBorderEdge"
                         ClipToBounds="True">
-                    <VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                        <VisualLayerManager.ChromeOverlayLayer>
+                    <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                        <atom:VisualLayerManager.ChromeOverlayLayer>
                             <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
                                                 IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}"/>
-                        </VisualLayerManager.ChromeOverlayLayer>
+                        </atom:VisualLayerManager.ChromeOverlayLayer>
                         <Border Name="ContentFrame"
                                 CornerRadius="{TemplateBinding CornerRadius}" 
                                 ClipToBounds="True"
@@ -33,7 +33,7 @@
                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                             </DockPanel>
                         </Border>
-                    </VisualLayerManager>
+                    </atom:VisualLayerManager>
                 </Border>
             </ControlTemplate>
         </Setter>

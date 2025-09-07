@@ -1,0 +1,42 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.VisualTree;
+
+namespace AtomUI.Controls.Primitives;
+
+public class DialogLayer : Canvas
+{
+    protected override bool BypassFlowDirectionPolicies => true;
+    public Size AvailableSize { get; private set; }
+    public static DialogLayer? GetDialogLayer(Visual visual)
+    {
+        foreach(var v in visual.GetVisualAncestors())
+            if(v is VisualLayerManager vlm)
+                if (vlm.DialogLayer != null)
+                    return vlm.DialogLayer;
+        if (TopLevel.GetTopLevel(visual) is {} tl)
+        {
+            var layers = tl.GetVisualDescendants().OfType<VisualLayerManager>().FirstOrDefault();
+            return layers?.DialogLayer;
+        }
+
+        return null;
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        foreach (Control child in Children)
+        {
+            child.Measure(availableSize);
+        }
+        return availableSize;
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        // We are saving it here since child controls might need to know the entire size of the overlay
+        // and Bounds won't be updated in time
+        AvailableSize = finalSize;
+        return base.ArrangeOverride(finalSize);
+    }
+}

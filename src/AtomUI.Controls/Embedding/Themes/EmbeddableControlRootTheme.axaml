@@ -9,12 +9,12 @@
                 <Panel>
                     <Border Name="{x:Static atom:EmbeddingThemeConstants.TransparencyFallbackPart}" IsHitTestVisible="False" />
                     <Border Background="{TemplateBinding Background}">
-                        <VisualLayerManager>
+                        <atom:VisualLayerManager>
                             <ContentPresenter Name="{x:Static atom:EmbeddingThemeConstants.ContentPresenterPart}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                               Content="{TemplateBinding Content}"
                                               Margin="{TemplateBinding Padding}"/>
-                        </VisualLayerManager>
+                        </atom:VisualLayerManager>
                     </Border>
                 </Panel>
             </ControlTemplate>
