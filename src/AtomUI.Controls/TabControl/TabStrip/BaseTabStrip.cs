@@ -7,9 +7,11 @@ using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Media;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -39,6 +41,24 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabStrip>();
     
+    public static readonly StyledProperty<double> HeaderStartEdgePaddingProperty = 
+        AvaloniaProperty.Register<BaseTabStrip, double>(nameof (HeaderStartEdgePadding));
+    
+    public static readonly StyledProperty<double> HeaderEndEdgePaddingProperty = 
+        AvaloniaProperty.Register<BaseTabStrip, double>(nameof (HeaderEndEdgePadding));
+    
+    public static readonly StyledProperty<object?> HeaderStartExtraContentProperty = 
+        AvaloniaProperty.Register<BaseTabStrip, object?>(nameof (HeaderStartExtraContent));
+    
+    public static readonly StyledProperty<IDataTemplate?> HeaderStartExtraContentTemplateProperty =
+        AvaloniaProperty.Register<BaseTabStrip, IDataTemplate?>(nameof(HeaderStartExtraContentTemplate));
+    
+    public static readonly StyledProperty<object?> HeaderEndExtraContentProperty = 
+        AvaloniaProperty.Register<BaseTabStrip, object?>(nameof (HeaderEndExtraContent));
+    
+    public static readonly StyledProperty<IDataTemplate?> HeaderEndExtraContentTemplateProperty =
+        AvaloniaProperty.Register<BaseTabStrip, IDataTemplate?>(nameof(HeaderEndExtraContentTemplate));
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -63,9 +83,60 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    public double HeaderStartEdgePadding
+    {
+        get => GetValue(HeaderStartEdgePaddingProperty);
+        set => SetValue(HeaderStartEdgePaddingProperty, value);
+    }
+    
+    public double HeaderEndEdgePadding
+    {
+        get => GetValue(HeaderEndEdgePaddingProperty);
+        set => SetValue(HeaderEndEdgePaddingProperty, value);
+    }
+    
+    [DependsOn(nameof(HeaderStartExtraContentTemplate))]
+    public object? HeaderStartExtraContent
+    {
+        get => GetValue(HeaderStartExtraContentProperty);
+        set => SetValue(HeaderStartExtraContentProperty, value);
+    }
+    
+    public IDataTemplate? HeaderStartExtraContentTemplate
+    {
+        get => GetValue(HeaderStartExtraContentTemplateProperty);
+        set => SetValue(HeaderStartExtraContentTemplateProperty, value);
+    }
+    
+    [DependsOn(nameof(HeaderEndExtraContentTemplate))]
+    public object? HeaderEndExtraContent
+    {
+        get => GetValue(HeaderEndExtraContentProperty);
+        set => SetValue(HeaderEndExtraContentProperty, value);
+    }
+    
+    public IDataTemplate? HeaderEndExtraContentTemplate
+    {
+        get => GetValue(HeaderEndExtraContentTemplateProperty);
+        set => SetValue(HeaderEndExtraContentTemplateProperty, value);
+    }
+
     #endregion
     
     #region 内部属性定义
+    internal static readonly DirectProperty<BaseTabStrip, Thickness> EffectiveHeaderPaddingProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabStrip, Thickness>(nameof(EffectiveHeaderPadding),
+            o => o.EffectiveHeaderPadding,
+            (o, v) => o.EffectiveHeaderPadding = v);
+        
+    private Thickness _effectiveHeaderPadding;
+
+    internal Thickness EffectiveHeaderPadding
+    {
+        get => _effectiveHeaderPadding;
+        set => SetAndRaise(EffectiveHeaderPaddingProperty, ref _effectiveHeaderPadding, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
@@ -114,10 +185,27 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is TabStripItem tabStripItem)
         {
-            var disposables = new CompositeDisposable(2);
+            var disposables = new CompositeDisposable(4);
             tabStripItem.TabStripPlacement = TabStripPlacement;
+            
+            if (item != null && item is not Visual)
+            {
+                if (!tabStripItem.IsSet(TabStripItem.ContentProperty))
+                {
+                    tabStripItem.SetCurrentValue(TabStripItem.ContentProperty, item);
+                }
+            }
+
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, tabStripItem, TabItem.ContentTemplateProperty));
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, tabStripItem, TabStripItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, tabStripItem, TabStripItem.IsMotionEnabledProperty));
+            
+            PrepareTabStripItem(tabStripItem, item, index, disposables);
+            
             if (ItemsBindingDisposables.TryGetValue(tabStripItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();
@@ -125,8 +213,16 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             }
             ItemsBindingDisposables.Add(tabStripItem, disposables);
         }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type TabStripItem.");
+        }
     }
 
+    protected virtual void PrepareTabStripItem(TabStripItem tabStripItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
+    }
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -156,6 +252,12 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
                     tabStripItem.TabStripPlacement = TabStripPlacement;
                 }
             }
+
+            ConfigureEffectiveHeaderPadding();
+        }
+        else if (change.Property == HeaderStartEdgePaddingProperty || change.Property == HeaderEndEdgePaddingProperty)
+        {
+            ConfigureEffectiveHeaderPadding();
         }
     }
 
@@ -199,5 +301,31 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             EdgeMode = EdgeMode.Aliased
         });
         context.DrawLine(new Pen(BorderBrush, borderThickness), startPoint, endPoint);
+    }
+    
+    private void ConfigureEffectiveHeaderPadding()
+    {
+        if (TabStripPlacement == Dock.Top)
+        {
+            SetCurrentValue(EffectiveHeaderPaddingProperty, new  Thickness(HeaderStartEdgePadding, 0, HeaderEndEdgePadding, 0));
+        }
+        else if (TabStripPlacement == Dock.Right)
+        {
+            SetCurrentValue(EffectiveHeaderPaddingProperty, new Thickness(0, HeaderStartEdgePadding, 0, HeaderEndEdgePadding));
+        }
+        else if (TabStripPlacement == Dock.Bottom)
+        {
+            SetCurrentValue(EffectiveHeaderPaddingProperty, new  Thickness(HeaderStartEdgePadding, 0, HeaderEndEdgePadding, 0));
+        }
+        else
+        {
+            SetCurrentValue(EffectiveHeaderPaddingProperty, new Thickness(0, HeaderStartEdgePadding, 0, HeaderEndEdgePadding));
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureEffectiveHeaderPadding();
     }
 }

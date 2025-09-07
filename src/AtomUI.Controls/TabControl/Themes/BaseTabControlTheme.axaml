@@ -9,28 +9,8 @@
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="TabAndContentGutter" Value="{DynamicResource {x:Static atom:TabControlTokenKey.TabAndContentGutter}}" />
-        
-        <!-- 设置 items presenter 面板样式 -->
-        <!-- 分为上、右、下、左 -->
-        <Style Selector="^[TabStripPlacement=Top]">
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-        </Style>
-        
-        <Style Selector="^[TabStripPlacement=Right]">
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Stretch" />
-        </Style>
-        
-        <Style Selector="^[TabStripPlacement=Bottom]">
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-        </Style>
-        
-        <Style Selector="^[TabStripPlacement=Left]">
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Stretch" />
-        </Style>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
     </Style>
     
 </ControlTheme>

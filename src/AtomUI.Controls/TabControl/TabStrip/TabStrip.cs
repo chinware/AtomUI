@@ -53,11 +53,11 @@ public class TabStrip : BaseTabStrip
             {
                 if (force || _selectedIndicator.Transitions == null)
                 {
-                    _selectedIndicator.Transitions = new Transitions()
-                    {
+                    _selectedIndicator.Transitions =
+                    [
                         TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
                             SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
-                    };
+                    ];
                 }
             }
             else

@@ -12,6 +12,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Media;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -34,6 +35,30 @@ public class BaseTabControl : AvaloniaTabControl,
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseTabControl>();
+    
+    public static readonly StyledProperty<double> HeaderStartEdgePaddingProperty = 
+        AvaloniaProperty.Register<BaseTabControl, double>(nameof (HeaderStartEdgePadding));
+    
+    public static readonly StyledProperty<double> HeaderEndEdgePaddingProperty = 
+        AvaloniaProperty.Register<BaseTabControl, double>(nameof (HeaderEndEdgePadding));
+    
+    public static readonly StyledProperty<Thickness> ContentPaddingProperty = 
+        AvaloniaProperty.Register<BaseTabControl, Thickness>(nameof (ContentPadding));
+    
+    public static readonly StyledProperty<double> TabAndContentGutterProperty =
+        AvaloniaProperty.Register<BaseTabControl, double>(nameof(TabAndContentGutter));
+    
+    public static readonly StyledProperty<object?> HeaderStartExtraContentProperty = 
+        AvaloniaProperty.Register<BaseTabControl, object?>(nameof (HeaderStartExtraContent));
+    
+    public static readonly StyledProperty<IDataTemplate?> HeaderStartExtraContentTemplateProperty =
+        AvaloniaProperty.Register<ContentControl, IDataTemplate?>(nameof(HeaderStartExtraContentTemplate));
+    
+    public static readonly StyledProperty<object?> HeaderEndExtraContentProperty = 
+        AvaloniaProperty.Register<BaseTabControl, object?>(nameof (HeaderEndExtraContent));
+    
+    public static readonly StyledProperty<IDataTemplate?> HeaderEndExtraContentTemplateProperty =
+        AvaloniaProperty.Register<ContentControl, IDataTemplate?>(nameof(HeaderEndExtraContentTemplate));
 
     public SizeType SizeType
     {
@@ -53,27 +78,69 @@ public class BaseTabControl : AvaloniaTabControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    public double HeaderStartEdgePadding
+    {
+        get => GetValue(HeaderStartEdgePaddingProperty);
+        set => SetValue(HeaderStartEdgePaddingProperty, value);
+    }
+    
+    public double HeaderEndEdgePadding
+    {
+        get => GetValue(HeaderEndEdgePaddingProperty);
+        set => SetValue(HeaderEndEdgePaddingProperty, value);
+    }
+    
+    public Thickness ContentPadding
+    {
+        get => GetValue(ContentPaddingProperty);
+        set => SetValue(ContentPaddingProperty, value);
+    }
+    
+    public double TabAndContentGutter
+    {
+        get => GetValue(TabAndContentGutterProperty);
+        set => SetValue(TabAndContentGutterProperty, value);
+    }
+    
+    [DependsOn(nameof(HeaderStartExtraContentTemplate))]
+    public object? HeaderStartExtraContent
+    {
+        get => GetValue(HeaderStartExtraContentProperty);
+        set => SetValue(HeaderStartExtraContentProperty, value);
+    }
+    
+    public IDataTemplate? HeaderStartExtraContentTemplate
+    {
+        get => GetValue(HeaderStartExtraContentTemplateProperty);
+        set => SetValue(HeaderStartExtraContentTemplateProperty, value);
+    }
+    
+    [DependsOn(nameof(HeaderEndExtraContentTemplate))]
+    public object? HeaderEndExtraContent
+    {
+        get => GetValue(HeaderEndExtraContentProperty);
+        set => SetValue(HeaderEndExtraContentProperty, value);
+    }
+    
+    public IDataTemplate? HeaderEndExtraContentTemplate
+    {
+        get => GetValue(HeaderEndExtraContentTemplateProperty);
+        set => SetValue(HeaderEndExtraContentTemplateProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性实现
-
-    internal static readonly DirectProperty<BaseTabControl, double> TabAndContentGutterProperty =
-        AvaloniaProperty.RegisterDirect<BaseTabControl, double>(nameof(TabAndContentGutter),
-            o => o.TabAndContentGutter,
-            (o, v) => o.TabAndContentGutter = v);
-
-    private double _tabAndContentGutter;
-
-    internal double TabAndContentGutter
-    {
-        get => _tabAndContentGutter;
-        set => SetAndRaise(TabAndContentGutterProperty, ref _tabAndContentGutter, value);
-    }
-
+    
     internal static readonly DirectProperty<BaseTabControl, Thickness> TabStripMarginProperty =
         AvaloniaProperty.RegisterDirect<BaseTabControl, Thickness>(nameof(TabStripMargin),
             o => o.TabStripMargin,
             (o, v) => o.TabStripMargin = v);
+    
+    internal static readonly DirectProperty<BaseTabControl, Thickness> EffectiveHeaderPaddingProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabControl, Thickness>(nameof(EffectiveHeaderPadding),
+            o => o.EffectiveHeaderPadding,
+            (o, v) => o.EffectiveHeaderPadding = v);
 
     private Thickness _tabStripMargin;
 
@@ -81,6 +148,14 @@ public class BaseTabControl : AvaloniaTabControl,
     {
         get => _tabStripMargin;
         set => SetAndRaise(TabStripMarginProperty, ref _tabStripMargin, value);
+    }
+    
+    private Thickness _effectiveHeaderPadding;
+
+    internal Thickness EffectiveHeaderPadding
+    {
+        get => _effectiveHeaderPadding;
+        set => SetAndRaise(EffectiveHeaderPaddingProperty, ref _effectiveHeaderPadding, value);
     }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -134,6 +209,8 @@ public class BaseTabControl : AvaloniaTabControl,
     {
         base.OnApplyTemplate(e);
         _alignWrapper   = e.NameScope.Find<Panel>(TabControlThemeConstants.AlignWrapperPart);
+        HandlePlacementChanged();
+        ConfigureEffectiveHeaderPadding();
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -141,9 +218,26 @@ public class BaseTabControl : AvaloniaTabControl,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is TabItem tabItem)
         {
-            var disposables = new CompositeDisposable(2);
+            var disposables = new CompositeDisposable(4);
+            
+            if (item != null && item is not Visual)
+            {
+                if (!tabItem.IsSet(TabItem.ContentProperty))
+                {
+                    tabItem.SetCurrentValue(TabItem.ContentProperty, item);
+                }
+            }
+
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, tabItem, TabItem.ContentTemplateProperty));
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, tabItem, TabItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, tabItem, TabItem.IsMotionEnabledProperty));
+            
+            PrepareTabItem(tabItem, item, index, disposables);
+            
             if (ItemsBindingDisposables.TryGetValue(tabItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();
@@ -151,6 +245,14 @@ public class BaseTabControl : AvaloniaTabControl,
             }
             ItemsBindingDisposables.Add(tabItem, disposables);
         }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type TabItem.");
+        }
+    }
+    
+    protected virtual void PrepareTabItem(TabItem tabItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -176,6 +278,10 @@ public class BaseTabControl : AvaloniaTabControl,
             UpdatePseudoClasses();
             HandlePlacementChanged();
         }
+        else if (change.Property == HeaderStartEdgePaddingProperty || change.Property == HeaderEndEdgePaddingProperty)
+        {
+            ConfigureEffectiveHeaderPadding();
+        }
     }
 
     private void UpdatePseudoClasses()
@@ -190,19 +296,41 @@ public class BaseTabControl : AvaloniaTabControl,
     {
         if (TabStripPlacement == Dock.Top)
         {
-            TabStripMargin = new Thickness(0, 0, 0, _tabAndContentGutter);
+            SetCurrentValue(TabStripMarginProperty, new Thickness(0, 0, 0, TabAndContentGutter));
         }
         else if (TabStripPlacement == Dock.Right)
         {
-            TabStripMargin = new Thickness(_tabAndContentGutter, 0, 0, 0);
+            SetCurrentValue(TabStripMarginProperty, new Thickness(TabAndContentGutter, 0, 0, 0));
         }
         else if (TabStripPlacement == Dock.Bottom)
         {
-            TabStripMargin = new Thickness(0, _tabAndContentGutter, 0, 0);
+            SetCurrentValue(TabStripMarginProperty, new Thickness(0, TabAndContentGutter, 0, 0));
         }
         else
         {
-            TabStripMargin = new Thickness(0, 0, _tabAndContentGutter, 0);
+            SetCurrentValue(TabStripMarginProperty, new Thickness(0, 0, TabAndContentGutter, 0));
+        }
+
+        ConfigureEffectiveHeaderPadding();
+    }
+
+    private void ConfigureEffectiveHeaderPadding()
+    {
+        if (TabStripPlacement == Dock.Top)
+        {
+            SetCurrentValue(EffectiveHeaderPaddingProperty, new  Thickness(HeaderStartEdgePadding, 0, HeaderEndEdgePadding, 0));
+        }
+        else if (TabStripPlacement == Dock.Right)
+        {
+            SetCurrentValue(EffectiveHeaderPaddingProperty, new Thickness(0, HeaderStartEdgePadding, 0, HeaderEndEdgePadding));
+        }
+        else if (TabStripPlacement == Dock.Bottom)
+        {
+            SetCurrentValue(EffectiveHeaderPaddingProperty, new  Thickness(HeaderStartEdgePadding, 0, HeaderEndEdgePadding, 0));
+        }
+        else
+        {
+            SetCurrentValue(EffectiveHeaderPaddingProperty, new Thickness(0, HeaderStartEdgePadding, 0, HeaderEndEdgePadding));
         }
     }
 

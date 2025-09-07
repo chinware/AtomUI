@@ -12,31 +12,55 @@
             <ControlTemplate>
                 <Border Name="{x:Static atom:TabStripThemeConstants.FramePart}">
                     <Panel Name="{x:Static atom:TabStripThemeConstants.AlignWrapperPart}">
-                        <Border>
-                            <atom:TabStripScrollViewer Name="{x:Static atom:TabStripThemeConstants.TabsContainerPart}"
-                                                       IsScrollChainingEnabled="False"
-                                                       TabStripPlacement="{TemplateBinding TabStripPlacement}"
-                                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                                <Panel>
-                                    <ItemsPresenter Name="{x:Static atom:TabStripThemeConstants.ItemsPresenterPart}"
-                                                    ItemsPanel="{TemplateBinding ItemsPanel}" />
-                                    <Border Name="{x:Static atom:TabStripThemeConstants.SelectedItemIndicatorPart}" />
-                                </Panel>
-                            </atom:TabStripScrollViewer>
+                        <Border Padding="{TemplateBinding EffectiveHeaderPadding}">
+                            <DockPanel LastChildFill="True" Name="HeaderLayout">
+                                <ContentPresenter Name="HeaderStartExtraContent"
+                                                  Content="{TemplateBinding HeaderStartExtraContent}"
+                                                  ContentTemplate="{TemplateBinding HeaderStartExtraContentTemplate}" />
+                                <ContentPresenter Name="HeaderEndExtraContent"
+                                                  Content="{TemplateBinding HeaderEndExtraContent}"
+                                                  ContentTemplate="{TemplateBinding HeaderEndExtraContentTemplate}" />
+                                <atom:TabStripScrollViewer
+                                    Name="{x:Static atom:TabStripThemeConstants.TabsContainerPart}"
+                                    IsScrollChainingEnabled="False"
+                                    TabStripPlacement="{TemplateBinding TabStripPlacement}"
+                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                                    <Panel>
+                                        <ItemsPresenter
+                                            Name="{x:Static atom:TabStripThemeConstants.ItemsPresenterPart}"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}" />
+                                        <Border Name="{x:Static atom:TabStripThemeConstants.SelectedItemIndicatorPart}" />
+                                    </Panel>
+                                </atom:TabStripScrollViewer>
+                            </DockPanel>
                         </Border>
                     </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>
-        
-        <Setter Property="SelectedIndicatorThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidthBold}}" />
+
+        <Setter Property="SelectedIndicatorThickness"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidthBold}}" />
 
         <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:TabControlTokenKey.InkBarColor}}" />
         </Style>
 
         <Style Selector="^[TabStripPlacement=Top]">
-
+            <Style Selector="^ /template/ DockPanel#HeaderLayout">
+                <Setter Property="HorizontalSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderEndExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
             <!-- tabs 是否居中 -->
             <Style Selector="^[TabAlignmentCenter=True]">
                 <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
@@ -57,6 +81,20 @@
         </Style>
 
         <Style Selector="^[TabStripPlacement=Right]">
+            <Style Selector="^ /template/ DockPanel#HeaderLayout">
+                <Setter Property="VerticalSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderEndExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Bottom"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
             <!-- tabs 是否居中 -->
             <Style Selector="^[TabAlignmentCenter=True]">
                 <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
@@ -77,6 +115,20 @@
         </Style>
 
         <Style Selector="^[TabStripPlacement=Bottom]">
+            <Style Selector="^ /template/ DockPanel#HeaderLayout">
+                <Setter Property="HorizontalSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderEndExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
             <!-- tabs 是否居中 -->
             <Style Selector="^[TabAlignmentCenter=True]">
                 <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
@@ -97,6 +149,20 @@
         </Style>
 
         <Style Selector="^[TabStripPlacement=Left]">
+            <Style Selector="^ /template/ DockPanel#HeaderLayout">
+                <Setter Property="VerticalSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderEndExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Bottom"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+            
             <!-- tabs 是否居中 -->
             <Style Selector="^[TabAlignmentCenter=True]">
                 <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
