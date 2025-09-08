@@ -1,10 +1,12 @@
 using System.Diagnostics;
+using AtomUI.Controls.DialogPositioning;
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -13,7 +15,8 @@ public sealed class OverlayDialogHost : ContentControl,
                                         IInputRoot,
                                         IDisposable,
                                         IDialogHost,
-                                        IMotionAwareControl
+                                        IMotionAwareControl,
+                                        IManagedDialogPositionerDialog
 {
     #region 公共属性定义
     public static readonly StyledProperty<string?> TitleProperty =
@@ -108,6 +111,7 @@ public sealed class OverlayDialogHost : ContentControl,
 
     private IInputRoot? InputRoot => TopLevel.GetTopLevel(this);
     private readonly DialogLayer _dialogLayer;
+    private readonly ManagedDialogPositioner _positioner;
     private readonly IKeyboardNavigationHandler? _keyboardNavigationHandler;
     private Point _lastRequestedPosition;
     private DialogPositionRequest? _dialogPositionRequest;
@@ -123,6 +127,7 @@ public sealed class OverlayDialogHost : ContentControl,
     public OverlayDialogHost(DialogLayer dialogLayer)
     {
         _dialogLayer               = dialogLayer;
+        _positioner                = new ManagedDialogPositioner(this);
         _keyboardNavigationHandler = AvaloniaLocator.Current.GetService<IKeyboardNavigationHandler>();
         _keyboardNavigationHandler?.SetOwner(this);
     }
@@ -256,21 +261,34 @@ public sealed class OverlayDialogHost : ContentControl,
             }
         }
     }
-
-    //
-    // IReadOnlyList<ManagedPopupPositionerScreenInfo> IManagedPopupPositionerPopup.Screens
-    // {
-    //     get
-    //     {
-    //         var rc       = new Rect(default, _overlayLayer.AvailableSize);
-    //         var topLevel = TopLevel.GetTopLevel(this);
-    //         if(topLevel != null)
-    //         {
-    //             var padding = topLevel.InsetsManager?.SafeAreaPadding ?? default;
-    //             rc = rc.Deflate(padding);
-    //         }
-    //
-    //         return new[] {new ManagedPopupPositionerScreenInfo(rc, rc)};
-    //     }
-    // }
+    
+    IReadOnlyList<ManagedDialogPositionerScreenInfo> IManagedDialogPositionerDialog.Screens
+    {
+        get
+        {
+            var rc       = new Rect(default, _dialogLayer.AvailableSize);
+            var topLevel = TopLevel.GetTopLevel(this);
+            if(topLevel != null)
+            {
+                var padding = topLevel.InsetsManager?.SafeAreaPadding ?? default;
+                rc = rc.Deflate(padding);
+            }
+    
+            return [new ManagedDialogPositionerScreenInfo(rc, rc)];
+        }
+    }
+    
+    double IManagedDialogPositionerDialog.Scaling => 1;
+    
+    Rect IManagedDialogPositionerDialog.ParentClientAreaScreenGeometry => new Rect(default, _dialogLayer.Bounds.Size);
+    
+    void IManagedDialogPositionerDialog.MoveAndResize(Point devicePoint, Size virtualSize)
+    {
+        _lastRequestedPosition = devicePoint;
+        Dispatcher.UIThread.Post(() =>
+        {
+            Canvas.SetLeft(this, _lastRequestedPosition.X);
+            Canvas.SetTop(this, _lastRequestedPosition.Y);
+        });
+    }
 }
