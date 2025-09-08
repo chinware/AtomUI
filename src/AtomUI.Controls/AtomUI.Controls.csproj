@@ -30,8 +30,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Dialog\Themes\" />
       <Folder Include="MessageBox\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Avalonia.Controls">
+        <HintPath>..\..\..\..\output\bin\Debug\net9.0\Avalonia.Controls.dll</HintPath>
+      </Reference>
     </ItemGroup>
     
 </Project>

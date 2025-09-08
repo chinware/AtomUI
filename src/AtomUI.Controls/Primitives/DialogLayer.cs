@@ -7,13 +7,11 @@ namespace AtomUI.Controls.Primitives;
 public class DialogLayer : Canvas
 {
     protected override bool BypassFlowDirectionPolicies => true;
+    
     public Size AvailableSize { get; private set; }
+    
     public static DialogLayer? GetDialogLayer(Visual visual)
     {
-        foreach(var v in visual.GetVisualAncestors())
-            if(v is VisualLayerManager vlm)
-                if (vlm.DialogLayer != null)
-                    return vlm.DialogLayer;
         if (TopLevel.GetTopLevel(visual) is {} tl)
         {
             var layers = tl.GetVisualDescendants().OfType<VisualLayerManager>().FirstOrDefault();

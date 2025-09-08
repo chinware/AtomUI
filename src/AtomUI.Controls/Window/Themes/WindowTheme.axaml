@@ -6,35 +6,37 @@
     <ControlTheme x:Key="{x:Type atom:Window}" TargetType="atom:Window">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="WindowFrame"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BackgroundSizing="InnerBorderEdge"
-                        ClipToBounds="True">
-                    <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                        <atom:VisualLayerManager.ChromeOverlayLayer>
-                            <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
-                                                IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}"/>
-                        </atom:VisualLayerManager.ChromeOverlayLayer>
-                        <Border Name="ContentFrame"
-                                CornerRadius="{TemplateBinding CornerRadius}" 
-                                ClipToBounds="True"
-                                Cursor="Arrow">
-                            <DockPanel LastChildFill="True">
-                                <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
-                                    <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
-                                                   Content="{TemplateBinding Title}"
-                                                   Logo="{TemplateBinding Logo}" />
+                <Panel>
+                    <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
+                                        IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}" />
+                    <Border Name="WindowFrame"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BackgroundSizing="InnerBorderEdge"
+                            ClipToBounds="True">
+
+                        <DockPanel LastChildFill="True">
+                            <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
+                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
+                                               Content="{TemplateBinding Title}"
+                                               Logo="{TemplateBinding Logo}" />
+                            </Border>
+                            <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                                <Border Name="ContentFrame"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        ClipToBounds="True"
+                                        Cursor="Arrow">
+                                    <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      Content="{TemplateBinding Content}"
+                                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                 </Border>
-                                <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
-                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  Content="{TemplateBinding Content}"
-                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                            </DockPanel>
-                        </Border>
-                    </atom:VisualLayerManager>
-                </Border>
+                            </atom:VisualLayerManager>
+                        </DockPanel>
+                    </Border>
+                </Panel>
+
             </ControlTemplate>
         </Setter>
 
@@ -48,11 +50,11 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:WindowTokenKey.DefaultForeground}}" />
         <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         <Setter Property="FontFamily" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontFamily}}" />
-      
+
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
-        
+
         <Style Selector="^:not(^[OperationSystemType=macOS])">
             <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
         </Style>
@@ -60,7 +62,7 @@
             <Setter Property="MacOSCaptionGroupOffset" Value="10, 2" />
             <Setter Property="MacOSCaptionGroupSpacing" Value="10" />
         </Style>
-        
+
         <Style Selector="^ /template/ Border#WindowFrame">
             <Setter Property="BorderThickness">
                 <OnPlatform>
@@ -92,25 +94,25 @@
                 </On>
             </OnPlatform>
         </Setter>
-        
+
         <Style Selector="^[OperationSystemType=macOS]">
-            <Setter Property="IsMaximizeCaptionButtonEnabled" Value="False"/>
-            <Setter Property="IsMinimizeCaptionButtonEnabled" Value="False"/>
-            <Setter Property="IsFullScreenCaptionButtonEnabled" Value="False"/>
-            <Setter Property="IsCloseCaptionButtonEnabled" Value="False"/>
+            <Setter Property="IsMaximizeCaptionButtonEnabled" Value="False" />
+            <Setter Property="IsMinimizeCaptionButtonEnabled" Value="False" />
+            <Setter Property="IsFullScreenCaptionButtonEnabled" Value="False" />
+            <Setter Property="IsCloseCaptionButtonEnabled" Value="False" />
         </Style>
-        
+
         <Style Selector="^:not(^[OperationSystemType=macOS])">
-            <Setter Property="IsMaximizeCaptionButtonEnabled" Value="True"/>
-            <Setter Property="IsMinimizeCaptionButtonEnabled" Value="True"/>
-            <Setter Property="IsCloseCaptionButtonEnabled" Value="True"/>
-            <Setter Property="IsFullScreenCaptionButtonEnabled" Value="True"/>
+            <Setter Property="IsMaximizeCaptionButtonEnabled" Value="True" />
+            <Setter Property="IsMinimizeCaptionButtonEnabled" Value="True" />
+            <Setter Property="IsCloseCaptionButtonEnabled" Value="True" />
+            <Setter Property="IsFullScreenCaptionButtonEnabled" Value="True" />
         </Style>
-        
+
         <Style Selector="^:not(^[OperationSystemType=Linux])">
-            <Setter Property="IsResizeEnabled" Value="False"/>
+            <Setter Property="IsResizeEnabled" Value="False" />
             <Setter Property="CornerRadius" Value="0" />
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>
