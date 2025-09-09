@@ -20,8 +20,12 @@ public struct Dimension: IEquatable<Dimension>
         
     public double Value => _value;
     
-    private readonly DimensionUnitType _type;
-    private readonly double _value;
+    private readonly DimensionUnitType _type = DimensionUnitType.Pixel;
+    private readonly double _value = 0;
+
+    public Dimension()
+    {
+    }
     
     public Dimension(double value)
         : this(value, DimensionUnitType.Pixel)

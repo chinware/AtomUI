@@ -76,11 +76,17 @@ public class Dialog : Control,
     public static readonly StyledProperty<bool> IsLightDismissEnabledProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsLightDismissEnabled), false);
     
+    public static readonly StyledProperty<DialogHorizontalAnchor> HorizontalAnchorProperty =
+        AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalAnchor));
+    
+    public static readonly StyledProperty<DialogVerticalAnchor> VerticalAnchorProperty =
+        AvaloniaProperty.Register<Dialog, DialogVerticalAnchor>(nameof(VerticalAnchor));
+    
     public static readonly StyledProperty<Dimension> HorizontalOffsetProperty =
-        AvaloniaProperty.Register<Dialog, Dimension>(nameof(HorizontalOffset));
+        AvaloniaProperty.Register<Dialog, Dimension>(nameof(HorizontalOffset), new Dimension(0.5, DimensionUnitType.Percentage));
     
     public static readonly StyledProperty<Dimension> VerticalOffsetProperty =
-        AvaloniaProperty.Register<Dialog, Dimension>(nameof(VerticalOffset));
+        AvaloniaProperty.Register<Dialog, Dimension>(nameof(VerticalOffset), new Dimension(0.3, DimensionUnitType.Percentage));
     
     public static readonly StyledProperty<bool> TopmostProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(Topmost));
@@ -186,6 +192,18 @@ public class Dialog : Control,
     {
         get => GetValue(OverlayInputPassThroughElementProperty);
         set => SetValue(OverlayInputPassThroughElementProperty, value);
+    }
+    
+    public DialogHorizontalAnchor HorizontalAnchor
+    {
+        get => GetValue(HorizontalAnchorProperty);
+        set => SetValue(HorizontalAnchorProperty, value);
+    }
+    
+    public DialogVerticalAnchor VerticalAnchor
+    {
+        get => GetValue(VerticalAnchorProperty);
+        set => SetValue(VerticalAnchorProperty, value);
     }
     
     public Dimension HorizontalOffset
@@ -731,6 +749,8 @@ public class Dialog : Control,
     {
         dialogHost.ConfigurePosition(new DialogPositionRequest(
             placementTarget,
+            HorizontalAnchor,
+            VerticalAnchor,
             HorizontalOffset,
             VerticalOffset,
             PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
@@ -782,27 +802,6 @@ public class Dialog : Control,
         {
             Close();
         }
-    }
-    
-    private void WindowPositionChanged(PixelPoint pp) => HandlePositionChange();
-    
-    private void PlacementTargetLayoutUpdated(object? src, EventArgs e)
-    {
-        if (_openState is null)
-        {
-            return;
-        }
-    
-        // A LayoutUpdated event is raised for the whole visual tree:
-        // the bounds of the PlacementTarget might not have effectively changed.
-        var newBounds = _openState.PlacementTarget.Bounds;
-        if (newBounds == _openState.LastPlacementTargetBounds)
-        {
-            return;
-        }
-    
-        _openState.LastPlacementTargetBounds = newBounds;
-        UpdateHostPosition(_openState.DialogHost, _openState.PlacementTarget);
     }
     
     private void TargetDetached(object? sender, VisualTreeAttachmentEventArgs e)
