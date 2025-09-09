@@ -244,20 +244,30 @@ public sealed class OverlayDialogHost : ContentControl,
         if (_needsUpdate && _dialogPositionRequest is not null)
         {
             _needsUpdate = false;
-            // _positioner.Update(TopLevel.GetTopLevel(_overlayLayer)!, _popupPositionRequest, _popupSize, FlowDirection);
+            _positioner.Update(_dialogPositionRequest, _dialogSize);
         }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsDragMovableProperty)
+        if (change.Property == IsModalProperty)
         {
             if (!IsHidden)
             {
-                // TODO 需要重构，这样不行
-                Hide();
-                Show();
+                if (change.OldValue is bool oldValue && oldValue && _dialogMask != null)
+                {
+                    _dialogLayer.Children.Remove(_dialogMask);
+                }
+
+                if (change.NewValue is bool newValue && newValue)
+                {
+                    // 找到自己
+                    var index = _dialogLayer.Children.IndexOf(this);
+                    _dialogMask ??= new OverlayDialogMask();
+                    _dialogLayer.Children.Insert(index, _dialogMask);
+                    ConfigureMaskSize(_dialogLayer.Bounds.Size);
+                }
             }
         }
     }

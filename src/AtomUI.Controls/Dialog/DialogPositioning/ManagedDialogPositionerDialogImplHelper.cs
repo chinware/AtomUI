@@ -38,7 +38,6 @@ public class ManagedDialogPositionerDialogImplHelper : IManagedDialogPositionerD
             var point = _parent.PointToScreen(default);
             var size  = _parent.ClientSize * Scaling;
             return new Rect(point.X, point.Y, size.Width, size.Height);
-
         }
     }
     

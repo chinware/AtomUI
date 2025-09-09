@@ -2,13 +2,125 @@ using Avalonia;
 
 namespace AtomUI.Controls.DialogPositioning;
 
-    public record struct PopupPositionerParameters
-    {
-        public Size Size { get; set; }
-        public Point Offset { get; set; }
-    }
+public record struct DialogPositionerParameters
+{
+    public Rect AnchorRectangle { get; set; }
+    public DialogHorizontalPlacement HorizontalPlacement { get; set; }
+    public DialogVerticalPlacement VerticalPlacement { get; set; }
+    public Size Size { get; set; }
+    public DialogPositionerConstraintAdjustment ConstraintAdjustment { get; set; }
+    public Point Offset { get; set; }
+}
 
 public interface IDialogPositioner
 {
-    void Update(PopupPositionerParameters parameters);
+    void Update(DialogPositionerParameters parameters);
+}
+
+[Flags]
+public enum DialogPositionerConstraintAdjustment
+{
+    /// <summary>
+    /// Don't alter the surface position even if it is constrained on some
+    /// axis, for example partially outside the edge of an output.
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// Slide the surface along the x axis until it is no longer constrained.
+    /// </summary>
+    /// <remarks>
+    /// First try to slide towards the direction of the gravity on the x axis until either the
+    /// edge in the opposite direction of the gravity is unconstrained or the edge in the
+    /// direction of the gravity is constrained.
+    ///
+    /// Then try to slide towards the opposite direction of the gravity on the x axis until
+    /// either the edge in the direction of the gravity is unconstrained or the edge in the
+    /// opposite direction of the gravity is constrained.
+    /// </remarks>
+    SlideX = 1,
+
+    /// <summary>
+    /// Slide the surface along the y axis until it is no longer constrained.
+    /// </summary>
+    /// <remarks>
+    /// First try to slide towards the direction of the gravity on the y axis until either the
+    /// edge in the opposite direction of the gravity is unconstrained or the edge in the
+    /// direction of the gravity is constrained.
+    /// 
+    /// Then try to slide towards the opposite direction of the gravity on the y axis until
+    /// either the edge in the direction of the gravity is unconstrained or the edge in the
+    /// opposite direction of the gravity is constrained.
+    /// </remarks>
+    SlideY = 2,
+
+    /// <summary>
+    /// Horizontally resize the surface
+    /// </summary>
+    /// <remarks>
+    /// Resize the surface horizontally so that it is completely unconstrained.
+    /// </remarks>
+    ResizeX = 16,
+
+    /// <summary>
+    /// Vertically resize the surface
+    /// </summary>
+    /// <remarks>
+    /// Resize the surface vertically so that it is completely unconstrained.
+    /// </remarks>
+    ResizeY = 32,
+
+    All = SlideX|SlideY|ResizeX|ResizeY
+}
+
+internal static class DialogPositionerExtensions
+{
+    public static void Update(
+        this IDialogPositioner positioner,
+        DialogPositionRequest positionRequest,
+        Size popupSize)
+    {
+        if (popupSize == default)
+        {
+            return;
+        }
+
+        var parameters = BuildParameters(positionRequest, popupSize);
+        positioner.Update(parameters);
+    }
+
+    private static DialogPositionerParameters BuildParameters(
+        DialogPositionRequest positionRequest,
+        Size dialogSize)
+    {
+        DialogPositionerParameters positionerParameters = default;
+        positionerParameters.Offset               = positionRequest.Offset;
+        positionerParameters.Size                 = dialogSize;
+        positionerParameters.ConstraintAdjustment = positionRequest.ConstraintAdjustment;
+        if (positionRequest.HorizontalPlacement == DialogHorizontalPlacement.Custom ||
+            positionRequest.VerticalPlacement == DialogVerticalPlacement.Custom)
+        {
+            if (positionRequest.PlacementCallback is null)
+                throw new InvalidOperationException(
+                    "CustomDialogPlacementCallback property must be set, when Placement=PlacementMode.Custom");
+            
+            var customPlacementParameters = new CustomDialogPlacement(
+                dialogSize,
+                positionRequest.Target)
+            {
+                HorizontalPlacement  = positionerParameters.HorizontalPlacement,
+                VerticalPlacement    = positionerParameters.VerticalPlacement,
+                ConstraintAdjustment = positionerParameters.ConstraintAdjustment,
+                Offset               = positionerParameters.Offset
+            };
+
+            positionRequest.PlacementCallback.Invoke(customPlacementParameters);
+            
+            positionerParameters.HorizontalPlacement  = customPlacementParameters.HorizontalPlacement;
+            positionerParameters.VerticalPlacement    = customPlacementParameters.VerticalPlacement;
+            positionerParameters.ConstraintAdjustment = customPlacementParameters.ConstraintAdjustment;
+            positionerParameters.Offset               = customPlacementParameters.Offset;
+        }
+        return positionerParameters;
+    }
 }
