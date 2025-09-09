@@ -39,10 +39,9 @@ public class ManagedDialogPositioner : IDialogPositioner
             new Rect(
                 parameters.AnchorRectangle.TopLeft * _dialog.Scaling,
                 parameters.AnchorRectangle.Size * _dialog.Scaling),
-            parameters.HorizontalPlacement,
-            parameters.VerticalPlacement,
-            parameters.ConstraintAdjustment,
-            parameters.Offset * _dialog.Scaling);
+            parameters.HorizontalOffset,
+            parameters.VerticalOffset,
+            parameters.ConstraintAdjustment);
            
         _dialog.MoveAndResize(
             rect.Position,
@@ -51,10 +50,9 @@ public class ManagedDialogPositioner : IDialogPositioner
     
     private Rect Calculate(Size translatedSize, 
             Rect anchorRect,
-            DialogHorizontalPlacement horizontalPlacement,
-            DialogVerticalPlacement verticalPlacement,
-            DialogPositionerConstraintAdjustment constraintAdjustment,
-            Point offset)
+            Dimension horizontalOffset,
+            Dimension verticalOffset,
+            DialogPositionerConstraintAdjustment constraintAdjustment)
         {
             var parentGeometry = _dialog.ParentClientAreaScreenGeometry;
             anchorRect = anchorRect.Translate(parentGeometry.TopLeft);
@@ -96,42 +94,8 @@ public class ManagedDialogPositioner : IDialogPositioner
 
             static bool IsValid(in Rect rc) => rc.Width > 0 && rc.Height > 0;
 
-            var offsetX = 0.0d;
-            var offsetY = 0.0d;
-
-            if (horizontalPlacement == DialogHorizontalPlacement.Left)
-            {
-                offsetX = 0;
-            }
-            else if (horizontalPlacement == DialogHorizontalPlacement.Right)
-            {
-                offsetX = bounds.Right - translatedSize.Width;
-            }
-            else if (horizontalPlacement == DialogHorizontalPlacement.Center)
-            {
-                offsetX = (bounds.Width - translatedSize.Width) / 2;
-            }
-            else
-            {
-                offsetX = offset.X;
-            }
-
-            if (verticalPlacement == DialogVerticalPlacement.Top)
-            {
-                offsetY = 0;
-            }
-            else if (verticalPlacement == DialogVerticalPlacement.Bottom)
-            {
-                offsetY = bounds.Bottom - translatedSize.Height;
-            }
-            else if (verticalPlacement == DialogVerticalPlacement.Center)
-            {
-                offsetY = (bounds.Height - translatedSize.Height) / 2;
-            }
-            else
-            {
-                offsetY = offset.Y;
-            }
+            var offsetX = horizontalOffset.Resolve(bounds.Width);
+            var offsetY = verticalOffset.Resolve(bounds.Height);
 
             Rect geo = new Rect(new Point(offsetX, offsetY), translatedSize);
 

@@ -12,6 +12,14 @@ public enum DimensionUnitType
 
 public struct Dimension: IEquatable<Dimension>
 {
+    public DimensionUnitType UnitType => _type;
+        
+    public bool IsPercentage => _type == DimensionUnitType.Percentage;
+        
+    public bool IsAbsolute => _type == DimensionUnitType.Pixel;
+        
+    public double Value => _value;
+    
     private readonly DimensionUnitType _type;
     private readonly double _value;
     
@@ -35,17 +43,131 @@ public struct Dimension: IEquatable<Dimension>
         _type  = type;
         _value = value;
     }
-        
-    public DimensionUnitType UnitType => _type;
-        
-    public bool IsAbsolute => _type == DimensionUnitType.Pixel;
-        
-    public bool IsPercentage => _type == DimensionUnitType.Percentage;
-        
-    public bool IsPixel => _type == DimensionUnitType.Pixel;
-        
-    public double Value => _value;
-        
+    
+    public double Resolve(double referenceSize)
+    {
+        return _type switch
+        {
+            DimensionUnitType.Percentage => _value * referenceSize / 100.0,
+            DimensionUnitType.Pixel => _value,
+            _ => _value
+        };
+    }
+    
+    private static void ValidateSameUnit(Dimension a, Dimension b)
+    {
+        if (a._type != b._type)
+        {
+            throw new InvalidOperationException("Cannot perform operation on dimensions with different units");
+        }
+    }
+
+    #region 自定义四则运算符
+
+    public static Dimension operator +(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return new Dimension(a._value + b._value, a._type);
+    }
+    
+    public static Dimension operator +(Dimension a, double b)
+    {
+        return new Dimension(a._value + b, a._type);
+    }
+    
+    public static Dimension operator +(double a, Dimension b)
+    {
+        return new Dimension(a + b._value, b._type);
+    }
+    
+    public static Dimension operator -(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return new Dimension(a._value - b._value, a._type);
+    }
+    
+    public static Dimension operator -(Dimension a, double b)
+    {
+        return new Dimension(a._value - b, a._type);
+    }
+    
+    public static Dimension operator -(double a, Dimension b)
+    {
+        return new Dimension(a - b._value, b._type);
+    }
+    
+    public static Dimension operator *(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return new Dimension(a._value * b._value, a._type);
+    }
+    
+    public static Dimension operator *(Dimension a, double b)
+    {
+        return new Dimension(a._value * b, a._type);
+    }
+    
+    public static Dimension operator *(double a, Dimension b)
+    {
+        return new Dimension(a * b._value, b._type);
+    }
+    
+    public static Dimension operator /(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        if (Math.Abs(b._value) < double.Epsilon)
+        {
+            throw new DivideByZeroException("Division by zero");
+        }
+        return new Dimension(a._value / b._value, a._type);
+    }
+    
+    public static Dimension operator /(Dimension a, double b)
+    {
+        if (Math.Abs(b) < double.Epsilon)
+        {
+            throw new DivideByZeroException("Division by zero");
+        }
+        return new Dimension(a._value / b, a._type);
+    }
+    
+    public static Dimension operator /(double a, Dimension b)
+    {
+        if (Math.Abs(b._value) < double.Epsilon)
+        {
+            throw new DivideByZeroException("Division by zero");
+        }
+        return new Dimension(a / b._value, b._type);
+    }
+    
+    public static Dimension operator %(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        if (Math.Abs(b._value) < double.Epsilon)
+        {
+            throw new DivideByZeroException("Modulo by zero");
+        }
+        return new Dimension(a._value % b._value, a._type);
+    }
+    
+    public static Dimension operator %(Dimension a, double b)
+    {
+        if (Math.Abs(b) < double.Epsilon)
+        {
+            throw new DivideByZeroException("Modulo by zero");
+        }
+        return new Dimension(a._value % b, a._type);
+    }
+    
+    public static Dimension operator +(Dimension a) => a;
+    
+    public static Dimension operator -(Dimension a)
+    {
+        return new Dimension(-a._value, a._type);
+    }
+
+    #endregion
+    
     public static bool operator ==(Dimension a, Dimension b)
     {
         return (MathUtils.AreClose(a._value, b._value) && a._type == b._type);
@@ -54,6 +176,30 @@ public struct Dimension: IEquatable<Dimension>
     public static bool operator !=(Dimension gl1, Dimension gl2)
     {
         return !(gl1 == gl2);
+    }
+    
+    public static bool operator <(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return a._value < b._value;
+    }
+    
+    public static bool operator >(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return a._value > b._value;
+    }
+    
+    public static bool operator <=(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return a._value <= b._value;
+    }
+    
+    public static bool operator >=(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return a._value >= b._value;
     }
     
     public override bool Equals(object? o)
@@ -78,7 +224,7 @@ public struct Dimension: IEquatable<Dimension>
         
     public override int GetHashCode()
     {
-        return _value.GetHashCode() ^ _type.GetHashCode();
+        return HashCode.Combine(_value, _type);
     }
         
     public override string ToString()
@@ -122,5 +268,22 @@ public struct Dimension: IEquatable<Dimension>
         }
 
         return result;
+    }
+    
+    public static Dimension Min(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return new Dimension(Math.Min(a._value, b._value), a._type);
+    }
+    public static Dimension Max(Dimension a, Dimension b)
+    {
+        ValidateSameUnit(a, b);
+        return new Dimension(Math.Max(a._value, b._value), a._type);
+    }
+    public static Dimension Clamp(Dimension value, Dimension min, Dimension max)
+    {
+        ValidateSameUnit(value, min);
+        ValidateSameUnit(value, max);
+        return new Dimension(Math.Clamp(value._value, min._value, max._value), value._type);
     }
 }

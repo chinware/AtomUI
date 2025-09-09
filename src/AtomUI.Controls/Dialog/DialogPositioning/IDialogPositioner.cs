@@ -5,11 +5,10 @@ namespace AtomUI.Controls.DialogPositioning;
 public record struct DialogPositionerParameters
 {
     public Rect AnchorRectangle { get; set; }
-    public DialogHorizontalPlacement HorizontalPlacement { get; set; }
-    public DialogVerticalPlacement VerticalPlacement { get; set; }
+    public Dimension HorizontalOffset { get; set; }
+    public Dimension VerticalOffset { get; set; }
     public Size Size { get; set; }
     public DialogPositionerConstraintAdjustment ConstraintAdjustment { get; set; }
-    public Point Offset { get; set; }
 }
 
 public interface IDialogPositioner
@@ -94,32 +93,27 @@ internal static class DialogPositionerExtensions
         Size dialogSize)
     {
         DialogPositionerParameters positionerParameters = default;
-        positionerParameters.Offset               = positionRequest.Offset;
+        positionerParameters.HorizontalOffset     = positionRequest.HorizontalOffset;
+        positionerParameters.VerticalOffset       = positionRequest.VerticalOffset;
         positionerParameters.Size                 = dialogSize;
         positionerParameters.ConstraintAdjustment = positionRequest.ConstraintAdjustment;
-        if (positionRequest.HorizontalPlacement == DialogHorizontalPlacement.Custom ||
-            positionRequest.VerticalPlacement == DialogVerticalPlacement.Custom)
+
+        if (positionRequest.PlacementCallback != null)
         {
-            if (positionRequest.PlacementCallback is null)
-                throw new InvalidOperationException(
-                    "CustomDialogPlacementCallback property must be set, when Placement=PlacementMode.Custom");
-            
             var customPlacementParameters = new CustomDialogPlacement(
                 dialogSize,
                 positionRequest.Target)
             {
-                HorizontalPlacement  = positionerParameters.HorizontalPlacement,
-                VerticalPlacement    = positionerParameters.VerticalPlacement,
+                HorizontalOffset     = positionerParameters.HorizontalOffset,
+                VerticalOffset       = positionerParameters.VerticalOffset,
                 ConstraintAdjustment = positionerParameters.ConstraintAdjustment,
-                Offset               = positionerParameters.Offset
             };
 
             positionRequest.PlacementCallback.Invoke(customPlacementParameters);
             
-            positionerParameters.HorizontalPlacement  = customPlacementParameters.HorizontalPlacement;
-            positionerParameters.VerticalPlacement    = customPlacementParameters.VerticalPlacement;
+            positionerParameters.HorizontalOffset     = customPlacementParameters.HorizontalOffset;
+            positionerParameters.VerticalOffset       = customPlacementParameters.VerticalOffset;
             positionerParameters.ConstraintAdjustment = customPlacementParameters.ConstraintAdjustment;
-            positionerParameters.Offset               = customPlacementParameters.Offset;
         }
         return positionerParameters;
     }

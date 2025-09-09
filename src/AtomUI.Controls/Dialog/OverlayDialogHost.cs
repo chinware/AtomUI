@@ -34,12 +34,6 @@ public sealed class OverlayDialogHost : ContentControl,
     public static readonly StyledProperty<bool> IsModalProperty =
         Dialog.IsModalProperty.AddOwner<OverlayDialogHost>();
     
-    public static readonly StyledProperty<DialogHorizontalPlacement> HorizontalPlacementProperty =
-        Dialog.HorizontalPlacementProperty.AddOwner<OverlayDialogHost>();
-    
-    public static readonly StyledProperty<DialogVerticalPlacement> VerticalPlacementProperty =
-        Dialog.VerticalPlacementProperty.AddOwner<OverlayDialogHost>();
-    
     public static readonly StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<OverlayDialogHost, Transform?>(nameof (Transform));
     
@@ -74,18 +68,6 @@ public sealed class OverlayDialogHost : ContentControl,
     {
         get => GetValue(IsModalProperty);
         set => SetValue(IsModalProperty, value);
-    }
-    
-    public DialogHorizontalPlacement HorizontalPlacement
-    {
-        get => GetValue(HorizontalPlacementProperty);
-        set => SetValue(HorizontalPlacementProperty, value);
-    }
-    
-    public DialogVerticalPlacement VerticalPlacement
-    {
-        get => GetValue(VerticalPlacementProperty);
-        set => SetValue(VerticalPlacementProperty, value);
     }
     
     public Transform? Transform

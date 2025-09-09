@@ -36,7 +36,7 @@ public class SkeletonLine : AbstractSkeleton
     protected override Size MeasureOverride(Size availableSize)
     {
         var actualWidth = availableSize.Width;
-        if (LineWidth.IsPixel)
+        if (LineWidth.IsAbsolute)
         {
             actualWidth = LineWidth.Value;
         }
@@ -48,7 +48,7 @@ public class SkeletonLine : AbstractSkeleton
     {
         var size        = base.ArrangeOverride(finalSize);
         var actualWidth = finalSize.Width;
-        if (!LineWidth.IsPixel)
+        if (!LineWidth.IsAbsolute)
         {
             if (!double.IsInfinity(actualWidth))
             {

@@ -58,12 +58,6 @@ public class Dialog : Control,
     public static readonly StyledProperty<bool> IsDragMovableProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof (IsDragMovable), false);
     
-    public static readonly StyledProperty<DialogHorizontalPlacement> HorizontalPlacementProperty =
-        AvaloniaProperty.Register<Dialog, DialogHorizontalPlacement>(nameof(HorizontalPlacement));
-    
-    public static readonly StyledProperty<DialogVerticalPlacement> VerticalPlacementProperty =
-        AvaloniaProperty.Register<Dialog, DialogVerticalPlacement>(nameof(VerticalPlacement));
-    
     public static readonly StyledProperty<Rect?> PlacementRectProperty =
         AvaloniaProperty.Register<Dialog, Rect?>(nameof(PlacementRect));
     
@@ -82,11 +76,11 @@ public class Dialog : Control,
     public static readonly StyledProperty<bool> IsLightDismissEnabledProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsLightDismissEnabled), false);
     
-    public static readonly StyledProperty<double> HorizontalOffsetProperty =
-        AvaloniaProperty.Register<Dialog, double>(nameof(HorizontalOffset));
+    public static readonly StyledProperty<Dimension> HorizontalOffsetProperty =
+        AvaloniaProperty.Register<Dialog, Dimension>(nameof(HorizontalOffset));
     
-    public static readonly StyledProperty<double> VerticalOffsetProperty =
-        AvaloniaProperty.Register<Dialog, double>(nameof(VerticalOffset));
+    public static readonly StyledProperty<Dimension> VerticalOffsetProperty =
+        AvaloniaProperty.Register<Dialog, Dimension>(nameof(VerticalOffset));
     
     public static readonly StyledProperty<bool> TopmostProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(Topmost));
@@ -163,18 +157,6 @@ public class Dialog : Control,
         set => SetValue(IsDragMovableProperty, value);
     }
     
-    public DialogHorizontalPlacement HorizontalPlacement
-    {
-        get => GetValue(HorizontalPlacementProperty);
-        set => SetValue(HorizontalPlacementProperty, value);
-    }
-    
-    public DialogVerticalPlacement VerticalPlacement
-    {
-        get => GetValue(VerticalPlacementProperty);
-        set => SetValue(VerticalPlacementProperty, value);
-    }
-    
     public Rect? PlacementRect
     {
         get => GetValue(PlacementRectProperty);
@@ -206,13 +188,13 @@ public class Dialog : Control,
         set => SetValue(OverlayInputPassThroughElementProperty, value);
     }
     
-    public double HorizontalOffset
+    public Dimension HorizontalOffset
     {
         get => GetValue(HorizontalOffsetProperty);
         set => SetValue(HorizontalOffsetProperty, value);
     }
     
-    public double VerticalOffset
+    public Dimension VerticalOffset
     {
         get => GetValue(VerticalOffsetProperty);
         set => SetValue(VerticalOffsetProperty, value);
@@ -749,9 +731,8 @@ public class Dialog : Control,
     {
         dialogHost.ConfigurePosition(new DialogPositionRequest(
             placementTarget,
-            HorizontalPlacement,
-            VerticalPlacement,
-            new Point(HorizontalOffset, VerticalOffset),
+            HorizontalOffset,
+            VerticalOffset,
             PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
             CustomDialogPlacementCallback));
     }

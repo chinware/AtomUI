@@ -4,12 +4,11 @@ namespace AtomUI.Controls.DialogPositioning;
 
 public record CustomDialogPlacement
 {
-    public DialogHorizontalPlacement HorizontalPlacement { get; set; } =  DialogHorizontalPlacement.Center;
-    public DialogVerticalPlacement VerticalPlacement { get; set; } =  DialogVerticalPlacement.Center;
+    public Dimension HorizontalOffset { get; set; }
+    public Dimension VerticalOffset { get; set; }
     
     public Size DialogSize { get; }
     public Visual Target { get; }
-    public Point Offset { get; set; }
     public DialogPositionerConstraintAdjustment ConstraintAdjustment { get; set; }
     public Rect AnchorRectangle { get; set; }
     
