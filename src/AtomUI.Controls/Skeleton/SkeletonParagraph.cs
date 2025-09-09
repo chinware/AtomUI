@@ -12,11 +12,11 @@ public class SkeletonParagraph : AbstractSkeleton, IControlSharedTokenResourcesH
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SkeletonWidth> LastLineWidthProperty =
-        AvaloniaProperty.Register<SkeletonParagraph, SkeletonWidth>(nameof(LastLineWidth), new SkeletonWidth(1.0, SkeletonUnitType.Percentage));
+    public static readonly StyledProperty<Dimension> LastLineWidthProperty =
+        AvaloniaProperty.Register<SkeletonParagraph, Dimension>(nameof(LastLineWidth), new Dimension(1.0, DimensionUnitType.Percentage));
     
-    public static readonly StyledProperty<List<SkeletonWidth>?> LineWidthsProperty =
-        AvaloniaProperty.Register<SkeletonParagraph, List<SkeletonWidth>?>(nameof(LineWidths));
+    public static readonly StyledProperty<List<Dimension>?> LineWidthsProperty =
+        AvaloniaProperty.Register<SkeletonParagraph, List<Dimension>?>(nameof(LineWidths));
     
     public static readonly StyledProperty<int> RowsProperty =
         AvaloniaProperty.Register<SkeletonParagraph, int>(nameof(Rows), 2, validate: i => i >= 1);
@@ -24,13 +24,13 @@ public class SkeletonParagraph : AbstractSkeleton, IControlSharedTokenResourcesH
     public static readonly StyledProperty<bool> IsRoundProperty =
         SkeletonLine.IsRoundProperty.AddOwner<SkeletonParagraph>();
 
-    public SkeletonWidth LastLineWidth
+    public Dimension LastLineWidth
     {
         get => GetValue(LastLineWidthProperty);
         set => SetValue(LastLineWidthProperty, value);
     }
     
-    public List<SkeletonWidth>? LineWidths
+    public List<Dimension>? LineWidths
     {
         get => GetValue(LineWidthsProperty);
         set => SetValue(LineWidthsProperty, value);

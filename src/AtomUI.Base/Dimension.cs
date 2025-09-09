@@ -2,32 +2,32 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using AtomUI.Utils;
 
-namespace AtomUI.Controls;
+namespace AtomUI;
 
-public enum SkeletonUnitType
+public enum DimensionUnitType
 {
     Percentage = 0,
     Pixel = 1,
 }
 
-public struct SkeletonWidth : IEquatable<SkeletonWidth>
+public struct Dimension: IEquatable<Dimension>
 {
-    private readonly SkeletonUnitType _type;
+    private readonly DimensionUnitType _type;
     private readonly double _value;
     
-    public SkeletonWidth(double value)
-        : this(value, SkeletonUnitType.Pixel)
+    public Dimension(double value)
+        : this(value, DimensionUnitType.Pixel)
     {
     }
       
-    public SkeletonWidth(double value, SkeletonUnitType type)
+    public Dimension(double value, DimensionUnitType type)
     {
         if (value < 0 || double.IsNaN(value) || double.IsInfinity(value))
         {
             throw new ArgumentException("Invalid value", nameof(value));
         }
 
-        if (type < SkeletonUnitType.Percentage || type > SkeletonUnitType.Pixel)
+        if (type < DimensionUnitType.Percentage || type > DimensionUnitType.Pixel)
         {
             throw new ArgumentException("Invalid value", nameof(type));
         }
@@ -36,22 +36,22 @@ public struct SkeletonWidth : IEquatable<SkeletonWidth>
         _value = value;
     }
         
-    public SkeletonUnitType SkeletonUnitType => _type;
+    public DimensionUnitType UnitType => _type;
         
-    public bool IsAbsolute => _type == SkeletonUnitType.Pixel;
+    public bool IsAbsolute => _type == DimensionUnitType.Pixel;
         
-    public bool IsPercentage => _type == SkeletonUnitType.Percentage;
+    public bool IsPercentage => _type == DimensionUnitType.Percentage;
         
-    public bool IsPixel => _type == SkeletonUnitType.Pixel;
+    public bool IsPixel => _type == DimensionUnitType.Pixel;
         
     public double Value => _value;
         
-    public static bool operator ==(SkeletonWidth a, SkeletonWidth b)
+    public static bool operator ==(Dimension a, Dimension b)
     {
         return (MathUtils.AreClose(a._value, b._value) && a._type == b._type);
     }
         
-    public static bool operator !=(SkeletonWidth gl1, SkeletonWidth gl2)
+    public static bool operator !=(Dimension gl1, Dimension gl2)
     {
         return !(gl1 == gl2);
     }
@@ -63,15 +63,15 @@ public struct SkeletonWidth : IEquatable<SkeletonWidth>
             return false;
         }
 
-        if (!(o is SkeletonWidth))
+        if (!(o is Dimension))
         {
             return false;
         }
 
-        return this == (SkeletonWidth)o;
+        return this == (Dimension)o;
     }
         
-    public bool Equals(SkeletonWidth gridLength)
+    public bool Equals(Dimension gridLength)
     {
         return this == gridLength;
     }
@@ -91,7 +91,7 @@ public struct SkeletonWidth : IEquatable<SkeletonWidth>
         return $"{vstr}px";
     }
         
-    public static SkeletonWidth Parse(string s)
+    public static Dimension Parse(string s)
     {
         s = s.ToUpperInvariant();
         var match = Regex.Match(s.Trim(), @"^([+-]?\d*\.?\d+)\s*([a-zA-Z%]+)?$", RegexOptions.IgnoreCase);
@@ -100,19 +100,19 @@ public struct SkeletonWidth : IEquatable<SkeletonWidth>
             throw new FormatException($"Invalid width format: '{s}'");
         }
 
-        SkeletonUnitType unit = SkeletonUnitType.Pixel;
+        DimensionUnitType unit = DimensionUnitType.Pixel;
         if (match.Groups[2].Value == "%")
         {
-            unit = SkeletonUnitType.Percentage;
+            unit = DimensionUnitType.Percentage;
         }
   
         var value = double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
-        return new SkeletonWidth(value, unit);
+        return new Dimension(value, unit);
     }
 
-    public static IEnumerable<SkeletonWidth> ParseWidths(string s)
+    public static IEnumerable<Dimension> ParseWidths(string s)
     {
-        var result = new List<SkeletonWidth>();
+        var result = new List<Dimension>();
         using (var tokenizer = new SpanStringTokenizer(s, CultureInfo.InvariantCulture))
         {
             while (tokenizer.TryReadString(out var item))

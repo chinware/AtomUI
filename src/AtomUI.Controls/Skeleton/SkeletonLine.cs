@@ -9,13 +9,13 @@ public class SkeletonLine : AbstractSkeleton
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SkeletonWidth> LineWidthProperty =
-        AvaloniaProperty.Register<SkeletonLine, SkeletonWidth>(nameof(LineWidth), new SkeletonWidth(100.0, SkeletonUnitType.Percentage));
+    public static readonly StyledProperty<Dimension> LineWidthProperty =
+        AvaloniaProperty.Register<SkeletonLine, Dimension>(nameof(LineWidth), new Dimension(100.0, DimensionUnitType.Percentage));
     
     public static readonly StyledProperty<bool> IsRoundProperty =
         AvaloniaProperty.Register<SkeletonLine, bool>(nameof(IsRound));
     
-    public SkeletonWidth LineWidth
+    public Dimension LineWidth
     {
         get => GetValue(LineWidthProperty);
         set => SetValue(LineWidthProperty, value);

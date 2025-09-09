@@ -30,17 +30,17 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<bool> IsRoundProperty =
         SkeletonLine.IsRoundProperty.AddOwner<Skeleton>();
     
-    public static readonly StyledProperty<SkeletonWidth> TitleWidthProperty =
-        AvaloniaProperty.Register<Skeleton, SkeletonWidth>(nameof(TitleWidth), new SkeletonWidth(50, SkeletonUnitType.Percentage));
+    public static readonly StyledProperty<Dimension> TitleWidthProperty =
+        AvaloniaProperty.Register<Skeleton, Dimension>(nameof(TitleWidth), new Dimension(50, DimensionUnitType.Percentage));
     
     public static readonly StyledProperty<int> ParagraphRowsProperty =
         AvaloniaProperty.Register<Skeleton, int>(nameof(ParagraphRows), 2, validate: i => i >= 1);
     
-    public static readonly StyledProperty<SkeletonWidth> ParagraphLastLineWidthProperty =
-        AvaloniaProperty.Register<Skeleton, SkeletonWidth>(nameof(ParagraphLastLineWidth), new SkeletonWidth(61.0, SkeletonUnitType.Percentage));
+    public static readonly StyledProperty<Dimension> ParagraphLastLineWidthProperty =
+        AvaloniaProperty.Register<Skeleton, Dimension>(nameof(ParagraphLastLineWidth), new Dimension(61.0, DimensionUnitType.Percentage));
     
-    public static readonly StyledProperty<List<SkeletonWidth>?> ParagraphLineWidthsProperty =
-        AvaloniaProperty.Register<Skeleton, List<SkeletonWidth>?>(nameof(ParagraphLineWidths));
+    public static readonly StyledProperty<List<Dimension>?> ParagraphLineWidthsProperty =
+        AvaloniaProperty.Register<Skeleton, List<Dimension>?>(nameof(ParagraphLineWidths));
     
     public static readonly StyledProperty<AvatarShape> AvatarShapeProperty =
         AvaloniaProperty.Register<Skeleton, AvatarShape>(nameof(AvatarShape), AvatarShape.Circle);
@@ -87,7 +87,7 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
         set => SetValue(IsRoundProperty, value);
     }
     
-    public SkeletonWidth TitleWidth
+    public Dimension TitleWidth
     {
         get => GetValue(TitleWidthProperty);
         set => SetValue(TitleWidthProperty, value);
@@ -99,13 +99,13 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
         set => SetValue(ParagraphRowsProperty, value);
     }
     
-    public SkeletonWidth ParagraphLastLineWidth
+    public Dimension ParagraphLastLineWidth
     {
         get => GetValue(ParagraphLastLineWidthProperty);
         set => SetValue(ParagraphLastLineWidthProperty, value);
     }
     
-    public List<SkeletonWidth>? ParagraphLineWidths
+    public List<Dimension>? ParagraphLineWidths
     {
         get => GetValue(ParagraphLineWidthsProperty);
         set => SetValue(ParagraphLineWidthsProperty, value);

@@ -15,7 +15,7 @@ public class SkeletonTitle : SkeletonLine, IControlSharedTokenResourcesHost
     
     static SkeletonTitle()
     {
-        LineWidthProperty.OverrideDefaultValue<SkeletonTitle>(new SkeletonWidth(50, SkeletonUnitType.Percentage));
+        LineWidthProperty.OverrideDefaultValue<SkeletonTitle>(new Dimension(50, DimensionUnitType.Percentage));
     }
     
     public SkeletonTitle()
