@@ -19,9 +19,14 @@
                                                       IsCloseButtonEnabled="{TemplateBinding IsClosable}"
                                                       IsMaximizeButtonEnabled="{TemplateBinding IsMaximizable}" 
                                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
-                            <ContentPresenter Name="ContentPresenter"
-                                              Content="{TemplateBinding Content}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            <Border Name="ContentFrame">
+                                <ContentPresenter Name="ContentPresenter"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                                  HorizontalContentAlignment="Stretch"
+                                                  VerticalContentAlignment="Stretch"
+                                                  ClipToBounds="True"/>
+                            </Border>
                         </DockPanel>
                     </Border>
                     <atom:OverlayDialogResizer Name="{x:Static atom:OverlayDialogThemeConstants.ResizerPart}">
@@ -44,7 +49,7 @@
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
 
-        <Style Selector="^ /template/ atom|OverlayDialogHeader#Header">
+        <Style Selector="^ /template/ atom|OverlayDialogHeader#PART_Header">
             <Setter Property="TitleFontSize" Value="{DynamicResource {x:Static atom:DialogTokenKey.HeaderFontSize}}" />
             <Setter Property="TitleFontWeight"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
@@ -56,7 +61,7 @@
             <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadows}}" />
         </Style>
 
-        <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+        <Style Selector="^ /template/ Border#ContentFrame">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
         </Style>
 

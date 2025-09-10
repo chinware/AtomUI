@@ -318,6 +318,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey HeaderMarginBottom = new TokenResourceKey("Dialog.HeaderMarginBottom");
         public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Dialog.HeaderPadding");
         public static readonly TokenResourceKey LogoSize = new TokenResourceKey("Dialog.LogoSize");
+        public static readonly TokenResourceKey MinHeight = new TokenResourceKey("Dialog.MinHeight");
+        public static readonly TokenResourceKey MinWidth = new TokenResourceKey("Dialog.MinWidth");
     }
 
     public static class DrawerTokenKey

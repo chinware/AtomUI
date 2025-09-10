@@ -30,25 +30,21 @@
                     <Border Tag="{x:Static atom:ResizeHandleLocation.NorthWest}"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Cursor="TopLeftCorner"
                             Width="8"
                             Height="8" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.NorthEast}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
-                            Cursor="TopRightCorner"
                             Width="8"
                             Height="8" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.SouthWest}"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Cursor="BottomLeftCorner"
                             Width="8"
                             Height="8" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.SouthEast}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
-                            Cursor="BottomRightCorner"
                             Width="8"
                             Height="8" />
                 </Panel>

@@ -526,6 +526,8 @@ public class Dialog : Control,
         _tokenBindingDisposables?.Dispose();
         _tokenBindingDisposables = new CompositeDisposable();
         _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, IsMotionEnabledProperty, SharedTokenKey.EnableMotion));
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MinHeightProperty, DialogTokenKey.MinHeight));
+        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MinWidthProperty, DialogTokenKey.MinWidth));
         if (_isOpenRequested)
         {
             Open();

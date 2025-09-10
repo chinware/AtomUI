@@ -58,6 +58,16 @@ internal class DialogToken : AbstractControlDesignToken
     /// </summary>
     public double CloseBtnSize { get; set; }
     
+    /// <summary>
+    /// 默认最小高度
+    /// </summary>
+    public double MinHeight { get; set; }
+    
+    /// <summary>
+    /// 默认最小宽度
+    /// </summary>
+    public double MinWidth { get; set; }
+    
     public DialogToken()
         : base(ID)
     {
@@ -66,14 +76,19 @@ internal class DialogToken : AbstractControlDesignToken
     public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        HeaderBg           = SharedToken.ColorBgElevated;
-        HeaderFontSize     = SharedToken.FontSizeHeading5;
-        ContentBg          = SharedToken.ColorBgElevated;
-        HeaderColor        = SharedToken.ColorTextHeading;
-        ContentPadding     = new Thickness(SharedToken.PaddingContentHorizontalLG, 0, SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingMD);
-        HeaderPadding      = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPadding, SharedToken.PaddingContentHorizontal, 0);
+        HeaderBg       = SharedToken.ColorBgElevated;
+        HeaderFontSize = SharedToken.FontSizeHeading5;
+        ContentBg      = SharedToken.ColorBgElevated;
+        HeaderColor    = SharedToken.ColorTextHeading;
+        ContentPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, 0,
+            SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingMD);
+        HeaderPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingSM,
+            SharedToken.PaddingContentHorizontalSM, 0);
         HeaderMarginBottom = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
         LogoSize           = SharedToken.SizeUnit * 4;
-        CloseBtnSize       = SharedToken.ControlHeight;
+        MinHeight = SharedToken.ControlHeightLG + HeaderPadding.Top + HeaderPadding.Bottom +
+                    SharedToken.UniformlyMarginXS;
+        MinWidth     = 200;
+        CloseBtnSize = SharedToken.ControlHeight;
     }
 }
