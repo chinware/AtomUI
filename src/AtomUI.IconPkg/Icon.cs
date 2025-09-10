@@ -63,8 +63,8 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
     public static readonly StyledProperty<IconMode> IconModeProperty =
         AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
 
     public IconInfo? IconInfo
     {

@@ -251,7 +251,7 @@ public sealed class OverlayDialogHost : ContentControl,
     void IDialogHost.ConfigurePosition(DialogPositionRequest positionRequest)
     {
         _dialogPositionRequest = positionRequest;
-        _needsUpdate          = true;
+        _needsUpdate           = true;
         UpdatePosition();
     }
 
@@ -353,19 +353,29 @@ public sealed class OverlayDialogHost : ContentControl,
         }
         _header = e.NameScope.Find<OverlayDialogHeader>(OverlayDialogThemeConstants.HeaderPart);
         ConfigureHeaderHandlers();
+        if (_header != null)
+        {
+            _header.SetCurrentValue(OverlayDialogHeader.IsDialogMaximizedProperty, WindowState == OverlayDialogState.Maximized);
+        }
     }
 
     private void ConfigureHeaderHandlers()
     {
         if (_header != null)
         {
-            _header.DoubleTapped    += HandleHeaderDoubleClicked;
+            _header.DoubleTapped     += HandleHeaderDoubleClicked;
+            _header.MaximizeRequest  += HandleHeaderMaximizeRequest;
+            _header.NormalizeRequest += HandleHeaderNormalizeRequest;
+            _header.CloseRequest     += HandleHeaderCloseRequest;
             // _header.PointerPressed  += HandleHeaderPointerPressed;
             // _header.PointerReleased += HandleHeaderPointerReleased;
             // _header.PointerMoved    += HandleHeaderPointerMoved;
             _disposeActions.Add(() =>
             {
-                _header.DoubleTapped    -= HandleHeaderDoubleClicked;
+                _header.DoubleTapped     -= HandleHeaderDoubleClicked;
+                _header.MaximizeRequest  -= HandleHeaderMaximizeRequest;
+                _header.NormalizeRequest -= HandleHeaderNormalizeRequest;
+                _header.CloseRequest     -= HandleHeaderCloseRequest;
                 // _header.PointerPressed  -= HandleHeaderPointerPressed;
                 // _header.PointerReleased -= HandleHeaderPointerReleased;
                 // _header.PointerMoved    -= HandleHeaderPointerMoved;
@@ -381,7 +391,24 @@ public sealed class OverlayDialogHost : ContentControl,
         }
 
         WindowState = WindowState == OverlayDialogState.Normal ? OverlayDialogState.Maximized : OverlayDialogState.Normal;
-        Console.WriteLine(WindowState);
+    }
+    
+    private void HandleHeaderNormalizeRequest(object? sender, EventArgs e)
+    {
+        SetCurrentValue(WindowStateProperty, OverlayDialogState.Normal);
+    }
+
+    private void HandleHeaderMaximizeRequest(object? sender, EventArgs e)
+    {
+        SetCurrentValue(WindowStateProperty, OverlayDialogState.Maximized);
+    }
+    
+    private void HandleHeaderCloseRequest(object? sender, EventArgs e)
+    {
+        if (Parent is Dialog dialog)
+        {
+            dialog.Close();
+        }
     }
 
     private void HandleWindowStateChanged(OverlayDialogState oldState, OverlayDialogState newState)
@@ -395,6 +422,15 @@ public sealed class OverlayDialogHost : ContentControl,
         {
             Canvas.SetLeft(this, 0);
             Canvas.SetTop(this, 0);
+        }
+        else if (newState == OverlayDialogState.Normal)
+        {
+            Canvas.SetLeft(this, _originPosition.X);
+            Canvas.SetTop(this, _originPosition.Y);
+        }
+        if (_header != null)
+        {
+            _header.SetCurrentValue(OverlayDialogHeader.IsDialogMaximizedProperty, WindowState == OverlayDialogState.Maximized);
         }
     }
 }

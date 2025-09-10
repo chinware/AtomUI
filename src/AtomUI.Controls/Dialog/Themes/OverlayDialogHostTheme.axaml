@@ -17,7 +17,8 @@
                                                       Title="{TemplateBinding Title}"
                                                       Logo="{TemplateBinding TitleIcon}"
                                                       IsCloseButtonEnabled="{TemplateBinding IsClosable}"
-                                                      IsMaximizeButtonEnabled="{TemplateBinding IsMaximizable}" />
+                                                      IsMaximizeButtonEnabled="{TemplateBinding IsMaximizable}" 
+                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                             <ContentPresenter Name="ContentPresenter"
                                               Content="{TemplateBinding Content}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
@@ -40,6 +41,7 @@
         </Setter>
 
         <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
 
         <Style Selector="^ /template/ atom|OverlayDialogHeader#Header">

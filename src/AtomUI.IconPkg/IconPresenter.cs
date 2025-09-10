@@ -1,5 +1,7 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -13,7 +15,7 @@ namespace AtomUI.IconPkg;
 /// Base class for controls which decorate a icon control.
 /// </summary>
 [PseudoClasses(StdPseudoClass.Empty)]
-public class IconPresenter : Control
+public class IconPresenter : Control, IMotionAwareControl
 {
     #region 公共属性定义
     
@@ -49,6 +51,9 @@ public class IconPresenter : Control
     
     public static readonly StyledProperty<IconMode> IconModeProperty =
         Icon.IconModeProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconPresenter>();
     
     [Content]
     public Icon? Icon
@@ -116,8 +121,16 @@ public class IconPresenter : Control
         get => GetValue(IconModeProperty);
         set => SetValue(IconModeProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
 
     #endregion
+    
+    Control IMotionAwareControl.PropertyBindTarget => this;
     
     private CompositeDisposable? _bindingDisposables;
     
@@ -133,6 +146,7 @@ public class IconPresenter : Control
     public IconPresenter()
     {
         UpdatePseudoClasses();
+        this.ConfigureMotionBindingStyle();
     }
 
     /// <inheritdoc/>
@@ -217,6 +231,7 @@ public class IconPresenter : Control
         _bindingDisposables.Add(BindUtils.RelayBind(this, IconHeightProperty, icon, HeightProperty));
         _bindingDisposables.Add(BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty));
         _bindingDisposables.Add(BindUtils.RelayBind(this, IconModeProperty, icon, IconModeProperty));
+        _bindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, icon, IsMotionEnabledProperty));
         if (icon.ThemeType != IconThemeType.TwoTone)
         {
             _bindingDisposables.Add(BindUtils.RelayBind(this, NormalFilledBrushProperty, icon, Icon.NormalFilledBrushProperty));

@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using Avalonia;
@@ -127,6 +128,14 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
     }
 
     #endregion
+
+    #region 内部事件定义
+
+    internal event EventHandler? CloseRequest;
+    internal event EventHandler? MaximizeRequest;
+    internal event EventHandler? NormalizeRequest;
+    
+    #endregion
     
     private CompositeDisposable? _disposables;
     private DialogCaptionButton? _maximizeButton;
@@ -153,7 +162,44 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
             };
         }
     }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _closeButton    = e.NameScope.Find<DialogCaptionButton>(OverlayDialogHeaderThemeConstants.CloseButtonPart);
+        _maximizeButton = e.NameScope.Find<DialogCaptionButton>(OverlayDialogHeaderThemeConstants.MaximizeButtonPart);
+        
+        if (_closeButton != null)
+        {
+            _closeButton.Click += HandleCloseButtonClicked;
+        }
+
+        if (_maximizeButton != null)
+        {
+            _maximizeButton.Click += HandleMaximizeButtonClicked;
+        }
+    }
     
+    private void HandleMaximizeButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        if (sender is DialogCaptionButton captionButton)
+        {
+            if (!captionButton.IsChecked)
+            {
+                MaximizeRequest?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                NormalizeRequest?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+    
+    private void HandleCloseButtonClicked(object? sender, RoutedEventArgs e)
+    {
+        CloseRequest?.Invoke(this, EventArgs.Empty);
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);

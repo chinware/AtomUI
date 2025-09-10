@@ -18,7 +18,8 @@
                             IconHeight="{TemplateBinding IconHeight}"
                             IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
+                            VerticalAlignment="Center"
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                         <atom:IconPresenter
                             Name="CheckedIconPresenter"
                             Icon="{TemplateBinding CheckedIcon}"
@@ -26,7 +27,8 @@
                             IconWidth="{TemplateBinding IconWidth}"
                             IconHeight="{TemplateBinding IconHeight}"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
+                            VerticalAlignment="Center" 
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     </Panel>
                 </Border>
             </ControlTemplate>
@@ -45,6 +47,9 @@
         <Setter Property="Background" Value="Transparent" />
         <Style Selector="^:pointerover">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconMode" Value="Active" />
+            </Style>
         </Style>
         
         <Style Selector="^:pressed">
