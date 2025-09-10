@@ -9,6 +9,11 @@ public class DialogLayer : Canvas
     protected override bool BypassFlowDirectionPolicies => true;
     
     public Size AvailableSize { get; private set; }
+
+    static DialogLayer()
+    {
+        ClipToBoundsProperty.OverrideDefaultValue<DialogLayer>(true);
+    }
     
     public static DialogLayer? GetDialogLayer(Visual visual)
     {

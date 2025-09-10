@@ -84,17 +84,17 @@ public class Dialog : Control,
     public static readonly StyledProperty<bool> IsLightDismissEnabledProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsLightDismissEnabled), false);
     
-    public static readonly StyledProperty<DialogHorizontalAnchor> HorizontalAnchorProperty =
-        AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalAnchor), DialogHorizontalAnchor.Center);
+    public static readonly StyledProperty<DialogHorizontalAnchor> HorizontalStartupLocationProperty =
+        AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalStartupLocation), DialogHorizontalAnchor.Center);
     
-    public static readonly StyledProperty<DialogVerticalAnchor> VerticalAnchorProperty =
-        AvaloniaProperty.Register<Dialog, DialogVerticalAnchor>(nameof(VerticalAnchor), DialogVerticalAnchor.Center);
+    public static readonly StyledProperty<DialogVerticalAnchor> VerticalStartupLocationProperty =
+        AvaloniaProperty.Register<Dialog, DialogVerticalAnchor>(nameof(VerticalStartupLocation), DialogVerticalAnchor.Center);
     
-    public static readonly StyledProperty<Dimension> HorizontalOffsetProperty =
-        AvaloniaProperty.Register<Dialog, Dimension>(nameof(HorizontalOffset), new Dimension(0.5, DimensionUnitType.Percentage));
+    public static readonly StyledProperty<Dimension?> HorizontalOffsetProperty =
+        AvaloniaProperty.Register<Dialog, Dimension?>(nameof(HorizontalOffset));
     
-    public static readonly StyledProperty<Dimension> VerticalOffsetProperty =
-        AvaloniaProperty.Register<Dialog, Dimension>(nameof(VerticalOffset), new Dimension(0.3, DimensionUnitType.Percentage));
+    public static readonly StyledProperty<Dimension?> VerticalOffsetProperty =
+        AvaloniaProperty.Register<Dialog, Dimension?>(nameof(VerticalOffset));
     
     public static readonly StyledProperty<bool> TopmostProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(Topmost));
@@ -214,25 +214,25 @@ public class Dialog : Control,
         set => SetValue(OverlayInputPassThroughElementProperty, value);
     }
     
-    public DialogHorizontalAnchor HorizontalAnchor
+    public DialogHorizontalAnchor HorizontalStartupLocation
     {
-        get => GetValue(HorizontalAnchorProperty);
-        set => SetValue(HorizontalAnchorProperty, value);
+        get => GetValue(HorizontalStartupLocationProperty);
+        set => SetValue(HorizontalStartupLocationProperty, value);
     }
     
-    public DialogVerticalAnchor VerticalAnchor
+    public DialogVerticalAnchor VerticalStartupLocation
     {
-        get => GetValue(VerticalAnchorProperty);
-        set => SetValue(VerticalAnchorProperty, value);
+        get => GetValue(VerticalStartupLocationProperty);
+        set => SetValue(VerticalStartupLocationProperty, value);
     }
     
-    public Dimension HorizontalOffset
+    public Dimension? HorizontalOffset
     {
         get => GetValue(HorizontalOffsetProperty);
         set => SetValue(HorizontalOffsetProperty, value);
     }
     
-    public Dimension VerticalOffset
+    public Dimension? VerticalOffset
     {
         get => GetValue(VerticalOffsetProperty);
         set => SetValue(VerticalOffsetProperty, value);
@@ -353,7 +353,7 @@ public class Dialog : Control,
             var dialogLayer = DialogLayer.GetDialogLayer(placementTarget);
             if (dialogLayer != null)
             {
-                var overlayDialogHost = new OverlayDialogHost(dialogLayer);
+                var overlayDialogHost = new OverlayDialogHost(dialogLayer, this);
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleProperty, overlayDialogHost, OverlayDialogHost.TitleProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleIconProperty, overlayDialogHost, OverlayDialogHost.TitleIconProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, overlayDialogHost, OverlayDialogHost.IsMotionEnabledProperty));
@@ -777,10 +777,8 @@ public class Dialog : Control,
     {
         dialogHost.ConfigurePosition(new DialogPositionRequest(
             placementTarget,
-            HorizontalAnchor,
-            VerticalAnchor,
-            HorizontalOffset,
-            VerticalOffset,
+            HorizontalOffset ?? new Dimension(0),
+            VerticalOffset ?? new Dimension(0),
             PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
             CustomDialogPlacementCallback));
     }
@@ -835,6 +833,56 @@ public class Dialog : Control,
     private void TargetDetached(object? sender, VisualTreeAttachmentEventArgs e)
     {
         Close();
+    }
+
+    internal void NotifyDialogHostMeasured(Size size)
+    {
+        if (DialogHostType == DialogHostType.Overlay)
+        {
+            var placementTarget = PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
+            if (placementTarget == null)
+            {
+                return;
+            }
+            var dialogLayer     = DialogLayer.GetDialogLayer(placementTarget);
+            if (dialogLayer == null)
+            {
+                return;
+            }
+        
+            var layerSize = dialogLayer.DesiredSize;
+            if (HorizontalOffset == null && HorizontalStartupLocation != DialogHorizontalAnchor.Custom)
+            {
+                if (HorizontalStartupLocation == DialogHorizontalAnchor.Left)
+                {
+                    SetCurrentValue(HorizontalOffsetProperty, new Dimension(0));
+                }
+                else if (HorizontalStartupLocation == DialogHorizontalAnchor.Right)
+                {
+                    SetCurrentValue(HorizontalOffsetProperty, new Dimension(layerSize.Width - size.Width));
+                }
+                else if (HorizontalStartupLocation == DialogHorizontalAnchor.Center)
+                {
+                    SetCurrentValue(HorizontalOffsetProperty, new Dimension((layerSize.Width - size.Width) / 2));
+                }
+            }
+        
+            if (VerticalOffset == null && VerticalStartupLocation != DialogVerticalAnchor.Custom)
+            {
+                if (VerticalStartupLocation == DialogVerticalAnchor.Top)
+                {
+                    SetCurrentValue(VerticalOffsetProperty, new Dimension(0));
+                }
+                else if (VerticalStartupLocation == DialogVerticalAnchor.Bottom)
+                {
+                    SetCurrentValue(VerticalOffsetProperty, new Dimension(layerSize.Height - size.Height));
+                }
+                else if (VerticalStartupLocation == DialogVerticalAnchor.Center)
+                {
+                    SetCurrentValue(VerticalOffsetProperty, new Dimension((layerSize.Height - size.Height) / 2));
+                }
+            }
+        }
     }
     
     private IgnoreIsOpenScope BeginIgnoringIsOpen()

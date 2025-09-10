@@ -34,11 +34,6 @@ public struct Dimension: IEquatable<Dimension>
       
     public Dimension(double value, DimensionUnitType type)
     {
-        if (value < 0 || double.IsNaN(value) || double.IsInfinity(value))
-        {
-            throw new ArgumentException("Invalid value", nameof(value));
-        }
-
         if (type < DimensionUnitType.Percentage || type > DimensionUnitType.Pixel)
         {
             throw new ArgumentException("Invalid value", nameof(type));

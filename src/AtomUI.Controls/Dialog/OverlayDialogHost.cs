@@ -116,6 +116,19 @@ public sealed class OverlayDialogHost : ContentControl,
     
     #region 内部属性定义
     
+    internal static readonly DirectProperty<OverlayDialogHost, bool> IsDraggingProperty =
+        AvaloniaProperty.RegisterDirect<OverlayDialogHost, bool>(nameof(IsDragging),
+            o => o.IsDragging,
+            (o, v) => o.IsDragging = v);
+    
+    private bool _isDragging;
+
+    internal bool IsDragging
+    {
+        get => _isDragging;
+        set => SetAndRaise(IsDraggingProperty, ref _isDragging, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     internal bool IsHidden => _dialogLayer.Children.Contains(this);
     
@@ -135,6 +148,10 @@ public sealed class OverlayDialogHost : ContentControl,
     private OverlayDialogHeader? _header;
     private OverlayDialogResizer? _resizer;
     private readonly List<Action> _disposeActions = new();
+    private Dialog _dialog;
+    
+    // 拖动
+    private Point? _lastPoint;
 
     static OverlayDialogHost()
     {
@@ -142,8 +159,9 @@ public sealed class OverlayDialogHost : ContentControl,
         AffectsMeasure<OverlayDialogHost>(WindowStateProperty);
     }
 
-    public OverlayDialogHost(DialogLayer dialogLayer)
+    public OverlayDialogHost(DialogLayer dialogLayer, Dialog dialog)
     {
+        _dialog                    = dialog;
         _dialogLayer               = dialogLayer;
         _positioner                = new ManagedDialogPositioner(this);
         _keyboardNavigationHandler = AvaloniaLocator.Current.GetService<IKeyboardNavigationHandler>();
@@ -232,6 +250,22 @@ public sealed class OverlayDialogHost : ContentControl,
         ConfigureMaskSize(e.NewSize);
         _needsUpdate = true;
         UpdatePosition();
+        
+        var offsetX = Canvas.GetLeft(this);
+        var offsetY = Canvas.GetTop(this);
+
+        var bounds     = _dialogLayer.Bounds;
+        var maxOffsetX = bounds.Width - DesiredSize.Width;
+        var maxOffsetY =  bounds.Height - DesiredSize.Height;
+        
+        var deltaX = maxOffsetX - offsetX;
+        if (deltaX < 0)
+        {
+            offsetX += deltaX;
+        }
+        
+        _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(Math.Min(Math.Max(offsetX, 0), maxOffsetX)));
+        _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(Math.Min(Math.Max(offsetY, 0), maxOffsetY)));
     }
 
     private void ConfigureMaskSize(Size size)
@@ -270,6 +304,7 @@ public sealed class OverlayDialogHost : ContentControl,
         if (_dialogSize != finalSize)
         {
             _dialogSize  = finalSize;
+            _dialog.NotifyDialogHostMeasured(_dialogSize);
             _needsUpdate = true;
             UpdatePosition();
         }
@@ -367,18 +402,18 @@ public sealed class OverlayDialogHost : ContentControl,
             _header.MaximizeRequest  += HandleHeaderMaximizeRequest;
             _header.NormalizeRequest += HandleHeaderNormalizeRequest;
             _header.CloseRequest     += HandleHeaderCloseRequest;
-            // _header.PointerPressed  += HandleHeaderPointerPressed;
-            // _header.PointerReleased += HandleHeaderPointerReleased;
-            // _header.PointerMoved    += HandleHeaderPointerMoved;
+            _header.PointerPressed  += HandleHeaderPointerPressed;
+            _header.PointerReleased += HandleHeaderPointerReleased;
+            _header.PointerMoved    += HandleHeaderPointerMoved;
             _disposeActions.Add(() =>
             {
                 _header.DoubleTapped     -= HandleHeaderDoubleClicked;
                 _header.MaximizeRequest  -= HandleHeaderMaximizeRequest;
                 _header.NormalizeRequest -= HandleHeaderNormalizeRequest;
                 _header.CloseRequest     -= HandleHeaderCloseRequest;
-                // _header.PointerPressed  -= HandleHeaderPointerPressed;
-                // _header.PointerReleased -= HandleHeaderPointerReleased;
-                // _header.PointerMoved    -= HandleHeaderPointerMoved;
+                _header.PointerPressed  -= HandleHeaderPointerPressed;
+                _header.PointerReleased -= HandleHeaderPointerReleased;
+                _header.PointerMoved    -= HandleHeaderPointerMoved;
             });
         }
     }
@@ -411,6 +446,71 @@ public sealed class OverlayDialogHost : ContentControl,
         }
     }
 
+    private void HandleHeaderPointerPressed(object? sender, PointerEventArgs e)
+    {
+        if (IsDragMovable && e.Properties.IsLeftButtonPressed)
+        {
+            e.Handled  = true;
+            _lastPoint = e.GetPosition(this);
+            e.PreventGestureRecognition();
+        }
+    }
+
+    private void HandleHeaderPointerReleased(object? sender, PointerEventArgs e)
+    {
+        if (_lastPoint.HasValue)
+        {
+            e.Handled = true;
+            _lastPoint = null;
+            SetCurrentValue(IsDraggingProperty, false);
+        }
+    }
+
+    private void HandleHeaderPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (_lastPoint.HasValue && e.Properties.IsLeftButtonPressed)
+        {
+            var delta             = e.GetPosition(this) - _lastPoint.Value;
+            var manhattanDistance = Math.Abs(delta.X) + Math.Abs(delta.Y);
+            if (manhattanDistance > Constants.DragThreshold)
+            {
+                if (!IsDragging)
+                {
+                    SetCurrentValue(IsDraggingProperty, true);
+                }
+
+                HandleDragging(e.GetPosition(this), delta);
+            }
+        }
+    }
+    
+    private void HandleDragging(Point position, Point delta)
+    {
+        var offsetX = Canvas.GetLeft(this);
+        var offsetY = Canvas.GetTop(this);
+
+        offsetX += delta.X;
+        offsetY += delta.Y;
+
+        var bounds = _dialogLayer.Bounds;
+        var maxOffsetX = bounds.Width - DesiredSize.Width;
+        var maxOffsetY =  bounds.Height - DesiredSize.Height;
+        
+        _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(Math.Min(Math.Max(offsetX, 0), maxOffsetX)));
+        _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(Math.Min(Math.Max(offsetY, 0), maxOffsetY)));
+    }
+    
+    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
+    {
+        if (_lastPoint.HasValue)
+        {
+            _lastPoint = null;
+            IsDragging = false;
+        }
+
+        base.OnPointerCaptureLost(e);
+    }
+
     private void HandleWindowStateChanged(OverlayDialogState oldState, OverlayDialogState newState)
     {
         if (oldState == OverlayDialogState.Normal)
@@ -420,13 +520,15 @@ public sealed class OverlayDialogHost : ContentControl,
 
         if (newState == OverlayDialogState.Maximized)
         {
-            Canvas.SetLeft(this, 0);
-            Canvas.SetTop(this, 0);
+            _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty,
+                new Dimension(0));
+            _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty,
+                new Dimension(0));
         }
         else if (newState == OverlayDialogState.Normal)
         {
-            Canvas.SetLeft(this, _originPosition.X);
-            Canvas.SetTop(this, _originPosition.Y);
+            _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(_originPosition.X));
+            _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(_originPosition.Y));
         }
         if (_header != null)
         {

@@ -18,7 +18,7 @@
                                 CheckedIcon="{atom:IconProvider Kind=WindowRestoreOutlined}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsChecked="{TemplateBinding IsDialogMaximized}"
-                                IsVisible="{TemplateBinding IsCloseButtonEnabled}">
+                                IsVisible="{TemplateBinding IsMaximizeButtonEnabled}">
                             </atom:DialogCaptionButton>
                             <atom:DialogCaptionButton
                                 Name="{x:Static atom:OverlayDialogHeaderThemeConstants.CloseButtonPart}"

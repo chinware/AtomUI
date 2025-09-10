@@ -5,8 +5,6 @@ namespace AtomUI.Controls.DialogPositioning;
 public record struct DialogPositionerParameters
 {
     public Rect AnchorRectangle { get; set; }
-    public DialogHorizontalAnchor HorizontalAnchor { get; set; }
-    public DialogVerticalAnchor VerticalAnchor { get; set; }
     public Dimension HorizontalOffset { get; set; }
     public Dimension VerticalOffset { get; set; }
     public Size Size { get; set; }
@@ -95,31 +93,23 @@ internal static class DialogPositionerExtensions
         Size dialogSize)
     {
         DialogPositionerParameters positionerParameters = default;
-        positionerParameters.HorizontalAnchor     = positionRequest.HorizontalAnchor;
-        positionerParameters.VerticalAnchor       = positionRequest.VerticalAnchor;
         positionerParameters.HorizontalOffset     = positionRequest.HorizontalOffset;
         positionerParameters.VerticalOffset       = positionRequest.VerticalOffset;
         positionerParameters.Size                 = dialogSize;
         positionerParameters.ConstraintAdjustment = positionRequest.ConstraintAdjustment;
 
-        if (positionRequest.PlacementCallback != null && 
-            (positionRequest.HorizontalAnchor == DialogHorizontalAnchor.Custom ||
-             positionRequest.VerticalAnchor == DialogVerticalAnchor.Custom))
+        if (positionRequest.PlacementCallback != null)
         {
             var customPlacementParameters = new CustomDialogPlacement(
                 dialogSize,
                 positionRequest.Target)
             {
-                HorizontalAnchor     = positionerParameters.HorizontalAnchor,
-                VerticalAnchor       = positionerParameters.VerticalAnchor,
                 HorizontalOffset     = positionerParameters.HorizontalOffset,
                 VerticalOffset       = positionerParameters.VerticalOffset,
                 ConstraintAdjustment = positionerParameters.ConstraintAdjustment,
             };
 
             positionRequest.PlacementCallback.Invoke(customPlacementParameters);
-            positionerParameters.HorizontalAnchor     = positionerParameters.HorizontalAnchor;
-            positionerParameters.VerticalAnchor       = positionerParameters.VerticalAnchor;
             positionerParameters.HorizontalOffset     = customPlacementParameters.HorizontalOffset;
             positionerParameters.VerticalOffset       = customPlacementParameters.VerticalOffset;
             positionerParameters.ConstraintAdjustment = customPlacementParameters.ConstraintAdjustment;

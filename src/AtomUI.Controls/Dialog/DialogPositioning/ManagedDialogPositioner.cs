@@ -39,8 +39,6 @@ public class ManagedDialogPositioner : IDialogPositioner
             new Rect(
                 parameters.AnchorRectangle.TopLeft * _dialog.Scaling,
                 parameters.AnchorRectangle.Size * _dialog.Scaling),
-            parameters.HorizontalAnchor,
-            parameters.VerticalAnchor,
             parameters.HorizontalOffset * _dialog.Scaling,
             parameters.VerticalOffset * _dialog.Scaling,
             parameters.ConstraintAdjustment);
@@ -52,8 +50,6 @@ public class ManagedDialogPositioner : IDialogPositioner
     
     private Rect Calculate(Size translatedSize, 
             Rect anchorRect,
-            DialogHorizontalAnchor horizontalAnchor,
-            DialogVerticalAnchor verticalAnchor,
             Dimension horizontalOffset,
             Dimension verticalOffset,
             DialogPositionerConstraintAdjustment constraintAdjustment)
@@ -97,43 +93,9 @@ public class ManagedDialogPositioner : IDialogPositioner
             }
 
             static bool IsValid(in Rect rc) => rc.Width > 0 && rc.Height > 0;
-            
-            var offsetX = 0.0d;
-            var offsetY = 0.0d;
 
-            if (horizontalAnchor == DialogHorizontalAnchor.Left)
-            {
-                offsetX = 0;
-            }
-            else if (horizontalAnchor == DialogHorizontalAnchor.Right)
-            {
-                offsetX = bounds.Right - translatedSize.Width;
-            }
-            else if (horizontalAnchor == DialogHorizontalAnchor.Center)
-            {
-                offsetX = (bounds.Width - translatedSize.Width) / 2;
-            }
-            else
-            {
-                offsetX = horizontalOffset.Resolve(bounds.Width);
-            }
-
-            if (verticalAnchor == DialogVerticalAnchor.Top)
-            {
-                offsetY = 0;
-            }
-            else if (verticalAnchor == DialogVerticalAnchor.Bottom)
-            {
-                offsetY = bounds.Bottom - translatedSize.Height;
-            }
-            else if (verticalAnchor == DialogVerticalAnchor.Center)
-            {
-                offsetY = (bounds.Height - translatedSize.Height) / 2;
-            }
-            else
-            {
-                offsetY = verticalOffset.Resolve(bounds.Height);
-            }
+            var offsetX = horizontalOffset.Resolve(bounds.Width);
+            var offsetY = verticalOffset.Resolve(bounds.Height);
 
             Rect geo = new Rect(new Point(offsetX, offsetY), translatedSize);
 
