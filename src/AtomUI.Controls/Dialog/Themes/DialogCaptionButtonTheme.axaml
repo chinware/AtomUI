@@ -1,0 +1,54 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:DialogCaptionButton}" TargetType="atom:DialogCaptionButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel>
+                        <atom:IconPresenter
+                            Name="NormalIconPresenter"
+                            Icon="{TemplateBinding NormalIcon}"
+                            IconWidth="{TemplateBinding IconWidth}"
+                            IconHeight="{TemplateBinding IconHeight}"
+                            IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                        <atom:IconPresenter
+                            Name="CheckedIconPresenter"
+                            Icon="{TemplateBinding CheckedIcon}"
+                            IsVisible="{TemplateBinding IsChecked}"
+                            IconWidth="{TemplateBinding IconWidth}"
+                            IconHeight="{TemplateBinding IconHeight}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        
+        <Style Selector="^ /template/ atom|IconPresenter">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+            <Setter Property="ActiveFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+        </Style>
+       
+        <Setter Property="Background" Value="Transparent" />
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
+        </Style>
+        
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

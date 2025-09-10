@@ -1,0 +1,66 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:OverlayDialogResizerVisibleConverter x:Key="OverlayDialogResizerVisibleConverter" />
+    <ControlTheme x:Key="{x:Type atom:OverlayDialogHost}" TargetType="atom:OverlayDialogHost">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="ShadowFrame" CornerRadius="{TemplateBinding CornerRadius}" />
+                    <Border Name="Frame" CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
+                        <DockPanel Name="RootLayout" LastChildFill="True">
+                            <atom:OverlayDialogHeader Name="{x:Static atom:OverlayDialogThemeConstants.HeaderPart}"
+                                                      DockPanel.Dock="Top"
+                                                      Title="{TemplateBinding Title}"
+                                                      Logo="{TemplateBinding TitleIcon}"
+                                                      IsCloseButtonEnabled="{TemplateBinding IsClosable}"
+                                                      IsMaximizeButtonEnabled="{TemplateBinding IsMaximizable}" />
+                            <ContentPresenter Name="ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </DockPanel>
+                    </Border>
+                    <atom:OverlayDialogResizer Name="{x:Static atom:OverlayDialogThemeConstants.ResizerPart}">
+
+                        <atom:OverlayDialogResizer.IsVisible>
+                            <MultiBinding
+                                Converter="{StaticResource OverlayDialogResizerVisibleConverter}">
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                         Path="IsResizable" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="WindowState" />
+                            </MultiBinding>
+                        </atom:OverlayDialogResizer.IsVisible>
+                    </atom:OverlayDialogResizer>
+                </Panel>
+
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+
+        <Style Selector="^ /template/ atom|OverlayDialogHeader#Header">
+            <Setter Property="TitleFontSize" Value="{DynamicResource {x:Static atom:DialogTokenKey.HeaderFontSize}}" />
+            <Setter Property="TitleFontWeight"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DialogTokenKey.HeaderMarginBottom}}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#ShadowFrame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentBg}}" />
+            <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadows}}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
+        </Style>
+
+        <Style Selector="^[WindowState=Maximized]">
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

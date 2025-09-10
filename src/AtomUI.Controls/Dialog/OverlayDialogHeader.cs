@@ -1,0 +1,203 @@
+using System.Reactive.Disposables;
+using AtomUI.Animations;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Metadata;
+
+namespace AtomUI.Controls;
+
+[PseudoClasses(StdPseudoClass.Active)]
+[PseudoClasses(StdPseudoClass.Normal, StdPseudoClass.Minimized, StdPseudoClass.Maximized)]
+internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
+{
+    public static readonly StyledProperty<string?> TitleProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, string?>(nameof (Title));
+    
+    public static readonly StyledProperty<Icon?> LogoProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, Icon?>(nameof(Logo));
+    
+    public static readonly StyledProperty<double> TitleFontSizeProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, double>(nameof(TitleFontSize), defaultValue: 14);
+
+    public static readonly StyledProperty<FontWeight> TitleFontWeightProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, FontWeight>(nameof(TitleFontWeight), defaultValue: FontWeight.Bold);
+    
+    public static readonly StyledProperty<object?> AddOnProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, object?>(nameof(AddOn));
+
+    public static readonly StyledProperty<IDataTemplate?> AddOnTemplateProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, IDataTemplate?>(nameof(AddOnTemplate));
+    
+    public static readonly StyledProperty<bool> IsActivatedProperty = 
+        AvaloniaProperty.Register<OverlayDialogHeader, bool>(nameof(IsActivated));
+    
+    public static readonly StyledProperty<bool> IsMaximizeButtonEnabledProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, bool>(nameof(IsMaximizeButtonEnabled), defaultValue: false);
+    
+    public static readonly StyledProperty<bool> IsCloseButtonEnabledProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, bool>(nameof(IsCloseButtonEnabled), defaultValue:true);
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OverlayDialogHeader>();
+    
+    public string? Title
+    {
+        get => GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
+    }
+    
+    public Control? Logo
+    {
+        get => GetValue(LogoProperty);
+        set => SetValue(LogoProperty, value);
+    }
+
+    public double TitleFontSize
+    {
+        get => GetValue(TitleFontSizeProperty);
+        set => SetValue(TitleFontSizeProperty, value);
+    }
+
+    public FontWeight TitleFontWeight
+    {
+        get => GetValue(TitleFontWeightProperty);
+        set => SetValue(TitleFontWeightProperty, value);
+    }
+
+    [DependsOn("AddOnTemplate")]
+    public object? AddOn
+    {
+        get => GetValue(AddOnProperty);
+        set => SetValue(AddOnProperty, value);
+    }
+
+    public IDataTemplate? AddOnTemplate
+    {
+        get => GetValue(AddOnTemplateProperty);
+        set => SetValue(AddOnTemplateProperty, value);
+    }
+    
+    public bool IsActivated
+    {
+        get => GetValue(IsActivatedProperty);
+        set => SetValue(IsActivatedProperty, value);
+    }
+    
+    public bool IsMaximizeButtonEnabled
+    {
+        get => GetValue(IsMaximizeButtonEnabledProperty);
+        set => SetValue(IsMaximizeButtonEnabledProperty, value);
+    }
+    
+    public bool IsCloseButtonEnabled
+    {
+        get => GetValue(IsCloseButtonEnabledProperty);
+        set => SetValue(IsCloseButtonEnabledProperty, value);
+    }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    #region 内部属性定义
+
+    Control IMotionAwareControl.PropertyBindTarget => this;
+    
+    internal static readonly DirectProperty<OverlayDialogHeader, bool> IsDialogMaximizedProperty =
+        AvaloniaProperty.RegisterDirect<OverlayDialogHeader, bool>(
+            nameof(IsDialogMaximized),
+            o => o.IsDialogMaximized,
+            (o, v) => o.IsDialogMaximized = v);
+    
+    private bool _isDialogMaximized;
+
+    internal bool IsDialogMaximized
+    {
+        get => _isDialogMaximized;
+        set => SetAndRaise(IsDialogMaximizedProperty, ref _isDialogMaximized, value);
+    }
+
+    #endregion
+    
+    private CompositeDisposable? _disposables;
+    private DialogCaptionButton? _maximizeButton;
+    private DialogCaptionButton? _closeButton;
+    
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        if (VisualRoot is Window window)
+        {
+            _disposables = new CompositeDisposable(6)
+            {
+                window.GetObservable(OverlayDialogHost.WindowStateProperty).Subscribe(x =>
+                {
+                    PseudoClasses.Set(StdPseudoClass.Normal, x == OverlayDialogState.Normal);
+                    PseudoClasses.Set(StdPseudoClass.Maximized, x == OverlayDialogState.Maximized);
+                }),
+                // window.GetObservable(WindowBase.IsActiveProperty).Subscribe(isActivated =>
+                // {
+                //     PseudoClasses.Set(StdPseudoClass.Active, isActivated);
+                //     IsActivated = isActivated;
+                // })
+            };
+        }
+    }
+    
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _disposables?.Dispose();
+    }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
+            }
+        }
+    }
+
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty)
+                ];
+            }
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+}

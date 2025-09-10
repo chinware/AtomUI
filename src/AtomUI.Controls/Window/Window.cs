@@ -377,6 +377,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         {
             disposeAction.Invoke();
         }
+        _disposeActions.Clear();
     }
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)

@@ -307,6 +307,19 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("DatePicker.WithoutTimeCellHeight");
     }
 
+    public static class DialogTokenKey
+    {
+        public static readonly TokenResourceKey CloseBtnSize = new TokenResourceKey("Dialog.CloseBtnSize");
+        public static readonly TokenResourceKey ContentBg = new TokenResourceKey("Dialog.ContentBg");
+        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("Dialog.ContentPadding");
+        public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("Dialog.HeaderBg");
+        public static readonly TokenResourceKey HeaderColor = new TokenResourceKey("Dialog.HeaderColor");
+        public static readonly TokenResourceKey HeaderFontSize = new TokenResourceKey("Dialog.HeaderFontSize");
+        public static readonly TokenResourceKey HeaderMarginBottom = new TokenResourceKey("Dialog.HeaderMarginBottom");
+        public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("Dialog.HeaderPadding");
+        public static readonly TokenResourceKey LogoSize = new TokenResourceKey("Dialog.LogoSize");
+    }
+
     public static class DrawerTokenKey
     {
         public static readonly TokenResourceKey BoxShadowDrawerDown = new TokenResourceKey("Drawer.BoxShadowDrawerDown");

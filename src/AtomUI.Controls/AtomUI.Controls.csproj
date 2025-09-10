@@ -28,15 +28,5 @@
         <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="MessageBox\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Avalonia.Controls">
-        <HintPath>..\..\..\..\output\bin\Debug\net9.0\Avalonia.Controls.dll</HintPath>
-      </Reference>
-    </ItemGroup>
     
 </Project>

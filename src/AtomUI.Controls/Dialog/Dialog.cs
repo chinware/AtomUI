@@ -6,11 +6,13 @@ using AtomUI.Controls.DialogPositioning;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -34,6 +36,9 @@ public class Dialog : Control,
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<Dialog, string?>(nameof (Title));
     
+    public static readonly StyledProperty<Icon?> TitleIconProperty =
+        AvaloniaProperty.Register<Dialog, Icon?>(nameof (TitleIcon));
+    
     public static readonly StyledProperty<bool> WindowManagerAddShadowHintProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(WindowManagerAddShadowHint), false);
 
@@ -54,6 +59,9 @@ public class Dialog : Control,
         
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof (IsClosable), true);
+    
+    public static readonly StyledProperty<bool> IsMaximizableProperty =
+        AvaloniaProperty.Register<Dialog, bool>(nameof (IsMaximizable), false);
     
     public static readonly StyledProperty<bool> IsDragMovableProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof (IsDragMovable), false);
@@ -77,10 +85,10 @@ public class Dialog : Control,
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsLightDismissEnabled), false);
     
     public static readonly StyledProperty<DialogHorizontalAnchor> HorizontalAnchorProperty =
-        AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalAnchor));
+        AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalAnchor), DialogHorizontalAnchor.Center);
     
     public static readonly StyledProperty<DialogVerticalAnchor> VerticalAnchorProperty =
-        AvaloniaProperty.Register<Dialog, DialogVerticalAnchor>(nameof(VerticalAnchor));
+        AvaloniaProperty.Register<Dialog, DialogVerticalAnchor>(nameof(VerticalAnchor), DialogVerticalAnchor.Center);
     
     public static readonly StyledProperty<Dimension> HorizontalOffsetProperty =
         AvaloniaProperty.Register<Dialog, Dimension>(nameof(HorizontalOffset), new Dimension(0.5, DimensionUnitType.Percentage));
@@ -104,6 +112,12 @@ public class Dialog : Control,
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
+    }
+    
+    public Icon? TitleIcon
+    {
+        get => GetValue(TitleIconProperty);
+        set => SetValue(TitleIconProperty, value);
     }
     
     public bool WindowManagerAddShadowHint
@@ -155,6 +169,12 @@ public class Dialog : Control,
     {
         get => GetValue(IsClosableProperty);
         set => SetValue(IsClosableProperty, value);
+    }
+    
+    public bool IsMaximizable
+    {
+        get => GetValue(IsMaximizableProperty);
+        set => SetValue(IsMaximizableProperty, value);
     }
     
     public bool IsDragMovable
@@ -281,6 +301,11 @@ public class Dialog : Control,
         IsOpenProperty.Changed.AddClassHandler<Dialog>((x, e) => x.HandleIsOpenChanged((AvaloniaPropertyChangedEventArgs<bool>)e));
     }
 
+    public Dialog()
+    {
+        this.RegisterResources();
+    }
+
     private void HandleIsOpenChanged(AvaloniaPropertyChangedEventArgs<bool> e)
     {
         if (!_ignoreIsOpenChanged)
@@ -329,10 +354,13 @@ public class Dialog : Control,
             if (dialogLayer != null)
             {
                 var overlayDialogHost = new OverlayDialogHost(dialogLayer);
+                relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleProperty, overlayDialogHost, OverlayDialogHost.TitleProperty));
+                relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleIconProperty, overlayDialogHost, OverlayDialogHost.TitleIconProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, overlayDialogHost, OverlayDialogHost.IsMotionEnabledProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsModalProperty, overlayDialogHost, OverlayDialogHost.IsModalProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsResizableProperty, overlayDialogHost, OverlayDialogHost.IsResizableProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsClosableProperty, overlayDialogHost, OverlayDialogHost.IsClosableProperty));
+                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, overlayDialogHost, OverlayDialogHost.IsMaximizableProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, overlayDialogHost, OverlayDialogHost.IsDragMovableProperty));
                 dialogHost = overlayDialogHost;
             }
@@ -554,7 +582,7 @@ public class Dialog : Control,
         }
     }
     
-    internal void SetPopupParent(Control? newParent)
+    internal void SetDialogParent(Control? newParent)
     {
         if (Parent != null && Parent != newParent)
         {

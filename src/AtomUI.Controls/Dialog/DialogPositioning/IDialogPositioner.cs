@@ -79,14 +79,14 @@ internal static class DialogPositionerExtensions
     public static void Update(
         this IDialogPositioner positioner,
         DialogPositionRequest positionRequest,
-        Size popupSize)
+        Size dialogSize)
     {
-        if (popupSize == default)
+        if (dialogSize == default)
         {
             return;
         }
 
-        var parameters = BuildParameters(positionRequest, popupSize);
+        var parameters = BuildParameters(positionRequest, dialogSize);
         positioner.Update(parameters);
     }
 

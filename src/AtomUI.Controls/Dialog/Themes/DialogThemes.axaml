@@ -2,5 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="OverlayDialogHostTheme.axaml"/>
+        <ResourceInclude Source="OverlayDialogHeaderTheme.axaml"/>
+        <ResourceInclude Source="DialogCaptionButtonTheme.axaml"/>
+        <ResourceInclude Source="OverlayDialogResizerTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

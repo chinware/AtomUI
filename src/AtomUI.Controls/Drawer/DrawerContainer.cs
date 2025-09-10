@@ -211,13 +211,13 @@ internal class DrawerContainer : ContentControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        Background = MaskBgColor;
+        SetCurrentValue(BackgroundProperty, MaskBgColor);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        Background = Brushes.Transparent;
+        SetCurrentValue(BackgroundProperty, Brushes.Transparent);
     }
 
     internal void Open(ScopeAwareAdornerLayer layer)

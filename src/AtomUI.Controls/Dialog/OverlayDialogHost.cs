@@ -1,12 +1,15 @@
 using System.Diagnostics;
 using AtomUI.Controls.DialogPositioning;
 using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Themes;
+using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -22,17 +25,26 @@ public sealed class OverlayDialogHost : ContentControl,
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<OverlayDialogHost, string?>(nameof (Title));
     
+    public static readonly StyledProperty<Icon?> TitleIconProperty =
+        AvaloniaProperty.Register<OverlayDialogHost, Icon?>(nameof (TitleIcon));
+    
     public static readonly StyledProperty<bool> IsResizableProperty =
         Dialog.IsResizableProperty.AddOwner<OverlayDialogHost>();
         
     public static readonly StyledProperty<bool> IsClosableProperty =
         Dialog.IsClosableProperty.AddOwner<OverlayDialogHost>();
     
+    public static readonly StyledProperty<bool> IsMaximizableProperty =
+        Dialog.IsMaximizableProperty.AddOwner<OverlayDialogHost>();
+    
     public static readonly StyledProperty<bool> IsDragMovableProperty =
         Dialog.IsDragMovableProperty.AddOwner<OverlayDialogHost>();
     
     public static readonly StyledProperty<bool> IsModalProperty =
         Dialog.IsModalProperty.AddOwner<OverlayDialogHost>();
+    
+    public static readonly StyledProperty<OverlayDialogState> WindowStateProperty =
+        AvaloniaProperty.Register<OverlayDialogHost, OverlayDialogState>(nameof(WindowState));
     
     public static readonly StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<OverlayDialogHost, Transform?>(nameof (Transform));
@@ -46,10 +58,22 @@ public sealed class OverlayDialogHost : ContentControl,
         set => SetValue(TitleProperty, value);
     }
     
+    public Icon? TitleIcon
+    {
+        get => GetValue(TitleIconProperty);
+        set => SetValue(TitleIconProperty, value);
+    }
+    
     public bool IsResizable
     {
         get => GetValue(IsResizableProperty);
         set => SetValue(IsResizableProperty, value);
+    }
+    
+    public bool IsMaximizable
+    {
+        get => GetValue(IsMaximizableProperty);
+        set => SetValue(IsMaximizableProperty, value);
     }
     
     public bool IsClosable
@@ -68,6 +92,12 @@ public sealed class OverlayDialogHost : ContentControl,
     {
         get => GetValue(IsModalProperty);
         set => SetValue(IsModalProperty, value);
+    }
+    
+    public OverlayDialogState WindowState
+    {
+        get => GetValue(WindowStateProperty);
+        set => SetValue(WindowStateProperty, value);
     }
     
     public Transform? Transform
@@ -100,10 +130,16 @@ public sealed class OverlayDialogHost : ContentControl,
     private Size _dialogSize;
     private bool _needsUpdate;
     private OverlayDialogMask? _dialogMask;
+    // 用于最大化
+    private Point _originPosition;
+    private OverlayDialogHeader? _header;
+    private OverlayDialogResizer? _resizer;
+    private readonly List<Action> _disposeActions = new();
 
     static OverlayDialogHost()
     {
         KeyboardNavigation.TabNavigationProperty.OverrideDefaultValue<OverlayDialogHost>(KeyboardNavigationMode.Cycle);
+        AffectsMeasure<OverlayDialogHost>(WindowStateProperty);
     }
 
     public OverlayDialogHost(DialogLayer dialogLayer)
@@ -158,14 +194,16 @@ public sealed class OverlayDialogHost : ContentControl,
     
     public void Show()
     {
+        _dialogLayer.SizeChanged +=  HandleDialogLayerSizeChanged;
+
         if (IsModal)
         {
-            _dialogLayer.SizeChanged +=  HandleDialogLayerSizeChanged;
             _dialogMask              ??= new OverlayDialogMask();
             _dialogLayer.Children.Add(_dialogMask);
             ConfigureMaskSize(_dialogLayer.Bounds.Size);
         }
         _dialogLayer.Children.Add(this);
+   
         if (Content is Visual visual && !visual.IsAttachedToVisualTree())
         {
             // We need to force a measure pass so any descendants are built, for focus to work.
@@ -180,13 +218,20 @@ public sealed class OverlayDialogHost : ContentControl,
         {
             Debug.Assert(_dialogMask != null);
             _dialogLayer.Children.Remove(_dialogMask);
-            _dialogLayer.SizeChanged -= HandleDialogLayerSizeChanged;
         }
+        _dialogLayer.SizeChanged -= HandleDialogLayerSizeChanged;
+        foreach (var disposeAction in _disposeActions)
+        {
+            disposeAction.Invoke();
+        }
+        _disposeActions.Clear();
     }
 
     private void HandleDialogLayerSizeChanged(object? sender, SizeChangedEventArgs e)
     {
         ConfigureMaskSize(e.NewSize);
+        _needsUpdate = true;
+        UpdatePosition();
     }
 
     private void ConfigureMaskSize(Size size)
@@ -209,7 +254,17 @@ public sealed class OverlayDialogHost : ContentControl,
         _needsUpdate          = true;
         UpdatePosition();
     }
-    
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size = base.MeasureOverride(availableSize);
+        if (WindowState == OverlayDialogState.Maximized)
+        {
+            return _dialogLayer.Bounds.Size;
+        }
+        return size;
+    }
+
     protected override Size ArrangeOverride(Size finalSize)
     {
         if (_dialogSize != finalSize)
@@ -246,11 +301,18 @@ public sealed class OverlayDialogHost : ContentControl,
                 {
                     // 找到自己
                     var index = _dialogLayer.Children.IndexOf(this);
-                    _dialogMask ??= new OverlayDialogMask();
-                    _dialogLayer.Children.Insert(index, _dialogMask);
-                    ConfigureMaskSize(_dialogLayer.Bounds.Size);
+                    if (index != -1)
+                    {
+                        _dialogMask ??= new OverlayDialogMask();
+                        _dialogLayer.Children.Insert(index, _dialogMask);
+                        ConfigureMaskSize(_dialogLayer.Bounds.Size);
+                    }
                 }
             }
+        }
+        else if (change.Property == WindowStateProperty)
+        {
+            HandleWindowStateChanged(change.GetOldValue<OverlayDialogState>(), change.GetNewValue<OverlayDialogState>());
         }
     }
     
@@ -277,10 +339,62 @@ public sealed class OverlayDialogHost : ContentControl,
     void IManagedDialogPositionerDialog.MoveAndResize(Point devicePoint, Size virtualSize)
     {
         _lastRequestedPosition = devicePoint;
-        Dispatcher.UIThread.Post(() =>
+        Canvas.SetLeft(this, _lastRequestedPosition.X);
+        Canvas.SetTop(this, _lastRequestedPosition.Y);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _resizer = e.NameScope.Find<OverlayDialogResizer>(OverlayDialogThemeConstants.ResizerPart);
+        if (_resizer != null)
         {
-            Canvas.SetLeft(this, _lastRequestedPosition.X);
-            Canvas.SetTop(this, _lastRequestedPosition.Y);
-        });
+            _resizer.TargetDialog = this;
+        }
+        _header = e.NameScope.Find<OverlayDialogHeader>(OverlayDialogThemeConstants.HeaderPart);
+        ConfigureHeaderHandlers();
+    }
+
+    private void ConfigureHeaderHandlers()
+    {
+        if (_header != null)
+        {
+            _header.DoubleTapped    += HandleHeaderDoubleClicked;
+            // _header.PointerPressed  += HandleHeaderPointerPressed;
+            // _header.PointerReleased += HandleHeaderPointerReleased;
+            // _header.PointerMoved    += HandleHeaderPointerMoved;
+            _disposeActions.Add(() =>
+            {
+                _header.DoubleTapped    -= HandleHeaderDoubleClicked;
+                // _header.PointerPressed  -= HandleHeaderPointerPressed;
+                // _header.PointerReleased -= HandleHeaderPointerReleased;
+                // _header.PointerMoved    -= HandleHeaderPointerMoved;
+            });
+        }
+    }
+    
+    private void HandleHeaderDoubleClicked(object? sender, RoutedEventArgs e)
+    {
+        if (!IsMaximizable)
+        {
+            return;
+        }
+
+        WindowState = WindowState == OverlayDialogState.Normal ? OverlayDialogState.Maximized : OverlayDialogState.Normal;
+        Console.WriteLine(WindowState);
+    }
+
+    private void HandleWindowStateChanged(OverlayDialogState oldState, OverlayDialogState newState)
+    {
+        if (oldState == OverlayDialogState.Normal)
+        {
+            _originPosition = new Point(Canvas.GetLeft(this), Canvas.GetTop(this));
+        }
+
+        if (newState == OverlayDialogState.Maximized)
+        {
+            Canvas.SetLeft(this, 0);
+            Canvas.SetTop(this, 0);
+        }
     }
 }

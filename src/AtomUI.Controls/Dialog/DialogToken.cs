@@ -1,4 +1,6 @@
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -6,6 +8,55 @@ namespace AtomUI.Controls;
 internal class DialogToken : AbstractControlDesignToken
 {
     public const string ID = "Dialog";
+    
+    /// <summary>
+    /// 顶部背景色
+    /// Background color of header
+    /// </summary>
+    public Color HeaderBg { get; set; }
+    
+    /// <summary>
+    /// 头部外边距
+    /// </summary>
+    public Thickness HeaderMarginBottom { get; set; }
+    
+    /// <summary>
+    /// overlay dialog 的 logo 大小
+    /// </summary>
+    public double LogoSize { get; set; }
+    
+    /// <summary>
+    /// 标题字体大小
+    /// Font size of title
+    /// </summary>
+    public double HeaderFontSize { get; set; }
+    
+    /// <summary>
+    /// 标题字体颜色
+    /// Font color of title
+    /// </summary>
+    public Color HeaderColor { get; set; }
+    
+    /// <summary>
+    /// 内容区域背景色
+    /// Background color of content
+    /// </summary>
+    public Color ContentBg { get; set; }
+    
+    /// <summary>
+    /// 标题区域内间距
+    /// </summary>
+    public Thickness HeaderPadding { get; set; }
+    
+    /// <summary>
+    /// 内容区域内间距
+    /// </summary>
+    public Thickness ContentPadding { get; set; }
+    
+    /// <summary>
+    /// 关闭按钮大小
+    /// </summary>
+    public double CloseBtnSize { get; set; }
     
     public DialogToken()
         : base(ID)
@@ -15,5 +66,14 @@ internal class DialogToken : AbstractControlDesignToken
     public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
+        HeaderBg           = SharedToken.ColorBgElevated;
+        HeaderFontSize     = SharedToken.FontSizeHeading5;
+        ContentBg          = SharedToken.ColorBgElevated;
+        HeaderColor        = SharedToken.ColorTextHeading;
+        ContentPadding     = new Thickness(SharedToken.PaddingContentHorizontalLG, 0, SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingMD);
+        HeaderPadding      = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPadding, SharedToken.PaddingContentHorizontal, 0);
+        HeaderMarginBottom = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
+        LogoSize           = SharedToken.SizeUnit * 4;
+        CloseBtnSize       = SharedToken.ControlHeight;
     }
 }

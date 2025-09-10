@@ -20,6 +20,7 @@
         <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" />
         <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
+        <ResourceInclude Source="Dialog/Themes/DialogThemes.axaml" />
         <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" />
         <ResourceInclude Source="Embedding/Themes/EmbeddableControlRootTheme.axaml" />
         <ResourceInclude Source="EmptyIndicator/Themes/EmptyIndicatorTheme.axaml" />

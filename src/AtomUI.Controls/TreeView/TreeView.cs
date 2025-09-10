@@ -599,8 +599,7 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
         {
             var delta             = e.GetPosition(this) - _lastPoint.Value;
             var manhattanDistance = Math.Abs(delta.X) + Math.Abs(delta.Y);
-            // 先写死
-            if (manhattanDistance > 5)
+            if (manhattanDistance > Constants.DragThreshold)
             {
                 if (!IsDragging)
                 {

@@ -144,6 +144,14 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
             };
         }
     }
+    
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _disposables?.Dispose();
+        _captionButtonGroup?.Detach();
+        _captionButtonGroup = null;
+    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -184,14 +192,6 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
     {
         base.OnUnloaded(e);
         Transitions = null;
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _disposables?.Dispose();
-        _captionButtonGroup?.Detach();
-        _captionButtonGroup = null;
     }
     
     void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
