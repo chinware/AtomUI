@@ -1,0 +1,17 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:DialogHost}" TargetType="atom:DialogHost">
+        <ControlTheme.BasedOn>
+            <themes:WindowTheme TargetType="atom:DialogHost" />
+        </ControlTheme.BasedOn>
+        
+        <Style Selector="^:is(atom|DialogHost)">
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

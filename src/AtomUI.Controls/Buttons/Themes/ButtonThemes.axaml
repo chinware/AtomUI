@@ -10,5 +10,5 @@
         <ResourceInclude Source="ToggleIconButtonTheme.axaml"/>
         <ResourceInclude Source="HyperLinkButtonTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
-    <themes:IconButtonTheme  x:Key="{x:Type atom:IconButton}" TargetType="atom:IconButton"/>
+    <themes:IconButtonTheme x:Key="{x:Type atom:IconButton}" TargetType="atom:IconButton"/>
 </ResourceDictionary>

@@ -283,11 +283,6 @@ public sealed class OverlayDialogHost : ContentControl,
         }
     }
     
-    public void TakeFocus()
-    {
-        // Nothing to do here: overlay popups are implemented inside the window.
-    }
-    
     void IDialogHost.ConfigurePosition(DialogPositionRequest positionRequest)
     {
         _dialogPositionRequest = positionRequest;

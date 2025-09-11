@@ -38,9 +38,6 @@ public class Dialog : Control,
     
     public static readonly StyledProperty<Icon?> TitleIconProperty =
         AvaloniaProperty.Register<Dialog, Icon?>(nameof (TitleIcon));
-    
-    public static readonly StyledProperty<bool> WindowManagerAddShadowHintProperty =
-        AvaloniaProperty.Register<Dialog, bool>(nameof(WindowManagerAddShadowHint), false);
 
     public static readonly StyledProperty<Control?> ChildProperty =
         AvaloniaProperty.Register<Dialog, Control?>(nameof(Child));
@@ -62,6 +59,9 @@ public class Dialog : Control,
     
     public static readonly StyledProperty<bool> IsMaximizableProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof (IsMaximizable), false);
+
+    public static readonly StyledProperty<bool> IsMinimizableProperty =
+        AvaloniaProperty.Register<Dialog, bool>(nameof (IsMinimizable), true);
     
     public static readonly StyledProperty<bool> IsDragMovableProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof (IsDragMovable), false);
@@ -102,9 +102,7 @@ public class Dialog : Control,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Dialog>();
     
-    public static readonly AttachedProperty<bool> TakesFocusFromNativeControlProperty =
-        AvaloniaProperty.RegisterAttached<Dialog, Control, bool>(nameof(TakesFocusFromNativeControl), true);
-    
+
     public static readonly StyledProperty<DialogHostType> DialogHostTypeProperty =
         AvaloniaProperty.Register<Dialog, DialogHostType>(nameof(VerticalOffset), DialogHostType.Overlay);
     
@@ -118,12 +116,6 @@ public class Dialog : Control,
     {
         get => GetValue(TitleIconProperty);
         set => SetValue(TitleIconProperty, value);
-    }
-    
-    public bool WindowManagerAddShadowHint
-    {
-        get => GetValue(WindowManagerAddShadowHintProperty);
-        set => SetValue(WindowManagerAddShadowHintProperty, value);
     }
     
     [Content]
@@ -175,6 +167,13 @@ public class Dialog : Control,
     {
         get => GetValue(IsMaximizableProperty);
         set => SetValue(IsMaximizableProperty, value);
+    }
+    
+    // 仅对 Window 类型的 Dialog 有效
+    public bool IsMinimizable
+    {
+        get => GetValue(IsMinimizableProperty);
+        set => SetValue(IsMinimizableProperty, value);
     }
     
     public bool IsDragMovable
@@ -242,12 +241,6 @@ public class Dialog : Control,
     {
         get => GetValue(TopmostProperty);
         set => SetValue(TopmostProperty, value);
-    }
-    
-    public bool TakesFocusFromNativeControl
-    {
-        get => GetValue(TakesFocusFromNativeControlProperty);
-        set => SetValue(TakesFocusFromNativeControlProperty, value);
     }
     
     public DialogHostType DialogHostType
@@ -346,7 +339,15 @@ public class Dialog : Control,
         CompositeDisposable relayBindingDisposables = new CompositeDisposable();
         if (DialogHostType == DialogHostType.Window)
         {
-            
+            var windowDialogHost = new DialogHost(topLevel, this);
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleProperty, windowDialogHost, DialogHost.TitleProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleIconProperty, windowDialogHost, DialogHost.IconProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, windowDialogHost, DialogHost.IsMotionEnabledProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsResizableProperty, windowDialogHost, DialogHost.CanResizeProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, windowDialogHost, DialogHost.CanMaximizeProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMinimizableProperty, windowDialogHost, DialogHost.CanMinimizeProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, windowDialogHost, DialogHost.IsMoveEnabledProperty));
+            dialogHost = windowDialogHost;
         }
         else
         {
@@ -365,6 +366,7 @@ public class Dialog : Control,
                 dialogHost = overlayDialogHost;
             }
         }
+        
         Debug.Assert(dialogHost != null);
         var handlerCleanup = new CompositeDisposable(7);
         UpdateHostSizing(dialogHost, topLevel, placementTarget);
@@ -380,14 +382,14 @@ public class Dialog : Control,
         {
             dialogHost.Transform = null;
         }
-        // if (dialogHost is DialogHost topLevelDialog)
-        // {
-        //     topLevelDialog
-        //         .Bind(
-        //             ThemeVariantScope.ActualThemeVariantProperty,
-        //             this.GetBindingObservable(ThemeVariantScope.ActualThemeVariantProperty))
-        //         .DisposeWith(handlerCleanup);
-        // }
+        if (dialogHost is DialogHost topLevelDialog)
+        {
+            topLevelDialog
+                .Bind(
+                    ThemeVariantScope.ActualThemeVariantProperty,
+                    this.GetBindingObservable(ThemeVariantScope.ActualThemeVariantProperty))
+                .DisposeWith(handlerCleanup);
+        }
         UpdateHostPosition(dialogHost, placementTarget);
         
         SubscribeToEventHandler<IDialogHost, EventHandler<TemplateAppliedEventArgs>>(dialogHost, RootTemplateApplied,
@@ -461,14 +463,25 @@ public class Dialog : Control,
         
         _openState = new DialogOpenState(placementTarget, topLevel, dialogHost, cleanupPopup);
 
-        WindowManagerAddShadowHintChanged(dialogHost, WindowManagerAddShadowHint);
-
-        dialogHost.Show();
-
-        if (TakesFocusFromNativeControl)
+        if (dialogHost is DialogHost windowDialog)
         {
-            dialogHost.TakeFocus();
+            if (IsModal)
+            {
+                if (topLevel is Window windowTopLevel)
+                {
+                    windowDialog.ShowDialog(windowTopLevel);
+                }
+            }
+            else
+            {
+                windowDialog.Show();
+            }
         }
+        else
+        {
+            dialogHost.Show();
+        }
+        
         using (BeginIgnoringIsOpen())
         {
             SetCurrentValue(IsOpenProperty, true);
@@ -508,11 +521,6 @@ public class Dialog : Control,
         }
 
         Closed?.Invoke(this, EventArgs.Empty);
-    }
-    
-    public static bool GetTakesFocusFromNativeControl(Control control)
-    {
-        return control.GetValue(TakesFocusFromNativeControlProperty);
     }
     
     protected override Size MeasureCore(Size availableSize)
@@ -603,14 +611,6 @@ public class Dialog : Control,
         subscribe(target, handler);
 
         return Disposable.Create((unsubscribe, target, handler), state => state.unsubscribe(state.target, state.handler));
-    }
-    
-    private static void WindowManagerAddShadowHintChanged(IDialogHost host, bool hint)
-    {
-        // if (host is DialogHost pr)
-        // {
-        //     pr.WindowManagerAddShadowHint = hint;
-        // }
     }
     
     private void HandleChildChanged(AvaloniaPropertyChangedEventArgs e)
@@ -885,6 +885,11 @@ public class Dialog : Control,
                 }
             }
         }
+    }
+
+    internal void NotifyDialogHostCloseRequest()
+    {
+        Close();
     }
     
     private IgnoreIsOpenScope BeginIgnoringIsOpen()

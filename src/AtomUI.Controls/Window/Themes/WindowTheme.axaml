@@ -1,44 +1,47 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:Window}" TargetType="atom:Window">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Panel>
-                    <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
-                                        IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}" />
-                    <Border Name="WindowFrame"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            BackgroundSizing="InnerBorderEdge"
-                            ClipToBounds="True">
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Controls.Themes.WindowTheme"
+              TargetType="atom:Window"
+              x:ClassModifier="internal">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:Window">
+            <Panel>
+                <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
+                                    IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}" />
+                <Border Name="WindowFrame"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BackgroundSizing="InnerBorderEdge"
+                        ClipToBounds="True">
 
-                        <DockPanel LastChildFill="True">
-                            <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
-                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
-                                               Content="{TemplateBinding Title}"
-                                               Logo="{TemplateBinding Logo}" />
+                    <DockPanel LastChildFill="True">
+                        <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
+                            <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
+                                           Content="{TemplateBinding Title}"
+                                           Logo="{TemplateBinding Logo}" />
+                        </Border>
+                        <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                            <Border Name="ContentFrame"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    ClipToBounds="True"
+                                    Cursor="Arrow"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                             </Border>
-                            <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                                <Border Name="ContentFrame"
-                                        CornerRadius="{TemplateBinding CornerRadius}"
-                                        ClipToBounds="True"
-                                        Cursor="Arrow">
-                                    <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
-                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                      Content="{TemplateBinding Content}"
-                                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                </Border>
-                            </atom:VisualLayerManager>
-                        </DockPanel>
-                    </Border>
-                </Panel>
+                        </atom:VisualLayerManager>
+                    </DockPanel>
+                </Border>
+            </Panel>
 
-            </ControlTemplate>
-        </Setter>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|Window)">
 
         <Setter Property="Margin" Value="0" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
@@ -113,6 +116,6 @@
             <Setter Property="IsResizeEnabled" Value="False" />
             <Setter Property="CornerRadius" Value="0" />
         </Style>
+    </Style>
 
-    </ControlTheme>
-</ResourceDictionary>
+</ControlTheme>

@@ -1,5 +1,0 @@
-<Project>
-    <PropertyGroup>
-        <DefineConstants>$(DefineConstants);INTERNAL_USING</DefineConstants>
-    </PropertyGroup>
-</Project>

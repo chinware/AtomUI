@@ -24,5 +24,4 @@ public interface IDialogHost : IDisposable, IFocusScope
     void SetChild(Control? control);
     void Show();
     void Hide();
-    void TakeFocus();
 }

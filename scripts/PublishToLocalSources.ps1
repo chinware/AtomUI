@@ -1,8 +1,6 @@
 param (
     [string]$localSourcesDir = "D:/nuget.local",
     [string]$buildType = "Release",
-    [string]$preReleaseTag,
-    [bool]$nativeOnly=$false
 )
 
 function Push-NuGetPackages {
@@ -43,24 +41,17 @@ function Push-NuGetPackages {
     }
 }
 
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Native/AtomUI.Native.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Native/AtomUI.Native.csproj -v:diag
+dotnet build -v diag --configuration $buildType ../packages/AtomUI/AtomUI.csproj
+dotnet pack --no-build --configuration $buildType ../packages/AtomUI/AtomUI.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
+
 Push-NuGetPackages -Source $localSourcesDir
 
-if (!$nativeOnly) {
-    dotnet build -v diag --configuration $buildType ../packages/AtomUI/AtomUI.csproj
-    dotnet pack --no-build --configuration $buildType ../packages/AtomUI/AtomUI.csproj
-    dotnet pack --no-build --configuration $buildType ../src/AtomUI.IconPkg.Generator/AtomUI.IconPkg.Generator.csproj
-    dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
+dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
 
-    Push-NuGetPackages -Source $localSourcesDir
+dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
 
-    dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
-    dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
-
-    dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
-    dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
-
-    Push-NuGetPackages -Source $localSourcesDir
-}
-
+Push-NuGetPackages -Source $localSourcesDir
