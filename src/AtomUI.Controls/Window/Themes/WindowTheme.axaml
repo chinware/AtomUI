@@ -14,8 +14,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BackgroundSizing="InnerBorderEdge"
                         ClipToBounds="True">
-
-                    <DockPanel LastChildFill="True">
+                    <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
                         <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
                             <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
                                            Content="{TemplateBinding Title}"
@@ -62,8 +61,8 @@
             <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
         </Style>
         <Style Selector="^[OperationSystemType=macOS]">
-            <Setter Property="MacOSCaptionGroupOffset" Value="10, 2" />
-            <Setter Property="MacOSCaptionGroupSpacing" Value="10" />
+            <Setter Property="MacOSCaptionGroupOffset" Value="10, 0" />
+            <Setter Property="MacOSCaptionGroupSpacing" Value="5" />
         </Style>
 
         <Style Selector="^ /template/ Border#WindowFrame">
@@ -97,13 +96,6 @@
                 </On>
             </OnPlatform>
         </Setter>
-
-        <Style Selector="^[OperationSystemType=macOS]">
-            <Setter Property="IsMaximizeCaptionButtonEnabled" Value="False" />
-            <Setter Property="IsMinimizeCaptionButtonEnabled" Value="False" />
-            <Setter Property="IsFullScreenCaptionButtonEnabled" Value="False" />
-            <Setter Property="IsCloseCaptionButtonEnabled" Value="False" />
-        </Style>
 
         <Style Selector="^:not(^[OperationSystemType=macOS])">
             <Setter Property="IsMaximizeCaptionButtonEnabled" Value="True" />

@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -69,12 +70,18 @@ public sealed class DialogHost : Window,
     private bool _needsUpdate;
     private readonly ManagedDialogPositioner _positioner;
     private Dialog _dialog;
+    private ManagedDialogPositionerDialogImplHelper _positionerHelper;
+    private PixelPoint _latestDialogPosition;
     
     public DialogHost(TopLevel parent, Dialog dialog)
     {
-        ParentTopLevel = parent;
-        _positioner    = new ManagedDialogPositioner(new ManagedDialogPositionerDialogImplHelper(PlatformImpl!,MoveResize));
-        _dialog =  dialog;
+        ParentTopLevel    = parent;
+        _positionerHelper = new ManagedDialogPositionerDialogImplHelper(PlatformImpl!, MoveResize);
+        _positioner       = new ManagedDialogPositioner(_positionerHelper);
+        _dialog           = dialog;
+#if DEBUG
+        this.AttachDevTools();
+#endif
     }
     
     public void SetChild(Control? control) => Content = control;
@@ -85,12 +92,13 @@ public sealed class DialogHost : Window,
         _needsUpdate           = true;
         UpdatePosition();
     }
-    
+
     protected override void ArrangeCore(Rect finalRect)
     {
         if (_dialogSize != finalRect.Size)
         {
             _dialogSize  = finalRect.Size;
+            _dialog.NotifyDialogHostMeasured(_dialogSize, _positionerHelper.ClientAreaScreenGeometry);
             _needsUpdate = true;
             UpdatePosition();
         }
@@ -109,10 +117,14 @@ public sealed class DialogHost : Window,
     
     private void MoveResize(PixelPoint position, Size size, double scaling)
     {
-        // Move(position);
-        // _scalingOverride = scaling;
-        // UpdateScaling(true);
-        // Resize(size, true, WindowResizeReason.Layout);
+        if (WindowState == WindowState.Normal)
+        {
+            if (_latestDialogPosition != position)
+            {
+                _latestDialogPosition =  position;
+                Position = position;
+            }
+        }
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)
@@ -120,7 +132,10 @@ public sealed class DialogHost : Window,
         if (!e.IsProgrammatic)
         {
             e.Cancel = true;
-            _dialog.NotifyDialogHostCloseRequest();
+            Dispatcher.UIThread.Post(() =>
+            {
+                _dialog.NotifyDialogHostCloseRequest();
+            });
         }
     }
 }

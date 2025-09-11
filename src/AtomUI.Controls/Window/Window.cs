@@ -10,6 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -53,7 +54,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         AvaloniaProperty.Register<Window, bool>(nameof(IsPinCaptionButtonEnabled));
     
     public static readonly StyledProperty<bool> IsCloseCaptionButtonEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsCloseCaptionButtonEnabled));
+        AvaloniaProperty.Register<Window, bool>(nameof(IsCloseCaptionButtonEnabled), true);
     
     public static readonly StyledProperty<bool> IsMoveEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMoveEnabled), defaultValue: true);
@@ -61,6 +62,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly StyledProperty<bool> IsResizeEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsResizeEnabled), defaultValue: true);
     
+#if PLATFORM_MACOS
     public static readonly StyledProperty<Point> MacOSCaptionGroupOffsetProperty =
         AvaloniaProperty.Register<Window, Point>(nameof(MacOSCaptionGroupOffset), defaultValue: new Point(10, 0));
     
@@ -73,6 +75,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
 
     public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
         OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<Window>();
+#endif
     
     public double TitleFontSize
     {
@@ -158,6 +161,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(IsResizeEnabledProperty, value);
     }
     
+#if PLATFORM_MACOS
     public Point MacOSCaptionGroupOffset
     {
         get => GetValue(MacOSCaptionGroupOffsetProperty);
@@ -178,6 +182,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     private Thickness _macOSTitleBarMargin;
     
     public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
+#endif
     
     #endregion
 
@@ -233,6 +238,16 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
             }
             HandleWindowStateChanged(oldWindowState, newWindowState);
         }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsCloseCaptionButtonEnabledProperty)
+            {
+#if PLATFORM_MACOS
+                this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
+#endif
+            }
+        }
     }
     
     private void HandleWindowStateChanged(WindowState oldState, WindowState newState)
@@ -275,6 +290,9 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
                 _titleBar.PointerMoved    -= HandleTitleBarPointerMoved;
             });
         }
+#if PLATFORM_MACOS
+        this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
+#endif
     }
 
     protected override void OnClosed(EventArgs e)
@@ -296,6 +314,9 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         {
             Icon ??= window.Icon;
         }
+#if PLATFORM_MACOS
+        this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
+#endif
     }
 
     private void HandleScalingChanged(object? sender, EventArgs e)

@@ -21,7 +21,7 @@ public class ManagedDialogPositionerDialogImplHelper : IManagedDialogPositionerD
         {
             if (_parent.TryGetFeature<IScreenImpl>() is not { } screenImpl)
             {
-                return Array.Empty<ManagedDialogPositionerScreenInfo>();
+                return [];
             }
 
             return screenImpl.AllScreens
@@ -38,6 +38,25 @@ public class ManagedDialogPositionerDialogImplHelper : IManagedDialogPositionerD
             var point = _parent.PointToScreen(default);
             var size  = _parent.ClientSize * Scaling;
             return new Rect(point.X, point.Y, size.Width, size.Height);
+        }
+    }
+
+    public Rect ClientAreaScreenGeometry
+    {
+        get
+        {
+            var targetScreen = Screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(ParentClientAreaScreenGeometry.TopLeft))
+                               ?? Screens.FirstOrDefault(s => s.Bounds.Intersects(ParentClientAreaScreenGeometry))
+                               ?? Screens.FirstOrDefault();
+
+            if (targetScreen != null &&
+                (targetScreen.WorkingArea.Width == 0 && targetScreen.WorkingArea.Height == 0))
+            {
+                return targetScreen.Bounds;
+            }
+                
+            return targetScreen?.WorkingArea
+                   ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
         }
     }
     

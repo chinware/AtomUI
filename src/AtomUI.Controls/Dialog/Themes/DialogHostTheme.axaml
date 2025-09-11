@@ -10,7 +10,12 @@
         </ControlTheme.BasedOn>
         
         <Style Selector="^:is(atom|DialogHost)">
-            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+        
+        <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
+            <Setter Property="VerticalSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}"/>
         </Style>
         
     </ControlTheme>

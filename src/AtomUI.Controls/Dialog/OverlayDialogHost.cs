@@ -10,7 +10,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
-using Avalonia.Threading;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
@@ -305,7 +304,7 @@ public sealed class OverlayDialogHost : ContentControl,
         if (_dialogSize != finalSize)
         {
             _dialogSize  = finalSize;
-            _dialog.NotifyDialogHostMeasured(_dialogSize);
+            _dialog.NotifyDialogHostMeasured(_dialogSize, new Rect(_dialogLayer.DesiredSize));
             _needsUpdate = true;
             UpdatePosition();
         }
@@ -617,10 +616,8 @@ public sealed class OverlayDialogHost : ContentControl,
 
         if (newState == OverlayDialogState.Maximized)
         {
-            _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty,
-                new Dimension(0));
-            _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty,
-                new Dimension(0));
+            _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(0));
+            _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(0));
         }
         else if (newState == OverlayDialogState.Normal)
         {

@@ -22,7 +22,6 @@ using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.Platform;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -335,11 +334,13 @@ public class Dialog : Control,
         }
         
         _isOpenRequested = false;
-        IDialogHost? dialogHost = default;
+        IDialogHost?        dialogHost              = null;
         CompositeDisposable relayBindingDisposables = new CompositeDisposable();
+        DialogHost?         windowDialogHost        = null;
+        OverlayDialogHost?  overlayDialogHost       = null;
         if (DialogHostType == DialogHostType.Window)
         {
-            var windowDialogHost = new DialogHost(topLevel, this);
+            windowDialogHost = new DialogHost(topLevel, this);
             relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleProperty, windowDialogHost, DialogHost.TitleProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleIconProperty, windowDialogHost, DialogHost.IconProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, windowDialogHost, DialogHost.IsMotionEnabledProperty));
@@ -347,6 +348,7 @@ public class Dialog : Control,
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, windowDialogHost, DialogHost.CanMaximizeProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMinimizableProperty, windowDialogHost, DialogHost.CanMinimizeProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, windowDialogHost, DialogHost.IsMoveEnabledProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsClosableProperty, windowDialogHost, DialogHost.IsCloseCaptionButtonEnabledProperty));
             dialogHost = windowDialogHost;
         }
         else
@@ -354,7 +356,7 @@ public class Dialog : Control,
             var dialogLayer = DialogLayer.GetDialogLayer(placementTarget);
             if (dialogLayer != null)
             {
-                var overlayDialogHost = new OverlayDialogHost(dialogLayer, this);
+                overlayDialogHost = new OverlayDialogHost(dialogLayer, this);
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleProperty, overlayDialogHost, OverlayDialogHost.TitleProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleIconProperty, overlayDialogHost, OverlayDialogHost.TitleIconProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, overlayDialogHost, OverlayDialogHost.IsMotionEnabledProperty));
@@ -399,17 +401,7 @@ public class Dialog : Control,
         SubscribeToEventHandler<Control, EventHandler<VisualTreeAttachmentEventArgs>>(placementTarget, TargetDetached,
             (x, handler) => x.DetachedFromVisualTree += handler,
             (x, handler) => x.DetachedFromVisualTree -= handler).DisposeWith(handlerCleanup);
-        if (topLevel is Window window && window.PlatformImpl != null)
-        {
-            SubscribeToEventHandler<Window, EventHandler>(window, WindowDeactivated,
-                (x, handler) => x.Deactivated += handler,
-                (x, handler) => x.Deactivated -= handler).DisposeWith(handlerCleanup);
-
-            SubscribeToEventHandler<IWindowImpl, Action>(window.PlatformImpl, WindowLostFocus,
-                (x, handler) => x.LostFocus += handler,
-                (x, handler) => x.LostFocus -= handler).DisposeWith(handlerCleanup);
-        } 
-        else if (topLevel is DialogHost parentDialogHost)
+        if (topLevel is DialogHost parentDialogHost)
         {
             if (parentDialogHost.Parent is Dialog dialog)
             {
@@ -418,12 +410,12 @@ public class Dialog : Control,
                     (x, handler) => x.Closed -= handler).DisposeWith(handlerCleanup);
             }
         }
-        else if (topLevel is { } tl && tl.PlatformImpl is ITopLevelImpl pimpl)
+        else if (topLevel is Window window)
         {
-            SubscribeToEventHandler<ITopLevelImpl, Action>(pimpl, TopLevelLostPlatformFocus,
-                (x, handler) => x.LostFocus += handler,
-                (x, handler) => x.LostFocus -= handler).DisposeWith(handlerCleanup);
-        }
+            SubscribeToEventHandler<Window, EventHandler>(window, ParentClosed,
+                (x, handler) => x.Closed += handler,
+                (x, handler) => x.Closed -= handler).DisposeWith(handlerCleanup);
+        } 
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>();
         inputManager?.Process.Subscribe(ListenForNonClientClick).DisposeWith(handlerCleanup);
         var cleanupPopup = Disposable.Create((dialogHost, handlerCleanup), state =>
@@ -431,11 +423,19 @@ public class Dialog : Control,
             state.handlerCleanup.Dispose();
 
             state.dialogHost.SetChild(null);
-            state.dialogHost.Hide();
+
+            if (DialogHostType == DialogHostType.Overlay)
+            {
+                overlayDialogHost?.Hide();
+            }
+            else
+            {
+                windowDialogHost?.Close();
+            }
 
             ((ISetLogicalParent)state.dialogHost).SetParent(null);
             state.dialogHost.Dispose();
-            relayBindingDisposables?.Dispose();
+            relayBindingDisposables.Dispose();
         });
         
         if (IsLightDismissEnabled)
@@ -465,6 +465,7 @@ public class Dialog : Control,
 
         if (dialogHost is DialogHost windowDialog)
         {
+            windowDialog.Focus();
             if (IsModal)
             {
                 if (topLevel is Window windowTopLevel)
@@ -476,6 +477,7 @@ public class Dialog : Control,
             {
                 windowDialog.Show();
             }
+       
         }
         else
         {
@@ -743,28 +745,9 @@ public class Dialog : Control,
     
     public bool IsPointerOverDialog => ((IInputElement?)_openState?.DialogHost)?.IsPointerOver ?? false;
     
-    private void WindowDeactivated(object? sender, EventArgs e)
-    {
-        if (IsLightDismissEnabled)
-        {
-            Close();
-        }
-    }
-    
     private void ParentClosed(object? sender, EventArgs e)
     {
-        if (IsLightDismissEnabled)
-        {
-            Close();
-        }
-    }
-    
-    private void TopLevelLostPlatformFocus()
-    {
-        if (IsLightDismissEnabled)
-        {
-            Close();
-        }
+        Close();
     }
     
     private void PlacementTargetTransformChanged(Visual v, Matrix? matrix)
@@ -816,73 +799,43 @@ public class Dialog : Control,
         dialogHost.MaxHeight = MaxHeight * scaleY;
     }
     
-    private void HandlePositionChange()
-    {
-        if (_openState != null)
-        {
-            UpdateHostPosition(_openState.DialogHost, _openState.PlacementTarget);
-        }
-    }
-    
-    private void WindowLostFocus()
-    {
-        if (IsLightDismissEnabled)
-        {
-            Close();
-        }
-    }
-    
     private void TargetDetached(object? sender, VisualTreeAttachmentEventArgs e)
     {
         Close();
     }
 
-    internal void NotifyDialogHostMeasured(Size size)
+    internal void NotifyDialogHostMeasured(Size size, Rect bounds)
     {
-        if (DialogHostType == DialogHostType.Overlay)
+        Size boundSize = bounds.Size;
+        if (HorizontalOffset == null && HorizontalStartupLocation != DialogHorizontalAnchor.Custom)
         {
-            var placementTarget = PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
-            if (placementTarget == null)
+            if (HorizontalStartupLocation == DialogHorizontalAnchor.Left)
             {
-                return;
+                SetCurrentValue(HorizontalOffsetProperty, new Dimension(0));
             }
-            var dialogLayer     = DialogLayer.GetDialogLayer(placementTarget);
-            if (dialogLayer == null)
+            else if (HorizontalStartupLocation == DialogHorizontalAnchor.Right)
             {
-                return;
+                SetCurrentValue(HorizontalOffsetProperty, new Dimension(boundSize.Width - size.Width));
             }
+            else if (HorizontalStartupLocation == DialogHorizontalAnchor.Center)
+            {
+                SetCurrentValue(HorizontalOffsetProperty, new Dimension((boundSize.Width - size.Width) / 2));
+            }
+        }
         
-            var layerSize = dialogLayer.DesiredSize;
-            if (HorizontalOffset == null && HorizontalStartupLocation != DialogHorizontalAnchor.Custom)
+        if (VerticalOffset == null && VerticalStartupLocation != DialogVerticalAnchor.Custom)
+        {
+            if (VerticalStartupLocation == DialogVerticalAnchor.Top)
             {
-                if (HorizontalStartupLocation == DialogHorizontalAnchor.Left)
-                {
-                    SetCurrentValue(HorizontalOffsetProperty, new Dimension(0));
-                }
-                else if (HorizontalStartupLocation == DialogHorizontalAnchor.Right)
-                {
-                    SetCurrentValue(HorizontalOffsetProperty, new Dimension(layerSize.Width - size.Width));
-                }
-                else if (HorizontalStartupLocation == DialogHorizontalAnchor.Center)
-                {
-                    SetCurrentValue(HorizontalOffsetProperty, new Dimension((layerSize.Width - size.Width) / 2));
-                }
+                SetCurrentValue(VerticalOffsetProperty, new Dimension(0));
             }
-        
-            if (VerticalOffset == null && VerticalStartupLocation != DialogVerticalAnchor.Custom)
+            else if (VerticalStartupLocation == DialogVerticalAnchor.Bottom)
             {
-                if (VerticalStartupLocation == DialogVerticalAnchor.Top)
-                {
-                    SetCurrentValue(VerticalOffsetProperty, new Dimension(0));
-                }
-                else if (VerticalStartupLocation == DialogVerticalAnchor.Bottom)
-                {
-                    SetCurrentValue(VerticalOffsetProperty, new Dimension(layerSize.Height - size.Height));
-                }
-                else if (VerticalStartupLocation == DialogVerticalAnchor.Center)
-                {
-                    SetCurrentValue(VerticalOffsetProperty, new Dimension((layerSize.Height - size.Height) / 2));
-                }
+                SetCurrentValue(VerticalOffsetProperty, new Dimension(boundSize.Height - size.Height));
+            }
+            else if (VerticalStartupLocation == DialogVerticalAnchor.Center)
+            {
+                SetCurrentValue(VerticalOffsetProperty, new Dimension((boundSize.Height - size.Height) / 2));
             }
         }
     }
