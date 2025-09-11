@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using AtomUI.Controls.DialogPositioning;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
@@ -22,6 +23,7 @@ using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -97,11 +99,13 @@ public class Dialog : Control,
     
     public static readonly StyledProperty<bool> TopmostProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(Topmost));
+    
+    public static readonly StyledProperty<object?> ResultProperty =
+        AvaloniaProperty.Register<Dialog, object?>(nameof(Result));
         
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Dialog>();
     
-
     public static readonly StyledProperty<DialogHostType> DialogHostTypeProperty =
         AvaloniaProperty.Register<Dialog, DialogHostType>(nameof(VerticalOffset), DialogHostType.Overlay);
     
@@ -242,10 +246,22 @@ public class Dialog : Control,
         set => SetValue(TopmostProperty, value);
     }
     
+    public object? Result
+    {
+        get => GetValue(ResultProperty);
+        set => SetValue(ResultProperty, value);
+    }
+    
     public DialogHostType DialogHostType
     {
         get => GetValue(DialogHostTypeProperty);
         set => SetValue(DialogHostTypeProperty, value);
+    }
+    
+    public Task<object?>? ResultTask
+    {
+        get;
+        private set;
     }
     
     public bool IsMotionEnabled
@@ -261,9 +277,13 @@ public class Dialog : Control,
 
     #region 公共事件定义
 
-    public event EventHandler<EventArgs>? Closed;
+    public event EventHandler? Closed;
     public event EventHandler? Opened;
     internal event EventHandler<CancelEventArgs>? Closing;
+    
+    public event EventHandler? Accepted;
+    public event EventHandler? Rejected;
+    public event EventHandler<DialogFinishedEventArgs>? Finished;
     
     event Action<IDialogHost?>? IDialogHostProvider.DialogHostChanged 
     { 
@@ -280,11 +300,12 @@ public class Dialog : Control,
     
     #endregion
     
-    private bool _isOpenRequested;
     private bool _ignoreIsOpenChanged;
     private DialogOpenState? _openState;
     private Action<IDialogHost?>? _dialogHostChangedHandler;
     private CompositeDisposable? _tokenBindingDisposables;
+    private IDisposable? _modalSubscription;
+    private CancellationTokenSource? _frameCancellationTokenSource;
 
     static Dialog()
     {
@@ -304,36 +325,41 @@ public class Dialog : Control,
         {
             if (e.NewValue.Value)
             {
-                Open();
+                OpenAsync();
             }
             else
             {
-                Close();
+                Done(Result);
             }
         }
     }
 
-    public void Open()
+    public object? Open()
     {
         if (_openState != null)
         {
-            return;
+            return null;
+        }
+        _frameCancellationTokenSource?.Cancel();
+        _frameCancellationTokenSource = new CancellationTokenSource();
+        var token = _frameCancellationTokenSource.Token;
+        var frame = new DispatcherFrame();
+        token.Register(() => frame.Continue = false);
+        var resultTask = OpenAsync();
+        Dispatcher.UIThread.PushFrame(frame);
+        return resultTask?.Result;
+    }
+
+    public Task<object?>? OpenAsync()
+    {
+        if (_openState != null)
+        {
+            return null;
         }
         var placementTarget = PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
-        if (placementTarget == null)
-        {
-            _isOpenRequested = true;
-            return;
-        }
+        Debug.Assert(placementTarget != null);
         var topLevel = TopLevel.GetTopLevel(placementTarget);
-        
-        if (topLevel == null)
-        {
-            _isOpenRequested = true;
-            return;
-        }
-        
-        _isOpenRequested = false;
+        Debug.Assert(topLevel != null);
         IDialogHost?        dialogHost              = null;
         CompositeDisposable relayBindingDisposables = new CompositeDisposable();
         DialogHost?         windowDialogHost        = null;
@@ -405,7 +431,7 @@ public class Dialog : Control,
         {
             if (parentDialogHost.Parent is Dialog dialog)
             {
-                SubscribeToEventHandler<Dialog, EventHandler<EventArgs>>(dialog, ParentClosed,
+                SubscribeToEventHandler<Dialog, EventHandler>(dialog, ParentClosed,
                     (x, handler) => x.Closed += handler,
                     (x, handler) => x.Closed -= handler).DisposeWith(handlerCleanup);
             }
@@ -432,7 +458,7 @@ public class Dialog : Control,
             {
                 windowDialogHost?.Close();
             }
-
+            
             ((ISetLogicalParent)state.dialogHost).SetParent(null);
             state.dialogHost.Dispose();
             relayBindingDisposables.Dispose();
@@ -484,6 +510,32 @@ public class Dialog : Control,
             dialogHost.Show();
         }
         
+        if (IsModal)
+        {
+            var tcs = new TaskCompletionSource<object?>();
+
+            var disposables = new CompositeDisposable(
+            [
+                Observable.FromEventPattern(
+                              x => Closed += x,
+                              x => Closed -= x)
+                          .Take(1)
+                          .Subscribe(_ =>
+                          {
+                              _modalSubscription?.Dispose();
+                          }),
+                Disposable.Create(() =>
+                {
+                    _modalSubscription = null;
+                    // owner!.Activate();
+                    tcs.SetResult(Result);
+                })
+            ]);
+
+            _modalSubscription = disposables;
+            ResultTask             = tcs.Task;
+        }
+        
         using (BeginIgnoringIsOpen())
         {
             SetCurrentValue(IsOpenProperty, true);
@@ -491,9 +543,31 @@ public class Dialog : Control,
 
         Opened?.Invoke(this, EventArgs.Empty);
         _dialogHostChangedHandler?.Invoke(Host);
+        return ResultTask;
     }
 
-    public void Close() => NotifyClose();
+    public void Accept()
+    {
+        Result = DialogCode.Accepted;
+        NotifyClose();
+    }
+
+    public void Reject()
+    {
+        Result = DialogCode.Rejected;
+        NotifyClose();
+    }
+
+    public void Done(object? dialogResult)
+    {
+        Result = dialogResult;
+        NotifyClose();
+    }
+
+    public void Done()
+    {
+        NotifyClose();
+    }
 
     protected virtual void NotifyClose()
     {
@@ -503,7 +577,20 @@ public class Dialog : Control,
         {
             return;
         }
-        _isOpenRequested = false;
+
+        if (Result is DialogCode code)
+        {
+            if (code == DialogCode.Accepted)
+            {
+                Accepted?.Invoke(this, EventArgs.Empty);
+            }
+            else if (code == DialogCode.Rejected)
+            {
+                Rejected?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        Finished?.Invoke(this, new DialogFinishedEventArgs(Result));
+        
         if (_openState is null)
         {
             using (BeginIgnoringIsOpen())
@@ -513,10 +600,14 @@ public class Dialog : Control,
 
             return;
         }
+        _frameCancellationTokenSource?.Cancel();
+        _frameCancellationTokenSource = null;
         _openState.Dispose();
         _openState = null;
-
+        
         _dialogHostChangedHandler?.Invoke(null);
+        _modalSubscription?.Dispose();
+        _modalSubscription = null;
         using (BeginIgnoringIsOpen())
         {
             SetCurrentValue(IsOpenProperty, false);
@@ -538,16 +629,12 @@ public class Dialog : Control,
         _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, IsMotionEnabledProperty, SharedTokenKey.EnableMotion));
         _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MinHeightProperty, DialogTokenKey.MinHeight));
         _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MinWidthProperty, DialogTokenKey.MinWidth));
-        if (_isOpenRequested)
-        {
-            Open();
-        }
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-        Close();
+        Done(null);
         _tokenBindingDisposables?.Dispose();
     }
     
@@ -578,7 +665,7 @@ public class Dialog : Control,
 
                     if (newTarget is null || newTarget.GetVisualRoot() != _openState.TopLevel)
                     {
-                        Close();
+                        Done();
                         return;
                     }
 
@@ -747,7 +834,7 @@ public class Dialog : Control,
     
     private void ParentClosed(object? sender, EventArgs e)
     {
-        Close();
+        Done(null);
     }
     
     private void PlacementTargetTransformChanged(Visual v, Matrix? matrix)
@@ -801,7 +888,7 @@ public class Dialog : Control,
     
     private void TargetDetached(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        Close();
+        Done();
     }
 
     internal void NotifyDialogHostMeasured(Size size, Rect bounds)
@@ -842,7 +929,7 @@ public class Dialog : Control,
 
     internal void NotifyDialogHostCloseRequest()
     {
-        Close();
+        Done();
     }
     
     private IgnoreIsOpenScope BeginIgnoringIsOpen()

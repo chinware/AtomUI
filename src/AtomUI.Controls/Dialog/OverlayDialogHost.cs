@@ -538,7 +538,7 @@ public sealed class OverlayDialogHost : ContentControl,
     {
         if (Parent is Dialog dialog)
         {
-            dialog.Close();
+            dialog.Done();
         }
     }
 
