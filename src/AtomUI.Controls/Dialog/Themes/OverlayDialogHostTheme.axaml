@@ -19,6 +19,12 @@
                                                       IsCloseButtonEnabled="{TemplateBinding IsClosable}"
                                                       IsMaximizeButtonEnabled="{TemplateBinding IsMaximizable}" 
                                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                            <Border Name="FooterFrame" DockPanel.Dock="Bottom">
+                                <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
+                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                      StandardButtons="{TemplateBinding StandardButtons}"
+                                                      DefaultStandardButton="{TemplateBinding DefaultStandardButton}"/>
+                            </Border>
                             <Border Name="ContentFrame">
                                 <ContentPresenter Name="ContentPresenter"
                                                   Content="{TemplateBinding Content}"
@@ -63,6 +69,12 @@
 
         <Style Selector="^ /template/ Border#ContentFrame">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Border#FooterFrame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterBg}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterMarginTop}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterPadding}}" />
         </Style>
 
         <Style Selector="^[WindowState=Maximized]">

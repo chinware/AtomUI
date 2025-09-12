@@ -1,9 +1,12 @@
+using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls.DialogPositioning;
+using AtomUI.Controls.MessageBox;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -49,6 +52,12 @@ public sealed class OverlayDialogHost : ContentControl,
     
     public static readonly StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<OverlayDialogHost, Transform?>(nameof (Transform));
+    
+    public static readonly StyledProperty<DialogStandardButtons> StandardButtonsProperty =
+        DialogButtonBox.StandardButtonsProperty.AddOwner<OverlayDialogHost>();
+    
+    public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
+        DialogButtonBox.DefaultStandardButtonProperty.AddOwner<OverlayDialogHost>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OverlayDialogHost>();
@@ -106,12 +115,26 @@ public sealed class OverlayDialogHost : ContentControl,
         get => GetValue(TransformProperty);
         set => SetValue(TransformProperty, value);
     }
+    
+    public DialogStandardButtons StandardButtons
+    {
+        get => GetValue(StandardButtonsProperty);
+        set => SetValue(StandardButtonsProperty, value);
+    }
+    
+    public DialogStandardButton DefaultStandardButton
+    {
+        get => GetValue(DefaultStandardButtonProperty);
+        set => SetValue(DefaultStandardButtonProperty, value);
+    }
 
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    public AvaloniaList<Button> CustomButtons { get; } = new ();
     
     #endregion
     
@@ -150,6 +173,7 @@ public sealed class OverlayDialogHost : ContentControl,
     private OverlayDialogResizer? _resizer;
     private readonly List<Action> _disposeActions = new();
     private Dialog _dialog;
+    private DialogButtonBox? _buttonBox;
     
     // 拖动
     private Size? _lastestSize;
@@ -167,6 +191,7 @@ public sealed class OverlayDialogHost : ContentControl,
         _positioner                = new ManagedDialogPositioner(this);
         _keyboardNavigationHandler = AvaloniaLocator.Current.GetService<IKeyboardNavigationHandler>();
         _keyboardNavigationHandler?.SetOwner(this);
+        CustomButtons.CollectionChanged += new NotifyCollectionChangedEventHandler(HandleCustomButtonsChanged);
     }
     
     IKeyboardNavigationHandler? IInputRoot.KeyboardNavigationHandler => _keyboardNavigationHandler;
@@ -388,11 +413,16 @@ public sealed class OverlayDialogHost : ContentControl,
             _resizer.ResizeRequest += HandleResizeRequest;
             _resizer.AboutToResize += HandleAboutToResize;
         }
-        _header = e.NameScope.Find<OverlayDialogHeader>(OverlayDialogThemeConstants.HeaderPart);
+        _header    = e.NameScope.Find<OverlayDialogHeader>(OverlayDialogThemeConstants.HeaderPart);
+        _buttonBox = e.NameScope.Find<DialogButtonBox>(DialogThemeConstants.ButtonBoxPart);
         ConfigureHeaderHandlers();
         if (_header != null)
         {
             _header.SetCurrentValue(OverlayDialogHeader.IsDialogMaximizedProperty, WindowState == OverlayDialogState.Maximized);
+        }
+        if (_buttonBox != null)
+        {
+            _buttonBox.CustomButtons.AddRange(CustomButtons);
         }
     }
 
@@ -627,6 +657,28 @@ public sealed class OverlayDialogHost : ContentControl,
         if (_header != null)
         {
             _header.SetCurrentValue(OverlayDialogHeader.IsDialogMaximizedProperty, WindowState == OverlayDialogState.Maximized);
+        }
+    }
+    
+    private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_buttonBox != null)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newItems = e.NewItems!.OfType<Button>();
+                    _buttonBox.CustomButtons.AddRange(newItems);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldItems = e.OldItems!.OfType<Button>();
+                    _buttonBox.CustomButtons.RemoveAll(oldItems);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotSupportedException();
+            }
         }
     }
 }

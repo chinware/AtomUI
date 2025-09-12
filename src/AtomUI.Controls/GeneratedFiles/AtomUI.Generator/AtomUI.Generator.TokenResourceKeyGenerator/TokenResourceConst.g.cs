@@ -309,9 +309,13 @@ namespace AtomUI.Theme.Styling
 
     public static class DialogTokenKey
     {
+        public static readonly TokenResourceKey ButtonGroupSpacing = new TokenResourceKey("Dialog.ButtonGroupSpacing");
         public static readonly TokenResourceKey CloseBtnSize = new TokenResourceKey("Dialog.CloseBtnSize");
         public static readonly TokenResourceKey ContentBg = new TokenResourceKey("Dialog.ContentBg");
         public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("Dialog.ContentPadding");
+        public static readonly TokenResourceKey FooterBg = new TokenResourceKey("Dialog.FooterBg");
+        public static readonly TokenResourceKey FooterMarginTop = new TokenResourceKey("Dialog.FooterMarginTop");
+        public static readonly TokenResourceKey FooterPadding = new TokenResourceKey("Dialog.FooterPadding");
         public static readonly TokenResourceKey HeaderBg = new TokenResourceKey("Dialog.HeaderBg");
         public static readonly TokenResourceKey HeaderColor = new TokenResourceKey("Dialog.HeaderColor");
         public static readonly TokenResourceKey HeaderFontSize = new TokenResourceKey("Dialog.HeaderFontSize");

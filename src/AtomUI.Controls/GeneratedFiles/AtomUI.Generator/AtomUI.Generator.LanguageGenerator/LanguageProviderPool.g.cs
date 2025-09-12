@@ -11,6 +11,8 @@ namespace AtomUI.Theme.Language
             List<LanguageProvider> languageProviders = new List<LanguageProvider>();
             languageProviders.Add(new AtomUI.Controls.DatePickerLang.en_US());
             languageProviders.Add(new AtomUI.Controls.DatePickerLang.zh_CN());
+            languageProviders.Add(new AtomUI.Controls.DialogLang.en_US());
+            languageProviders.Add(new AtomUI.Controls.DialogLang.zh_CN());
             languageProviders.Add(new AtomUI.Controls.Localization.en_US());
             languageProviders.Add(new AtomUI.Controls.Localization.zh_CN());
             languageProviders.Add(new AtomUI.Controls.PaginationLang.en_US());

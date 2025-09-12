@@ -54,6 +54,22 @@ internal class DialogToken : AbstractControlDesignToken
     public Thickness ContentPadding { get; set; }
     
     /// <summary>
+    /// 底部区域背景色
+    /// Background color of footer
+    /// </summary>
+    public Color FooterBg { get; set; }
+    
+    /// <summary>
+    /// 底部区域内间距
+    /// </summary>
+    public Thickness FooterPadding { get; set; }
+    
+    /// <summary>
+    /// 底部区域外间距
+    /// </summary>
+    public Thickness FooterMarginTop { get; set; }
+    
+    /// <summary>
     /// 关闭按钮大小
     /// </summary>
     public double CloseBtnSize { get; set; }
@@ -67,6 +83,11 @@ internal class DialogToken : AbstractControlDesignToken
     /// 默认最小宽度
     /// </summary>
     public double MinWidth { get; set; }
+    
+    /// <summary>
+    /// 底部按钮间隔大小
+    /// </summary>
+    public double ButtonGroupSpacing { get; set; }
     
     public DialogToken()
         : base(ID)
@@ -90,5 +111,10 @@ internal class DialogToken : AbstractControlDesignToken
                     SharedToken.UniformlyMarginXS;
         MinWidth     = 200;
         CloseBtnSize = SharedToken.ControlHeight;
+        FooterPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, 0,
+            SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingMD);
+        FooterMarginTop    = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
+        FooterBg           = Colors.Transparent;
+        ButtonGroupSpacing = SharedToken.SpacingXS;
     }
 }

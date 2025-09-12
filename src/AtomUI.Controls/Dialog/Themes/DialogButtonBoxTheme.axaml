@@ -1,0 +1,38 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:OverlayDialogResizerVisibleConverter x:Key="OverlayDialogResizerVisibleConverter" />
+    <ControlTheme x:Key="{x:Type atom:DialogButtonBox}" TargetType="atom:DialogButtonBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame">
+                    <Grid ColumnDefinitions="*, Auto, *"
+                          RowDefinitions="*">
+                        <StackPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.LeftGroupPart}"
+                                    Orientation="Horizontal"
+                                    Grid.Row="0"
+                                    Grid.Column="0"/>
+                        <StackPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.CenterGroupPart}"
+                                    Orientation="Horizontal"
+                                    Grid.Row="0"
+                                    Grid.Column="1"/>
+                        <StackPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.RightGroupPart}"
+                                    Orientation="Horizontal"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    FlowDirection="RightToLeft"/>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
+        <Style Selector="^ /template/ StackPanel">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:DialogTokenKey.ButtonGroupSpacing}}"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

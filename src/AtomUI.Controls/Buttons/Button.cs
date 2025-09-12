@@ -329,12 +329,6 @@ public class Button : AvaloniaButton,
         }
     }
 
-    public override void EndInit()
-    {
-        ConfigureControlThemeBindings(false);
-        base.EndInit();
-    }
-
     private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
@@ -378,6 +372,7 @@ public class Button : AvaloniaButton,
         // 为了防止意外被用户改变背景，做了一个 frame
         _frame = e.NameScope.Find<Border>(ButtonThemeConstants.FramePart);
         UpdatePseudoClasses();
+        ConfigureControlThemeBindings(false);
     }
 
     protected override void OnLoaded(RoutedEventArgs e)

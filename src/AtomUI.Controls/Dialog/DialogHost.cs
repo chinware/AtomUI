@@ -1,6 +1,11 @@
+using System.Collections.Specialized;
 using AtomUI.Controls.DialogPositioning;
+using AtomUI.Controls.MessageBox;
+using AtomUI.Controls.Themes;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -19,6 +24,12 @@ public sealed class DialogHost : Window,
     public static readonly StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<DialogHost, Transform?>(nameof(Transform));
     
+    public static readonly StyledProperty<DialogStandardButtons> StandardButtonsProperty =
+        DialogButtonBox.StandardButtonsProperty.AddOwner<DialogHost>();
+    
+    public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
+        DialogButtonBox.DefaultStandardButtonProperty.AddOwner<DialogHost>();
+    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DialogHost>();
     
@@ -26,6 +37,18 @@ public sealed class DialogHost : Window,
     {
         get => GetValue(TransformProperty);
         set => SetValue(TransformProperty, value);
+    }
+    
+    public DialogStandardButtons StandardButtons
+    {
+        get => GetValue(StandardButtonsProperty);
+        set => SetValue(StandardButtonsProperty, value);
+    }
+    
+    public DialogStandardButton DefaultStandardButton
+    {
+        get => GetValue(DefaultStandardButtonProperty);
+        set => SetValue(DefaultStandardButtonProperty, value);
     }
     
     public bool IsMotionEnabled
@@ -57,6 +80,8 @@ public sealed class DialogHost : Window,
 
     Visual IDialogHost.HostedVisualTreeRoot => this;
     
+    public AvaloniaList<Button> CustomButtons { get; } = new ();
+    
     #endregion
     
     #region 内部属性定义
@@ -72,6 +97,7 @@ public sealed class DialogHost : Window,
     private Dialog _dialog;
     private ManagedDialogPositionerDialogImplHelper _positionerHelper;
     private PixelPoint _latestDialogPosition;
+    private DialogButtonBox? _buttonBox;
     
     public DialogHost(TopLevel parent, Dialog dialog)
     {
@@ -82,6 +108,7 @@ public sealed class DialogHost : Window,
 #if DEBUG
         this.AttachDevTools();
 #endif
+        CustomButtons.CollectionChanged += new NotifyCollectionChangedEventHandler(HandleCustomButtonsChanged);
     }
     
     public void SetChild(Control? control) => Content = control;
@@ -136,6 +163,38 @@ public sealed class DialogHost : Window,
             {
                 _dialog.NotifyDialogHostCloseRequest();
             });
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _buttonBox = e.NameScope.Find<DialogButtonBox>(DialogThemeConstants.ButtonBoxPart);
+        if (_buttonBox != null)
+        {
+            _buttonBox.CustomButtons.AddRange(CustomButtons);
+        }
+    }
+
+    private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_buttonBox != null)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newItems = e.NewItems!.OfType<Button>();
+                    _buttonBox.CustomButtons.AddRange(newItems);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldItems = e.OldItems!.OfType<Button>();
+                    _buttonBox.CustomButtons.RemoveAll(oldItems);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotSupportedException();
+            }
         }
     }
 }

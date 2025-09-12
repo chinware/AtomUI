@@ -6,6 +6,7 @@
         <ResourceInclude Source="OverlayDialogHeaderTheme.axaml"/>
         <ResourceInclude Source="DialogCaptionButtonTheme.axaml"/>
         <ResourceInclude Source="OverlayDialogResizerTheme.axaml"/>
+        <ResourceInclude Source="DialogButtonBoxTheme.axaml"/>
         <ResourceInclude Source="DialogHostTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

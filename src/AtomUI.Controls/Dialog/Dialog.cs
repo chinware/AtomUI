@@ -1,9 +1,11 @@
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using AtomUI.Controls.DialogPositioning;
+using AtomUI.Controls.MessageBox;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -15,6 +17,7 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -102,6 +105,12 @@ public class Dialog : Control,
     
     public static readonly StyledProperty<object?> ResultProperty =
         AvaloniaProperty.Register<Dialog, object?>(nameof(Result));
+    
+    public static readonly StyledProperty<DialogStandardButtons> StandardButtonsProperty =
+        DialogButtonBox.StandardButtonsProperty.AddOwner<Dialog>();
+    
+    public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
+        DialogButtonBox.DefaultStandardButtonProperty.AddOwner<Dialog>();
         
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Dialog>();
@@ -264,6 +273,18 @@ public class Dialog : Control,
         private set;
     }
     
+    public DialogStandardButtons StandardButtons
+    {
+        get => GetValue(StandardButtonsProperty);
+        set => SetValue(StandardButtonsProperty, value);
+    }
+    
+    public DialogStandardButton DefaultStandardButton
+    {
+        get => GetValue(DefaultStandardButtonProperty);
+        set => SetValue(DefaultStandardButtonProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -272,6 +293,8 @@ public class Dialog : Control,
     
     public IDialogHost? Host => _openState?.DialogHost;
     IDialogHost? IDialogHostProvider.DialogHost => Host;
+    
+    public AvaloniaList<Button> CustomButtons { get; } = new ();
     
     #endregion
 
@@ -317,6 +340,7 @@ public class Dialog : Control,
     public Dialog()
     {
         this.RegisterResources();
+        CustomButtons.CollectionChanged += new NotifyCollectionChangedEventHandler(HandleCustomButtonsChanged);
     }
 
     private void HandleIsOpenChanged(AvaloniaPropertyChangedEventArgs<bool> e)
@@ -374,8 +398,11 @@ public class Dialog : Control,
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, windowDialogHost, DialogHost.CanMaximizeProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMinimizableProperty, windowDialogHost, DialogHost.CanMinimizeProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, windowDialogHost, DialogHost.IsMoveEnabledProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, windowDialogHost, DialogHost.StandardButtonsProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, windowDialogHost, DialogHost.DefaultStandardButtonProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsClosableProperty, windowDialogHost, DialogHost.IsCloseCaptionButtonEnabledProperty));
-            dialogHost = windowDialogHost;
+            windowDialogHost.CustomButtons.AddRange(CustomButtons);
+            dialogHost                     = windowDialogHost;
         }
         else
         {
@@ -391,6 +418,9 @@ public class Dialog : Control,
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsClosableProperty, overlayDialogHost, OverlayDialogHost.IsClosableProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, overlayDialogHost, OverlayDialogHost.IsMaximizableProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, overlayDialogHost, OverlayDialogHost.IsDragMovableProperty));
+                relayBindingDisposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, overlayDialogHost, OverlayDialogHost.StandardButtonsProperty));
+                relayBindingDisposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, overlayDialogHost, DialogHost.DefaultStandardButtonProperty));
+                overlayDialogHost.CustomButtons.AddRange(CustomButtons);
                 dialogHost = overlayDialogHost;
             }
         }
@@ -620,17 +650,23 @@ public class Dialog : Control,
     {
         return new Size();
     }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
         _tokenBindingDisposables?.Dispose();
         _tokenBindingDisposables = new CompositeDisposable();
         _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, IsMotionEnabledProperty, SharedTokenKey.EnableMotion));
         _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MinHeightProperty, DialogTokenKey.MinHeight));
         _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MinWidthProperty, DialogTokenKey.MinWidth));
+        NotifyCreateTokenBindings(_tokenBindingDisposables);
     }
-    
+
+    protected virtual void NotifyCreateTokenBindings(CompositeDisposable compositeDisposables)
+    {
+        
+    }
+
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
@@ -993,6 +1029,42 @@ public class Dialog : Control,
         {
             _presenterCleanup?.Dispose();
             _cleanup.Dispose();
+        }
+    }
+    
+    private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (!IsOpen || _openState == null)
+        {
+            return;
+        }
+
+        AvaloniaList<Button>? targetButtons = null;
+        if (DialogHostType == DialogHostType.Overlay)
+        {
+            if (_openState.DialogHost is OverlayDialogHost overlayDialogHost)
+            {
+                targetButtons = overlayDialogHost.CustomButtons;
+            }
+            else if (_openState.DialogHost is DialogHost dialogHost)
+            {
+                targetButtons = dialogHost.CustomButtons;
+            }
+        }
+        switch (e.Action)
+        {
+            case NotifyCollectionChangedAction.Add:
+                var newItems = e.NewItems!.OfType<Button>();
+                targetButtons?.AddRange(newItems);
+                break;
+            case NotifyCollectionChangedAction.Remove:
+                var oldItems = e.OldItems!.OfType<Button>();
+                targetButtons?.RemoveAll(oldItems);
+                break;
+            case NotifyCollectionChangedAction.Replace:
+            case NotifyCollectionChangedAction.Move:
+            case NotifyCollectionChangedAction.Reset:
+                throw new NotSupportedException();
         }
     }
 }
