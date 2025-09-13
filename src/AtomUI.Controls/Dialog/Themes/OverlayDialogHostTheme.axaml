@@ -19,7 +19,7 @@
                                                       IsCloseButtonEnabled="{TemplateBinding IsClosable}"
                                                       IsMaximizeButtonEnabled="{TemplateBinding IsMaximizable}" 
                                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
-                            <Border Name="FooterFrame" DockPanel.Dock="Bottom">
+                            <Border Name="FooterFrame" DockPanel.Dock="Bottom" IsVisible="{TemplateBinding IsEffectiveFooterVisible}">
                                 <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
                                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                       StandardButtons="{TemplateBinding StandardButtons}"

@@ -30,7 +30,7 @@ public static class BindUtils
             }
         }
 
-        var binding = new Binding()
+        var binding = new Binding
         {
             Source   = source,
             Path     = sourceProperty.Name,

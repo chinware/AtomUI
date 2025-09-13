@@ -59,6 +59,9 @@ public sealed class OverlayDialogHost : ContentControl,
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
         DialogButtonBox.DefaultStandardButtonProperty.AddOwner<OverlayDialogHost>();
     
+    public static readonly StyledProperty<bool> IsFooterVisibleProperty =
+        Dialog.IsFooterVisibleProperty.AddOwner<OverlayDialogHost>();
+    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OverlayDialogHost>();
     
@@ -128,6 +131,12 @@ public sealed class OverlayDialogHost : ContentControl,
         set => SetValue(DefaultStandardButtonProperty, value);
     }
 
+    public bool IsFooterVisible
+    {
+        get => GetValue(IsFooterVisibleProperty);
+        set => SetValue(IsFooterVisibleProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -145,12 +154,26 @@ public sealed class OverlayDialogHost : ContentControl,
             o => o.IsDragging,
             (o, v) => o.IsDragging = v);
     
+    public static readonly DirectProperty<OverlayDialogHost, bool> IsEffectiveFooterVisibleProperty =
+        AvaloniaProperty.RegisterDirect<OverlayDialogHost, bool>(
+            nameof(IsEffectiveFooterVisible),
+            o => o.IsEffectiveFooterVisible,
+            (o, v) => o.IsEffectiveFooterVisible = v);
+    
     private bool _isDragging;
 
     internal bool IsDragging
     {
         get => _isDragging;
         set => SetAndRaise(IsDraggingProperty, ref _isDragging, value);
+    }
+    
+    private bool _isEffectiveFooterVisible;
+
+    public bool IsEffectiveFooterVisible
+    {
+        get => _isEffectiveFooterVisible;
+        set => SetAndRaise(IsEffectiveFooterVisibleProperty, ref _isEffectiveFooterVisible, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -373,6 +396,17 @@ public sealed class OverlayDialogHost : ContentControl,
         else if (change.Property == WindowStateProperty)
         {
             HandleWindowStateChanged(change.GetOldValue<OverlayDialogState>(), change.GetNewValue<OverlayDialogState>());
+        }
+        else if (change.Property == StandardButtonsProperty)
+        {
+            if (IsFooterVisible)
+            {
+                SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
+            }
+            else
+            {
+                SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
+            }
         }
     }
     
@@ -679,6 +713,15 @@ public sealed class OverlayDialogHost : ContentControl,
                 case NotifyCollectionChangedAction.Reset:
                     throw new NotSupportedException();
             }
+        }
+        
+        if (IsFooterVisible)
+        {
+            SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
+        }
+        else
+        {
+            SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
         }
     }
 }

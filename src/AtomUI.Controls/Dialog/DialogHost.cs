@@ -30,6 +30,9 @@ public sealed class DialogHost : Window,
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
         DialogButtonBox.DefaultStandardButtonProperty.AddOwner<DialogHost>();
     
+    public static readonly StyledProperty<bool> IsFooterVisibleProperty =
+        Dialog.IsFooterVisibleProperty.AddOwner<DialogHost>();
+    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DialogHost>();
     
@@ -49,6 +52,12 @@ public sealed class DialogHost : Window,
     {
         get => GetValue(DefaultStandardButtonProperty);
         set => SetValue(DefaultStandardButtonProperty, value);
+    }
+    
+    public bool IsFooterVisible
+    {
+        get => GetValue(IsFooterVisibleProperty);
+        set => SetValue(IsFooterVisibleProperty, value);
     }
     
     public bool IsMotionEnabled
@@ -85,7 +94,23 @@ public sealed class DialogHost : Window,
     #endregion
     
     #region 内部属性定义
+    
+    public static readonly DirectProperty<DialogHost, bool> IsEffectiveFooterVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DialogHost, bool>(
+            nameof(IsEffectiveFooterVisible),
+            o => o.IsEffectiveFooterVisible,
+            (o, v) => o.IsEffectiveFooterVisible = v);
+    
+    private bool _isEffectiveFooterVisible;
+
+    public bool IsEffectiveFooterVisible
+    {
+        get => _isEffectiveFooterVisible;
+        set => SetAndRaise(IsEffectiveFooterVisibleProperty, ref _isEffectiveFooterVisible, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
+    
     #endregion
     
     protected override Type StyleKeyOverride { get; } = typeof(DialogHost);
@@ -176,6 +201,22 @@ public sealed class DialogHost : Window,
         }
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == StandardButtonsProperty)
+        {
+            if (IsFooterVisible)
+            {
+                SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
+            }
+            else
+            {
+                SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
+            }
+        }
+    }
+
     private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (_buttonBox != null)
@@ -195,6 +236,15 @@ public sealed class DialogHost : Window,
                 case NotifyCollectionChangedAction.Reset:
                     throw new NotSupportedException();
             }
+        }
+
+        if (IsFooterVisible)
+        {
+            SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
+        }
+        else
+        {
+            SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
         }
     }
 }

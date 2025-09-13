@@ -26,23 +26,24 @@
                             </Border>
                             <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                                 <DockPanel LastChildFill="True">
-                                    <Border Name="FooterFrame" DockPanel.Dock="Bottom">
+                                    <Border Name="FooterFrame" DockPanel.Dock="Bottom" IsVisible="{TemplateBinding IsEffectiveFooterVisible}">
                                         <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
                                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                               StandardButtons="{TemplateBinding StandardButtons}"
-                                                              DefaultStandardButton="{TemplateBinding DefaultStandardButton}"/>
+                                                              DefaultStandardButton="{TemplateBinding DefaultStandardButton}" />
                                     </Border>
                                     <Border Name="ContentFrame"
                                             CornerRadius="{TemplateBinding CornerRadius}"
                                             ClipToBounds="True"
                                             Cursor="Arrow"
                                             Padding="{TemplateBinding Padding}">
-                                        <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
-                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                          Content="{TemplateBinding Content}"
-                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                </Border>
+                                        <ContentPresenter
+                                            Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            Content="{TemplateBinding Content}"
+                                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    </Border>
                                 </DockPanel>
                             </atom:VisualLayerManager>
                         </DockPanel>
@@ -55,12 +56,12 @@
         <Style Selector="^:is(atom|DialogHost)">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
             <Setter Property="SizeToContent" Value="WidthAndHeight" />
-            
+
             <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
                 <Setter Property="VerticalSpacing"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}" />
             </Style>
-            
+
             <Style Selector="^ /template/ Border#FooterFrame">
                 <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterBg}}" />
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterMarginTop}}" />

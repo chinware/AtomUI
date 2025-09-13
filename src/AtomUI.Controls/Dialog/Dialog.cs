@@ -111,12 +111,15 @@ public class Dialog : Control,
     
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
         DialogButtonBox.DefaultStandardButtonProperty.AddOwner<Dialog>();
+    
+    public static readonly StyledProperty<bool> IsFooterVisibleProperty =
+        AvaloniaProperty.Register<Dialog, bool>(nameof(IsFooterVisible), true);
         
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Dialog>();
     
     public static readonly StyledProperty<DialogHostType> DialogHostTypeProperty =
-        AvaloniaProperty.Register<Dialog, DialogHostType>(nameof(VerticalOffset), DialogHostType.Overlay);
+        AvaloniaProperty.Register<Dialog, DialogHostType>(nameof(DialogHostType), DialogHostType.Overlay);
     
     public string? Title
     {
@@ -285,6 +288,12 @@ public class Dialog : Control,
         set => SetValue(DefaultStandardButtonProperty, value);
     }
     
+    public bool IsFooterVisible
+    {
+        get => GetValue(IsFooterVisibleProperty);
+        set => SetValue(IsFooterVisibleProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -401,6 +410,7 @@ public class Dialog : Control,
             relayBindingDisposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, windowDialogHost, DialogHost.StandardButtonsProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, windowDialogHost, DialogHost.DefaultStandardButtonProperty));
             relayBindingDisposables.Add(BindUtils.RelayBind(this, IsClosableProperty, windowDialogHost, DialogHost.IsCloseCaptionButtonEnabledProperty));
+            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, windowDialogHost, DialogHost.IsFooterVisibleProperty));
             windowDialogHost.CustomButtons.AddRange(CustomButtons);
             dialogHost                     = windowDialogHost;
         }
@@ -419,7 +429,8 @@ public class Dialog : Control,
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, overlayDialogHost, OverlayDialogHost.IsMaximizableProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, overlayDialogHost, OverlayDialogHost.IsDragMovableProperty));
                 relayBindingDisposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, overlayDialogHost, OverlayDialogHost.StandardButtonsProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, overlayDialogHost, DialogHost.DefaultStandardButtonProperty));
+                relayBindingDisposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, overlayDialogHost, OverlayDialogHost.DefaultStandardButtonProperty));
+                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, overlayDialogHost, OverlayDialogHost.IsFooterVisibleProperty));
                 overlayDialogHost.CustomButtons.AddRange(CustomButtons);
                 dialogHost = overlayDialogHost;
             }

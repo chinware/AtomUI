@@ -26,6 +26,9 @@ public class DialogButtonBox : TemplatedControl,
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
         AvaloniaProperty.Register<DialogButtonBox, DialogStandardButton>(nameof (DefaultStandardButton));
     
+    public static readonly StyledProperty<DialogStandardButton> EscapeStandardButtonProperty =
+        AvaloniaProperty.Register<DialogButtonBox, DialogStandardButton>(nameof (EscapeStandardButton));
+    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DialogButtonBox>();
     
@@ -41,6 +44,12 @@ public class DialogButtonBox : TemplatedControl,
         set => SetValue(DefaultStandardButtonProperty, value);
     }
     
+    public DialogStandardButton EscapeStandardButton
+    {
+        get => GetValue(EscapeStandardButtonProperty);
+        set => SetValue(EscapeStandardButtonProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -52,6 +61,15 @@ public class DialogButtonBox : TemplatedControl,
     public Dictionary<DialogButtonRole, List<Button>> ButtonGroup => _buttonGroup;
     public Dictionary<DialogButtonRole, List<Button>> StandardButtonGroup => _standardButtonGroup;
     
+    #endregion
+
+    #region 公共事件定义
+
+    public event EventHandler? Accepted;
+    public event EventHandler<DialogButtonClickedEventArgs>? Clicked;
+    public event EventHandler? HelpRequested;
+    public event EventHandler? Rejected;
+
     #endregion
 
     #region 按钮语言属性定义
@@ -334,6 +352,8 @@ public class DialogButtonBox : TemplatedControl,
         {
             buttons = targetGroup[buttonRole];
         }
+
+        button.Click += HandleButtonClicked;
         buttons.Add(button);
     }
     
@@ -350,6 +370,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             buttons = targetGroup[buttonRole];
         }
+        button.Click -= HandleButtonClicked;
         buttons.Remove(button);
     }
 
@@ -822,5 +843,33 @@ public class DialogButtonBox : TemplatedControl,
         }
         
         _leftGroup.Children.AddRange(leftGroupButtons);
+    }
+
+    private void HandleButtonClicked(object? sender, EventArgs args)
+    {
+        DialogStandardButton buttonType = DialogStandardButton.NoButton;
+        if (sender is Button button)
+        {
+            if (button is DialogBoxButton standardButton)
+            {
+                buttonType = standardButton.StandardButtonType;
+            }
+            Clicked?.Invoke(this, new DialogButtonClickedEventArgs(button, buttonType));
+            if (button.Tag is DialogButtonRole role)
+            {
+                if (role == DialogButtonRole.AcceptRole)
+                {
+                    Accepted?.Invoke(this, EventArgs.Empty);
+                }
+                else if (role == DialogButtonRole.RejectRole)
+                {
+                    Rejected?.Invoke(this, EventArgs.Empty);
+                }
+                else if (role == DialogButtonRole.HelpRole)
+                {
+                    HelpRequested?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
     }
 }
