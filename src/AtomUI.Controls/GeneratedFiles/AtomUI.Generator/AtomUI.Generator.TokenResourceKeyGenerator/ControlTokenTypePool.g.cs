@@ -35,6 +35,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.LoadingIndicatorToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MenuToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.MessageBox.MessageBoxToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MessageToken));
             tokenTypes.Add(typeof(AtomUI.Controls.NavMenuToken));
             tokenTypes.Add(typeof(AtomUI.Controls.NotificationToken));

@@ -1,11 +1,10 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.DialogLang;
 using AtomUI.Controls.MessageBox;
 using AtomUI.Controls.Themes;
+using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Collections;
@@ -53,6 +52,171 @@ public class DialogButtonBox : TemplatedControl,
     public Dictionary<DialogButtonRole, List<Button>> ButtonGroup => _buttonGroup;
     public Dictionary<DialogButtonRole, List<Button>> StandardButtonGroup => _standardButtonGroup;
     
+    #endregion
+
+    #region 按钮语言属性定义
+
+    public static readonly StyledProperty<string?> OkButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (OkButtonText));
+    
+    public static readonly StyledProperty<string?> OpenButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (OpenButtonText));
+
+    public static readonly StyledProperty<string?> SaveButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (SaveButtonText));
+    
+    public static readonly StyledProperty<string?> CancelButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (CancelButtonText));
+    
+    public static readonly StyledProperty<string?> CloseButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (CloseButtonText));
+
+    public static readonly StyledProperty<string?> DiscardButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (DiscardButtonText));
+    
+    public static readonly StyledProperty<string?> ApplyButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (ApplyButtonText));
+    
+    public static readonly StyledProperty<string?> ResetButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (ResetButtonText));
+    
+    public static readonly StyledProperty<string?> RestoreDefaultsButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (RestoreDefaultsButtonText));
+    
+    public static readonly StyledProperty<string?> HelpButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (HelpButtonText));
+    
+    public static readonly StyledProperty<string?> SaveAllButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (SaveAllButtonText));
+    
+    public static readonly StyledProperty<string?> YesButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (YesButtonText));
+    
+    public static readonly StyledProperty<string?> YesToAllButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (YesToAllButtonText));
+    
+    public static readonly StyledProperty<string?> NoButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (NoButtonText));
+    
+    public static readonly StyledProperty<string?> NoToAllButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (NoToAllButtonText));
+    
+    public static readonly StyledProperty<string?> AbortButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (AbortButtonText));
+    
+    public static readonly StyledProperty<string?> RetryButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (RetryButtonText));
+    
+    public static readonly StyledProperty<string?> IgnoreButtonTextProperty =
+        AvaloniaProperty.Register<DialogButtonBox, string?>(nameof (IgnoreButtonText));
+    
+    public string? OkButtonText
+    {
+        get => GetValue(OkButtonTextProperty);
+        set => SetValue(OkButtonTextProperty, value);
+    }
+    
+    public string? OpenButtonText
+    {
+        get => GetValue(OpenButtonTextProperty);
+        set => SetValue(OpenButtonTextProperty, value);
+    }
+    
+    public string? SaveButtonText
+    {
+        get => GetValue(SaveButtonTextProperty);
+        set => SetValue(SaveButtonTextProperty, value);
+    }
+    
+    public string? CancelButtonText
+    {
+        get => GetValue(CancelButtonTextProperty);
+        set => SetValue(CancelButtonTextProperty, value);
+    }
+    
+    public string? CloseButtonText
+    {
+        get => GetValue(CloseButtonTextProperty);
+        set => SetValue(CloseButtonTextProperty, value);
+    }
+    
+    public string? DiscardButtonText
+    {
+        get => GetValue(DiscardButtonTextProperty);
+        set => SetValue(DiscardButtonTextProperty, value);
+    }
+    
+    public string? ApplyButtonText
+    {
+        get => GetValue(ApplyButtonTextProperty);
+        set => SetValue(ApplyButtonTextProperty, value);
+    }
+    
+    public string? ResetButtonText
+    {
+        get => GetValue(ResetButtonTextProperty);
+        set => SetValue(ResetButtonTextProperty, value);
+    }
+    
+    public string? RestoreDefaultsButtonText
+    {
+        get => GetValue(RestoreDefaultsButtonTextProperty);
+        set => SetValue(RestoreDefaultsButtonTextProperty, value);
+    }
+    
+    public string? HelpButtonText
+    {
+        get => GetValue(HelpButtonTextProperty);
+        set => SetValue(HelpButtonTextProperty, value);
+    }
+    
+    public string? SaveAllButtonText
+    {
+        get => GetValue(SaveAllButtonTextProperty);
+        set => SetValue(SaveAllButtonTextProperty, value);
+    }
+    
+    public string? YesButtonText
+    {
+        get => GetValue(YesButtonTextProperty);
+        set => SetValue(YesButtonTextProperty, value);
+    }
+    
+    public string? YesToAllButtonText
+    {
+        get => GetValue(YesToAllButtonTextProperty);
+        set => SetValue(YesToAllButtonTextProperty, value);
+    }
+    
+    public string? NoButtonText
+    {
+        get => GetValue(NoButtonTextProperty);
+        set => SetValue(NoButtonTextProperty, value);
+    }
+    
+    public string? NoToAllButtonText
+    {
+        get => GetValue(NoToAllButtonTextProperty);
+        set => SetValue(NoToAllButtonTextProperty, value);
+    }
+    
+    public string? AbortButtonText
+    {
+        get => GetValue(AbortButtonTextProperty);
+        set => SetValue(AbortButtonTextProperty, value);
+    }
+    
+    public string? RetryButtonText
+    {
+        get => GetValue(RetryButtonTextProperty);
+        set => SetValue(RetryButtonTextProperty, value);
+    }
+    
+    public string? IgnoreButtonText
+    {
+        get => GetValue(IgnoreButtonTextProperty);
+        set => SetValue(IgnoreButtonTextProperty, value);
+    }
     #endregion
     
     #region 内部属性定义
@@ -219,8 +383,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Ok ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Ok));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, OkButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -233,8 +397,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag        = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Open ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Open));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, OpenButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -247,8 +411,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag        = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Save ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Save));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, SaveButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -261,8 +425,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.SaveAll ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.SaveAll));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, SaveAllButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -275,8 +439,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Retry ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Retry));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, RetryButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -289,8 +453,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Ignore ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Ignore));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, IgnoreButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -303,8 +467,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.YesRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Yes ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Yes));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, YesButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.YesRole, button, true);
@@ -317,8 +481,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.YesRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.YesToAll ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.YesToAll));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, YesToAllButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.YesRole, button, true);
@@ -331,8 +495,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.RejectRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Cancel ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Cancel));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, CancelButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
@@ -345,8 +509,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.RejectRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Close ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Close));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, CloseButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
@@ -359,8 +523,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.RejectRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Abort ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Abort));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, AbortButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
@@ -373,8 +537,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.NoRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.No ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.No));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, NoButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.NoRole, button, true);
@@ -387,8 +551,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.NoRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.NoToAll ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.NoToAll));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, NoToAllButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.NoRole, button, true);
@@ -401,8 +565,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.DestructiveRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Discard ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Discard));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, DiscardButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.DestructiveRole, button, true);
@@ -415,8 +579,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.HelpRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Help ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Help));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, HelpButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.HelpRole, button, true);
@@ -429,8 +593,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.ResetRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Reset ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Reset));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, ResetButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.ResetRole, button, true);
@@ -443,8 +607,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.ResetRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.RestoreDefaults ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.RestoreDefaults));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, RestoreDefaultsButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.ResetRole, button, true);
@@ -457,8 +621,8 @@ public class DialogButtonBox : TemplatedControl,
                 Tag = DialogButtonRole.ApplyRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Apply ? ButtonType.Primary : ButtonType.Default
             };
-            var disposables = new CompositeDisposable();
-            disposables.Add(LanguageResourceBinder.CreateBinding(button, Button.ContentProperty, DialogLangResourceKey.Apply));
+            var disposables = new CompositeDisposable(2);
+            disposables.Add(BindUtils.RelayBind(this, ApplyButtonTextProperty, button, Button.ContentProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.ApplyRole, button, true);
