@@ -37,6 +37,9 @@ internal class DialogHost : Window,
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DialogHost>();
+        
+    public static readonly StyledProperty<bool> IsLoadingProperty = Dialog.IsLoadingProperty.AddOwner<DialogHost>();
+    public static readonly StyledProperty<bool> IsConfirmLoadingProperty = Dialog.IsConfirmLoadingProperty.AddOwner<DialogHost>();
     
     public Transform? Transform
     {
@@ -73,6 +76,19 @@ internal class DialogHost : Window,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    public bool IsLoading
+    {
+        get => GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
+    
+    public bool IsConfirmLoading
+    {
+        get => GetValue(IsConfirmLoadingProperty);
+        set => SetValue(IsConfirmLoadingProperty, value);
+    }
+    
     Visual? IHostedVisualTreeRoot.Host
     {
         get
@@ -97,7 +113,7 @@ internal class DialogHost : Window,
 
     Visual IDialogHost.HostedVisualTreeRoot => this;
     
-    public AvaloniaList<DialogBoxButton> CustomButtons { get; } = new ();
+    public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
     
     #endregion
     
@@ -214,9 +230,18 @@ internal class DialogHost : Window,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == StandardButtonsProperty)
+        if (change.Property == StandardButtonsProperty ||
+            change.Property == IsLoadingProperty)
         {
-            if (IsFooterVisible)
+            ConfigureEffectiveFooterVisible();
+        }
+    }
+
+    private void ConfigureEffectiveFooterVisible()
+    {
+        if (IsFooterVisible)
+        {
+            if (!IsLoading)
             {
                 SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
             }
@@ -224,6 +249,10 @@ internal class DialogHost : Window,
             {
                 SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
             }
+        }
+        else
+        {
+            SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
         }
     }
 
@@ -234,11 +263,11 @@ internal class DialogHost : Window,
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<DialogBoxButton>();
+                    var newItems = e.NewItems!.OfType<DialogButton>();
                     _buttonBox.CustomButtons.AddRange(newItems);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<DialogBoxButton>();
+                    var oldItems = e.OldItems!.OfType<DialogButton>();
                     _buttonBox.CustomButtons.RemoveAll(oldItems);
                     break;
                 case NotifyCollectionChangedAction.Replace:
@@ -248,14 +277,7 @@ internal class DialogHost : Window,
             }
         }
 
-        if (IsFooterVisible)
-        {
-            SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
-        }
-        else
-        {
-            SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
-        }
+        ConfigureEffectiveFooterVisible();
     }
 
     private void HandleButtonBoxClicked(object? sender, DialogButtonClickedEventArgs args)

@@ -66,6 +66,9 @@ internal class OverlayDialogHost : ContentControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OverlayDialogHost>();
     
+    public static readonly StyledProperty<bool> IsLoadingProperty = Dialog.IsLoadingProperty.AddOwner<OverlayDialogHost>();
+    public static readonly StyledProperty<bool> IsConfirmLoadingProperty = Dialog.IsConfirmLoadingProperty.AddOwner<OverlayDialogHost>();
+    
     public string? Title
     {
         get => GetValue(TitleProperty);
@@ -150,7 +153,19 @@ internal class OverlayDialogHost : ContentControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public AvaloniaList<DialogBoxButton> CustomButtons { get; } = new ();
+    public bool IsLoading
+    {
+        get => GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
+    
+    public bool IsConfirmLoading
+    {
+        get => GetValue(IsConfirmLoadingProperty);
+        set => SetValue(IsConfirmLoadingProperty, value);
+    }
+    
+    public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
     
     #endregion
     
@@ -404,9 +419,18 @@ internal class OverlayDialogHost : ContentControl,
         {
             HandleWindowStateChanged(change.GetOldValue<OverlayDialogState>(), change.GetNewValue<OverlayDialogState>());
         }
-        else if (change.Property == StandardButtonsProperty)
+        else if (change.Property == StandardButtonsProperty ||
+                 change.Property == IsLoadingProperty)
         {
-            if (IsFooterVisible)
+            ConfigureEffectiveFooterVisible();
+        }
+    }
+
+    private void ConfigureEffectiveFooterVisible()
+    {
+        if (IsFooterVisible)
+        {
+            if (!IsLoading)
             {
                 SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
             }
@@ -414,6 +438,10 @@ internal class OverlayDialogHost : ContentControl,
             {
                 SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
             }
+        }
+        else
+        {
+            SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
         }
     }
     
@@ -679,8 +707,8 @@ internal class OverlayDialogHost : ContentControl,
         var maxOffsetX = bounds.Width - DesiredSize.Width;
         var maxOffsetY =  bounds.Height - DesiredSize.Height;
         
-        _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(Math.Min(Math.Max(offsetX, 0), maxOffsetX)));
-        _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(Math.Min(Math.Max(offsetY, 0), maxOffsetY)));
+        _dialog.SetCurrentValue(Dialog.OffsetXProperty, Math.Min(Math.Max(offsetX, 0), maxOffsetX));
+        _dialog.SetCurrentValue(Dialog.OffsetYProperty, Math.Min(Math.Max(offsetY, 0), maxOffsetY));
     }
     
     protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
@@ -724,11 +752,11 @@ internal class OverlayDialogHost : ContentControl,
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<DialogBoxButton>();
+                    var newItems = e.NewItems!.OfType<DialogButton>();
                     _buttonBox.CustomButtons.AddRange(newItems);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<DialogBoxButton>();
+                    var oldItems = e.OldItems!.OfType<DialogButton>();
                     _buttonBox.CustomButtons.RemoveAll(oldItems);
                     break;
                 case NotifyCollectionChangedAction.Replace:
@@ -737,14 +765,7 @@ internal class OverlayDialogHost : ContentControl,
                     throw new NotSupportedException();
             }
         }
-        
-        if (IsFooterVisible)
-        {
-            SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
-        }
-        else
-        {
-            SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
-        }
+
+        ConfigureEffectiveFooterVisible();
     }
 }

@@ -50,13 +50,13 @@ public class MessageBox : TemplatedControl,
     public static readonly StyledProperty<MessageBoxOkButtonStyle> OkButtonStyleProperty =
         AvaloniaProperty.Register<Dialog, MessageBoxOkButtonStyle>(nameof(OkButtonStyle), MessageBoxOkButtonStyle.Primary);
     
-    public static readonly StyledProperty<string?> OkButtonTextProperty = AvaloniaProperty.Register<Dialog, string?>(nameof(OkButtonText));
+    public static readonly StyledProperty<string?> OkButtonTextProperty = AvaloniaProperty.Register<MessageBox, string?>(nameof(OkButtonText));
     
-    public static readonly StyledProperty<string?> CancelButtonTextProperty = AvaloniaProperty.Register<Dialog, string?>(nameof(CancelButtonText));
+    public static readonly StyledProperty<string?> CancelButtonTextProperty = AvaloniaProperty.Register<MessageBox, string?>(nameof(CancelButtonText));
     
-    public static readonly StyledProperty<bool> IsLoadingProperty = AvaloniaProperty.Register<Dialog, bool>(nameof(IsLoading));
+    public static readonly StyledProperty<bool> IsLoadingProperty = AvaloniaProperty.Register<MessageBox, bool>(nameof(IsLoading));
     
-    public static readonly StyledProperty<bool> IsConfirmLoadingProperty = AvaloniaProperty.Register<Dialog, bool>(nameof(IsConfirmLoading));
+    public static readonly StyledProperty<bool> IsConfirmLoadingProperty = AvaloniaProperty.Register<MessageBox, bool>(nameof(IsConfirmLoading));
     
     public static readonly StyledProperty<bool> IsLightDismissEnabledProperty =
         Dialog.IsLightDismissEnabledProperty.AddOwner<MessageBox>();

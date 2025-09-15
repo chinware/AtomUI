@@ -69,9 +69,6 @@ public class Dialog : TemplatedControl,
     public static readonly StyledProperty<bool> IsDragMovableProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof (IsDragMovable), false);
     
-    public static readonly StyledProperty<Rect?> PlacementRectProperty =
-        AvaloniaProperty.Register<Dialog, Rect?>(nameof(PlacementRect));
-    
     public static readonly StyledProperty<Control?> PlacementTargetProperty =
         AvaloniaProperty.Register<Dialog, Control?>(nameof(PlacementTarget));
     
@@ -122,6 +119,10 @@ public class Dialog : TemplatedControl,
     
     public static readonly StyledProperty<DialogHostType> DialogHostTypeProperty =
         AvaloniaProperty.Register<Dialog, DialogHostType>(nameof(DialogHostType), DialogHostType.Overlay);
+    
+    public static readonly StyledProperty<bool> IsLoadingProperty = AvaloniaProperty.Register<Dialog, bool>(nameof(IsLoading));
+    
+    public static readonly StyledProperty<bool> IsConfirmLoadingProperty = AvaloniaProperty.Register<Dialog, bool>(nameof(IsConfirmLoading));
     
     public string? Title
     {
@@ -204,12 +205,6 @@ public class Dialog : TemplatedControl,
     {
         get => GetValue(IsDragMovableProperty);
         set => SetValue(IsDragMovableProperty, value);
-    }
-    
-    public Rect? PlacementRect
-    {
-        get => GetValue(PlacementRectProperty);
-        set => SetValue(PlacementRectProperty, value);
     }
     
     [ResolveByName]
@@ -315,10 +310,22 @@ public class Dialog : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
+    public bool IsLoading
+    {
+        get => GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
+    
+    public bool IsConfirmLoading
+    {
+        get => GetValue(IsConfirmLoadingProperty);
+        set => SetValue(IsConfirmLoadingProperty, value);
+    }
+    
     public IDialogHost? Host => _openState?.DialogHost;
     IDialogHost? IDialogHostProvider.DialogHost => Host;
     
-    public AvaloniaList<DialogBoxButton> CustomButtons { get; } = new ();
+    public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
     
     #endregion
 
@@ -331,6 +338,7 @@ public class Dialog : TemplatedControl,
     public event EventHandler? Accepted;
     public event EventHandler? Rejected;
     public event EventHandler<DialogFinishedEventArgs>? Finished;
+    public event EventHandler<DialogButtonClickedEventArgs>? ButtonClicked;
     
     event Action<IDialogHost?>? IDialogHostProvider.DialogHostChanged 
     { 
@@ -445,7 +453,7 @@ public class Dialog : TemplatedControl,
         OverlayDialogHost?  overlayDialogHost       = null;
         if (DialogHostType == DialogHostType.Window)
         {
-            windowDialogHost = CreateDialogHost(topLevel, this);
+            windowDialogHost               = CreateDialogHost(topLevel, this);
             RelayDialogHostBindings(relayBindingDisposables, windowDialogHost);
             windowDialogHost.CustomButtons.AddRange(CustomButtons);
             dialogHost                     = windowDialogHost;
@@ -455,7 +463,8 @@ public class Dialog : TemplatedControl,
             var dialogLayer = DialogLayer.GetDialogLayer(placementTarget);
             if (dialogLayer != null)
             {
-                overlayDialogHost = CreateOverlayDialogHost(dialogLayer, this);
+                overlayDialogHost              = CreateOverlayDialogHost(dialogLayer, this);
+                OverlayInputPassThroughElement = overlayDialogHost;
                 RelayOverlayDialogBindings(relayBindingDisposables, overlayDialogHost);
                 overlayDialogHost.CustomButtons.AddRange(CustomButtons);
                 dialogHost = overlayDialogHost;
@@ -533,8 +542,8 @@ public class Dialog : TemplatedControl,
         
         if (IsLightDismissEnabled)
         {
-            var dismissLayer = LightDismissOverlayLayer.GetLightDismissOverlayLayer(placementTarget);
-
+            var dismissLayer = LightDismissOverlayLayer.GetLightDismissOverlayLayer(topLevel);
+        
             if (dismissLayer != null)
             {
                 dismissLayer.IsVisible               = true;
@@ -638,6 +647,7 @@ public class Dialog : TemplatedControl,
         disposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, dialogHost, DialogHost.IsFooterVisibleProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentProperty, dialogHost, DialogHost.ContentProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, dialogHost, DialogHost.ContentTemplateProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsLoadingProperty, dialogHost, DialogHost.IsLoadingProperty));
     }
 
     private protected virtual void RelayOverlayDialogBindings(CompositeDisposable disposables, OverlayDialogHost dialogHost)
@@ -656,6 +666,7 @@ public class Dialog : TemplatedControl,
         disposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, dialogHost, OverlayDialogHost.IsFooterVisibleProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentProperty, dialogHost, OverlayDialogHost.ContentProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, dialogHost, OverlayDialogHost.ContentTemplateProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsLoadingProperty, dialogHost, OverlayDialogHost.IsLoadingProperty));
     }
 
     public void Accept()
@@ -755,8 +766,7 @@ public class Dialog : TemplatedControl,
                      change.Property == HorizontalStartupLocationProperty ||
                      change.Property == VerticalStartupLocationProperty ||
                      change.Property == OffsetXProperty ||
-                     change.Property == OffsetYProperty ||
-                     change.Property == PlacementRectProperty)
+                     change.Property == OffsetYProperty)
             {
                 if (change.Property == PlacementTargetProperty)
                 {
@@ -951,7 +961,7 @@ public class Dialog : TemplatedControl,
             placementTarget,
             OffsetX,
             OffsetY,
-            PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
+            new Rect(default, placementTarget.Bounds.Size),
             CustomDialogPlacementCallback));
     }
     
@@ -1108,7 +1118,7 @@ public class Dialog : TemplatedControl,
             return;
         }
 
-        AvaloniaList<DialogBoxButton>? targetButtons = null;
+        AvaloniaList<DialogButton>? targetButtons = null;
         if (DialogHostType == DialogHostType.Overlay)
         {
             if (_openState.DialogHost is OverlayDialogHost overlayDialogHost)
@@ -1123,11 +1133,11 @@ public class Dialog : TemplatedControl,
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems!.OfType<DialogBoxButton>();
+                var newItems = e.NewItems!.OfType<DialogButton>();
                 targetButtons?.AddRange(newItems);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                var oldItems = e.OldItems!.OfType<DialogBoxButton>();
+                var oldItems = e.OldItems!.OfType<DialogButton>();
                 targetButtons?.RemoveAll(oldItems);
                 break;
             case NotifyCollectionChangedAction.Replace:
@@ -1137,7 +1147,7 @@ public class Dialog : TemplatedControl,
         }
     }
 
-    internal void NotifyDialogButtonBoxClicked(Button? button)
+    internal void NotifyDialogButtonBoxClicked(DialogButton? button)
     {
         if (button is not null && button.Tag is DialogButtonRole role)
         {
@@ -1155,14 +1165,7 @@ public class Dialog : TemplatedControl,
             }
             else
             {
-                if (button is DialogBoxButton dialogBoxButton)
-                {
-                    Done(dialogBoxButton.StandardButtonType);
-                }
-                else
-                {
-                    Done(role);
-                }
+                ButtonClicked?.Invoke(this, new DialogButtonClickedEventArgs(button));
             }
         }
     }

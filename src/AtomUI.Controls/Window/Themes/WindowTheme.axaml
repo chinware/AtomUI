@@ -14,13 +14,14 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BackgroundSizing="InnerBorderEdge"
                         ClipToBounds="True">
-                    <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
-                        <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
-                            <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
-                                           Content="{TemplateBinding Title}"
-                                           Logo="{TemplateBinding Logo}" />
-                        </Border>
-                        <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                    <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                        <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
+                            <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
+                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
+                                               Content="{TemplateBinding Title}"
+                                               Logo="{TemplateBinding Logo}" />
+                            </Border>
+
                             <Border Name="ContentFrame"
                                     CornerRadius="{TemplateBinding CornerRadius}"
                                     ClipToBounds="True"
@@ -32,8 +33,9 @@
                                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                             </Border>
-                        </atom:VisualLayerManager>
-                    </DockPanel>
+
+                        </DockPanel>
+                    </atom:VisualLayerManager>
                 </Border>
             </Panel>
 

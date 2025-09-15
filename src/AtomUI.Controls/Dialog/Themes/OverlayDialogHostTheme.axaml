@@ -26,13 +26,14 @@
                                                   DefaultStandardButton="{TemplateBinding DefaultStandardButton}"
                                                   EscapeStandardButton="{TemplateBinding EscapeStandardButton}"/>
                         </Border>
-                        <Border Name="ContentFrame">
-                            <ContentPresenter Name="ContentPresenter"
-                                              Content="{TemplateBinding Content}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              HorizontalContentAlignment="Stretch"
-                                              VerticalContentAlignment="Stretch"
-                                              ClipToBounds="True" />
+                        <Border Name="ContentFrame" ClipToBounds="True">
+                            <atom:Skeleton IsLoading="{TemplateBinding IsLoading}"
+                                           IsActive="True"
+                                           ParagraphRows="4"
+                                           IsShowTitle="False"
+                                           ClipToBounds = "False"
+                                           Content="{TemplateBinding Content}"
+                                           ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </Border>
                     </DockPanel>
                 </Border>

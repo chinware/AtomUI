@@ -1,6 +1,6 @@
 namespace AtomUI.Controls;
 
-public class DialogBoxButton : Button
+public class DialogButton : Button
 {
     public DialogStandardButton? StandardButtonType { get; set; }
     public bool IsDefaultConfirmButton { get; set; }
