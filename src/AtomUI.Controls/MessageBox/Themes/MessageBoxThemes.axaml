@@ -3,5 +3,7 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="MessageBoxTheme.axaml"/>
+        <ResourceInclude Source="MessageBoxDialogHostTheme.axaml"/>
+        <ResourceInclude Source="MessageBoxOverlayDialogHostTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

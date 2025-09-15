@@ -1,15 +1,11 @@
-using AtomUI.Controls.MessageBox;
-
 namespace AtomUI.Controls;
 
 public class DialogButtonClickedEventArgs : EventArgs
 {
     public Button? SourceButton { get; }
-    public DialogStandardButton StandardButton { get; }
 
-    public DialogButtonClickedEventArgs(Button? sourceButton, DialogStandardButton standardButton)
+    public DialogButtonClickedEventArgs(Button? sourceButton)
     {
         SourceButton = sourceButton;
-        StandardButton = standardButton;
     }
 }

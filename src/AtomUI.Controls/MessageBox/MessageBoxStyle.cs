@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.MessageBox;
+namespace AtomUI.Controls;
 
 public enum MessageBoxStyle
 {
@@ -9,11 +9,15 @@ public enum MessageBoxStyle
     /// <summary>
     /// an icon indicating that the message is asking a question.
     /// </summary>
-    Question,
+    Confirm,
     /// <summary>
     /// an icon indicating that the message is nothing out of the ordinary.
     /// </summary>
     Information,
+    /// <summary>
+    /// an icon indicating that the message is a success.
+    /// </summary>
+    Success,
     /// <summary>
     /// an icon indicating that the message is a warning, but can be dealt with.
     /// </summary>
@@ -21,5 +25,5 @@ public enum MessageBoxStyle
     /// <summary>
     /// an icon indicating that the message represents a critical problem.
     /// </summary>
-    Critical
+    Error
 }

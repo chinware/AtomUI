@@ -2,13 +2,34 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themes="clr-namespace:AtomUI.Controls.MessageBox.Themes"
+    xmlns:themes="clr-namespace:AtomUI.Controls.Themes"
     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:MessageCard}" TargetType="atom:MessageCard">
+    <ControlTheme x:Key="{x:Type atom:MessageBox}" TargetType="atom:MessageBox">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:Dialog Name="{x:Static themes:MessageBoxThemeConstants.DialogPart}"/>
+                <atom:MessageBoxDialog Name="{x:Static themes:MessageBoxThemeConstants.DialogPart}"
+                                       Title="{TemplateBinding Title}"
+                                       Icon="{TemplateBinding Icon}"
+                                       IsModal="{TemplateBinding IsModal}"
+                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                       DialogHostType="{TemplateBinding HostType}"
+                                       IsDragMovable="{TemplateBinding IsDragMovable}"
+                                       StandardButtons="{TemplateBinding StandardButtons}"
+                                       PlacementTarget="{TemplateBinding PlacementTarget}"
+                                       HorizontalOffset="{TemplateBinding HorizontalOffset, Mode=TwoWay}"
+                                       VerticalOffset="{TemplateBinding VerticalOffset, Mode=TwoWay}"
+                                       IsLightDismissEnabled="{TemplateBinding IsLightDismissEnabled}"
+                                       IsOpen="{TemplateBinding IsOpen, Mode=TwoWay}"
+                                       Content="{TemplateBinding Content}"
+                                       ContentTemplate="{TemplateBinding ContentTemplate}"
+                                       Style="{TemplateBinding Style}"
+                                       Width="{TemplateBinding Width}"
+                                       MinWidth="{TemplateBinding MinWidth}"
+                                       Height="{TemplateBinding Height}"
+                                       MinHeight="{TemplateBinding MinHeight}"/>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
     </ControlTheme>
 </ResourceDictionary>

@@ -8,9 +8,11 @@
             <ControlTemplate>
                 <Border Name="HeaderFrame" Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}">
-                    <DockPanel LastChildFill="True">
+                    <DockPanel LastChildFill="True" 
+                               HorizontalSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingSM}}">
                         <atom:IconPresenter Name="IconPresenter" DockPanel.Dock="Left"
-                                            Icon="{TemplateBinding Logo}"/>
+                                            Icon="{TemplateBinding Logo}"
+                                            IsVisible="{TemplateBinding Logo, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                         <StackPanel Orientation="Horizontal" Name="ButtonGroup" DockPanel.Dock="Right">
                             <atom:DialogCaptionButton
                                 Name="{x:Static atom:OverlayDialogHeaderThemeConstants.MaximizeButtonPart}"

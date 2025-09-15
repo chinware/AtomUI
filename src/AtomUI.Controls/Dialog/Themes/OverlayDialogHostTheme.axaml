@@ -1,56 +1,57 @@
-<ResourceDictionary
+<ControlTheme
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
-    x:ClassModifier="internal">
-    <converters:OverlayDialogResizerVisibleConverter x:Key="OverlayDialogResizerVisibleConverter" />
-    <ControlTheme x:Key="{x:Type atom:OverlayDialogHost}" TargetType="atom:OverlayDialogHost">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Panel>
-                    <Border Name="ShadowFrame" CornerRadius="{TemplateBinding CornerRadius}" />
-                    <Border Name="Frame" CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
-                        <DockPanel Name="RootLayout" LastChildFill="True">
-                            <atom:OverlayDialogHeader Name="{x:Static atom:OverlayDialogThemeConstants.HeaderPart}"
-                                                      DockPanel.Dock="Top"
-                                                      Title="{TemplateBinding Title}"
-                                                      Logo="{TemplateBinding TitleIcon}"
-                                                      IsCloseButtonEnabled="{TemplateBinding IsClosable}"
-                                                      IsMaximizeButtonEnabled="{TemplateBinding IsMaximizable}" 
-                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
-                            <Border Name="FooterFrame" DockPanel.Dock="Bottom" IsVisible="{TemplateBinding IsEffectiveFooterVisible}">
-                                <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
-                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                      StandardButtons="{TemplateBinding StandardButtons}"
-                                                      DefaultStandardButton="{TemplateBinding DefaultStandardButton}"/>
-                            </Border>
-                            <Border Name="ContentFrame">
-                                <ContentPresenter Name="ContentPresenter"
-                                                  Content="{TemplateBinding Content}"
-                                                  ContentTemplate="{TemplateBinding ContentTemplate}" 
-                                                  HorizontalContentAlignment="Stretch"
-                                                  VerticalContentAlignment="Stretch"
-                                                  ClipToBounds="True"/>
-                            </Border>
-                        </DockPanel>
-                    </Border>
-                    <atom:OverlayDialogResizer Name="{x:Static atom:OverlayDialogThemeConstants.ResizerPart}">
+    x:ClassModifier="internal"
+    x:Class="AtomUI.Controls.Themes.OverlayDialogHostTheme"
+    TargetType="atom:OverlayDialogHost">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:OverlayDialogHost">
+            <Panel>
+                <Border Name="ShadowFrame" CornerRadius="{TemplateBinding CornerRadius}" />
+                <Border Name="Frame" CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
+                    <DockPanel Name="RootLayout" LastChildFill="True">
+                        <atom:OverlayDialogHeader Name="{x:Static atom:OverlayDialogThemeConstants.HeaderPart}"
+                                                  DockPanel.Dock="Top"
+                                                  Title="{TemplateBinding Title}"
+                                                  Logo="{TemplateBinding TitleIcon}"
+                                                  IsCloseButtonEnabled="{TemplateBinding IsClosable}"
+                                                  IsMaximizeButtonEnabled="{TemplateBinding IsMaximizable}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        <Border Name="FooterFrame" DockPanel.Dock="Bottom"
+                                IsVisible="{TemplateBinding IsEffectiveFooterVisible}">
+                            <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                  StandardButtons="{TemplateBinding StandardButtons}"
+                                                  DefaultStandardButton="{TemplateBinding DefaultStandardButton}" />
+                        </Border>
+                        <Border Name="ContentFrame">
+                            <ContentPresenter Name="ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalContentAlignment="Stretch"
+                                              VerticalContentAlignment="Stretch"
+                                              ClipToBounds="True" />
+                        </Border>
+                    </DockPanel>
+                </Border>
+                <atom:OverlayDialogResizer Name="{x:Static atom:OverlayDialogThemeConstants.ResizerPart}">
 
-                        <atom:OverlayDialogResizer.IsVisible>
-                            <MultiBinding
-                                Converter="{StaticResource OverlayDialogResizerVisibleConverter}">
-                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                         Path="IsResizable" />
-                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="WindowState" />
-                            </MultiBinding>
-                        </atom:OverlayDialogResizer.IsVisible>
-                    </atom:OverlayDialogResizer>
-                </Panel>
+                    <atom:OverlayDialogResizer.IsVisible>
+                        <MultiBinding
+                            Converter="{x:Static atom:OverlayDialogHostTheme.OverlayDialogResizerVisibleConverter}">
+                            <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                     Path="IsResizable" />
+                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="WindowState" />
+                        </MultiBinding>
+                    </atom:OverlayDialogResizer.IsVisible>
+                </atom:OverlayDialogResizer>
+            </Panel>
 
-            </ControlTemplate>
-        </Setter>
+        </ControlTemplate>
+    </Setter>
 
+    <Style Selector="^:is(atom|OverlayDialogHost)">
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
@@ -70,7 +71,7 @@
         <Style Selector="^ /template/ Border#ContentFrame">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
         </Style>
-        
+
         <Style Selector="^ /template/ Border#FooterFrame">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterBg}}" />
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterMarginTop}}" />
@@ -80,6 +81,6 @@
         <Style Selector="^[WindowState=Maximized]">
             <Setter Property="CornerRadius" Value="0" />
         </Style>
+    </Style>
 
-    </ControlTheme>
-</ResourceDictionary>
+</ControlTheme>

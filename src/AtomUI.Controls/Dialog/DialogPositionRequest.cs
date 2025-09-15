@@ -6,8 +6,8 @@ namespace AtomUI.Controls;
 public class DialogPositionRequest
 {
     internal DialogPositionRequest(Visual target,
-                                   Dimension horizontalOffset, 
-                                   Dimension verticalOffset,
+                                   double horizontalOffset, 
+                                   double verticalOffset,
                                    Rect? anchorRect = null,
                                    CustomDialogPlacementCallback? placementCallback = null)
     {
@@ -19,8 +19,8 @@ public class DialogPositionRequest
     }
     
     public Visual Target { get; }
-    public Dimension HorizontalOffset { get; set; }
-    public Dimension VerticalOffset { get; set; }
+    public double HorizontalOffset { get; set; }
+    public double VerticalOffset { get; set; }
     public Rect? AnchorRect { get; }
     public DialogPositionerConstraintAdjustment ConstraintAdjustment {get;}
     public CustomDialogPlacementCallback? PlacementCallback { get; }

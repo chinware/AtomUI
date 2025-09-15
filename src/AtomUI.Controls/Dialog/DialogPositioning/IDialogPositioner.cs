@@ -5,8 +5,8 @@ namespace AtomUI.Controls.DialogPositioning;
 public record struct DialogPositionerParameters
 {
     public Rect AnchorRectangle { get; set; }
-    public Dimension HorizontalOffset { get; set; }
-    public Dimension VerticalOffset { get; set; }
+    public double HorizontalOffset { get; set; }
+    public double VerticalOffset { get; set; }
     public Size Size { get; set; }
     public DialogPositionerConstraintAdjustment ConstraintAdjustment { get; set; }
 }

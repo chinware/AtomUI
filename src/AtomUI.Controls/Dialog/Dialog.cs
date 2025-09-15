@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using AtomUI.Controls.DialogPositioning;
-using AtomUI.Controls.MessageBox;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -13,14 +12,13 @@ using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Reflection;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
@@ -31,7 +29,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class Dialog : Control, 
+public class Dialog : TemplatedControl, 
                       IDialogHostProvider, 
                       IControlSharedTokenResourcesHost,
                       IMotionAwareControl
@@ -43,8 +41,9 @@ public class Dialog : Control,
     public static readonly StyledProperty<Icon?> TitleIconProperty =
         AvaloniaProperty.Register<Dialog, Icon?>(nameof (TitleIcon));
 
-    public static readonly StyledProperty<Control?> ChildProperty =
-        AvaloniaProperty.Register<Dialog, Control?>(nameof(Child));
+    public static readonly StyledProperty<object?> ContentProperty = ContentPresenter.ContentProperty.AddOwner<Dialog>();
+
+    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = ContentPresenter.ContentTemplateProperty.AddOwner<Dialog>();
 
     public static readonly StyledProperty<bool> InheritsTransformProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(InheritsTransform));
@@ -89,10 +88,10 @@ public class Dialog : Control,
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsLightDismissEnabled), false);
     
     public static readonly StyledProperty<DialogHorizontalAnchor> HorizontalStartupLocationProperty =
-        AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalStartupLocation), DialogHorizontalAnchor.Center);
+        AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalStartupLocation), DialogHorizontalAnchor.Custom);
     
     public static readonly StyledProperty<DialogVerticalAnchor> VerticalStartupLocationProperty =
-        AvaloniaProperty.Register<Dialog, DialogVerticalAnchor>(nameof(VerticalStartupLocation), DialogVerticalAnchor.Center);
+        AvaloniaProperty.Register<Dialog, DialogVerticalAnchor>(nameof(VerticalStartupLocation), DialogVerticalAnchor.Custom);
     
     public static readonly StyledProperty<Dimension?> HorizontalOffsetProperty =
         AvaloniaProperty.Register<Dialog, Dimension?>(nameof(HorizontalOffset));
@@ -134,10 +133,17 @@ public class Dialog : Control,
     }
     
     [Content]
-    public Control? Child
+    [DependsOn("ContentTemplate")]
+    public object? Content
     {
-        get => GetValue(ChildProperty);
-        set => SetValue(ChildProperty, value);
+        get => GetValue(ContentProperty);
+        set => SetValue(ContentProperty, value);
+    }
+    
+    public IDataTemplate? ContentTemplate
+    {
+        get => GetValue(ContentTemplateProperty);
+        set => SetValue(ContentTemplateProperty, value);
     }
     
     public IAvaloniaDependencyResolver? DependencyResolver { get; set; }
@@ -322,9 +328,40 @@ public class Dialog : Control,
         add => _dialogHostChangedHandler += value; 
         remove => _dialogHostChangedHandler -= value;
     }
+
+    public Action<IReadOnlyList<Button>>? DialogButtonsConfigure { get; set; }
+    
     #endregion
     
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<Dialog, double> OffsetXProperty =
+        AvaloniaProperty.RegisterDirect<Dialog, double>(
+            nameof(OffsetX),
+            o => o.OffsetX,
+            (o, v) => o.OffsetX = v);
+    
+    internal static readonly DirectProperty<Dialog, double> OffsetYProperty =
+        AvaloniaProperty.RegisterDirect<Dialog, double>(
+            nameof(OffsetY),
+            o => o.OffsetY,
+            (o, v) => o.OffsetY = v);
+    
+    private double _offsetX;
+
+    public double OffsetX
+    {
+        get => _offsetX;
+        set => SetAndRaise(OffsetXProperty, ref _offsetX, value);
+    }
+    
+    private double _offsetY;
+
+    public double OffsetY
+    {
+        get => _offsetY;
+        set => SetAndRaise(OffsetYProperty, ref _offsetY, value);
+    }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -335,14 +372,14 @@ public class Dialog : Control,
     private bool _ignoreIsOpenChanged;
     private DialogOpenState? _openState;
     private Action<IDialogHost?>? _dialogHostChangedHandler;
-    private CompositeDisposable? _tokenBindingDisposables;
     private IDisposable? _modalSubscription;
     private CancellationTokenSource? _frameCancellationTokenSource;
+    private bool _startupLocationCalculated;
 
     static Dialog()
     {
         IsHitTestVisibleProperty.OverrideDefaultValue<Dialog>(false);
-        ChildProperty.Changed.AddClassHandler<Dialog>((x, e) => x.HandleChildChanged(e));
+        ContentProperty.Changed.AddClassHandler<Dialog>((x, e) => x.HandleChildChanged(e));
         IsOpenProperty.Changed.AddClassHandler<Dialog>((x, e) => x.HandleIsOpenChanged((AvaloniaPropertyChangedEventArgs<bool>)e));
     }
 
@@ -399,18 +436,8 @@ public class Dialog : Control,
         OverlayDialogHost?  overlayDialogHost       = null;
         if (DialogHostType == DialogHostType.Window)
         {
-            windowDialogHost = new DialogHost(topLevel, this);
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleProperty, windowDialogHost, DialogHost.TitleProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleIconProperty, windowDialogHost, DialogHost.IconProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, windowDialogHost, DialogHost.IsMotionEnabledProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsResizableProperty, windowDialogHost, DialogHost.CanResizeProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, windowDialogHost, DialogHost.CanMaximizeProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMinimizableProperty, windowDialogHost, DialogHost.CanMinimizeProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, windowDialogHost, DialogHost.IsMoveEnabledProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, windowDialogHost, DialogHost.StandardButtonsProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, windowDialogHost, DialogHost.DefaultStandardButtonProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsClosableProperty, windowDialogHost, DialogHost.IsCloseCaptionButtonEnabledProperty));
-            relayBindingDisposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, windowDialogHost, DialogHost.IsFooterVisibleProperty));
+            windowDialogHost = CreateDialogHost(topLevel, this);
+            RelayDialogHostBindings(relayBindingDisposables, windowDialogHost);
             windowDialogHost.CustomButtons.AddRange(CustomButtons);
             dialogHost                     = windowDialogHost;
         }
@@ -419,18 +446,8 @@ public class Dialog : Control,
             var dialogLayer = DialogLayer.GetDialogLayer(placementTarget);
             if (dialogLayer != null)
             {
-                overlayDialogHost = new OverlayDialogHost(dialogLayer, this);
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleProperty, overlayDialogHost, OverlayDialogHost.TitleProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, TitleIconProperty, overlayDialogHost, OverlayDialogHost.TitleIconProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, overlayDialogHost, OverlayDialogHost.IsMotionEnabledProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsModalProperty, overlayDialogHost, OverlayDialogHost.IsModalProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsResizableProperty, overlayDialogHost, OverlayDialogHost.IsResizableProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsClosableProperty, overlayDialogHost, OverlayDialogHost.IsClosableProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, overlayDialogHost, OverlayDialogHost.IsMaximizableProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, overlayDialogHost, OverlayDialogHost.IsDragMovableProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, overlayDialogHost, OverlayDialogHost.StandardButtonsProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, overlayDialogHost, OverlayDialogHost.DefaultStandardButtonProperty));
-                relayBindingDisposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, overlayDialogHost, OverlayDialogHost.IsFooterVisibleProperty));
+                overlayDialogHost = CreateOverlayDialogHost(dialogLayer, this);
+                RelayOverlayDialogBindings(relayBindingDisposables, overlayDialogHost);
                 overlayDialogHost.CustomButtons.AddRange(CustomButtons);
                 dialogHost = overlayDialogHost;
             }
@@ -440,7 +457,6 @@ public class Dialog : Control,
         var handlerCleanup = new CompositeDisposable(7);
         UpdateHostSizing(dialogHost, topLevel, placementTarget);
         dialogHost.Topmost = Topmost;
-        dialogHost.SetChild(Child);
         ((ISetLogicalParent)dialogHost).SetParent(this);
         if (InheritsTransform)
         {
@@ -503,6 +519,7 @@ public class Dialog : Control,
             ((ISetLogicalParent)state.dialogHost).SetParent(null);
             state.dialogHost.Dispose();
             relayBindingDisposables.Dispose();
+            _startupLocationCalculated = false;
         });
         
         if (IsLightDismissEnabled)
@@ -544,7 +561,6 @@ public class Dialog : Control,
             {
                 windowDialog.Show();
             }
-       
         }
         else
         {
@@ -585,6 +601,50 @@ public class Dialog : Control,
         Opened?.Invoke(this, EventArgs.Empty);
         _dialogHostChangedHandler?.Invoke(Host);
         return ResultTask;
+    }
+
+    private protected virtual DialogHost CreateDialogHost(TopLevel topLevel, Dialog dialog)
+    {
+        return new DialogHost(topLevel, this);
+    }
+
+    private protected virtual OverlayDialogHost CreateOverlayDialogHost(DialogLayer dialogLayer, Dialog dialog)
+    {
+        return new OverlayDialogHost(dialogLayer, this);
+    }
+
+    private protected virtual void RelayDialogHostBindings(CompositeDisposable disposables, DialogHost dialogHost)
+    {
+        disposables.Add(BindUtils.RelayBind(this, TitleProperty, dialogHost, DialogHost.TitleProperty));
+        disposables.Add(BindUtils.RelayBind(this, TitleIconProperty, dialogHost, DialogHost.LogoProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, dialogHost, DialogHost.IsMotionEnabledProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsResizableProperty, dialogHost, DialogHost.CanResizeProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, dialogHost, DialogHost.CanMaximizeProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMinimizableProperty, dialogHost, DialogHost.CanMinimizeProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, dialogHost, DialogHost.IsMoveEnabledProperty));
+        disposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, dialogHost, DialogHost.StandardButtonsProperty));
+        disposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, dialogHost, DialogHost.DefaultStandardButtonProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsClosableProperty, dialogHost, DialogHost.IsCloseCaptionButtonEnabledProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, dialogHost, DialogHost.IsFooterVisibleProperty));
+        disposables.Add(BindUtils.RelayBind(this, ContentProperty, dialogHost, DialogHost.ContentProperty));
+        disposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, dialogHost, DialogHost.ContentTemplateProperty));
+    }
+
+    private protected virtual void RelayOverlayDialogBindings(CompositeDisposable disposables, OverlayDialogHost dialogHost)
+    {
+        disposables.Add(BindUtils.RelayBind(this, TitleProperty, dialogHost, OverlayDialogHost.TitleProperty));
+        disposables.Add(BindUtils.RelayBind(this, TitleIconProperty, dialogHost, OverlayDialogHost.TitleIconProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, dialogHost, OverlayDialogHost.IsMotionEnabledProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsModalProperty, dialogHost, OverlayDialogHost.IsModalProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsResizableProperty, dialogHost, OverlayDialogHost.IsResizableProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsClosableProperty, dialogHost, OverlayDialogHost.IsClosableProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, dialogHost, OverlayDialogHost.IsMaximizableProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, dialogHost, OverlayDialogHost.IsDragMovableProperty));
+        disposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, dialogHost, OverlayDialogHost.StandardButtonsProperty));
+        disposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, dialogHost, OverlayDialogHost.DefaultStandardButtonProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, dialogHost, OverlayDialogHost.IsFooterVisibleProperty));
+        disposables.Add(BindUtils.RelayBind(this, ContentProperty, dialogHost, OverlayDialogHost.ContentProperty));
+        disposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, dialogHost, OverlayDialogHost.ContentTemplateProperty));
     }
 
     public void Accept()
@@ -662,27 +722,8 @@ public class Dialog : Control,
         return new Size();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingDisposables?.Dispose();
-        _tokenBindingDisposables = new CompositeDisposable();
-        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, IsMotionEnabledProperty, SharedTokenKey.EnableMotion));
-        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MinHeightProperty, DialogTokenKey.MinHeight));
-        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, MinWidthProperty, DialogTokenKey.MinWidth));
-        NotifyCreateTokenBindings(_tokenBindingDisposables);
-    }
-
     protected virtual void NotifyCreateTokenBindings(CompositeDisposable compositeDisposables)
     {
-        
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        Done(null);
-        _tokenBindingDisposables?.Dispose();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -700,10 +741,10 @@ public class Dialog : Control,
                 UpdateHostSizing(_openState.DialogHost, _openState.TopLevel, _openState.PlacementTarget);
             }
             else if (change.Property == PlacementTargetProperty ||
-                     change.Property == HorizontalAlignmentProperty ||
-                     change.Property == VerticalAlignmentProperty ||
-                     change.Property == HorizontalOffsetProperty ||
-                     change.Property == VerticalOffsetProperty ||
+                     change.Property == HorizontalStartupLocationProperty ||
+                     change.Property == VerticalStartupLocationProperty ||
+                     change.Property == OffsetXProperty ||
+                     change.Property == OffsetYProperty ||
                      change.Property == PlacementRectProperty)
             {
                 if (change.Property == PlacementTargetProperty)
@@ -724,6 +765,10 @@ public class Dialog : Control,
             else if (change.Property == TopmostProperty)
             {
                 _openState.DialogHost.Topmost = change.GetNewValue<bool>();
+            }
+            else if (change.Property == DialogHostTypeProperty)
+            {
+                _startupLocationCalculated = false;
             }
         }
     }
@@ -814,9 +859,7 @@ public class Dialog : Control,
         }
 
         var popupHost = _openState.DialogHost;
-
         popupHost.TemplateApplied -= RootTemplateApplied;
-
         _openState.SetPresenterSubscription(null);
 
         // If the Popup appears in a control template, then the child controls
@@ -832,7 +875,6 @@ public class Dialog : Control,
             _openState.SetPresenterSubscription(presenterSubscription);
         }
     }
-
     
     private void SetTemplatedParentAndApplyChildTemplates(Control? control)
     {
@@ -896,8 +938,8 @@ public class Dialog : Control,
     {
         dialogHost.ConfigurePosition(new DialogPositionRequest(
             placementTarget,
-            HorizontalOffset ?? new Dimension(0),
-            VerticalOffset ?? new Dimension(0),
+            OffsetX,
+            OffsetY,
             PlacementRect ?? new Rect(default, placementTarget.Bounds.Size),
             CustomDialogPlacementCallback));
     }
@@ -940,37 +982,42 @@ public class Dialog : Control,
 
     internal void NotifyDialogHostMeasured(Size size, Rect bounds)
     {
-        Size boundSize = bounds.Size;
-        if (HorizontalOffset == null && HorizontalStartupLocation != DialogHorizontalAnchor.Custom)
+        if (!_startupLocationCalculated)
         {
-            if (HorizontalStartupLocation == DialogHorizontalAnchor.Left)
+            Size boundSize = bounds.Size;
+            if (HorizontalStartupLocation != DialogHorizontalAnchor.Custom)
             {
-                SetCurrentValue(HorizontalOffsetProperty, new Dimension(0));
+                if (HorizontalStartupLocation == DialogHorizontalAnchor.Left)
+                {
+                    SetCurrentValue(OffsetXProperty, 0);
+                }
+                else if (HorizontalStartupLocation == DialogHorizontalAnchor.Right)
+                {
+                    SetCurrentValue(OffsetXProperty, boundSize.Width - size.Width);
+                }
+                else if (HorizontalStartupLocation == DialogHorizontalAnchor.Center)
+                {
+                    SetCurrentValue(OffsetXProperty, (boundSize.Width - size.Width) / 2);
+                }
             }
-            else if (HorizontalStartupLocation == DialogHorizontalAnchor.Right)
-            {
-                SetCurrentValue(HorizontalOffsetProperty, new Dimension(boundSize.Width - size.Width));
-            }
-            else if (HorizontalStartupLocation == DialogHorizontalAnchor.Center)
-            {
-                SetCurrentValue(HorizontalOffsetProperty, new Dimension((boundSize.Width - size.Width) / 2));
-            }
-        }
         
-        if (VerticalOffset == null && VerticalStartupLocation != DialogVerticalAnchor.Custom)
-        {
-            if (VerticalStartupLocation == DialogVerticalAnchor.Top)
+            if (VerticalStartupLocation != DialogVerticalAnchor.Custom)
             {
-                SetCurrentValue(VerticalOffsetProperty, new Dimension(0));
+                if (VerticalStartupLocation == DialogVerticalAnchor.Top)
+                {
+                    SetCurrentValue(OffsetYProperty, 0);
+                }
+                else if (VerticalStartupLocation == DialogVerticalAnchor.Bottom)
+                {
+                    SetCurrentValue(OffsetYProperty, boundSize.Height - size.Height);
+                }
+                else if (VerticalStartupLocation == DialogVerticalAnchor.Center)
+                {
+                    SetCurrentValue(OffsetYProperty, (boundSize.Height - size.Height) / 2);
+                }
             }
-            else if (VerticalStartupLocation == DialogVerticalAnchor.Bottom)
-            {
-                SetCurrentValue(VerticalOffsetProperty, new Dimension(boundSize.Height - size.Height));
-            }
-            else if (VerticalStartupLocation == DialogVerticalAnchor.Center)
-            {
-                SetCurrentValue(VerticalOffsetProperty, new Dimension((boundSize.Height - size.Height) / 2));
-            }
+
+            _startupLocationCalculated = true;
         }
     }
 
@@ -1077,5 +1124,40 @@ public class Dialog : Control,
             case NotifyCollectionChangedAction.Reset:
                 throw new NotSupportedException();
         }
+    }
+
+    internal void NotifyDialogButtonBoxClicked(Button? button)
+    {
+        if (button is not null && button.Tag is DialogButtonRole role)
+        {
+            if (role == DialogButtonRole.AcceptRole ||
+                role == DialogButtonRole.YesRole ||
+                role == DialogButtonRole.ApplyRole ||
+                role == DialogButtonRole.ResetRole)
+            {
+                Accept();
+            }
+            else if (role == DialogButtonRole.RejectRole ||
+                     role == DialogButtonRole.NoRole)
+            {
+                Reject();
+            }
+            else
+            {
+                if (button is DialogBoxButton dialogBoxButton)
+                {
+                    Done(dialogBoxButton.StandardButtonType);
+                }
+                else
+                {
+                    Done(role);
+                }
+            }
+        }
+    }
+
+    internal void NotifyDialogButtonSynchronized(IReadOnlyList<Button> buttons)
+    {
+        DialogButtonsConfigure?.Invoke(buttons);
     }
 }

@@ -326,19 +326,22 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
 
     private void HandleTitleDoubleClicked(object? sender, RoutedEventArgs e)
     {
-        var windowState = WindowState;
-        if (windowState == WindowState.FullScreen)
+        if (CanResize)
         {
-            return;
-        }
+            var windowState = WindowState;
+            if (windowState == WindowState.FullScreen)
+            {
+                return;
+            }
 
-        if (windowState == WindowState.Normal && (OperationSystemType == OperationSystemType.macOS || IsMaximizeCaptionButtonEnabled))
-        {
-            WindowState =  WindowState.Maximized;
-        }
-        else if (windowState == WindowState.Maximized)
-        {
-            WindowState = WindowState.Normal;
+            if (windowState == WindowState.Normal && (OperationSystemType == OperationSystemType.macOS || IsMaximizeCaptionButtonEnabled))
+            {
+                WindowState =  WindowState.Maximized;
+            }
+            else if (windowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+            }
         }
     }
 

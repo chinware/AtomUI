@@ -106,7 +106,7 @@ internal class DialogToken : AbstractControlDesignToken
         HeaderPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingSM,
             SharedToken.PaddingContentHorizontalSM, 0);
         HeaderMarginBottom = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
-        LogoSize           = SharedToken.SizeUnit * 4;
+        LogoSize           = SharedToken.SizeLG;
         MinHeight = SharedToken.ControlHeightLG + HeaderPadding.Top + HeaderPadding.Bottom +
                     SharedToken.UniformlyMarginXS;
         MinWidth     = 200;

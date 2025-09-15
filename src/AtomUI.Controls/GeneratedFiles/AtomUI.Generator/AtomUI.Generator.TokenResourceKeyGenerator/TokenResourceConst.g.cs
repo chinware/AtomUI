@@ -508,6 +508,11 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey MessageTopMargin = new TokenResourceKey("Message.MessageTopMargin");
     }
 
+    public static class MessageBoxTokenKey
+    {
+        public static readonly TokenResourceKey StyleIconSize = new TokenResourceKey("MessageBox.StyleIconSize");
+    }
+
     public static class NavMenuTokenKey
     {
         public static readonly TokenResourceKey ActiveBarHeight = new TokenResourceKey("NavMenu.ActiveBarHeight");

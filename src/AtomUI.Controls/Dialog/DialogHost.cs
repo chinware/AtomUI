@@ -1,6 +1,5 @@
 using System.Collections.Specialized;
 using AtomUI.Controls.DialogPositioning;
-using AtomUI.Controls.MessageBox;
 using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Collections;
@@ -13,11 +12,11 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public sealed class DialogHost : Window,
-                                 IDialogHost,
-                                 IHostedVisualTreeRoot,
-                                 IStyleHost,
-                                 IMotionAwareControl
+internal class DialogHost : Window,
+                            IDialogHost,
+                            IHostedVisualTreeRoot,
+                            IStyleHost,
+                            IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -173,8 +172,8 @@ public sealed class DialogHost : Window,
         {
             if (_latestDialogPosition != position)
             {
-                _latestDialogPosition =  position;
-                Position = position;
+                _latestDialogPosition = position;
+                Position              = position;
             }
         }
     }
@@ -198,6 +197,8 @@ public sealed class DialogHost : Window,
         if (_buttonBox != null)
         {
             _buttonBox.CustomButtons.AddRange(CustomButtons);
+            _buttonBox.Clicked             += HandleButtonBoxClicked;
+            _buttonBox.ButtonsSynchronized += HandleButtonsSynchronized;
         }
     }
 
@@ -246,5 +247,15 @@ public sealed class DialogHost : Window,
         {
             SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
         }
+    }
+
+    private void HandleButtonBoxClicked(object? sender, DialogButtonClickedEventArgs args)
+    {
+        _dialog.NotifyDialogButtonBoxClicked(args.SourceButton);
+    }
+
+    private void HandleButtonsSynchronized(object? sender, DialogBoxButtonSyncEventArgs args)
+    {
+        _dialog.NotifyDialogButtonSynchronized(args.Buttons);
     }
 }

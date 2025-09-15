@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Media;
 
@@ -19,6 +20,8 @@ public interface IDialogHost : IDisposable, IFocusScope
     ContentPresenter? Presenter { get; }
     Transform? Transform { get; set; }
     Visual? HostedVisualTreeRoot { get; }
+    object? Content { get; }
+    IDataTemplate? ContentTemplate { get; }
     event EventHandler<TemplateAppliedEventArgs>? TemplateApplied;
     void ConfigurePosition(DialogPositionRequest positionRequest);
     void SetChild(Control? control);

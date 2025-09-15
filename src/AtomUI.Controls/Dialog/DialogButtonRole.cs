@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.MessageBox;
+namespace AtomUI.Controls;
 
 public enum DialogButtonRole
 {

@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.MessageBox.Themes;
+namespace AtomUI.Controls.Themes;
 
 internal static class MessageBoxThemeConstants
 {

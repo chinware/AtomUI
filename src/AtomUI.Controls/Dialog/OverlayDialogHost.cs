@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls.DialogPositioning;
-using AtomUI.Controls.MessageBox;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
@@ -18,12 +17,11 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public sealed class OverlayDialogHost : ContentControl,
-                                        IInputRoot,
-                                        IDisposable,
-                                        IDialogHost,
-                                        IMotionAwareControl,
-                                        IManagedDialogPositionerDialog
+internal class OverlayDialogHost : ContentControl,
+                                   IInputRoot,
+                                   IDialogHost,
+                                   IMotionAwareControl,
+                                   IManagedDialogPositionerDialog
 {
     #region 公共属性定义
     public static readonly StyledProperty<string?> TitleProperty =
@@ -457,7 +455,23 @@ public sealed class OverlayDialogHost : ContentControl,
         if (_buttonBox != null)
         {
             _buttonBox.CustomButtons.AddRange(CustomButtons);
+            _buttonBox.Clicked             += HandleButtonBoxClicked;
+            _buttonBox.ButtonsSynchronized += HandleButtonsSynchronized;
         }
+    }
+    
+    private void HandleButtonBoxClicked(object? sender, DialogButtonClickedEventArgs args)
+    {
+        _dialog.NotifyDialogButtonBoxClicked(args.SourceButton);
+    }
+    
+    private void HandleButtonsSynchronized(object? sender, DialogBoxButtonSyncEventArgs args)
+    {
+        foreach (var button in args.Buttons)
+        {
+            button.IsWaveSpiritEnabled = false;
+        }
+        _dialog.NotifyDialogButtonSynchronized(args.Buttons);
     }
 
     private void HandleAboutToResize(object? sender, OverlayDialogResizeEventArgs args)
@@ -470,7 +484,7 @@ public sealed class OverlayDialogHost : ContentControl,
     {
         if (_lastestSize != null && _lastestPoint != null)
         {
-            var originWidth = _lastestSize.Value.Width;
+            var originWidth  = _lastestSize.Value.Width;
             var originHeight = _lastestSize.Value.Height;
             if (args.Location == ResizeHandleLocation.East)
             {
@@ -580,7 +594,7 @@ public sealed class OverlayDialogHost : ContentControl,
     
     private void HandleHeaderDoubleClicked(object? sender, RoutedEventArgs e)
     {
-        if (!IsMaximizable)
+        if (!IsMaximizable || !IsResizable)
         {
             return;
         }
@@ -652,7 +666,7 @@ public sealed class OverlayDialogHost : ContentControl,
         offsetX += delta.X;
         offsetY += delta.Y;
 
-        var bounds = _dialogLayer.Bounds;
+        var bounds     = _dialogLayer.Bounds;
         var maxOffsetX = bounds.Width - DesiredSize.Width;
         var maxOffsetY =  bounds.Height - DesiredSize.Height;
         

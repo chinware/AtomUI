@@ -1,73 +1,73 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    xmlns:themes="using:AtomUI.Controls.Themes"
-    x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:DialogHost}" TargetType="atom:DialogHost">
-        <ControlTheme.BasedOn>
-            <themes:WindowTheme TargetType="atom:DialogHost" />
-        </ControlTheme.BasedOn>
-        <Setter Property="Template">
-            <ControlTemplate TargetType="atom:DialogHost">
-                <Panel>
-                    <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
-                                        IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}" />
-                    <Border Name="WindowFrame"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            BackgroundSizing="InnerBorderEdge"
-                            ClipToBounds="True">
-                        <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
-                            <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
-                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
-                                               Content="{TemplateBinding Title}"
-                                               Logo="{TemplateBinding Logo}" />
-                            </Border>
-                            <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                                <DockPanel LastChildFill="True">
-                                    <Border Name="FooterFrame" DockPanel.Dock="Bottom" IsVisible="{TemplateBinding IsEffectiveFooterVisible}">
-                                        <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
-                                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                              StandardButtons="{TemplateBinding StandardButtons}"
-                                                              DefaultStandardButton="{TemplateBinding DefaultStandardButton}" />
-                                    </Border>
-                                    <Border Name="ContentFrame"
-                                            CornerRadius="{TemplateBinding CornerRadius}"
-                                            ClipToBounds="True"
-                                            Cursor="Arrow"
-                                            Padding="{TemplateBinding Padding}">
-                                        <ContentPresenter
-                                            Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
-                                            ContentTemplate="{TemplateBinding ContentTemplate}"
-                                            Content="{TemplateBinding Content}"
-                                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                    </Border>
-                                </DockPanel>
-                            </atom:VisualLayerManager>
-                        </DockPanel>
-                    </Border>
-                </Panel>
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="using:AtomUI.Controls.Themes"
+              TargetType="atom:DialogHost"
+              x:Class="AtomUI.Controls.Themes.DialogHostTheme"
+              x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <themes:WindowTheme TargetType="atom:DialogHost" />
+    </ControlTheme.BasedOn>
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:DialogHost">
+            <Panel>
+                <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
+                                    IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}" />
+                <Border Name="WindowFrame"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BackgroundSizing="InnerBorderEdge"
+                        ClipToBounds="True">
+                    <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
+                        <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
+                            <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
+                                           Content="{TemplateBinding Title}"
+                                           Logo="{TemplateBinding Logo}" />
+                        </Border>
+                        <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                            <DockPanel LastChildFill="True">
+                                <Border Name="FooterFrame" DockPanel.Dock="Bottom"
+                                        IsVisible="{TemplateBinding IsEffectiveFooterVisible}">
+                                    <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
+                                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                          StandardButtons="{TemplateBinding StandardButtons}"
+                                                          DefaultStandardButton="{TemplateBinding DefaultStandardButton}" />
+                                </Border>
+                                <Border Name="ContentFrame"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        ClipToBounds="True"
+                                        Cursor="Arrow"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter
+                                        Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        Content="{TemplateBinding Content}"
+                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                </Border>
+                            </DockPanel>
+                        </atom:VisualLayerManager>
+                    </DockPanel>
+                </Border>
+            </Panel>
 
-            </ControlTemplate>
-        </Setter>
+        </ControlTemplate>
+    </Setter>
 
-        <Style Selector="^:is(atom|DialogHost)">
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
-            <Setter Property="SizeToContent" Value="WidthAndHeight" />
+    <Style Selector="^:is(atom|DialogHost)">
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
+        <Setter Property="SizeToContent" Value="WidthAndHeight" />
 
-            <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
-                <Setter Property="VerticalSpacing"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}" />
-            </Style>
-
-            <Style Selector="^ /template/ Border#FooterFrame">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterBg}}" />
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterMarginTop}}" />
-                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterPadding}}" />
-            </Style>
+        <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
+            <Setter Property="VerticalSpacing"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}" />
         </Style>
 
-    </ControlTheme>
-</ResourceDictionary>
+        <Style Selector="^ /template/ Border#FooterFrame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterBg}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterMarginTop}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterPadding}}" />
+        </Style>
+    </Style>
+
+</ControlTheme>

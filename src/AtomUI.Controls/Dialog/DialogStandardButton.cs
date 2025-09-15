@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace AtomUI.Controls.MessageBox;
+namespace AtomUI.Controls;
 
 [Flags]
 public enum DialogStandardButton

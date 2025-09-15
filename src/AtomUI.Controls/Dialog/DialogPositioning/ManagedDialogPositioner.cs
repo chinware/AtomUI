@@ -50,8 +50,8 @@ public class ManagedDialogPositioner : IDialogPositioner
     
     private Rect Calculate(Size translatedSize, 
                            Rect anchorRect,
-                           Dimension horizontalOffset,
-                           Dimension verticalOffset,
+                           double horizontalOffset,
+                           double verticalOffset,
                            DialogPositionerConstraintAdjustment constraintAdjustment)
     {
         var parentGeometry = _dialog.ParentClientAreaScreenGeometry;
@@ -94,10 +94,7 @@ public class ManagedDialogPositioner : IDialogPositioner
 
         static bool IsValid(in Rect rc) => rc.Width > 0 && rc.Height > 0;
 
-        var offsetX = horizontalOffset.Resolve(bounds.Width);
-        var offsetY = verticalOffset.Resolve(bounds.Height);
-
-        Rect geo = new Rect(new Point(offsetX, offsetY), translatedSize);
+        Rect geo = new Rect(new Point(horizontalOffset, verticalOffset), translatedSize);
 
         // If sliding is allowed, try moving the rect into the bounds
         if (constraintAdjustment.HasAllFlags(DialogPositionerConstraintAdjustment.SlideX))

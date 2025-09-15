@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.MessageBox;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
@@ -69,6 +68,7 @@ public class DialogButtonBox : TemplatedControl,
     public event EventHandler<DialogButtonClickedEventArgs>? Clicked;
     public event EventHandler? HelpRequested;
     public event EventHandler? Rejected;
+    public event EventHandler<DialogBoxButtonSyncEventArgs>? ButtonsSynchronized;
 
     #endregion
 
@@ -402,10 +402,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Ok ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Ok ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Ok
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, OkButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -416,10 +418,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag        = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Open ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Open ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Open
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, OpenButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -430,10 +434,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag        = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Save ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Save ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Save
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, SaveButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -444,10 +450,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.SaveAll ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.SaveAll ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.SaveAll
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, SaveAllButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -458,10 +466,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Retry ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Retry ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Retry
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, RetryButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -472,10 +482,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.AcceptRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Ignore ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Ignore ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Ignore
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, IgnoreButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
@@ -486,10 +498,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.YesRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Yes ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Yes ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Yes
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, YesButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.YesRole, button, true);
@@ -500,10 +514,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.YesRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.YesToAll ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.YesToAll ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.YesToAll
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, YesToAllButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.YesRole, button, true);
@@ -514,10 +530,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.RejectRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Cancel ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Cancel ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Cancel
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, CancelButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
@@ -528,10 +546,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.RejectRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Close ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Close ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Close
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, CloseButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
@@ -542,10 +562,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.RejectRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Abort ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Abort ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Abort
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, AbortButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
@@ -556,10 +578,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.NoRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.No ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.No ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.No
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, NoButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.NoRole, button, true);
@@ -570,10 +594,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.NoRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.NoToAll ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.NoToAll ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.NoToAll
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, NoToAllButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.NoRole, button, true);
@@ -584,10 +610,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.DestructiveRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Discard ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Discard ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Discard
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, DiscardButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.DestructiveRole, button, true);
@@ -598,10 +626,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.HelpRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Help ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Help ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Help
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, HelpButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.HelpRole, button, true);
@@ -612,10 +642,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.ResetRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Reset ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Reset ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Reset
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, ResetButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.ResetRole, button, true);
@@ -626,10 +658,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.ResetRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.RestoreDefaults ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.RestoreDefaults ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.RestoreDefaults
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, RestoreDefaultsButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.ResetRole, button, true);
@@ -640,10 +674,12 @@ public class DialogButtonBox : TemplatedControl,
             var button = new DialogBoxButton
             {
                 Tag = DialogButtonRole.ApplyRole,
-                ButtonType = DefaultStandardButton == DialogStandardButton.Apply ? ButtonType.Primary : ButtonType.Default
+                ButtonType = DefaultStandardButton == DialogStandardButton.Apply ? ButtonType.Primary : ButtonType.Default,
+                StandardButtonType = DialogStandardButton.Apply
             };
             var disposables = new CompositeDisposable(2);
             disposables.Add(BindUtils.RelayBind(this, ApplyButtonTextProperty, button, Button.ContentProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, button, Button.IsMotionEnabledProperty));
             _bindingDisposables.Add(button, disposables);
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.ApplyRole, button, true);
@@ -652,12 +688,17 @@ public class DialogButtonBox : TemplatedControl,
 
     private void SyncButtonsToGroup()
     {
-        SyncRightGroupButtons();
-        SyncCenterGroupButtons();
-        SyncLeftGroupButtons();
+        var buttons            = new List<Button>();
+        var rightButtons       = SyncRightGroupButtons();
+        var centerGroupButtons = SyncCenterGroupButtons();
+        var leftGroupButtons   = SyncLeftGroupButtons();
+        buttons.AddRange(rightButtons);
+        buttons.AddRange(centerGroupButtons);
+        buttons.AddRange(leftGroupButtons);
+        ButtonsSynchronized?.Invoke(this, new DialogBoxButtonSyncEventArgs(buttons));
     }
     
-    private void SyncRightGroupButtons()
+    private List<Button> SyncRightGroupButtons()
     {
         Debug.Assert(_rightGroup != null);
         var rightGroupButtons = new List<Button>();
@@ -773,9 +814,10 @@ public class DialogButtonBox : TemplatedControl,
         }
         
         _rightGroup.Children.AddRange(rightGroupButtons);
+        return rightGroupButtons;
     }
 
-    private void SyncCenterGroupButtons()
+    private List<Button> SyncCenterGroupButtons()
     {
         Debug.Assert(_centerGroup != null);
         var centerGroupButtons = new List<Button>();
@@ -794,9 +836,10 @@ public class DialogButtonBox : TemplatedControl,
             centerGroupButtons.Add(button);
         }
         _centerGroup.Children.AddRange(centerGroupButtons);
+        return centerGroupButtons;
     }
 
-    private void SyncLeftGroupButtons()
+    private List<Button> SyncLeftGroupButtons()
     {
         Debug.Assert(_leftGroup != null);
         var leftGroupButtons = new List<Button>();
@@ -843,18 +886,14 @@ public class DialogButtonBox : TemplatedControl,
         }
         
         _leftGroup.Children.AddRange(leftGroupButtons);
+        return leftGroupButtons;
     }
 
     private void HandleButtonClicked(object? sender, EventArgs args)
     {
-        DialogStandardButton buttonType = DialogStandardButton.NoButton;
         if (sender is Button button)
         {
-            if (button is DialogBoxButton standardButton)
-            {
-                buttonType = standardButton.StandardButtonType;
-            }
-            Clicked?.Invoke(this, new DialogButtonClickedEventArgs(button, buttonType));
+            Clicked?.Invoke(this, new DialogButtonClickedEventArgs(button));
             if (button.Tag is DialogButtonRole role)
             {
                 if (role == DialogButtonRole.AcceptRole)
