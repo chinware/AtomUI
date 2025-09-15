@@ -57,6 +57,9 @@ internal class OverlayDialogHost : ContentControl,
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
         DialogButtonBox.DefaultStandardButtonProperty.AddOwner<OverlayDialogHost>();
     
+    public static readonly StyledProperty<DialogStandardButton> EscapeStandardButtonProperty =
+        DialogButtonBox.EscapeStandardButtonProperty.AddOwner<OverlayDialogHost>();
+    
     public static readonly StyledProperty<bool> IsFooterVisibleProperty =
         Dialog.IsFooterVisibleProperty.AddOwner<OverlayDialogHost>();
     
@@ -128,6 +131,12 @@ internal class OverlayDialogHost : ContentControl,
         get => GetValue(DefaultStandardButtonProperty);
         set => SetValue(DefaultStandardButtonProperty, value);
     }
+    
+    public DialogStandardButton EscapeStandardButton
+    {
+        get => GetValue(EscapeStandardButtonProperty);
+        set => SetValue(EscapeStandardButtonProperty, value);
+    }
 
     public bool IsFooterVisible
     {
@@ -141,7 +150,7 @@ internal class OverlayDialogHost : ContentControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public AvaloniaList<Button> CustomButtons { get; } = new ();
+    public AvaloniaList<DialogBoxButton> CustomButtons { get; } = new ();
     
     #endregion
     
@@ -715,11 +724,11 @@ internal class OverlayDialogHost : ContentControl,
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<Button>();
+                    var newItems = e.NewItems!.OfType<DialogBoxButton>();
                     _buttonBox.CustomButtons.AddRange(newItems);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<Button>();
+                    var oldItems = e.OldItems!.OfType<DialogBoxButton>();
                     _buttonBox.CustomButtons.RemoveAll(oldItems);
                     break;
                 case NotifyCollectionChangedAction.Replace:

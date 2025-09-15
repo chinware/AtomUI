@@ -42,45 +42,49 @@ public enum DialogStandardButton
     /// </summary>
     Reset = 0x00000080,
     /// <summary>
+    /// A "Reload" button defined with the ResetRole.
+    /// </summary>
+    Reload = 0x00000100,
+    /// <summary>
     /// A "Restore Defaults" button defined with the ResetRole.
     /// </summary>
-    RestoreDefaults = 0x00000100,
+    RestoreDefaults = 0x00000200,
     /// <summary>
     /// A "Help" button defined with the HelpRole.
     /// </summary>
-    Help = 0x00000200,
+    Help = 0x00000400,
     /// <summary>
     /// A "Save All" button defined with the AcceptRole.
     /// </summary>
-    SaveAll = 0x00000400,
+    SaveAll = 0x00000800,
     /// <summary>
     /// A "Yes" button defined with the YesRole.
     /// </summary>
-    Yes = 0x00000800,
+    Yes = 0x00001000,
     /// <summary>
     /// A "Yes to All" button defined with the YesRole.
     /// </summary>
-    YesToAll = 0x00001000,
+    YesToAll = 0x00002000,
     /// <summary>
     /// A "No" button defined with the NoRole.
     /// </summary>
-    No = 0x00002000,
+    No = 0x00004000,
     /// <summary>
     /// A "No to All" button defined with the NoRole.
     /// </summary>
-    NoToAll = 0x00004000,
+    NoToAll = 0x00008000,
     /// <summary>
     /// An "Abort" button defined with the RejectRole.
     /// </summary>
-    Abort = 0x00008000,
+    Abort = 0x00010000,
     /// <summary>
     /// A "Retry" button defined with the AcceptRole.
     /// </summary>
-    Retry = 0x00010000,
+    Retry = 0x00020000,
     /// <summary>
     /// An "Ignore" button defined with the AcceptRole.
     /// </summary>
-    Ignore = 0x00020000,
+    Ignore = 0x00040000,
 }
 
 public readonly struct DialogStandardButtons : IEquatable<DialogStandardButtons>

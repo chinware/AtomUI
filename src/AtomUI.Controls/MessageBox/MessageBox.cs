@@ -309,6 +309,11 @@ public class MessageBox : TemplatedControl,
         {
             _dialog.StandardButtons = DialogStandardButton.Ok;
         }
+        else if (Style == MessageBoxStyle.Confirm)
+        {
+            SetValue(IconProperty, AntDesignIconPackage.ExclamationCircleFilled(), BindingPriority.Template);
+            _dialog.StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel;
+        }
     }
 
     private void ConfigureOkButton()

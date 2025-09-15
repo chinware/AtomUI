@@ -43,6 +43,7 @@
         <Setter Property="DiscardButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Discard}}"/>
         <Setter Property="ApplyButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Apply}}"/>
         <Setter Property="ResetButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Reset}}"/>
+        <Setter Property="ReloadButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Reload}}"/>
         <Setter Property="RestoreDefaultsButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.RestoreDefaults}}"/>
         <Setter Property="HelpButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Help}}"/>
         <Setter Property="SaveAllButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.SaveAll}}"/>

@@ -31,7 +31,8 @@
                                     <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
                                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                           StandardButtons="{TemplateBinding StandardButtons}"
-                                                          DefaultStandardButton="{TemplateBinding DefaultStandardButton}" />
+                                                          DefaultStandardButton="{TemplateBinding DefaultStandardButton}"
+                                                          EscapeStandardButton="{TemplateBinding EscapeStandardButton}"/>
                                 </Border>
                                 <Border Name="ContentFrame"
                                         CornerRadius="{TemplateBinding CornerRadius}"

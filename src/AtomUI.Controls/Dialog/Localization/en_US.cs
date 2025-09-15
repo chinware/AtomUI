@@ -13,6 +13,7 @@ internal class en_US : LanguageProvider
     public const string Discard = "Discard";
     public const string Apply = "Apply";
     public const string Reset = "Reset";
+    public const string Reload = "Reload";
     public const string RestoreDefaults = "Restore Defaults";
     public const string Help = "Help";
     public const string SaveAll = "Save All";

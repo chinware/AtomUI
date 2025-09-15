@@ -29,6 +29,9 @@ internal class DialogHost : Window,
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
         DialogButtonBox.DefaultStandardButtonProperty.AddOwner<DialogHost>();
     
+    public static readonly StyledProperty<DialogStandardButton> EscapeStandardButtonProperty =
+        DialogButtonBox.EscapeStandardButtonProperty.AddOwner<DialogHost>();
+    
     public static readonly StyledProperty<bool> IsFooterVisibleProperty =
         Dialog.IsFooterVisibleProperty.AddOwner<DialogHost>();
     
@@ -51,6 +54,12 @@ internal class DialogHost : Window,
     {
         get => GetValue(DefaultStandardButtonProperty);
         set => SetValue(DefaultStandardButtonProperty, value);
+    }
+    
+    public DialogStandardButton EscapeStandardButton
+    {
+        get => GetValue(EscapeStandardButtonProperty);
+        set => SetValue(EscapeStandardButtonProperty, value);
     }
     
     public bool IsFooterVisible
@@ -88,7 +97,7 @@ internal class DialogHost : Window,
 
     Visual IDialogHost.HostedVisualTreeRoot => this;
     
-    public AvaloniaList<Button> CustomButtons { get; } = new ();
+    public AvaloniaList<DialogBoxButton> CustomButtons { get; } = new ();
     
     #endregion
     
@@ -225,11 +234,11 @@ internal class DialogHost : Window,
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<Button>();
+                    var newItems = e.NewItems!.OfType<DialogBoxButton>();
                     _buttonBox.CustomButtons.AddRange(newItems);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<Button>();
+                    var oldItems = e.OldItems!.OfType<DialogBoxButton>();
                     _buttonBox.CustomButtons.RemoveAll(oldItems);
                     break;
                 case NotifyCollectionChangedAction.Replace:

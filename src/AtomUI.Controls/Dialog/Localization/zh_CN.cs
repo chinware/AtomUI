@@ -13,6 +13,7 @@ internal class zh_CN : LanguageProvider
     public const string Discard = "丢弃";
     public const string Apply = "应用";
     public const string Reset = "重置";
+    public const string Reload = "重新加载";
     public const string RestoreDefaults = "恢复默认值";
     public const string Help = "帮助";
     public const string SaveAll = "全部保存";

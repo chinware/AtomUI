@@ -25,6 +25,7 @@ namespace AtomUI.Controls.DialogLang
         public static readonly LanguageResourceKey NoToAll = new LanguageResourceKey("Dialog.NoToAll", "AtomUI.Lang");
         public static readonly LanguageResourceKey Ok = new LanguageResourceKey("Dialog.Ok", "AtomUI.Lang");
         public static readonly LanguageResourceKey Open = new LanguageResourceKey("Dialog.Open", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Reload = new LanguageResourceKey("Dialog.Reload", "AtomUI.Lang");
         public static readonly LanguageResourceKey Reset = new LanguageResourceKey("Dialog.Reset", "AtomUI.Lang");
         public static readonly LanguageResourceKey RestoreDefaults = new LanguageResourceKey("Dialog.RestoreDefaults", "AtomUI.Lang");
         public static readonly LanguageResourceKey Retry = new LanguageResourceKey("Dialog.Retry", "AtomUI.Lang");

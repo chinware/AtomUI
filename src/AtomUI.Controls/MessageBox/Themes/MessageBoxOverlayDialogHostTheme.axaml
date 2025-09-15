@@ -62,6 +62,13 @@
             </ControlTemplate>
         </Setter>
         
+              
+        <Style Selector="^[Style=Confirm]">
+            <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
+                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+            </Style>
+        </Style>
+        
         <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MessageBoxTokenKey.StyleIconSize}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MessageBoxTokenKey.StyleIconSize}}" />

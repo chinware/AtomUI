@@ -111,6 +111,9 @@ public class Dialog : TemplatedControl,
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
         DialogButtonBox.DefaultStandardButtonProperty.AddOwner<Dialog>();
     
+    public static readonly StyledProperty<DialogStandardButton> EscapeStandardButtonProperty =
+        DialogButtonBox.EscapeStandardButtonProperty.AddOwner<Dialog>();
+    
     public static readonly StyledProperty<bool> IsFooterVisibleProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsFooterVisible), true);
         
@@ -294,6 +297,12 @@ public class Dialog : TemplatedControl,
         set => SetValue(DefaultStandardButtonProperty, value);
     }
     
+    public DialogStandardButton EscapeStandardButton
+    {
+        get => GetValue(EscapeStandardButtonProperty);
+        set => SetValue(EscapeStandardButtonProperty, value);
+    }
+    
     public bool IsFooterVisible
     {
         get => GetValue(IsFooterVisibleProperty);
@@ -309,7 +318,7 @@ public class Dialog : TemplatedControl,
     public IDialogHost? Host => _openState?.DialogHost;
     IDialogHost? IDialogHostProvider.DialogHost => Host;
     
-    public AvaloniaList<Button> CustomButtons { get; } = new ();
+    public AvaloniaList<DialogBoxButton> CustomButtons { get; } = new ();
     
     #endregion
 
@@ -624,6 +633,7 @@ public class Dialog : TemplatedControl,
         disposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, dialogHost, DialogHost.IsMoveEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, dialogHost, DialogHost.StandardButtonsProperty));
         disposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, dialogHost, DialogHost.DefaultStandardButtonProperty));
+        disposables.Add(BindUtils.RelayBind(this, EscapeStandardButtonProperty, dialogHost, DialogHost.EscapeStandardButtonProperty));
         disposables.Add(BindUtils.RelayBind(this, IsClosableProperty, dialogHost, DialogHost.IsCloseCaptionButtonEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, dialogHost, DialogHost.IsFooterVisibleProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentProperty, dialogHost, DialogHost.ContentProperty));
@@ -642,6 +652,7 @@ public class Dialog : TemplatedControl,
         disposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, dialogHost, OverlayDialogHost.IsDragMovableProperty));
         disposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, dialogHost, OverlayDialogHost.StandardButtonsProperty));
         disposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, dialogHost, OverlayDialogHost.DefaultStandardButtonProperty));
+        disposables.Add(BindUtils.RelayBind(this, EscapeStandardButtonProperty, dialogHost, OverlayDialogHost.EscapeStandardButtonProperty));
         disposables.Add(BindUtils.RelayBind(this, IsFooterVisibleProperty, dialogHost, OverlayDialogHost.IsFooterVisibleProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentProperty, dialogHost, OverlayDialogHost.ContentProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, dialogHost, OverlayDialogHost.ContentTemplateProperty));
@@ -1097,7 +1108,7 @@ public class Dialog : TemplatedControl,
             return;
         }
 
-        AvaloniaList<Button>? targetButtons = null;
+        AvaloniaList<DialogBoxButton>? targetButtons = null;
         if (DialogHostType == DialogHostType.Overlay)
         {
             if (_openState.DialogHost is OverlayDialogHost overlayDialogHost)
@@ -1112,11 +1123,11 @@ public class Dialog : TemplatedControl,
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems!.OfType<Button>();
+                var newItems = e.NewItems!.OfType<DialogBoxButton>();
                 targetButtons?.AddRange(newItems);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                var oldItems = e.OldItems!.OfType<Button>();
+                var oldItems = e.OldItems!.OfType<DialogBoxButton>();
                 targetButtons?.RemoveAll(oldItems);
                 break;
             case NotifyCollectionChangedAction.Replace:
