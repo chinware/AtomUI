@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
@@ -63,18 +64,12 @@ public class MenuFlyout : Flyout
         
         Presenter = new MenuFlyoutPresenter
         {
-            ItemsSource = Items,
             MenuFlyout  = this
         };
         
-        // 会二次创建
         foreach (var item in Items)
         {
-            if (item is Control control)
-            {
-                control.SetLogicalParent(null);
-                control.SetVisualParent(null);
-            }
+            Presenter.Items.Add(item);
         }
         
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, Presenter, MenuFlyoutPresenter.ItemTemplateProperty));
