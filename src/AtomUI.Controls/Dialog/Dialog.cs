@@ -390,6 +390,8 @@ public class Dialog : TemplatedControl,
     private IDisposable? _modalSubscription;
     private CancellationTokenSource? _frameCancellationTokenSource;
     private bool _startupLocationCalculated;
+    private bool _opening;
+    private bool _closing;
 
     static Dialog()
     {
@@ -410,7 +412,10 @@ public class Dialog : TemplatedControl,
         {
             if (e.NewValue.Value)
             {
-                OpenAsync();
+                Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                   await OpenAsync();
+                });
             }
             else
             {
@@ -421,7 +426,7 @@ public class Dialog : TemplatedControl,
 
     public object? Open()
     {
-        if (_openState != null)
+        if (_openState != null || _opening)
         {
             return null;
         }
@@ -435,12 +440,14 @@ public class Dialog : TemplatedControl,
         return resultTask?.Result;
     }
 
-    public Task<object?>? OpenAsync()
+    public async Task<object?> OpenAsync()
     {
-        if (_openState != null)
+        if (_openState != null || _opening)
         {
             return null;
         }
+
+        _opening = true;
         var placementTarget = PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
         Debug.Assert(placementTarget != null);
         var topLevel = TopLevel.GetTopLevel(placementTarget);
@@ -519,23 +526,29 @@ public class Dialog : TemplatedControl,
         inputManager?.Process.Subscribe(ListenForNonClientClick).DisposeWith(handlerCleanup);
         var cleanupPopup = Disposable.Create((dialogHost, handlerCleanup), state =>
         {
-            state.handlerCleanup.Dispose();
-
-            state.dialogHost.SetChild(null);
-
-            if (DialogHostType == DialogHostType.Overlay)
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                overlayDialogHost?.Hide();
-            }
-            else
-            {
-                windowDialogHost?.Close();
-            }
-            
-            ((ISetLogicalParent)state.dialogHost).SetParent(null);
-            state.dialogHost.Dispose();
-            relayBindingDisposables.Dispose();
-            _startupLocationCalculated = false;
+                if (DialogHostType == DialogHostType.Overlay)
+                {
+                    if (overlayDialogHost != null)
+                    {
+                        await overlayDialogHost.HideAsync();
+                    }
+                }
+                else
+                {
+                    windowDialogHost?.Close();
+                    windowDialogHost?.Dispose();
+                }
+                state.handlerCleanup.Dispose();
+                state.dialogHost.SetChild(null);
+                
+                ((ISetLogicalParent)state.dialogHost).SetParent(null);
+                relayBindingDisposables.Dispose();
+                _startupLocationCalculated = false;
+                _closing                   = false;
+            });
+           
         });
         
         if (IsLightDismissEnabled)
@@ -570,7 +583,7 @@ public class Dialog : TemplatedControl,
             {
                 if (topLevel is Window windowTopLevel)
                 {
-                    windowDialog.ShowDialog(windowTopLevel);
+                    await windowDialog.ShowDialog(windowTopLevel);
                 }
             }
             else
@@ -580,7 +593,7 @@ public class Dialog : TemplatedControl,
         }
         else
         {
-            dialogHost.Show();
+            await dialogHost.ShowAsync();
         }
         
         if (IsModal)
@@ -613,9 +626,10 @@ public class Dialog : TemplatedControl,
         {
             SetCurrentValue(IsOpenProperty, true);
         }
-
         Opened?.Invoke(this, EventArgs.Empty);
+        _opening = false;
         _dialogHostChangedHandler?.Invoke(Host);
+        
         return ResultTask;
     }
 
@@ -694,10 +708,11 @@ public class Dialog : TemplatedControl,
 
     protected virtual void NotifyClose()
     {
-        if (IsConfirmLoading)
+        if (IsConfirmLoading  || _closing)
         {
             return;
         }
+        
         var closingArgs = new CancelEventArgs();
         Closing?.Invoke(this, closingArgs);
         if (closingArgs.Cancel)
@@ -727,6 +742,7 @@ public class Dialog : TemplatedControl,
 
             return;
         }
+        
         _frameCancellationTokenSource?.Cancel();
         _frameCancellationTokenSource = null;
         _openState.Dispose();

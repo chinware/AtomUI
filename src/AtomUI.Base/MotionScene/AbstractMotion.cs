@@ -45,6 +45,16 @@ public class AbstractMotion : IMotion
         RunAnimations(actor, aboutToStart, completedAction);
     }
 
+    public Task RunAsync(BaseMotionActor actor, Action? aboutToStart = null)
+    {
+        var tsc = new TaskCompletionSource();
+        Run(actor, aboutToStart, () =>
+        {
+            tsc.SetResult();
+        });
+        return tsc.Task;
+    }
+
     private void RunAnimations(BaseMotionActor actor,
                                Action? aboutToStart = null,
                                Action? completedAction = null)

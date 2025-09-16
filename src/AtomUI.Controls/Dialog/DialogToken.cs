@@ -97,7 +97,7 @@ internal class DialogToken : AbstractControlDesignToken
     public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        HeaderBg       = SharedToken.ColorBgElevated;
+        HeaderBg       = Colors.Transparent;
         HeaderFontSize = SharedToken.FontSizeHeading5;
         ContentBg      = SharedToken.ColorBgElevated;
         HeaderColor    = SharedToken.ColorTextHeading;

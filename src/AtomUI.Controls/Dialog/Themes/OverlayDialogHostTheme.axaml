@@ -56,6 +56,7 @@
     <Style Selector="^:is(atom|OverlayDialogHost)">
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="AnimationDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
 
         <Style Selector="^ /template/ atom|OverlayDialogHeader#PART_Header">

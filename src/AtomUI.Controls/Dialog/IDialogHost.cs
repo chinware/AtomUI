@@ -8,7 +8,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-public interface IDialogHost : IDisposable, IFocusScope
+public interface IDialogHost : IFocusScope
 {
     double Width { get; set; }
     double MinWidth { get; set; }
@@ -25,6 +25,6 @@ public interface IDialogHost : IDisposable, IFocusScope
     event EventHandler<TemplateAppliedEventArgs>? TemplateApplied;
     void ConfigurePosition(DialogPositionRequest positionRequest);
     void SetChild(Control? control);
-    void Show();
-    void Hide();
+    Task ShowAsync();
+    Task HideAsync();
 }

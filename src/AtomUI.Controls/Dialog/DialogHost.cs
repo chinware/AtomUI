@@ -303,4 +303,16 @@ internal class DialogHost : Window,
             }
         }
     }
+
+    public Task HideAsync()
+    {
+        Hide();
+        return Task.CompletedTask;
+    }
+
+    public Task ShowAsync()
+    {
+        Show();
+        return Task.CompletedTask;
+    }
 }
