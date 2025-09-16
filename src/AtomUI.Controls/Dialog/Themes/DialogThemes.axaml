@@ -9,6 +9,7 @@
         <ResourceInclude Source="OverlayDialogResizerTheme.axaml"/>
         <ResourceInclude Source="DialogButtonBoxTheme.axaml"/>
         <ResourceInclude Source="DialogTheme.axaml"/>
+        <ResourceInclude Source="OverlayDialogMaskTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
     <themes:DialogHostTheme x:Key="{x:Type atom:DialogHost}" TargetType="atom:DialogHost" />
     <themes:OverlayDialogHostTheme x:Key="{x:Type atom:OverlayDialogHost}" TargetType="atom:OverlayDialogHost" />

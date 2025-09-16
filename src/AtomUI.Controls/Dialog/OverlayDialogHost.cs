@@ -14,6 +14,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
@@ -222,6 +223,7 @@ internal class OverlayDialogHost : ContentControl,
     private Dialog _dialog;
     private DialogButtonBox? _buttonBox;
     private CompositeDisposable? _confirmLoadingBindings;
+    private IDisposable? _maskMotionDisposable;
     
     // 拖动
     private Size? _lastestSize;
@@ -291,7 +293,13 @@ internal class OverlayDialogHost : ContentControl,
         if (IsModal)
         {
             _dialogMask              ??= new OverlayDialogMask();
+            _maskMotionDisposable?.Dispose();
+            _maskMotionDisposable = BindUtils.RelayBind(_dialog, IsMotionEnabledProperty, _dialogMask, IsMotionEnabledProperty);
             _dialogLayer.Children.Add(_dialogMask);
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await _dialogMask.ShowAsync();
+            });
             ConfigureMaskSize(_dialogLayer.Bounds.Size);
         }
         _dialogLayer.Children.Add(this);
@@ -305,15 +313,18 @@ internal class OverlayDialogHost : ContentControl,
     
     public void Hide()
     {
-        _dialogLayer.Children.Remove(this);
         if (IsModal)
         {
             Debug.Assert(_dialogMask != null);
-            _dialogLayer.Children.Remove(_dialogMask);
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await _dialogMask.HideAsync();
+                _dialogLayer.Children.Remove(_dialogMask);
+            });
         }
-
-        _dialog.ClearValue(Dialog.HorizontalOffsetProperty);
-        _dialog.ClearValue(Dialog.VerticalOffsetProperty);
+        _dialogLayer.Children.Remove(this);
+        _dialog.ClearValue(Dialog.OffsetXProperty);
+        _dialog.ClearValue(Dialog.OffsetYProperty);
         _dialogLayer.SizeChanged -= HandleDialogLayerSizeChanged;
         foreach (var disposeAction in _disposeActions)
         {
@@ -341,8 +352,8 @@ internal class OverlayDialogHost : ContentControl,
             offsetX += deltaX;
         }
         
-        _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(Math.Min(Math.Max(offsetX, 0), maxOffsetX)));
-        _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(Math.Min(Math.Max(offsetY, 0), maxOffsetY)));
+        _dialog.SetCurrentValue(Dialog.OffsetXProperty, Math.Min(Math.Max(offsetX, 0), maxOffsetX));
+        _dialog.SetCurrentValue(Dialog.OffsetYProperty, Math.Min(Math.Max(offsetY, 0), maxOffsetY));
     }
 
     private void ConfigureMaskSize(Size size)
@@ -571,7 +582,7 @@ internal class OverlayDialogHost : ContentControl,
                 
                 if (!minWidthReached)
                 {
-                    _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(_lastestPoint.Value.X + args.DeltaOffsetX));
+                    _dialog.SetCurrentValue(Dialog.OffsetXProperty, _lastestPoint.Value.X + args.DeltaOffsetX);
                     _dialog.SetCurrentValue(Dialog.WidthProperty, width);
                 }
             }
@@ -595,7 +606,7 @@ internal class OverlayDialogHost : ContentControl,
                 
                 if (!minHeightReached)
                 {
-                    _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(_lastestPoint.Value.Y + args.DeltaOffsetY));
+                    _dialog.SetCurrentValue(Dialog.OffsetYProperty, _lastestPoint.Value.Y + args.DeltaOffsetY);
                     _dialog.SetCurrentValue(Dialog.HeightProperty, height);
                 }
                 
@@ -744,13 +755,13 @@ internal class OverlayDialogHost : ContentControl,
 
         if (newState == OverlayDialogState.Maximized)
         {
-            _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(0));
-            _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(0));
+            _dialog.SetCurrentValue(Dialog.OffsetXProperty, 0);
+            _dialog.SetCurrentValue(Dialog.OffsetYProperty, 0);
         }
         else if (newState == OverlayDialogState.Normal)
         {
-            _dialog.SetCurrentValue(Dialog.HorizontalOffsetProperty, new Dimension(_originPosition.X));
-            _dialog.SetCurrentValue(Dialog.VerticalOffsetProperty, new Dimension(_originPosition.Y));
+            _dialog.SetCurrentValue(Dialog.OffsetXProperty, _originPosition.X);
+            _dialog.SetCurrentValue(Dialog.OffsetYProperty, _originPosition.Y);
         }
         if (_header != null)
         {
