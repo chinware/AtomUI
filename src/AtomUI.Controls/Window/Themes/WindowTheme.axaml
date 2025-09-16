@@ -12,7 +12,9 @@
                 <Border Name="WindowFrame"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        BackgroundSizing="InnerBorderEdge"
+                        BackgroundSizing="InnerBorderEdge"/>
+                <Border Name="BodyFrame"
+                        CornerRadius="{TemplateBinding CornerRadius}"
                         ClipToBounds="True">
                     <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                         <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
@@ -33,12 +35,10 @@
                                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                             </Border>
-
                         </DockPanel>
                     </atom:VisualLayerManager>
                 </Border>
             </Panel>
-
         </ControlTemplate>
     </Setter>
 
@@ -80,11 +80,27 @@
             </Setter>
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         </Style>
+        
+        <Style Selector="^ /template/ Border#BodyFrame">
+            <Setter Property="Padding">
+                <OnPlatform>
+                    <On Options="Default">
+                        <Thickness>0</Thickness>
+                    </On>
+                    <On Options="Linux">
+                        <Thickness>1</Thickness>
+                    </On>
+                </OnPlatform>
+            </Setter>
+        </Style>
 
         <Style Selector="^[WindowState=FullScreen], ^[WindowState=Maximized]">
             <Setter Property="CornerRadius" Value="0" />
             <Style Selector="^ /template/ Border#WindowFrame">
                 <Setter Property="BorderThickness" Value="0" />
+            </Style>
+            <Style Selector="^ /template/ Border#BodyFrame">
+                <Setter Property="Padding" Value="0" />
             </Style>
         </Style>
 

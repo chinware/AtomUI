@@ -62,7 +62,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly StyledProperty<bool> IsResizeEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsResizeEnabled), defaultValue: true);
     
-#if PLATFORM_MACOS
     public static readonly StyledProperty<Point> MacOSCaptionGroupOffsetProperty =
         AvaloniaProperty.Register<Window, Point>(nameof(MacOSCaptionGroupOffset), defaultValue: new Point(10, 0));
     
@@ -72,10 +71,9 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly DirectProperty<Window, Thickness> MacOSTitleBarMarginProperty = 
         AvaloniaProperty.RegisterDirect<Window, Thickness>(nameof (MacOSTitleBarMargin), 
             o => o.MacOSTitleBarMargin);
-
+    
     public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
         OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<Window>();
-#endif
     
     public double TitleFontSize
     {
@@ -161,7 +159,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(IsResizeEnabledProperty, value);
     }
     
-#if PLATFORM_MACOS
     public Point MacOSCaptionGroupOffset
     {
         get => GetValue(MacOSCaptionGroupOffsetProperty);
@@ -182,7 +179,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     private Thickness _macOSTitleBarMargin;
     
     public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
-#endif
     
     #endregion
 
@@ -238,16 +234,15 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
             }
             HandleWindowStateChanged(oldWindowState, newWindowState);
         }
-
+#if PLATFORM_MACOS
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == IsCloseCaptionButtonEnabledProperty)
             {
-#if PLATFORM_MACOS
                 this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
-#endif
             }
         }
+#endif
     }
     
     private void HandleWindowStateChanged(WindowState oldState, WindowState newState)
@@ -404,14 +399,11 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         _disposeActions.Clear();
     }
 
+#if PLATFORM_MACOS
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
-        
-        if (OperatingSystem.IsMacCatalyst() || OperatingSystem.IsMacOS())
-        {
-            ConfigureMacOSCaptionGroupOffset();
-        }
+        ConfigureMacOSCaptionGroupOffset();
     }
 
     private void ConfigureMacOSCaptionGroupOffset()
@@ -420,7 +412,8 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         var cationsSize = this.GetMacOSOptionsSize(MacOSCaptionGroupSpacing);
         MacOSTitleBarMargin = new Thickness(cationsSize.Width + MacOSCaptionGroupOffset.X, 0, 0, 0);
     }
-
+#endif
+    
     void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
     {
         SetValue(OperationSystemTypeProperty, operationSystemType);
