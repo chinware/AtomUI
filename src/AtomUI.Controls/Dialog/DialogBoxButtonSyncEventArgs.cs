@@ -2,9 +2,9 @@ namespace AtomUI.Controls;
 
 public class DialogBoxButtonSyncEventArgs: EventArgs
 {
-    public IReadOnlyList<Button> Buttons { get; set; }
+    public IReadOnlyList<DialogButton> Buttons { get; set; }
 
-    public DialogBoxButtonSyncEventArgs(IReadOnlyList<Button> buttons)
+    public DialogBoxButtonSyncEventArgs(IReadOnlyList<DialogButton> buttons)
     {
         Buttons = buttons;
     }

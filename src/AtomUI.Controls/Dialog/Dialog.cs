@@ -326,6 +326,7 @@ public class Dialog : TemplatedControl,
     IDialogHost? IDialogHostProvider.DialogHost => Host;
     
     public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
+    public Action<IReadOnlyList<DialogButton>>? ButtonsConfigure { get; set; }
     
     #endregion
 
@@ -334,7 +335,6 @@ public class Dialog : TemplatedControl,
     public event EventHandler? Closed;
     public event EventHandler? Opened;
     internal event EventHandler<CancelEventArgs>? Closing;
-    
     public event EventHandler? Accepted;
     public event EventHandler? Rejected;
     public event EventHandler<DialogFinishedEventArgs>? Finished;
@@ -345,8 +345,6 @@ public class Dialog : TemplatedControl,
         add => _dialogHostChangedHandler += value; 
         remove => _dialogHostChangedHandler -= value;
     }
-
-    public Action<IReadOnlyList<Button>>? DialogButtonsConfigure { get; set; }
     
     #endregion
     
@@ -648,6 +646,7 @@ public class Dialog : TemplatedControl,
         disposables.Add(BindUtils.RelayBind(this, ContentProperty, dialogHost, DialogHost.ContentProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, dialogHost, DialogHost.ContentTemplateProperty));
         disposables.Add(BindUtils.RelayBind(this, IsLoadingProperty, dialogHost, DialogHost.IsLoadingProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsConfirmLoadingProperty, dialogHost, DialogHost.IsConfirmLoadingProperty));
     }
 
     private protected virtual void RelayOverlayDialogBindings(CompositeDisposable disposables, OverlayDialogHost dialogHost)
@@ -667,6 +666,7 @@ public class Dialog : TemplatedControl,
         disposables.Add(BindUtils.RelayBind(this, ContentProperty, dialogHost, OverlayDialogHost.ContentProperty));
         disposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, dialogHost, OverlayDialogHost.ContentTemplateProperty));
         disposables.Add(BindUtils.RelayBind(this, IsLoadingProperty, dialogHost, OverlayDialogHost.IsLoadingProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsConfirmLoadingProperty, dialogHost, OverlayDialogHost.IsConfirmLoadingProperty));
     }
 
     public void Accept()
@@ -694,6 +694,10 @@ public class Dialog : TemplatedControl,
 
     protected virtual void NotifyClose()
     {
+        if (IsConfirmLoading)
+        {
+            return;
+        }
         var closingArgs = new CancelEventArgs();
         Closing?.Invoke(this, closingArgs);
         if (closingArgs.Cancel)
@@ -1021,6 +1025,13 @@ public class Dialog : TemplatedControl,
                     SetCurrentValue(OffsetXProperty, (boundSize.Width - size.Width) / 2);
                 }
             }
+            else
+            {
+                if (HorizontalOffset != null)
+                {
+                    SetCurrentValue(OffsetXProperty, HorizontalOffset.Value.Resolve(boundSize.Width));
+                }
+            }
         
             if (VerticalStartupLocation != DialogVerticalAnchor.Custom)
             {
@@ -1035,6 +1046,13 @@ public class Dialog : TemplatedControl,
                 else if (VerticalStartupLocation == DialogVerticalAnchor.Center)
                 {
                     SetCurrentValue(OffsetYProperty, (boundSize.Height - size.Height) / 2);
+                }
+            }
+            else
+            {
+                if (VerticalOffset != null)
+                {
+                    SetCurrentValue(OffsetYProperty, VerticalOffset.Value.Resolve(boundSize.Height));
                 }
             }
 
@@ -1147,31 +1165,30 @@ public class Dialog : TemplatedControl,
         }
     }
 
-    internal void NotifyDialogButtonBoxClicked(DialogButton? button)
+    internal void NotifyDialogButtonBoxClicked(DialogButton button)
     {
-        if (button is not null && button.Tag is DialogButtonRole role)
+        var buttonClickedArgs = new DialogButtonClickedEventArgs(button);
+        ButtonClicked?.Invoke(this, buttonClickedArgs);
+        if (buttonClickedArgs.Handled)
         {
-            if (role == DialogButtonRole.AcceptRole ||
-                role == DialogButtonRole.YesRole ||
-                role == DialogButtonRole.ApplyRole ||
-                role == DialogButtonRole.ResetRole)
-            {
-                Accept();
-            }
-            else if (role == DialogButtonRole.RejectRole ||
-                     role == DialogButtonRole.NoRole)
-            {
-                Reject();
-            }
-            else
-            {
-                ButtonClicked?.Invoke(this, new DialogButtonClickedEventArgs(button));
-            }
+            return;
+        }
+        if (button.Role == DialogButtonRole.AcceptRole ||
+            button.Role == DialogButtonRole.YesRole ||
+            button.Role == DialogButtonRole.ApplyRole ||
+            button.Role == DialogButtonRole.ResetRole)
+        {
+            Accept();
+        }
+        else if (button.Role == DialogButtonRole.RejectRole ||
+                 button.Role == DialogButtonRole.NoRole)
+        {
+            Reject();
         }
     }
 
-    internal void NotifyDialogButtonSynchronized(IReadOnlyList<Button> buttons)
+    internal void NotifyDialogButtonSynchronized(IReadOnlyList<DialogButton> buttons)
     {
-        DialogButtonsConfigure?.Invoke(buttons);
+        ButtonsConfigure?.Invoke(buttons);
     }
 }

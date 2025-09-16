@@ -12,48 +12,55 @@
                 <Border Name="Frame">
                     <Grid ColumnDefinitions="*, Auto, *"
                           RowDefinitions="*">
-                        <StackPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.LeftGroupPart}"
-                                    Orientation="Horizontal"
-                                    Grid.Row="0"
-                                    Grid.Column="0"/>
-                        <StackPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.CenterGroupPart}"
-                                    Orientation="Horizontal"
-                                    Grid.Row="0"
-                                    Grid.Column="1"/>
-                        <StackPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.RightGroupPart}"
-                                    Orientation="Horizontal"
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    FlowDirection="RightToLeft"/>
+                        <DockPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.LeftGroupPart}"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   LastChildFill="True"/>
+                        <DockPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.CenterGroupPart}"
+                                   LastChildFill="True"
+                                   Grid.Row="0"
+                                   Grid.Column="1" />
+                        <DockPanel Name="{x:Static atom:DialogButtonBoxThemeConstants.RightGroupPart}"
+                                   LastChildFill="True"
+                                   Grid.Row="0"
+                                   Grid.Column="2" />
                     </Grid>
                 </Border>
             </ControlTemplate>
         </Setter>
-        
-        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
-        <Style Selector="^ /template/ StackPanel">
-            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:DialogTokenKey.ButtonGroupSpacing}}"/>
+
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Style Selector="^ /template/ DockPanel">
+            <Setter Property="HorizontalSpacing" Value="{DynamicResource {x:Static atom:DialogTokenKey.ButtonGroupSpacing}}" />
         </Style>
-        
-        <Setter Property="OkButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Ok}}"/>
-        <Setter Property="OpenButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Open}}"/>
-        <Setter Property="SaveButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Save}}"/>
-        <Setter Property="CancelButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Cancel}}"/>
-        <Setter Property="CloseButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Close}}"/>
-        <Setter Property="DiscardButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Discard}}"/>
-        <Setter Property="ApplyButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Apply}}"/>
-        <Setter Property="ResetButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Reset}}"/>
-        <Setter Property="ReloadButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Reload}}"/>
-        <Setter Property="RestoreDefaultsButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.RestoreDefaults}}"/>
-        <Setter Property="HelpButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Help}}"/>
-        <Setter Property="SaveAllButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.SaveAll}}"/>
-        <Setter Property="YesButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Yes}}"/>
-        <Setter Property="YesToAllButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.YesToAll}}"/>
-        <Setter Property="NoButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.No}}"/>
-        <Setter Property="NoToAllButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.NoToAll}}"/>
-        <Setter Property="AbortButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Abort}}"/>
-        <Setter Property="RetryButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Retry}}"/>
-        <Setter Property="IgnoreButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Ignore}}"/>
-        
+
+        <Setter Property="OkButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Ok}}" />
+        <Setter Property="OpenButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Open}}" />
+        <Setter Property="SaveButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Save}}" />
+        <Setter Property="CancelButtonText"
+                Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Cancel}}" />
+        <Setter Property="CloseButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Close}}" />
+        <Setter Property="DiscardButtonText"
+                Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Discard}}" />
+        <Setter Property="ApplyButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Apply}}" />
+        <Setter Property="ResetButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Reset}}" />
+        <Setter Property="ReloadButtonText"
+                Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Reload}}" />
+        <Setter Property="RestoreDefaultsButtonText"
+                Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.RestoreDefaults}}" />
+        <Setter Property="HelpButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Help}}" />
+        <Setter Property="SaveAllButtonText"
+                Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.SaveAll}}" />
+        <Setter Property="YesButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Yes}}" />
+        <Setter Property="YesToAllButtonText"
+                Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.YesToAll}}" />
+        <Setter Property="NoButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.No}}" />
+        <Setter Property="NoToAllButtonText"
+                Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.NoToAll}}" />
+        <Setter Property="AbortButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Abort}}" />
+        <Setter Property="RetryButtonText" Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Retry}}" />
+        <Setter Property="IgnoreButtonText"
+                Value="{DynamicResource {x:Static dialogLang:DialogLangResourceKey.Ignore}}" />
+
     </ControlTheme>
 </ResourceDictionary>

@@ -18,32 +18,30 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Background="{TemplateBinding Background}">
                 <DockPanel Name="{x:Static atom:ButtonThemeConstants.RootLayoutPart}"
-                           LastChildFill="True">
-                    <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                Orientation="Horizontal">
-                        <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
-                                   IconInfo="{atom:IconInfoProvider LoadingOutlined}"
-                                   Margin="{Binding (atom:IconPresenter.Margin), 
-                                   ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" />
-                        <atom:IconPresenter
-                            Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
-                            Icon="{TemplateBinding Icon}">
-                            <atom:IconPresenter.IsVisible>
-                                <MultiBinding
-                                    Converter="{x:Static atom:BaseButtonTheme.ButtonIconVisibleConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsIconVisible" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
-                                </MultiBinding>
-                            </atom:IconPresenter.IsVisible>
-                        </atom:IconPresenter>
-                        <atom:TextBlock
-                            Name="{x:Static atom:ButtonThemeConstants.LabelPart}"
-                            VerticalAlignment="Center"
-                            Text="{TemplateBinding Content}" />
-                    </StackPanel>
+                           LastChildFill="True"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                    <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
+                               IconInfo="{atom:IconInfoProvider LoadingOutlined}"
+                               Margin="{Binding (atom:IconPresenter.Margin),
+                                   ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" 
+                               DockPanel.Dock="Left"/>
+                    <atom:IconPresenter
+                        Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
+                        Icon="{TemplateBinding Icon}"
+                        DockPanel.Dock="Left">
+                        <atom:IconPresenter.IsVisible>
+                            <MultiBinding
+                                Converter="{x:Static atom:BaseButtonTheme.ButtonIconVisibleConverter}">
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsIconVisible" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
+                            </MultiBinding>
+                        </atom:IconPresenter.IsVisible>
+                    </atom:IconPresenter>
+                    <atom:TextBlock
+                        Name="{x:Static atom:ButtonThemeConstants.LabelPart}"
+                        Text="{TemplateBinding Content}" />
                 </DockPanel>
             </Border>
             </Panel>

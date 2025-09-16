@@ -1,6 +1,8 @@
 using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Controls.DialogPositioning;
 using AtomUI.Controls.Themes;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -147,6 +149,7 @@ internal class DialogHost : Window,
     private ManagedDialogPositionerDialogImplHelper _positionerHelper;
     private PixelPoint _latestDialogPosition;
     private DialogButtonBox? _buttonBox;
+    private CompositeDisposable? _confirmLoadingBindings;
     
     public DialogHost(TopLevel parent, Dialog dialog)
     {
@@ -288,5 +291,16 @@ internal class DialogHost : Window,
     private void HandleButtonsSynchronized(object? sender, DialogBoxButtonSyncEventArgs args)
     {
         _dialog.NotifyDialogButtonSynchronized(args.Buttons);
+        _confirmLoadingBindings?.Dispose();
+        _confirmLoadingBindings = new CompositeDisposable(args.Buttons.Count);
+        foreach (var button in args.Buttons)
+        {
+            if (button.Role == DialogButtonRole.AcceptRole ||
+                button.Role == DialogButtonRole.YesRole ||
+                button.Role == DialogButtonRole.ApplyRole)
+            {
+                _confirmLoadingBindings.Add(BindUtils.RelayBind(this, IsConfirmLoadingProperty, button, Button.IsLoadingProperty));
+            }
+        }
     }
 }

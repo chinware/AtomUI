@@ -1,9 +1,11 @@
+using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -37,9 +39,6 @@ public class MessageBox : TemplatedControl,
     
     public static readonly StyledProperty<MessageBoxStyle> StyleProperty =
         AvaloniaProperty.Register<MessageBox, MessageBoxStyle>(nameof (Style));
-    
-    public static readonly StyledProperty<DialogStandardButtons> StandardButtonsProperty =
-        DialogButtonBox.StandardButtonsProperty.AddOwner<MessageBox>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageBox>();
@@ -114,12 +113,6 @@ public class MessageBox : TemplatedControl,
         set => SetValue(StyleProperty, value);
     }
     
-    public DialogStandardButtons StandardButtons
-    {
-        get => GetValue(StandardButtonsProperty);
-        set => SetValue(StandardButtonsProperty, value);
-    }
-
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -211,11 +204,27 @@ public class MessageBox : TemplatedControl,
         set => SetValue(PlacementTargetProperty, value);
     }
     
-    public Action<IReadOnlyList<Button>>? ButtonsConfigure { get; set; }
+    private Action<IReadOnlyList<DialogButton>>? _buttonsConfigure;
+
+    public Action<IReadOnlyList<DialogButton>>? ButtonsConfigure
+    {
+        get => _buttonsConfigure;
+        set
+        {
+            _buttonsConfigure = value;
+            if (_dialog != null)
+            {
+                _dialog.ButtonsConfigure = _buttonsConfigure;
+            }
+        }
+    }
+    
+    public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
     
     #endregion
     
     #region 公共事件定义
+    public event EventHandler? Opened;
     public event EventHandler? Closed;
     public event EventHandler? Cancelled;
     public event EventHandler? Confirmed;
@@ -230,6 +239,39 @@ public class MessageBox : TemplatedControl,
     #endregion
     
     private Dialog? _dialog;
+
+    public MessageBox()
+    {
+        CustomButtons.CollectionChanged += new NotifyCollectionChangedEventHandler(HandleCustomButtonsChanged);
+    }
+
+    public object? Open()
+    {
+        if (_dialog == null)
+        {
+            return null;
+        }
+        return _dialog.Open();
+    }
+
+    public Task<object?>? OpenAsync()
+    {
+        if (_dialog == null)
+        {
+            return null;
+        }
+        return _dialog.OpenAsync();
+    }
+
+    public void Cancel()
+    {
+        _dialog?.Reject();
+    }
+
+    public void Confirm()
+    {
+        _dialog?.Accept();
+    }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -257,14 +299,22 @@ public class MessageBox : TemplatedControl,
         _dialog = e.NameScope.Find<Dialog>(MessageBoxThemeConstants.DialogPart);
         if (_dialog != null)
         {
-            _dialog.Closed   += HandleDialogClosed;
-            _dialog.Rejected += HandleDialogCancelled;
-            _dialog.Accepted += HandleDialogConfirmed;
+            _dialog.Opened           += HandleDialogOpened;
+            _dialog.Closed           += HandleDialogClosed;
+            _dialog.Rejected         += HandleDialogCancelled;
+            _dialog.Accepted         += HandleDialogConfirmed;
+            _dialog.ButtonsConfigure =  ButtonsConfigure;
+            _dialog.CustomButtons.AddRange(CustomButtons);
         }
 
         ConfigureIcon();
         ConfigureOkButton();
         ConfigurePositionOnStartup();
+    }
+    
+    private void HandleDialogOpened(object? sender, EventArgs e)
+    {
+        Opened?.Invoke(this, EventArgs.Empty);
     }
 
     private void HandleDialogClosed(object? sender, EventArgs e)
@@ -355,5 +405,27 @@ public class MessageBox : TemplatedControl,
         }
 
         return new Size();
+    }
+    
+    private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_dialog != null)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var newItems = e.NewItems!.OfType<DialogButton>();
+                    _dialog.CustomButtons.AddRange(newItems);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    var oldItems = e.OldItems!.OfType<DialogButton>();
+                    _dialog.CustomButtons.RemoveAll(oldItems);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotSupportedException();
+            }
+        }
     }
 }

@@ -1,8 +1,10 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.DialogPositioning;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Collections;
@@ -219,6 +221,7 @@ internal class OverlayDialogHost : ContentControl,
     private readonly List<Action> _disposeActions = new();
     private Dialog _dialog;
     private DialogButtonBox? _buttonBox;
+    private CompositeDisposable? _confirmLoadingBindings;
     
     // 拖动
     private Size? _lastestSize;
@@ -308,8 +311,7 @@ internal class OverlayDialogHost : ContentControl,
             Debug.Assert(_dialogMask != null);
             _dialogLayer.Children.Remove(_dialogMask);
         }
-        _dialog.ClearValue(Dialog.WidthProperty);
-        _dialog.ClearValue(Dialog.HeightProperty);
+
         _dialog.ClearValue(Dialog.HorizontalOffsetProperty);
         _dialog.ClearValue(Dialog.VerticalOffsetProperty);
         _dialogLayer.SizeChanged -= HandleDialogLayerSizeChanged;
@@ -509,6 +511,17 @@ internal class OverlayDialogHost : ContentControl,
             button.IsWaveSpiritEnabled = false;
         }
         _dialog.NotifyDialogButtonSynchronized(args.Buttons);
+        _confirmLoadingBindings?.Dispose();
+        _confirmLoadingBindings = new CompositeDisposable(args.Buttons.Count);
+        foreach (var button in args.Buttons)
+        {
+            if (button.Role == DialogButtonRole.AcceptRole ||
+                button.Role == DialogButtonRole.YesRole ||
+                button.Role == DialogButtonRole.ApplyRole)
+            {
+                _confirmLoadingBindings.Add(BindUtils.RelayBind(this, IsConfirmLoadingProperty, button, Button.IsLoadingProperty));
+            }
+        }
     }
 
     private void HandleAboutToResize(object? sender, OverlayDialogResizeEventArgs args)

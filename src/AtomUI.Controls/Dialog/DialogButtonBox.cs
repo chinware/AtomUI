@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -253,13 +254,13 @@ public class DialogButtonBox : TemplatedControl,
     Control IMotionAwareControl.PropertyBindTarget => this;
     #endregion
 
-    private StackPanel? _leftGroup;
-    private StackPanel? _centerGroup;
-    private StackPanel? _rightGroup;
+    private DockPanel? _leftGroup;
+    private DockPanel? _centerGroup;
+    private DockPanel? _rightGroup;
     private List<DialogButton>? _standardButtons;
     private Dictionary<DialogButtonRole, List<DialogButton>> _buttonGroup;
     private Dictionary<DialogButtonRole, List<DialogButton>> _standardButtonGroup;
-    private Dictionary<Button, CompositeDisposable> _bindingDisposables;
+    private Dictionary<DialogButton, CompositeDisposable> _bindingDisposables;
     
     static DialogButtonBox()
     {
@@ -272,7 +273,7 @@ public class DialogButtonBox : TemplatedControl,
         CustomButtons.CollectionChanged += new NotifyCollectionChangedEventHandler(HandleCustomButtonsChanged);
         _standardButtonGroup            =  new Dictionary<DialogButtonRole, List<DialogButton>>();
         _buttonGroup                    =  new Dictionary<DialogButtonRole, List<DialogButton>>();
-        _bindingDisposables             =  new Dictionary<Button, CompositeDisposable>();
+        _bindingDisposables             =  new Dictionary<DialogButton, CompositeDisposable>();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -291,19 +292,10 @@ public class DialogButtonBox : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _leftGroup = e.NameScope.Find<StackPanel>(DialogButtonBoxThemeConstants.LeftGroupPart);
-        _centerGroup = e.NameScope.Find<StackPanel>(DialogButtonBoxThemeConstants.CenterGroupPart);
-        _rightGroup = e.NameScope.Find<StackPanel>(DialogButtonBoxThemeConstants.RightGroupPart);
+        _leftGroup   = e.NameScope.Find<DockPanel>(DialogButtonBoxThemeConstants.LeftGroupPart);
+        _centerGroup = e.NameScope.Find<DockPanel>(DialogButtonBoxThemeConstants.CenterGroupPart);
+        _rightGroup  = e.NameScope.Find<DockPanel>(DialogButtonBoxThemeConstants.RightGroupPart);
         BuildStandardButtons();
-        foreach (var item in CustomButtons)
-        {
-            DialogButtonRole role = DialogButtonRole.NoRole;
-            if (item.Tag is DialogButtonRole buttonRole)
-            {
-                role = buttonRole;
-            }
-            AddButtonToGroup(role, item, false);
-        }
         SyncButtonsToGroup();
     }
 
@@ -313,27 +305,16 @@ public class DialogButtonBox : TemplatedControl,
         {
             case NotifyCollectionChangedAction.Add:
                 var newItems = e.NewItems!.OfType<DialogButton>();
-                foreach (var item in newItems)
+                foreach (var button in newItems)
                 {
-                    DialogButtonRole role = DialogButtonRole.NoRole;
-                    if (item.Tag is DialogButtonRole buttonRole)
-                    {
-                        role = buttonRole;
-                    }
-                    AddButtonToGroup(role, item, false);
+                    AddButtonToGroup(button.Role, button, false);
                 }
                 break;
             case NotifyCollectionChangedAction.Remove:
                 var oldItems = e.OldItems!.OfType<DialogButton>();
-                foreach (var item in oldItems)
+                foreach (var button in oldItems)
                 {
-                    DialogButtonRole role = DialogButtonRole.NoRole;
-                    if (item.Tag is DialogButtonRole buttonRole)
-                    {
-                        role = buttonRole;
-                    }
-
-                    RemoveButtonFromGroup(role, item, false);
+                    RemoveButtonFromGroup(button.Role, button, false);
                 }
                 break;
             case NotifyCollectionChangedAction.Replace:
@@ -342,10 +323,7 @@ public class DialogButtonBox : TemplatedControl,
                 throw new NotSupportedException();
         }
 
-        if (this.IsAttachedToVisualTree())
-        {
-            SyncButtonsToGroup();
-        }
+        SyncButtonsToGroup();
     }
 
     private void AddButtonToGroup(DialogButtonRole buttonRole, DialogButton button, bool isStandard)
@@ -389,9 +367,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             foreach (var button in _standardButtons)
             {
-                var role = button.Tag as DialogButtonRole?;
-                Debug.Assert(role != null);
-                RemoveButtonFromGroup(role.Value, button, true);
+                RemoveButtonFromGroup(button.Role, button, true);
                 if (_bindingDisposables.TryGetValue(button, out var disposables))
                 {
                     disposables.Dispose();
@@ -410,7 +386,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.AcceptRole,
+                Role = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Ok ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Ok,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Ok,
@@ -428,7 +404,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag        = DialogButtonRole.AcceptRole,
+                Role        = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Open ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Open,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Open,
@@ -446,7 +422,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag        = DialogButtonRole.AcceptRole,
+                Role        = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Save ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Save,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Save,
@@ -464,7 +440,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.AcceptRole,
+                Role = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.SaveAll ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.SaveAll,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.SaveAll,
@@ -482,7 +458,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.AcceptRole,
+                Role = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Retry ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Retry,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Retry,
@@ -500,7 +476,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.AcceptRole,
+                Role = DialogButtonRole.AcceptRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Ignore ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Ignore,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Ignore,
@@ -518,7 +494,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.YesRole,
+                Role = DialogButtonRole.YesRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Yes ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Yes,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Yes,
@@ -536,7 +512,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.YesRole,
+                Role = DialogButtonRole.YesRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.YesToAll ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.YesToAll,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.YesToAll,
@@ -554,7 +530,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.RejectRole,
+                Role = DialogButtonRole.RejectRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Cancel ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Cancel,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Cancel,
@@ -572,7 +548,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.RejectRole,
+                Role = DialogButtonRole.RejectRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Close ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Close,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Close,
@@ -590,7 +566,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.RejectRole,
+                Role = DialogButtonRole.RejectRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Abort ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Abort,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Abort,
@@ -608,7 +584,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.NoRole,
+                Role = DialogButtonRole.NoRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.No ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.No,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.No,
@@ -626,7 +602,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.NoRole,
+                Role = DialogButtonRole.NoRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.NoToAll ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.NoToAll,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.NoToAll,
@@ -644,7 +620,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.DestructiveRole,
+                Role = DialogButtonRole.DestructiveRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Discard ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Discard,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Discard,
@@ -662,7 +638,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.HelpRole,
+                Role = DialogButtonRole.HelpRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Help ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Help,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Help,
@@ -680,7 +656,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.ResetRole,
+                Role = DialogButtonRole.ResetRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Reset ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Reset,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Reset,
@@ -698,7 +674,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.ActionRole,
+                Role = DialogButtonRole.ActionRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Reload ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Reload,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Reload,
@@ -716,7 +692,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.ResetRole,
+                Role = DialogButtonRole.ResetRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.RestoreDefaults ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.RestoreDefaults,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.RestoreDefaults,
@@ -734,7 +710,7 @@ public class DialogButtonBox : TemplatedControl,
         {
             var button = new DialogButton
             {
-                Tag = DialogButtonRole.ApplyRole,
+                Role = DialogButtonRole.ApplyRole,
                 ButtonType = DefaultStandardButton == DialogStandardButton.Apply ? ButtonType.Primary : ButtonType.Default,
                 IsDefaultConfirmButton = DefaultStandardButton == DialogStandardButton.Apply,
                 IsDefaultEscapeButton = EscapeStandardButton == DialogStandardButton.Apply,
@@ -751,7 +727,13 @@ public class DialogButtonBox : TemplatedControl,
 
     private void SyncButtonsToGroup()
     {
-        var buttons            = new List<Button>();
+        if (_leftGroup == null ||
+            _rightGroup == null ||
+            _centerGroup == null)
+        {
+            return;
+        }
+        var buttons            = new List<DialogButton>();
         var rightButtons       = SyncRightGroupButtons();
         var centerGroupButtons = SyncCenterGroupButtons();
         var leftGroupButtons   = SyncLeftGroupButtons();
@@ -761,10 +743,10 @@ public class DialogButtonBox : TemplatedControl,
         ButtonsSynchronized?.Invoke(this, new DialogBoxButtonSyncEventArgs(buttons));
     }
     
-    private List<Button> SyncRightGroupButtons()
+    private List<DialogButton> SyncRightGroupButtons()
     {
         Debug.Assert(_rightGroup != null);
-        var rightGroupButtons = new List<Button>();
+        var rightGroupButtons = new List<DialogButton>();
         
         // 后面可以定义各种操作系统的风格，现在先写死
         // 标准
@@ -875,15 +857,24 @@ public class DialogButtonBox : TemplatedControl,
                 rightGroupButtons.Add(button);
             }
         }
+
+        foreach (var button in rightGroupButtons)
+        {
+            DockPanel.SetDock(button, Dock.Right);
+            button.SetLogicalParent(null);
+            button.SetVisualParent(null);
+        }
         
+        ClearButtonPanel(_rightGroup);
         _rightGroup.Children.AddRange(rightGroupButtons);
+        _rightGroup.Children.Add(new Control());
         return rightGroupButtons;
     }
 
-    private List<Button> SyncCenterGroupButtons()
+    private List<DialogButton> SyncCenterGroupButtons()
     {
         Debug.Assert(_centerGroup != null);
-        var centerGroupButtons = new List<Button>();
+        var centerGroupButtons = new List<DialogButton>();
         // 标准
         var standardDestructiveList  = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.DestructiveRole) ?? new List<DialogButton>();
         
@@ -898,14 +889,22 @@ public class DialogButtonBox : TemplatedControl,
         {
             centerGroupButtons.Add(button);
         }
+        foreach (var button in centerGroupButtons)
+        {
+            DockPanel.SetDock(button, Dock.Left);
+            button.SetLogicalParent(null);
+            button.SetVisualParent(null);
+        }
+        ClearButtonPanel(_centerGroup);
         _centerGroup.Children.AddRange(centerGroupButtons);
+        _centerGroup.Children.Add(new Control());
         return centerGroupButtons;
     }
 
-    private List<Button> SyncLeftGroupButtons()
+    private List<DialogButton> SyncLeftGroupButtons()
     {
         Debug.Assert(_leftGroup != null);
-        var leftGroupButtons = new List<Button>();
+        var leftGroupButtons = new List<DialogButton>();
         // 标准
         var standardHelpList = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.HelpRole) ?? new List<DialogButton>();
         foreach (var button in standardHelpList)
@@ -962,8 +961,27 @@ public class DialogButtonBox : TemplatedControl,
             leftGroupButtons.Add(button);
         }
         
+        foreach (var button in leftGroupButtons)
+        {
+            DockPanel.SetDock(button, Dock.Left);
+            button.SetLogicalParent(null);
+            button.SetVisualParent(null);
+        }
+
+        ClearButtonPanel(_leftGroup);
         _leftGroup.Children.AddRange(leftGroupButtons);
+        _leftGroup.Children.Add(new Control());
         return leftGroupButtons;
+    }
+
+    private void ClearButtonPanel(Panel panel)
+    {
+        var tobeRemoved = new List<Control>();
+        tobeRemoved.AddRange(panel.Children);
+        foreach (var item in tobeRemoved)
+        {
+            panel.Children.Remove(item);
+        }
     }
 
     private void HandleButtonClicked(object? sender, EventArgs args)
@@ -971,20 +989,17 @@ public class DialogButtonBox : TemplatedControl,
         if (sender is DialogButton button)
         {
             Clicked?.Invoke(this, new DialogButtonClickedEventArgs(button));
-            if (button.Tag is DialogButtonRole role)
+            if (button.Role == DialogButtonRole.AcceptRole)
             {
-                if (role == DialogButtonRole.AcceptRole)
-                {
-                    Accepted?.Invoke(this, EventArgs.Empty);
-                }
-                else if (role == DialogButtonRole.RejectRole)
-                {
-                    Rejected?.Invoke(this, EventArgs.Empty);
-                }
-                else if (role == DialogButtonRole.HelpRole)
-                {
-                    HelpRequested?.Invoke(this, EventArgs.Empty);
-                }
+                Accepted?.Invoke(this, EventArgs.Empty);
+            }
+            else if (button.Role == DialogButtonRole.RejectRole)
+            {
+                Rejected?.Invoke(this, EventArgs.Empty);
+            }
+            else if (button.Role == DialogButtonRole.HelpRole)
+            {
+                HelpRequested?.Invoke(this, EventArgs.Empty);
             }
         }
     }

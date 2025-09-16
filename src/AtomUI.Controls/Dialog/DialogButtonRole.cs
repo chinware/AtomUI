@@ -3,10 +3,6 @@ namespace AtomUI.Controls;
 public enum DialogButtonRole
 {
     /// <summary>
-    /// The button is invalid.
-    /// </summary>
-    InvalidRole = -1,
-    /// <summary>
     /// Clicking the button causes the dialog to be accepted (e.g. OK).
     /// </summary>
     AcceptRole,
@@ -41,5 +37,9 @@ public enum DialogButtonRole
     /// <summary>
     /// The button resets the dialog's fields to default values.
     /// </summary>
-    ResetRole
+    ResetRole,
+    /// <summary>
+    /// User-defined button roles
+    /// </summary>
+    CustomRole
 }

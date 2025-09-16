@@ -14,7 +14,6 @@
                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                        DialogHostType="{TemplateBinding HostType}"
                                        IsDragMovable="{TemplateBinding IsDragMovable}"
-                                       StandardButtons="{TemplateBinding StandardButtons}"
                                        PlacementTarget="{TemplateBinding PlacementTarget}"
                                        HorizontalOffset="{TemplateBinding HorizontalOffset, Mode=TwoWay}"
                                        VerticalOffset="{TemplateBinding VerticalOffset, Mode=TwoWay}"
@@ -26,7 +25,9 @@
                                        Width="{TemplateBinding Width}"
                                        MinWidth="{TemplateBinding MinWidth}"
                                        Height="{TemplateBinding Height}"
-                                       MinHeight="{TemplateBinding MinHeight}"/>
+                                       MinHeight="{TemplateBinding MinHeight}"
+                                       IsLoading="{TemplateBinding IsLoading}"
+                                       IsConfirmLoading="{TemplateBinding IsConfirmLoading}"/>
             </ControlTemplate>
         </Setter>
         
