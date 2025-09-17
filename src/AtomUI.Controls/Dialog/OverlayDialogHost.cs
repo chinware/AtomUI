@@ -615,7 +615,7 @@ internal class OverlayDialogHost : ContentControl,
         }
     }
     
-    IReadOnlyList<ManagedDialogPositionerScreenInfo> IManagedDialogPositionerDialog.Screens
+    IReadOnlyList<ManagedDialogPositionerScreenInfo> IManagedDialogPositionerDialog.ScreenInfos
     {
         get
         {
@@ -631,11 +631,9 @@ internal class OverlayDialogHost : ContentControl,
         }
     }
     
-    double IManagedDialogPositionerDialog.Scaling => 1;
-    
     Rect IManagedDialogPositionerDialog.ParentClientAreaScreenGeometry => new Rect(default, _dialogLayer.Bounds.Size);
     
-    void IManagedDialogPositionerDialog.MoveAndResize(Point devicePoint, Size virtualSize)
+    void IManagedDialogPositionerDialog.Move(Point devicePoint)
     {
         _lastRequestedPosition = devicePoint;
         Canvas.SetLeft(this, _lastRequestedPosition.X);

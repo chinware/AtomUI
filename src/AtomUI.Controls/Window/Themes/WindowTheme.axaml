@@ -7,8 +7,6 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:Window">
             <Panel>
-                <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
-                                    IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}" />
                 <Border Name="WindowFrame"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
@@ -18,7 +16,7 @@
                         ClipToBounds="True">
                     <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                         <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
-                            <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
+                            <Border Padding="{TemplateBinding TitleBarOSOffsetMargin}" DockPanel.Dock="Top">
                                 <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
                                                Content="{TemplateBinding Title}"
                                                Logo="{TemplateBinding Logo}" />
@@ -38,6 +36,8 @@
                         </DockPanel>
                     </atom:VisualLayerManager>
                 </Border>
+                <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
+                                    IsVisible="{Binding $parent[atom:Window].IsCustomResizerVisible}" />
             </Panel>
         </ControlTemplate>
     </Setter>
@@ -81,8 +81,8 @@
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         </Style>
         
-        <Style Selector="^ /template/ Border#BodyFrame">
-            <Setter Property="Padding">
+        <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
+            <Setter Property="Margin">
                 <OnPlatform>
                     <On Options="Default">
                         <Thickness>0</Thickness>
@@ -99,8 +99,8 @@
             <Style Selector="^ /template/ Border#WindowFrame">
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
-            <Style Selector="^ /template/ Border#BodyFrame">
-                <Setter Property="Padding" Value="0" />
+            <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
+                <Setter Property="Margin" Value="0" />
             </Style>
         </Style>
 
@@ -115,15 +115,7 @@
             </OnPlatform>
         </Setter>
 
-        <Style Selector="^:not(^[OperationSystemType=macOS])">
-            <Setter Property="IsMaximizeCaptionButtonEnabled" Value="True" />
-            <Setter Property="IsMinimizeCaptionButtonEnabled" Value="True" />
-            <Setter Property="IsCloseCaptionButtonEnabled" Value="True" />
-            <Setter Property="IsFullScreenCaptionButtonEnabled" Value="True" />
-        </Style>
-
         <Style Selector="^:not(^[OperationSystemType=Linux])">
-            <Setter Property="IsResizeEnabled" Value="False" />
             <Setter Property="CornerRadius" Value="0" />
         </Style>
     </Style>

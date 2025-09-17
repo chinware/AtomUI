@@ -134,7 +134,7 @@ internal class ChromeToken : AbstractControlDesignToken
         HoverBackgroundColor        = SharedToken.ColorBgTextHover;
         PressedBackgroundColor      = SharedToken.ColorBgTextActive;
         LogoAndTitleSpacing         = SharedToken.SizeUnit * 2;
-        TitleBarPadding             = new Thickness(LogoAndTitleSpacing);
+        TitleBarPadding             = new Thickness(LogoAndTitleSpacing * 1.8, LogoAndTitleSpacing);
         CaptionButtonSize           = SharedToken.SizeUnit * 3;
         LogoSize                    = SharedToken.SizeUnit * 4;
         

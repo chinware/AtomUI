@@ -12,7 +12,8 @@
                     <Border Name="Frame" Background="{TemplateBinding Background}"
                             MinHeight="{TemplateBinding MinHeight}"
                             Padding="{TemplateBinding Padding}">
-                        <DockPanel LastChildFill="True" VerticalAlignment="Center">
+                        <DockPanel LastChildFill="True" VerticalAlignment="Center"
+                                   HorizontalSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                             <StackPanel Orientation="Horizontal"
                                         VerticalAlignment="Center"
                                         Spacing="{DynamicResource {x:Static atom:ChromeTokenKey.LogoAndTitleSpacing}}"

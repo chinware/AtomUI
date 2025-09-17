@@ -8,31 +8,34 @@
         <ControlTheme.BasedOn>
             <themes:DialogHostTheme TargetType="atom:MessageBoxDialogHost" />
         </ControlTheme.BasedOn>
-
+        
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
-                                        IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}" />
                     <Border Name="WindowFrame"
                             Background="{TemplateBinding Background}"
                             CornerRadius="{TemplateBinding CornerRadius}"
-                            BackgroundSizing="InnerBorderEdge"
+                            BackgroundSizing="InnerBorderEdge" />
+                    <Border Name="BodyFrame"
+                            CornerRadius="{TemplateBinding CornerRadius}"
                             ClipToBounds="True">
-                        <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
-                            <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
-                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
-                                               Content="{TemplateBinding Title}"
-                                               Logo="{TemplateBinding Logo}" />
-                            </Border>
-                            <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                        <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                            <DockPanel LastChildFill="True"
+                                       Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
+                                <Border Padding="{TemplateBinding TitleBarOSOffsetMargin}" DockPanel.Dock="Top">
+                                    <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
+                                                   Content="{TemplateBinding Title}"
+                                                   Logo="{TemplateBinding Logo}" />
+                                </Border>
+
                                 <DockPanel LastChildFill="True">
                                     <Border Name="FooterFrame" DockPanel.Dock="Bottom"
                                             IsVisible="{TemplateBinding IsEffectiveFooterVisible}">
                                         <atom:DialogButtonBox Name="{x:Static atom:DialogThemeConstants.ButtonBoxPart}"
                                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                               StandardButtons="{TemplateBinding StandardButtons}"
-                                                              DefaultStandardButton="{TemplateBinding DefaultStandardButton}" />
+                                                              DefaultStandardButton="{TemplateBinding DefaultStandardButton}"
+                                                              EscapeStandardButton="{TemplateBinding EscapeStandardButton}" />
                                     </Border>
                                     <Border Name="ContentFrame"
                                             CornerRadius="{TemplateBinding CornerRadius}"
@@ -54,21 +57,26 @@
                                         </DockPanel>
                                     </Border>
                                 </DockPanel>
-                            </atom:VisualLayerManager>
-                        </DockPanel>
+
+                            </DockPanel>
+                        </atom:VisualLayerManager>
                     </Border>
+                    <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
+                                        IsVisible="{Binding $parent[atom:Window].IsCustomResizerVisible}" />
                 </Panel>
+
             </ControlTemplate>
         </Setter>
-        
+
         <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MessageBoxTokenKey.StyleIconSize}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MessageBoxTokenKey.StyleIconSize}}" />
         </Style>
-        
+
         <Style Selector="^[Style=Confirm]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
 
@@ -77,22 +85,25 @@
                 <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfo}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Style=Success]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Style=Error]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Style=Warning]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                <Setter Property="NormalFilledBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
     </ControlTheme>

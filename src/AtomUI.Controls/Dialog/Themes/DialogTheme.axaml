@@ -7,5 +7,9 @@
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:DialogTokenKey.MinHeight}}" />
         <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:DialogTokenKey.MinWidth}}" />
+        
+        <Style Selector="^[IsModal=True]">
+            <Setter Property="IsMinimizable" Value="False" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
