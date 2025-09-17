@@ -1,6 +1,6 @@
 param (
     [string]$localSourcesDir = "D:/nuget.local",
-    [string]$buildType = "Release",
+    [string]$buildType = "Release"
 )
 
 function Push-NuGetPackages {

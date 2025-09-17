@@ -7,6 +7,7 @@
 *.js text eol=lf
 *.html text eol=lf
 *.css text eol=lf
+*.cs text eol=lf
 
 # 排除二进制文件
 *.png binary
