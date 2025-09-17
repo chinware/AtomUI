@@ -1,4 +1,5 @@
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.DialogPositioning;
 using AtomUI.Controls.Themes;
@@ -18,7 +19,8 @@ internal class DialogHost : Window,
                             IDialogHost,
                             IHostedVisualTreeRoot,
                             IStyleHost,
-                            IMotionAwareControl
+                            IMotionAwareControl,
+                            IManagedDialogPositionerDialog
 {
     #region 公共属性定义
 
@@ -36,6 +38,9 @@ internal class DialogHost : Window,
     
     public static readonly StyledProperty<bool> IsFooterVisibleProperty =
         Dialog.IsFooterVisibleProperty.AddOwner<DialogHost>();
+    
+    public static readonly StyledProperty<bool> IsModalProperty =
+        AvaloniaProperty.Register<DialogHost, bool>(nameof(IsModal));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DialogHost>();
@@ -89,6 +94,12 @@ internal class DialogHost : Window,
     {
         get => GetValue(IsConfirmLoadingProperty);
         set => SetValue(IsConfirmLoadingProperty, value);
+    }
+    
+    public bool IsModal
+    {
+        get => GetValue(IsModalProperty);
+        set => SetValue(IsModalProperty, value);
     }
     
     Visual? IHostedVisualTreeRoot.Host
@@ -146,7 +157,6 @@ internal class DialogHost : Window,
     private bool _needsUpdate;
     private readonly ManagedDialogPositioner _positioner;
     private Dialog _dialog;
-    private ManagedDialogPositionerDialogImplHelper _positionerHelper;
     private PixelPoint _latestDialogPosition;
     private DialogButtonBox? _buttonBox;
     private CompositeDisposable? _confirmLoadingBindings;
@@ -154,8 +164,7 @@ internal class DialogHost : Window,
     public DialogHost(TopLevel parent, Dialog dialog)
     {
         ParentTopLevel    = parent;
-        _positionerHelper = new ManagedDialogPositionerDialogImplHelper(PlatformImpl!, MoveResize);
-        _positioner       = new ManagedDialogPositioner(_positionerHelper);
+        _positioner       = new ManagedDialogPositioner(this);
         _dialog           = dialog;
 #if DEBUG
         this.AttachDevTools();
@@ -177,7 +186,7 @@ internal class DialogHost : Window,
         if (_dialogSize != finalRect.Size)
         {
             _dialogSize  = finalRect.Size;
-            _dialog.NotifyDialogHostMeasured(_dialogSize, _positionerHelper.ClientAreaScreenGeometry);
+            _dialog.NotifyDialogHostMeasured(_dialogSize, ClientAreaScreenGeometry);
             _needsUpdate = true;
             UpdatePosition();
         }
@@ -194,25 +203,14 @@ internal class DialogHost : Window,
         }
     }
     
-    private void MoveResize(PixelPoint position, Size size, double scaling)
-    {
-        if (WindowState == WindowState.Normal)
-        {
-            if (_latestDialogPosition != position)
-            {
-                _latestDialogPosition = position;
-                Position              = position;
-            }
-        }
-    }
-
     protected override void OnClosing(WindowClosingEventArgs e)
     {
-        if (!e.IsProgrammatic)
+        if (!e.IsProgrammatic || CloseByClickCloseCaptionButton)
         {
             e.Cancel = true;
             Dispatcher.UIThread.Post(() =>
             {
+                CloseByClickCloseCaptionButton = false;
                 _dialog.NotifyDialogHostCloseRequest();
             });
         }
@@ -314,5 +312,67 @@ internal class DialogHost : Window,
     {
         Show();
         return Task.CompletedTask;
+    }
+    
+    IReadOnlyList<ManagedDialogPositionerScreenInfo> IManagedDialogPositionerDialog.ScreenInfos
+    {
+        get
+        {
+            return Screens.All.Select(s => new ManagedDialogPositionerScreenInfo(s.Bounds.ToRect(RenderScaling), s.WorkingArea.ToRect(RenderScaling)))
+                          .ToArray();
+        }
+    }
+
+    void IManagedDialogPositionerDialog.Move(Point devicePoint)
+    {
+        if (WindowState == WindowState.Normal)
+        {
+            var position = new PixelPoint((int)devicePoint.X, (int)devicePoint.Y);
+            if (_latestDialogPosition != position)
+            {
+                _latestDialogPosition = position;
+                Position              = position;
+            }
+        }
+    }
+
+    Rect IManagedDialogPositionerDialog.ParentClientAreaScreenGeometry
+    {
+        get
+        {
+            var parentTopLevel = GetTopLevel(_dialog.PlacementTarget);
+            Debug.Assert(parentTopLevel != null);
+            var point = parentTopLevel.PointToScreen(default);
+            var size  = parentTopLevel.ClientSize * RenderScaling;
+            return new Rect(point.X, point.Y, size.Width, size.Height);
+        }
+    }
+    
+    private Rect ClientAreaScreenGeometry
+    {
+        get
+        {
+            ManagedDialogPositionerScreenInfo? targetScreen = null;
+            if (this is IManagedDialogPositionerDialog positionerDialog)
+            {
+                targetScreen = positionerDialog.ScreenInfos.FirstOrDefault(s => s.Bounds.ContainsExclusive(positionerDialog.ParentClientAreaScreenGeometry.TopLeft))
+                                   ?? positionerDialog.ScreenInfos.FirstOrDefault(s => s.Bounds.Intersects(positionerDialog.ParentClientAreaScreenGeometry))
+                                   ?? positionerDialog.ScreenInfos.FirstOrDefault();
+
+                if (targetScreen != null &&
+                    (targetScreen.WorkingArea.Width == 0 && targetScreen.WorkingArea.Height == 0))
+                {
+                    return targetScreen.Bounds;
+                }
+            }
+                 
+            return targetScreen?.WorkingArea ?? new Rect(0, 0, int.MaxValue, int.MaxValue);
+        }
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var size = base.MeasureOverride(availableSize);
+        return new Size(Math.Max(size.Width, MinWidth), Math.Max(size.Height, MinHeight));
     }
 }

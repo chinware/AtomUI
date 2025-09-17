@@ -11,20 +11,21 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DialogHost">
             <Panel>
-                <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
-                                    IsVisible="{Binding $parent[atom:Window].IsResizeEnabled}" />
                 <Border Name="WindowFrame"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        BackgroundSizing="InnerBorderEdge"
+                        BackgroundSizing="InnerBorderEdge" />
+                <Border Name="BodyFrame"
+                        CornerRadius="{TemplateBinding CornerRadius}"
                         ClipToBounds="True">
-                    <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
-                        <Border Padding="{TemplateBinding MacOSTitleBarMargin}" DockPanel.Dock="Top">
-                            <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
-                                           Content="{TemplateBinding Title}"
-                                           Logo="{TemplateBinding Logo}" />
-                        </Border>
-                        <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                    <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                        <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
+                            <Border Padding="{TemplateBinding TitleBarOSOffsetMargin}" DockPanel.Dock="Top">
+                                <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
+                                               Content="{TemplateBinding Title}"
+                                               Logo="{TemplateBinding Logo}" />
+                            </Border>
+
                             <DockPanel LastChildFill="True">
                                 <Border Name="FooterFrame" DockPanel.Dock="Bottom"
                                         IsVisible="{TemplateBinding IsEffectiveFooterVisible}">
@@ -32,7 +33,7 @@
                                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                           StandardButtons="{TemplateBinding StandardButtons}"
                                                           DefaultStandardButton="{TemplateBinding DefaultStandardButton}"
-                                                          EscapeStandardButton="{TemplateBinding EscapeStandardButton}"/>
+                                                          EscapeStandardButton="{TemplateBinding EscapeStandardButton}" />
                                 </Border>
                                 <Border Name="ContentFrame"
                                         CornerRadius="{TemplateBinding CornerRadius}"
@@ -47,9 +48,12 @@
                                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                 </Border>
                             </DockPanel>
-                        </atom:VisualLayerManager>
-                    </DockPanel>
+
+                        </DockPanel>
+                    </atom:VisualLayerManager>
                 </Border>
+                <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
+                                    IsVisible="{Binding $parent[atom:Window].IsCustomResizerVisible}" />
             </Panel>
 
         </ControlTemplate>
@@ -58,6 +62,7 @@
     <Style Selector="^:is(atom|DialogHost)">
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
         <Setter Property="SizeToContent" Value="WidthAndHeight" />
+        <Setter Property="IsFullScreenCaptionButtonEnabled" Value="False" />
 
         <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
             <Setter Property="VerticalSpacing"
@@ -69,6 +74,7 @@
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterMarginTop}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.FooterPadding}}" />
         </Style>
+
     </Style>
 
 </ControlTheme>

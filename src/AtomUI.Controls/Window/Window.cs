@@ -44,12 +44,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly StyledProperty<bool> IsFullScreenCaptionButtonEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsFullScreenCaptionButtonEnabled));
 
-    public static readonly StyledProperty<bool> IsMaximizeCaptionButtonEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsMaximizeCaptionButtonEnabled), defaultValue: true);
-
-    public static readonly StyledProperty<bool> IsMinimizeCaptionButtonEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsMinimizeCaptionButtonEnabled), defaultValue: true);
-
     public static readonly StyledProperty<bool> IsPinCaptionButtonEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsPinCaptionButtonEnabled));
     
@@ -59,18 +53,11 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly StyledProperty<bool> IsMoveEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMoveEnabled), defaultValue: true);
     
-    public static readonly StyledProperty<bool> IsResizeEnabledProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsResizeEnabled), defaultValue: true);
-    
     public static readonly StyledProperty<Point> MacOSCaptionGroupOffsetProperty =
         AvaloniaProperty.Register<Window, Point>(nameof(MacOSCaptionGroupOffset), defaultValue: new Point(10, 0));
     
     public static readonly StyledProperty<double> MacOSCaptionGroupSpacingProperty =
         AvaloniaProperty.Register<Window, double>(nameof(MacOSCaptionGroupSpacing), 10.0);
-    
-    public static readonly DirectProperty<Window, Thickness> MacOSTitleBarMarginProperty = 
-        AvaloniaProperty.RegisterDirect<Window, Thickness>(nameof (MacOSTitleBarMargin), 
-            o => o.MacOSTitleBarMargin);
     
     public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
         OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<Window>();
@@ -123,18 +110,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(IsFullScreenCaptionButtonEnabledProperty, value);
     }
     
-    public bool IsMaximizeCaptionButtonEnabled
-    {
-        get => GetValue(IsMaximizeCaptionButtonEnabledProperty);
-        set => SetValue(IsMaximizeCaptionButtonEnabledProperty, value);
-    }
-    
-    public bool IsMinimizeCaptionButtonEnabled
-    {
-        get => GetValue(IsMinimizeCaptionButtonEnabledProperty);
-        set => SetValue(IsMinimizeCaptionButtonEnabledProperty, value);
-    }
-    
     public bool IsPinCaptionButtonEnabled
     {
         get => GetValue(IsPinCaptionButtonEnabledProperty);
@@ -153,12 +128,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(IsMoveEnabledProperty, value);
     }
     
-    public bool IsResizeEnabled
-    {
-        get => GetValue(IsResizeEnabledProperty);
-        set => SetValue(IsResizeEnabledProperty, value);
-    }
-    
     public Point MacOSCaptionGroupOffset
     {
         get => GetValue(MacOSCaptionGroupOffsetProperty);
@@ -171,23 +140,32 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(MacOSCaptionGroupSpacingProperty, value);
     }
     
-    public Thickness MacOSTitleBarMargin
-    {
-        get => _macOSTitleBarMargin;
-        private set => SetAndRaise(MacOSTitleBarMarginProperty, ref _macOSTitleBarMargin, value);
-    }
-    private Thickness _macOSTitleBarMargin;
-    
     public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
     
     #endregion
 
     #region 内部属性定义
+    internal static readonly DirectProperty<Window, Thickness> TitleBarOSOffsetMarginProperty = 
+        AvaloniaProperty.RegisterDirect<Window, Thickness>(nameof (TitleBarOSOffsetMargin), 
+            o => o.TitleBarOSOffsetMargin);
 
     internal static readonly DirectProperty<Window, WindowState> PreviousVisibleWindowStateProperty =
         AvaloniaProperty.RegisterDirect<Window, WindowState>(
             nameof(PreviousVisibleWindowState),
             o => o.PreviousVisibleWindowState);
+    
+    internal static readonly DirectProperty<Window, bool> IsCustomResizerVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Window, bool>(
+            nameof(IsCustomResizerVisible),
+            o => o.IsCustomResizerVisible,
+            (o, v) => o.IsCustomResizerVisible = v);
+    
+    private Thickness _titleBarOSOffsetMargin;
+    public Thickness TitleBarOSOffsetMargin
+    {
+        get => _titleBarOSOffsetMargin;
+        private set => SetAndRaise(TitleBarOSOffsetMarginProperty, ref _titleBarOSOffsetMargin, value);
+    }
     
     private WindowState _previousVisibleWindowState = WindowState.Normal;
 
@@ -196,7 +174,14 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         get => _previousVisibleWindowState;
         private set => SetAndRaise(PreviousVisibleWindowStateProperty, ref _previousVisibleWindowState, value);
     }
-    
+
+    private bool _isCustomResizerVisible;
+
+    internal bool IsCustomResizerVisible
+    {
+        get => _isCustomResizerVisible;
+        set => SetAndRaise(IsCustomResizerVisibleProperty, ref _isCustomResizerVisible, value);
+    }
     #endregion
     
     protected override Type StyleKeyOverride { get; } = typeof(Window);
@@ -207,6 +192,8 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     private Point? _lastMousePressedPoint;
     private PointerPressedEventArgs? _lastMousePressedEventArgs;
     private bool _isDragging;
+
+    protected bool CloseByClickCloseCaptionButton;
 
     public Window()
     {
@@ -224,6 +211,10 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         else if (change.Property == MaxHeightScreenRatioProperty)
         {
             this.ConstrainMaxSizeToScreenRatio(double.NaN, MaxHeightScreenRatio);
+        }
+        else if (change.Property == CanResizeProperty)
+        {
+            ConfigureCustomResizerVisible();
         }
         if (change.Property == WindowStateProperty)
         {
@@ -288,6 +279,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
 #if PLATFORM_MACOS
         this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
 #endif
+        ConfigureCustomResizerVisible();
     }
 
     protected override void OnClosed(EventArgs e)
@@ -329,7 +321,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
                 return;
             }
 
-            if (windowState == WindowState.Normal && (OperationSystemType == OperationSystemType.macOS || IsMaximizeCaptionButtonEnabled))
+            if (windowState == WindowState.Normal && (OperationSystemType == OperationSystemType.macOS || CanMaximize))
             {
                 WindowState =  WindowState.Maximized;
             }
@@ -399,23 +391,43 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         _disposeActions.Clear();
     }
 
-#if PLATFORM_MACOS
+
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
+#if PLATFORM_MACOS
         ConfigureMacOSCaptionGroupOffset();
+#endif
     }
 
+#if PLATFORM_MACOS
     private void ConfigureMacOSCaptionGroupOffset()
     {
         this.SetMacOSOptionButtonsPosition(MacOSCaptionGroupOffset.X, MacOSCaptionGroupOffset.Y, MacOSCaptionGroupSpacing);
         var cationsSize = this.GetMacOSOptionsSize(MacOSCaptionGroupSpacing);
-        MacOSTitleBarMargin = new Thickness(cationsSize.Width + MacOSCaptionGroupOffset.X, 0, 0, 0);
+        SetCurrentValue(TitleBarOSOffsetMarginProperty, new Thickness(cationsSize.Width + MacOSCaptionGroupOffset.X, 0, 0, 0));
     }
 #endif
     
     void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
     {
         SetValue(OperationSystemTypeProperty, operationSystemType);
+    }
+
+    internal void NotifyCloseRequestByUser()
+    {
+        CloseByClickCloseCaptionButton = true;
+    }
+
+    private void ConfigureCustomResizerVisible()
+    {
+        if (OperationSystemType != OperationSystemType.Linux)
+        {
+            SetCurrentValue(IsCustomResizerVisibleProperty, false);
+        }
+        else
+        {
+            SetCurrentValue(IsCustomResizerVisibleProperty, CanResize);
+        }
     }
 }

@@ -19,10 +19,10 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         Window.IsFullScreenCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
     
     public static readonly StyledProperty<bool> IsMaximizeCaptionButtonEnabledProperty =
-        Window.IsMaximizeCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
-    
+        AvaloniaProperty.Register<CaptionButtonGroup, bool>(nameof(IsMaximizeCaptionButtonEnabled), defaultValue: true);
+
     public static readonly StyledProperty<bool> IsMinimizeCaptionButtonEnabledProperty =
-        Window.IsMinimizeCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
+        AvaloniaProperty.Register<CaptionButtonGroup, bool>(nameof(IsMinimizeCaptionButtonEnabled), defaultValue: true);
     
     public static readonly StyledProperty<bool> IsPinCaptionButtonEnabledProperty =
         Window.IsPinCaptionButtonEnabledProperty.AddOwner<CaptionButtonGroup>();
@@ -169,8 +169,8 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         _disposables = new CompositeDisposable(7);
         _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsFullScreenCaptionButtonEnabledProperty, this, IsFullScreenCaptionButtonEnabledProperty));
         _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsPinCaptionButtonEnabledProperty, this, IsPinCaptionButtonEnabledProperty));
-        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsMaximizeCaptionButtonEnabledProperty, this, IsMaximizeCaptionButtonEnabledProperty));
-        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsMinimizeCaptionButtonEnabledProperty, this, IsMinimizeCaptionButtonEnabledProperty));
+        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.CanMaximizeProperty, this, IsMaximizeCaptionButtonEnabledProperty));
+        _disposables.Add(BindUtils.RelayBind(hostWindow, Window.CanMinimizeProperty, this, IsMinimizeCaptionButtonEnabledProperty));
         _disposables.Add(BindUtils.RelayBind(hostWindow, Window.IsCloseCaptionButtonEnabledProperty, this, IsCloseCaptionButtonEnabledProperty));
         _disposables.Add(HostWindow.GetObservable(Window.WindowStateProperty)
                                    .Subscribe(x =>
@@ -280,7 +280,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
             return;
         }
         var windowState = HostWindow.WindowState;
-        if (!HostWindow.IsMaximizeCaptionButtonEnabled || windowState == WindowState.FullScreen)
+        if (!HostWindow.CanMaximize || windowState == WindowState.FullScreen)
         {
             return;
         }
@@ -293,6 +293,10 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
     
     private void HandleCloseButtonClicked(object? sender, RoutedEventArgs e)
     {
+        if (HostWindow != null)
+        {
+            HostWindow.NotifyCloseRequestByUser();
+        }
         HostWindow?.Close();
     }
     
@@ -370,7 +374,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
             }
             else if (msg == WM_CAPTURECHANGED)
             {
-                if (pointerOnButton && HostWindow.IsMaximizeCaptionButtonEnabled)
+                if (pointerOnButton && HostWindow.CanMaximize)
                 {
                     HostWindow.WindowState = HostWindow.WindowState == WindowState.Maximized
                                   ? WindowState.Normal

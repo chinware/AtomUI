@@ -362,6 +362,12 @@ public class Dialog : TemplatedControl,
             o => o.OffsetY,
             (o, v) => o.OffsetY = v);
     
+    internal static readonly DirectProperty<Dialog, bool> EffectiveMinimizableProperty =
+        AvaloniaProperty.RegisterDirect<Dialog, bool>(
+            nameof(EffectiveMinimizable),
+            o => o.EffectiveMinimizable,
+            (o, v) => o.EffectiveMinimizable = v);
+    
     private double _offsetX;
 
     public double OffsetX
@@ -376,6 +382,14 @@ public class Dialog : TemplatedControl,
     {
         get => _offsetY;
         set => SetAndRaise(OffsetYProperty, ref _offsetY, value);
+    }
+    
+    private bool _effectiveMinimizable;
+
+    public bool EffectiveMinimizable
+    {
+        get => _effectiveMinimizable;
+        set => SetAndRaise(EffectiveMinimizableProperty, ref _effectiveMinimizable, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -437,7 +451,7 @@ public class Dialog : TemplatedControl,
         token.Register(() => frame.Continue = false);
         var resultTask = OpenAsync();
         Dispatcher.UIThread.PushFrame(frame);
-        return resultTask?.Result;
+        return resultTask.Result;
     }
 
     public async Task<object?> OpenAsync()
@@ -583,7 +597,10 @@ public class Dialog : TemplatedControl,
             {
                 if (topLevel is Window windowTopLevel)
                 {
-                    await windowDialog.ShowDialog(windowTopLevel);
+                    Dispatcher.UIThread.InvokeAsync(async () =>
+                    {
+                        await windowDialog.ShowDialog(windowTopLevel);
+                    });
                 }
             }
             else
@@ -650,7 +667,7 @@ public class Dialog : TemplatedControl,
         disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, dialogHost, DialogHost.IsMotionEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, IsResizableProperty, dialogHost, DialogHost.CanResizeProperty));
         disposables.Add(BindUtils.RelayBind(this, IsMaximizableProperty, dialogHost, DialogHost.CanMaximizeProperty));
-        disposables.Add(BindUtils.RelayBind(this, IsMinimizableProperty, dialogHost, DialogHost.CanMinimizeProperty));
+        disposables.Add(BindUtils.RelayBind(this, EffectiveMinimizableProperty, dialogHost, DialogHost.CanMinimizeProperty));
         disposables.Add(BindUtils.RelayBind(this, IsDragMovableProperty, dialogHost, DialogHost.IsMoveEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, StandardButtonsProperty, dialogHost, DialogHost.StandardButtonsProperty));
         disposables.Add(BindUtils.RelayBind(this, DefaultStandardButtonProperty, dialogHost, DialogHost.DefaultStandardButtonProperty));
@@ -661,6 +678,7 @@ public class Dialog : TemplatedControl,
         disposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, dialogHost, DialogHost.ContentTemplateProperty));
         disposables.Add(BindUtils.RelayBind(this, IsLoadingProperty, dialogHost, DialogHost.IsLoadingProperty));
         disposables.Add(BindUtils.RelayBind(this, IsConfirmLoadingProperty, dialogHost, DialogHost.IsConfirmLoadingProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsModalProperty, dialogHost, DialogHost.IsModalProperty));
     }
 
     private protected virtual void RelayOverlayDialogBindings(CompositeDisposable disposables, OverlayDialogHost dialogHost)
@@ -810,6 +828,17 @@ public class Dialog : TemplatedControl,
             else if (change.Property == DialogHostTypeProperty)
             {
                 _startupLocationCalculated = false;
+            }
+        }
+        else if (change.Property == IsModalProperty)
+        {
+            SetCurrentValue(EffectiveMinimizableProperty, false);
+        }
+        else if (change.Property == IsMinimizableProperty)
+        {
+            if (!IsModal)
+            {
+                SetCurrentValue(EffectiveMinimizableProperty, IsMinimizable);
             }
         }
     }

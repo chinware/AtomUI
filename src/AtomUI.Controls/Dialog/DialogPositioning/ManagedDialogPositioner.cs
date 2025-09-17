@@ -5,10 +5,9 @@ namespace AtomUI.Controls.DialogPositioning;
 
 public interface IManagedDialogPositionerDialog
 {
-    IReadOnlyList<ManagedDialogPositionerScreenInfo> Screens { get; }
+    IReadOnlyList<ManagedDialogPositionerScreenInfo> ScreenInfos { get; }
     Rect ParentClientAreaScreenGeometry { get; }
-    double Scaling { get; }
-    void MoveAndResize(Point devicePoint, Size virtualSize);
+    void Move(Point devicePoint);
 }
 
 public class ManagedDialogPositionerScreenInfo
@@ -35,17 +34,15 @@ public class ManagedDialogPositioner : IDialogPositioner
     public void Update(DialogPositionerParameters parameters)
     {
         var rect = Calculate(
-            parameters.Size * _dialog.Scaling,
+            parameters.Size,
             new Rect(
-                parameters.AnchorRectangle.TopLeft * _dialog.Scaling,
-                parameters.AnchorRectangle.Size * _dialog.Scaling),
-            parameters.HorizontalOffset * _dialog.Scaling,
-            parameters.VerticalOffset * _dialog.Scaling,
+                parameters.AnchorRectangle.TopLeft,
+                parameters.AnchorRectangle.Size),
+            parameters.HorizontalOffset,
+            parameters.VerticalOffset,
             parameters.ConstraintAdjustment);
            
-        _dialog.MoveAndResize(
-            rect.Position,
-            rect.Size / _dialog.Scaling);
+        _dialog.Move(rect.Position);
     }
     
     private Rect Calculate(Size translatedSize, 
@@ -59,7 +56,7 @@ public class ManagedDialogPositioner : IDialogPositioner
             
         Rect GetBounds()
         {
-            var screens = _dialog.Screens;
+            var screens = _dialog.ScreenInfos;
                 
             var targetScreen =  screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(anchorRect.TopLeft))
                                 ?? screens.FirstOrDefault(s => s.Bounds.Intersects(anchorRect))
@@ -73,8 +70,7 @@ public class ManagedDialogPositioner : IDialogPositioner
                 return targetScreen.Bounds;
             }
                 
-            return targetScreen?.WorkingArea
-                   ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
+            return targetScreen?.WorkingArea ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
         }
 
         var bounds = GetBounds();
