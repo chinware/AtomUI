@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <Import Project="$(MSBuildThisFileDirectory)/build/Common.props"/>
-    <Import Project="$(MSBuildThisFileDirectory)/build/PackageMetaInfo.props"/>
     <Import Project="$(MSBuildThisFileDirectory)/build/Version.props"/>
+    <Import Project="$(MSBuildThisFileDirectory)/build/PackageMetaInfo.props"/>
     <Import Project="$(MSBuildThisFileDirectory)/build/Output.props"/>
 
 </Project>
