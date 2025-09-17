@@ -147,7 +147,8 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     #region 内部属性定义
     internal static readonly DirectProperty<Window, Thickness> TitleBarOSOffsetMarginProperty = 
         AvaloniaProperty.RegisterDirect<Window, Thickness>(nameof (TitleBarOSOffsetMargin), 
-            o => o.TitleBarOSOffsetMargin);
+            o => o.TitleBarOSOffsetMargin,
+            (o, v) => o.TitleBarOSOffsetMargin = v);
 
     internal static readonly DirectProperty<Window, WindowState> PreviousVisibleWindowStateProperty =
         AvaloniaProperty.RegisterDirect<Window, WindowState>(

@@ -318,20 +318,20 @@ internal class DialogHost : Window,
     {
         get
         {
-            return Screens.All.Select(s => new ManagedDialogPositionerScreenInfo(s.Bounds.ToRect(RenderScaling), s.WorkingArea.ToRect(RenderScaling)))
+            return Screens.All.Select(s => new ManagedDialogPositionerScreenInfo(s.Bounds.ToRect(DesktopScaling), s.WorkingArea.ToRect(DesktopScaling)))
                           .ToArray();
         }
     }
 
-    void IManagedDialogPositionerDialog.Move(Point devicePoint)
+    void IManagedDialogPositionerDialog.Move(Point logicalPoint)
     {
         if (WindowState == WindowState.Normal)
         {
-            var position = new PixelPoint((int)devicePoint.X, (int)devicePoint.Y);
-            if (_latestDialogPosition != position)
+            var devicePoint = new PixelPoint((int)(logicalPoint.X * DesktopScaling), (int)(logicalPoint.Y * DesktopScaling));
+            if (_latestDialogPosition != devicePoint)
             {
-                _latestDialogPosition = position;
-                Position              = position;
+                _latestDialogPosition = devicePoint;
+                Position              = devicePoint;
             }
         }
     }
@@ -343,7 +343,7 @@ internal class DialogHost : Window,
             var parentTopLevel = GetTopLevel(_dialog.PlacementTarget);
             Debug.Assert(parentTopLevel != null);
             var point = parentTopLevel.PointToScreen(default);
-            var size  = parentTopLevel.ClientSize * RenderScaling;
+            var size  = parentTopLevel.ClientSize;
             return new Rect(point.X, point.Y, size.Width, size.Height);
         }
     }
