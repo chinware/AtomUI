@@ -254,7 +254,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
     protected internal virtual void NotifyPositionPopup(bool showAtPointer)
     {
-        // Popup.Child can't be null here, it was set in ShowAtCore.
         if (Popup.Child!.DesiredSize == default)
         {
             // Popup may not have been shown yet. Measure content
@@ -338,7 +337,9 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     protected void HandlePopupClosed()
     {
         Popup.SetLogicalParent(null);
-        Popup.Child = null;
+        // TODO 子元素不能直接删除, 会造成不能重复添加的问题
+        // 是否可以在删除前递归清除 visual parent 呢?
+        // Popup.Child = null;
 
         // Ensure this isn't active
         _transientDisposable?.Dispose();
@@ -669,13 +670,5 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
 
         //Add new classes
         presenter.Classes.AddRange(classes);
-    }
-
-    /// <summary>
-    /// 有时候需要清空 Popup 的 Child控件，强制重新创建
-    /// </summary>
-    internal void ClearUpPopupChild()
-    {
-        Popup.Child = null;
     }
 }

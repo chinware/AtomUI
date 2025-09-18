@@ -58,10 +58,13 @@
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
-
-        <Style Selector="^:not(^[OperationSystemType=macOS])">
+        
+        <Setter Property="ExtendClientAreaChromeHints" Value="SystemChrome" />
+        
+        <Style Selector="^[OperationSystemType=Linux]">
             <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
         </Style>
+        
         <Style Selector="^[OperationSystemType=macOS]">
             <Setter Property="MacOSCaptionGroupOffset" Value="10, 0" />
             <Setter Property="MacOSCaptionGroupSpacing" Value="5" />
@@ -108,6 +111,9 @@
             <OnPlatform>
                 <On Options="Default">
                     <SystemDecorations>Full</SystemDecorations>
+                </On>
+                <On Options="Windows">
+                    <SystemDecorations>BorderOnly</SystemDecorations>
                 </On>
                 <On Options="Linux">
                     <SystemDecorations>None</SystemDecorations>
