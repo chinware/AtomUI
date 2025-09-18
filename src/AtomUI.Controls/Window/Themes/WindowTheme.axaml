@@ -14,7 +14,7 @@
                 <Border Name="BodyFrame"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         ClipToBounds="True">
-                    <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                    <atom:VisualLayerManager>
                         <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
                             <Border Padding="{TemplateBinding TitleBarOSOffsetMargin}" DockPanel.Dock="Top">
                                 <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
@@ -54,18 +54,22 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:WindowTokenKey.DefaultForeground}}" />
         <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         <Setter Property="FontFamily" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontFamily}}" />
-
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
+        
+        <Style Selector="^[OsType=Windows]">
+            <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="1" />
+        </Style>
+        
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
         
         <Setter Property="ExtendClientAreaChromeHints" Value="SystemChrome" />
         
-        <Style Selector="^[OperationSystemType=Linux]">
+        <Style Selector="^[OsType=Linux]">
             <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
         </Style>
         
-        <Style Selector="^[OperationSystemType=macOS]">
+        <Style Selector="^[OsType=macOS]">
             <Setter Property="MacOSCaptionGroupOffset" Value="10, 0" />
             <Setter Property="MacOSCaptionGroupSpacing" Value="5" />
         </Style>
@@ -113,7 +117,7 @@
                     <SystemDecorations>Full</SystemDecorations>
                 </On>
                 <On Options="Windows">
-                    <SystemDecorations>BorderOnly</SystemDecorations>
+                    <SystemDecorations>Full</SystemDecorations>
                 </On>
                 <On Options="Linux">
                     <SystemDecorations>None</SystemDecorations>
@@ -121,7 +125,7 @@
             </OnPlatform>
         </Setter>
 
-        <Style Selector="^:not(^[OperationSystemType=Linux])">
+        <Style Selector="^:not(^[OsType=Linux])">
             <Setter Property="CornerRadius" Value="0" />
         </Style>
     </Style>

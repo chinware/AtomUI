@@ -33,8 +33,11 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
     public static readonly StyledProperty<bool> IsWindowActiveProperty = 
         TitleBar.IsWindowActiveProperty.AddOwner<CaptionButtonGroup>();
     
-    public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
-        OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<CaptionButtonGroup>();
+    public static readonly StyledProperty<OsType> OsTypeProperty =
+        OperationSystemAwareControlProperty.OsTypeProperty.AddOwner<CaptionButtonGroup>();
+    
+    public static readonly StyledProperty<Version> OsVersionProperty =
+        OperationSystemAwareControlProperty.OsVersionProperty.AddOwner<CaptionButtonGroup>();
 
     public bool IsFullScreenCaptionButtonEnabled
     {
@@ -72,7 +75,8 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         set => SetValue(IsWindowActiveProperty, value);
     }
     
-    public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
+    public OsType OsType => GetValue(OsTypeProperty);
+    public Version OsVersion => GetValue(OsVersionProperty);
 
     #endregion
 
@@ -154,7 +158,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
 
     public CaptionButtonGroup()
     {
-        this.ConfigureOperationSystemType();
+        this.ConfigureOsType();
     }
 
     public virtual void Attach(Window hostWindow)
@@ -230,9 +234,12 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         {
             _maximizeButton.Click += HandleMaximizeButtonClicked;
             _disposeActions.Add(() => _maximizeButton.Click -= HandleMaximizeButtonClicked);
-            if (OperatingSystem.IsWindows())
+            if (OsType == OsType.Windows)
             {
-                EnableWindowsSnapLayout(_maximizeButton);
+                if (OsVersion.Major > 10)
+                {
+                    EnableWindowsSnapLayout(_maximizeButton);
+                }
             }
         }
 
@@ -395,14 +402,9 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         _disposeActions.Add(() => Win32Properties.RemoveWndProcHookCallback(HostWindow, wndProcHookCallback));
     }
     
-    void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
-    {
-        SetValue(OperationSystemTypeProperty, operationSystemType);
-    }
-
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (OperationSystemType == OperationSystemType.Windows)
+        if (OsType == OsType.Windows)
         {
             if (_closeButton != null)
             {
@@ -432,5 +434,15 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         }
         var size = base.MeasureOverride(availableSize);
         return size;
+    }
+    
+    void IOperationSystemAware.SetOsType(OsType osType)
+    {
+        SetValue(OsTypeProperty, osType);
+    }
+    
+    void IOperationSystemAware.SetOsVersion(Version version)
+    {
+        SetValue(OsVersionProperty, version);
     }
 }

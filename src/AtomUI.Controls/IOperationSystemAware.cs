@@ -4,36 +4,43 @@ namespace AtomUI.Controls;
 
 internal interface IOperationSystemAware
 {
-    OperationSystemType OperationSystemType { get; }
-    void SetOperationSystemType(OperationSystemType operationSystemType);
+    OsType OsType { get; }
+    void SetOsType(OsType osType);
+    
+    Version OsVersion { get; }
+    void SetOsVersion(Version version);
 }
 
 internal abstract class OperationSystemAwareControlProperty : AvaloniaObject
 {
-    public const string OperationSystemPropertyName = "OperationSystemType";
-    public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
-        AvaloniaProperty.Register<OperationSystemAwareControlProperty, OperationSystemType>(OperationSystemPropertyName, OperationSystemType.Unknown);
+    public const string OsTypePropertyName = "OsType";
+    public const string OsVersionPropertyName = "OsVersion";
+    public static readonly StyledProperty<OsType> OsTypeProperty =
+        AvaloniaProperty.Register<OperationSystemAwareControlProperty, OsType>(OsTypePropertyName, OsType.Unknown);
+    public static readonly StyledProperty<Version> OsVersionProperty =
+        AvaloniaProperty.Register<OperationSystemAwareControlProperty, Version>(OsVersionPropertyName);
 }
 
 internal static class OperationSystemAwareExtensions
 {
-    public static void ConfigureOperationSystemType(this IOperationSystemAware operationSystemAware)
+    public static void ConfigureOsType(this IOperationSystemAware operationSystemAware)
     {
         if (OperatingSystem.IsWindows())
         {
-            operationSystemAware.SetOperationSystemType(OperationSystemType.Windows);
+            operationSystemAware.SetOsType(OsType.Windows);
         }
         else if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
         {
-            operationSystemAware.SetOperationSystemType(OperationSystemType.macOS);
+            operationSystemAware.SetOsType(OsType.macOS);
         }
         else if (OperatingSystem.IsLinux())
         {
-            operationSystemAware.SetOperationSystemType(OperationSystemType.Linux);
+            operationSystemAware.SetOsType(OsType.Linux);
         }
         else
         {
-            operationSystemAware.SetOperationSystemType(OperationSystemType.Unknown);
+            operationSystemAware.SetOsType(OsType.Unknown);
         }
+        operationSystemAware.SetOsVersion(Environment.OSVersion.Version);
     }
 }

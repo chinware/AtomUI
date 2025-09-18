@@ -8,7 +8,7 @@
     <converters:MinimizeButtonVisibleConverter x:Key="MinimizeButtonVisibleConverter" />
     <converters:FullScreenButtonVisibleConverter x:Key="FullScreenButtonVisibleConverter" />
     <ControlTheme x:Key="{x:Type atom:CaptionButtonGroup}" TargetType="atom:CaptionButtonGroup">
-        <Style Selector="^[OperationSystemType=Linux]">
+        <Style Selector="^[OsType=Linux]">
             <Setter Property="Template">
                 <ControlTemplate>
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
@@ -81,7 +81,7 @@
             </Setter>
         </Style>
         
-        <Style Selector="^[OperationSystemType=macOS]">
+        <Style Selector="^[OsType=macOS]">
             <Setter Property="Template">
                 <ControlTemplate>
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
@@ -99,7 +99,7 @@
             </Setter>
         </Style>
         
-        <Style Selector="^[OperationSystemType=Windows]">
+        <Style Selector="^[OsType=Windows]">
              <Setter Property="Template">
                 <ControlTemplate>
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
@@ -177,7 +177,7 @@
             <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:ChromeTokenKey.CaptionGroupSpacing}}" />
         </Style>
 
-        <Style Selector="^[OperationSystemType=Windows]">
+        <Style Selector="^[OsType=Windows]">
             <Style Selector="^ /template/ StackPanel#RootLayout">
                 <Setter Property="Spacing" Value="0" />
             </Style>

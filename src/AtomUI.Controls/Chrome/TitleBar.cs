@@ -44,8 +44,11 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TitleBar>();
     
-    public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
-        OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<TitleBar>();
+    public static readonly StyledProperty<OsType> OsTypeProperty =
+        OperationSystemAwareControlProperty.OsTypeProperty.AddOwner<TitleBar>();
+    
+    public static readonly StyledProperty<Version> OsVersionProperty =
+        OperationSystemAwareControlProperty.OsVersionProperty.AddOwner<TitleBar>();
 
     public Control? Logo
     {
@@ -90,7 +93,8 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
+    public OsType OsType => GetValue(OsTypeProperty);
+    public Version OsVersion => GetValue(OsVersionProperty);
     #endregion
 
     #region 内部属性定义
@@ -106,7 +110,7 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
 
     public TitleBar()
     {
-        this.ConfigureOperationSystemType();
+        this.ConfigureOsType();
         this.RegisterResources();
     }
 
@@ -194,8 +198,13 @@ internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMot
         Transitions = null;
     }
     
-    void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
+    void IOperationSystemAware.SetOsType(OsType osType)
     {
-        SetValue(OperationSystemTypeProperty, operationSystemType);
+        SetValue(OsTypeProperty, osType);
+    }
+    
+    void IOperationSystemAware.SetOsVersion(Version version)
+    {
+        SetValue(OsVersionProperty, version);
     }
 }

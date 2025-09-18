@@ -59,8 +59,11 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly StyledProperty<double> MacOSCaptionGroupSpacingProperty =
         AvaloniaProperty.Register<Window, double>(nameof(MacOSCaptionGroupSpacing), 10.0);
     
-    public static readonly StyledProperty<OperationSystemType> OperationSystemTypeProperty =
-        OperationSystemAwareControlProperty.OperationSystemTypeProperty.AddOwner<Window>();
+    public static readonly StyledProperty<OsType> OsTypeProperty =
+        OperationSystemAwareControlProperty.OsTypeProperty.AddOwner<Window>();
+    
+    public static readonly StyledProperty<Version> OsVersionProperty =
+        OperationSystemAwareControlProperty.OsVersionProperty.AddOwner<Window>();
     
     public double TitleFontSize
     {
@@ -140,7 +143,8 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(MacOSCaptionGroupSpacingProperty, value);
     }
     
-    public OperationSystemType OperationSystemType => GetValue(OperationSystemTypeProperty);
+    public OsType OsType => GetValue(OsTypeProperty);
+    public Version OsVersion => GetValue(OsVersionProperty);
     
     #endregion
 
@@ -199,7 +203,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public Window()
     {
         ScalingChanged += HandleScalingChanged;
-        this.ConfigureOperationSystemType();
+        this.ConfigureOsType();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -322,7 +326,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
                 return;
             }
 
-            if (windowState == WindowState.Normal && (OperationSystemType == OperationSystemType.macOS || CanMaximize))
+            if (windowState == WindowState.Normal && (OsType == OsType.macOS || CanMaximize))
             {
                 WindowState =  WindowState.Maximized;
             }
@@ -410,9 +414,14 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     }
 #endif
     
-    void IOperationSystemAware.SetOperationSystemType(OperationSystemType operationSystemType)
+    void IOperationSystemAware.SetOsType(OsType osType)
     {
-        SetValue(OperationSystemTypeProperty, operationSystemType);
+        SetValue(OsTypeProperty, osType);
+    }
+    
+    void IOperationSystemAware.SetOsVersion(Version version)
+    {
+        SetValue(OsVersionProperty, version);
     }
 
     internal void NotifyCloseRequestByUser()
@@ -422,7 +431,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
 
     private void ConfigureCustomResizerVisible()
     {
-        if (OperationSystemType != OperationSystemType.Linux)
+        if (OsType != OsType.Linux)
         {
             SetCurrentValue(IsCustomResizerVisibleProperty, false);
         }
