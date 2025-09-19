@@ -301,18 +301,6 @@ internal class DialogHost : Window,
             }
         }
     }
-
-    public Task HideAsync()
-    {
-        Hide();
-        return Task.CompletedTask;
-    }
-
-    public Task ShowAsync()
-    {
-        Show();
-        return Task.CompletedTask;
-    }
     
     IReadOnlyList<ManagedDialogPositionerScreenInfo> IManagedDialogPositionerDialog.ScreenInfos
     {
@@ -374,5 +362,11 @@ internal class DialogHost : Window,
     {
         var size = base.MeasureOverride(availableSize);
         return new Size(Math.Max(size.Width, MinWidth), Math.Max(size.Height, MinHeight));
+    }
+
+    public void Close(Action? callback = null)
+    {
+        base.Close();
+        callback?.Invoke();
     }
 }

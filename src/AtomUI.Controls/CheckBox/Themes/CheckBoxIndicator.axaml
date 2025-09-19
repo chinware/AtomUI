@@ -11,7 +11,7 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <Panel UseLayoutRounding="True">
+                    <Panel>
                         <atom:Icon Name="{x:Static atom:CheckBoxIndicatorThemeConstants.CheckedMarkPart}"
                                    IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
                                    HorizontalAlignment="Center"

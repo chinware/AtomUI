@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Animations;
 using AtomUI.Controls.DialogPositioning;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
@@ -19,10 +18,9 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
-using System.Reactive.Linq;
+using AtomUI.Controls.Utils;
 using Avalonia.Animation.Easings;
 using Avalonia.Media.Transformation;
-using Avalonia.ReactiveUI;
 
 namespace AtomUI.Controls;
 
@@ -194,6 +192,12 @@ internal class OverlayDialogHost : ContentControl,
     internal static readonly StyledProperty<TimeSpan> AnimationDurationProperty =
         AvaloniaProperty.Register<OverlayDialogHost, TimeSpan>(nameof(AnimationDuration));
     
+    internal static readonly DirectProperty<OverlayDialogHost, bool> IsHostAnimatingProperty =
+        AvaloniaProperty.RegisterDirect<OverlayDialogHost, bool>(
+            nameof(IsHostAnimating),
+            o => o.IsHostAnimating,
+            (o, v) => o.IsHostAnimating = v);
+    
     private bool _isDragging;
 
     internal bool IsDragging
@@ -204,16 +208,24 @@ internal class OverlayDialogHost : ContentControl,
     
     private bool _isEffectiveFooterVisible;
 
-    public bool IsEffectiveFooterVisible
+    internal bool IsEffectiveFooterVisible
     {
         get => _isEffectiveFooterVisible;
         set => SetAndRaise(IsEffectiveFooterVisibleProperty, ref _isEffectiveFooterVisible, value);
     }
     
-    public TimeSpan AnimationDuration
+    internal TimeSpan AnimationDuration
     {
         get => GetValue(AnimationDurationProperty);
         set => SetValue(AnimationDurationProperty, value);
+    }
+    
+    private bool _isHostAnimating;
+
+    internal bool IsHostAnimating
+    {
+        get => _isHostAnimating;
+        set => SetAndRaise(IsHostAnimatingProperty, ref _isHostAnimating, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -229,7 +241,7 @@ internal class OverlayDialogHost : ContentControl,
     private DialogPositionRequest? _dialogPositionRequest;
     private Size _dialogSize;
     private bool _needsUpdate;
-    private OverlayDialogMask? _dialogMask;
+    private OverlayDialogMask _dialogMask;
     // 用于最大化
     private Point _originPosition;
     private OverlayDialogHeader? _header;
@@ -238,7 +250,6 @@ internal class OverlayDialogHost : ContentControl,
     private Dialog _dialog;
     private DialogButtonBox? _buttonBox;
     private CompositeDisposable? _confirmLoadingBindings;
-    private IDisposable? _maskMotionDisposable;
     
     // 拖动
     private Size? _lastestSize;
@@ -256,7 +267,8 @@ internal class OverlayDialogHost : ContentControl,
         _positioner                = new ManagedDialogPositioner(this);
         _keyboardNavigationHandler = AvaloniaLocator.Current.GetService<IKeyboardNavigationHandler>();
         _keyboardNavigationHandler?.SetOwner(this);
-        CustomButtons.CollectionChanged += new NotifyCollectionChangedEventHandler(HandleCustomButtonsChanged);
+        CustomButtons.CollectionChanged +=  new NotifyCollectionChangedEventHandler(HandleCustomButtonsChanged);
+        _dialogMask                     ??= new OverlayDialogMask(_dialogLayer, _dialog);
     }
     
     IKeyboardNavigationHandler? IInputRoot.KeyboardNavigationHandler => _keyboardNavigationHandler;
@@ -298,151 +310,51 @@ internal class OverlayDialogHost : ContentControl,
     
     // 多个 overlay 中始终置顶也可以有的
     bool IDialogHost.Topmost { get; set; }
-    
-    public async Task ShowAsync()
-    {
-        _dialogLayer.SizeChanged +=  HandleDialogLayerSizeChanged;
 
+    public void Show()
+    {
+        _dialogLayer.Children.Add(this);
+        _dialogLayer.SizeChanged +=  HandleDialogLayerSizeChanged;
         if (IsModal)
         {
-            _dialogMask              ??= new OverlayDialogMask();
-            _maskMotionDisposable?.Dispose();
-            _maskMotionDisposable = BindUtils.RelayBind(_dialog, IsMotionEnabledProperty, _dialogMask, IsMotionEnabledProperty);
-            _dialogLayer.Children.Add(_dialogMask);
-            await Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await _dialogMask.ShowAsync();
-            });
-            ConfigureMaskSize(_dialogLayer.Bounds.Size);
+
+            _dialogMask.Show(this);
         }
-        _dialogLayer.Children.Add(this);
-   
         if (Content is Visual visual && !visual.IsAttachedToVisualTree())
         {
             // We need to force a measure pass so any descendants are built, for focus to work.
             UpdateLayout();
         }
 
+        IsHostAnimating = false;
         if (IsMotionEnabled)
         {
-            await RunOpenMotionAsync();
-        }
-    }
-
-    private async Task RunOpenMotionAsync()
-    {
-        var observables = new List<IObservable<bool>>();
-        // 初始化动画初始值
-        Opacity     =   0.0;
-        {
-            var builder = new TransformOperations.Builder(2);
-            var offset  = CalculateOffsetFromPlacement();
-            builder.AppendScale(0.1, 0.1);
-            builder.AppendTranslate(-offset.X, -offset.Y);
-            RenderTransform = builder.Build();
-        }
-        var easing = new CircularEaseOut();
-        Transitions ??= new Transitions();
-        var opacityTransition = new NotifiableDoubleTransition()
-        {
-            Property = OpacityProperty,
-            Duration = AnimationDuration * 0.8,
-            Easing = easing,
-        };
-
-        var renderTransition = new NotifiableTransformOperationsTransition()
-        {
-            Property = RenderTransformProperty,
-            Duration = AnimationDuration,
-            Easing = easing,
-        };
-        
-        Transitions.Add(opacityTransition);
-        Transitions.Add(renderTransition);
-        
-        foreach (var transition in Transitions)
-        {
-            if (transition is INotifyTransitionCompleted completed)
+            Opacity     =   0.0;
             {
-                observables.Add(completed.CompletedObservable);
+                var builder = new TransformOperations.Builder(2);
+                var offset  = CalculateOffsetFromPlacement();
+                builder.AppendScale(0.75, 0.75);
+                builder.AppendTranslate(-offset.X, -offset.Y);
+           
+                RenderTransform = builder.Build();
             }
-        }
-        Opacity     =   1.0;
-        {
-            var builder = new TransformOperations.Builder(2);
-            builder.AppendScale(1.0, 1.0);
-            builder.AppendTranslate(0, 0);
-            RenderTransform = builder.Build();
-        }
-        var tsc = new TaskCompletionSource();
-        observables.Zip()
-                   .LastAsync()
-                   .ObserveOn(AvaloniaScheduler.Instance)
-                   .Subscribe(list =>
-                   {
-                       tsc.SetResult();
-                   });
-        await tsc.Task;
-        Transitions.Remove(opacityTransition);
-        Transitions.Remove(renderTransition);
-    }
-    
-    private async Task RunHideMotionAsync()
-    {
-        var observables = new List<IObservable<bool>>();
-        // 初始化动画初始值
-        Opacity     =   1.0;
-        {
-            var builder = new TransformOperations.Builder(2);
-            builder.AppendScale(1.0, 1.0);
-            builder.AppendTranslate(0, 0);
-            RenderTransform = builder.Build();
-        }
-        var easing = new CircularEaseOut();
-        Transitions ??= new Transitions();
-        var opacityTransition = new NotifiableDoubleTransition()
-        {
-            Property = OpacityProperty,
-            Duration = AnimationDuration * 0.6,
-            Easing   = easing,
-        };
-
-        var renderTransition = new NotifiableTransformOperationsTransition()
-        {
-            Property = RenderTransformProperty,
-            Duration = AnimationDuration,
-            Easing   = easing,
-        };
-        
-        Transitions.Add(opacityTransition);
-        Transitions.Add(renderTransition);
-        
-        foreach (var transition in Transitions)
-        {
-            if (transition is INotifyTransitionCompleted completed)
+            
+            Dispatcher.UIThread.Post(() =>
             {
-                observables.Add(completed.CompletedObservable);
-            }
+                IsHostAnimating = true;
+                Opacity         = 1.0;
+                {
+                    var builder = new TransformOperations.Builder(2);
+                    builder.AppendScale(1.0, 1.0);
+                    builder.AppendTranslate(0, 0);
+                    RenderTransform = builder.Build();
+                }
+                DispatcherTimer.RunOnce(() =>
+                {
+                    IsHostAnimating = false;
+                }, AnimationDuration);
+            });
         }
-        Opacity     =   0.0;
-        {
-            var offset  = CalculateOffsetFromPlacement();
-            var builder = new TransformOperations.Builder(2);
-            builder.AppendScale(0.1, 0.1);
-            builder.AppendTranslate(-offset.X, -offset.Y);
-            RenderTransform = builder.Build();
-        }
-        var tsc = new TaskCompletionSource();
-        observables.Zip()
-                   .LastAsync()
-                   .ObserveOn(AvaloniaScheduler.Instance)
-                   .Subscribe(list =>
-                   {
-                       tsc.SetResult();
-                   });
-        await tsc.Task;
-        Transitions.Remove(opacityTransition);
-        Transitions.Remove(renderTransition);
     }
 
     private Point CalculateOffsetFromPlacement()
@@ -450,9 +362,8 @@ internal class OverlayDialogHost : ContentControl,
         var offset = new Point();
         if (_dialog.PlacementTarget != null)
         {
-            var size         = _dialog.PlacementTarget.DesiredSize;
-            var sourceOffset = _dialog.PlacementTarget.TranslatePoint(new Point(size.Width / 2, size.Height / 2), _dialogLayer);
-            var targetOffset = Bounds.Center;
+            var sourceOffset = _dialog.PlacementTarget.TranslatePoint(new Point(0, 0), _dialogLayer);
+            var targetOffset = Bounds.TopLeft;
             if (sourceOffset != null)
             {
                 var offsetX = targetOffset.X - sourceOffset.Value.X;
@@ -460,29 +371,49 @@ internal class OverlayDialogHost : ContentControl,
                 offset = new Point(offsetX, offsetY);
             }
         }
-
         return offset;
     }
-    
-    public async Task HideAsync()
+
+    public void Close(Action? callback = null)
     {
+        IsHostAnimating = false;
         if (IsMotionEnabled)
         {
-            await RunHideMotionAsync();
+            IsHostAnimating = true;
+            Opacity         = 0.0;
+            
+            {
+                var builder = new TransformOperations.Builder(2);
+                var offset  = CalculateOffsetFromPlacement();
+                builder.AppendTranslate(-offset.X, -offset.Y);
+                builder.AppendScale(0.75, 0.75);
+                RenderTransform = builder.Build();
+            }
+            DispatcherTimer.RunOnce(() =>
+            {
+                IsHostAnimating = false;
+                HandleClosed();
+                callback?.Invoke();
+            }, AnimationDuration * 1.1);
+        }
+        else
+        {
+            HandleClosed();
+            callback?.Invoke();
         }
         if (IsModal)
         {
             Debug.Assert(_dialogMask != null);
-            await Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await _dialogMask.HideAsync();
-                _dialogLayer.Children.Remove(_dialogMask);
-            });
+            _dialogMask.Hide();
         }
+    }
+
+    private void HandleClosed()
+    {
+        _dialogLayer.SizeChanged -= HandleDialogLayerSizeChanged;
         _dialogLayer.Children.Remove(this);
         _dialog.ClearValue(Dialog.OffsetXProperty);
         _dialog.ClearValue(Dialog.OffsetYProperty);
-        _dialogLayer.SizeChanged -= HandleDialogLayerSizeChanged;
         foreach (var disposeAction in _disposeActions)
         {
             disposeAction.Invoke();
@@ -492,7 +423,6 @@ internal class OverlayDialogHost : ContentControl,
 
     private void HandleDialogLayerSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        ConfigureMaskSize(e.NewSize);
         _needsUpdate = true;
         UpdatePosition();
         
@@ -511,15 +441,6 @@ internal class OverlayDialogHost : ContentControl,
         
         _dialog.SetCurrentValue(Dialog.OffsetXProperty, Math.Min(Math.Max(offsetX, 0), maxOffsetX));
         _dialog.SetCurrentValue(Dialog.OffsetYProperty, Math.Min(Math.Max(offsetY, 0), maxOffsetY));
-    }
-
-    private void ConfigureMaskSize(Size size)
-    {
-        if (IsModal && _dialogMask != null)
-        {
-            _dialogMask.Width  = size.Width;
-            _dialogMask.Height = size.Height;
-        }
     }
     
     void IDialogHost.ConfigurePosition(DialogPositionRequest positionRequest)
@@ -567,21 +488,14 @@ internal class OverlayDialogHost : ContentControl,
         {
             if (!IsHidden)
             {
-                if (change.OldValue is bool oldValue && oldValue && _dialogMask != null)
+                if (change.OldValue is bool oldValue && oldValue)
                 {
-                    _dialogLayer.Children.Remove(_dialogMask);
+                    _dialogMask.Hide();
                 }
 
                 if (change.NewValue is bool newValue && newValue)
                 {
-                    // 找到自己
-                    var index = _dialogLayer.Children.IndexOf(this);
-                    if (index != -1)
-                    {
-                        _dialogMask ??= new OverlayDialogMask();
-                        _dialogLayer.Children.Insert(index, _dialogMask);
-                        ConfigureMaskSize(_dialogLayer.Bounds.Size);
-                    }
+                    _dialogMask.Show(this);
                 }
             }
         }
@@ -593,6 +507,13 @@ internal class OverlayDialogHost : ContentControl,
                  change.Property == IsLoadingProperty)
         {
             ConfigureEffectiveFooterVisible();
+        }
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
+            }
         }
     }
 
@@ -946,5 +867,36 @@ internal class OverlayDialogHost : ContentControl,
         }
 
         ConfigureEffectiveFooterVisible();
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                var easing = new CircularEaseOut();
+                Transitions = [
+                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty, AnimationDuration, easing),
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty, AnimationDuration, easing),
+                ];
+            }
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 }

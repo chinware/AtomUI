@@ -68,7 +68,12 @@
 
         <Style Selector="^ /template/ Border#ShadowFrame">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentBg}}" />
-            <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadows}}" />
+        </Style>
+        
+        <Style Selector="^[IsHostAnimating=False]">
+            <Style Selector="^ /template/ Border#ShadowFrame">
+                <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadows}}" />
+            </Style>
         </Style>
 
         <Style Selector="^ /template/ Border#ContentFrame">

@@ -426,10 +426,7 @@ public class Dialog : TemplatedControl,
         {
             if (e.NewValue.Value)
             {
-                Dispatcher.UIThread.InvokeAsync(async () =>
-                {
-                   await OpenAsync();
-                });
+                OpenAsync();
             }
             else
             {
@@ -451,10 +448,10 @@ public class Dialog : TemplatedControl,
         token.Register(() => frame.Continue = false);
         var resultTask = OpenAsync();
         Dispatcher.UIThread.PushFrame(frame);
-        return resultTask.Result;
+        return resultTask?.Result;
     }
 
-    public async Task<object?> OpenAsync()
+    public Task<object?>? OpenAsync()
     {
         if (_openState != null || _opening)
         {
@@ -538,22 +535,11 @@ public class Dialog : TemplatedControl,
         } 
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>();
         inputManager?.Process.Subscribe(ListenForNonClientClick).DisposeWith(handlerCleanup);
+        
         var cleanupPopup = Disposable.Create((dialogHost, handlerCleanup), state =>
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            dialogHost?.Close(() =>
             {
-                if (DialogHostType == DialogHostType.Overlay)
-                {
-                    if (overlayDialogHost != null)
-                    {
-                        await overlayDialogHost.HideAsync();
-                    }
-                }
-                else
-                {
-                    windowDialogHost?.Close();
-                    windowDialogHost?.Dispose();
-                }
                 state.handlerCleanup.Dispose();
                 state.dialogHost.SetChild(null);
                 
@@ -562,7 +548,10 @@ public class Dialog : TemplatedControl,
                 _startupLocationCalculated = false;
                 _closing                   = false;
             });
-           
+            if (DialogHostType == DialogHostType.Window)
+            {
+                windowDialogHost?.Dispose();
+            }
         });
         
         if (IsLightDismissEnabled)
@@ -597,10 +586,7 @@ public class Dialog : TemplatedControl,
             {
                 if (topLevel is Window windowTopLevel)
                 {
-                    Dispatcher.UIThread.InvokeAsync(async () =>
-                    {
-                        await windowDialog.ShowDialog(windowTopLevel);
-                    });
+                    windowDialog.ShowDialog(windowTopLevel);
                 }
             }
             else
@@ -610,7 +596,7 @@ public class Dialog : TemplatedControl,
         }
         else
         {
-            await dialogHost.ShowAsync();
+            dialogHost.Show();
         }
         
         if (IsModal)

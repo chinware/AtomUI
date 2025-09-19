@@ -25,6 +25,6 @@ public interface IDialogHost : IFocusScope
     event EventHandler<TemplateAppliedEventArgs>? TemplateApplied;
     void ConfigurePosition(DialogPositionRequest positionRequest);
     void SetChild(Control? control);
-    Task ShowAsync();
-    Task HideAsync();
+    void Show();
+    void Close(Action? callback = null);
 }

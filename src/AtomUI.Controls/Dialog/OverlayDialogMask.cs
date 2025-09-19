@@ -1,8 +1,12 @@
-using AtomUI.Controls.Utils; 
+using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -26,38 +30,38 @@ internal class OverlayDialogMask : TemplatedControl
         set => SetValue(AnimationDurationProperty, value);
     }
     
-    private CancellationTokenSource? _cancellationTokenSource;
+    private readonly DialogLayer _dialogLayer;
 
-    public Task ShowAsync()
+    public OverlayDialogMask(DialogLayer dialogLayer, Dialog dialog)
     {
-        Task? task;
-        Opacity = 1.0;
-        if (IsMotionEnabled)
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-            task                     = Task.Delay(AnimationDuration * 1.2, _cancellationTokenSource.Token);
-        }
-        else
-        {
-            task = Task.CompletedTask;
-        }
-        return task;
+        _dialogLayer = dialogLayer;
+        BindUtils.RelayBind(dialog, IsMotionEnabledProperty, this, IsMotionEnabledProperty);
     }
 
-    public Task HideAsync()
+    public void Show(OverlayDialogHost maskTarget)
     {
-        Task? task;
+        var dialogHostIndex = _dialogLayer.Children.IndexOf(maskTarget);
+        if (dialogHostIndex == -1)
+        {
+            return;
+        }
+        _dialogLayer.SizeChanged += HandleDialogLayerSizeChanged;
+        _dialogLayer.Children.Insert(dialogHostIndex, this);
+        ConfigureMaskSize(_dialogLayer.Bounds.Size);
+        Dispatcher.UIThread.Post(() =>
+        {
+            Opacity = 1.0;
+        });
+    }
+
+    public void Hide()
+    {
         Opacity = 0.0;
-        if (IsMotionEnabled)
+        DispatcherTimer.RunOnce(() =>
         {
-            _cancellationTokenSource = new CancellationTokenSource();
-            task                     = Task.Delay(AnimationDuration * 1.2, _cancellationTokenSource.Token);
-        }
-        else
-        {
-            task = Task.CompletedTask;
-        }
-        return task;
+            _dialogLayer.Children.Remove(this);
+            _dialogLayer.SizeChanged -= HandleDialogLayerSizeChanged;
+        }, AnimationDuration);
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -91,17 +95,26 @@ internal class OverlayDialogMask : TemplatedControl
         {
             if (force || Transitions == null)
             {
-                _cancellationTokenSource?.Cancel();
                 Transitions = [
-                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty)
+                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty, AnimationDuration)
                 ];
             }
         }
         else
         {
-            _cancellationTokenSource?.Cancel();
             Transitions = null;
         }
     }
-    
+
+    private void HandleDialogLayerSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        ConfigureMaskSize(e.NewSize);
+    }
+
+    private void ConfigureMaskSize(Size size)
+    {
+        Width  = size.Width;
+        Height = size.Height;
+    }
+
 }
