@@ -64,13 +64,9 @@ public class MenuFlyout : Flyout
         
         Presenter = new MenuFlyoutPresenter
         {
-            MenuFlyout  = this
+            MenuFlyout  = this,
+            ItemsSource = Items
         };
-        
-        foreach (var item in Items)
-        {
-            Presenter.Items.Add(item);
-        }
         
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, Presenter, MenuFlyoutPresenter.ItemTemplateProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));

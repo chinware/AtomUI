@@ -32,16 +32,13 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
 
     private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
     {
-        if (MenuFlyout is null)
+        MenuFlyout = new MenuFlyout
         {
-            MenuFlyout = new MenuFlyout
-            {
-                IsShowArrow = false,
-                ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
-            };
-            _flyoutBindingDisposable?.Dispose();
-            _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
-        }
+            IsShowArrow              = false,
+            ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
+        };
+        _flyoutBindingDisposable?.Dispose();
+        _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
         if (MenuFlyout.IsOpen)
         {
             return;
@@ -64,7 +61,12 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         }
 
         // 收集没有完全显示的 Tab 列表
-        MenuFlyout.Items.Clear();
+        var oldItems = MenuFlyout.Items.ToList();
+        foreach (var item in oldItems)
+        {
+            MenuFlyout.Items.Remove(item);
+        }
+
         if (TabControl is not null)
         {
             _itemBindingDisposables?.Dispose();

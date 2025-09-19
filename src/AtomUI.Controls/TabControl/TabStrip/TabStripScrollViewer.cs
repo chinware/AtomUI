@@ -33,16 +33,13 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
 
     private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
     {
-        if (MenuFlyout is null)
+        MenuFlyout = new MenuFlyout()
         {
-            MenuFlyout = new MenuFlyout()
-            {
-                IsShowArrow = false,
-                ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
-            };
-            _flyoutBindingDisposable?.Dispose();
-            _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
-        }
+            IsShowArrow              = false,
+            ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
+        };
+        _flyoutBindingDisposable?.Dispose();
+        _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
         
         if (MenuFlyout.IsOpen)
         {
