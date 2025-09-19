@@ -14,7 +14,7 @@
                 <Border Name="BodyFrame"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         ClipToBounds="True">
-                    <atom:VisualLayerManager>
+                    <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                         <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
                             <Border Padding="{TemplateBinding TitleBarOSOffsetMargin}" DockPanel.Dock="Top">
                                 <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
