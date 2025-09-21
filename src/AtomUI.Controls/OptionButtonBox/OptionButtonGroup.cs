@@ -36,13 +36,14 @@ public class OptionButtonGroup : SelectingItemsControl,
                                  IControlSharedTokenResourcesHost
 {
     protected override Type StyleKeyOverride { get; } = typeof(OptionButtonGroup);
+    
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<OptionButtonGroup>();
 
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
-        AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(SizeType));
+        AvaloniaProperty.Register<OptionButtonGroup, OptionButtonStyle>(nameof(ButtonStyle));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButtonGroup>();

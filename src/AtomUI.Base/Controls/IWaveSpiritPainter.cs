@@ -2,13 +2,13 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Controls;
 
-internal interface IWavePainter
+internal interface IWaveSpiritPainter
 {
     public void Paint(DrawingContext context, object size, double opacity);
     public AbstractWavePainter Clone();
-    public WaveType WaveType { get; }
+    public WaveSpiritType WaveType { get; }
     public void NotifyBuildSizeAnimation(Animation animation, AvaloniaProperty targetProperty);
     public void NotifyBuildOpacityAnimation(Animation animation, AvaloniaProperty targetProperty);
 }

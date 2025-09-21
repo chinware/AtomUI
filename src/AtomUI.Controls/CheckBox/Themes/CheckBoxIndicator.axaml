@@ -6,30 +6,39 @@
     <ControlTheme x:Key="{x:Type atom:CheckBoxIndicator}" TargetType="atom:CheckBoxIndicator">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
-                    <Panel>
-                        <atom:Icon Name="{x:Static atom:CheckBoxIndicatorThemeConstants.CheckedMarkPart}"
-                                   IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" 
-                                   NormalFilledBrush="{TemplateBinding CheckedMarkBrush}"
-                                   IsVisible="False"/>
-                        <Rectangle Name="{x:Static atom:CheckBoxIndicatorThemeConstants.TristateMarkPart}"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Stretch"
-                                   Fill="{TemplateBinding TristateMarkBrush}"
-                                   Width="{TemplateBinding TristateMarkSize}"
-                                   Height="{TemplateBinding TristateMarkSize}"
-                                   IsVisible="False"/>
-                    </Panel>
-                </Border>
+                <Panel>
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:CheckBoxIndicatorThemeConstants.WaveSpiritPart}"
+                                              CornerRadius="{TemplateBinding CornerRadius}"/>
+                    <Border Name="Frame"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Panel>
+                            <atom:Icon Name="{x:Static atom:CheckBoxIndicatorThemeConstants.CheckedMarkPart}"
+                                       IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" 
+                                       NormalFilledBrush="{TemplateBinding CheckedMarkBrush}"
+                                       IsVisible="False"/>
+                            <Rectangle Name="{x:Static atom:CheckBoxIndicatorThemeConstants.TristateMarkPart}"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Fill="{TemplateBinding TristateMarkBrush}"
+                                       Width="{TemplateBinding TristateMarkSize}"
+                                       Height="{TemplateBinding TristateMarkSize}"
+                                       IsVisible="False"/>
+                        </Panel>
+                    </Border>
+                </Panel>
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
+            <Setter Property="WaveType" Value="RoundRectWave"/>
+        </Style>
+        
         <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckedMarkSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckedMarkSize}}" />

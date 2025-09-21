@@ -6,17 +6,20 @@
     <ControlTheme x:Key="{x:Type atom:OptionButton}" TargetType="atom:OptionButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
+                <Panel>
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:OptionButtonThemeConstants.WaveSpiritPart}"
+                                              CornerRadius="{TemplateBinding CornerRadius}"/>
                     <atom:TextBlock Padding="0"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Text="{TemplateBinding Content}" />
-                </StackPanel>
+                </Panel>
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="ClipToBounds" Value="False" />
+        
         <Style Selector="^[SizeType=Large]">
             <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
             <Setter Property="FontSize"
@@ -39,8 +42,10 @@
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.PaddingSM}}" />
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         </Style>
-
-        <Setter Property="Cursor" Value="Hand" />
+        
+        <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
+            <Setter Property="WaveType" Value="RoundRectWave"/>
+        </Style>
 
         <Style Selector="^[ButtonStyle=Solid]">
             <Style Selector="^[IsEnabled=True]">

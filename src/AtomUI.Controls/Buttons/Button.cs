@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Animations;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
@@ -17,6 +18,8 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -48,7 +51,6 @@ public enum ButtonShape
     ButtonPseudoClass.TextType)]
 public class Button : AvaloniaButton,
                       ISizeTypeAware,
-                      IWaveAdornerInfoProvider,
                       IWaveSpiritAwareControl,
                       IControlSharedTokenResourcesHost
 {
@@ -80,7 +82,7 @@ public class Button : AvaloniaButton,
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Button>();
-
+    
     public ButtonType ButtonType
     {
         get => GetValue(ButtonTypeProperty);
@@ -151,6 +153,9 @@ public class Button : AvaloniaButton,
     internal static readonly StyledProperty<Thickness> EffectiveBorderThicknessProperty =
         AvaloniaProperty.Register<Button, Thickness>(
             nameof(EffectiveBorderThickness));
+    
+    internal static readonly StyledProperty<WaveSpiritType> WaveSpiritTypeProperty =
+        WaveSpiritAwareControlProperty.WaveSpiritTypeProperty.AddOwner<Button>();
 
     internal bool IsIconVisible
     {
@@ -175,6 +180,12 @@ public class Button : AvaloniaButton,
         get => GetValue(EffectiveBorderThicknessProperty);
         set => SetValue(EffectiveBorderThicknessProperty, value);
     }
+    
+    internal WaveSpiritType WaveSpiritType
+    {
+        get => GetValue(WaveSpiritTypeProperty);
+        set => SetValue(WaveSpiritTypeProperty, value);
+    }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -185,6 +196,7 @@ public class Button : AvaloniaButton,
     private Border? _frame;
     protected bool ThemeConfigured;
     private IDisposable? _borderThicknessDisposable;
+    private WaveSpiritDecorator? _waveSpiritDecorator;
 
     static Button()
     {
@@ -233,34 +245,38 @@ public class Button : AvaloniaButton,
                 (e.OldValue as bool? == true) &&
                 (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default))
             {
-                WaveType waveType = default;
-                if (Shape == ButtonShape.Default)
-                {
-                    waveType = WaveType.RoundRectWave;
-                }
-                else if (Shape == ButtonShape.Round)
-                {
-                    waveType = WaveType.PillWave;
-                }
-                else if (Shape == ButtonShape.Circle)
-                {
-                    waveType = WaveType.CircleWave;
-                }
-
-                Color? waveColor = null;
+                Debug.Assert(_waveSpiritDecorator != null);
+                
+                IBrush? waveBrush = null;
                 if (IsDanger)
                 {
                     if (ButtonType == ButtonType.Primary && !IsGhost)
                     {
-                        waveColor = Color.Parse(_frame?.Background?.ToString()!);
+                        waveBrush = _frame?.Background;
                     }
                     else
                     {
-                        waveColor = Color.Parse(Foreground?.ToString()!);
+                        waveBrush = Foreground;
                     }
                 }
 
-                WaveSpiritAdorner.ShowWaveAdorner(this, waveType, waveColor);
+                if (waveBrush != null)
+                {
+                    _waveSpiritDecorator.WaveBrush = waveBrush;
+                }
+     
+                Dispatcher.UIThread.Post(() =>
+                {
+                    _waveSpiritDecorator?.Play();
+                });
+            }
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (e.Property == ButtonTypeProperty)
+            {
+                ConfigureWaveSpiritType();
             }
         }
 
@@ -288,6 +304,25 @@ public class Button : AvaloniaButton,
         {
             ConfigureControlThemeBindings(true);
         }
+    }
+
+    private void ConfigureWaveSpiritType()
+    {
+        WaveSpiritType waveType = default;
+        if (Shape == ButtonShape.Default)
+        {
+            waveType = WaveSpiritType.RoundRectWave;
+        }
+        else if (Shape == ButtonShape.Round)
+        {
+            waveType = WaveSpiritType.PillWave;
+        }
+        else if (Shape == ButtonShape.Circle)
+        {
+            waveType = WaveSpiritType.CircleWave;
+        }
+
+        WaveSpiritType = waveType;
     }
 
     protected virtual void ConfigureControlThemeBindings(bool force)
@@ -371,8 +406,10 @@ public class Button : AvaloniaButton,
         base.OnApplyTemplate(e);
         // 为了防止意外被用户改变背景，做了一个 frame
         _frame = e.NameScope.Find<Border>(ButtonThemeConstants.FramePart);
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(ButtonThemeConstants.WaveSpiritPart);
         UpdatePseudoClasses();
         ConfigureControlThemeBindings(false);
+        ConfigureWaveSpiritType();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -424,17 +461,6 @@ public class Button : AvaloniaButton,
         {
             EffectiveBorderThickness = new Thickness(0);
         }
-    }
-
-    public Rect WaveGeometry()
-    {
-        Debug.Assert(_frame != null);
-        return _frame.Bounds;
-    }
-
-    public CornerRadius WaveBorderRadius()
-    {
-        return CornerRadius;
     }
 
     private void UpdatePseudoClasses()

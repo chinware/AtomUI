@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -13,7 +14,7 @@ internal class PillWavePainter : AbstractWavePainter
         : base(originPoint)
     {
         OriginSize = size;
-        WaveType   = WaveType.PillWave;
+        WaveType   = WaveSpiritType.PillWave;
     }
 
     public override void Paint(DrawingContext context, object newSize, double newOpacity)
@@ -23,8 +24,8 @@ internal class PillWavePainter : AbstractWavePainter
         {
             throw new ArgumentException("newSize argument must be Size type.");
         }
-
-        var pillRadius = OriginSize.Height / 2;
+        using var state      = context.PushOpacity(newOpacity);
+        var       pillRadius = OriginSize.Height / 2;
         var originGeometry = new RectangleGeometry(
             new Rect(OriginPoint.X, OriginPoint.Y, OriginSize.Width, OriginSize.Height),
             pillRadius, pillRadius);
@@ -37,7 +38,7 @@ internal class PillWavePainter : AbstractWavePainter
         var targetGeometry = new CombinedGeometry(GeometryCombineMode.Exclude, newGeometry, originGeometry);
         var geometryDrawing = new GeometryDrawing
         {
-            Brush    = new SolidColorBrush(WaveColor, newOpacity),
+            Brush    = WaveBrush,
             Geometry = targetGeometry
         };
         geometryDrawing.Draw(context);
@@ -51,7 +52,7 @@ internal class PillWavePainter : AbstractWavePainter
     public override void NotifyBuildSizeAnimation(Animation animation, AvaloniaProperty targetProperty)
     {
         animation.Duration = SizeMotionDuration;
-        animation.Easing   = SizeEasingCurve;
+        animation.Easing   = SizeEasingCurve ?? new LinearEasing();
         animation.Children.Add(new KeyFrame
         {
             Setters =

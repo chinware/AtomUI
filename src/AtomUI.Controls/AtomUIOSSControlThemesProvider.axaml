@@ -42,10 +42,9 @@
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmThemes.axaml" />
-        <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
-        <ResourceInclude Source="Primitives/SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />
+        <ResourceInclude Source="Primitives/Themes/PrimitiveThemes.axaml" />
         <ResourceInclude Source="ProgressBar/Themes/ProgressBarThemes.axaml" />
-        <ResourceInclude Source="RadioButton/Themes/RadioButtonTheme.axaml" />
+        <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
         <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />

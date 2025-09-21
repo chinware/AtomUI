@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
@@ -25,7 +26,6 @@ namespace AtomUI.Controls;
 public class ToggleSwitch : ToggleButton,
                             ISizeTypeAware,
                             ICustomHitTest,
-                            IWaveAdornerInfoProvider,
                             IWaveSpiritAwareControl,
                             IControlSharedTokenResourcesHost
 {
@@ -266,6 +266,8 @@ public class ToggleSwitch : ToggleButton,
     private SwitchKnob? _switchKnob;
     private CompositeDisposable? _onBindingDisposables;
     private CompositeDisposable? _offBindingDisposables;
+    private WaveSpiritDecorator? _waveSpiritDecorator;
+    
     static ToggleSwitch()
     {
         AffectsMeasure<ToggleSwitch>(SizeTypeProperty, IsCheckedProperty);
@@ -345,7 +347,7 @@ public class ToggleSwitch : ToggleButton,
         {
             _switchKnob.Measure(KnobRect.Size);
         }
-
+        
         return targetSize;
     }
 
@@ -371,6 +373,11 @@ public class ToggleSwitch : ToggleButton,
         if (_onContentPresenter != null)
         {
             _onContentPresenter.Arrange(new Rect(new Point(OnContentOffset.X, OnContentOffset.Y), _onContentPresenter.DesiredSize));
+        }
+
+        if (_waveSpiritDecorator != null)
+        {
+            _waveSpiritDecorator.Arrange(new Rect(DesiredSize));
         }
         return finalSize;
     }
@@ -450,7 +457,7 @@ public class ToggleSwitch : ToggleButton,
             if (e.Property == IsCheckedProperty && IsMotionEnabled)
             {
                 CalculateElementsOffset(GrooveRect().Size);
-                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.PillWave);
+                _waveSpiritDecorator?.Play();
             }
         }
         else if (e.Property == KnobSizeProperty)
@@ -491,9 +498,9 @@ public class ToggleSwitch : ToggleButton,
             _switchKnob.KnobSize = KnobSize;
         }
 
-        _onContentPresenter = scope.Find<ContentPresenter>(ToggleSwitchThemeConstants.OnContentPresenterPart);
+        _onContentPresenter  = scope.Find<ContentPresenter>(ToggleSwitchThemeConstants.OnContentPresenterPart);
         _offContentPresenter = scope.Find<ContentPresenter>(ToggleSwitchThemeConstants.OffContentPresenterPart);
-        
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(ToggleSwitchThemeConstants.WaveSpiritPart);
         HandleLoadingState(IsLoading);
     }
 
@@ -643,16 +650,5 @@ public class ToggleSwitch : ToggleButton,
         }
 
         return targetRect;
-    }
-    
-    public Rect WaveGeometry()
-    {
-        return GrooveRect();
-    }
-
-    public CornerRadius WaveBorderRadius()
-    {
-        var size = GrooveRect().Size;
-        return new CornerRadius(size.Height / 2);
     }
 }

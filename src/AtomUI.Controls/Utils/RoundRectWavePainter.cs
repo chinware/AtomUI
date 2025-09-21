@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -16,7 +17,7 @@ internal class RoundRectWavePainter : AbstractWavePainter
         : base(originPoint)
     {
         OriginSize = size;
-        WaveType   = WaveType.RoundRectWave;
+        WaveType   = WaveSpiritType.RoundRectWave;
     }
 
     public override void Paint(DrawingContext context, object newSize, double newOpacity)
@@ -26,6 +27,8 @@ internal class RoundRectWavePainter : AbstractWavePainter
         {
             throw new ArgumentException("newSize argument must be Size type.");
         }
+        
+        using var state = context.PushOpacity(newOpacity);
 
         if (_originGeometry is null)
         {
@@ -51,7 +54,7 @@ internal class RoundRectWavePainter : AbstractWavePainter
         var targetGeometry = new CombinedGeometry(GeometryCombineMode.Exclude, newGeometry, _originGeometry);
         var geometryDrawing = new GeometryDrawing
         {
-            Brush    = new SolidColorBrush(WaveColor, newOpacity),
+            Brush    = WaveBrush,
             Geometry = targetGeometry
         };
         geometryDrawing.Draw(context);
@@ -88,7 +91,7 @@ internal class RoundRectWavePainter : AbstractWavePainter
     public override void NotifyBuildSizeAnimation(Animation animation, AvaloniaProperty targetProperty)
     {
         animation.Duration = SizeMotionDuration;
-        animation.Easing   = SizeEasingCurve;
+        animation.Easing   = SizeEasingCurve ?? new LinearEasing();
         animation.Children.Add(new KeyFrame
         {
             Setters =

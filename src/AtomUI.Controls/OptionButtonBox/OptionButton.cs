@@ -1,10 +1,13 @@
 using System.Diagnostics;
 using AtomUI.Animations;
+using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
@@ -41,8 +44,7 @@ public class OptionButtonPointerEventArgs : EventArgs
 }
 
 public class OptionButton : AvaloniaRadioButton,
-                            ISizeTypeAware,
-                            IWaveAdornerInfoProvider
+                            ISizeTypeAware
 {
     #region 公共属性定义
 
@@ -107,6 +109,7 @@ public class OptionButton : AvaloniaRadioButton,
 
     private CornerRadius? _originCornerRadius;
     private readonly BorderRenderHelper _borderRenderHelper;
+    private WaveSpiritDecorator? _waveSpiritDecorator;
 
     static OptionButton()
     {
@@ -150,7 +153,7 @@ public class OptionButton : AvaloniaRadioButton,
         {
             if (e.Property == IsPressedProperty && e.OldValue as bool? == true && IsWaveSpiritEnabled)
             {
-                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
+                _waveSpiritDecorator?.Play();
             }
         }
 
@@ -175,16 +178,6 @@ public class OptionButton : AvaloniaRadioButton,
     {
         _originCornerRadius = CornerRadius;
         CornerRadius        = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
-    }
-
-    public Rect WaveGeometry()
-    {
-        return new Rect(0, 0, Bounds.Width, Bounds.Height);
-    }
-
-    public CornerRadius WaveBorderRadius()
-    {
-        return CornerRadius;
     }
 
     private void ConfigureTransitions(bool force)
@@ -301,5 +294,11 @@ public class OptionButton : AvaloniaRadioButton,
     {
         base.OnUnloaded(e);
         Transitions = null;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(OptionButtonThemeConstants.WaveSpiritPart);
     }
 }

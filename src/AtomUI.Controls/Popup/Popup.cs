@@ -24,7 +24,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 
-public class Popup : AvaloniaPopup, IWaveSpiritAwareControl
+public class Popup : AvaloniaPopup, IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -174,7 +174,7 @@ public class Popup : AvaloniaPopup, IWaveSpiritAwareControl
 
     public Popup()
     {
-        this.ConfigureWaveSpiritBindingStyle();
+        this.ConfigureMotionBindingStyle();
         Closed                         += HandleClosed;
         Opened                         += HandleOpened;
         if (this is IPopupHostProvider popupHostProvider)

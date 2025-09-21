@@ -1,8 +1,8 @@
 ﻿using AtomUI.Animations;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -23,7 +23,7 @@ internal enum CheckBoxIndicatorState
     Unchecked,
 }
 
-internal class CheckBoxIndicator : TemplatedControl, IWaveAdornerInfoProvider
+internal class CheckBoxIndicator : TemplatedControl
 {
     #region 公共属性定义
 
@@ -89,6 +89,7 @@ internal class CheckBoxIndicator : TemplatedControl, IWaveAdornerInfoProvider
 
     private Icon? _checkedMark;
     private IDisposable? _borderThicknessDisposable;
+    private WaveSpiritDecorator? _waveSpiritDecorator;
 
     static CheckBoxIndicator()
     {
@@ -177,7 +178,7 @@ internal class CheckBoxIndicator : TemplatedControl, IWaveAdornerInfoProvider
                 IsEnabled &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))
             {
-                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.RoundRectWave);
+                _waveSpiritDecorator?.Play();
             }
         }
         
@@ -212,6 +213,8 @@ internal class CheckBoxIndicator : TemplatedControl, IWaveAdornerInfoProvider
             _checkedMark.Loaded += HandleCheckedMarkLoaded;
             _checkedMark.Unloaded += HandleCheckedMarkUnLoaded;
         }
+
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(CheckBoxIndicatorThemeConstants.WaveSpiritPart);
     }
 
     private void HandleCheckedMarkLoaded(object? sender, RoutedEventArgs e)
@@ -225,15 +228,5 @@ internal class CheckBoxIndicator : TemplatedControl, IWaveAdornerInfoProvider
         {
             _checkedMark.Transitions = null;
         }
-    }
-    
-    public Rect WaveGeometry()
-    {
-        return new Rect(Bounds.Size);
-    }
-
-    public CornerRadius WaveBorderRadius()
-    {
-        return CornerRadius;
     }
 }

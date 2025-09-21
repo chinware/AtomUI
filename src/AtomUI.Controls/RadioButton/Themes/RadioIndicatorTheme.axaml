@@ -1,0 +1,21 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:RadioIndicator}" TargetType="atom:RadioIndicator">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:RadioButtonThemeConstants.WaveSpiritPart}"/>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
+            <Setter Property="WaveType" Value="CircleWave"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

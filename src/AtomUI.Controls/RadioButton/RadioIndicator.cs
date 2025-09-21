@@ -1,8 +1,8 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Animations;
+﻿using AtomUI.Animations;
+using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -16,7 +16,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class RadioIndicator : Control, IWaveAdornerInfoProvider
+internal class RadioIndicator : TemplatedControl
 {
     #region 公共属性定义
 
@@ -138,7 +138,8 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
 
     private IPen? _cachedPen;
     private IDisposable? _borderThicknessDisposable;
-
+    private WaveSpiritDecorator? _waveSpiritDecorator;
+    
     static RadioIndicator()
     {
         AffectsRender<RadioIndicator>(
@@ -213,7 +214,7 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
                 !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))
             {
-                WaveSpiritAdorner.ShowWaveAdorner(this, WaveType.CircleWave);
+                _waveSpiritDecorator?.Play();
             }
         }
 
@@ -277,13 +278,9 @@ internal class RadioIndicator : Control, IWaveAdornerInfoProvider
         }
     }
 
-    public Rect WaveGeometry()
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        return new Rect(Bounds.Size);
-    }
-
-    public CornerRadius WaveBorderRadius()
-    {
-        return new CornerRadius(RadioSize / 2);
+        base.OnApplyTemplate(e);
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(RadioButtonThemeConstants.WaveSpiritPart);
     }
 }

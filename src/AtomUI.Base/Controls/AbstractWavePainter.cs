@@ -4,31 +4,25 @@ using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Controls;
 
-internal enum WaveType
-{
-    RoundRectWave,
-    CircleWave,
-    PillWave
-}
-
-internal abstract class AbstractWavePainter : IWavePainter
+internal abstract class AbstractWavePainter : IWaveSpiritPainter
 {
     public Point OriginPoint { get; set; }
-    public Color WaveColor { get; set; }
-    public WaveType WaveType { get; protected set; }
+    public IBrush? WaveBrush { get; set; }
+    public WaveSpiritType WaveType { get; protected set; }
     public double WaveRange { get; set; }
     public TimeSpan SizeMotionDuration { get; set; }
     public TimeSpan OpacityMotionDuration { get; set; }
-    public Easing SizeEasingCurve { get; set; } = default!;
-    public Easing OpacityEasingCurve { get; set; } = default!;
+    public Easing? SizeEasingCurve { get; set; }
+    public Easing? OpacityEasingCurve { get; set; }
     public double OriginOpacity { get; set; }
 
     public AbstractWavePainter(Point originPoint)
     {
-        WaveType  = WaveType.RoundRectWave;
+        WaveType  = WaveSpiritType.RoundRectWave;
         WaveRange = 3;
+        OriginPoint = originPoint;
     }
 
     public abstract void Paint(DrawingContext context, object newSize, double newOpacity);
@@ -38,7 +32,7 @@ internal abstract class AbstractWavePainter : IWavePainter
     public virtual void NotifyBuildOpacityAnimation(Animation animation, AvaloniaProperty targetProperty)
     {
         animation.Duration = OpacityMotionDuration;
-        animation.Easing   = OpacityEasingCurve;
+        animation.Easing   = OpacityEasingCurve ?? new LinearEasing();
         animation.Children.Add(new KeyFrame
         {
             Setters =

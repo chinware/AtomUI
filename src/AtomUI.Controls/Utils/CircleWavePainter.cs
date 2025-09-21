@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -13,7 +14,7 @@ internal class CircleWavePainter : AbstractWavePainter
         : base(originPoint)
     {
         OriginRadius = radius;
-        WaveType     = WaveType.CircleWave;
+        WaveType     = WaveSpiritType.CircleWave;
     }
 
     public override void Paint(DrawingContext context, object newSize, double newOpacity)
@@ -22,6 +23,8 @@ internal class CircleWavePainter : AbstractWavePainter
         {
             throw new ArgumentException("newSize argument must be double type.");
         }
+
+        using var state = context.PushOpacity(newOpacity);
 
         var newRadius = (double)newSize;
 
@@ -41,7 +44,7 @@ internal class CircleWavePainter : AbstractWavePainter
         var targetGeometry = new CombinedGeometry(GeometryCombineMode.Exclude, newGeometry, originGeometry);
         var geometryDrawing = new GeometryDrawing
         {
-            Brush    = new SolidColorBrush(WaveColor, newOpacity),
+            Brush    = WaveBrush,
             Geometry = targetGeometry
         };
         geometryDrawing.Draw(context);
@@ -55,7 +58,7 @@ internal class CircleWavePainter : AbstractWavePainter
     public override void NotifyBuildSizeAnimation(Animation animation, AvaloniaProperty targetProperty)
     {
         animation.Duration = SizeMotionDuration;
-        animation.Easing   = SizeEasingCurve;
+        animation.Easing   = SizeEasingCurve ?? new LinearEasing();
         animation.Children.Add(new KeyFrame
         {
             Setters =

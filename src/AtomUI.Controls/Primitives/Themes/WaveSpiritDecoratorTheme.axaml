@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:WaveSpiritDecorator}" TargetType="atom:WaveSpiritDecorator">
+        <Setter Property="WaveBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"/>
+        <Setter Property="OriginOpacity" Value="{DynamicResource {x:Static atom:SharedTokenKey.WaveStartOpacity}}"/>
+        <Setter Property="SizeMotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}"/>
+        <Setter Property="OpacityMotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}"/>
+        <Setter Property="WaveRange" Value="{DynamicResource {x:Static atom:SharedTokenKey.WaveAnimationRange}}"/>
+    </ControlTheme>
+</ResourceDictionary>
