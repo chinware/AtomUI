@@ -101,6 +101,18 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey SeparatorMargin = new TokenResourceKey("Breadcrumb.SeparatorMargin");
     }
 
+    public static class ButtonSpinnerTokenKey
+    {
+        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth");
+        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg");
+        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg");
+        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg");
+        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor");
+        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor");
+        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize");
+        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth");
+    }
+
     public static class ButtonTokenKey
     {
         public static readonly TokenResourceKey BorderColorDisabled = new TokenResourceKey("Button.BorderColorDisabled");
@@ -150,18 +162,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey PrimaryColor = new TokenResourceKey("Button.PrimaryColor");
         public static readonly TokenResourceKey PrimaryShadow = new TokenResourceKey("Button.PrimaryShadow");
         public static readonly TokenResourceKey TextHoverBg = new TokenResourceKey("Button.TextHoverBg");
-    }
-
-    public static class ButtonSpinnerTokenKey
-    {
-        public static readonly TokenResourceKey ControlWidth = new TokenResourceKey("ButtonSpinner.ControlWidth");
-        public static readonly TokenResourceKey FilledHandleBg = new TokenResourceKey("ButtonSpinner.FilledHandleBg");
-        public static readonly TokenResourceKey HandleActiveBg = new TokenResourceKey("ButtonSpinner.HandleActiveBg");
-        public static readonly TokenResourceKey HandleBg = new TokenResourceKey("ButtonSpinner.HandleBg");
-        public static readonly TokenResourceKey HandleBorderColor = new TokenResourceKey("ButtonSpinner.HandleBorderColor");
-        public static readonly TokenResourceKey HandleHoverColor = new TokenResourceKey("ButtonSpinner.HandleHoverColor");
-        public static readonly TokenResourceKey HandleIconSize = new TokenResourceKey("ButtonSpinner.HandleIconSize");
-        public static readonly TokenResourceKey HandleWidth = new TokenResourceKey("ButtonSpinner.HandleWidth");
     }
 
     public static class CalendarTokenKey
@@ -498,6 +498,11 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TopLevelItemSelectedColor = new TokenResourceKey("Menu.TopLevelItemSelectedColor");
     }
 
+    public static class MessageBoxTokenKey
+    {
+        public static readonly TokenResourceKey StyleIconSize = new TokenResourceKey("MessageBox.StyleIconSize");
+    }
+
     public static class MessageTokenKey
     {
         public static readonly TokenResourceKey CardHeight = new TokenResourceKey("Message.CardHeight");
@@ -506,11 +511,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey MessageIconMargin = new TokenResourceKey("Message.MessageIconMargin");
         public static readonly TokenResourceKey MessageIconSize = new TokenResourceKey("Message.MessageIconSize");
         public static readonly TokenResourceKey MessageTopMargin = new TokenResourceKey("Message.MessageTopMargin");
-    }
-
-    public static class MessageBoxTokenKey
-    {
-        public static readonly TokenResourceKey StyleIconSize = new TokenResourceKey("MessageBox.StyleIconSize");
     }
 
     public static class NavMenuTokenKey

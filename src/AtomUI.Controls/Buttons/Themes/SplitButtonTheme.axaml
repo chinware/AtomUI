@@ -15,19 +15,24 @@
                                  IsEnabled="{TemplateBinding IsEnabled}"
                                  IsDanger="{TemplateBinding IsDanger}"
                                  ButtonType="{TemplateBinding EffectiveButtonType}"
+                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                 IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"
                                  />
                     <atom:Button Name="{x:Static atom:SplitButtonThemeConstants.SecondaryButtonPart}"
                                  SizeType="{TemplateBinding SizeType}"
                                  Icon="{TemplateBinding FlyoutButtonIcon}"
                                  IsEnabled="{TemplateBinding IsEnabled}"
                                  IsDanger="{TemplateBinding IsDanger}"
-                                 ButtonType="{TemplateBinding EffectiveButtonType}"/>
+                                 ButtonType="{TemplateBinding EffectiveButtonType}"
+                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                 IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"/>
                 </DockPanel>
             </ControlTemplate>
         </Setter>
         
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="IsWaveSpiritEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
         <Setter Property="SplitSeparatorBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
         

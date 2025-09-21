@@ -5,45 +5,50 @@
               TargetType="{x:Type atom:DropdownButton}"
               x:Class="AtomUI.Controls.Themes.PrimaryDropdownButtonTheme"
               x:ClassModifier="internal">
-      <ControlTheme.BasedOn>
+    <ControlTheme.BasedOn>
         <themes:PrimaryButtonTheme TargetType="{x:Type atom:DropdownButton}" />
     </ControlTheme.BasedOn>
 
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DropdownButton">
-            <Border Name="{x:Static atom:ButtonThemeConstants.FramePart}"
-                    Padding="{TemplateBinding Padding}"
-                    BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                    CornerRadius="{TemplateBinding CornerRadius}"
-                    Background="{TemplateBinding Background}">
-                <DockPanel Name="{x:Static atom:ButtonThemeConstants.RootLayoutPart}"
-                           LastChildFill="True">
-                    <atom:Icon Name="{x:Static atom:DropdownButtonThemeConstants.DropdownIndicatorPart}"
-                               DockPanel.Dock="Right"
-                               VerticalAlignment="Center"
-                               IconInfo="{atom:IconInfoProvider DownOutlined}"
-                               NormalFilledBrush="{TemplateBinding Foreground}"/>
-                    <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                Orientation="Horizontal">
-                        <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
-                                   IconInfo="{atom:IconInfoProvider LoadingOutlined}"
-                                   Margin="{Binding (atom:IconPresenter.Margin), 
+            <Panel>
+                <atom:WaveSpiritDecorator Name="{x:Static atom:ButtonThemeConstants.WaveSpiritPart}"
+                                          CornerRadius="{TemplateBinding CornerRadius}"
+                                          WaveType="{TemplateBinding WaveSpiritType}" />
+                <Border Name="{x:Static atom:ButtonThemeConstants.FramePart}"
+                        Padding="{TemplateBinding Padding}"
+                        BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}">
+                    <DockPanel Name="{x:Static atom:ButtonThemeConstants.RootLayoutPart}"
+                               LastChildFill="True">
+                        <atom:Icon Name="{x:Static atom:DropdownButtonThemeConstants.DropdownIndicatorPart}"
+                                   DockPanel.Dock="Right"
+                                   VerticalAlignment="Center"
+                                   IconInfo="{atom:IconInfoProvider DownOutlined}"
+                                   NormalFilledBrush="{TemplateBinding Foreground}" />
+                        <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal">
+                            <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
+                                       IconInfo="{atom:IconInfoProvider LoadingOutlined}"
+                                       Margin="{Binding (atom:IconPresenter.Margin), 
                                    ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" />
-                        <atom:IconPresenter
-                            Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
-                            Icon="{TemplateBinding Icon}"
-                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        <atom:TextBlock
-                            Name="{x:Static atom:ButtonThemeConstants.LabelPart}"
-                            VerticalAlignment="Center"
-                            Text="{TemplateBinding Content}" />
-                    </StackPanel>
-                </DockPanel>
-            </Border>
+                            <atom:IconPresenter
+                                Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
+                                Icon="{TemplateBinding Icon}"
+                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <atom:TextBlock
+                                Name="{x:Static atom:ButtonThemeConstants.LabelPart}"
+                                VerticalAlignment="Center"
+                                Text="{TemplateBinding Content}" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </Panel>
         </ControlTemplate>
     </Setter>
 

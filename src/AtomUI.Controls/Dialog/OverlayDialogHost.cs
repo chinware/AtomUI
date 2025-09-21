@@ -593,10 +593,6 @@ internal class OverlayDialogHost : ContentControl,
     
     private void HandleButtonsSynchronized(object? sender, DialogBoxButtonSyncEventArgs args)
     {
-        foreach (var button in args.Buttons)
-        {
-            button.IsWaveSpiritEnabled = false;
-        }
         _dialog.NotifyDialogButtonSynchronized(args.Buttons);
         _confirmLoadingBindings?.Dispose();
         _confirmLoadingBindings = new CompositeDisposable(args.Buttons.Count);
