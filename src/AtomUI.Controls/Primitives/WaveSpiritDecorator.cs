@@ -258,7 +258,7 @@ internal class WaveSpiritDecorator : Control
     
     public void Play()
     {
-        if (_isPlaying)
+        if (_isPlaying || !this.IsAttachedToVisualTree())
         {
             return;
         }
