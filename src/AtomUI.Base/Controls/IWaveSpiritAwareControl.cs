@@ -6,7 +6,6 @@ namespace AtomUI.Controls;
 public interface IWaveSpiritAwareControl : IMotionAwareControl
 {
     bool IsWaveSpiritEnabled { get; }
-    // Color WaveSpiritColor { get; }
 }
 
 public abstract class WaveSpiritAwareControlProperty : MotionAwareControlProperty

@@ -17,6 +17,7 @@
         <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
         <ResourceInclude Source="Chrome/Themes/ChromeThemes.axaml" />
         <ResourceInclude Source="Card/Themes/CardThemes.axaml" />
+        <ResourceInclude Source="Carousel/Themes/CarouselThemes.axaml" />
         <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" />
         <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />

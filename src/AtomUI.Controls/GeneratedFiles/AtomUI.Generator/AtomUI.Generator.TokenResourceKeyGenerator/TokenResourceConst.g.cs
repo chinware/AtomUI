@@ -211,6 +211,17 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TabsMarginBottom = new TokenResourceKey("Card.TabsMarginBottom");
     }
 
+    public static class CarouselTokenKey
+    {
+        public static readonly TokenResourceKey ArrowOffset = new TokenResourceKey("Carousel.ArrowOffset");
+        public static readonly TokenResourceKey ArrowSize = new TokenResourceKey("Carousel.ArrowSize");
+        public static readonly TokenResourceKey IndicatorActiveWidth = new TokenResourceKey("Carousel.IndicatorActiveWidth");
+        public static readonly TokenResourceKey IndicatorGap = new TokenResourceKey("Carousel.IndicatorGap");
+        public static readonly TokenResourceKey IndicatorHeight = new TokenResourceKey("Carousel.IndicatorHeight");
+        public static readonly TokenResourceKey IndicatorOffset = new TokenResourceKey("Carousel.IndicatorOffset");
+        public static readonly TokenResourceKey IndicatorWidth = new TokenResourceKey("Carousel.IndicatorWidth");
+    }
+
     public static class CheckBoxTokenKey
     {
         public static readonly TokenResourceKey CheckedMarkSize = new TokenResourceKey("CheckBox.CheckedMarkSize");

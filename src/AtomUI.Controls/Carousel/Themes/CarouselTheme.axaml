@@ -1,0 +1,29 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Carousel}" TargetType="atom:Carousel">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <ScrollViewer Name="{x:Static atom:CarouselThemeConstants.ScrollViewerPart}"
+                                  Background="{TemplateBinding Background}"
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollBarVisibility="Hidden">
+                        <ItemsPresenter
+                            Name="PART_ItemsPresenter"
+                            Margin="{TemplateBinding Padding}"
+                            ItemsPanel="{TemplateBinding ItemsPanel}" />
+                    </ScrollViewer>
+                    <atom:IconButton Name="PreviousPageButton"/>
+                    <atom:IconButton Name="NextPageButton"/>
+                    <atom:CarouselPagination Name="Pagination"/>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+    </ControlTheme>
+</ResourceDictionary>

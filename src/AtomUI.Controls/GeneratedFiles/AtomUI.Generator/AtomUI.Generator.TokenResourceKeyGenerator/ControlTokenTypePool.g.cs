@@ -19,6 +19,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.ButtonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.CalendarToken));
             tokenTypes.Add(typeof(AtomUI.Controls.CardToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.CarouselToken));
             tokenTypes.Add(typeof(AtomUI.Controls.CheckBoxToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ChromeToken));
             tokenTypes.Add(typeof(AtomUI.Controls.CollapseToken));
