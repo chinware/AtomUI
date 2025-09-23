@@ -20,10 +20,12 @@
                                      IsVisible="{TemplateBinding PreviousNavButtonVisible}" />
                     <atom:IconButton Name="NextPageButton"
                                      IsVisible="{TemplateBinding NextNavButtonVisible}" />
-                    <atom:CarouselPagination Name="{x:Static atom:CarouselThemeConstants.PaginationPart}"
-                                             IsVisible="{TemplateBinding IsShowPagination}"
-                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
-                                             Margin="{TemplateBinding EffectivePaginationMargin}"/>
+                    <LayoutTransformControl Name="PaginationLayoutTransform"
+                                            Margin="{TemplateBinding EffectivePaginationMargin}"
+                                            IsVisible="{TemplateBinding IsShowPagination}">
+                        <atom:CarouselPagination Name="{x:Static atom:CarouselThemeConstants.PaginationPart}"
+                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                    </LayoutTransformControl>
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -36,10 +38,33 @@
         <Setter Property="PageInEasing" Value="CubicEaseOut"/>
         <Setter Property="PageOutEasing" Value="CubicEaseOut"/>
 
+        <Style Selector="^[PaginationPosition=Top]">
+            <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+        </Style>
+        
         <Style Selector="^[PaginationPosition=Bottom]">
-            <Style Selector="^ /template/ atom|CarouselPagination#PART_Pagination">
+            <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Bottom"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[PaginationPosition=Left]">
+            <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[PaginationPosition=Right]">
+            <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="LayoutTransform" Value="rotate(90deg)" />
             </Style>
         </Style>
 
