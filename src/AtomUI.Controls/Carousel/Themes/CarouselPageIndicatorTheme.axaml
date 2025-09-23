@@ -6,8 +6,28 @@
     <ControlTheme x:Key="{x:Type atom:CarouselPageIndicator}" TargetType="atom:CarouselPageIndicator">
         <Setter Property="Template">
             <ControlTemplate>
-             
+                <Border Name="Frame"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Height="{TemplateBinding Height}"
+                        Width="{TemplateBinding Width}" 
+                        Background="{TemplateBinding Background}"/>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="Height" Value="{DynamicResource {x:Static atom:CarouselTokenKey.IndicatorHeight}}"/>
+        <Setter Property="Width" Value="{DynamicResource {x:Static atom:CarouselTokenKey.IndicatorWidth}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
+        <Setter Property="Opacity" Value="0.2"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="Opacity" Value="0.75"/>
+        </Style>
+        
+        <Style Selector="^[IsSelected=True]">
+            <Setter Property="Opacity" Value="1"/>
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:CarouselTokenKey.IndicatorActiveWidth}}"/>
+        </Style>
+        
     </ControlTheme>
 </ResourceDictionary>

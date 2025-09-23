@@ -1,4 +1,5 @@
 using AtomUI.Controls.Themes;
+using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
@@ -6,6 +7,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 
 namespace AtomUI.Controls;
 
@@ -140,6 +142,15 @@ public class Carousel : SelectingItemsControl,
             o => o.NextNavButtonVisible,
             (o, v) => o.NextNavButtonVisible = v);
     
+    internal static readonly DirectProperty<Carousel, Thickness> EffectivePaginationMarginProperty =
+        AvaloniaProperty.RegisterDirect<Carousel, Thickness>(
+            nameof(EffectivePaginationMargin),
+            o => o.EffectivePaginationMargin,
+            (o, v) => o.EffectivePaginationMargin = v);
+    
+    internal static readonly StyledProperty<double> PaginationOffsetProperty =
+        AvaloniaProperty.Register<Carousel, double>(nameof(PaginationOffset));
+    
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new VirtualizingCarouselPanel());
     
@@ -164,6 +175,20 @@ public class Carousel : SelectingItemsControl,
         get => _nextNavButtonVisible;
         set => SetAndRaise(NextNavButtonVisibleProperty, ref _nextNavButtonVisible, value);
     }
+    
+    private Thickness _effectivePaginationMargin;
+
+    internal Thickness EffectivePaginationMargin
+    {
+        get => _effectivePaginationMargin;
+        set => SetAndRaise(EffectivePaginationMarginProperty, ref _effectivePaginationMargin, value);
+    }
+    
+    internal double PaginationOffset
+    {
+        get => GetValue(PaginationOffsetProperty);
+        set => SetValue(PaginationOffsetProperty, value);
+    }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -172,11 +197,23 @@ public class Carousel : SelectingItemsControl,
     #endregion
     
     private IScrollable? _scroller;
+    private CarouselPagination? _pagination;
     
     static Carousel()
     {
         SelectionModeProperty.OverrideDefaultValue<Carousel>(SelectionMode.AlwaysSelected);
         ItemsPanelProperty.OverrideDefaultValue<Carousel>(DefaultPanel);
+        AffectsArrange<Carousel>(SelectedIndexProperty);
+    }
+
+    public Carousel()
+    {
+        SelectionChanged += HandleSelectionChanged;
+    }
+    
+    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        SyncPagination();
     }
     
     public void Next()
@@ -210,7 +247,14 @@ public class Carousel : SelectingItemsControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _scroller = e.NameScope.Find<IScrollable>(CarouselThemeConstants.ScrollViewerPart);
+        _scroller   = e.NameScope.Find<IScrollable>(CarouselThemeConstants.ScrollViewerPart);
+        _pagination = e.NameScope.Find<CarouselPagination>(CarouselThemeConstants.PaginationPart);
+        SyncPagination();
+        if (_pagination != null)
+        {
+            BindUtils.RelayBind(this, SelectedIndexProperty, _pagination, SelectedIndexProperty, BindingMode.TwoWay);
+        }
+        BuildEffectivePageTransition(false);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -228,6 +272,20 @@ public class Carousel : SelectingItemsControl,
                  change.Property == ItemCountProperty)
         {
             ConfigureNavButtons();
+        }
+        else if (change.Property == PaginationPositionProperty ||
+                 change.Property == PaginationOffsetProperty)
+        {
+            ConfigurePaginationMargin();
+        }
+        else if (change.Property == TransitionEffectProperty)
+        {
+            BuildEffectivePageTransition(true);
+        }
+
+        if (change.Property == PaginationPositionProperty)
+        {
+            ConfigureEffectivePageTransition();
         }
     }
 
@@ -250,6 +308,96 @@ public class Carousel : SelectingItemsControl,
         {
             SetCurrentValue(PreviousNavButtonVisibleProperty, false);
             SetCurrentValue(NextNavButtonVisibleProperty, false);
+        }
+    }
+
+    private void SyncPagination()
+    {
+        if (_pagination != null)
+        {
+            var paginationCount = _pagination.ItemCount;
+            var pageCount       = ItemCount;
+            if (paginationCount != pageCount)
+            {
+                if (pageCount < paginationCount)
+                {
+                    var delta = paginationCount - pageCount;
+                    for (var i = 0; i < delta; ++i)
+                    {
+                        _pagination.Items.RemoveAt(_pagination.Items.Count - 1);
+                    }
+                }
+                else if (pageCount > paginationCount)
+                {
+                    var delta = pageCount - paginationCount;
+                    for (var i = 0; i < delta; ++i)
+                    {
+                        _pagination.Items.Add(new CarouselPageIndicator());
+                    }
+                }
+            }
+        }
+    }
+
+    private void ConfigurePaginationMargin()
+    {
+        if (PaginationPosition == CarouselPaginationPosition.Bottom)
+        {
+            SetCurrentValue(EffectivePaginationMarginProperty, new Thickness(0, 0, 0, PaginationOffset));
+        }
+        else if (PaginationPosition == CarouselPaginationPosition.Top)
+        {
+            SetCurrentValue(EffectivePaginationMarginProperty, new Thickness(0, PaginationOffset, 0, 0));
+        }
+        else if (PaginationPosition == CarouselPaginationPosition.Left)
+        {
+            SetCurrentValue(EffectivePaginationMarginProperty, new Thickness(PaginationOffset, 0, 0, 0));
+        }
+        else if (PaginationPosition == CarouselPaginationPosition.Right)
+        {
+            SetCurrentValue(EffectivePaginationMarginProperty, new Thickness(0, 0, PaginationOffset, 0));
+        }
+    }
+
+    private void BuildEffectivePageTransition(bool force)
+    {
+        if (PageTransition == null || force)
+        {
+            if (TransitionEffect == CarouselTransitionEffect.Fade)
+            {
+                SetCurrentValue(PageTransitionProperty, new CrossFade());
+            }
+            else
+            {
+                SetCurrentValue(PageTransitionProperty, new PageSlide());
+            }
+        }
+        ConfigureEffectivePageTransition();
+    }
+
+    private void ConfigureEffectivePageTransition()
+    {
+        if (PageTransition is CrossFade crossFade)
+        {
+            crossFade.FadeInEasing  = PageInEasing;
+            crossFade.FadeOutEasing = PageOutEasing;
+            crossFade.Duration      = PageTransitionDuration;
+        }
+        else if (PageTransition is PageSlide pageSlide)
+        {
+            pageSlide.SlideInEasing  = PageInEasing;
+            pageSlide.SlideOutEasing = PageOutEasing;
+            pageSlide.Duration      = PageTransitionDuration;
+            if (PaginationPosition == CarouselPaginationPosition.Bottom ||
+                PaginationPosition == CarouselPaginationPosition.Top)
+            {
+                pageSlide.Orientation = PageSlide.SlideAxis.Horizontal;
+            }
+            else if (PaginationPosition == CarouselPaginationPosition.Left ||
+                     PaginationPosition == CarouselPaginationPosition.Right)
+            {
+                pageSlide.Orientation = PageSlide.SlideAxis.Vertical;
+            }
         }
     }
 }

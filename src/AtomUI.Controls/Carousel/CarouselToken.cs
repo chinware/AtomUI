@@ -34,7 +34,7 @@ internal class CarouselToken : AbstractControlDesignToken
     /// 指示点距离边缘的距离
     /// dot offset to Carousel edge
     /// </summary>
-    public double IndicatorOffset { get; set; }
+    public double PaginationOffset { get; set; }
     
     /// <summary>
     /// 激活态指示点宽度
@@ -62,7 +62,7 @@ internal class CarouselToken : AbstractControlDesignToken
         ArrowOffset          = SharedToken.SpacingXS;
         IndicatorWidth       = 16;
         IndicatorHeight      = 3;
-        IndicatorGap         = SharedToken.SpacingXXS;
-        IndicatorOffset      = 12;
+        IndicatorGap         = SharedToken.UniformlyMarginXS;
+        PaginationOffset     = 12;
     }
 }

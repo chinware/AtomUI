@@ -285,7 +285,7 @@ public class Segmented : SelectingItemsControl,
             true,
             false,
             false,
-            e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
+            e.GetCurrentPoint(source).Properties.IsLeftButtonPressed);
     }
     
     public sealed override void Render(DrawingContext context)

@@ -17,16 +17,31 @@
                             ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </ScrollViewer>
                     <atom:IconButton Name="PreviousPageButton"
-                                     IsVisible="{TemplateBinding PreviousNavButtonVisible}"/>
+                                     IsVisible="{TemplateBinding PreviousNavButtonVisible}" />
                     <atom:IconButton Name="NextPageButton"
-                                     IsVisible="{TemplateBinding NextNavButtonVisible}"/>
-                    <atom:CarouselPagination Name="Pagination" IsVisible="{TemplateBinding IsShowPagination}"
-                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                                     IsVisible="{TemplateBinding NextNavButtonVisible}" />
+                    <atom:CarouselPagination Name="{x:Static atom:CarouselThemeConstants.PaginationPart}"
+                                             IsVisible="{TemplateBinding IsShowPagination}"
+                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
+                                             Margin="{TemplateBinding EffectivePaginationMargin}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>
-        
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
+
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="PaginationOffset" Value="{DynamicResource {x:Static atom:CarouselTokenKey.PaginationOffset}}"/>
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
+        <Setter Property="PageTransitionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}"/>
+        <Setter Property="PageInEasing" Value="CubicEaseOut"/>
+        <Setter Property="PageOutEasing" Value="CubicEaseOut"/>
+
+        <Style Selector="^[PaginationPosition=Bottom]">
+            <Style Selector="^ /template/ atom|CarouselPagination#PART_Pagination">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Bottom"/>
+            </Style>
+        </Style>
+
     </ControlTheme>
 </ResourceDictionary>
