@@ -16,9 +16,12 @@
                             Margin="{TemplateBinding Padding}"
                             ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </ScrollViewer>
-                    <atom:IconButton Name="PreviousPageButton"/>
-                    <atom:IconButton Name="NextPageButton"/>
-                    <atom:CarouselPagination Name="Pagination"/>
+                    <atom:IconButton Name="PreviousPageButton"
+                                     IsVisible="{TemplateBinding PreviousNavButtonVisible}"/>
+                    <atom:IconButton Name="NextPageButton"
+                                     IsVisible="{TemplateBinding NextNavButtonVisible}"/>
+                    <atom:CarouselPagination Name="Pagination" IsVisible="{TemplateBinding IsShowPagination}"
+                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>

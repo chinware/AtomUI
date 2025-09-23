@@ -15,7 +15,7 @@ public class Carousel : SelectingItemsControl,
 {
     #region 公共属性定义
     public static readonly StyledProperty<bool> IsShowNavButtonsProperty = 
-        AvaloniaProperty.Register<Carousel, bool>(nameof(IsShowNavButtons));
+        AvaloniaProperty.Register<Carousel, bool>(nameof(IsShowNavButtons), false);
     
     public static readonly StyledProperty<bool> IsAutoPlayProperty = 
         AvaloniaProperty.Register<Carousel, bool>(nameof(IsAutoPlay));
@@ -27,7 +27,7 @@ public class Carousel : SelectingItemsControl,
         AvaloniaProperty.Register<Carousel, CarouselPaginationPosition>(nameof(PaginationPosition), CarouselPaginationPosition.Bottom);
     
     public static readonly StyledProperty<bool> IsShowPaginationProperty = 
-        AvaloniaProperty.Register<Carousel, bool>(nameof(IsShowPagination));
+        AvaloniaProperty.Register<Carousel, bool>(nameof(IsShowPagination), true);
     
     public static readonly StyledProperty<bool> IsDraggableProperty = 
         AvaloniaProperty.Register<Carousel, bool>(nameof(IsDraggable));
@@ -221,6 +221,35 @@ public class Carousel : SelectingItemsControl,
         {
             var value = change.GetNewValue<int>();
             _scroller.Offset = new(value, 0);
+        }
+        else if (change.Property == IsInfiniteProperty ||
+                 change.Property == IsShowNavButtonsProperty ||
+                 change.Property == SelectedIndexProperty ||
+                 change.Property == ItemCountProperty)
+        {
+            ConfigureNavButtons();
+        }
+    }
+
+    private void ConfigureNavButtons()
+    {
+        if (IsShowNavButtons)
+        {
+            if (IsInfinite)
+            {
+                SetCurrentValue(PreviousNavButtonVisibleProperty, false);
+                SetCurrentValue(NextNavButtonVisibleProperty, false);
+            }
+            else
+            {
+                SetCurrentValue(PreviousNavButtonVisibleProperty, SelectedIndex != 0);
+                SetCurrentValue(NextNavButtonVisibleProperty, SelectedIndex != ItemCount - 1);
+            }
+        }
+        else
+        {
+            SetCurrentValue(PreviousNavButtonVisibleProperty, false);
+            SetCurrentValue(NextNavButtonVisibleProperty, false);
         }
     }
 }

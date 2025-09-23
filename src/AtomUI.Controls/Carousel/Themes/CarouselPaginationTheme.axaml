@@ -6,7 +6,18 @@
     <ControlTheme x:Key="{x:Type atom:CarouselPagination}" TargetType="atom:CarouselPagination">
         <Setter Property="Template">
             <ControlTemplate>
-             
+                <Border Name="Frame"
+                        ClipToBounds="True"
+                        Padding="{TemplateBinding Padding}"
+                        Margin="{TemplateBinding Margin}">
+                    <ItemsPresenter>
+                        <ItemsPresenter.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="{Binding ItemSpacing, RelativeSource={RelativeSource AncestorType=atom:CarouselPagination}}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsPresenter.ItemsPanel>
+                    </ItemsPresenter>
+                </Border>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

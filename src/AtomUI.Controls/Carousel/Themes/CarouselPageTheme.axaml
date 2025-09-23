@@ -7,6 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter Name="ContentPresenter"
+                                  Background="{TemplateBinding Background}"
                                   Margin="{TemplateBinding Margin}"
                                   Padding="{TemplateBinding Padding}"
                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
