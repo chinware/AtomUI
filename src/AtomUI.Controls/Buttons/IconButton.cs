@@ -158,6 +158,8 @@ public class IconButton : AvaloniaButton,
         typeof(AvaloniaButton).GetFieldInfoOrThrow("_isFlyoutOpen",
             BindingFlags.Instance | BindingFlags.NonPublic));
     #endregion
+    
+    protected override Type StyleKeyOverride { get; } = typeof(IconButton);
 
     static IconButton()
     {
@@ -205,12 +207,17 @@ public class IconButton : AvaloniaButton,
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
                     TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
                 ];
+                NotifyConfigureTransitions(Transitions);
             }
         }
         else
         {
             Transitions = null;
         }
+    }
+
+    protected virtual void NotifyConfigureTransitions(Transitions transitions)
+    {
     }
 
     protected bool IsFlyoutOpen()

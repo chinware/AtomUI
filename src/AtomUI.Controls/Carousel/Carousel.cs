@@ -8,6 +8,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Interactivity;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -31,11 +33,8 @@ public class Carousel : SelectingItemsControl,
     public static readonly StyledProperty<bool> IsShowPaginationProperty = 
         AvaloniaProperty.Register<Carousel, bool>(nameof(IsShowPagination), true);
     
-    public static readonly StyledProperty<bool> IsDraggableProperty = 
-        AvaloniaProperty.Register<Carousel, bool>(nameof(IsDraggable));
-    
     public static readonly StyledProperty<bool> IsInfiniteProperty = 
-        AvaloniaProperty.Register<Carousel, bool>(nameof(IsInfinite));
+        AvaloniaProperty.Register<Carousel, bool>(nameof(IsInfinite), true);
     
     public static readonly StyledProperty<TimeSpan> PageTransitionDurationProperty = 
         AvaloniaProperty.Register<Carousel, TimeSpan>(nameof(PageTransitionDuration));
@@ -80,12 +79,6 @@ public class Carousel : SelectingItemsControl,
     {
         get => GetValue(IsShowPaginationProperty);
         set => SetValue(IsShowPaginationProperty, value);
-    }
-
-    public bool IsDraggable
-    {
-        get => GetValue(IsDraggableProperty);
-        set => SetValue(IsDraggableProperty, value);
     }
     
     public bool IsInfinite
@@ -148,6 +141,18 @@ public class Carousel : SelectingItemsControl,
             o => o.EffectivePaginationMargin,
             (o, v) => o.EffectivePaginationMargin = v);
     
+    internal static readonly DirectProperty<Carousel, Thickness> EffectivePreviousButtonMarginProperty =
+        AvaloniaProperty.RegisterDirect<Carousel, Thickness>(
+            nameof(EffectivePreviousButtonMargin),
+            o => o.EffectivePreviousButtonMargin,
+            (o, v) => o.EffectivePreviousButtonMargin = v);
+    
+    internal static readonly DirectProperty<Carousel, Thickness> EffectiveNextButtonMarginProperty =
+        AvaloniaProperty.RegisterDirect<Carousel, Thickness>(
+            nameof(EffectiveNextButtonMargin),
+            o => o.EffectiveNextButtonMargin,
+            (o, v) => o.EffectiveNextButtonMargin = v);
+    
     internal static readonly StyledProperty<double> PaginationOffsetProperty =
         AvaloniaProperty.Register<Carousel, double>(nameof(PaginationOffset));
     
@@ -184,6 +189,22 @@ public class Carousel : SelectingItemsControl,
         set => SetAndRaise(EffectivePaginationMarginProperty, ref _effectivePaginationMargin, value);
     }
     
+    private Thickness _effectivePreviousButtonMargin;
+
+    internal Thickness EffectivePreviousButtonMargin
+    {
+        get => _effectivePreviousButtonMargin;
+        set => SetAndRaise(EffectivePaginationMarginProperty, ref _effectivePreviousButtonMargin, value);
+    }
+    
+    private Thickness _effectiveNextButtonMargin;
+
+    internal Thickness EffectiveNextButtonMargin
+    {
+        get => _effectiveNextButtonMargin;
+        set => SetAndRaise(EffectivePaginationMarginProperty, ref _effectiveNextButtonMargin, value);
+    }
+    
     internal double PaginationOffset
     {
         get => GetValue(PaginationOffsetProperty);
@@ -198,6 +219,9 @@ public class Carousel : SelectingItemsControl,
     
     private IScrollable? _scroller;
     private CarouselPagination? _pagination;
+    private DispatcherTimer? _autoPlayTimer;
+    private IconButton? _previousButton;
+    private IconButton? _nextButton;
     
     static Carousel()
     {
@@ -218,17 +242,31 @@ public class Carousel : SelectingItemsControl,
     
     public void Next()
     {
-        if (SelectedIndex < ItemCount - 1)
+        if (!IsInfinite)
         {
-            ++SelectedIndex;
+            if (SelectedIndex < ItemCount - 1)
+            {
+                ++SelectedIndex;
+            }
+        }
+        else
+        {
+            SelectedIndex = (SelectedIndex + 1) % ItemCount;
         }
     }
     
     public void Previous()
     {
-        if (SelectedIndex > 0)
+        if (!IsInfinite)
         {
-            --SelectedIndex;
+            if (SelectedIndex > 0)
+            {
+                --SelectedIndex;
+            }
+        }
+        else
+        {
+            SelectedIndex = (SelectedIndex - 1) % ItemCount;
         }
     }
     
@@ -247,28 +285,53 @@ public class Carousel : SelectingItemsControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _scroller   = e.NameScope.Find<IScrollable>(CarouselThemeConstants.ScrollViewerPart);
-        _pagination = e.NameScope.Find<CarouselPagination>(CarouselThemeConstants.PaginationPart);
+        _scroller       = e.NameScope.Find<IScrollable>(CarouselThemeConstants.ScrollViewerPart);
+        _pagination     = e.NameScope.Find<CarouselPagination>(CarouselThemeConstants.PaginationPart);
+        _previousButton = e.NameScope.Find<IconButton>(CarouselThemeConstants.PreviousButtonPart);
+        _nextButton     = e.NameScope.Find<IconButton>(CarouselThemeConstants.NextButtonPart);
         SyncPagination();
         if (_pagination != null)
         {
             BindUtils.RelayBind(this, SelectedIndexProperty, _pagination, SelectedIndexProperty, BindingMode.TwoWay);
         }
         BuildEffectivePageTransition(false);
+        ConfigureNavButtons();
+        if (_previousButton != null)
+        {
+            _previousButton.Click += HandlePreviousButtonClick;
+        }
+
+        if (_nextButton != null)
+        {
+            _nextButton.Click += HandleNextButtonClick;
+        }
+    }
+
+    private void HandlePreviousButtonClick(object? sender, RoutedEventArgs args)
+    {
+        Previous();
+    }
+
+    private void HandleNextButtonClick(object? sender, RoutedEventArgs args)
+    {
+        Next();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == SelectedIndexProperty && _scroller is not null)
+        if (change.Property == SelectedIndexProperty)
         {
-            var value = change.GetNewValue<int>();
-            _scroller.Offset = new(value, 0);
+            if (_scroller is not null)
+            {
+                var value = change.GetNewValue<int>();
+                _scroller.Offset = new(value, 0);
+            }
+            ConfigureNavButtons();
         }
         else if (change.Property == IsInfiniteProperty ||
                  change.Property == IsShowNavButtonsProperty ||
-                 change.Property == SelectedIndexProperty ||
                  change.Property == ItemCountProperty)
         {
             ConfigureNavButtons();
@@ -277,6 +340,7 @@ public class Carousel : SelectingItemsControl,
                  change.Property == PaginationOffsetProperty)
         {
             ConfigurePaginationMargin();
+            ConfigureNavButtonsMargin();
         }
         else if (change.Property == TransitionEffectProperty)
         {
@@ -287,6 +351,40 @@ public class Carousel : SelectingItemsControl,
         {
             ConfigureEffectivePageTransition();
         }
+        else if (change.Property == IsAutoPlayProperty)
+        {
+            BuildAutoPlayTimer();
+        }
+        else if (change.Property == AutoPlaySpeedProperty)
+        {
+            ConfigureAutoPlayTimer();
+        }
+        else if (change.Property == SelectedIndexProperty)
+        {
+            if (_autoPlayTimer != null && _autoPlayTimer.IsEnabled)
+            {
+                _autoPlayTimer?.Stop();
+                _autoPlayTimer?.Start();
+            }
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (IsAutoPlay)
+        {
+            _autoPlayTimer?.Start();
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        if (IsAutoPlay)
+        {
+            _autoPlayTimer?.Stop();
+        }
     }
 
     private void ConfigureNavButtons()
@@ -295,8 +393,8 @@ public class Carousel : SelectingItemsControl,
         {
             if (IsInfinite)
             {
-                SetCurrentValue(PreviousNavButtonVisibleProperty, false);
-                SetCurrentValue(NextNavButtonVisibleProperty, false);
+                SetCurrentValue(PreviousNavButtonVisibleProperty, true);
+                SetCurrentValue(NextNavButtonVisibleProperty, true);
             }
             else
             {
@@ -359,6 +457,22 @@ public class Carousel : SelectingItemsControl,
         }
     }
 
+    private void ConfigureNavButtonsMargin()
+    {
+        if (PaginationPosition == CarouselPaginationPosition.Bottom ||
+            PaginationPosition == CarouselPaginationPosition.Top)
+        {
+            SetCurrentValue(EffectivePreviousButtonMarginProperty, new Thickness(PaginationOffset, 0, 0, 0));
+            SetCurrentValue(EffectiveNextButtonMarginProperty, new Thickness(0, 0, PaginationOffset, 0));
+        }
+        else if (PaginationPosition == CarouselPaginationPosition.Left ||
+                 PaginationPosition == CarouselPaginationPosition.Right)
+        {
+            SetCurrentValue(EffectivePreviousButtonMarginProperty, new Thickness(0, PaginationOffset, 0, 0));
+            SetCurrentValue(EffectiveNextButtonMarginProperty, new Thickness(0, 0, 0, PaginationOffset));
+        }
+    }
+
     private void BuildEffectivePageTransition(bool force)
     {
         if (PageTransition == null || force)
@@ -398,6 +512,34 @@ public class Carousel : SelectingItemsControl,
             {
                 pageSlide.Orientation = PageSlide.SlideAxis.Vertical;
             }
+        }
+    }
+
+    private void BuildAutoPlayTimer()
+    {
+        if (IsAutoPlay)
+        {
+            _autoPlayTimer      =  new DispatcherTimer();
+            _autoPlayTimer.Tick += HandleAutoPlayTick;
+            ConfigureAutoPlayTimer();
+        }
+        else
+        {
+            _autoPlayTimer?.Stop();
+            _autoPlayTimer = null;
+        }
+    }
+
+    private void HandleAutoPlayTick(object? sender, EventArgs e)
+    {
+        Next();
+    }
+    
+    private void ConfigureAutoPlayTimer()
+    {
+        if (_autoPlayTimer != null)
+        {
+            _autoPlayTimer.Interval = AutoPlaySpeed;
         }
     }
 }

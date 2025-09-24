@@ -16,10 +16,14 @@
                             Margin="{TemplateBinding Padding}"
                             ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </ScrollViewer>
-                    <atom:IconButton Name="PreviousPageButton"
-                                     IsVisible="{TemplateBinding PreviousNavButtonVisible}" />
-                    <atom:IconButton Name="NextPageButton"
-                                     IsVisible="{TemplateBinding NextNavButtonVisible}" />
+                    <atom:CarouselNavButton Name="{x:Static atom:CarouselThemeConstants.PreviousButtonPart}"
+                                            Icon="{atom:IconProvider LeftOutlined}"
+                                            Margin="{TemplateBinding EffectivePreviousButtonMargin}"
+                                            IsVisible="{TemplateBinding PreviousNavButtonVisible}"/>
+                    <atom:CarouselNavButton Name="{x:Static atom:CarouselThemeConstants.NextButtonPart}"
+                                            Icon="{atom:IconProvider RightOutlined}"
+                                            Margin="{TemplateBinding EffectiveNextButtonMargin}"
+                                            IsVisible="{TemplateBinding NextNavButtonVisible}"/>
                     <LayoutTransformControl Name="PaginationLayoutTransform"
                                             Margin="{TemplateBinding EffectivePaginationMargin}"
                                             IsVisible="{TemplateBinding IsShowPagination}">
@@ -37,11 +41,35 @@
         <Setter Property="PageTransitionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}"/>
         <Setter Property="PageInEasing" Value="CubicEaseOut"/>
         <Setter Property="PageOutEasing" Value="CubicEaseOut"/>
+        
+        <Style Selector="^ /template/ atom|CarouselNavButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:CarouselTokenKey.ArrowSize}}"/>
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:CarouselTokenKey.ArrowSize}}"/>
+            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
+            <Setter Property="Opacity" Value="0.2"/>
+        </Style>
+
+
+        <Style Selector="^ /template/ atom|CarouselNavButton">
+            <Style Selector="^:pointerover">
+                <Setter Property="Opacity" Value="1.0" />
+            </Style>
+        </Style>
 
         <Style Selector="^[PaginationPosition=Top]">
             <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+            
+            <Style Selector="^ /template/ atom|CarouselNavButton#PART_PreviousButton">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ atom|CarouselNavButton#PART_NextButton">
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
         </Style>
         
@@ -49,6 +77,16 @@
             <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Bottom"/>
+            </Style>
+            
+            <Style Selector="^ /template/ atom|CarouselNavButton#PART_PreviousButton">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ atom|CarouselNavButton#PART_NextButton">
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
         </Style>
         
@@ -58,6 +96,18 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="LayoutTransform" Value="rotate(90deg)" />
             </Style>
+            
+            <Style Selector="^ /template/ atom|CarouselNavButton#PART_PreviousButton">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="RenderTransform" Value="rotate(90deg)" />
+            </Style>
+            
+            <Style Selector="^ /template/ atom|CarouselNavButton#PART_NextButton">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Bottom"/>
+                <Setter Property="RenderTransform" Value="rotate(90deg)" />
+            </Style>
         </Style>
         
         <Style Selector="^[PaginationPosition=Right]">
@@ -65,6 +115,18 @@
                 <Setter Property="HorizontalAlignment" Value="Right"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="LayoutTransform" Value="rotate(90deg)" />
+            </Style>
+            
+            <Style Selector="^ /template/ atom|CarouselNavButton#PART_PreviousButton">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="RenderTransform" Value="rotate(90deg)" />
+            </Style>
+            
+            <Style Selector="^ /template/ atom|CarouselNavButton#PART_NextButton">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Bottom"/>
+                <Setter Property="RenderTransform" Value="rotate(90deg)" />
             </Style>
         </Style>
 

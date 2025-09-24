@@ -6,5 +6,6 @@
         <ResourceInclude Source="CarouselPaginationTheme.axaml"/>
         <ResourceInclude Source="CarouselPageTheme.axaml"/>
         <ResourceInclude Source="CarouselTheme.axaml"/>
+        <ResourceInclude Source="CarouselNavButtonTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
