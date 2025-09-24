@@ -7,7 +7,6 @@
         <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)"/>
-        <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="AtomUI.Controls.DataGrid" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)"/>

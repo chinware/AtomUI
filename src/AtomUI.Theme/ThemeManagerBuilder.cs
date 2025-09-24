@@ -2,6 +2,7 @@ using System.Globalization;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Media;
 
 namespace AtomUI.Theme;
 
@@ -18,6 +19,7 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
 
     public LanguageVariant LanguageVariant { get; private set; }
     public string ThemeId { get; private set; }
+    public FontFamily? FontFamily { get; private set; }
     public AppBuilder AppBuilder { get; }
 
     private HashSet<string> _registeredTokenTypes;
@@ -89,6 +91,16 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     public void WithDefaultTheme(string themeId)
     {
         ThemeId = themeId;
+    }
+
+    public void WithDefaultFontFamily(FontFamily fontFamily)
+    {
+        FontFamily = fontFamily;
+    }
+
+    public void WithDefaultFontFamily(string fontFamily)
+    {
+        FontFamily = FontFamily.Parse(fontFamily);
     }
 
     public void WithDefaultCultureInfo(CultureInfo cultureInfo)

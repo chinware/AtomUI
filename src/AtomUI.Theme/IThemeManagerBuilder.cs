@@ -2,6 +2,7 @@ using System.Globalization;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Media;
 
 namespace AtomUI.Theme;
 
@@ -22,6 +23,8 @@ public interface IThemeManagerBuilder
     void AddLanguageProviders(LanguageProvider languageProvider);
     
     void WithDefaultTheme(string themeId);
+    void WithDefaultFontFamily(FontFamily fontFamily);
+    void WithDefaultFontFamily(string fontFamily);
     void WithDefaultCultureInfo(CultureInfo cultureInfo);
     void WithDefaultLanguageVariant(LanguageVariant languageVariant);
     void WithThemeVariantCalculatorFactory(IThemeVariantCalculatorFactory factory);

@@ -24,12 +24,12 @@ internal class Theme : AvaloniaObject, ITheme
     public string DefinitionFilePath { get; }
 
     public string Id => _id;
-    public string DisplayName => string.Empty;
+    public string DisplayName => ThemeDefinition.DisplayName;
     public bool LoadStatus => LoadedStatus;
     public string? LoadErrorMsg => _loadErrorMsg;
     public bool IsLoaded => Loaded;
     public ThemeVariant ThemeVariant => _themeVariant;
-    internal ResourceDictionary ThemeResource => ResourceDictionary;
+    public ResourceDictionary ThemeResource => ResourceDictionary;
     public bool IsDarkMode { get; protected set; }
     public bool IsActivated => Activated;
     public bool IsBuiltIn => _isBuiltIn;

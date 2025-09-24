@@ -13,7 +13,6 @@
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="Avalonia.Svg"/>
         <PackageReference Include="System.Reactive"/>
-        <PackageReference Include="Avalonia.Fonts.Inter"/>
         <PackageReference Include="Avalonia.Desktop"/>
     </ItemGroup>
 
@@ -25,6 +24,9 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Base/AtomUI.Base.csproj">
+            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
+        </ProjectReference>
+        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Controls/AtomUI.Controls.csproj">
@@ -50,6 +52,7 @@
 
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Base.dll"/>
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.Fonts.AlibabaSans.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Controls.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.dll"/>
@@ -66,6 +69,8 @@
         <ItemGroup>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Base.dll" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Base.pdb" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Fonts.AlibabaSans.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Fonts.AlibabaSans.pdb" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.dll" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.pdb" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.dll" PackagePath="lib/$(TargetFramework)"/>

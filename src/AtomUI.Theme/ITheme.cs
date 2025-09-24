@@ -1,4 +1,5 @@
 ﻿using AtomUI.Theme.TokenSystem;
+using Avalonia.Controls;
 using Avalonia.Styling;
 
 namespace AtomUI.Theme;
@@ -17,4 +18,5 @@ public interface ITheme
     DesignToken SharedToken { get; }
     ThemeVariant ThemeVariant { get; }
     IList<ThemeAlgorithm> Algorithms { get; }
+    ResourceDictionary ThemeResource { get; }
 }

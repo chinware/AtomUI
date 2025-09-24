@@ -3,6 +3,7 @@ using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Styling;
 
@@ -36,7 +37,7 @@ internal class ThemeManager : Styles, IThemeManager
     public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
     public static ThemeManager Current { get; internal set; } = null!;
     public string DefaultThemeId { get; set; }
-
+    public FontFamily? FontFamily { get; internal set; }
     internal List<Type> ControlTokenTypes { get; set; }
     internal IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; set; }
     
