@@ -33,6 +33,9 @@ public class Carousel : SelectingItemsControl,
     public static readonly StyledProperty<bool> IsShowPaginationProperty = 
         AvaloniaProperty.Register<Carousel, bool>(nameof(IsShowPagination), true);
     
+    public static readonly StyledProperty<bool> IsShowTransitionProgressProperty = 
+        AvaloniaProperty.Register<Carousel, bool>(nameof(IsShowTransitionProgress), false);
+    
     public static readonly StyledProperty<bool> IsInfiniteProperty = 
         AvaloniaProperty.Register<Carousel, bool>(nameof(IsInfinite), true);
     
@@ -79,6 +82,12 @@ public class Carousel : SelectingItemsControl,
     {
         get => GetValue(IsShowPaginationProperty);
         set => SetValue(IsShowPaginationProperty, value);
+    }
+    
+    public bool IsShowTransitionProgress
+    {
+        get => GetValue(IsShowTransitionProgressProperty);
+        set => SetValue(IsShowTransitionProgressProperty, value);
     }
     
     public bool IsInfinite
@@ -156,6 +165,12 @@ public class Carousel : SelectingItemsControl,
     internal static readonly StyledProperty<double> PaginationOffsetProperty =
         AvaloniaProperty.Register<Carousel, double>(nameof(PaginationOffset));
     
+    internal static readonly DirectProperty<Carousel, bool> IsEffectiveShowTransitionProgressProperty =
+        AvaloniaProperty.RegisterDirect<Carousel, bool>(
+            nameof(IsEffectiveShowTransitionProgress),
+            o => o.IsEffectiveShowTransitionProgress,
+            (o, v) => o.IsEffectiveShowTransitionProgress = v);
+    
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new VirtualizingCarouselPanel());
     
@@ -205,6 +220,14 @@ public class Carousel : SelectingItemsControl,
         set => SetAndRaise(EffectivePaginationMarginProperty, ref _effectiveNextButtonMargin, value);
     }
     
+    private bool _isEffectiveShowTransitionProgress;
+
+    internal bool IsEffectiveShowTransitionProgress
+    {
+        get => _isEffectiveShowTransitionProgress;
+        set => SetAndRaise(IsEffectiveShowTransitionProgressProperty, ref _isEffectiveShowTransitionProgress, value);
+    }
+    
     internal double PaginationOffset
     {
         get => GetValue(PaginationOffsetProperty);
@@ -228,6 +251,7 @@ public class Carousel : SelectingItemsControl,
         SelectionModeProperty.OverrideDefaultValue<Carousel>(SelectionMode.AlwaysSelected);
         ItemsPanelProperty.OverrideDefaultValue<Carousel>(DefaultPanel);
         AffectsArrange<Carousel>(SelectedIndexProperty);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<Carousel>(false);
     }
 
     public Carousel()
@@ -257,16 +281,13 @@ public class Carousel : SelectingItemsControl,
     
     public void Previous()
     {
-        if (!IsInfinite)
+        if (SelectedIndex > 0)
         {
-            if (SelectedIndex > 0)
-            {
-                --SelectedIndex;
-            }
+            --SelectedIndex;
         }
-        else
+        else if (IsInfinite)
         {
-            SelectedIndex = (SelectedIndex - 1) % ItemCount;
+            SelectedIndex = ItemCount - 1;
         }
     }
     
@@ -365,6 +386,19 @@ public class Carousel : SelectingItemsControl,
             {
                 _autoPlayTimer?.Stop();
                 _autoPlayTimer?.Start();
+            }
+        }
+
+        if (change.Property == IsAutoPlayProperty ||
+            change.Property == IsShowTransitionProgressProperty)
+        {
+            if (IsAutoPlay)
+            {
+                SetCurrentValue(IsEffectiveShowTransitionProgressProperty, IsShowTransitionProgress);
+            }
+            else
+            {
+                SetCurrentValue(IsEffectiveShowTransitionProgressProperty, false);
             }
         }
     }

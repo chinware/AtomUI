@@ -1,10 +1,13 @@
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils; 
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -18,6 +21,12 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CarouselPageIndicator>();
     
+    public static readonly StyledProperty<bool> IsShowTransitionProgressProperty = 
+        Carousel.IsShowTransitionProgressProperty.AddOwner<CarouselPageIndicator>();
+    
+    public static readonly StyledProperty<TimeSpan> AutoPlaySpeedProperty = 
+        Carousel.AutoPlaySpeedProperty.AddOwner<CarouselPageIndicator>();
+    
     public bool IsSelected
     {
         get => GetValue(IsSelectedProperty);
@@ -29,8 +38,52 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    public bool IsShowTransitionProgress
+    {
+        get => GetValue(IsShowTransitionProgressProperty);
+        set => SetValue(IsShowTransitionProgressProperty, value);
+    }
+    
+    public TimeSpan AutoPlaySpeed
+    {
+        get => GetValue(AutoPlaySpeedProperty);
+        set => SetValue(AutoPlaySpeedProperty, value);
+    }
 
     #endregion
+    
+    internal static readonly DirectProperty<CarouselPageIndicator, double> ProgressValueProperty =
+        AvaloniaProperty.RegisterDirect<CarouselPageIndicator, double>(
+            nameof(ProgressValue),
+            o => o.ProgressValue,
+            (o, v) => o.ProgressValue = v);
+    
+    internal static readonly DirectProperty<CarouselPageIndicator, double> EffectiveProgressWidthProperty =
+        AvaloniaProperty.RegisterDirect<CarouselPageIndicator, double>(
+            nameof(EffectiveProgressWidth),
+            o => o.EffectiveProgressWidth,
+            (o, v) => o.EffectiveProgressWidth = v);
+
+    private double _progressValue;
+
+    internal double ProgressValue
+    {
+        get => _progressValue;
+        set => SetAndRaise(ProgressValueProperty, ref _progressValue, value);
+    }
+    
+    private double _effectiveProgressWidth;
+
+    internal double EffectiveProgressWidth
+    {
+        get => _effectiveProgressWidth;
+        set => SetAndRaise(EffectiveProgressWidthProperty, ref _effectiveProgressWidth, value);
+    }
+    
+    private Animation? _animation;
+    private CancellationTokenSource? _cancellationTokenSource;
+    private Border? _frame;
     
     static CarouselPageIndicator()
     {
@@ -53,7 +106,25 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
             if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
+                ConfigureFrameTransitions(true);
             }
+        }
+
+        if (change.Property == IsShowTransitionProgressProperty)
+        {
+            BuildProgressAnimation(true);
+        }
+        else if (change.Property == AutoPlaySpeedProperty)
+        {
+            ConfigureProgressAnimation();
+        }
+        else if (change.Property == IsSelectedProperty)
+        {
+            HandleSelectChanged();
+        }
+        else if (change.Property == ProgressValueProperty)
+        {
+            ConfigureProgressWidth();
         }
     }
 
@@ -65,7 +136,6 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
             {
                 Transitions = new Transitions()
                 {
-                    TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
                     TransitionUtils.CreateTransition<DoubleTransition>(WidthProperty)
                 };
             }
@@ -86,5 +156,118 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
     {
         base.OnUnloaded(e);
         Transitions = null;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _frame = e.NameScope.Find<Border>(CarouselPageIndicatorThemeConstants.FramePart);
+        if (_frame != null)
+        {
+            _frame.Loaded += (sender, args) =>
+            {
+                ConfigureFrameTransitions(false);
+            };
+            _frame.Unloaded += (sender, args) =>
+            {
+                _frame.Transitions = null;
+            };
+        }
+        if (IsShowTransitionProgress)
+        {
+            BuildProgressAnimation(false);
+        }
+    }
+
+    private void BuildProgressAnimation(bool force = false)
+    {
+        if (force || _animation is null)
+        {
+            _cancellationTokenSource?.Cancel();
+            _animation = new Animation
+            {
+                Easing         = new LinearEasing(),
+                Duration       = AutoPlaySpeed,
+                Children =
+                {
+                    new KeyFrame
+                    {
+                        Setters = { new Setter(ProgressValueProperty, 0.0) }, 
+                        Cue     = new Cue(0.0d)
+                    },
+                    new KeyFrame
+                    {
+                        Setters = { new Setter(ProgressValueProperty, 1.0) }, 
+                        Cue     = new Cue(1.0d)
+                    }
+                }
+            };
+            ConfigureProgressAnimation();
+            _cancellationTokenSource = null;
+        }
+    }
+    
+    private void ConfigureFrameTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (_frame != null)
+            {
+                if (force || _frame.Transitions == null)
+                {
+                    _frame.Transitions =
+                    [
+                        TransitionUtils.CreateTransition<DoubleTransition>(Border.OpacityProperty)
+                    ];
+                }
+            }
+        }
+        else
+        {
+            if (_frame != null)
+            {
+                _frame.Transitions = null;
+            }
+        }
+    }
+
+    private void ConfigureProgressAnimation()
+    {
+        if (_animation != null)
+        {
+            _animation.Duration = AutoPlaySpeed;
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = null;
+    }
+
+    private void HandleSelectChanged()
+    {
+        if (IsSelected && IsShowTransitionProgress)
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            _animation?.RunAsync(this, _cancellationTokenSource.Token);
+        }
+        else
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    private void ConfigureProgressWidth()
+    {
+        if (IsSelected && IsShowTransitionProgress)
+        {
+            var width = _frame?.Bounds.Width ?? 0.0;
+            SetCurrentValue(EffectiveProgressWidthProperty, width * ProgressValue);
+        }
+     
     }
 }

@@ -28,7 +28,9 @@
                                             Margin="{TemplateBinding EffectivePaginationMargin}"
                                             IsVisible="{TemplateBinding IsShowPagination}">
                         <atom:CarouselPagination Name="{x:Static atom:CarouselThemeConstants.PaginationPart}"
-                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
+                                                 IsShowTransitionProgress="{TemplateBinding IsEffectiveShowTransitionProgress}"
+                                                 AutoPlaySpeed="{TemplateBinding AutoPlaySpeed}"/>
                     </LayoutTransformControl>
                 </Panel>
             </ControlTemplate>

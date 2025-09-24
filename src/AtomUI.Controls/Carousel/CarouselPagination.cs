@@ -16,10 +16,28 @@ internal class CarouselPagination : SelectingItemsControl
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CarouselPagination>();
     
+    public static readonly StyledProperty<bool> IsShowTransitionProgressProperty = 
+        Carousel.IsShowTransitionProgressProperty.AddOwner<CarouselPagination>();
+    
+    public static readonly StyledProperty<TimeSpan> AutoPlaySpeedProperty = 
+        Carousel.AutoPlaySpeedProperty.AddOwner<CarouselPagination>();
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public bool IsShowTransitionProgress
+    {
+        get => GetValue(IsShowTransitionProgressProperty);
+        set => SetValue(IsShowTransitionProgressProperty, value);
+    }
+    
+    public TimeSpan AutoPlaySpeed
+    {
+        get => GetValue(AutoPlaySpeedProperty);
+        set => SetValue(AutoPlaySpeedProperty, value);
     }
 
     #endregion
@@ -40,7 +58,7 @@ internal class CarouselPagination : SelectingItemsControl
 
     static CarouselPagination()
     {
-        AutoScrollToSelectedItemProperty.OverrideDefaultValue<Segmented>(false);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<CarouselPagination>(false);
     }
     
     public CarouselPagination()
@@ -101,6 +119,8 @@ internal class CarouselPagination : SelectingItemsControl
             }
             
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, pageIndicator, CarouselPageIndicator.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsShowTransitionProgressProperty, pageIndicator, CarouselPageIndicator.IsShowTransitionProgressProperty));
+            disposables.Add(BindUtils.RelayBind(this, AutoPlaySpeedProperty, pageIndicator, CarouselPageIndicator.AutoPlaySpeedProperty));
             
             PreparePageIndicator(pageIndicator, item, index, disposables);
             
