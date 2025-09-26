@@ -82,15 +82,16 @@ AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 
 
 目前我们已经发布的包如下：
 
-| 包名称                      | 描述                                                    |
-|--------------------------|-------------------------------------------------------|
-| AtomUI                   | 主库，包含了主题系统和 AtomUI OSS 版本所有的控件                        |
-| AtomUI.Controls.DataGrid | 数据表格控件定义，如果不用可以不引入                                    |
-| AtomUI.Generator         | 自定义控件需要的一些源码生成器定义，您如果在自定义控件的时候需要接入 AtomUI 主题系统，需要引入此包 |
-| AtomUI.IconPkg.Generator | 如果您需要自定义 Icon 包，需要引入此包                                |
+| 包名称                         | 描述                                                    |
+|-----------------------------|-------------------------------------------------------|
+| AtomUI                      | 主库，包含了主题系统和 AtomUI OSS 版本所有的控件                        |
+| AtomUI.Controls.DataGrid    | 数据表格控件，如果不用可以不引入                                      |
+| AtomUI.Controls.ColorPicker | 颜色选择控件，如果不用可以不引入                                      |
+| AtomUI.Generator            | 自定义控件需要的一些源码生成器定义，您如果在自定义控件的时候需要接入 AtomUI 主题系统，需要引入此包 |
+| AtomUI.IconPkg.Generator    | 如果您需要自定义 Icon 包，需要引入此包                                |
 
 ```bash
-dotnet add package AtomUI --version 0.0.6-build.4
+dotnet add package AtomUI --version 1.0.0
 ```
 
 ##### 启用 AtomUI 库
@@ -108,9 +109,9 @@ dotnet add package AtomUI --version 0.0.6-build.4
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="0.0.6-build.4"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.2"/>
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.2">
+        <PackageReference Include="AtomUI" Version="1.0.0"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
@@ -131,16 +132,21 @@ class Program
         .StartWithClassicDesktopLifetime(args);
     public static AppBuilder BuildAvaloniaApp()
     {
-        var builder = AppBuilder.Configure<App>()
+        return AppBuilder.Configure<App>()
+            .UseReactiveUI()
             .UsePlatformDetect()
-            .WithInterFont()
+            .WithAlibabaSansFont()
             .With(new Win32PlatformOptions())
+            .UseAtomUI(builder =>
+            { 
+                builder.WithDefaultLanguageVariant(LanguageVariant.zh_CN);
+                builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
+                builder.UseOSSControls();
+                builder.UseGalleryControls();
+                builder.UseOSSDataGrid();
+                builder.UseColorPicker();
+            })
             .LogToTrace();
-        var themeBuilder = builder.CreateThemeManagerBuilder();
-        themeBuilder.UseCultureInfo(new CultureInfo(LanguageCode.en_US));
-        themeBuilder.UseTheme(ThemeManager.DEFAULT_THEME_ID);
-        themeBuilder.UseOSSControls();
-        return builder.UseAtomUI(themeBuilder);
     }
 }
 ```
@@ -180,14 +186,7 @@ class Program
 <div style="height:50px"></div>
 
 #### 许可证说明
-使用 AtomUI 的项目需要遵循 LGPL v3 协议，<strong>商业应用(包括且不限于公司内部项目、个人使用 AtomUI 开发的商业项目和承接的外包项目)在使用二进制连接的情况下免费</strong>，如果基于源码定制 AtomUI 需要修改的代码开源或者购买商业授权，需要商业授权，欢迎联系：北京秦派软件科技有限公司。
-
-#### 关于甲辰计划
-<p align="center">
-    <img src="./resources/images/readme/jiachenjihua.png" width="300" />
-</p>
-
-甲辰计划（RISC-V Prosperity 2036）诞生于2024年除夕，由国内多家 RISC-V 软件及芯片团队联合发起，并已经吸引数十家国内外从事 RISC-V 产品及软件开发的企业加入。我们相信RISC-V 生态正在进入前所未有的爆炸式增长的初期阶段：在2025年，RISC-V或将迎来预计超过100万名RISC-V应用开发者，与此同时RISC-V将在2025年进入世界超算TOP500、并在2030年进入TOP10。我们正处于一个计算机体系架构和基础软件系统的黄金时代，开放指令集架构带来了大量新的科学问题和工程挑战。
+使用 AtomUI 的项目需要遵循 LGPL v3 协议，<strong>商业应用(包括且不限于公司内部项目、个人使用 AtomUI OSS 开发的商业项目和承接的外包项目)在使用二进制连接的情况下免费</strong>，如果基于源码定制 AtomUI 需要修改的代码开源或者购买商业授权，需要商业授权，欢迎联系：北京秦派软件科技有限公司。
 
 ### 🤝 贡献
 
@@ -207,7 +206,7 @@ class Program
 #### 关于秦派软件
 
 <p align="center">
-    <img src="./resources/images/readme/Chinware.png" width="300" />
+    <img src="./resources/images/readme/Qinware.png" width="300" />
 </p>
 
-北京秦派软件科技有限公司(Pulsarware® Technologies Ltd.)是一家致力于开发生产力工具软件的技术公司，成立之初立志要在工具软件领域深耕，践行精益求精的研发精神，努力推出优质的生产力工具软件服务国内外的开发者，提升开发者的工作效率，同时创造出商业价值和社会价值。
+北京秦派软件科技有限公司(Qinware Technology Co., Ltd.)是一家致力于开发生产力工具软件的技术公司，成立之初立志要在工具软件领域深耕，践行精益求精的研发精神，努力推出优质的生产力工具软件服务国内外的开发者，提升开发者的工作效率，同时创造出商业价值和社会价值。

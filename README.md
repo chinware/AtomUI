@@ -71,15 +71,16 @@ has not released a long-term support version, so it is recommended to install th
 
 The packages we have released are as follows:
 
-| Package                  | Description                                                                                                                                |
-|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| AtomUI                   | Main library, includes the theme system and all controls of the AtomUI OSS version                                                         |
-| AtomUI.Controls.DataGrid | Data grid control definitions. Can be omitted if not used.                                                                                 |
-| AtomUI.Generator         | Source generator definitions required for custom controls. Required if integrating with AtomUI theme system when creating custom controls. |
-| AtomUI.IconPkg.Generator | Required if you need to create custom icon packages.                                                                                       |
+| Package                     | Description                                                                                                                                |
+|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| AtomUI                      | Main library, includes the theme system and all controls of the AtomUI OSS version                                                         |
+| AtomUI.Controls.DataGrid    | Data grid control. Can be omitted if not used.                                                                                             |
+| AtomUI.Controls.ColorPicker | ColorPicker control. Can be omitted if not used.                                                                                           |
+| AtomUI.Generator            | Source generator definitions required for custom controls. Required if integrating with AtomUI theme system when creating custom controls. |
+| AtomUI.IconPkg.Generator    | Required if you need to create custom icon packages.                                                                                       |
 
 ```bash
-dotnet add package AtomUI --version 0.0.6-build.4
+dotnet add package AtomUI --version 1.0.0
 ```
 
 ##### Enable AtomUI library
@@ -97,9 +98,9 @@ dotnet add package AtomUI --version 0.0.6-build.4
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="0.0.6-build.4"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.2"/>
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.2">
+        <PackageReference Include="AtomUI" Version="1.0.0"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
@@ -120,16 +121,21 @@ class Program
         .StartWithClassicDesktopLifetime(args);
     public static AppBuilder BuildAvaloniaApp()
     {
-        var builder = AppBuilder.Configure<App>()
+        return AppBuilder.Configure<App>()
+            .UseReactiveUI()
             .UsePlatformDetect()
-            .WithInterFont()
+            .WithAlibabaSansFont()
             .With(new Win32PlatformOptions())
+            .UseAtomUI(builder =>
+            { 
+                builder.WithDefaultLanguageVariant(LanguageVariant.zh_CN);
+                builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
+                builder.UseOSSControls();
+                builder.UseGalleryControls();
+                builder.UseOSSDataGrid();
+                builder.UseColorPicker();
+            })
             .LogToTrace();
-        var themeBuilder = builder.CreateThemeManagerBuilder();
-        themeBuilder.UseCultureInfo(new CultureInfo(LanguageCode.en_US));
-        themeBuilder.UseTheme(ThemeManager.DEFAULT_THEME_ID);
-        themeBuilder.UseOSSControls();
-        return builder.UseAtomUI(themeBuilder);
     }
 }
 ```
@@ -170,25 +176,11 @@ You can start using it in your own projects
 
 #### License Description
 
-Projects using AtomUI need to comply with the LGPL v3 agreement. <strong>Commercial applications (including but not
-limited to internal company projects, commercial projects developed by individuals using AtomUI, and outsourced
+Projects using AtomUI OSS need to comply with the LGPL v3 agreement. <strong>Commercial applications (including but not
+limited to internal company projects, commercial projects developed by individuals using AtomUI OSS, and outsourced
 projects) are free when using binary links</strong>. If you want to customize AtomUI based on source code, you need to
 modify the open source code or purchase a commercial license. If you need a commercial license, please contact: Beijing
-Chinware Software Technology Co., Ltd.
-
-#### About the Jiachen Project
-
-<p align="center">
-    <img src="./resources/images/readme/jiachenjihua.png" width="300" />
-</p>
-
-The Jiachen Project (RISC-V Prosperity 2036) was born on New Year's Eve 2024. It was jointly initiated by several
-domestic RISC-V software and chip teams and has attracted dozens of domestic and foreign companies engaged in RISC-V
-product and software development to join. We believe that the RISC-V ecosystem is entering the initial stage of
-unprecedented explosive growth: in 2025, RISC-V may welcome more than 1 million RISC-V application developers, and at
-the same time RISC-V will enter the world's top 500 supercomputers in 2025 and the top 10 in 2030. We are in a golden
-age of computer architecture and basic software systems, and the open instruction set architecture has brought a large
-number of new scientific problems and engineering challenges.
+Qinware Technology Co., Ltd.
 
 ### 🤝 Contributing
 
@@ -209,13 +201,13 @@ GitHub [Issues][github-issues-link] to get stuck in to show us what you’re mad
 
 [github-contrib-link]: https://github.com/chinware/AtomUI/graphs/contributors
 
-#### About Chinware
+#### About Qinware
 
 <p align="center">
-    <img src="./resources/images/readme/Chinware.png" width="300" />
+    <img src="./resources/images/readme/Qinware.png" width="300" />
 </p>
 
-Chinware Technologies Ltd. is a technology company dedicated to the development of productivity tool software. Since its
+Qinware Technology Co., Ltd. is a technology company dedicated to the development of productivity tool software. Since its
 inception, it has been determined to deepen its roots in the field of tool software, practice the spirit of continuous
 improvement in research and development, and strive to launch high-quality productivity tool software to serve
 developers at home and abroad, improve developers' work efficiency, and create commercial value and social value.
