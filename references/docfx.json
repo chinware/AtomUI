@@ -7,12 +7,21 @@
                     "src": "../src",
                     "files": [
                         "AtomUI.Base/AtomUI.Base.csproj",
+                        "AtomUI.Generator/AtomUI.Generator.csproj",
+                        "AtomUI.Theme/AtomUI.Theme.csproj",
+                        "AtomUI.IconPkg/AtomUI.IconPkg.csproj",
+                        "AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj",
                         "AtomUI.Controls/AtomUI.Controls.csproj",
-                        "AtomUI.Theme/AtomUI.Theme.csproj"
+                        "AtomUI.ReactiveUI/AtomUI.ReactiveUI.csproj",
+                        "AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj",
+                        "AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj"
                     ]
                 }
             ],
-            "dest": "../../output/references/api"
+            "output":"../../output/references",
+            "properties": {
+                "Configuration": "Debug"
+            }
         }
     ],
     "build": {
@@ -34,7 +43,8 @@
         "output": "../../output/references/site",
         "template": [
             "default",
-            "modern"
+            "modern",
+            "lumi-apidoc-template"
         ],
         "globalMetadata": {
             "_appName": "qinware",
