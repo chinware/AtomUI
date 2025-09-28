@@ -267,6 +267,7 @@ public class ToggleSwitch : ToggleButton,
     private CompositeDisposable? _onBindingDisposables;
     private CompositeDisposable? _offBindingDisposables;
     private WaveSpiritDecorator? _waveSpiritDecorator;
+    private Canvas? _mainLayout;
     
     static ToggleSwitch()
     {
@@ -353,32 +354,20 @@ public class ToggleSwitch : ToggleButton,
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (_switchKnob is not null)
+        _mainLayout?.Arrange(new Rect(DesiredSize));
+        if (!_isCheckedChanged)
         {
-            if (!_isCheckedChanged)
-            {
-                _switchKnob.Arrange(KnobRect);
-            }
-            else
-            {
-                _switchKnob.Arrange(KnobMovingRect);
-            }
+            _switchKnob?.Arrange(KnobRect);
         }
-
-        if (_offContentPresenter != null)
+        else
         {
-            _offContentPresenter.Arrange(new Rect(new Point(OffContentOffset.X, OffContentOffset.Y), _offContentPresenter.DesiredSize));
+            _switchKnob?.Arrange(KnobMovingRect);
         }
-
-        if (_onContentPresenter != null)
-        {
-            _onContentPresenter.Arrange(new Rect(new Point(OnContentOffset.X, OnContentOffset.Y), _onContentPresenter.DesiredSize));
-        }
-
-        if (_waveSpiritDecorator != null)
-        {
-            _waveSpiritDecorator.Arrange(new Rect(DesiredSize));
-        }
+        
+        _offContentPresenter?.Arrange(new Rect(new Point(OffContentOffset.X, OffContentOffset.Y), _offContentPresenter.DesiredSize));
+        _onContentPresenter?.Arrange(new Rect(new Point(OnContentOffset.X, OnContentOffset.Y), _onContentPresenter.DesiredSize));
+        _waveSpiritDecorator?.Arrange(new Rect(DesiredSize));
+        
         return finalSize;
     }
     
@@ -501,6 +490,7 @@ public class ToggleSwitch : ToggleButton,
         _onContentPresenter  = scope.Find<ContentPresenter>(ToggleSwitchThemeConstants.OnContentPresenterPart);
         _offContentPresenter = scope.Find<ContentPresenter>(ToggleSwitchThemeConstants.OffContentPresenterPart);
         _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(ToggleSwitchThemeConstants.WaveSpiritPart);
+        _mainLayout          = e.NameScope.Find<Canvas>(ToggleSwitchThemeConstants.MainContainerPart);
         HandleLoadingState(IsLoading);
     }
 

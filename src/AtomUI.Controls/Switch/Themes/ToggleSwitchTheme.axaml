@@ -8,7 +8,8 @@
             <ControlTemplate>
                 <Panel>
                     <atom:WaveSpiritDecorator Name="{x:Static atom:ToggleSwitchThemeConstants.WaveSpiritPart}"/>
-                    <Canvas Name="{x:Static atom:ToggleSwitchThemeConstants.MainContainerPart}">
+                    <Canvas Name="{x:Static atom:ToggleSwitchThemeConstants.MainContainerPart}"
+                            ClipToBounds="True">
                         <atom:SwitchKnob Name="{x:Static atom:ToggleSwitchThemeConstants.SwitchKnobPart}"
                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                          IsCheckedState="{TemplateBinding IsChecked}" />
