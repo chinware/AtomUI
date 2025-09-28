@@ -1,3 +1,7 @@
+---
+title: "AtomUI OSS API Reference"
+---
+
 <div style="margin:0 auto; width: 40%">
     <img src="images/atomui-oss.svg"/>
 </div>
