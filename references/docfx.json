@@ -39,6 +39,11 @@
             }
         ],
         "resource": [
+            {
+                "files": [
+                    "images/**"
+                ]
+            }
         ],
         "output": "../../output/references/site",
         "template": [
