@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Controls.DialogPositioning;
 
-public record struct DialogPositionerParameters
+internal record struct DialogPositionerParameters
 {
     public Rect AnchorRectangle { get; set; }
     public double HorizontalOffset { get; set; }
@@ -11,7 +11,7 @@ public record struct DialogPositionerParameters
     public DialogPositionerConstraintAdjustment ConstraintAdjustment { get; set; }
 }
 
-public interface IDialogPositioner
+internal interface IDialogPositioner
 {
     void Update(DialogPositionerParameters parameters);
 }

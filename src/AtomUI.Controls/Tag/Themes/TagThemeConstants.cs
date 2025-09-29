@@ -1,6 +1,6 @@
 namespace AtomUI.Controls.Themes;
 
-public static class TagThemeConstants
+internal static class TagThemeConstants
 {
     public const string ElementsLayoutPart = "PART_ElementsLayout";
     public const string FramePart = "PART_Frame";

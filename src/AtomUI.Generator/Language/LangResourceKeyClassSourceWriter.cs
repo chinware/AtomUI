@@ -56,7 +56,7 @@ public class LangResourceKeyClassSourceWriter
     {
         var modifiers = new List<SyntaxToken>
         {
-            SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+            SyntaxFactory.Token(SyntaxKind.InternalKeyword),
             SyntaxFactory.Token(SyntaxKind.StaticKeyword)
         };
         var classSyntax = SyntaxFactory.ClassDeclaration(className)

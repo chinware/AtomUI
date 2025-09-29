@@ -1,6 +1,6 @@
 namespace AtomUI.Controls.Themes;
 
-public static class AlertThemeConstants
+internal static class AlertThemeConstants
 {
     public const string CloseBtnPart = "PART_CloseBtn";
     public const string InfoIconPart = "PART_InfoIcon";

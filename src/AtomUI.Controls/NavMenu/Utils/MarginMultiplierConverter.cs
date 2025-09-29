@@ -4,7 +4,7 @@ using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Utils;
 
-public class MarginMultiplierConverter : IMultiValueConverter
+internal class MarginMultiplierConverter : IMultiValueConverter
 {
     public bool Left { get; set; } = false;
 

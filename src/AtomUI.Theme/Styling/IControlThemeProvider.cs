@@ -2,8 +2,8 @@
 
 public interface IControlThemeProvider
 {
-    public object Key { get; }
-    public Type TargetType { get; }
+    object Key { get; }
+    Type TargetType { get; }
 
-    public BaseControlTheme BuildControlTheme();
+    BaseControlTheme BuildControlTheme();
 }

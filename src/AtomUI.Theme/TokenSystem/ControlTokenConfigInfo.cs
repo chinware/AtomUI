@@ -1,6 +1,6 @@
 ﻿namespace AtomUI.Theme.TokenSystem;
 
-public class ControlTokenConfigInfo
+internal class ControlTokenConfigInfo
 {
     public bool EnableAlgorithm { get; set; } = false;
     

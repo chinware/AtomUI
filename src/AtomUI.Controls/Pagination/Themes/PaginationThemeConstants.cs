@@ -1,6 +1,6 @@
 namespace AtomUI.Controls.Themes;
 
-public static class PaginationThemeConstants
+internal static class PaginationThemeConstants
 {
     public const string RootLayoutPart = "PART_RootLayout";
     public const string NavPart = "PART_Nav";
@@ -9,20 +9,20 @@ public static class PaginationThemeConstants
     public const string TotalInfoPresenterPart = "PART_TotalInfoPresenter";
 }
 
-public static class PaginationNavItemThemeConstants
+internal static class PaginationNavItemThemeConstants
 {
     public const string RootLayoutPart = "PART_RootLayoutPart";
     public const string MainFramePart = "PART_MainFrame";
     public const string ContentPart = "PART_Content";
 }
 
-public static class PaginationNavThemeConstants
+internal static class PaginationNavThemeConstants
 {
     public const string FramePart = "PART_Frame";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 }
 
-public static class PaginationQuickJumperBarThemeConstants
+internal static class PaginationQuickJumperBarThemeConstants
 {
     public const string RootLayoutPart = "PART_RootLayout";
     public const string JumpToContentPresenterPart = "PART_JumpToContentPresenter";
@@ -30,7 +30,7 @@ public static class PaginationQuickJumperBarThemeConstants
     public const string PageLineEditPart = "PART_PageLineEdit";
 }
     
-public static class SimplePaginationThemeConstants
+internal static class SimplePaginationThemeConstants
 {
     public const string RootLayoutPart = "PART_RootLayoutPart";
     public const string PreviousNavItemPart = "PART_PreviousNavItem";

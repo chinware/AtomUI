@@ -4,7 +4,7 @@ using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Utils;
 
-public class ToggleItemsLayoutVisibleConverter : IMultiValueConverter
+internal class ToggleItemsLayoutVisibleConverter : IMultiValueConverter
 {
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
