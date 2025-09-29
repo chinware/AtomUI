@@ -732,6 +732,10 @@ namespace AtomUI.Theme.Styling
 
     public static class SeparatorTokenKey
     {
+        public static readonly TokenResourceKey HorizontalMarginBlock = new TokenResourceKey("Separator.HorizontalMarginBlock");
+        public static readonly TokenResourceKey HorizontalMarginBlockLG = new TokenResourceKey("Separator.HorizontalMarginBlockLG");
+        public static readonly TokenResourceKey HorizontalMarginBlockSM = new TokenResourceKey("Separator.HorizontalMarginBlockSM");
+        public static readonly TokenResourceKey HorizontalWithTextGutterMargin = new TokenResourceKey("Separator.HorizontalWithTextGutterMargin");
         public static readonly TokenResourceKey OrientationMarginPercent = new TokenResourceKey("Separator.OrientationMarginPercent");
         public static readonly TokenResourceKey TextPaddingInline = new TokenResourceKey("Separator.TextPaddingInline");
         public static readonly TokenResourceKey VerticalMarginInline = new TokenResourceKey("Separator.VerticalMarginInline");

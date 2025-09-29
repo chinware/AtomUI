@@ -5,9 +5,11 @@ using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
@@ -21,7 +23,16 @@ public enum SeparatorTitlePosition
     Center
 }
 
+public enum SeparatorVariant
+{
+    Solid,
+    Dotted,
+    Dashed
+}
+
+[PseudoClasses(SeparatorPseudoClass.HasTitleText)]
 public class Separator : AvaloniaSeparator,
+                         ISizeTypeAware,
                          IControlSharedTokenResourcesHost
 {
     private const double SEPARATOR_LINE_MIN_PROPORTION = 0.25;
@@ -46,12 +57,18 @@ public class Separator : AvaloniaSeparator,
 
     public static readonly StyledProperty<double> OrientationMarginProperty =
         AvaloniaProperty.Register<Separator, double>(nameof(OrientationMargin), double.NaN);
-
-    public static readonly StyledProperty<bool> IsDashedLineProperty =
-        AvaloniaProperty.Register<Separator, bool>(nameof(Orientation));
+    
+    public static readonly StyledProperty<SeparatorVariant> VariantProperty =
+        AvaloniaProperty.Register<Separator, SeparatorVariant>(nameof(Variant), SeparatorVariant.Solid);
 
     public static readonly StyledProperty<double> LineWidthProperty =
         AvaloniaProperty.Register<Separator, double>(nameof(LineWidth), 1);
+    
+    public static readonly StyledProperty<bool> IsPlainProperty =
+        AvaloniaProperty.Register<Separator, bool>(nameof(IsPlain), false);
+    
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Separator>();
 
     /// <summary>
     /// 分割线的标题
@@ -98,6 +115,15 @@ public class Separator : AvaloniaSeparator,
         get => GetValue(OrientationProperty);
         set => SetValue(OrientationProperty, value);
     }
+    
+    /// <summary>
+    /// 分割线是虚线、点线还是实线
+    /// </summary>
+    public SeparatorVariant Variant
+    {
+        get => GetValue(VariantProperty);
+        set => SetValue(VariantProperty, value);
+    }
 
     /// <summary>
     /// The margin-left/right between the title and its closest border, while the orientation must be left or right,
@@ -109,16 +135,7 @@ public class Separator : AvaloniaSeparator,
         get => GetValue(OrientationMarginProperty);
         set => SetValue(OrientationMarginProperty, value);
     }
-
-    /// <summary>
-    /// 是否为虚线
-    /// </summary>
-    public bool IsDashedLine
-    {
-        get => GetValue(IsDashedLineProperty);
-        set => SetValue(IsDashedLineProperty, value);
-    }
-
+    
     /// <summary>
     /// 分割线的宽度，这里的宽度是 RenderScaling 中立的像素值
     /// </summary>
@@ -126,6 +143,24 @@ public class Separator : AvaloniaSeparator,
     {
         get => GetValue(LineWidthProperty);
         set => SetValue(LineWidthProperty, value);
+    }
+    
+    /// <summary>
+    /// 文字是否显示为普通正文样式
+    /// </summary>
+    public bool IsPlain
+    {
+        get => GetValue(IsPlainProperty);
+        set => SetValue(IsPlainProperty, value);
+    }
+    
+    /// <summary>
+    /// The size of divider. Only valid for horizontal layout
+    /// </summary>
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
 
     #endregion
@@ -169,6 +204,8 @@ public class Separator : AvaloniaSeparator,
     
     private Label? _titleLabel;
     private double _currentEdgeDistance;
+    private static ImmutableDashStyle? s_dash;
+    private static ImmutableDashStyle? s_dot;
 
     static Separator()
     {
@@ -178,7 +215,7 @@ public class Separator : AvaloniaSeparator,
         AffectsArrange<Separator>(TitlePositionProperty);
         AffectsRender<Separator>(TitleColorProperty,
             LineColorProperty,
-            IsDashedLineProperty);
+            IsPlainProperty);
     }
 
     public Separator()
@@ -186,11 +223,20 @@ public class Separator : AvaloniaSeparator,
         this.RegisterResources();
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == TitleProperty)
+        {
+            UpdatePseudoClasses();
+        }
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _titleLabel = e.NameScope.Find<Label>(SeparatorThemeConstants.TitlePart);
-
+        UpdatePseudoClasses();
     }
     
     // 当为水平分隔线的时候，我们设置最小的高度，当为垂直分割线的时候我们设置一个合适宽度
@@ -315,12 +361,19 @@ public class Separator : AvaloniaSeparator,
         {
             EdgeMode = EdgeMode.Aliased
         });
-        var linePen     = new Pen(LineColor, LineWidth);
-        var controlRect = new Rect(DesiredSize.Deflate(Margin));
-        if (IsDashedLine)
+        IDashStyle? lineStyle   = null;
+        
+        if (Variant == SeparatorVariant.Dashed)
         {
-            linePen.DashStyle = DashStyle.Dash;
+            lineStyle = DashStyle;
         }
+        else if (Variant == SeparatorVariant.Dotted)
+        {
+            lineStyle = DotStyle;
+        }
+        
+        var linePen     = new Pen(LineColor, LineWidth, lineStyle);
+        var controlRect = new Rect(DesiredSize.Deflate(Margin));
 
         if (Orientation == Orientation.Horizontal)
         {
@@ -366,8 +419,17 @@ public class Separator : AvaloniaSeparator,
         else
         {
             var offsetX = controlRect.Width / 2.0;
-            context.DrawLine(linePen, new Point(offsetX, 0), new Point(offsetX, controlRect.Bottom));
+            var offsetY = controlRect.Height * 0.2;
+            context.DrawLine(linePen, new Point(offsetX, offsetY), new Point(offsetX, controlRect.Bottom - offsetY));
         }
+    }
+    
+    public static IDashStyle DashStyle => s_dash ??= new ImmutableDashStyle([4, 2], 0);
+    public static IDashStyle DotStyle => s_dot ??= new ImmutableDashStyle([1, 1], 0);
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(SeparatorPseudoClass.HasTitleText, !string.IsNullOrEmpty(Title));
     }
 }
 

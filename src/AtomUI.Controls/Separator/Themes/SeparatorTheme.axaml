@@ -15,17 +15,29 @@
                        Content="{TemplateBinding Title}"
                        FontSize="{TemplateBinding FontSize}"
                        Foreground="{TemplateBinding TitleColor}"
-                       FontStyle="{TemplateBinding FontStyle}"
-                       FontWeight="{TemplateBinding FontWeight}"/>
+                       IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}"/>
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="TitleColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-        <Setter Property="LineColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSplit}}" />
+        <Setter Property="TitleColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextHeading}}" />
+        <Setter Property="LineColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
+        
         <Setter Property="TextPaddingInline" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.TextPaddingInline}}" />
         <Setter Property="OrientationMarginPercent" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.OrientationMarginPercent}}" />
         <Setter Property="LineWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidth}}" />
+        
+        <Style Selector="^[IsPlain=True]">
+            <Style Selector="^ /template/ Label#PART_Title">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+                <Setter Property="FontWeight" Value="Normal" />
+            </Style>
+        </Style>
+        <Style Selector="^[IsPlain=False]">
+            <Style Selector="^ /template/ Label#PART_Title">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+                <Setter Property="FontWeight" Value="500" />
+            </Style>
+        </Style>
 
         <Style Selector="^[Orientation=Horizontal]">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -33,6 +45,26 @@
             <Style Selector="^ /template/ Label#PART_Title">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
+            
+            <Style Selector="^:not(:has-title)">
+                <Style Selector="^[SizeType=Small]">
+                    <Setter Property="Margin" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.HorizontalMarginBlockSM}}"/>
+                </Style>
+            
+                <Style Selector="^[SizeType=Middle]">
+                    <Setter Property="Margin" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.HorizontalMarginBlock}}"/>
+                </Style>
+            
+                <Style Selector="^[SizeType=Large]">
+                    <Setter Property="Margin" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.HorizontalMarginBlockLG}}"/>
+                </Style>
+            </Style>
+            <Style Selector="^:has-title">
+                <Style Selector="^[SizeType=Small]">
+                    <Setter Property="Margin" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.HorizontalWithTextGutterMargin}}"/>
+                </Style>
+            </Style>
+  
         </Style>
         
         <Style Selector="^[Orientation=Vertical]">
@@ -41,6 +73,8 @@
             <Style Selector="^ /template/ Label#PART_Title">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
+            
+            <Setter Property="VerticalMarginInline" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.VerticalMarginInline}}"/>
         </Style>
         
     </ControlTheme>
