@@ -1,19 +1,20 @@
 namespace AtomUI.Generator;
 
-public class ControlTokenInfo
+internal class ControlTokenInfo
 {
-    public string? ControlNamespace { get; set; }
+    public string ControlNamespace { get; set; }
     public string ControlName { get; set; }
     public HashSet<TokenName> Tokens { get; }
 
-    public ControlTokenInfo(string controlName, HashSet<TokenName> tokens)
+    public ControlTokenInfo(string ns, string controlName, HashSet<TokenName> tokens)
     {
+        ControlNamespace = ns;
         ControlName = controlName;
         Tokens      = tokens;
     }
 
     public ControlTokenInfo()
-        : this(string.Empty, new HashSet<TokenName>())
+        : this(string.Empty, string.Empty, new HashSet<TokenName>())
     {
     }
 
@@ -23,7 +24,7 @@ public class ControlTokenInfo
     }
 }
 
-public class TokenInfo
+internal class TokenInfo
 {
     public HashSet<TokenName> Tokens { get; private set; }
     public List<ControlTokenInfo> ControlTokenInfos { get; private set; }
@@ -35,7 +36,7 @@ public class TokenInfo
     }
 }
 
-public record TokenName
+internal record TokenName
 {
     public string Name { get; }
     public string ResourceCatalog { get; }

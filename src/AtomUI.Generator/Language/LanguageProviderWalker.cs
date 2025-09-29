@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AtomUI.Generator.Language;
 
-public class LanguageProviderWalker : CSharpSyntaxWalker
+internal class LanguageProviderWalker : CSharpSyntaxWalker
 {
     public LanguageInfo LanguageInfo { get; }
     private readonly SemanticModel _semanticModel;

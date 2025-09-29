@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AtomUI.Generator;
 
-public class TokenPropertyWalker : CSharpSyntaxWalker
+internal class TokenPropertyWalker : CSharpSyntaxWalker
 {
     public const string NotTokenDefinitionAttribute = "NotTokenDefinition";
     

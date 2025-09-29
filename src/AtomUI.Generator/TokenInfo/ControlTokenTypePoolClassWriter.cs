@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator;
 
-public class ControlTokenTypePoolClassWriter
+internal class ControlTokenTypePoolClassWriter
 {
     private readonly SourceProductionContext _context;
     private readonly IEnumerable<string> _classes;

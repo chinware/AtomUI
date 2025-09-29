@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator;
 
-public class ResourceKeyClassWriter
+internal class ResourceKeyClassWriter
 {
     private readonly SourceProductionContext _context;
     private readonly TokenInfo _tokenInfo;
@@ -145,26 +145,50 @@ public class ResourceKeyClassWriter
 
         compilationUnit = compilationUnit.AddUsings(usingSyntaxList.ToArray());
 
-        // 添加命名空间
-        var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Styling"));
-        if (_tokenInfo.Tokens.Count != 0)
+        var controlTokenInfos = new Dictionary<string, List<ControlTokenInfo>>();
+
+        foreach (var tokenInfo in _tokenInfo.ControlTokenInfos)
         {
-            namespaceSyntax = namespaceSyntax.AddMembers(BuildDesignResourceKeyClassSyntax());
+            var ns = $"{tokenInfo.ControlNamespace}.DesignTokens";
+            if (!controlTokenInfos.TryGetValue(ns, out var tokenInfoList))
+            {
+                tokenInfoList = new List<ControlTokenInfo>();
+                controlTokenInfos.Add(ns, tokenInfoList);
+            }
+            tokenInfoList.Add(tokenInfo);
         }
 
-        var controlInfoClassSyntaxList = new List<MemberDeclarationSyntax>();
-        // 添加控件类成员
-        foreach (var controlTokenInfo in _tokenInfo.ControlTokenInfos)
+        // 添加全局 Design Token
         {
-            if (controlTokenInfo.Tokens.Count > 0)
+            if (_tokenInfo.Tokens.Count != 0)
             {
-                controlInfoClassSyntaxList.Add(BuildControlResourceKeyClassSyntax(controlTokenInfo));
+                var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName("AtomUI.Theme.Styling"));
+                namespaceSyntax = namespaceSyntax.AddMembers(BuildDesignResourceKeyClassSyntax());
+                compilationUnit = compilationUnit.AddMembers(namespaceSyntax);
             }
         }
+        
+        // 添加控件 Design Token
+        foreach (var entry in controlTokenInfos)
+        {
+            if (entry.Value.Count > 0)
+            {
+                var namespaceSyntax            = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(entry.Key));
+                var controlInfoClassSyntaxList = new List<MemberDeclarationSyntax>();
+                // 添加控件类成员
+                foreach (var controlTokenInfo in entry.Value)
+                {
+                    if (controlTokenInfo.Tokens.Count > 0)
+                    {
+                        controlInfoClassSyntaxList.Add(BuildControlResourceKeyClassSyntax(controlTokenInfo));
+                    }
+                }
 
-        namespaceSyntax = namespaceSyntax.AddMembers(controlInfoClassSyntaxList.ToArray());
-        compilationUnit = compilationUnit.AddMembers(namespaceSyntax);
-
+                namespaceSyntax = namespaceSyntax.AddMembers(controlInfoClassSyntaxList.ToArray());
+                compilationUnit = compilationUnit.AddMembers(namespaceSyntax);
+            }
+        }
+        
         return compilationUnit;
     }
 }

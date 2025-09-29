@@ -1,6 +1,6 @@
 ﻿namespace AtomUI.Generator.Language;
 
-public class LanguageInfo
+internal class LanguageInfo
 {
     public string Namespace { get; internal set; } = string.Empty;
     public string ResourceCatalog { get; internal set; } = string.Empty;

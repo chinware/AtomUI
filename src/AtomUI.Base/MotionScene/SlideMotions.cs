@@ -5,7 +5,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
-internal class SlideUpInMotion : AbstractMotion
+public class SlideUpInMotion : AbstractMotion
 {
     public SlideUpInMotion(TimeSpan? duration = null,
                            Easing? easing = null,
@@ -33,7 +33,7 @@ internal class SlideUpInMotion : AbstractMotion
     }
 }
 
-internal class SlideUpOutMotion : AbstractMotion
+public class SlideUpOutMotion : AbstractMotion
 {
     public SlideUpOutMotion(TimeSpan? duration = null,
                             Easing? easing = null,
@@ -61,7 +61,7 @@ internal class SlideUpOutMotion : AbstractMotion
     }
 }
 
-internal class SlideDownInMotion : AbstractMotion
+public class SlideDownInMotion : AbstractMotion
 {
     public SlideDownInMotion(TimeSpan? duration = null,
                              Easing? easing = null,
@@ -89,7 +89,7 @@ internal class SlideDownInMotion : AbstractMotion
     }
 }
 
-internal class SlideDownOutMotion : AbstractMotion
+public class SlideDownOutMotion : AbstractMotion
 {
     public SlideDownOutMotion(TimeSpan? duration = null,
                               Easing? easing = null,
@@ -117,7 +117,7 @@ internal class SlideDownOutMotion : AbstractMotion
     }
 }
 
-internal class SlideLeftInMotion : AbstractMotion
+public class SlideLeftInMotion : AbstractMotion
 {
     public SlideLeftInMotion(TimeSpan? duration = null,
                              Easing? easing = null,
@@ -145,7 +145,7 @@ internal class SlideLeftInMotion : AbstractMotion
     }
 }
 
-internal class SlideLeftOutMotion : AbstractMotion
+public class SlideLeftOutMotion : AbstractMotion
 {
     public SlideLeftOutMotion(TimeSpan? duration = null,
                               Easing? easing = null,
@@ -173,7 +173,7 @@ internal class SlideLeftOutMotion : AbstractMotion
     }
 }
 
-internal class SlideRightInMotion : AbstractMotion
+public class SlideRightInMotion : AbstractMotion
 {
     public SlideRightInMotion(TimeSpan? duration = null,
                               Easing? easing = null,
@@ -201,7 +201,7 @@ internal class SlideRightInMotion : AbstractMotion
     }
 }
 
-internal class SlideRightOutMotion : AbstractMotion
+public class SlideRightOutMotion : AbstractMotion
 {
     public SlideRightOutMotion(TimeSpan? duration = null,
                                Easing? easing = null,

@@ -5,7 +5,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.MotionScene;
 
-internal class MoveDownInMotion : AbstractMotion
+public class MoveDownInMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -106,7 +106,7 @@ internal class MoveDownInMotion : AbstractMotion
     }
 }
 
-internal class MoveDownOutMotion : AbstractMotion
+public class MoveDownOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -197,7 +197,7 @@ internal class MoveDownOutMotion : AbstractMotion
     }
 }
 
-internal class MoveUpInMotion : AbstractMotion
+public class MoveUpInMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -298,7 +298,7 @@ internal class MoveUpInMotion : AbstractMotion
     }
 }
 
-internal class MoveUpOutMotion : AbstractMotion
+public class MoveUpOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -391,7 +391,7 @@ internal class MoveUpOutMotion : AbstractMotion
     }
 }
 
-internal class MoveLeftInMotion : AbstractMotion
+public class MoveLeftInMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -495,7 +495,7 @@ internal class MoveLeftInMotion : AbstractMotion
     }
 }
 
-internal class MoveLeftOutMotion : AbstractMotion
+public class MoveLeftOutMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -584,7 +584,7 @@ internal class MoveLeftOutMotion : AbstractMotion
     }
 }
 
-internal class MoveRightInMotion : AbstractMotion
+public class MoveRightInMotion : AbstractMotion
 {
     public double Offset { get; }
 
@@ -686,7 +686,7 @@ internal class MoveRightInMotion : AbstractMotion
     }
 }
 
-internal class MoveRightOutMotion : AbstractMotion
+public class MoveRightOutMotion : AbstractMotion
 {
     public double Offset { get; }
 

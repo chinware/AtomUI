@@ -1,6 +1,6 @@
 namespace AtomUI.Animations;
 
-public class NotifiableIntegerTransition : AbstractNotifiableTransition<int>
+internal class NotifiableIntegerTransition : AbstractNotifiableTransition<int>
 {
     protected override int Interpolate(double progress, int from, int to)
     {

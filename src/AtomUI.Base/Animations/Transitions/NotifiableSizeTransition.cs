@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Animations;
 
-public class NotifiableSizeTransition : AbstractNotifiableTransition<Size>
+internal class NotifiableSizeTransition : AbstractNotifiableTransition<Size>
 {
     protected override Size Interpolate(double progress, Size from, Size to)
     {

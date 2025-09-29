@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.TokenSystem;
 
-namespace AtomUI.Theme.Styling
+namespace AtomUI.Controls.DesignTokens
 {
     public static class ColorPickerTokenKey
     {

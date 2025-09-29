@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Animations;
 
-public class NotifiableCornerRadiusTransition : AbstractNotifiableTransition<CornerRadius>
+internal class NotifiableCornerRadiusTransition : AbstractNotifiableTransition<CornerRadius>
 {
     protected override CornerRadius Interpolate(double progress, CornerRadius from, CornerRadius to)
     {

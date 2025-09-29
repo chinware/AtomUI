@@ -1,6 +1,6 @@
 namespace AtomUI.Animations;
 
-public class NotifiableFloatTransition : AbstractNotifiableTransition<float>
+internal class NotifiableFloatTransition : AbstractNotifiableTransition<float>
 {
     protected override float Interpolate(double progress, float from, float to)
     {

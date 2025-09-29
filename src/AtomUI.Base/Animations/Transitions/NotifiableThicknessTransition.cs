@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Animations;
 
-public class NotifiableThicknessTransition : AbstractNotifiableTransition<Thickness>
+internal class NotifiableThicknessTransition : AbstractNotifiableTransition<Thickness>
 {
     protected override Thickness Interpolate(double progress, Thickness from, Thickness to)
     {

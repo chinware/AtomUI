@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.TokenSystem;
 
-namespace AtomUI.Theme.Styling
+namespace AtomUI.Controls.DesignTokens
 {
     public static class AddOnDecoratedBoxTokenKey
     {
@@ -667,12 +667,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("PopupConfirm.TitleMargin");
     }
 
-    public static class InfoPickerInputTokenKey
-    {
-        public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("InfoPickerInput.RangePickerArrowMargin");
-        public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("InfoPickerInput.RangePickerIndicatorThickness");
-    }
-
     public static class ProgressBarTokenKey
     {
         public static readonly TokenResourceKey CircleMinimumIconSize = new TokenResourceKey("ProgressBar.CircleMinimumIconSize");
@@ -921,5 +915,14 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey DefaultBackground = new TokenResourceKey("Window.DefaultBackground");
         public static readonly TokenResourceKey DefaultForeground = new TokenResourceKey("Window.DefaultForeground");
         public static readonly TokenResourceKey SystemBarColor = new TokenResourceKey("Window.SystemBarColor");
+    }
+}
+
+namespace AtomUI.Controls.Primitives.DesignTokens
+{
+    public static class InfoPickerInputTokenKey
+    {
+        public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("InfoPickerInput.RangePickerArrowMargin");
+        public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("InfoPickerInput.RangePickerIndicatorThickness");
     }
 }

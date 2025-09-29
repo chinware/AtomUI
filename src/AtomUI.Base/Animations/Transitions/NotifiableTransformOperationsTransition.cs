@@ -2,7 +2,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Animations;
 
-public class NotifiableTransformOperationsTransition : AbstractNotifiableTransition<ITransform>
+internal class NotifiableTransformOperationsTransition : AbstractNotifiableTransition<ITransform>
 {
     protected override ITransform Interpolate(double progress, ITransform from, ITransform to)
     {

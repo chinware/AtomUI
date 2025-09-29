@@ -4,7 +4,7 @@ using Avalonia.Animation.Easings;
 
 namespace AtomUI.MotionScene;
 
-internal class ZoomInMotion : AbstractMotion
+public class ZoomInMotion : AbstractMotion
 {
     public ZoomInMotion(TimeSpan? duration = null,
                         Easing? easing = null,
@@ -32,7 +32,7 @@ internal class ZoomInMotion : AbstractMotion
     }
 }
 
-internal class ZoomOutMotion : AbstractMotion
+public class ZoomOutMotion : AbstractMotion
 {
     public ZoomOutMotion(TimeSpan? duration = null,
                          Easing? easing = null,
@@ -66,7 +66,7 @@ internal class ZoomOutMotion : AbstractMotion
     }
 }
 
-internal class ZoomBigInMotion : AbstractMotion
+public class ZoomBigInMotion : AbstractMotion
 {
     public ZoomBigInMotion(TimeSpan? duration = null,
                            Easing? easing = null,
@@ -94,7 +94,7 @@ internal class ZoomBigInMotion : AbstractMotion
     }
 }
 
-internal class ZoomBigOutMotion : AbstractMotion
+public class ZoomBigOutMotion : AbstractMotion
 {
     public ZoomBigOutMotion(TimeSpan? duration = null,
                             Easing? easing = null,
@@ -128,7 +128,7 @@ internal class ZoomBigOutMotion : AbstractMotion
     }
 }
 
-internal class ZoomUpInMotion : AbstractMotion
+public class ZoomUpInMotion : AbstractMotion
 {
     public ZoomUpInMotion(TimeSpan? duration = null,
                           Easing? easing = null,
@@ -156,7 +156,7 @@ internal class ZoomUpInMotion : AbstractMotion
     }
 }
 
-internal class ZoomUpOutMotion : AbstractMotion
+public class ZoomUpOutMotion : AbstractMotion
 {
     public ZoomUpOutMotion(TimeSpan? duration = null,
                            Easing? easing = null,
@@ -190,7 +190,7 @@ internal class ZoomUpOutMotion : AbstractMotion
     }
 }
 
-internal class ZoomLeftInMotion : AbstractMotion
+public class ZoomLeftInMotion : AbstractMotion
 {
     public ZoomLeftInMotion(TimeSpan? duration = null,
                             Easing? easing = null,
@@ -218,7 +218,7 @@ internal class ZoomLeftInMotion : AbstractMotion
     }
 }
 
-internal class ZoomLeftOutMotion : AbstractMotion
+public class ZoomLeftOutMotion : AbstractMotion
 {
     public ZoomLeftOutMotion(TimeSpan? duration = null,
                              Easing? easing = null,
@@ -252,7 +252,7 @@ internal class ZoomLeftOutMotion : AbstractMotion
     }
 }
 
-internal class ZoomRightInMotion : AbstractMotion
+public class ZoomRightInMotion : AbstractMotion
 {
     public ZoomRightInMotion(TimeSpan? duration = null,
                              Easing? easing = null,
@@ -280,7 +280,7 @@ internal class ZoomRightInMotion : AbstractMotion
     }
 }
 
-internal class ZoomRightOutMotion : AbstractMotion
+public class ZoomRightOutMotion : AbstractMotion
 {
     public ZoomRightOutMotion(TimeSpan? duration = null,
                               Easing? easing = null,
@@ -314,7 +314,7 @@ internal class ZoomRightOutMotion : AbstractMotion
     }
 }
 
-internal class ZoomDownInMotion : AbstractMotion
+public class ZoomDownInMotion : AbstractMotion
 {
     public ZoomDownInMotion(TimeSpan? duration = null,
                             Easing? easing = null,
@@ -342,7 +342,7 @@ internal class ZoomDownInMotion : AbstractMotion
     }
 }
 
-internal class ZoomDownOutMotion : AbstractMotion
+public class ZoomDownOutMotion : AbstractMotion
 {
     public ZoomDownOutMotion(TimeSpan? duration = null,
                              Easing? easing = null,

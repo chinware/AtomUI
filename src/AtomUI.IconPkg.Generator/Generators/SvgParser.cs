@@ -2,7 +2,7 @@ using System.Xml;
 
 namespace AtomUI.IconPkg.Generators;
 
-public record PathInfo
+internal record PathInfo
 {
     public string Data { get; set; }
     public string? FillColor { get; set; }
@@ -14,7 +14,7 @@ public record PathInfo
     }
 }
 
-public struct ViewBox
+internal struct ViewBox
 {
     public int X { get; set; }
     public int Y { get; set; }
@@ -22,13 +22,13 @@ public struct ViewBox
     public int Height { get; set; }
 }
 
-public record SvgParsedInfo
+internal record SvgParsedInfo
 {
     public List<PathInfo> PathInfos { get; set; } = new();
     public ViewBox ViewBox { get; set; }
 }
 
-public class SvgParser
+internal class SvgParser
 {
     private const string SvgElementName = "svg";
     private const string PathElementName = "path";

@@ -2,7 +2,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Animations;
 
-public class NotifiableBoxShadowsTransition : AbstractNotifiableTransition<BoxShadows>
+internal class NotifiableBoxShadowsTransition : AbstractNotifiableTransition<BoxShadows>
 {
     protected override BoxShadows Interpolate(double progress, BoxShadows from, BoxShadows to)
     {

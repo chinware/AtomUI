@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Animations;
 
-public class NotifiableRelativePointTransition : AbstractNotifiableTransition<RelativePoint>
+internal class NotifiableRelativePointTransition : AbstractNotifiableTransition<RelativePoint>
 {
     protected override RelativePoint Interpolate(double progress, RelativePoint from, RelativePoint to)
     {

@@ -4,7 +4,7 @@ using Avalonia.Animation;
 
 namespace AtomUI.Animations;
 
-public abstract class AbstractNotifiableTransition<T> : InterpolatingTransitionBase<T>, INotifyTransitionCompleted
+internal abstract class AbstractNotifiableTransition<T> : InterpolatingTransitionBase<T>, INotifyTransitionCompleted
 {
     internal const double CompletedProgress = 1.0d;
     public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;

@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator.Language;
 
-public class LanguageProviderPoolClassSourceWriter
+internal class LanguageProviderPoolClassSourceWriter
 {
     private readonly SourceProductionContext _context;
     private readonly List<LanguageInfo> _languageInfos;

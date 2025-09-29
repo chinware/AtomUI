@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Animations;
 
-public class NotifiableVectorTransition : AbstractNotifiableTransition<Vector>
+internal class NotifiableVectorTransition : AbstractNotifiableTransition<Vector>
 {
     protected override Vector Interpolate(double progress, Vector from, Vector to)
     {

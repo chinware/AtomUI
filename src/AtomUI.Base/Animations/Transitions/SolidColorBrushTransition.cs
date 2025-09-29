@@ -3,7 +3,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Animations;
 
-public class SolidColorBrushTransition : InterpolatingTransitionBase<IBrush?>
+internal class SolidColorBrushTransition : InterpolatingTransitionBase<IBrush?>
 {
     protected override IBrush? Interpolate(double progress, IBrush? from, IBrush? to)
     {
