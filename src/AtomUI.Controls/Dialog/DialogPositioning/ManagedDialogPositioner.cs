@@ -3,14 +3,14 @@ using Avalonia;
 
 namespace AtomUI.Controls.DialogPositioning;
 
-public interface IManagedDialogPositionerDialog
+internal interface IManagedDialogPositionerDialog
 {
     IReadOnlyList<ManagedDialogPositionerScreenInfo> ScreenInfos { get; }
     Rect ParentClientAreaScreenGeometry { get; }
     void Move(Point devicePoint);
 }
 
-public class ManagedDialogPositionerScreenInfo
+internal class ManagedDialogPositionerScreenInfo
 {
     public Rect Bounds { get; }
     public Rect WorkingArea { get; }
@@ -22,7 +22,7 @@ public class ManagedDialogPositionerScreenInfo
     }
 }
 
-public class ManagedDialogPositioner : IDialogPositioner
+internal class ManagedDialogPositioner : IDialogPositioner
 {
     private readonly IManagedDialogPositionerDialog _dialog;
     

@@ -3,7 +3,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Controls.DataGridLocalization
 {
-    public static class DataGridLangResourceKey
+    internal static class DataGridLangResourceKey
     {
         public static readonly LanguageResourceKey AscendTooltip = new LanguageResourceKey("DataGrid.AscendTooltip", "AtomUI.Lang");
         public static readonly LanguageResourceKey CancelConfirmText = new LanguageResourceKey("DataGrid.CancelConfirmText", "AtomUI.Lang");

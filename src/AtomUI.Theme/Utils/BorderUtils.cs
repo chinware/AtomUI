@@ -3,7 +3,7 @@ using Avalonia;
 
 namespace AtomUI.Theme.Utils;
 
-public static class BorderUtils
+internal static class BorderUtils
 {
     public static Thickness BuildRenderScaleAwareThickness(in Thickness borderThickness, double renderScaling)
     {

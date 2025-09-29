@@ -11,7 +11,7 @@ public record CustomDialogPlacement
     
     public Size DialogSize { get; }
     public Visual Target { get; }
-    public DialogPositionerConstraintAdjustment ConstraintAdjustment { get; set; }
+    internal DialogPositionerConstraintAdjustment ConstraintAdjustment { get; set; }
     public Rect AnchorRectangle { get; set; }
     
     internal CustomDialogPlacement(Size size, Visual target)

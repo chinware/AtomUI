@@ -2,6 +2,6 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Themes;
 
-public class ArrowDecoratedBoxTheme : ControlTheme
+internal class ArrowDecoratedBoxTheme : ControlTheme
 {
 }

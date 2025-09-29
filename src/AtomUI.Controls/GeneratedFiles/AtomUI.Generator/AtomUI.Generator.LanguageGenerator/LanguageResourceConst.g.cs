@@ -3,7 +3,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Controls.DatePickerLang
 {
-    public static class DatePickerLangResourceKey
+    internal static class DatePickerLangResourceKey
     {
         public static readonly LanguageResourceKey Now = new LanguageResourceKey("DatePicker.Now", "AtomUI.Lang");
         public static readonly LanguageResourceKey Today = new LanguageResourceKey("DatePicker.Today", "AtomUI.Lang");
@@ -12,7 +12,7 @@ namespace AtomUI.Controls.DatePickerLang
 
 namespace AtomUI.Controls.DialogLang
 {
-    public static class DialogLangResourceKey
+    internal static class DialogLangResourceKey
     {
         public static readonly LanguageResourceKey Abort = new LanguageResourceKey("Dialog.Abort", "AtomUI.Lang");
         public static readonly LanguageResourceKey Apply = new LanguageResourceKey("Dialog.Apply", "AtomUI.Lang");
@@ -38,7 +38,7 @@ namespace AtomUI.Controls.DialogLang
 
 namespace AtomUI.Controls.Localization
 {
-    public static class CommonLangResourceKey
+    internal static class CommonLangResourceKey
     {
         public static readonly LanguageResourceKey Cancel = new LanguageResourceKey("Common.Cancel", "AtomUI.Lang");
         public static readonly LanguageResourceKey Delete = new LanguageResourceKey("Common.Delete", "AtomUI.Lang");
@@ -51,7 +51,7 @@ namespace AtomUI.Controls.Localization
 
 namespace AtomUI.Controls.PaginationLang
 {
-    public static class PaginationLangResourceKey
+    internal static class PaginationLangResourceKey
     {
         public static readonly LanguageResourceKey JumpToText = new LanguageResourceKey("Pagination.JumpToText", "AtomUI.Lang");
         public static readonly LanguageResourceKey PageText = new LanguageResourceKey("Pagination.PageText", "AtomUI.Lang");
@@ -61,7 +61,7 @@ namespace AtomUI.Controls.PaginationLang
 
 namespace AtomUI.Controls.PopupConfirmLang
 {
-    public static class PopupConfirmLangResourceKey
+    internal static class PopupConfirmLangResourceKey
     {
         public static readonly LanguageResourceKey Cancel = new LanguageResourceKey("PopupConfirm.Cancel", "AtomUI.Lang");
         public static readonly LanguageResourceKey Ok = new LanguageResourceKey("PopupConfirm.Ok", "AtomUI.Lang");
@@ -70,7 +70,7 @@ namespace AtomUI.Controls.PopupConfirmLang
 
 namespace AtomUI.Controls.TimePickerLang
 {
-    public static class TimePickerLangResourceKey
+    internal static class TimePickerLangResourceKey
     {
         public static readonly LanguageResourceKey AMText = new LanguageResourceKey("TimePicker.AMText", "AtomUI.Lang");
         public static readonly LanguageResourceKey Now = new LanguageResourceKey("TimePicker.Now", "AtomUI.Lang");
