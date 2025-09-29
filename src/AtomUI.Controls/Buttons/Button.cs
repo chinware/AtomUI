@@ -29,6 +29,7 @@ using ButtonSizeType = SizeType;
 public enum ButtonType
 {
     Default,
+    Dashed,
     Primary,
     Link,
     Text
@@ -41,11 +42,11 @@ public enum ButtonShape
     Round
 }
 
-[PseudoClasses(
-    ButtonPseudoClass.IconOnly,
+[PseudoClasses(ButtonPseudoClass.IconOnly,
     ButtonPseudoClass.Loading,
     ButtonPseudoClass.IsDanger,
     ButtonPseudoClass.DefaultType,
+    ButtonPseudoClass.DashedType,
     ButtonPseudoClass.PrimaryType,
     ButtonPseudoClass.LinkType,
     ButtonPseudoClass.TextType)]
@@ -193,7 +194,6 @@ public class Button : AvaloniaButton,
     
     #endregion
     
-    private Border? _frame;
     protected bool ThemeConfigured;
     private IDisposable? _borderThicknessDisposable;
     private WaveSpiritDecorator? _waveSpiritDecorator;
@@ -243,7 +243,7 @@ public class Button : AvaloniaButton,
             if (!IsLoading &&
                 IsWaveSpiritEnabled &&
                 (e.OldValue as bool? == true) &&
-                (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default))
+                (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default || ButtonType == ButtonType.Dashed))
             {
                 Debug.Assert(_waveSpiritDecorator != null);
                 
@@ -252,7 +252,7 @@ public class Button : AvaloniaButton,
                 {
                     if (ButtonType == ButtonType.Primary && !IsGhost)
                     {
-                        waveBrush = _frame?.Background;
+                        waveBrush = Background;
                     }
                     else
                     {
@@ -338,6 +338,10 @@ public class Button : AvaloniaButton,
             {
                 resourceKey = PrimaryButtonTheme.ID;
             }
+            else if (ButtonType == ButtonType.Dashed)
+            {
+                resourceKey = DashedButtonTheme.ID;
+            }
             else if (ButtonType == ButtonType.Text)
             {
                 resourceKey = TextButtonTheme.ID;
@@ -382,7 +386,7 @@ public class Button : AvaloniaButton,
                             TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
                     }
                 }
-                else if (ButtonType == ButtonType.Default)
+                else if (ButtonType == ButtonType.Default || ButtonType == ButtonType.Dashed)
                 {
                     transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty));
                     transitions.Add(TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty));
@@ -404,8 +408,6 @@ public class Button : AvaloniaButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        // 为了防止意外被用户改变背景，做了一个 frame
-        _frame = e.NameScope.Find<Border>(ButtonThemeConstants.FramePart);
         _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(ButtonThemeConstants.WaveSpiritPart);
         UpdatePseudoClasses();
         ConfigureControlThemeBindings(false);
@@ -442,7 +444,8 @@ public class Button : AvaloniaButton,
 
     private void SetupEffectiveBorderThickness()
     {
-        if (ButtonType == ButtonType.Default)
+        if (ButtonType == ButtonType.Default ||
+            ButtonType == ButtonType.Dashed)
         {
             EffectiveBorderThickness = BorderThickness;
         }
@@ -468,6 +471,7 @@ public class Button : AvaloniaButton,
         PseudoClasses.Set(ButtonPseudoClass.IconOnly, Icon is not null && Content is null);
         PseudoClasses.Set(ButtonPseudoClass.Loading, IsLoading);
         PseudoClasses.Set(ButtonPseudoClass.DefaultType, ButtonType == ButtonType.Default);
+        PseudoClasses.Set(ButtonPseudoClass.DashedType, ButtonType == ButtonType.Dashed);
         PseudoClasses.Set(ButtonPseudoClass.PrimaryType, ButtonType == ButtonType.Primary);
         PseudoClasses.Set(ButtonPseudoClass.LinkType, ButtonType == ButtonType.Link);
         PseudoClasses.Set(ButtonPseudoClass.TextType, ButtonType == ButtonType.Text);

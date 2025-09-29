@@ -13,7 +13,7 @@
                 <Border Name="ShadowsFrame"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Background="{TemplateBinding Background}"/>
-                <Border Name="{x:Static atom:ButtonThemeConstants.FramePart}"
+                <Border Name="Frame"
                         Padding="{TemplateBinding Padding}"
                         BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                         BorderBrush="{TemplateBinding BorderBrush}"
@@ -60,7 +60,7 @@
         <Setter Property="ClipToBounds" Value="False" />
         
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
             </Style>
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ContentFontSizeLG}}" />
@@ -74,7 +74,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
             </Style>
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ContentFontSize}}" />
@@ -88,7 +88,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
             </Style>
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ButtonTokenKey.ContentFontSizeSM}}" />

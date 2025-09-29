@@ -108,8 +108,7 @@ internal class ButtonSpinnerHandle : TemplatedControl
             _borderRenderHelper.Render(context, Bounds.Size.Deflate(new Thickness(lineWidth)),
                 new Thickness(0), 
                 cornerRadius, BackgroundSizing.OuterBorderEdge,
-                Background, null, 
-                new BoxShadows());
+                Background, null);
         }
         
         {

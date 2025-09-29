@@ -2,14 +2,62 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               xmlns:themes="using:AtomUI.Controls.Themes"
-              x:Class="AtomUI.Controls.Themes.DefaultButtonTheme"
+              x:Class="AtomUI.Controls.Themes.DashedButtonTheme"
               TargetType="{x:Type atom:Button}"
               x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:BaseButtonTheme TargetType="{x:Type atom:Button}" />
     </ControlTheme.BasedOn>
 
-    <Style Selector="^:is(atom|Button)[ButtonType=Default]">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:Button">
+            <Panel>
+                <atom:WaveSpiritDecorator Name="{x:Static atom:ButtonThemeConstants.WaveSpiritPart}"
+                                          CornerRadius="{TemplateBinding CornerRadius}"
+                                          WaveType="{TemplateBinding WaveSpiritType}" />
+                <Border Name="ShadowsFrame"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}" />
+                <atom:DashedBorder Name="Frame"
+                                   Padding="{TemplateBinding Padding}"
+                                   BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                   BorderBrush="{TemplateBinding BorderBrush}"
+                                   BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                   CornerRadius="{TemplateBinding CornerRadius}"
+                                   Background="{TemplateBinding Background}"
+                                   StrokeDashArray="{x:Static atom:DashedButtonTheme.DashedStyle}">
+                    <DockPanel Name="{x:Static atom:ButtonThemeConstants.RootLayoutPart}"
+                               LastChildFill="True"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
+                                   IconInfo="{atom:IconInfoProvider LoadingOutlined}"
+                                   Margin="{Binding (atom:IconPresenter.Margin),
+                                   ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
+                                   DockPanel.Dock="Left" />
+                        <atom:IconPresenter
+                            Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
+                            Icon="{TemplateBinding Icon}"
+                            DockPanel.Dock="Left">
+                            <atom:IconPresenter.IsVisible>
+                                <MultiBinding
+                                    Converter="{x:Static atom:BaseButtonTheme.ButtonIconVisibleConverter}">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsIconVisible" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
+                                </MultiBinding>
+                            </atom:IconPresenter.IsVisible>
+                        </atom:IconPresenter>
+                        <atom:TextBlock
+                            Name="{x:Static atom:ButtonThemeConstants.LabelPart}"
+                            Text="{TemplateBinding Content}" />
+                    </DockPanel>
+                </atom:DashedBorder>
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|Button)[ButtonType=Dashed]">
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultColor}}" />
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultBorderColor}}" />
@@ -72,7 +120,7 @@
                 <Style Selector="^:danger">
                     <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
                     <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-                    
+
                     <Style Selector="^:pointerover">
                         <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorderHover}}" />
@@ -89,8 +137,7 @@
                 </Style>
             </Style>
         </Style>
-        
-        <!-- icon 的各种颜色 -->
+
         <Style Selector="^[IsGhost=True]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
                 <Setter Property="atom:Icon.NormalFilledBrush"
@@ -112,7 +159,7 @@
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^ /template/ Border#ShadowsFrame">
             <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultShadow}}" />
         </Style>

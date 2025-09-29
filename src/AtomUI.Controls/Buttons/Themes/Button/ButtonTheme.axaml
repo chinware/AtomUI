@@ -5,6 +5,7 @@
     xmlns:themes="using:AtomUI.Controls.Themes"
     x:ClassModifier="internal">
     <themes:DefaultButtonTheme x:Key="{x:Static atom:DefaultButtonTheme.ID}" TargetType="atom:Button"/>
+    <themes:DashedButtonTheme x:Key="{x:Static atom:DashedButtonTheme.ID}" TargetType="atom:Button"/>
     <themes:PrimaryButtonTheme x:Key="{x:Static atom:PrimaryButtonTheme.ID}" TargetType="atom:Button"/>
     <themes:LinkButtonTheme x:Key="{x:Static atom:LinkButtonTheme.ID}" TargetType="atom:Button"/>
     <themes:TextButtonTheme x:Key="{x:Static atom:TextButtonTheme.ID}" TargetType="atom:Button"/>

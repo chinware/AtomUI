@@ -18,7 +18,7 @@
                 <Border Name="ShadowsFrame"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Background="{TemplateBinding Background}" />
-                <Border Name="{x:Static atom:ButtonThemeConstants.FramePart}"
+                <Border Name="Frame"
                         Padding="{TemplateBinding Padding}"
                         BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                         BorderBrush="{TemplateBinding BorderBrush}"

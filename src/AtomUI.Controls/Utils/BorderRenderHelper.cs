@@ -109,7 +109,9 @@ internal class BorderRenderHelper
         BackgroundSizing backgroundSizing,
         IBrush? background,
         IBrush? borderBrush,
-        BoxShadows boxShadows)
+        IList<double>? strokeDashArray = null,
+        double strokeDaskOffset = 0.0,
+        BoxShadows boxShadows = default)
     {
         if (_size != finalSize
             || _borderThickness != borderThickness
@@ -136,7 +138,7 @@ internal class BorderRenderHelper
         {
             var thickness = _borderThickness.Top;
 
-            PenUtils.TryModifyOrCreate(ref _cachedPen, borderBrush, thickness);
+            PenUtils.TryModifyOrCreate(ref _cachedPen, borderBrush, thickness, strokeDashArray, strokeDaskOffset);
 
             var rect = new Rect(_size);
             if (!MathUtilities.IsZero(thickness))

@@ -314,8 +314,7 @@ public class OptionButtonGroup : SelectingItemsControl,
             CornerRadius,
             BackgroundSizing.CenterBorder,
             null,
-            BorderBrush,
-            new BoxShadows());
+            BorderBrush);
         for (var i = 0; i < ItemCount; ++i)
         {
             var optionButton = ContainerFromIndex(i);
@@ -375,8 +374,7 @@ public class OptionButtonGroup : SelectingItemsControl,
                         cornerRadius,
                         BackgroundSizing.InnerBorderEdge,
                         null,
-                        SelectedOptionBorderColor,
-                        new BoxShadows());
+                        SelectedOptionBorderColor);
                 }
             }
         }

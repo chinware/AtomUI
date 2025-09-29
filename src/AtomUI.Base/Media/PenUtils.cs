@@ -22,7 +22,7 @@ public static class PenUtils
                                           IBrush? brush,
                                           double thickness,
                                           IList<double>? strokeDashArray = null,
-                                          double strokeDaskOffset = default,
+                                          double strokeDaskOffset = 0.0,
                                           PenLineCap lineCap = PenLineCap.Flat,
                                           PenLineJoin lineJoin = PenLineJoin.Miter,
                                           double miterLimit = 10.0)
