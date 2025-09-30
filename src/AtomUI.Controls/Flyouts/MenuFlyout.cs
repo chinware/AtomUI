@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;

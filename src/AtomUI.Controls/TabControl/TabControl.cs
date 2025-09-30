@@ -70,33 +70,33 @@ public class TabControl : BaseTabControl
     
     private void SetupSelectedIndicator()
     {
-        if (_selectedIndicator is not null && SelectedItem is TabItem tabStripItem)
+        if (_selectedIndicator is not null && SelectedItem is not null && ContainerFromItem(SelectedItem) is TabItem tabItem)
         {
-            var selectedBounds = tabStripItem.Bounds;
+            var selectedBounds = tabItem.Bounds;
             var builder        = new TransformOperations.Builder(1);
             var offset         = _itemsPresenter?.Bounds.Position ?? default;
 
             if (TabStripPlacement == Dock.Top)
             {
-                _selectedIndicator.SetValue(WidthProperty, tabStripItem.DesiredSize.Width);
+                _selectedIndicator.SetValue(WidthProperty, tabItem.DesiredSize.Width);
                 _selectedIndicator.SetValue(HeightProperty, SelectedIndicatorThickness);
                 builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
             }
             else if (TabStripPlacement == Dock.Right)
             {
-                _selectedIndicator.SetValue(HeightProperty, tabStripItem.DesiredSize.Height);
+                _selectedIndicator.SetValue(HeightProperty, tabItem.DesiredSize.Height);
                 _selectedIndicator.SetValue(WidthProperty, SelectedIndicatorThickness);
                 builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
             }
             else if (TabStripPlacement == Dock.Bottom)
             {
-                _selectedIndicator.SetValue(WidthProperty, tabStripItem.DesiredSize.Width);
+                _selectedIndicator.SetValue(WidthProperty, tabItem.DesiredSize.Width);
                 _selectedIndicator.SetValue(HeightProperty, SelectedIndicatorThickness);
                 builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
             }
             else
             {
-                _selectedIndicator.SetValue(HeightProperty, tabStripItem.DesiredSize.Height);
+                _selectedIndicator.SetValue(HeightProperty, tabItem.DesiredSize.Height);
                 _selectedIndicator.SetValue(WidthProperty, SelectedIndicatorThickness);
                 builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
             }
@@ -108,7 +108,7 @@ public class TabControl : BaseTabControl
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
-        if (SelectedItem is TabItem)
+        if (SelectedItem is not null && ContainerFromItem(SelectedItem) is TabItem)
         {
             SetupSelectedIndicator();
         }
