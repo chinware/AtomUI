@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
@@ -87,6 +88,12 @@ public class TabItem : AvaloniaTabItem
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupShapeThemeBindings(false);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -172,7 +179,7 @@ public class TabItem : AvaloniaTabItem
         }
     }
 
-    private void SetupShapeThemeBindings(bool force = false)
+    private void SetupShapeThemeBindings(bool force)
     {
         if (force || Theme == null)
         {
@@ -208,11 +215,5 @@ public class TabItem : AvaloniaTabItem
     {
         base.OnUnloaded(e);
         Transitions = null;
-    }
-
-    public override void EndInit()
-    {
-        SetupShapeThemeBindings();
-        base.EndInit();
     }
 }

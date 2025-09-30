@@ -5,13 +5,12 @@ using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -110,6 +109,12 @@ public class TabStripItem : AvaloniaTabStripItem
         Debug.Assert(CloseIcon is not null);
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupShapeThemeBindings(false);
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         SetupDefaultCloseIcon();
@@ -129,11 +134,11 @@ public class TabStripItem : AvaloniaTabStripItem
         {
             if (force || Transitions == null)
             {
-                Transitions = new Transitions
-                {
+                Transitions =
+                [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-                };
+                ];
             }
         }
         else
@@ -209,7 +214,7 @@ public class TabStripItem : AvaloniaTabStripItem
         }
     }
 
-    private void SetupShapeThemeBindings(bool force = false)
+    private void SetupShapeThemeBindings(bool force)
     {
         if (force || Theme == null)
         {
@@ -234,11 +239,5 @@ public class TabStripItem : AvaloniaTabStripItem
                 }
             }
         }
-    }
-    
-    public override void EndInit()
-    {
-        SetupShapeThemeBindings();
-        base.EndInit();
     }
 }
