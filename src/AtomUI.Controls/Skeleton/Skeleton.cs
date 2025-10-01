@@ -4,7 +4,6 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
@@ -193,7 +192,7 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
         {
             StartActiveAnimation();
         }
-        IsContentVisible = !IsLoading && (Content != null || ContentTemplate != null);
+        IsContentVisible = !IsLoading;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -203,7 +202,7 @@ public class Skeleton : AbstractSkeleton, IControlSharedTokenResourcesHost
             change.Property == ContentProperty || 
             change.Property == ContentTemplateProperty)
         {
-            IsContentVisible = !IsLoading && (Content != null || ContentTemplate != null);
+            IsContentVisible = !IsLoading;
         }
     }
     
