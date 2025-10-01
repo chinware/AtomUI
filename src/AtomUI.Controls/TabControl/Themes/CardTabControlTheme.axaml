@@ -43,7 +43,7 @@
                                                 Name="{x:Static atom:TabControlThemeConstants.AddTabButtonPart}"
                                                 Icon="{atom:IconProvider PlusOutlined}"
                                                 BorderThickness="{TemplateBinding CardBorderThickness}"
-                                                CornerRadius="{TemplateBinding CardBorderRadius}"
+                                                CornerRadius="{TemplateBinding EffectiveCardBorderRadius}"
                                                 IsVisible="{TemplateBinding IsShowAddTabButton}" />
                                         </atom:TabsContainerPanel.AddTabButton>
                                     </atom:TabsContainerPanel>
@@ -52,7 +52,7 @@
                         </Panel>
 
                         <ContentPresenter Name="{x:Static atom:TabControlThemeConstants.SelectedContentHostPart}"
-                                          Margin="{TemplateBinding Padding}"
+                                          Padding="{TemplateBinding ContentPadding}"
                                           Content="{TemplateBinding SelectedContent}"
                                           ContentTemplate="{TemplateBinding SelectedContentTemplate}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -61,6 +61,9 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="CardSize"
+                Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardSize}}" />
 
         <Style Selector="^ /template/ atom|IconButton#PART_AddTabButton">
             <Setter Property="NormalIconBrush"
@@ -215,6 +218,19 @@
                         Value="{DynamicResource {x:Static atom:TabControlTokenKey.AddTabButtonMarginVertical}}" />
             </Style>
 
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="CardBorderRadius"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="CardBorderRadius"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="CardBorderRadius"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

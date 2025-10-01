@@ -79,6 +79,12 @@ public class BaseTabControl : SelectingItemsControl,
     
     public static readonly StyledProperty<IDataTemplate?> HeaderEndExtraContentTemplateProperty =
         AvaloniaProperty.Register<ContentControl, IDataTemplate?>(nameof(HeaderEndExtraContentTemplate));
+    
+    public static readonly StyledProperty<bool> IsTabClosableProperty =
+        AvaloniaProperty.Register<ContentControl, bool>(nameof(IsTabClosable));
+    
+    public static readonly StyledProperty<bool> IsTabAutoHideCloseButtonProperty =
+        AvaloniaProperty.Register<ContentControl, bool>(nameof(IsTabAutoHideCloseButton));
 
     public Dock TabStripPlacement
     {
@@ -184,6 +190,17 @@ public class BaseTabControl : SelectingItemsControl,
         set => SetValue(HeaderEndExtraContentTemplateProperty, value);
     }
     
+    public bool IsTabClosable
+    {
+        get => GetValue(IsTabClosableProperty);
+        set => SetValue(IsTabClosableProperty, value);
+    }
+    
+    public bool IsTabAutoHideCloseButton
+    {
+        get => GetValue(IsTabAutoHideCloseButtonProperty);
+        set => SetValue(IsTabAutoHideCloseButtonProperty, value);
+    }
     #endregion
 
     #region 内部属性实现
@@ -235,12 +252,12 @@ public class BaseTabControl : SelectingItemsControl,
 
     static BaseTabControl()
     {
-        SelectionModeProperty.OverrideDefaultValue<TabControl>(SelectionMode.AlwaysSelected);
+        SelectionModeProperty.OverrideDefaultValue<BaseTabControl>(SelectionMode.AlwaysSelected);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabControl>(false);
         ItemsPanelProperty.OverrideDefaultValue<BaseTabControl>(DefaultPanel);
         AffectsRender<BaseTabControl>(BorderBrushProperty);
         AffectsMeasure<BaseTabControl>(TabStripMarginProperty, TabAndContentGutterProperty, TabStripPlacementProperty);
-        SelectedItemProperty.Changed.AddClassHandler<TabControl>((x, e) => x.UpdateSelectedContent());
+        SelectedItemProperty.Changed.AddClassHandler<BaseTabControl>((x, e) => x.UpdateSelectedContent());
         
     }
 
@@ -397,6 +414,7 @@ public class BaseTabControl : SelectingItemsControl,
                 ItemsBindingDisposables.Remove(tabItem);
             }
             ItemsBindingDisposables.Add(tabItem, disposables);
+            ConfigureTabItem(tabItem);
         }
         else
         {
@@ -519,6 +537,21 @@ public class BaseTabControl : SelectingItemsControl,
         {
             ConfigureEffectiveHeaderPadding();
         }
+        if (change.Property == IsTabAutoHideCloseButtonProperty ||
+            change.Property == IsTabClosableProperty)
+        {
+            if (Items.Count > 0)
+            {
+                for (int i = 0; i < ItemCount; i++)
+                {
+                    var item = Items[i];
+                    if (item is TabItem tabItem)
+                    {
+                        ConfigureTabItem(tabItem);
+                    }
+                }
+            }
+        }
     }
 
     private void UpdatePseudoClasses()
@@ -616,4 +649,9 @@ public class BaseTabControl : SelectingItemsControl,
         context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
     }
     
+    private void ConfigureTabItem(TabItem tabItem)
+    {
+        tabItem.SetValue(TabItem.IsClosableProperty, IsTabClosable, BindingPriority.Template);
+        tabItem.SetValue(TabItem.IsAutoHideCloseButtonProperty, IsTabAutoHideCloseButton, BindingPriority.Template);
+    }
 }

@@ -4,6 +4,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
@@ -23,7 +24,8 @@ public class TabItem : HeaderedContentControl, ISelectable
     #region 公共属性定义
     
     public static readonly DirectProperty<TabItem, Dock?> TabStripPlacementProperty =
-        AvaloniaProperty.RegisterDirect<TabItem, Dock?>(nameof(TabStripPlacement), o => o.TabStripPlacement);
+        AvaloniaProperty.RegisterDirect<TabItem, Dock?>(nameof(TabStripPlacement), 
+            o => o.TabStripPlacement);
     
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<TabItem>();
@@ -36,6 +38,9 @@ public class TabItem : HeaderedContentControl, ISelectable
 
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<TabItem, bool>(nameof(IsClosable));
+    
+    public static readonly StyledProperty<bool> IsAutoHideCloseButtonProperty =
+        AvaloniaProperty.Register<TabItem, bool>(nameof(IsAutoHideCloseButton));
     
     public Dock? TabStripPlacement
     {
@@ -67,6 +72,12 @@ public class TabItem : HeaderedContentControl, ISelectable
         set => SetValue(IsClosableProperty, value);
     }
 
+    public bool IsAutoHideCloseButton
+    {
+        get => GetValue(IsAutoHideCloseButtonProperty);
+        set => SetValue(IsAutoHideCloseButtonProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -79,6 +90,9 @@ public class TabItem : HeaderedContentControl, ISelectable
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabItem>();
+    
+    internal static readonly StyledProperty<double> CloseButtonOpacityProperty =
+        AvaloniaProperty.Register<TabItem, double>(nameof(CloseButtonOpacity));
 
     public SizeType SizeType
     {
@@ -98,6 +112,11 @@ public class TabItem : HeaderedContentControl, ISelectable
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    internal double CloseButtonOpacity
+    {
+        get => GetValue(CloseButtonOpacityProperty);
+        set => SetValue(CloseButtonOpacityProperty, value);
+    }
     #endregion
     
     private Dock? _tabStripPlacement;
@@ -150,7 +169,8 @@ public class TabItem : HeaderedContentControl, ISelectable
                 Transitions =
                 [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(CloseButtonOpacityProperty)
                 ];
             }
         }
