@@ -70,10 +70,12 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
         base.OnPropertyChanged(change);
         if (change.Property == SizeTypeProperty || change.Property == SizeProperty)
         {
-            ConfigureSize();
             IsCustomSize = !double.IsNaN(Size);
+            ConfigureSize();
         }
-        else if (change.Property == ShapeProperty)
+        if (change.Property == ShapeProperty || 
+            change.Property == SizeTypeProperty || 
+            change.Property == SizeProperty)
         {
             ConfigureShape();
         }
@@ -83,7 +85,7 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
     {
         if (Shape == AvatarShape.Circle)
         {
-            SetValue(CornerRadiusProperty, new CornerRadius(Width / 2), BindingPriority.Template);
+            SetValue(CornerRadiusProperty, new CornerRadius(Width), BindingPriority.Template);
         }
     }
     
