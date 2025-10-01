@@ -15,6 +15,7 @@ namespace AtomUI.Controls;
 public class TabStrip : BaseTabStrip
 {
     protected override Type StyleKeyOverride { get; } = typeof(TabStrip);
+    
     #region 内部属性定义
 
     internal static readonly StyledProperty<double> SelectedIndicatorThicknessProperty =
@@ -69,7 +70,7 @@ public class TabStrip : BaseTabStrip
 
     private void SetupSelectedIndicator()
     {
-        if (_selectedIndicator is not null && SelectedItem is TabStripItem tabStripItem)
+        if (_selectedIndicator is not null && SelectedItem is not null && ContainerFromItem(SelectedItem) is TabStripItem tabStripItem)
         {
             var selectedBounds = tabStripItem.Bounds;
             var builder        = new TransformOperations.Builder(1);
@@ -107,7 +108,7 @@ public class TabStrip : BaseTabStrip
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
-        if (SelectedItem is TabStripItem)
+        if (SelectedItem is not null && ContainerFromItem(SelectedItem) is TabStripItem)
         {
             SetupSelectedIndicator();
         }

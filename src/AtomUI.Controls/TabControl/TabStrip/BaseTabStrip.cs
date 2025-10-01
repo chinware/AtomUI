@@ -24,8 +24,6 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
 {
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel());
-    
-    private protected readonly Dictionary<TabStripItem, CompositeDisposable> ItemsBindingDisposables = new();
 
     #region 公共属性定义
 
@@ -58,6 +56,12 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     
     public static readonly StyledProperty<IDataTemplate?> HeaderEndExtraContentTemplateProperty =
         AvaloniaProperty.Register<BaseTabStrip, IDataTemplate?>(nameof(HeaderEndExtraContentTemplate));
+    
+    public static readonly StyledProperty<bool> IsTabClosableProperty =
+        AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(IsTabClosable));
+    
+    public static readonly StyledProperty<bool> IsTabAutoHideCloseButtonProperty =
+        AvaloniaProperty.Register<BaseTabStrip, bool>(nameof(IsTabAutoHideCloseButton));
     
     public SizeType SizeType
     {
@@ -120,6 +124,18 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         get => GetValue(HeaderEndExtraContentTemplateProperty);
         set => SetValue(HeaderEndExtraContentTemplateProperty, value);
     }
+    
+    public bool IsTabClosable
+    {
+        get => GetValue(IsTabClosableProperty);
+        set => SetValue(IsTabClosableProperty, value);
+    }
+    
+    public bool IsTabAutoHideCloseButton
+    {
+        get => GetValue(IsTabAutoHideCloseButtonProperty);
+        set => SetValue(IsTabAutoHideCloseButtonProperty, value);
+    }
 
     #endregion
     
@@ -136,6 +152,8 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         get => _effectiveHeaderPadding;
         set => SetAndRaise(EffectiveHeaderPaddingProperty, ref _effectiveHeaderPadding, value);
     }
+    
+    private protected readonly Dictionary<TabStripItem, CompositeDisposable> ItemsBindingDisposables = new();
     
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -212,6 +230,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
                 ItemsBindingDisposables.Remove(tabStripItem);
             }
             ItemsBindingDisposables.Add(tabStripItem, disposables);
+            ConfigureTabStripItem(tabStripItem);
         }
         else
         {
@@ -258,6 +277,21 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         else if (change.Property == HeaderStartEdgePaddingProperty || change.Property == HeaderEndEdgePaddingProperty)
         {
             ConfigureEffectiveHeaderPadding();
+        }
+        if (change.Property == IsTabAutoHideCloseButtonProperty ||
+            change.Property == IsTabClosableProperty)
+        {
+            if (Items.Count > 0)
+            {
+                for (int i = 0; i < ItemCount; i++)
+                {
+                    var item = Items[i];
+                    if (item is TabStripItem tabStripItem)
+                    {
+                        ConfigureTabStripItem(tabStripItem);
+                    }
+                }
+            }
         }
     }
 
@@ -327,5 +361,11 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     {
         base.OnApplyTemplate(e);
         ConfigureEffectiveHeaderPadding();
+    }
+    
+    private void ConfigureTabStripItem(TabStripItem tabItem)
+    {
+        tabItem.SetValue(TabStripItem.IsClosableProperty, IsTabClosable, BindingPriority.Template);
+        tabItem.SetValue(TabStripItem.IsAutoHideCloseButtonProperty, IsTabAutoHideCloseButton, BindingPriority.Template);
     }
 }

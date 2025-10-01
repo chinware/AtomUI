@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
-using AtomUI.Controls.DesignTokens;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme.Data;
@@ -12,14 +10,13 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
 public class CardTabStrip : BaseTabStrip
 {
     protected override Type StyleKeyOverride { get; } = typeof(CardTabStrip);
+    
     #region 公共属性实现
 
     public static readonly StyledProperty<bool> IsShowAddTabButtonProperty =
@@ -51,21 +48,23 @@ public class CardTabStrip : BaseTabStrip
 
     internal static readonly StyledProperty<Thickness> CardBorderThicknessProperty =
         AvaloniaProperty.Register<CardTabStrip, Thickness>(nameof(CardBorderThickness));
-
-    internal static readonly DirectProperty<CardTabStrip, CornerRadius> CardBorderRadiusSizeProperty =
-        AvaloniaProperty.RegisterDirect<CardTabStrip, CornerRadius>(nameof(CardBorderRadiusSize),
-            o => o.CardBorderRadiusSize,
-            (o, v) => o.CardBorderRadiusSize = v);
-
-    internal static readonly DirectProperty<CardTabStrip, double> CardSizeProperty =
-        AvaloniaProperty.RegisterDirect<CardTabStrip, double>(nameof(CardSize),
-            o => o.CardSize,
-            (o, v) => o.CardSize = v);
+    
+    internal static readonly StyledProperty<CornerRadius> EffectiveCardBorderRadiusProperty =
+        AvaloniaProperty.Register<CardTabStrip, CornerRadius>(nameof(EffectiveCardBorderRadius));
+    
+    internal static readonly StyledProperty<double> CardSizeProperty =
+        AvaloniaProperty.Register<CardTabStrip, double>(nameof(CardSize));
 
     internal CornerRadius CardBorderRadius
     {
         get => GetValue(CardBorderRadiusProperty);
         set => SetValue(CardBorderRadiusProperty, value);
+    }
+    
+    internal CornerRadius EffectiveCardBorderRadius
+    {
+        get => GetValue(EffectiveCardBorderRadiusProperty);
+        set => SetValue(EffectiveCardBorderRadiusProperty, value);
     }
 
     internal Thickness CardBorderThickness
@@ -74,20 +73,10 @@ public class CardTabStrip : BaseTabStrip
         set => SetValue(CardBorderThicknessProperty, value);
     }
 
-    private CornerRadius _cardBorderRadiusSize;
-
-    internal CornerRadius CardBorderRadiusSize
-    {
-        get => _cardBorderRadiusSize;
-        set => SetAndRaise(CardBorderRadiusSizeProperty, ref _cardBorderRadiusSize, value);
-    }
-
-    private double _cardSize;
-
     internal double CardSize
     {
-        get => _cardSize;
-        set => SetAndRaise(CardSizeProperty, ref _cardSize, value);
+        get => GetValue(CardSizeProperty);
+        set => SetValue(CardSizeProperty, value);
     }
 
     #endregion
@@ -95,7 +84,6 @@ public class CardTabStrip : BaseTabStrip
     private IconButton? _addTabButton;
     private ItemsPresenter? _itemsPresenter;
     private TabStripScrollViewer? _scrollViewer;
-    private CompositeDisposable? _tokenBindingDisposables;
     private IDisposable? _borderBindingDisposable;
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -114,7 +102,7 @@ public class CardTabStrip : BaseTabStrip
             tabStripItem.Shape = TabSharp.Card;
             Debug.Assert(ItemsBindingDisposables.ContainsKey(tabStripItem));
             var disposables = ItemsBindingDisposables[tabStripItem];
-            disposables.Add(BindUtils.RelayBind(this, CardBorderRadiusProperty, tabStripItem, CornerRadiusProperty));
+            disposables.Add(BindUtils.RelayBind(this, EffectiveCardBorderRadiusProperty, tabStripItem, CornerRadiusProperty));
             disposables.Add(BindUtils.RelayBind(this, CardBorderThicknessProperty, tabStripItem, BorderThicknessProperty));
         }
     }
@@ -135,20 +123,6 @@ public class CardTabStrip : BaseTabStrip
         }
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingDisposables = new CompositeDisposable();
-        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, CardSizeProperty, TabControlTokenKey.CardSize));
-        HandleSizeTypeChanged();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _tokenBindingDisposables?.Dispose();
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -166,15 +140,9 @@ public class CardTabStrip : BaseTabStrip
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == SizeTypeProperty)
-            {
-                HandleSizeTypeChanged();
-            }
-        }
-
-        if (change.Property == TabStripPlacementProperty)
+        
+        if (change.Property == TabStripPlacementProperty ||
+            change.Property == CardSizeProperty)
         {
             HandleTabStripPlacementChanged();
         }
@@ -183,25 +151,6 @@ public class CardTabStrip : BaseTabStrip
     private void HandleAddButtonClicked(object? sender, RoutedEventArgs args)
     {
         RaiseEvent(new RoutedEventArgs(AddTabRequestEvent));
-    }
-
-    private void HandleSizeTypeChanged()
-    {
-        if (SizeType == SizeType.Large)
-        {
-            _tokenBindingDisposables?.Add(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
-                SharedTokenKey.BorderRadiusLG));
-        }
-        else if (SizeType == SizeType.Middle)
-        {
-            _tokenBindingDisposables?.Add(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
-                SharedTokenKey.BorderRadius));
-        }
-        else
-        {
-            _tokenBindingDisposables?.Add(TokenResourceBinder.CreateTokenBinding(this, CardBorderRadiusSizeProperty,
-                SharedTokenKey.BorderRadiusSM));
-        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -215,43 +164,43 @@ public class CardTabStrip : BaseTabStrip
     {
         if (TabStripPlacement == Dock.Top)
         {
-            CardBorderRadius = new CornerRadius(_cardBorderRadiusSize.TopLeft, _cardBorderRadiusSize.TopRight,
+            EffectiveCardBorderRadius = new CornerRadius(CardBorderRadius.TopLeft, CardBorderRadius.TopRight,
                 bottomLeft: 0, bottomRight: 0);
             if (_addTabButton is not null && _itemsPresenter is not null)
             {
-                _addTabButton.Width  = _cardSize;
+                _addTabButton.Width  = CardSize;
                 _addTabButton.Height = _itemsPresenter.DesiredSize.Height;
             }
         }
         else if (TabStripPlacement == Dock.Bottom)
         {
-            CardBorderRadius = new CornerRadius(0, 0, bottomLeft: _cardBorderRadiusSize.BottomLeft,
-                bottomRight: _cardBorderRadiusSize.BottomRight);
+            EffectiveCardBorderRadius = new CornerRadius(0, 0, bottomLeft: CardBorderRadius.BottomLeft,
+                bottomRight: CardBorderRadius.BottomRight);
             if (_addTabButton is not null && _itemsPresenter is not null)
             {
-                _addTabButton.Width  = _cardSize;
+                _addTabButton.Width  = CardSize;
                 _addTabButton.Height = _itemsPresenter.DesiredSize.Height;
             }
         }
         else if (TabStripPlacement == Dock.Left)
         {
-            CardBorderRadius = new CornerRadius(_cardBorderRadiusSize.TopLeft, 0,
-                bottomLeft: _cardBorderRadiusSize.BottomLeft, bottomRight: 0);
+            EffectiveCardBorderRadius = new CornerRadius(CardBorderRadius.TopLeft, 0,
+                bottomLeft: CardBorderRadius.BottomLeft, bottomRight: 0);
             if (_addTabButton is not null && _itemsPresenter is not null)
             {
-                _addTabButton.Width               = _cardSize;
-                _addTabButton.Height              = _cardSize;
+                _addTabButton.Width               = CardSize;
+                _addTabButton.Height              = CardSize;
                 _addTabButton.HorizontalAlignment = HorizontalAlignment.Right;
             }
         }
         else
         {
-            CardBorderRadius = new CornerRadius(0, _cardBorderRadiusSize.TopRight, bottomLeft: 0,
-                bottomRight: _cardBorderRadiusSize.BottomRight);
+            EffectiveCardBorderRadius = new CornerRadius(0, CardBorderRadius.TopRight, bottomLeft: 0,
+                bottomRight: CardBorderRadius.BottomRight);
             if (_addTabButton is not null && _itemsPresenter is not null)
             {
-                _addTabButton.Width               = _cardSize;
-                _addTabButton.Height              = _cardSize;
+                _addTabButton.Width               = CardSize;
+                _addTabButton.Height              = CardSize;
                 _addTabButton.HorizontalAlignment = HorizontalAlignment.Left;
             }
         }

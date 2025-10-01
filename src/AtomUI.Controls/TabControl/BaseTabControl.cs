@@ -8,17 +8,19 @@ using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-using AvaloniaTabControl = Avalonia.Controls.TabControl;
-
-public class BaseTabControl : AvaloniaTabControl,
+public class BaseTabControl : SelectingItemsControl,
                               IMotionAwareControl,
                               IControlSharedTokenResourcesHost
 {
@@ -26,7 +28,25 @@ public class BaseTabControl : AvaloniaTabControl,
         new(() => new StackPanel());
 
     #region 公共属性定义
+    
+    public static readonly StyledProperty<Dock> TabStripPlacementProperty =
+        AvaloniaProperty.Register<BaseTabControl, Dock>(nameof(TabStripPlacement), defaultValue: Dock.Top);
+    
+    public static readonly StyledProperty<HorizontalAlignment> HorizontalContentAlignmentProperty =
+        ContentControl.HorizontalContentAlignmentProperty.AddOwner<BaseTabControl>();
+    
+    public static readonly StyledProperty<VerticalAlignment> VerticalContentAlignmentProperty =
+        ContentControl.VerticalContentAlignmentProperty.AddOwner<BaseTabControl>();
+    
+    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty =
+        ContentControl.ContentTemplateProperty.AddOwner<BaseTabControl>();
+    
+    public static readonly DirectProperty<BaseTabControl, object?> SelectedContentProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabControl, object?>(nameof(SelectedContent), o => o.SelectedContent);
 
+    public static readonly DirectProperty<BaseTabControl, IDataTemplate?> SelectedContentTemplateProperty =
+        AvaloniaProperty.RegisterDirect<BaseTabControl, IDataTemplate?>(nameof(SelectedContentTemplate), o => o.SelectedContentTemplate);
+    
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<BaseTabControl>();
 
@@ -59,7 +79,49 @@ public class BaseTabControl : AvaloniaTabControl,
     
     public static readonly StyledProperty<IDataTemplate?> HeaderEndExtraContentTemplateProperty =
         AvaloniaProperty.Register<ContentControl, IDataTemplate?>(nameof(HeaderEndExtraContentTemplate));
+    
+    public static readonly StyledProperty<bool> IsTabClosableProperty =
+        AvaloniaProperty.Register<ContentControl, bool>(nameof(IsTabClosable));
+    
+    public static readonly StyledProperty<bool> IsTabAutoHideCloseButtonProperty =
+        AvaloniaProperty.Register<ContentControl, bool>(nameof(IsTabAutoHideCloseButton));
 
+    public Dock TabStripPlacement
+    {
+        get => GetValue(TabStripPlacementProperty);
+        set => SetValue(TabStripPlacementProperty, value);
+    }
+    
+    public HorizontalAlignment HorizontalContentAlignment
+    {
+        get => GetValue(HorizontalContentAlignmentProperty);
+        set => SetValue(HorizontalContentAlignmentProperty, value);
+    }
+    
+    public VerticalAlignment VerticalContentAlignment
+    {
+        get => GetValue(VerticalContentAlignmentProperty);
+        set => SetValue(VerticalContentAlignmentProperty, value);
+    }
+    
+    public IDataTemplate? ContentTemplate
+    {
+        get => GetValue(ContentTemplateProperty);
+        set => SetValue(ContentTemplateProperty, value);
+    }
+    
+    public object? SelectedContent
+    {
+        get => _selectedContent;
+        internal set => SetAndRaise(SelectedContentProperty, ref _selectedContent, value);
+    }
+    
+    public IDataTemplate? SelectedContentTemplate
+    {
+        get => _selectedContentTemplate;
+        internal set => SetAndRaise(SelectedContentTemplateProperty, ref _selectedContentTemplate, value);
+    }
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -128,6 +190,17 @@ public class BaseTabControl : AvaloniaTabControl,
         set => SetValue(HeaderEndExtraContentTemplateProperty, value);
     }
     
+    public bool IsTabClosable
+    {
+        get => GetValue(IsTabClosableProperty);
+        set => SetValue(IsTabClosableProperty, value);
+    }
+    
+    public bool IsTabAutoHideCloseButton
+    {
+        get => GetValue(IsTabAutoHideCloseButtonProperty);
+        set => SetValue(IsTabAutoHideCloseButtonProperty, value);
+    }
     #endregion
 
     #region 内部属性实现
@@ -158,12 +231,19 @@ public class BaseTabControl : AvaloniaTabControl,
         set => SetAndRaise(EffectiveHeaderPaddingProperty, ref _effectiveHeaderPadding, value);
     }
 
+    internal ItemsPresenter? ItemsPresenterPart { get; private set; }
+
+    internal ContentPresenter? ContentPart { get; private set; }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
     
     #endregion
     
+    private object? _selectedContent;
+    private IDataTemplate? _selectedContentTemplate;
+    private CompositeDisposable? _selectedItemSubscriptions;
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
@@ -172,10 +252,13 @@ public class BaseTabControl : AvaloniaTabControl,
 
     static BaseTabControl()
     {
+        SelectionModeProperty.OverrideDefaultValue<BaseTabControl>(SelectionMode.AlwaysSelected);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabControl>(false);
         ItemsPanelProperty.OverrideDefaultValue<BaseTabControl>(DefaultPanel);
         AffectsRender<BaseTabControl>(BorderBrushProperty);
-        AffectsMeasure<BaseTabControl>(TabStripMarginProperty, TabAndContentGutterProperty);
+        AffectsMeasure<BaseTabControl>(TabStripMarginProperty, TabAndContentGutterProperty, TabStripPlacementProperty);
+        SelectedItemProperty.Changed.AddClassHandler<BaseTabControl>((x, e) => x.UpdateSelectedContent());
+        
     }
 
     public BaseTabControl()
@@ -208,16 +291,103 @@ public class BaseTabControl : AvaloniaTabControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        
+        ItemsPresenterPart = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
+        ItemsPresenterPart?.ApplyTemplate();
+
+        UpdateTabStripPlacement();
+
+        // Set TabNavigation to Once on the panel if not already set and
+        // forward the TabOnceActiveElement to the panel.
+        if (ItemsPresenterPart?.Panel is { } panel)
+        {
+            if (!panel.IsSet(KeyboardNavigation.TabNavigationProperty))
+            {
+                panel.SetCurrentValue(
+                    KeyboardNavigation.TabNavigationProperty,
+                    KeyboardNavigationMode.Once);
+            }
+            KeyboardNavigation.SetTabOnceActiveElement(
+                panel,
+                KeyboardNavigation.GetTabOnceActiveElement(this));
+        }
+        
         _alignWrapper   = e.NameScope.Find<Panel>(TabControlThemeConstants.AlignWrapperPart);
         HandlePlacementChanged();
         ConfigureEffectiveHeaderPadding();
     }
     
+    protected override void OnGotFocus(GotFocusEventArgs e)
+    {
+        base.OnGotFocus(e);
+
+        if (e.NavigationMethod == NavigationMethod.Directional && e.Source is TabItem)
+        {
+            e.Handled = UpdateSelectionFromEventSource(e.Source);
+        }
+    }
+    
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
+        {
+            e.Handled = UpdateSelectionFromEventSource(e.Source);
+        }
+    }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (e.InitialPressMouseButton == MouseButton.Left && e.Pointer.Type != PointerType.Mouse)
+        {
+            var container = GetContainerFromEventSource(e.Source);
+            if (container != null
+                && container.GetVisualsAt(e.GetPosition(container))
+                            .Any(c => container == c || container.IsVisualAncestorOf(c)))
+            {
+                e.Handled = UpdateSelectionFromEventSource(e.Source);
+            }
+        }
+    }
+    
+    private void UpdateTabStripPlacement()
+    {
+        var controls = ItemsPresenterPart?.Panel?.Children;
+        if (controls is null)
+        {
+            return;
+        }
+
+        foreach (var control in controls)
+        {
+            if (control is TabItem tabItem)
+            {
+                tabItem.TabStripPlacement = TabStripPlacement;
+            }
+        }
+    }
+    
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        return new TabItem();
+    }
+    
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        return NeedsContainer<TabItem>(item, out recycleKey);
+    }
+    
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
-        base.PrepareContainerForItemOverride(container, item, index);
+        if (index == SelectedIndex)
+        {
+            UpdateSelectedContent(container);
+        }
         if (container is TabItem tabItem)
         {
+            tabItem.TabStripPlacement = TabStripPlacement;
+            
             var disposables = new CompositeDisposable(4);
             
             if (item != null && item is not Visual)
@@ -244,6 +414,7 @@ public class BaseTabControl : AvaloniaTabControl,
                 ItemsBindingDisposables.Remove(tabItem);
             }
             ItemsBindingDisposables.Add(tabItem, disposables);
+            ConfigureTabItem(tabItem);
         }
         else
         {
@@ -253,6 +424,68 @@ public class BaseTabControl : AvaloniaTabControl,
     
     protected virtual void PrepareTabItem(TabItem tabItem, object? item, int index, CompositeDisposable compositeDisposable)
     {
+    }
+    
+    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
+    {
+        base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
+
+        var selectedIndex = SelectedIndex;
+
+        if (selectedIndex == oldIndex || selectedIndex == newIndex)
+        {
+            UpdateSelectedContent();
+        }
+    }
+    
+    protected override void ClearContainerForItemOverride(Control element)
+    {
+        base.ClearContainerForItemOverride(element);
+        UpdateSelectedContent();
+    }
+    
+    private void UpdateSelectedContent(Control? container = null)
+    {
+        _selectedItemSubscriptions?.Dispose();
+        _selectedItemSubscriptions = null;
+
+        if (SelectedIndex == -1)
+        {
+            SelectedContent = SelectedContentTemplate = null;
+        }
+        else
+        {
+            container ??= ContainerFromIndex(SelectedIndex);
+            if (container != null)
+            {
+                if (SelectedContentTemplate != SelectContentTemplate(container.GetValue(ContentTemplateProperty)))
+                {
+                    // If the value of SelectedContentTemplate is about to change, clear it first. This ensures
+                    // that the template is not reused as soon as SelectedContent changes in the statement below
+                    // this block, and also that controls generated from it are unloaded before SelectedContent
+                    // (which is typically their DataContext) changes.
+                    SelectedContentTemplate = null;
+                }
+
+                _selectedItemSubscriptions = new CompositeDisposable(
+                    container.GetObservable(ContentControl.ContentProperty).Subscribe(v => SelectedContent = v),
+                    container.GetObservable(ContentControl.ContentTemplateProperty).Subscribe(v => SelectedContentTemplate = SelectContentTemplate(v)));
+
+                // Note how we fall back to our own ContentTemplate if the container doesn't specify one
+                IDataTemplate? SelectContentTemplate(IDataTemplate? containerTemplate) => containerTemplate ?? ContentTemplate;
+            }
+        }
+    }
+    
+    protected virtual bool RegisterContentPresenter(ContentPresenter presenter)
+    {
+        if (presenter.Name == "PART_SelectedContentHost")
+        {
+            ContentPart = presenter;
+            return true;
+        }
+
+        return false;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -273,6 +506,28 @@ public class BaseTabControl : AvaloniaTabControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+        if (change.Property == TabStripPlacementProperty)
+        {
+            RefreshContainers();
+        }
+        else if (change.Property == ContentTemplateProperty)
+        {
+            var newTemplate = change.GetNewValue<IDataTemplate?>();
+            if (SelectedContentTemplate != newTemplate &&
+                ContainerFromIndex(SelectedIndex) is { } container && 
+                container.GetValue(ContentControl.ContentTemplateProperty) == null)
+            {
+                SelectedContentTemplate = newTemplate; // See also UpdateSelectedContent
+            }
+        }
+        else if (change.Property == KeyboardNavigation.TabOnceActiveElementProperty &&
+                 ItemsPresenterPart?.Panel is { } panel)
+        {
+            // Forward TabOnceActiveElement to the panel.
+            KeyboardNavigation.SetTabOnceActiveElement(
+                panel,
+                change.GetNewValue<IInputElement?>());
+        }
         if (change.Property == TabStripPlacementProperty || change.Property == TabAndContentGutterProperty)
         {
             UpdatePseudoClasses();
@@ -281,6 +536,21 @@ public class BaseTabControl : AvaloniaTabControl,
         else if (change.Property == HeaderStartEdgePaddingProperty || change.Property == HeaderEndEdgePaddingProperty)
         {
             ConfigureEffectiveHeaderPadding();
+        }
+        if (change.Property == IsTabAutoHideCloseButtonProperty ||
+            change.Property == IsTabClosableProperty)
+        {
+            if (Items.Count > 0)
+            {
+                for (int i = 0; i < ItemCount; i++)
+                {
+                    var item = Items[i];
+                    if (item is TabItem tabItem)
+                    {
+                        ConfigureTabItem(tabItem);
+                    }
+                }
+            }
         }
     }
 
@@ -379,4 +649,9 @@ public class BaseTabControl : AvaloniaTabControl,
         context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
     }
     
+    private void ConfigureTabItem(TabItem tabItem)
+    {
+        tabItem.SetValue(TabItem.IsClosableProperty, IsTabClosable, BindingPriority.Template);
+        tabItem.SetValue(TabItem.IsAutoHideCloseButtonProperty, IsTabAutoHideCloseButton, BindingPriority.Template);
+    }
 }

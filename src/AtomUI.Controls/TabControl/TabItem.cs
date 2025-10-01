@@ -4,19 +4,31 @@ using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Automation;
+using Avalonia.Automation.Peers;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
-using AvaloniaTabItem = Avalonia.Controls.TabItem;
-
-public class TabItem : AvaloniaTabItem
+[PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
+public class TabItem : HeaderedContentControl, ISelectable
 {
     #region 公共属性定义
+    
+    public static readonly DirectProperty<TabItem, Dock?> TabStripPlacementProperty =
+        AvaloniaProperty.RegisterDirect<TabItem, Dock?>(nameof(TabStripPlacement), 
+            o => o.TabStripPlacement);
+    
+    public static readonly StyledProperty<bool> IsSelectedProperty =
+        SelectingItemsControl.IsSelectedProperty.AddOwner<TabItem>();
 
     public static readonly StyledProperty<Icon?> IconProperty =
         AvaloniaProperty.Register<TabItem, Icon?>(nameof(Icon));
@@ -26,6 +38,21 @@ public class TabItem : AvaloniaTabItem
 
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<TabItem, bool>(nameof(IsClosable));
+    
+    public static readonly StyledProperty<bool> IsAutoHideCloseButtonProperty =
+        AvaloniaProperty.Register<TabItem, bool>(nameof(IsAutoHideCloseButton));
+    
+    public Dock? TabStripPlacement
+    {
+        get => _tabStripPlacement;
+        internal set => SetAndRaise(TabStripPlacementProperty, ref _tabStripPlacement, value);
+    }
+
+    public bool IsSelected
+    {
+        get => GetValue(IsSelectedProperty);
+        set => SetValue(IsSelectedProperty, value);
+    }
 
     public Icon? Icon
     {
@@ -45,6 +72,12 @@ public class TabItem : AvaloniaTabItem
         set => SetValue(IsClosableProperty, value);
     }
 
+    public bool IsAutoHideCloseButton
+    {
+        get => GetValue(IsAutoHideCloseButtonProperty);
+        set => SetValue(IsAutoHideCloseButtonProperty, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
@@ -55,8 +88,11 @@ public class TabItem : AvaloniaTabItem
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabItem, TabSharp>(nameof(Shape));
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabItem>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabItem>();
+    
+    internal static readonly StyledProperty<double> CloseButtonOpacityProperty =
+        AvaloniaProperty.Register<TabItem, double>(nameof(CloseButtonOpacity));
 
     public SizeType SizeType
     {
@@ -76,9 +112,25 @@ public class TabItem : AvaloniaTabItem
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    internal double CloseButtonOpacity
+    {
+        get => GetValue(CloseButtonOpacityProperty);
+        set => SetValue(CloseButtonOpacityProperty, value);
+    }
     #endregion
-
+    
+    private Dock? _tabStripPlacement;
     private IconButton? _closeButton;
+    
+    static TabItem()
+    {
+        SelectableMixin.Attach<TabItem>(IsSelectedProperty);
+        PressedMixin.Attach<TabItem>();
+        FocusableProperty.OverrideDefaultValue(typeof(TabItem), true);
+        DataContextProperty.Changed.AddClassHandler<TabItem>((x, e) => x.UpdateHeader(e));
+        AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<TabItem>(AutomationControlType.TabItem);
+        AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<TabItem>(IsOffscreenBehavior.FromClip);
+    }
     
     private void SetupDefaultCloseIcon()
     {
@@ -87,6 +139,12 @@ public class TabItem : AvaloniaTabItem
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupShapeThemeBindings(false);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -111,7 +169,8 @@ public class TabItem : AvaloniaTabItem
                 Transitions =
                 [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(CloseButtonOpacityProperty)
                 ];
             }
         }
@@ -172,7 +231,7 @@ public class TabItem : AvaloniaTabItem
         }
     }
 
-    private void SetupShapeThemeBindings(bool force = false)
+    private void SetupShapeThemeBindings(bool force)
     {
         if (force || Theme == null)
         {
@@ -209,10 +268,39 @@ public class TabItem : AvaloniaTabItem
         base.OnUnloaded(e);
         Transitions = null;
     }
-
-    public override void EndInit()
+    
+    protected override void OnAccessKey(RoutedEventArgs e)
     {
-        SetupShapeThemeBindings();
-        base.EndInit();
+        Focus();
+        SetCurrentValue(IsSelectedProperty, true);
+        e.Handled = true;
+    }
+    
+    private void UpdateHeader(AvaloniaPropertyChangedEventArgs obj)
+    {
+        if (Header == null)
+        {
+            if (obj.NewValue is IHeadered headered)
+            {
+                if (Header != headered.Header)
+                {
+                    SetCurrentValue(HeaderProperty, headered.Header);
+                }
+            }
+            else
+            {
+                if (!(obj.NewValue is Control))
+                {
+                    SetCurrentValue(HeaderProperty, obj.NewValue);
+                }
+            }
+        }
+        else
+        {
+            if (Header == obj.OldValue)
+            {
+                SetCurrentValue(HeaderProperty, obj.NewValue);
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@
                                       ContentTemplate="{TemplateBinding HeaderTemplate, Converter={x:Static atom:BaseTabItemTheme.StringToTextBlockConverter}}" />
                     <atom:IconButton Name="{x:Static atom:TabItemThemeConstants.ItemCloseButtonPart}"
                                      Icon="{TemplateBinding CloseIcon}"
-                                     IsVisible="{TemplateBinding IsClosable}" />
+                                     Opacity="{TemplateBinding CloseButtonOpacity}" />
                 </StackPanel>
             </Border>
         </ControlTemplate>
@@ -96,8 +96,6 @@
             </Style>
         </Style>
         
-        <!-- BuildPlacementStyle begin -->
-        <!-- 设置 items presenter 面板样式 -->
         <!-- 分为上、右、下、左 -->
         <Style Selector="^[TabStripPlacement=Top]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
@@ -124,10 +122,28 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Style>
-        <!-- BuildPlacementStyle end -->
         
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        
+        <Style Selector="^[IsClosable=True]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+            <Setter Property="CloseButtonOpacity" Value="0.0" />
+            <Style Selector="^[IsAutoHideCloseButton=False]">
+                <Setter Property="CloseButtonOpacity" Value="1.0" />
+            </Style>
+            <Style Selector="^[IsAutoHideCloseButton=True]">
+                <Style Selector="^:pointerover">
+                    <Setter Property="CloseButtonOpacity" Value="1.0" />
+                </Style>
+            </Style>
         </Style>
         
     </Style>

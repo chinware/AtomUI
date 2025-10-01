@@ -283,17 +283,12 @@ public class NavMenu : NavMenuBase
         PseudoClasses.Set(NavMenuPseudoClass.DarkStyle, IsDarkStyle);
         PseudoClasses.Set(NavMenuPseudoClass.LightStyle, !IsDarkStyle);
     }
-    
-    public override void EndInit()
-    {
-        ConfigureControlTheme(false);
-        ConfigureItemContainerTheme(false);
-        base.EndInit();
-    }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
+        ConfigureControlTheme(false);
+        ConfigureItemContainerTheme(false);
         SetupInteractionHandler();
     }
     

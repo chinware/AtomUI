@@ -10,8 +10,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -38,10 +38,14 @@ public class TabStripItem : AvaloniaTabStripItem
 
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsClosable));
+    
+    public static readonly StyledProperty<bool> IsAutoHideCloseButtonProperty =
+        AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsAutoHideCloseButton));
 
     public static readonly DirectProperty<TabStripItem, Dock?> TabStripPlacementProperty =
-        AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), o => o.TabStripPlacement);
-
+        AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), 
+            o => o.TabStripPlacement);
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -65,6 +69,12 @@ public class TabStripItem : AvaloniaTabStripItem
         get => GetValue(IsClosableProperty);
         set => SetValue(IsClosableProperty, value);
     }
+    
+    public bool IsAutoHideCloseButton
+    {
+        get => GetValue(IsAutoHideCloseButtonProperty);
+        set => SetValue(IsAutoHideCloseButtonProperty, value);
+    }
 
     private Dock? _tabStripPlacement;
 
@@ -81,8 +91,12 @@ public class TabStripItem : AvaloniaTabStripItem
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabStripItem>();
+        
+    internal static readonly StyledProperty<double> CloseButtonOpacityProperty =
+        AvaloniaProperty.Register<TabStripItem, double>(nameof(CloseButtonOpacity));
+    
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabStripItem>();
 
     public TabSharp Shape
     {
@@ -96,6 +110,11 @@ public class TabStripItem : AvaloniaTabStripItem
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
+    internal double CloseButtonOpacity
+    {
+        get => GetValue(CloseButtonOpacityProperty);
+        set => SetValue(CloseButtonOpacityProperty, value);
+    }
     #endregion
     
     private IconButton? _closeButton;
@@ -108,6 +127,12 @@ public class TabStripItem : AvaloniaTabStripItem
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
         }
         Debug.Assert(CloseIcon is not null);
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        SetupShapeThemeBindings(false);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -129,11 +154,12 @@ public class TabStripItem : AvaloniaTabStripItem
         {
             if (force || Transitions == null)
             {
-                Transitions = new Transitions
-                {
+                Transitions =
+                [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-                };
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(CloseButtonOpacityProperty)
+                ];
             }
         }
         else
@@ -209,7 +235,7 @@ public class TabStripItem : AvaloniaTabStripItem
         }
     }
 
-    private void SetupShapeThemeBindings(bool force = false)
+    private void SetupShapeThemeBindings(bool force)
     {
         if (force || Theme == null)
         {
@@ -234,11 +260,5 @@ public class TabStripItem : AvaloniaTabStripItem
                 }
             }
         }
-    }
-    
-    public override void EndInit()
-    {
-        SetupShapeThemeBindings();
-        base.EndInit();
     }
 }
