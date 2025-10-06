@@ -17,9 +17,11 @@ namespace AtomUI.Controls;
 
 public class Segmented : SelectingItemsControl,
                          IMotionAwareControl,
+                         ISizeTypeAware,
                          IControlSharedTokenResourcesHost
 {
     protected override Type StyleKeyOverride { get; } = typeof(Segmented);
+    
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =

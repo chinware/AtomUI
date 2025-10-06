@@ -1,0 +1,232 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:StepsItem}" TargetType="atom:StepsItem">
+        <Style Selector="^[Style=Default]">
+            <Style Selector="^[LabelPlacement=Horizontal]">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True" Name="RootLayout">
+                            <atom:StepsItemIndicator DockPanel.Dock="Left" 
+                                                     IndicatorType="{TemplateBinding IndicatorType}"
+                                                     SizeType="{TemplateBinding SizeType}"
+                                                     Position="{TemplateBinding Position}"
+                                                     VerticalAlignment="Top"
+                                                     Status="{TemplateBinding Status}"/>
+                            <StackPanel Orientation="Vertical">
+                                <DockPanel LastChildFill="True">
+                                    <StackPanel Orientation="Horizontal"
+                                                Name="HeaderLayout"
+                                                DockPanel.Dock="Left">
+                                        <ContentPresenter
+                                            Name="HeaderPresenter"
+                                            Content="{TemplateBinding Header}"
+                                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                            VerticalAlignment="Center" />
+                                        <ContentPresenter
+                                            Name="SubHeaderPresenter"
+                                            Content="{TemplateBinding SubHeader}"
+                                            ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                            VerticalAlignment="Center" 
+                                            IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                    </StackPanel>
+                                    <Rectangle Name="SeparatorLine"
+                                               Height="1"
+                                               VerticalAlignment="Center" 
+                                               IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}"/>
+                                </DockPanel>
+                                <ContentPresenter
+                                    Name="DescriptionPresenter"
+                                    Content="{TemplateBinding Description}"
+                                    ContentTemplate="{TemplateBinding DescriptionTemplate}" />
+                            </StackPanel>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter>
+
+                <Style Selector="^ /template/ StackPanel#HeaderLayout">
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.HorizontalHeaderMargin}}" />
+                    <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}" />
+                    <Setter Property="MinHeight"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+                </Style>
+                
+                <Style Selector="^ /template/ DockPanel#RootLayout">
+                    <Setter Property="HorizontalSpacing"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[LabelPlacement=Vertical]">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+            </Style>
+            
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+                </Style>
+            </Style>
+            
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+                </Style>
+            </Style>
+            
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+                </Style>
+            </Style>
+            
+        </Style>
+
+        <Style Selector="^[Style=Navigation]">
+            <Style Selector="^[LabelPlacement=Horizontal]">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+
+            <Style Selector="^[LabelPlacement=Vertical]">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+        </Style>
+
+        <Style Selector="^[Style=Inline]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="^ /template/ Rectangle#SeparatorLine">
+            <Setter Property="Fill" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTailColor}}" />
+        </Style>
+
+        <Style Selector="^[Status=Wait]">
+            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitTitleColor}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDescriptionColor}}" />
+            </Style>
+            
+            <Style Selector="^ /template/ Rectangle#SeparatorLine">
+                <Setter Property="Fill"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitTailColor}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=Process]">
+            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTitleColor}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDescriptionColor}}" />
+            </Style>
+            <Style Selector="^ /template/ Rectangle#SeparatorLine">
+                <Setter Property="Fill"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTailColor}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=Finish]">
+            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishTitleColor}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDescriptionColor}}" />
+            </Style>
+            <Style Selector="^ /template/ Rectangle#SeparatorLine">
+                <Setter Property="Fill"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishTailColor}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=Error]">
+            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorTitleColor}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDescriptionColor}}" />
+            </Style>
+            <Style Selector="^ /template/ Rectangle#SeparatorLine">
+                <Setter Property="Fill"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorTailColor}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsSelected=False]">
+            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            </Style>
+
+            <Style Selector="^[IsFinished=True]">
+                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+                </Style>
+            </Style>
+
+        </Style>
+
+        <Style Selector="^[IsSelected=True]">
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

@@ -103,30 +103,25 @@ public static class ColorUtils
         return color >= 0 && color <= 255;
     }
 
-    public static bool IsStableColor(float color)
-    {
-        return color >= 0.0f && color <= 1.0f;
-    }
-
     public static bool IsStableColor(double color)
     {
-        return color >= 0.0d && color <= 1.0d;
+        return MathUtils.GreaterThanOrClose(color, 0.0d) && MathUtils.LessThanOrClose(color, 255.0d);
     }
 
     public static Color AlphaColor(in Color frontColor, in Color backgroundColor)
     {
-        var fR          = frontColor.GetRedF();
-        var fG          = frontColor.GetGreenF();
-        var fB          = frontColor.GetBlueF();
+        var fR          = frontColor.R;
+        var fG          = frontColor.G;
+        var fB          = frontColor.B;
         var originAlpha = frontColor.GetAlphaF();
         if (originAlpha < 1d)
         {
             return frontColor;
         }
 
-        var bR = backgroundColor.GetRedF();
-        var bG = backgroundColor.GetGreenF();
-        var bB = backgroundColor.GetBlueF();
+        var bR = backgroundColor.R;
+        var bG = backgroundColor.G;
+        var bB = backgroundColor.B;
 
         for (var fA = 0.01d; fA <= 1.0d; fA += 0.01d)
         {
@@ -135,13 +130,13 @@ public static class ColorUtils
             var b = Math.Round((fB - bB * (1d - fA)) / fA);
             if (IsStableColor(r) && IsStableColor(g) && IsStableColor(b))
             {
-                return FromRgbF(Math.Round(fA * 100d) / 100d, r, g, b);
+                return Color.FromArgb((byte)(Math.Round(fA * 100d) / 100d * 255), (byte)r, (byte)g, (byte)b);
             }
         }
 
         // fallback
         /* istanbul ignore next */
-        return FromRgbF(1.0d, fR, fG, fB);
+        return Color.FromArgb(255, fR, fG, fB);
     }
 
     public static Color ParseCssRgbColor(string colorExpr)

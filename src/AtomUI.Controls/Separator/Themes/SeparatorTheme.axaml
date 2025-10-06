@@ -20,7 +20,7 @@
         </Setter>
         
         <Setter Property="TitleColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextHeading}}" />
-        <Setter Property="LineColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
+        <Setter Property="LineColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSplit}}" />
         
         <Setter Property="TextPaddingInline" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.TextPaddingInline}}" />
         <Setter Property="OrientationMarginPercent" Value="{DynamicResource {x:Static atom:SeparatorTokenKey.OrientationMarginPercent}}" />

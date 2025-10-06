@@ -258,7 +258,6 @@ public class BaseTabControl : SelectingItemsControl,
         AffectsRender<BaseTabControl>(BorderBrushProperty);
         AffectsMeasure<BaseTabControl>(TabStripMarginProperty, TabAndContentGutterProperty, TabStripPlacementProperty);
         SelectedItemProperty.Changed.AddClassHandler<BaseTabControl>((x, e) => x.UpdateSelectedContent());
-        
     }
 
     public BaseTabControl()

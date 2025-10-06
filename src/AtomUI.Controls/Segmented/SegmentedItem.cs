@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AtomUI.Animations;
+﻿using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using Avalonia;
@@ -9,7 +8,6 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 

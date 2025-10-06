@@ -1,0 +1,39 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Steps}" TargetType="atom:Steps">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ItemsPresenter
+                    Name="{x:Static atom:StepsThemeConstants.ItemsPresenterPart}">
+                    <ItemsPresenter.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid
+                                RowSpacing="{Binding VerticalItemSpacing, RelativeSource={RelativeSource AncestorType=atom:Steps}}"
+                                ColumnSpacing="{Binding HorizontalItemSpacing, RelativeSource={RelativeSource AncestorType=atom:Steps}}" />
+                        </ItemsPanelTemplate>
+                    </ItemsPresenter.ItemsPanel>
+                </ItemsPresenter>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[Style=Default]">
+            <Style Selector="^[LabelPlacement=Horizontal]">
+                <Style Selector="^[SizeType=Large]">
+                    <Setter Property="HorizontalItemSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}"/>
+                    <Setter Property="VerticalItemSpacing" Value="0"/>
+                </Style>
+                <Style Selector="^[SizeType=Middle]">
+                    <Setter Property="HorizontalItemSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}"/>
+                    <Setter Property="VerticalItemSpacing" Value="0"/>
+                </Style>
+                <Style Selector="^[SizeType=Small]">
+                    <Setter Property="HorizontalItemSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingSM}}"/>
+                    <Setter Property="VerticalItemSpacing" Value="0"/>
+                </Style>
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

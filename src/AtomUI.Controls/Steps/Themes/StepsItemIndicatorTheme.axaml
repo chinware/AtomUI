@@ -1,0 +1,122 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:StepsItemIndicator}" TargetType="atom:StepsItemIndicator">
+        <Style Selector="^[IndicatorType=Default]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Frame"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Panel>
+                            <TextBlock Name="PositionText"
+                                       Text="{TemplateBinding Position}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       IsVisible="False" />
+                            <atom:Icon Name="FinishedMark"
+                                       IconInfo="{atom:IconInfoProvider Kind=CheckOutlined}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       IsVisible="False" />
+                        </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+
+            <Style Selector="^[Status=Finish]">
+                <Style Selector="^ /template/ TextBlock#PositionText">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:not(^[Status=Finish])">
+                <Style Selector="^ /template/ TextBlock#PositionText">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+                </Style>
+
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[Status=Wait]">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconBgColor}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconColor}}" />
+                
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconColor}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[Status=Process]">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBgColor}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconColor}}" />
+                
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconColor}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[Status=Finish]">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconBgColor}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconColor}}" />
+                
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconColor}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[Status=Error]">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconBgColor}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconColor}}" />
+                <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                    <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconColor}}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[IndicatorType=Dot]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

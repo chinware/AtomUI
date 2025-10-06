@@ -783,6 +783,55 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey TrackHoverBg = new TokenResourceKey("Slider.TrackHoverBg");
     }
 
+    public static class StepsTokenKey
+    {
+        public static readonly TokenResourceKey CustomIconFontSize = new TokenResourceKey("Steps.CustomIconFontSize");
+        public static readonly TokenResourceKey CustomIconSize = new TokenResourceKey("Steps.CustomIconSize");
+        public static readonly TokenResourceKey CustomIconTop = new TokenResourceKey("Steps.CustomIconTop");
+        public static readonly TokenResourceKey DescriptionMaxWidth = new TokenResourceKey("Steps.DescriptionMaxWidth");
+        public static readonly TokenResourceKey DotCurrentSize = new TokenResourceKey("Steps.DotCurrentSize");
+        public static readonly TokenResourceKey DotSize = new TokenResourceKey("Steps.DotSize");
+        public static readonly TokenResourceKey ErrorDescriptionColor = new TokenResourceKey("Steps.ErrorDescriptionColor");
+        public static readonly TokenResourceKey ErrorDotColor = new TokenResourceKey("Steps.ErrorDotColor");
+        public static readonly TokenResourceKey ErrorIconBgColor = new TokenResourceKey("Steps.ErrorIconBgColor");
+        public static readonly TokenResourceKey ErrorIconBorderColor = new TokenResourceKey("Steps.ErrorIconBorderColor");
+        public static readonly TokenResourceKey ErrorIconColor = new TokenResourceKey("Steps.ErrorIconColor");
+        public static readonly TokenResourceKey ErrorTailColor = new TokenResourceKey("Steps.ErrorTailColor");
+        public static readonly TokenResourceKey ErrorTitleColor = new TokenResourceKey("Steps.ErrorTitleColor");
+        public static readonly TokenResourceKey FinishDescriptionColor = new TokenResourceKey("Steps.FinishDescriptionColor");
+        public static readonly TokenResourceKey FinishDotColor = new TokenResourceKey("Steps.FinishDotColor");
+        public static readonly TokenResourceKey FinishIconBgColor = new TokenResourceKey("Steps.FinishIconBgColor");
+        public static readonly TokenResourceKey FinishIconBorderColor = new TokenResourceKey("Steps.FinishIconBorderColor");
+        public static readonly TokenResourceKey FinishIconColor = new TokenResourceKey("Steps.FinishIconColor");
+        public static readonly TokenResourceKey FinishTailColor = new TokenResourceKey("Steps.FinishTailColor");
+        public static readonly TokenResourceKey FinishTitleColor = new TokenResourceKey("Steps.FinishTitleColor");
+        public static readonly TokenResourceKey HorizontalHeaderMargin = new TokenResourceKey("Steps.HorizontalHeaderMargin");
+        public static readonly TokenResourceKey IconFontSize = new TokenResourceKey("Steps.IconFontSize");
+        public static readonly TokenResourceKey IconSize = new TokenResourceKey("Steps.IconSize");
+        public static readonly TokenResourceKey IconSizeSM = new TokenResourceKey("Steps.IconSizeSM");
+        public static readonly TokenResourceKey InlineDotSize = new TokenResourceKey("Steps.InlineDotSize");
+        public static readonly TokenResourceKey InlineTailColor = new TokenResourceKey("Steps.InlineTailColor");
+        public static readonly TokenResourceKey InlineTitleColor = new TokenResourceKey("Steps.InlineTitleColor");
+        public static readonly TokenResourceKey NavArrowColor = new TokenResourceKey("Steps.NavArrowColor");
+        public static readonly TokenResourceKey ProcessDescriptionColor = new TokenResourceKey("Steps.ProcessDescriptionColor");
+        public static readonly TokenResourceKey ProcessDotColor = new TokenResourceKey("Steps.ProcessDotColor");
+        public static readonly TokenResourceKey ProcessIconBgColor = new TokenResourceKey("Steps.ProcessIconBgColor");
+        public static readonly TokenResourceKey ProcessIconBorderColor = new TokenResourceKey("Steps.ProcessIconBorderColor");
+        public static readonly TokenResourceKey ProcessIconColor = new TokenResourceKey("Steps.ProcessIconColor");
+        public static readonly TokenResourceKey ProcessTailColor = new TokenResourceKey("Steps.ProcessTailColor");
+        public static readonly TokenResourceKey ProcessTitleColor = new TokenResourceKey("Steps.ProcessTitleColor");
+        public static readonly TokenResourceKey StepsNavActiveColor = new TokenResourceKey("Steps.StepsNavActiveColor");
+        public static readonly TokenResourceKey StepsProgressSize = new TokenResourceKey("Steps.StepsProgressSize");
+        public static readonly TokenResourceKey VerticalHeaderMargin = new TokenResourceKey("Steps.VerticalHeaderMargin");
+        public static readonly TokenResourceKey WaitDescriptionColor = new TokenResourceKey("Steps.WaitDescriptionColor");
+        public static readonly TokenResourceKey WaitDotColor = new TokenResourceKey("Steps.WaitDotColor");
+        public static readonly TokenResourceKey WaitIconBgColor = new TokenResourceKey("Steps.WaitIconBgColor");
+        public static readonly TokenResourceKey WaitIconBorderColor = new TokenResourceKey("Steps.WaitIconBorderColor");
+        public static readonly TokenResourceKey WaitIconColor = new TokenResourceKey("Steps.WaitIconColor");
+        public static readonly TokenResourceKey WaitTailColor = new TokenResourceKey("Steps.WaitTailColor");
+        public static readonly TokenResourceKey WaitTitleColor = new TokenResourceKey("Steps.WaitTitleColor");
+    }
+
     public static class ToggleSwitchTokenKey
     {
         public static readonly TokenResourceKey ExtraInfoFontSize = new TokenResourceKey("ToggleSwitch.ExtraInfoFontSize");

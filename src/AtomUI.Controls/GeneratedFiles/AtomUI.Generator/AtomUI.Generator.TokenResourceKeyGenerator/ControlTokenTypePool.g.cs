@@ -52,6 +52,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.SeparatorToken));
             tokenTypes.Add(typeof(AtomUI.Controls.SkeletonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.SliderToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.StepsToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TabControlToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TagToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TimelineToken));
