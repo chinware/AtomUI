@@ -827,6 +827,8 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey VerticalDotMargin = new TokenResourceKey("Steps.VerticalDotMargin");
         public static readonly TokenResourceKey VerticalItemSpacing = new TokenResourceKey("Steps.VerticalItemSpacing");
         public static readonly TokenResourceKey VerticalLabelContentMargin = new TokenResourceKey("Steps.VerticalLabelContentMargin");
+        public static readonly TokenResourceKey VerticalNavArrowMargin = new TokenResourceKey("Steps.VerticalNavArrowMargin");
+        public static readonly TokenResourceKey VerticalNavArrowMarginSM = new TokenResourceKey("Steps.VerticalNavArrowMarginSM");
         public static readonly TokenResourceKey WaitDescriptionColor = new TokenResourceKey("Steps.WaitDescriptionColor");
         public static readonly TokenResourceKey WaitDotColor = new TokenResourceKey("Steps.WaitDotColor");
         public static readonly TokenResourceKey WaitIconBgColor = new TokenResourceKey("Steps.WaitIconBgColor");

@@ -377,7 +377,14 @@ public class Steps : SelectingItemsControl,
                     }
                     else
                     {
-                        columnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+                        if (Style == StepsStyle.Default || Style == StepsStyle.Inline)
+                        {
+                            columnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+                        }
+                        else
+                        {
+                            columnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+                        }
                     }
                 }
                 _grid.ColumnDefinitions = columnDefinitions;
@@ -387,14 +394,7 @@ public class Steps : SelectingItemsControl,
                 var rowDefinitions = new RowDefinitions();
                 for (var i = 0; i < count; i++)
                 {
-                    if (i != count - 1)
-                    {
-                        rowDefinitions.Add(new RowDefinition(GridLength.Star));
-                    }
-                    else
-                    {
-                        rowDefinitions.Add(new RowDefinition(GridLength.Auto));
-                    }
+                    rowDefinitions.Add(new RowDefinition(GridLength.Auto));
                 }
                 _grid.RowDefinitions = rowDefinitions;
             }
@@ -516,8 +516,7 @@ public class Steps : SelectingItemsControl,
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-
-        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
+        if (IsItemClickable && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
         {
             e.Handled = UpdateSelectionFromEventSource(e.Source);
         }
@@ -525,12 +524,11 @@ public class Steps : SelectingItemsControl,
     
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
-        if (e.InitialPressMouseButton == MouseButton.Left && e.Pointer.Type != PointerType.Mouse)
+        if (IsItemClickable && e.InitialPressMouseButton == MouseButton.Left && e.Pointer.Type != PointerType.Mouse)
         {
             var container = GetContainerFromEventSource(e.Source);
-            if (container != null
-                && container.GetVisualsAt(e.GetPosition(container))
-                            .Any(c => container == c || container.IsVisualAncestorOf(c)))
+            if (container != null && container.GetVisualsAt(e.GetPosition(container))
+                                              .Any(c => container == c || container.IsVisualAncestorOf(c)))
             {
                 e.Handled = UpdateSelectionFromEventSource(e.Source);
             }

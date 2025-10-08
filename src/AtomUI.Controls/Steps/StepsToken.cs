@@ -98,6 +98,16 @@ internal class StepsToken : AbstractControlDesignToken
     /// 垂直标签排列时候内容跟图标之间的外间距
     /// </summary>
     public Thickness VerticalLabelContentMargin { get; set; }
+    
+    /// <summary>
+    /// 垂直导航类型箭头的外间距
+    /// </summary>
+    public Thickness VerticalNavArrowMargin { get; set; }
+    
+    /// <summary>
+    /// 垂直导航类型箭头的外间距，小尺寸
+    /// </summary>
+    public Thickness VerticalNavArrowMarginSM { get; set; }
 
     #region 内部 Token
 
@@ -198,8 +208,10 @@ internal class StepsToken : AbstractControlDesignToken
         VerticalDescriptionPadding = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingXS);
         DotLineThickness           = SharedToken.LineWidth * 3;
 
-        HorizontalDotMargin = new Thickness(SharedToken.UniformlyMarginXS, 0);
-        VerticalDotMargin = new Thickness(0, SharedToken.UniformlyMarginXS);
+        HorizontalDotMargin        = new Thickness(SharedToken.UniformlyMarginXS, 0);
+        VerticalDotMargin          = new Thickness(0, SharedToken.UniformlyMarginXS);
         VerticalLabelContentMargin = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
+        VerticalNavArrowMargin     = new Thickness(0, SharedToken.UniformlyMargin);
+        VerticalNavArrowMarginSM   = new Thickness(0, SharedToken.UniformlyMarginSM);
     }
 }

@@ -2,7 +2,10 @@ using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
+using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
@@ -144,6 +147,12 @@ public class StepsItem : HeaderedContentControl, ISelectable
     internal static readonly StyledProperty<IBrush?> DescriptionForegroundProperty =
         AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(DescriptionForeground));
     
+    internal static readonly StyledProperty<IBrush?> NavIndicatorLineColorProperty =
+        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(NavIndicatorLineColor));
+    
+    internal static readonly StyledProperty<ITransform?> NavIndicatorLineRenderTransformProperty = 
+        AvaloniaProperty.Register<StepsItem, ITransform?>(nameof (NavIndicatorLineRenderTransform));
+    
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -223,6 +232,18 @@ public class StepsItem : HeaderedContentControl, ISelectable
         get => GetValue(DescriptionForegroundProperty);
         set => SetValue(DescriptionForegroundProperty, value);
     }
+    
+    internal IBrush? NavIndicatorLineColor
+    {
+        get => GetValue(NavIndicatorLineColorProperty);
+        set => SetValue(NavIndicatorLineColorProperty, value);
+    }
+    
+    internal ITransform? NavIndicatorLineRenderTransform
+    {
+        get => GetValue(NavIndicatorLineRenderTransformProperty);
+        set => SetValue(NavIndicatorLineRenderTransformProperty, value);
+    }
     #endregion
     
     private StepsItemIndicator? _indicator;
@@ -258,6 +279,13 @@ public class StepsItem : HeaderedContentControl, ISelectable
         {
             UpdatePseudoClasses();
         }
+        else if (change.Property == IsSelectedProperty)
+        {
+            if (_indicator != null)
+            {
+                _indicator.IsItemHover = false;
+            }
+        }
     }
     
     private void ConfigureTransitions(bool force)
@@ -271,7 +299,8 @@ public class StepsItem : HeaderedContentControl, ISelectable
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(SubTitleForegroundProperty),
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(DescriptionForegroundProperty)
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(DescriptionForegroundProperty),
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(NavIndicatorLineRenderTransformProperty, SharedTokenKey.MotionDurationMid, new CubicEaseOut())
                 ];
             }
         }
@@ -296,7 +325,7 @@ public class StepsItem : HeaderedContentControl, ISelectable
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);
-        if (_indicator != null)
+        if (_indicator != null && !IsSelected)
         {
             _indicator.IsItemHover = true;
         }
@@ -305,7 +334,7 @@ public class StepsItem : HeaderedContentControl, ISelectable
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
-        if (_indicator != null)
+        if (_indicator != null && !IsSelected)
         {
             _indicator.IsItemHover = false;
         }
