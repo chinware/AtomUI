@@ -1,4 +1,5 @@
 using AtomUI.Animations;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using Avalonia;
@@ -7,8 +8,10 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -135,6 +138,12 @@ public class StepsItem : HeaderedContentControl, ISelectable
     internal static readonly StyledProperty<Orientation> OrientationProperty =
         ScrollBar.OrientationProperty.AddOwner<StepsItem>();
     
+    internal static readonly StyledProperty<IBrush?> SubTitleForegroundProperty =
+        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(SubTitleForeground));
+    
+    internal static readonly StyledProperty<IBrush?> DescriptionForegroundProperty =
+        AvaloniaProperty.Register<StepsItem, IBrush?>(nameof(DescriptionForeground));
+    
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -197,23 +206,40 @@ public class StepsItem : HeaderedContentControl, ISelectable
         set => SetAndRaise(IsLastProperty, ref _isLast, value);
     }
     
-    public Orientation Orientation
+    internal Orientation Orientation
     {
         get => GetValue(OrientationProperty);
         set => SetValue(OrientationProperty, value);
     }
+    
+    internal IBrush? SubTitleForeground
+    {
+        get => GetValue(SubTitleForegroundProperty);
+        set => SetValue(SubTitleForegroundProperty, value);
+    }
+    
+    internal IBrush? DescriptionForeground
+    {
+        get => GetValue(DescriptionForegroundProperty);
+        set => SetValue(DescriptionForegroundProperty, value);
+    }
     #endregion
+    
+    private StepsItemIndicator? _indicator;
     
     static StepsItem()
     {
         SelectableMixin.Attach<StepsItem>(IsSelectedProperty);
         PressedMixin.Attach<StepsItem>();
         FocusableProperty.OverrideDefaultValue<StepsItem>(true);
+        AffectsRender<StepsItem>(SubTitleForegroundProperty, DescriptionForegroundProperty);
+        AffectsMeasure<StepsItem>(OrientationProperty, StyleProperty, SizeTypeProperty, OrientationProperty);
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _indicator = e.NameScope.Find<StepsItemIndicator>(StepsItemThemeConstants.IndicatorPart);
         UpdatePseudoClasses();
     }
     
@@ -242,7 +268,10 @@ public class StepsItem : HeaderedContentControl, ISelectable
             {
                 Transitions =
                 [
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(SubTitleForegroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(DescriptionForegroundProperty)
                 ];
             }
         }
@@ -263,7 +292,25 @@ public class StepsItem : HeaderedContentControl, ISelectable
         base.OnUnloaded(e);
         Transitions = null;
     }
-    
+
+    protected override void OnPointerEntered(PointerEventArgs e)
+    {
+        base.OnPointerEntered(e);
+        if (_indicator != null)
+        {
+            _indicator.IsItemHover = true;
+        }
+    }
+
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        if (_indicator != null)
+        {
+            _indicator.IsItemHover = false;
+        }
+    }
+
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StepsPseudoClass.Finished, IsFinished);

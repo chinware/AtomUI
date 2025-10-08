@@ -11,6 +11,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
@@ -276,6 +277,7 @@ public class Steps : SelectingItemsControl,
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, stepsItem, StepsItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, StyleProperty, stepsItem, StepsItem.StyleProperty));
             disposables.Add(BindUtils.RelayBind(this, ItemIndicatorTypeProperty, stepsItem, StepsItem.IndicatorTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsItemClickableProperty, stepsItem, StepsItem.IsClickableProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, stepsItem, StepsItem.IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, OrientationProperty, stepsItem, StepsItem.OrientationProperty));
             
@@ -507,6 +509,30 @@ public class Steps : SelectingItemsControl,
 
                 // Note how we fall back to our own ContentTemplate if the container doesn't specify one
                 IDataTemplate? EffectiveCurrentContentTemplate(IDataTemplate? containerTemplate) => containerTemplate ?? ContentTemplate;
+            }
+        }
+    }
+    
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
+        {
+            e.Handled = UpdateSelectionFromEventSource(e.Source);
+        }
+    }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (e.InitialPressMouseButton == MouseButton.Left && e.Pointer.Type != PointerType.Mouse)
+        {
+            var container = GetContainerFromEventSource(e.Source);
+            if (container != null
+                && container.GetVisualsAt(e.GetPosition(container))
+                            .Any(c => container == c || container.IsVisualAncestorOf(c)))
+            {
+                e.Handled = UpdateSelectionFromEventSource(e.Source);
             }
         }
     }

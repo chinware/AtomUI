@@ -6,20 +6,24 @@
     <ControlTheme x:Key="{x:Type atom:StepsItem}" TargetType="atom:StepsItem">
 
         <!-- 通用样式 -->
+        <Style Selector="^[IsClickable=True]">
+            <Style Selector="^[IsSelected=False]">
+                <Style Selector="^ /template/ DockPanel#RootLayout">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Cursor" Value="Hand" />
+                </Style>
+            </Style>
+        </Style>
+        
         <Style Selector="^ /template/ Rectangle.IndicatorLine">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTailColor}}" />
         </Style>
 
         <Style Selector="^[Status=Wait]">
-            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitTitleColor}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDescriptionColor}}" />
-            </Style>
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitTitleColor}}" />
+            <Setter Property="DescriptionForeground"
+                    Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDescriptionColor}}" />
 
             <Style Selector="^ /template/ Rectangle.IndicatorLine">
                 <Setter Property="Fill"
@@ -28,15 +32,11 @@
         </Style>
 
         <Style Selector="^[Status=Process]">
-            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTitleColor}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDescriptionColor}}" />
-            </Style>
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTitleColor}}" />
+            <Setter Property="DescriptionForeground"
+                    Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDescriptionColor}}" />
+            
             <Style Selector="^ /template/ Rectangle.IndicatorLine">
                 <Setter Property="Fill"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTailColor}}" />
@@ -44,15 +44,10 @@
         </Style>
 
         <Style Selector="^[Status=Finish]">
-            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishTitleColor}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDescriptionColor}}" />
-            </Style>
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishTitleColor}}" />
+            <Setter Property="DescriptionForeground"
+                    Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDescriptionColor}}" />
             <Style Selector="^ /template/ Rectangle.IndicatorLine">
                 <Setter Property="Fill"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishTailColor}}" />
@@ -60,15 +55,11 @@
         </Style>
 
         <Style Selector="^[Status=Error]">
-            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorTitleColor}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDescriptionColor}}" />
-            </Style>
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorTitleColor}}" />
+            <Setter Property="DescriptionForeground"
+                    Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDescriptionColor}}" />
+            
             <Style Selector="^ /template/ Rectangle.IndicatorLine">
                 <Setter Property="Fill"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorTailColor}}" />
@@ -76,44 +67,41 @@
         </Style>
 
         <Style Selector="^[IsSelected=False]">
-            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
-            </Style>
+            
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            <Setter Property="SubTitleForeground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            <Setter Property="DescriptionForeground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
 
             <Style Selector="^[IsFinished=True]">
-                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-                </Style>
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+                <Setter Property="SubTitleForeground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+                <Setter Property="DescriptionForeground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            </Style>
 
-                <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
-                    <Setter Property="Foreground"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
-                </Style>
-
-                <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
-                    <Setter Property="Foreground"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            <Style Selector="^[IsClickable=True]">
+                <Style Selector="^:pointerover">
+                    <Style Selector="^:not(^[Status=Process])">
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
+                        <Setter Property="SubTitleForeground"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
+                        <Setter Property="DescriptionForeground"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
+                    </Style>
                 </Style>
             </Style>
 
         </Style>
 
         <Style Selector="^[IsSelected=True]">
-            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
-            </Style>
+            <Setter Property="SubTitleForeground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
         </Style>
 
         <Style Selector="^[Style=Default]">
@@ -178,8 +166,10 @@
                             <ControlTemplate>
                                 <DockPanel LastChildFill="True" Name="RootLayout">
                                     <atom:StepsItemIndicator DockPanel.Dock="Left"
+                                                             Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
                                                              IndicatorType="{TemplateBinding IndicatorType}"
                                                              IsCurrent="{TemplateBinding IsSelected}"
+                                                             IsClickable="{TemplateBinding IsClickable}"
                                                              SizeType="{TemplateBinding SizeType}"
                                                              Position="{TemplateBinding Position}"
                                                              Icon="{TemplateBinding Icon}"
@@ -195,11 +185,13 @@
                                                     Name="HeaderPresenter"
                                                     Content="{TemplateBinding Header}"
                                                     ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                    Foreground="{TemplateBinding Foreground}"
                                                     VerticalAlignment="Center" />
                                                 <ContentPresenter
                                                     Name="SubHeaderPresenter"
                                                     Content="{TemplateBinding SubHeader}"
                                                     ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                                    Foreground="{TemplateBinding SubTitleForeground}"
                                                     VerticalAlignment="Center"
                                                     IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                             </StackPanel>
@@ -211,6 +203,7 @@
                                         </DockPanel>
                                         <ContentPresenter
                                             Name="DescriptionPresenter"
+                                            Foreground="{TemplateBinding DescriptionForeground}"
                                             Content="{TemplateBinding Description}"
                                             ContentTemplate="{TemplateBinding DescriptionTemplate}" />
                                     </StackPanel>
@@ -251,12 +244,14 @@
                                                        VerticalAlignment="Center"
                                                        IsVisible="{TemplateBinding IsFirst, Converter={x:Static BoolConverters.Not}}"
                                                        Grid.Column="0" />
-                                            <atom:StepsItemIndicator IndicatorType="{TemplateBinding IndicatorType}"
+                                            <atom:StepsItemIndicator Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                                     IndicatorType="{TemplateBinding IndicatorType}"
                                                                      UseLayoutRounding="False"
                                                                      SizeType="{TemplateBinding SizeType}"
                                                                      Position="{TemplateBinding Position}"
                                                                      Icon="{TemplateBinding Icon}"
                                                                      IsCurrent="{TemplateBinding IsSelected}"
+                                                                     IsClickable="{TemplateBinding IsClickable}"
                                                                      VerticalAlignment="Center"
                                                                      Status="{TemplateBinding Status}"
                                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
@@ -272,18 +267,21 @@
                                             <ContentPresenter
                                                 Name="HeaderPresenter"
                                                 Content="{TemplateBinding Header}"
+                                                Foreground="{TemplateBinding Foreground}"
                                                 ContentTemplate="{TemplateBinding HeaderTemplate}"
                                                 VerticalAlignment="Center" />
                                             <ContentPresenter
                                                 Name="SubHeaderPresenter"
                                                 Content="{TemplateBinding SubHeader}"
                                                 ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                                Foreground="{TemplateBinding SubTitleForeground}"
                                                 VerticalAlignment="Center"
                                                 IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                         </StackPanel>
                                         <ContentPresenter
                                             Name="DescriptionPresenter"
                                             Content="{TemplateBinding Description}"
+                                            Foreground="{TemplateBinding DescriptionForeground}"
                                             ContentTemplate="{TemplateBinding DescriptionTemplate}"
                                             TextAlignment="Center" />
                                     </StackPanel>
@@ -354,12 +352,13 @@
                     <Setter Property="Template">
                         <ControlTemplate>
                             <DockPanel LastChildFill="True" Name="RootLayout">
-                                <DockPanel DockPanel.Dock="Left" LastChildFill="True"
-                                           Name="IndicatorLayout">
+                                <DockPanel DockPanel.Dock="Left" LastChildFill="True" Name="IndicatorLayout">
                                     <atom:StepsItemIndicator
                                         DockPanel.Dock="Top"
+                                        Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
                                         IndicatorType="{TemplateBinding IndicatorType}"
                                         IsCurrent="{TemplateBinding IsSelected}"
+                                        IsClickable="{TemplateBinding IsClickable}"
                                         SizeType="{TemplateBinding SizeType}"
                                         Position="{TemplateBinding Position}"
                                         Icon="{TemplateBinding Icon}"
@@ -376,12 +375,14 @@
                                     <StackPanel Orientation="Horizontal" Name="HeaderLayout">
                                         <ContentPresenter
                                             Name="HeaderPresenter"
+                                            Foreground="{TemplateBinding Foreground}"
                                             Content="{TemplateBinding Header}"
                                             ContentTemplate="{TemplateBinding HeaderTemplate}"
                                             TextWrapping="Wrap"
                                             VerticalAlignment="Center" />
                                         <ContentPresenter
                                             Name="SubHeaderPresenter"
+                                            Foreground="{TemplateBinding SubTitleForeground}"
                                             Content="{TemplateBinding SubHeader}"
                                             ContentTemplate="{TemplateBinding SubHeaderTemplate}"
                                             VerticalAlignment="Center"
@@ -390,6 +391,7 @@
                                     </StackPanel>
                                     <ContentPresenter
                                         Name="DescriptionPresenter"
+                                        Foreground="{TemplateBinding DescriptionForeground}"
                                         Content="{TemplateBinding Description}"
                                         ContentTemplate="{TemplateBinding DescriptionTemplate}"
                                         TextWrapping="Wrap" />
@@ -421,8 +423,10 @@
                                 <DockPanel DockPanel.Dock="Left" LastChildFill="True" Name="IndicatorLayout">
                                     <Panel DockPanel.Dock="Top" Name="ItemIndicatorLayout">
                                         <atom:StepsItemIndicator
+                                            Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
                                             IndicatorType="{TemplateBinding IndicatorType}"
                                             IsCurrent="{TemplateBinding IsSelected}"
+                                            IsClickable="{TemplateBinding IsClickable}"
                                             SizeType="{TemplateBinding SizeType}"
                                             Position="{TemplateBinding Position}"
                                             Icon="{TemplateBinding Icon}"
@@ -441,12 +445,14 @@
                                     <StackPanel Orientation="Horizontal" Name="HeaderLayout">
                                         <ContentPresenter
                                             Name="HeaderPresenter"
+                                            Foreground="{TemplateBinding Foreground}"
                                             Content="{TemplateBinding Header}"
                                             ContentTemplate="{TemplateBinding HeaderTemplate}"
                                             TextWrapping="Wrap"
                                             VerticalAlignment="Center" />
                                         <ContentPresenter
                                             Name="SubHeaderPresenter"
+                                            Foreground="{TemplateBinding SubTitleForeground}"
                                             Content="{TemplateBinding SubHeader}"
                                             ContentTemplate="{TemplateBinding SubHeaderTemplate}"
                                             VerticalAlignment="Center"
@@ -455,6 +461,7 @@
                                     </StackPanel>
                                     <ContentPresenter
                                         Name="DescriptionPresenter"
+                                        Foreground="{TemplateBinding DescriptionForeground}"
                                         Content="{TemplateBinding Description}"
                                         ContentTemplate="{TemplateBinding DescriptionTemplate}"
                                         TextWrapping="Wrap" />

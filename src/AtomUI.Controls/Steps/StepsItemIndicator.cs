@@ -78,6 +78,18 @@ internal class StepsItemIndicator : TemplatedControl
             nameof(IsCurrent),
             o => o.IsCurrent,
             (o, v) => o.IsCurrent = v);
+    
+    internal static readonly DirectProperty<StepsItemIndicator, bool> IsClickableProperty =
+        AvaloniaProperty.RegisterDirect<StepsItemIndicator, bool>(
+            nameof(IsClickable),
+            o => o.IsClickable,
+            (o, v) => o.IsClickable = v);
+    
+    internal static readonly DirectProperty<StepsItemIndicator, bool> IsItemHoverProperty =
+        AvaloniaProperty.RegisterDirect<StepsItemIndicator, bool>(
+            nameof(IsItemHover),
+            o => o.IsItemHover,
+            (o, v) => o.IsItemHover = v);
 
     private int _position;
 
@@ -100,10 +112,31 @@ internal class StepsItemIndicator : TemplatedControl
     internal bool IsCurrent
     {
         get => _isCurrent;
-        set => SetAndRaise(IsCustomProperty, ref _isCurrent, value);
+        set => SetAndRaise(IsCurrentProperty, ref _isCurrent, value);
+    }
+    
+    private bool _isClickable;
+
+    internal bool IsClickable
+    {
+        get => _isClickable;
+        set => SetAndRaise(IsClickableProperty, ref _isClickable, value);
+    }
+    
+    private bool _isItemHover;
+
+    internal bool IsItemHover
+    {
+        get => _isItemHover;
+        set => SetAndRaise(IsItemHoverProperty, ref _isItemHover, value);
     }
     #endregion
 
+    static StepsItemIndicator()
+    {
+        AffectsMeasure<StepsItemIndicator>(SizeTypeProperty, IndicatorTypeProperty, IsCurrentProperty);
+    }
+    
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
@@ -134,7 +167,9 @@ internal class StepsItemIndicator : TemplatedControl
             {
                 Transitions =
                 [
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
                 ];
             }
         }
