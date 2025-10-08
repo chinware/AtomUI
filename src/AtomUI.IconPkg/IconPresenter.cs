@@ -139,7 +139,8 @@ public class IconPresenter : Control, IMotionAwareControl
     /// </summary>
     static IconPresenter()
     {
-        AffectsMeasure<IconPresenter>(IconProperty, PaddingProperty);
+        AffectsMeasure<IconPresenter>(IconProperty, PaddingProperty, IconHeightProperty, IconWidthProperty);
+        AffectsRender<IconPresenter>(IconModeProperty, NormalFilledBrushProperty, ActiveFilledBrushProperty, SelectedFilledBrushProperty, DisabledFilledBrushProperty);
         IconProperty.Changed.AddClassHandler<IconPresenter>((x, e) => x.ChildChanged(e));
     }
     

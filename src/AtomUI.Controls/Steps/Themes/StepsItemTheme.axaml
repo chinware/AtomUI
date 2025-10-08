@@ -4,121 +4,9 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:StepsItem}" TargetType="atom:StepsItem">
-        <Style Selector="^[Style=Default]">
-            <Style Selector="^[LabelPlacement=Horizontal]">
-                <Setter Property="Template">
-                    <ControlTemplate>
-                        <DockPanel LastChildFill="True" Name="RootLayout">
-                            <atom:StepsItemIndicator DockPanel.Dock="Left" 
-                                                     IndicatorType="{TemplateBinding IndicatorType}"
-                                                     SizeType="{TemplateBinding SizeType}"
-                                                     Position="{TemplateBinding Position}"
-                                                     VerticalAlignment="Top"
-                                                     Status="{TemplateBinding Status}"/>
-                            <StackPanel Orientation="Vertical">
-                                <DockPanel LastChildFill="True">
-                                    <StackPanel Orientation="Horizontal"
-                                                Name="HeaderLayout"
-                                                DockPanel.Dock="Left">
-                                        <ContentPresenter
-                                            Name="HeaderPresenter"
-                                            Content="{TemplateBinding Header}"
-                                            ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                            VerticalAlignment="Center" />
-                                        <ContentPresenter
-                                            Name="SubHeaderPresenter"
-                                            Content="{TemplateBinding SubHeader}"
-                                            ContentTemplate="{TemplateBinding SubHeaderTemplate}"
-                                            VerticalAlignment="Center" 
-                                            IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                                    </StackPanel>
-                                    <Rectangle Name="SeparatorLine"
-                                               Height="1"
-                                               VerticalAlignment="Center" 
-                                               IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}"/>
-                                </DockPanel>
-                                <ContentPresenter
-                                    Name="DescriptionPresenter"
-                                    Content="{TemplateBinding Description}"
-                                    ContentTemplate="{TemplateBinding DescriptionTemplate}" />
-                            </StackPanel>
-                        </DockPanel>
-                    </ControlTemplate>
-                </Setter>
 
-                <Style Selector="^ /template/ StackPanel#HeaderLayout">
-                    <Setter Property="Margin"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.HorizontalHeaderMargin}}" />
-                    <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}" />
-                    <Setter Property="MinHeight"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
-                </Style>
-                
-                <Style Selector="^ /template/ DockPanel#RootLayout">
-                    <Setter Property="HorizontalSpacing"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[LabelPlacement=Vertical]">
-                <Setter Property="Template">
-                    <ControlTemplate>
-                    </ControlTemplate>
-                </Setter>
-            </Style>
-            
-            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
-                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
-                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-            </Style>
-            
-            <Style Selector="^[SizeType=Large]">
-                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
-                </Style>
-            </Style>
-            
-            <Style Selector="^[SizeType=Middle]">
-                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
-                </Style>
-            </Style>
-            
-            <Style Selector="^[SizeType=Small]">
-                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-                </Style>
-            </Style>
-            
-        </Style>
-
-        <Style Selector="^[Style=Navigation]">
-            <Style Selector="^[LabelPlacement=Horizontal]">
-                <Setter Property="Template">
-                    <ControlTemplate>
-                    </ControlTemplate>
-                </Setter>
-            </Style>
-
-            <Style Selector="^[LabelPlacement=Vertical]">
-                <Setter Property="Template">
-                    <ControlTemplate>
-                    </ControlTemplate>
-                </Setter>
-            </Style>
-        </Style>
-
-        <Style Selector="^[Style=Inline]">
-            <Setter Property="Template">
-                <ControlTemplate>
-                </ControlTemplate>
-            </Setter>
-        </Style>
-
-        <Style Selector="^ /template/ Rectangle#SeparatorLine">
+        <!-- 通用样式 -->
+        <Style Selector="^ /template/ Rectangle.IndicatorLine">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTailColor}}" />
         </Style>
 
@@ -132,8 +20,8 @@
                 <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDescriptionColor}}" />
             </Style>
-            
-            <Style Selector="^ /template/ Rectangle#SeparatorLine">
+
+            <Style Selector="^ /template/ Rectangle.IndicatorLine">
                 <Setter Property="Fill"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitTailColor}}" />
             </Style>
@@ -149,7 +37,7 @@
                 <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDescriptionColor}}" />
             </Style>
-            <Style Selector="^ /template/ Rectangle#SeparatorLine">
+            <Style Selector="^ /template/ Rectangle.IndicatorLine">
                 <Setter Property="Fill"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessTailColor}}" />
             </Style>
@@ -165,7 +53,7 @@
                 <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDescriptionColor}}" />
             </Style>
-            <Style Selector="^ /template/ Rectangle#SeparatorLine">
+            <Style Selector="^ /template/ Rectangle.IndicatorLine">
                 <Setter Property="Fill"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishTailColor}}" />
             </Style>
@@ -181,7 +69,7 @@
                 <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDescriptionColor}}" />
             </Style>
-            <Style Selector="^ /template/ Rectangle#SeparatorLine">
+            <Style Selector="^ /template/ Rectangle.IndicatorLine">
                 <Setter Property="Fill"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorTailColor}}" />
             </Style>
@@ -226,6 +114,411 @@
                 <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
             </Style>
+        </Style>
+
+        <Style Selector="^[Style=Default]">
+            <!-- 普通样式风格模板对应的通用样式 -->
+            <Style Selector="^ /template/ StackPanel#HeaderLayout">
+                <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ StackPanel#HeaderLayout">
+                    <Setter Property="MinHeight"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ StackPanel#HeaderLayout">
+                    <Setter Property="MinHeight"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+
+                <Style Selector="^ /template/ StackPanel#HeaderLayout">
+                    <Setter Property="MinHeight"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+                </Style>
+            </Style>
+
+            <!-- 普通样式水平风格模板 -->
+            <Style Selector="^[Orientation=Horizontal]">
+                <!-- 默认指示器类型 -->
+                <Style Selector="^[IndicatorType=Default]">
+                    <Style Selector="^[LabelPlacement=Horizontal]">
+                        <Setter Property="Template">
+                            <ControlTemplate>
+                                <DockPanel LastChildFill="True" Name="RootLayout">
+                                    <atom:StepsItemIndicator DockPanel.Dock="Left"
+                                                             IndicatorType="{TemplateBinding IndicatorType}"
+                                                             IsCurrent="{TemplateBinding IsSelected}"
+                                                             SizeType="{TemplateBinding SizeType}"
+                                                             Position="{TemplateBinding Position}"
+                                                             Icon="{TemplateBinding Icon}"
+                                                             VerticalAlignment="Top"
+                                                             Status="{TemplateBinding Status}"
+                                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel LastChildFill="True">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Name="HeaderLayout"
+                                                        DockPanel.Dock="Left">
+                                                <ContentPresenter
+                                                    Name="HeaderPresenter"
+                                                    Content="{TemplateBinding Header}"
+                                                    ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                    VerticalAlignment="Center" />
+                                                <ContentPresenter
+                                                    Name="SubHeaderPresenter"
+                                                    Content="{TemplateBinding SubHeader}"
+                                                    ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                                    VerticalAlignment="Center"
+                                                    IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            </StackPanel>
+                                            <Rectangle Name="SeparatorLine"
+                                                       Classes="IndicatorLine"
+                                                       Height="1"
+                                                       VerticalAlignment="Center"
+                                                       IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                        </DockPanel>
+                                        <ContentPresenter
+                                            Name="DescriptionPresenter"
+                                            Content="{TemplateBinding Description}"
+                                            ContentTemplate="{TemplateBinding DescriptionTemplate}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Setter>
+
+                        <Style Selector="^ /template/ DockPanel#RootLayout">
+                            <Setter Property="HorizontalSpacing"
+                                    Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}" />
+                        </Style>
+
+                        <Style Selector="^ /template/ StackPanel#HeaderLayout">
+                            <Setter Property="Margin"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.HorizontalHeaderMargin}}" />
+                        </Style>
+                    </Style>
+
+                    <Style Selector="^[LabelPlacement=Vertical]">
+                        <Setter Property="Template">
+                            <ControlTemplate>
+
+                            </ControlTemplate>
+                        </Setter>
+                    </Style>
+                </Style>
+                <!-- 点指示器类型 -->
+                <Style Selector="^[IndicatorType=Dot]">
+                    <Style Selector="^[Orientation=Horizontal]">
+                        <Setter Property="Template">
+                            <ControlTemplate>
+                                <DockPanel LastChildFill="True" Name="RootLayout">
+                                    <StackPanel Orientation="Vertical" DockPanel.Dock="Left">
+                                        <Grid Name="IndicatorLayout" VerticalAlignment="Top"
+                                              ColumnDefinitions="*, Auto, *">
+                                            <Rectangle Name="BeginningSeparatorLine"
+                                                       Classes="IndicatorLine"
+                                                       VerticalAlignment="Center"
+                                                       IsVisible="{TemplateBinding IsFirst, Converter={x:Static BoolConverters.Not}}"
+                                                       Grid.Column="0" />
+                                            <atom:StepsItemIndicator IndicatorType="{TemplateBinding IndicatorType}"
+                                                                     UseLayoutRounding="False"
+                                                                     SizeType="{TemplateBinding SizeType}"
+                                                                     Position="{TemplateBinding Position}"
+                                                                     Icon="{TemplateBinding Icon}"
+                                                                     IsCurrent="{TemplateBinding IsSelected}"
+                                                                     VerticalAlignment="Center"
+                                                                     Status="{TemplateBinding Status}"
+                                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                                     Grid.Column="1" />
+                                            <Rectangle Name="EndingSeparatorLine"
+                                                       Classes="IndicatorLine"
+                                                       VerticalAlignment="Center"
+                                                       IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}"
+                                                       Grid.Column="2" />
+                                        </Grid>
+                                        <StackPanel Orientation="Horizontal" Name="HeaderLayout"
+                                                    HorizontalAlignment="Center">
+                                            <ContentPresenter
+                                                Name="HeaderPresenter"
+                                                Content="{TemplateBinding Header}"
+                                                ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                VerticalAlignment="Center" />
+                                            <ContentPresenter
+                                                Name="SubHeaderPresenter"
+                                                Content="{TemplateBinding SubHeader}"
+                                                ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                                VerticalAlignment="Center"
+                                                IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        </StackPanel>
+                                        <ContentPresenter
+                                            Name="DescriptionPresenter"
+                                            Content="{TemplateBinding Description}"
+                                            ContentTemplate="{TemplateBinding DescriptionTemplate}"
+                                            TextAlignment="Center" />
+                                    </StackPanel>
+                                    <Panel Name="TailLineLayout" VerticalAlignment="Top">
+                                        <Rectangle Name="TailSeparatorLine"
+                                                   Classes="IndicatorLine"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                    </Panel>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Setter>
+
+                        <Style Selector="^ /template/ Panel#TailLineLayout">
+                            <Setter Property="Height"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
+                        </Style>
+
+                        <Style Selector="^ /template/ Rectangle#TailSeparatorLine">
+                            <Setter Property="Height"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.DotLineThickness}}" />
+                        </Style>
+
+                        <Style Selector="^ /template/ Rectangle#BeginningSeparatorLine">
+                            <Setter Property="Height"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.DotLineThickness}}" />
+                        </Style>
+
+                        <Style Selector="^ /template/ Rectangle#EndingSeparatorLine">
+                            <Setter Property="Height"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.DotLineThickness}}" />
+                        </Style>
+
+                        <Style Selector="^ /template/ Grid#IndicatorLayout">
+                            <Setter Property="Height"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
+                        </Style>
+
+                        <Style Selector="^ /template/ atom|StepsItemIndicator">
+                            <Setter Property="Margin"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.HorizontalDotMargin}}" />
+                        </Style>
+
+                        <Style Selector="^[Status=Process]">
+                            <Style Selector="^ /template/ Rectangle#BeginningSeparatorLine">
+                                <Setter Property="Fill"
+                                        Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishTailColor}}" />
+                            </Style>
+                        </Style>
+                        <Style Selector="^ /template/ StackPanel#HeaderLayout">
+                            <Setter Property="Margin"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.VerticalLabelContentMargin}}" />
+                        </Style>
+
+                        <Style Selector="^ /template/ StackPanel#ContentLayout">
+                            <Setter Property="MaxWidth"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.DescriptionMaxWidth}}" />
+                        </Style>
+
+                    </Style>
+                </Style>
+
+            </Style>
+            <!-- 普通样式垂直风格模板 -->
+            <Style Selector="^[Orientation=Vertical]">
+                <!-- 普通指示器类型 -->
+                <Style Selector="^[IndicatorType=Default]">
+                    <Setter Property="Template">
+                        <ControlTemplate>
+                            <DockPanel LastChildFill="True" Name="RootLayout">
+                                <DockPanel DockPanel.Dock="Left" LastChildFill="True"
+                                           Name="IndicatorLayout">
+                                    <atom:StepsItemIndicator
+                                        DockPanel.Dock="Top"
+                                        IndicatorType="{TemplateBinding IndicatorType}"
+                                        IsCurrent="{TemplateBinding IsSelected}"
+                                        SizeType="{TemplateBinding SizeType}"
+                                        Position="{TemplateBinding Position}"
+                                        Icon="{TemplateBinding Icon}"
+                                        VerticalAlignment="Top"
+                                        Status="{TemplateBinding Status}"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                    <Rectangle Name="SeparatorLine"
+                                               Classes="IndicatorLine"
+                                               Width="1"
+                                               HorizontalAlignment="Center"
+                                               IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                </DockPanel>
+                                <StackPanel Orientation="Vertical" Name="ContentLayout">
+                                    <StackPanel Orientation="Horizontal" Name="HeaderLayout">
+                                        <ContentPresenter
+                                            Name="HeaderPresenter"
+                                            Content="{TemplateBinding Header}"
+                                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                            TextWrapping="Wrap"
+                                            VerticalAlignment="Center" />
+                                        <ContentPresenter
+                                            Name="SubHeaderPresenter"
+                                            Content="{TemplateBinding SubHeader}"
+                                            ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                            VerticalAlignment="Center"
+                                            TextWrapping="Wrap"
+                                            IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    </StackPanel>
+                                    <ContentPresenter
+                                        Name="DescriptionPresenter"
+                                        Content="{TemplateBinding Description}"
+                                        ContentTemplate="{TemplateBinding DescriptionTemplate}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Setter>
+
+                    <Style Selector="^ /template/ DockPanel#IndicatorLayout">
+                        <Setter Property="VerticalSpacing"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.VerticalItemSpacing}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ DockPanel#RootLayout">
+                        <Setter Property="HorizontalSpacing"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                        <Setter Property="Padding"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.VerticalDescriptionPadding}}" />
+                    </Style>
+                </Style>
+                <!-- 点指示器类型 -->
+                <Style Selector="^[IndicatorType=Dot]">
+                    <Setter Property="Template">
+                        <ControlTemplate>
+                            <DockPanel LastChildFill="True" Name="RootLayout">
+                                <DockPanel DockPanel.Dock="Left" LastChildFill="True" Name="IndicatorLayout">
+                                    <Panel DockPanel.Dock="Top" Name="ItemIndicatorLayout">
+                                        <atom:StepsItemIndicator
+                                            IndicatorType="{TemplateBinding IndicatorType}"
+                                            IsCurrent="{TemplateBinding IsSelected}"
+                                            SizeType="{TemplateBinding SizeType}"
+                                            Position="{TemplateBinding Position}"
+                                            Icon="{TemplateBinding Icon}"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            Status="{TemplateBinding Status}"
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                    </Panel>
+                                    <Rectangle Name="SeparatorLine"
+                                               Classes="IndicatorLine"
+                                               Width="1"
+                                               HorizontalAlignment="Center"
+                                               IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                </DockPanel>
+                                <StackPanel Orientation="Vertical" Name="ContentLayout">
+                                    <StackPanel Orientation="Horizontal" Name="HeaderLayout">
+                                        <ContentPresenter
+                                            Name="HeaderPresenter"
+                                            Content="{TemplateBinding Header}"
+                                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                            TextWrapping="Wrap"
+                                            VerticalAlignment="Center" />
+                                        <ContentPresenter
+                                            Name="SubHeaderPresenter"
+                                            Content="{TemplateBinding SubHeader}"
+                                            ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                            VerticalAlignment="Center"
+                                            TextWrapping="Wrap"
+                                            IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    </StackPanel>
+                                    <ContentPresenter
+                                        Name="DescriptionPresenter"
+                                        Content="{TemplateBinding Description}"
+                                        ContentTemplate="{TemplateBinding DescriptionTemplate}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Setter>
+
+                    <Style Selector="^ /template/ DockPanel#IndicatorLayout">
+                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
+                    </Style>
+
+                    <Style Selector="^[SizeType=Large]">
+                        <Style Selector="^ /template/ Panel#ItemIndicatorLayout">
+                            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+                        </Style>
+                    </Style>
+                    <Style Selector="^[SizeType=Middle]">
+                        <Style Selector="^ /template/ Panel#ItemIndicatorLayout">
+                            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+                        </Style>
+                    </Style>
+
+                    <Style Selector="^[SizeType=Small]">
+                        <Style Selector="^ /template/ DockPanel#ItemIndicatorLayout">
+                            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                        </Style>
+                    </Style>
+                    
+                    <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                        <Setter Property="Padding"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.VerticalDescriptionPadding}}" />
+                    </Style>
+                    
+                    <Style Selector="^ /template/ DockPanel#RootLayout">
+                        <Setter Property="HorizontalSpacing"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}" />
+                    </Style>
+                    
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[Style=Navigation]">
+            <Style Selector="^[LabelPlacement=Horizontal]">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+
+            <Style Selector="^[LabelPlacement=Vertical]">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+        </Style>
+
+        <Style Selector="^[Style=Inline]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                </ControlTemplate>
+            </Setter>
         </Style>
 
     </ControlTheme>

@@ -19,21 +19,37 @@
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="HorizontalItemSpacing" Value="0" />
+        <Setter Property="VerticalItemSpacing" Value="0" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+
         <Style Selector="^[Style=Default]">
-            <Style Selector="^[LabelPlacement=Horizontal]">
-                <Style Selector="^[SizeType=Large]">
-                    <Setter Property="HorizontalItemSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}"/>
-                    <Setter Property="VerticalItemSpacing" Value="0"/>
-                </Style>
-                <Style Selector="^[SizeType=Middle]">
-                    <Setter Property="HorizontalItemSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}"/>
-                    <Setter Property="VerticalItemSpacing" Value="0"/>
-                </Style>
-                <Style Selector="^[SizeType=Small]">
-                    <Setter Property="HorizontalItemSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingSM}}"/>
-                    <Setter Property="VerticalItemSpacing" Value="0"/>
+            <Style Selector="^[Orientation=Horizontal]">
+                <Style Selector="^[LabelPlacement=Horizontal]">
+                    <Style Selector="^[SizeType=Large]">
+                        <Setter Property="HorizontalItemSpacing"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}" />
+                    </Style>
+                    <Style Selector="^[SizeType=Middle]">
+                        <Setter Property="HorizontalItemSpacing"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}" />
+                    </Style>
+                    <Style Selector="^[SizeType=Small]">
+                        <Setter Property="HorizontalItemSpacing"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingSM}}" />
+                    </Style>
                 </Style>
             </Style>
+            
+            <Style Selector="^[Orientation=Vertical]">
+                <Setter Property="VerticalItemSpacing"
+                        Value="{DynamicResource {x:Static atom:StepsTokenKey.VerticalItemSpacing}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[ItemIndicatorType=Dot]">
+            <Setter Property="HorizontalItemSpacing" Value="0" />
+            <Setter Property="VerticalItemSpacing" Value="0" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -787,9 +787,9 @@ namespace AtomUI.Controls.DesignTokens
     {
         public static readonly TokenResourceKey CustomIconFontSize = new TokenResourceKey("Steps.CustomIconFontSize");
         public static readonly TokenResourceKey CustomIconSize = new TokenResourceKey("Steps.CustomIconSize");
-        public static readonly TokenResourceKey CustomIconTop = new TokenResourceKey("Steps.CustomIconTop");
         public static readonly TokenResourceKey DescriptionMaxWidth = new TokenResourceKey("Steps.DescriptionMaxWidth");
         public static readonly TokenResourceKey DotCurrentSize = new TokenResourceKey("Steps.DotCurrentSize");
+        public static readonly TokenResourceKey DotLineThickness = new TokenResourceKey("Steps.DotLineThickness");
         public static readonly TokenResourceKey DotSize = new TokenResourceKey("Steps.DotSize");
         public static readonly TokenResourceKey ErrorDescriptionColor = new TokenResourceKey("Steps.ErrorDescriptionColor");
         public static readonly TokenResourceKey ErrorDotColor = new TokenResourceKey("Steps.ErrorDotColor");
@@ -805,6 +805,7 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey FinishIconColor = new TokenResourceKey("Steps.FinishIconColor");
         public static readonly TokenResourceKey FinishTailColor = new TokenResourceKey("Steps.FinishTailColor");
         public static readonly TokenResourceKey FinishTitleColor = new TokenResourceKey("Steps.FinishTitleColor");
+        public static readonly TokenResourceKey HorizontalDotMargin = new TokenResourceKey("Steps.HorizontalDotMargin");
         public static readonly TokenResourceKey HorizontalHeaderMargin = new TokenResourceKey("Steps.HorizontalHeaderMargin");
         public static readonly TokenResourceKey IconFontSize = new TokenResourceKey("Steps.IconFontSize");
         public static readonly TokenResourceKey IconSize = new TokenResourceKey("Steps.IconSize");
@@ -822,7 +823,10 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey ProcessTitleColor = new TokenResourceKey("Steps.ProcessTitleColor");
         public static readonly TokenResourceKey StepsNavActiveColor = new TokenResourceKey("Steps.StepsNavActiveColor");
         public static readonly TokenResourceKey StepsProgressSize = new TokenResourceKey("Steps.StepsProgressSize");
-        public static readonly TokenResourceKey VerticalHeaderMargin = new TokenResourceKey("Steps.VerticalHeaderMargin");
+        public static readonly TokenResourceKey VerticalDescriptionPadding = new TokenResourceKey("Steps.VerticalDescriptionPadding");
+        public static readonly TokenResourceKey VerticalDotMargin = new TokenResourceKey("Steps.VerticalDotMargin");
+        public static readonly TokenResourceKey VerticalItemSpacing = new TokenResourceKey("Steps.VerticalItemSpacing");
+        public static readonly TokenResourceKey VerticalLabelContentMargin = new TokenResourceKey("Steps.VerticalLabelContentMargin");
         public static readonly TokenResourceKey WaitDescriptionColor = new TokenResourceKey("Steps.WaitDescriptionColor");
         public static readonly TokenResourceKey WaitDotColor = new TokenResourceKey("Steps.WaitDotColor");
         public static readonly TokenResourceKey WaitIconBgColor = new TokenResourceKey("Steps.WaitIconBgColor");

@@ -255,10 +255,7 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
                      change.Property == IconModeProperty ||
                      change.Property == IconInfoProperty)
             {
-                if (IsVisible)
-                {
-                    SetupFilledBrush();
-                }
+                SetupFilledBrush();
             }
             
         }

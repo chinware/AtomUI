@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
@@ -77,6 +78,15 @@ public class Steps : SelectingItemsControl,
     public static readonly StyledProperty<bool> IsItemClickableProperty =
         AvaloniaProperty.Register<Steps, bool>(nameof(IsItemClickable), false);
     
+    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty =
+        ContentControl.ContentTemplateProperty.AddOwner<Steps>();
+    
+    public static readonly DirectProperty<Steps, object?> CurrentContentProperty =
+        AvaloniaProperty.RegisterDirect<Steps, object?>(nameof(CurrentContent), o => o.CurrentContent);
+
+    public static readonly DirectProperty<Steps, IDataTemplate?> CurrentContentTemplateProperty =
+        AvaloniaProperty.RegisterDirect<Steps, IDataTemplate?>(nameof(CurrentContentTemplate), o => o.CurrentContentTemplate);
+    
     public int CurrentStep
     {
         get => GetValue(CurrentStepProperty);
@@ -142,7 +152,27 @@ public class Steps : SelectingItemsControl,
         get => GetValue(IsItemClickableProperty);
         set => SetValue(IsItemClickableProperty, value);
     }
+    
+    public IDataTemplate? ContentTemplate
+    {
+        get => GetValue(ContentTemplateProperty);
+        set => SetValue(ContentTemplateProperty, value);
+    }
 
+    private object? _currentContent;
+
+    public object? CurrentContent
+    {
+        get => _currentContent;
+        internal set => SetAndRaise(CurrentContentProperty, ref _currentContent, value);
+    }
+    
+    private IDataTemplate? _currentContentTemplate;
+    public IDataTemplate? CurrentContentTemplate
+    {
+        get => _currentContentTemplate;
+        internal set => SetAndRaise(CurrentContentTemplateProperty, ref _currentContentTemplate, value);
+    }
     #endregion
     
     #region 内部属性定义
@@ -173,12 +203,14 @@ public class Steps : SelectingItemsControl,
 
     private readonly Dictionary<StepsItem, CompositeDisposable> _itemsBindingDisposables = new();
     private Grid? _grid;
+    private CompositeDisposable? _currentItemSubscriptions;
     
     static Steps()
     {
         AffectsMeasure<Steps>(SizeTypeProperty);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<Steps>(false);
         OrientationProperty.OverrideDefaultValue<Steps>(Orientation.Horizontal);
+        SelectedItemProperty.Changed.AddClassHandler<Steps>((x, e) => x.UpdateCurrentContent());
     }
     
     public Steps()
@@ -245,6 +277,7 @@ public class Steps : SelectingItemsControl,
             disposables.Add(BindUtils.RelayBind(this, StyleProperty, stepsItem, StepsItem.StyleProperty));
             disposables.Add(BindUtils.RelayBind(this, ItemIndicatorTypeProperty, stepsItem, StepsItem.IndicatorTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, stepsItem, StepsItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, OrientationProperty, stepsItem, StepsItem.OrientationProperty));
             
             PrepareStepsItem(stepsItem, item, index, disposables);
             
@@ -285,6 +318,16 @@ public class Steps : SelectingItemsControl,
         if (change.Property == CurrentStepProperty)
         {
             SyncCurrentStepToSelectedItem();    
+        }
+        else if (change.Property == ContentTemplateProperty)
+        {
+            var newTemplate = change.GetNewValue<IDataTemplate?>();
+            if (CurrentContentTemplate != newTemplate &&
+                ContainerFromIndex(SelectedIndex) is { } container && 
+                container.GetValue(ContentControl.ContentTemplateProperty) == null)
+            {
+                CurrentContentTemplate = newTemplate;
+            }
         }
     }
 
@@ -363,6 +406,7 @@ public class Steps : SelectingItemsControl,
             if (ContainerFromIndex(i) is StepsItem stepsItem)
             {
                 stepsItem.SetCurrentValue(StepsItem.PositionProperty, i + 1);
+                stepsItem.SetCurrentValue(StepsItem.IsFirstProperty, i == 0);
                 stepsItem.SetCurrentValue(StepsItem.IsLastProperty, i == ItemCount - 1);
                 if (SelectedIndex != -1)
                 {
@@ -413,6 +457,57 @@ public class Steps : SelectingItemsControl,
         else
         {
             SetCurrentValue(SelectedIndexProperty, -1);
+        }
+    }
+    
+    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
+    {
+        base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
+
+        var selectedIndex = SelectedIndex;
+
+        if (selectedIndex == oldIndex || selectedIndex == newIndex)
+        {
+            UpdateCurrentContent();
+        }
+    }
+    
+    protected override void ClearContainerForItemOverride(Control element)
+    {
+        base.ClearContainerForItemOverride(element);
+        UpdateCurrentContent();
+    }
+    
+    private void UpdateCurrentContent(Control? container = null)
+    {
+        _currentItemSubscriptions?.Dispose();
+        _currentItemSubscriptions = null;
+
+        if (SelectedIndex == -1)
+        {
+            CurrentContent = CurrentContentTemplate = null;
+        }
+        else
+        {
+            container ??= ContainerFromIndex(SelectedIndex);
+            if (container != null)
+            {
+                if (CurrentContentTemplate != EffectiveCurrentContentTemplate(container.GetValue(ContentTemplateProperty)))
+                {
+                    // If the value of CurrentContentTemplate is about to change, clear it first. This ensures
+                    // that the template is not reused as soon as CurrentContent changes in the statement below
+                    // this block, and also that controls generated from it are unloaded before CurrentContent
+                    // (which is typically their DataContext) changes.
+                    CurrentContentTemplate = null;
+                }
+
+                _currentItemSubscriptions = new CompositeDisposable(
+                    container.GetObservable(ContentControl.ContentProperty).Subscribe(v => CurrentContent = v),
+                    container.GetObservable(ContentControl.ContentTemplateProperty).Subscribe(v => CurrentContentTemplate = EffectiveCurrentContentTemplate(v)));
+
+                // Note how we fall back to our own ContentTemplate if the container doesn't specify one
+                IDataTemplate? EffectiveCurrentContentTemplate(IDataTemplate? containerTemplate) => containerTemplate ?? ContentTemplate;
+            }
         }
     }
 }

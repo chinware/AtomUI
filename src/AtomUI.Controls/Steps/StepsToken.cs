@@ -27,12 +27,6 @@ internal class StepsToken : AbstractControlDesignToken
     public double CustomIconSize { get; set; }
     
     /// <summary>
-    /// 自定义图标 top
-    /// Top of custom icon
-    /// </summary>
-    public double CustomIconTop { get; set; }
-    
-    /// <summary>
     /// 自定义图标大小
     /// Font size of custom icon
     /// </summary>
@@ -63,6 +57,16 @@ internal class StepsToken : AbstractControlDesignToken
     public double DotCurrentSize { get; set; }
     
     /// <summary>
+    /// 水平点状步骤点外间距
+    /// </summary>
+    public Thickness HorizontalDotMargin { get; set; }
+    
+    /// <summary>
+    /// 垂直点状步骤点外间距
+    /// </summary>
+    public Thickness VerticalDotMargin { get; set; }
+    
+    /// <summary>
     /// 可跳转步骤条箭头颜色
     /// Color of arrow in nav
     /// </summary>
@@ -81,10 +85,19 @@ internal class StepsToken : AbstractControlDesignToken
     public Thickness HorizontalHeaderMargin { get; set; }
     
     /// <summary>
-    /// Label 垂直排列的时候的外间距
-    /// External spacing when Label is arranged vertically
+    /// 垂直排列的时候 item 的间距
     /// </summary>
-    public Thickness VerticalHeaderMargin { get; set; }
+    public double VerticalItemSpacing { get; set; }
+    
+    /// <summary>
+    /// 垂直排列描述的内间距
+    /// </summary>
+    public Thickness VerticalDescriptionPadding { get; set; }
+    
+    /// <summary>
+    /// 垂直标签排列时候内容跟图标之间的外间距
+    /// </summary>
+    public Thickness VerticalLabelContentMargin { get; set; }
 
     #region 内部 Token
 
@@ -123,6 +136,8 @@ internal class StepsToken : AbstractControlDesignToken
     public double InlineDotSize { get; set; }
     public Color InlineTitleColor { get; set; }
     public Color InlineTailColor { get; set; }
+    
+    public double DotLineThickness { get; set; }
     #endregion
 
     public override void CalculateFromAlias()
@@ -130,7 +145,6 @@ internal class StepsToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         
         CustomIconSize      = SharedToken.ControlHeight;
-        CustomIconTop       = 0;
         CustomIconFontSize  = SharedToken.ControlHeightSM;
         IconSize            = SharedToken.ControlHeight;
         IconFontSize        = SharedToken.FontSize;
@@ -143,8 +157,10 @@ internal class StepsToken : AbstractControlDesignToken
         WaitIconColor         = SharedToken.ColorTextLabel;
         WaitIconBgColor       = SharedToken.ColorFillContent;
         WaitIconBorderColor   = Colors.Transparent;
-        FinishIconBgColor     = SharedToken.ControlItemBgActive;
-        FinishIconBorderColor = SharedToken.ControlItemBgActive;
+        WaitTitleColor        = SharedToken.ColorTextDescription;
+        WaitDescriptionColor  = SharedToken.ColorTextDescription;
+        WaitTailColor         = SharedToken.ColorSplit;
+        WaitDotColor          = SharedToken.ColorTextDisabled;
         
         ProcessIconColor        = SharedToken.ColorTextLightSolid;
         ProcessTitleColor       = SharedToken.ColorText;
@@ -153,15 +169,15 @@ internal class StepsToken : AbstractControlDesignToken
         ProcessIconBorderColor  = SharedToken.ColorPrimary;
         ProcessDotColor         = SharedToken.ColorPrimary;
         ProcessTailColor        = SharedToken.ColorSplit;
-        WaitTitleColor          = SharedToken.ColorTextDescription;
-        WaitDescriptionColor    = SharedToken.ColorTextDescription;
-        WaitTailColor           = SharedToken.ColorSplit;
-        WaitDotColor            = SharedToken.ColorTextDisabled;
+        
+        FinishIconBgColor       = SharedToken.ControlItemBgActive;
+        FinishIconBorderColor   = SharedToken.ControlItemBgActive;
         FinishIconColor         = SharedToken.ColorPrimary;
         FinishTitleColor        = SharedToken.ColorText;
         FinishDescriptionColor  = SharedToken.ColorTextDescription;
         FinishTailColor         = SharedToken.ColorPrimary;
         FinishDotColor          = SharedToken.ColorPrimary;
+        
         ErrorIconColor          = SharedToken.ColorTextLightSolid;
         ErrorTitleColor         = SharedToken.ColorError;
         ErrorDescriptionColor   = SharedToken.ColorError;
@@ -176,6 +192,14 @@ internal class StepsToken : AbstractControlDesignToken
         InlineTitleColor = SharedToken.ColorTextQuaternary;
         InlineTailColor  = SharedToken.ColorBorderSecondary;
         
-        HorizontalHeaderMargin = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
+        HorizontalHeaderMargin     = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
+        HorizontalHeaderMargin     = new Thickness(0, 0, SharedToken.UniformlyMargin, 0);
+        VerticalItemSpacing        = SharedToken.SpacingXXS * 1.5;
+        VerticalDescriptionPadding = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingXS);
+        DotLineThickness           = SharedToken.LineWidth * 3;
+
+        HorizontalDotMargin = new Thickness(SharedToken.UniformlyMarginXS, 0);
+        VerticalDotMargin = new Thickness(0, SharedToken.UniformlyMarginXS);
+        VerticalLabelContentMargin = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
     }
 }

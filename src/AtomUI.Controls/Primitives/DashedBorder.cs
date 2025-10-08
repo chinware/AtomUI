@@ -7,7 +7,7 @@ using Avalonia.Utilities;
 
 namespace AtomUI.Controls.Primitives;
 
-internal class DashedBorder : Decorator
+public class DashedBorder : Decorator
 {
     #region 公共属性定义
     public static readonly StyledProperty<IBrush?> BackgroundProperty =

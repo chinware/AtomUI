@@ -1,6 +1,10 @@
+using AtomUI.Animations;
+using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -19,6 +23,9 @@ internal class StepsItemIndicator : TemplatedControl
     
     public static readonly StyledProperty<StepsItemIndicatorType> IndicatorTypeProperty =
         StepsItem.IndicatorTypeProperty.AddOwner<StepsItemIndicator>();
+
+    public static readonly StyledProperty<Icon?> IconProperty =
+        StepsItem.IconProperty.AddOwner<StepsItemIndicator>();
     
     public StepsItemStatus Status
     {
@@ -43,6 +50,12 @@ internal class StepsItemIndicator : TemplatedControl
         get => GetValue(IndicatorTypeProperty);
         set => SetValue(IndicatorTypeProperty, value);
     }
+    
+    public Icon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
 
     #endregion
     
@@ -53,6 +66,18 @@ internal class StepsItemIndicator : TemplatedControl
             nameof(Position),
             o => o.Position,
             (o, v) => o.Position = v);
+    
+    internal static readonly DirectProperty<StepsItemIndicator, bool> IsCustomProperty =
+        AvaloniaProperty.RegisterDirect<StepsItemIndicator, bool>(
+            nameof(IsCustom),
+            o => o.IsCustom,
+            (o, v) => o.IsCustom = v);
+    
+    internal static readonly DirectProperty<StepsItemIndicator, bool> IsCurrentProperty =
+        AvaloniaProperty.RegisterDirect<StepsItemIndicator, bool>(
+            nameof(IsCurrent),
+            o => o.IsCurrent,
+            (o, v) => o.IsCurrent = v);
 
     private int _position;
 
@@ -61,11 +86,73 @@ internal class StepsItemIndicator : TemplatedControl
         get => _position;
         set => SetAndRaise(PositionProperty, ref _position, value);
     }
+    
+    private bool _isCustom;
+
+    internal bool IsCustom
+    {
+        get => _isCustom;
+        set => SetAndRaise(IsCustomProperty, ref _isCustom, value);
+    }
+    
+    private bool _isCurrent;
+
+    internal bool IsCurrent
+    {
+        get => _isCurrent;
+        set => SetAndRaise(IsCustomProperty, ref _isCurrent, value);
+    }
     #endregion
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
         SetCurrentValue(CornerRadiusProperty, new CornerRadius(e.NewSize.Width));
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IconProperty)
+        {
+            SetCurrentValue(IsCustomProperty, Icon != null);
+        }
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);    
+            }
+        }
+    }
+    
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
+                ];
+            }
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

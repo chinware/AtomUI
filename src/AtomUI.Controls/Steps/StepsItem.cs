@@ -1,3 +1,5 @@
+using AtomUI.Animations;
+using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Controls;
@@ -118,11 +120,20 @@ public class StepsItem : HeaderedContentControl, ISelectable
             o => o.Position,
             (o, v) => o.Position = v);
     
+    internal static readonly DirectProperty<StepsItem, bool> IsFirstProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, bool>(
+            nameof(IsFirst),
+            o => o.IsFirst,
+            (o, v) => o.IsFirst = v);
+    
     internal static readonly DirectProperty<StepsItem, bool> IsLastProperty =
         AvaloniaProperty.RegisterDirect<StepsItem, bool>(
             nameof(IsLast),
             o => o.IsLast,
             (o, v) => o.IsLast = v);
+    
+    internal static readonly StyledProperty<Orientation> OrientationProperty =
+        ScrollBar.OrientationProperty.AddOwner<StepsItem>();
     
     internal SizeType SizeType
     {
@@ -170,12 +181,26 @@ public class StepsItem : HeaderedContentControl, ISelectable
         set => SetAndRaise(PositionProperty, ref _position, value);
     }
     
+    private bool _isFirst;
+
+    internal bool IsFirst
+    {
+        get => _isFirst;
+        set => SetAndRaise(IsFirstProperty, ref _isFirst, value);
+    }
+    
     private bool _isLast;
 
     internal bool IsLast
     {
         get => _isLast;
         set => SetAndRaise(IsLastProperty, ref _isLast, value);
+    }
+    
+    public Orientation Orientation
+    {
+        get => GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
     }
     #endregion
     
@@ -217,6 +242,7 @@ public class StepsItem : HeaderedContentControl, ISelectable
             {
                 Transitions =
                 [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
                 ];
             }
         }
