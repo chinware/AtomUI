@@ -116,7 +116,7 @@ public class StepsProgressBar : AbstractLineProgress
             }
         }
 
-        return IndicatorBarBrush!;
+        return StrokeBrush!;
     }
 
     protected override void RenderIndicatorBar(DrawingContext context)

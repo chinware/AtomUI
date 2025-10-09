@@ -38,33 +38,23 @@ public abstract class AbstractProgressBar : RangeBase,
     protected const double SMALL_STROKE_THICKNESS = 4;
 
     #region 公共属性定义
-
-    /// <summary>
-    /// Defines the <see cref="IsIndeterminate" /> property.
-    /// </summary>
     public static readonly StyledProperty<bool> IsIndeterminateProperty =
         AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsIndeterminate));
-
-    /// <summary>
-    /// Defines the <see cref="ShowProgressInfo" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> ShowProgressInfoProperty =
         AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(ShowProgressInfo), true);
-
-    /// <summary>
-    /// Defines the <see cref="ProgressTextFormat" /> property.
-    /// </summary>
+    
     public static readonly StyledProperty<string> ProgressTextFormatProperty =
         AvaloniaProperty.Register<AbstractProgressBar, string>(nameof(ProgressTextFormat), "{0:0}%");
-
-    /// <summary>
-    /// Defines the <see cref="Percentage" /> property.
-    /// </summary>
+    
     public static readonly DirectProperty<AbstractProgressBar, double> PercentageProperty =
         AvaloniaProperty.RegisterDirect<AbstractProgressBar, double>(
             nameof(Percentage),
             o => o.Percentage,
             (o, v) => o.Percentage = v);
+    
+    public static readonly StyledProperty<IBrush?> StrokeBrushProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(StrokeBrush));
 
     public static readonly StyledProperty<Color?> TrailColorProperty =
         AvaloniaProperty.Register<AbstractProgressBar, Color?>(nameof(TrailColor));
@@ -78,20 +68,17 @@ public abstract class AbstractProgressBar : RangeBase,
     public static readonly StyledProperty<ProgressStatus> StatusProperty =
         AvaloniaProperty.Register<AbstractProgressBar, ProgressStatus>(nameof(Status));
 
-    public static readonly StyledProperty<IBrush?> IndicatorBarBrushProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(IndicatorBarBrush));
-
     public static readonly StyledProperty<double> IndicatorThicknessProperty =
         AvaloniaProperty.Register<AbstractProgressBar, double>(nameof(IndicatorThickness), double.NaN);
 
     public static readonly StyledProperty<double> SuccessThresholdProperty =
         AvaloniaProperty.Register<AbstractProgressBar, double>(nameof(SuccessThreshold), double.NaN);
 
-    public static readonly StyledProperty<IBrush?> SuccessThresholdBrushProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(SuccessThresholdBrush));
+    public static readonly StyledProperty<IBrush?> SuccessStrokeBrushProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(SuccessStrokeBrush));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractProgressBar>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractProgressBar>();
 
     /// <summary>
     /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
@@ -119,6 +106,12 @@ public abstract class AbstractProgressBar : RangeBase,
     {
         get => GetValue(ProgressTextFormatProperty);
         set => SetValue(ProgressTextFormatProperty, value);
+    }
+    
+    public IBrush? StrokeBrush
+    {
+        get => GetValue(StrokeBrushProperty);
+        set => SetValue(StrokeBrushProperty, value);
     }
 
     public Color? TrailColor
@@ -160,22 +153,16 @@ public abstract class AbstractProgressBar : RangeBase,
         private set => SetAndRaise(PercentageProperty, ref _percentage, value);
     }
 
-    public IBrush? IndicatorBarBrush
-    {
-        get => GetValue(IndicatorBarBrushProperty);
-        set => SetValue(IndicatorBarBrushProperty, value);
-    }
-
     public double IndicatorThickness
     {
         get => GetValue(IndicatorThicknessProperty);
         set => SetValue(IndicatorThicknessProperty, value);
     }
 
-    public IBrush? SuccessThresholdBrush
+    public IBrush? SuccessStrokeBrush
     {
-        get => GetValue(SuccessThresholdBrushProperty);
-        set => SetValue(SuccessThresholdBrushProperty, value);
+        get => GetValue(SuccessStrokeBrushProperty);
+        set => SetValue(SuccessStrokeBrushProperty, value);
     }
 
     public double SuccessThreshold
@@ -199,7 +186,7 @@ public abstract class AbstractProgressBar : RangeBase,
             o => o.EffectiveSizeType,
             (o, v) => o.EffectiveSizeType = v);
 
-    protected static readonly DirectProperty<AbstractProgressBar, double> StrokeThicknessProperty =
+    internal static readonly DirectProperty<AbstractProgressBar, double> StrokeThicknessProperty =
         AvaloniaProperty.RegisterDirect<AbstractProgressBar, double>(nameof(StrokeThickness),
             o => o.StrokeThickness,
             (o, v) => o.StrokeThickness = v);
@@ -272,11 +259,11 @@ public abstract class AbstractProgressBar : RangeBase,
         AffectsMeasure<AbstractProgressBar>(EffectiveSizeTypeProperty,
             ShowProgressInfoProperty,
             ProgressTextFormatProperty);
-        AffectsRender<AbstractProgressBar>(IndicatorBarBrushProperty,
+        AffectsRender<AbstractProgressBar>(StrokeBrushProperty,
             StrokeLineCapProperty,
             TrailColorProperty,
             StrokeThicknessProperty,
-            SuccessThresholdBrushProperty,
+            SuccessStrokeBrushProperty,
             SuccessThresholdProperty,
             ValueProperty);
         ValueProperty.OverrideMetadata<AbstractProgressBar>(
@@ -402,7 +389,7 @@ public abstract class AbstractProgressBar : RangeBase,
                 [
                     TransitionUtils.CreateTransition<DoubleTransition>(ValueProperty,
                         SharedTokenKey.MotionDurationVerySlow, new ExponentialEaseOut()),
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(IndicatorBarBrushProperty,
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(StrokeBrushProperty,
                         SharedTokenKey.MotionDurationFast),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty,
                         SharedTokenKey.MotionDurationFast)

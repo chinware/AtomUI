@@ -172,14 +172,14 @@ public class ProgressBar : AbstractLineProgress
         }
 
         deflateValue = range * (1 - _percentage / 100);
-        DrawIndicatorBar(context, deflateValue, IndicatorBarBrush!);
+        DrawIndicatorBar(context, deflateValue, StrokeBrush!);
 
         // 绘制成功阈值
         if (!double.IsNaN(SuccessThreshold))
         {
             var successThreshold             = Math.Clamp(SuccessThreshold, Minimum, Maximum);
             var successThresholdDeflateValue = range * (1 - successThreshold / (Maximum - Minimum));
-            DrawIndicatorBar(context, successThresholdDeflateValue, SuccessThresholdBrush!);
+            DrawIndicatorBar(context, successThresholdDeflateValue, SuccessStrokeBrush!);
         }
     }
 
@@ -575,7 +575,7 @@ public class ProgressBar : AbstractLineProgress
         base.NotifyPropertyChanged(e);
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == IndicatorBarBrushProperty)
+            if (e.Property == StrokeBrushProperty)
             {
                 SetupPercentLabelForegroundBrush();
             }
@@ -641,9 +641,9 @@ public class ProgressBar : AbstractLineProgress
                 }
                 else
                 {
-                    if (IndicatorBarBrush is ISolidColorBrush indicatorBarBrush)
+                    if (StrokeBrush is ISolidColorBrush solidColorBrush)
                     {
-                        var mostReadable = ColorUtils.MostReadable(indicatorBarBrush.Color, colors);
+                        var mostReadable = ColorUtils.MostReadable(solidColorBrush.Color, colors);
                         if (mostReadable.HasValue)
                         {
                             _percentageLabel?.SetValue(ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);

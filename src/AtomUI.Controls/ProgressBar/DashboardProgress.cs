@@ -106,7 +106,7 @@ public class DashboardProgress : AbstractCircleProgress
 
     private void DrawIndicatorBarNormal(DrawingContext context)
     {
-        var pen = new Pen(IndicatorBarBrush, StrokeThickness)
+        var pen = new Pen(StrokeBrush, StrokeThickness)
         {
             LineCap = StrokeLineCap
         };
@@ -114,7 +114,7 @@ public class DashboardProgress : AbstractCircleProgress
 
         if (!double.IsNaN(SuccessThreshold))
         {
-            var successPen = new Pen(SuccessThresholdBrush, StrokeThickness)
+            var successPen = new Pen(SuccessStrokeBrush, StrokeThickness)
             {
                 LineCap = StrokeLineCap
             };
@@ -124,7 +124,7 @@ public class DashboardProgress : AbstractCircleProgress
 
     private void DrawIndicatorBarStep(DrawingContext context)
     {
-        var pen = new Pen(IndicatorBarBrush, StrokeThickness)
+        var pen = new Pen(StrokeBrush, StrokeThickness)
         {
             LineCap = PenLineCap.Flat
         };
@@ -137,7 +137,7 @@ public class DashboardProgress : AbstractCircleProgress
 
         if (!double.IsNaN(SuccessThreshold))
         {
-            successPen = new Pen(SuccessThresholdBrush, StrokeThickness)
+            successPen = new Pen(SuccessStrokeBrush, StrokeThickness)
             {
                 LineCap = PenLineCap.Flat
             };

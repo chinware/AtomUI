@@ -27,7 +27,7 @@
         <Style Selector="^[IsEnabled=True]">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLabel}}" />
             <Setter Property="GrooveBrush" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.RemainingColor}}" />
-            <Setter Property="SuccessThresholdBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+            <Setter Property="SuccessStrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
         </Style>
 
         <!-- BuildInfoLabelStyle begin -->
@@ -39,7 +39,7 @@
         <!-- BuildInfoLabelStyle end -->
         
         <Style Selector="^[Status=Normal]">
-            <Setter Property="IndicatorBarBrush" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.DefaultColor}}" />
+            <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.DefaultColor}}" />
             
             <Style Selector="^ /template/ atom|Icon#PART_ExceptionCompletedIcon">
                 <Setter Property="IsVisible" Value="False" />
@@ -50,7 +50,7 @@
             </Style>
             
             <Style Selector="^[IsCompleted=True]">
-                <Setter Property="IndicatorBarBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+                <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
                 <Style Selector="^ /template/ atom|Icon#PART_SuccessCompletedIcon">
                     <Setter Property="IsVisible" Value="True" />
                 </Style>
@@ -58,7 +58,7 @@
         </Style>
         
         <Style Selector="^[Status=Active]">
-            <Setter Property="IndicatorBarBrush" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.DefaultColor}}" />
+            <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.DefaultColor}}" />
             
             <Style Selector="^ /template/ atom|Icon#PART_ExceptionCompletedIcon">
                 <Setter Property="IsVisible" Value="False" />
@@ -69,7 +69,7 @@
             </Style>
             
             <Style Selector="^[IsCompleted=True]">
-                <Setter Property="IndicatorBarBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+                <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
                 <Style Selector="^ /template/ atom|Icon#PART_SuccessCompletedIcon">
                     <Setter Property="IsVisible" Value="True" />
                 </Style>
@@ -77,7 +77,7 @@
         </Style>
 
         <Style Selector="^[Status=Exception]">
-            <Setter Property="IndicatorBarBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+            <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
             
             <Style Selector="^ /template/ atom|Icon#PART_ExceptionCompletedIcon">
                 <Setter Property="IsVisible" Value="True" />
@@ -88,7 +88,7 @@
             </Style>
             
             <Style Selector="^[IsCompleted=True]">
-                <Setter Property="IndicatorBarBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+                <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
                 <Style Selector="^ /template/ atom|Icon#PART_SuccessCompletedIcon">
                     <Setter Property="IsVisible" Value="False" />
                 </Style>
@@ -96,7 +96,7 @@
         </Style>
         
         <Style Selector="^[Status=Success]">
-            <Setter Property="IndicatorBarBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+            <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
             
             <Style Selector="^ /template/ atom|Icon#PART_ExceptionCompletedIcon">
                 <Setter Property="IsVisible" Value="False" />
@@ -107,7 +107,7 @@
             </Style>
             
             <Style Selector="^[IsCompleted=True]">
-                <Setter Property="IndicatorBarBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+                <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
                 <Style Selector="^ /template/ atom|Icon#PART_SuccessCompletedIcon">
                     <Setter Property="IsVisible" Value="False" />
                 </Style>
@@ -117,7 +117,7 @@
         <Style Selector="^:disabled">
             <Setter Property="GrooveBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
-            <Setter Property="IndicatorBarBrush"
+            <Setter Property="StrokeBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         
