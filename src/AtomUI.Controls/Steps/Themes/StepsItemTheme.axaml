@@ -485,7 +485,7 @@
                     </Style>
 
                     <Style Selector="^[SizeType=Small]">
-                        <Style Selector="^ /template/ DockPanel#ItemIndicatorLayout">
+                        <Style Selector="^ /template/ Panel#ItemIndicatorLayout">
                             <Setter Property="MinHeight"
                                     Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
                         </Style>
@@ -564,11 +564,32 @@
 
             <Style Selector="^[IsSelected=True]">
                 <Style Selector="^ /template/ Rectangle.NavIndicatorLine">
-                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="Opacity" Value="1.0" />
                 </Style>
             </Style>
-            
+
             <Style Selector="^[Orientation=Horizontal]">
+                <!-- 水平风格通用风格 -->
+
+                <Style Selector="^[SizeType=Large]">
+                    <Style Selector="^ /template/ DockPanel#IndicatorLineLayout">
+                        <Setter Property="VerticalSpacing"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.NavItemGutter}}" />
+                    </Style>
+                </Style>
+                <Style Selector="^[SizeType=Middle]">
+                    <Style Selector="^ /template/ DockPanel#IndicatorLineLayout">
+                        <Setter Property="VerticalSpacing"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.NavItemGutter}}" />
+                    </Style>
+                </Style>
+                <Style Selector="^[SizeType=Small]">
+                    <Style Selector="^ /template/ DockPanel#IndicatorLineLayout">
+                        <Setter Property="VerticalSpacing"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.NavItemGutterSM}}" />
+                    </Style>
+                </Style>
+
                 <!-- 默认指示器类型 -->
                 <Style Selector="^[IndicatorType=Default]">
                     <Style Selector="^[LabelPlacement=Horizontal]">
@@ -580,9 +601,11 @@
                                                DockPanel.Dock="Right"
                                                VerticalAlignment="Center"
                                                IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
-                                    <DockPanel LastChildFill="True">
-                                        <Rectangle DockPanel.Dock="Bottom" Classes="NavIndicatorLine"
-                                                   IsVisible="False" Fill="{TemplateBinding NavIndicatorLineColor}"
+                                    <DockPanel LastChildFill="True" Name="IndicatorLineLayout">
+                                        <Rectangle DockPanel.Dock="Bottom"
+                                                   Classes="NavIndicatorLine"
+                                                   Opacity="0.0"
+                                                   Fill="{TemplateBinding NavIndicatorLineColor}"
                                                    RenderTransform="{TemplateBinding NavIndicatorLineRenderTransform}"
                                                    RenderTransformOrigin="{x:Static RelativePoint.Center}" />
                                         <Panel>
@@ -665,45 +688,135 @@
                 <Style Selector="^[IndicatorType=Dot]">
                     <Setter Property="Template">
                         <ControlTemplate>
+                            <DockPanel LastChildFill="True" Name="RootLayout">
+                                <atom:Icon Name="NavArrow"
+                                           IconInfo="{atom:IconInfoProvider Kind=RightOutlined}"
+                                           DockPanel.Dock="Right"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                <DockPanel LastChildFill="True" Name="IndicatorLineLayout">
+                                    <Rectangle DockPanel.Dock="Bottom" Classes="NavIndicatorLine"
+                                               Opacity="0.0"
+                                               Fill="{TemplateBinding NavIndicatorLineColor}"
+                                               RenderTransform="{TemplateBinding NavIndicatorLineRenderTransform}"
+                                               RenderTransformOrigin="{x:Static RelativePoint.Center}" />
+                                    <Panel>
+                                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                            <Panel Name="IndicatorLayout">
+                                                <atom:StepsItemIndicator
+                                                    Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                    IndicatorType="{TemplateBinding IndicatorType}"
+                                                    SizeType="{TemplateBinding SizeType}"
+                                                    Position="{TemplateBinding Position}"
+                                                    Icon="{TemplateBinding Icon}"
+                                                    IsCurrent="{TemplateBinding IsSelected}"
+                                                    IsClickable="{TemplateBinding IsClickable}"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Status="{TemplateBinding Status}"
+                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                            </Panel>
+                                            <StackPanel Orientation="Horizontal" Name="HeaderLayout"
+                                                        HorizontalAlignment="Center">
+                                                <ContentPresenter
+                                                    Name="HeaderPresenter"
+                                                    Content="{TemplateBinding Header}"
+                                                    Foreground="{TemplateBinding Foreground}"
+                                                    ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                    VerticalAlignment="Center" />
+                                                <ContentPresenter
+                                                    Name="SubHeaderPresenter"
+                                                    Content="{TemplateBinding SubHeader}"
+                                                    ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                                    Foreground="{TemplateBinding SubTitleForeground}"
+                                                    VerticalAlignment="Center"
+                                                    IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            </StackPanel>
+                                            <ContentPresenter
+                                                Name="DescriptionPresenter"
+                                                Content="{TemplateBinding Description}"
+                                                Foreground="{TemplateBinding DescriptionForeground}"
+                                                ContentTemplate="{TemplateBinding DescriptionTemplate}"
+                                                TextAlignment="Center" />
+                                        </StackPanel>
+                                    </Panel>
+                                </DockPanel>
+                            </DockPanel>
                         </ControlTemplate>
                     </Setter>
+
+                    <Style Selector="^ /template/ Panel#IndicatorLayout">
+                        <Setter Property="Height"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ atom|StepsItemIndicator">
+                        <Setter Property="Margin"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.HorizontalDotMargin}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ StackPanel#HeaderLayout">
+                        <Setter Property="Margin"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.VerticalLabelContentMargin}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ StackPanel#ContentLayout">
+                        <Setter Property="MaxWidth"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.DescriptionMaxWidth}}" />
+                    </Style>
                 </Style>
             </Style>
 
             <!-- 导航样式垂直风格模板 -->
             <Style Selector="^[Orientation=Vertical]">
+
+                <!-- 垂直类型的通用样式 -->
+                <Style Selector="^[SizeType=Large]">
+                    <Style Selector="^ /template/ DockPanel#RootLayout">
+                        <Setter Property="HorizontalSpacing"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.NavItemGutter}}" />
+                    </Style>
+                </Style>
+                <Style Selector="^[SizeType=Middle]">
+                    <Style Selector="^ /template/ DockPanel#RootLayout">
+                        <Setter Property="HorizontalSpacing"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.NavItemGutter}}" />
+                    </Style>
+                </Style>
+                <Style Selector="^[SizeType=Small]">
+                    <Style Selector="^ /template/ DockPanel#RootLayout">
+                        <Setter Property="HorizontalSpacing"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.NavItemGutterSM}}" />
+                    </Style>
+                </Style>
+
                 <!-- 普通指示器类型 -->
                 <Style Selector="^[IndicatorType=Default]">
                     <Setter Property="Template">
                         <ControlTemplate>
                             <DockPanel Name="RootLayout">
                                 <Rectangle DockPanel.Dock="Right"
+                                           Name="NavRightIndicatorLine"
                                            Classes="NavIndicatorLine"
-                                           IsVisible="False"
+                                           Opacity="0.0"
                                            Fill="{TemplateBinding NavIndicatorLineColor}"
                                            RenderTransform="{TemplateBinding NavIndicatorLineRenderTransform}"
                                            RenderTransformOrigin="{x:Static RelativePoint.Center}" />
                                 <Panel>
-                                    <DockPanel LastChildFill="True" Name="ItemContentLayout" HorizontalAlignment="Left">
-                                        <DockPanel DockPanel.Dock="Left">
-                                            <atom:StepsItemIndicator
-                                                Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
-                                                IndicatorType="{TemplateBinding IndicatorType}"
-                                                IsCurrent="{TemplateBinding IsSelected}"
-                                                IsClickable="{TemplateBinding IsClickable}"
-                                                SizeType="{TemplateBinding SizeType}"
-                                                Position="{TemplateBinding Position}"
-                                                Icon="{TemplateBinding Icon}"
-                                                VerticalAlignment="Top"
-                                                Status="{TemplateBinding Status}"
-                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                DockPanel.Dock="Top" />
-                                            <atom:Icon Name="NavArrow"
-                                                       IconInfo="{atom:IconInfoProvider Kind=DownOutlined}"
-                                                       HorizontalAlignment="Center"
-                                                       DockPanel.Dock="Bottom"
-                                                       IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
-                                        </DockPanel>
+                                    <DockPanel LastChildFill="True" Name="ItemContentLayout"
+                                               HorizontalAlignment="Left">
+                                        <atom:StepsItemIndicator
+                                            Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                            DockPanel.Dock="Left"
+                                            IndicatorType="{TemplateBinding IndicatorType}"
+                                            IsCurrent="{TemplateBinding IsSelected}"
+                                            IsClickable="{TemplateBinding IsClickable}"
+                                            SizeType="{TemplateBinding SizeType}"
+                                            Position="{TemplateBinding Position}"
+                                            Icon="{TemplateBinding Icon}"
+                                            VerticalAlignment="Top"
+                                            Status="{TemplateBinding Status}"
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
 
                                         <StackPanel Orientation="Vertical" Name="ContentLayout">
                                             <StackPanel Orientation="Horizontal" Name="HeaderLayout">
@@ -729,6 +842,11 @@
                                                 Content="{TemplateBinding Description}"
                                                 ContentTemplate="{TemplateBinding DescriptionTemplate}"
                                                 TextWrapping="Wrap" />
+
+                                            <atom:Icon Name="NavArrow"
+                                                       IconInfo="{atom:IconInfoProvider Kind=DownOutlined}"
+                                                       HorizontalAlignment="Center"
+                                                       IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
                                         </StackPanel>
                                     </DockPanel>
                                 </Panel>
@@ -739,6 +857,108 @@
                     <Style Selector="^ /template/ DockPanel#ItemContentLayout">
                         <Setter Property="HorizontalSpacing"
                                 Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">
+                        <Setter Property="Padding"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.VerticalDescriptionPadding}}" />
+                    </Style>
+                </Style>
+
+                <!-- 点指示器类型 -->
+                <Style Selector="^[IndicatorType=Dot]">
+                    <Setter Property="Template">
+                        <ControlTemplate>
+                            <DockPanel LastChildFill="True" Name="RootLayout">
+                                <Rectangle DockPanel.Dock="Right"
+                                           Name="NavRightIndicatorLine"
+                                           Classes="NavIndicatorLine"
+                                           Opacity="0.0"
+                                           Fill="{TemplateBinding NavIndicatorLineColor}"
+                                           RenderTransform="{TemplateBinding NavIndicatorLineRenderTransform}"
+                                           RenderTransformOrigin="{x:Static RelativePoint.Center}" />
+                                <Panel>
+                                    <DockPanel LastChildFill="True" Name="ItemContentLayout"
+                                               HorizontalAlignment="Left">
+                                        
+                                        <Panel DockPanel.Dock="Left" Name="IndicatorLayout" VerticalAlignment="Top">
+                                            <atom:StepsItemIndicator
+                                                Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                IndicatorType="{TemplateBinding IndicatorType}"
+                                                IsCurrent="{TemplateBinding IsSelected}"
+                                                IsClickable="{TemplateBinding IsClickable}"
+                                                SizeType="{TemplateBinding SizeType}"
+                                                Position="{TemplateBinding Position}"
+                                                Icon="{TemplateBinding Icon}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Status="{TemplateBinding Status}"
+                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                        </Panel>
+
+                                        <StackPanel Orientation="Vertical" Name="ContentLayout">
+                                            <StackPanel Orientation="Horizontal" Name="HeaderLayout">
+                                                <ContentPresenter
+                                                    Name="HeaderPresenter"
+                                                    Foreground="{TemplateBinding Foreground}"
+                                                    Content="{TemplateBinding Header}"
+                                                    ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                    TextWrapping="Wrap"
+                                                    VerticalAlignment="Center" />
+                                                <ContentPresenter
+                                                    Name="SubHeaderPresenter"
+                                                    Foreground="{TemplateBinding SubTitleForeground}"
+                                                    Content="{TemplateBinding SubHeader}"
+                                                    ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                                    VerticalAlignment="Center"
+                                                    TextWrapping="Wrap"
+                                                    IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            </StackPanel>
+                                            <ContentPresenter
+                                                Name="DescriptionPresenter"
+                                                Foreground="{TemplateBinding DescriptionForeground}"
+                                                Content="{TemplateBinding Description}"
+                                                ContentTemplate="{TemplateBinding DescriptionTemplate}"
+                                                TextWrapping="Wrap" />
+
+                                            <atom:Icon Name="NavArrow"
+                                                       IconInfo="{atom:IconInfoProvider Kind=DownOutlined}"
+                                                       HorizontalAlignment="Center"
+                                                       IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Panel>
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Setter>
+                    
+                    <Style Selector="^ /template/ DockPanel#ItemContentLayout">
+                        <Setter Property="HorizontalSpacing"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ Panel#IndicatorLayout">
+                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
+                    </Style>
+
+                    <Style Selector="^[SizeType=Large]">
+                        <Style Selector="^ /template/ Panel#IndicatorLayout">
+                            <Setter Property="MinHeight"
+                                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+                        </Style>
+                    </Style>
+                    <Style Selector="^[SizeType=Middle]">
+                        <Style Selector="^ /template/ Panel#IndicatorLayout">
+                            <Setter Property="MinHeight"
+                                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+                        </Style>
+                    </Style>
+
+                    <Style Selector="^[SizeType=Small]">
+                        <Style Selector="^ /template/ Panel#IndicatorLayout">
+                            <Setter Property="MinHeight"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                        </Style>
                     </Style>
 
                     <Style Selector="^ /template/ ContentPresenter#DescriptionPresenter">

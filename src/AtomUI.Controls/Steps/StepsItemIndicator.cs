@@ -2,6 +2,7 @@ using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -170,6 +171,8 @@ internal class StepsItemIndicator : TemplatedControl
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(WidthProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(HeightProperty),
                 ];
             }
         }

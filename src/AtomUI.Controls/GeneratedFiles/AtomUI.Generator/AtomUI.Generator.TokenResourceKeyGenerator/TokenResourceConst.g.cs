@@ -814,6 +814,8 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey InlineTailColor = new TokenResourceKey("Steps.InlineTailColor");
         public static readonly TokenResourceKey InlineTitleColor = new TokenResourceKey("Steps.InlineTitleColor");
         public static readonly TokenResourceKey NavArrowColor = new TokenResourceKey("Steps.NavArrowColor");
+        public static readonly TokenResourceKey NavItemGutter = new TokenResourceKey("Steps.NavItemGutter");
+        public static readonly TokenResourceKey NavItemGutterSM = new TokenResourceKey("Steps.NavItemGutterSM");
         public static readonly TokenResourceKey ProcessDescriptionColor = new TokenResourceKey("Steps.ProcessDescriptionColor");
         public static readonly TokenResourceKey ProcessDotColor = new TokenResourceKey("Steps.ProcessDotColor");
         public static readonly TokenResourceKey ProcessIconBgColor = new TokenResourceKey("Steps.ProcessIconBgColor");

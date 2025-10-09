@@ -371,21 +371,25 @@ public class Steps : SelectingItemsControl,
                 var columnDefinitions = new ColumnDefinitions();
                 for (var i = 0; i < count; i++)
                 {
+                    GridLength gridLength       = default;
+                    
                     if (i != count - 1)
                     {
-                        columnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+                        gridLength = GridLength.Star;
                     }
                     else
                     {
                         if (Style == StepsStyle.Default || Style == StepsStyle.Inline)
                         {
-                            columnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+                            gridLength = GridLength.Auto;
                         }
                         else
                         {
-                            columnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+                            gridLength = GridLength.Star;
                         }
                     }
+                    
+                    columnDefinitions.Add(new ColumnDefinition(gridLength));
                 }
                 _grid.ColumnDefinitions = columnDefinitions;
             }
@@ -394,9 +398,15 @@ public class Steps : SelectingItemsControl,
                 var rowDefinitions = new RowDefinitions();
                 for (var i = 0; i < count; i++)
                 {
-                    rowDefinitions.Add(new RowDefinition(GridLength.Auto));
+                    var rowDefinition =  new RowDefinition(GridLength.Auto);
+                    if (Style == StepsStyle.Navigation)
+                    {
+                        rowDefinition.SharedSizeGroup = "NavStepsGridSizeGroup";
+                    }
+                    rowDefinitions.Add(rowDefinition);
                 }
                 _grid.RowDefinitions = rowDefinitions;
+                _grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
             }
         }
     }
