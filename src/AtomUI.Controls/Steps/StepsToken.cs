@@ -156,8 +156,12 @@ internal class StepsToken : AbstractControlDesignToken
     public double InlineDotSize { get; set; }
     public Color InlineTitleColor { get; set; }
     public Color InlineTailColor { get; set; }
-    
     public double DotLineThickness { get; set; }
+    public Thickness ProgressFramePadding { get; set; }
+    public Thickness ProgressFramePaddingSM { get; set; }
+    public Color ProgressGrooveColor { get; set; }
+    public Color ProgressColor { get; set; }
+    
     #endregion
 
     public override void CalculateFromAlias()
@@ -189,6 +193,9 @@ internal class StepsToken : AbstractControlDesignToken
         ProcessIconBorderColor  = SharedToken.ColorPrimary;
         ProcessDotColor         = SharedToken.ColorPrimary;
         ProcessTailColor        = SharedToken.ColorSplit;
+
+        ProgressGrooveColor = SharedToken.ColorSplit;
+        ProgressColor       = SharedToken.ColorPrimary;
         
         FinishIconBgColor       = SharedToken.ControlItemBgActive;
         FinishIconBorderColor   = SharedToken.ControlItemBgActive;
@@ -225,5 +232,7 @@ internal class StepsToken : AbstractControlDesignToken
         VerticalNavArrowMarginSM   = new Thickness(0, SharedToken.UniformlyMarginXS);
         NavItemGutter              = SharedToken.Spacing;
         NavItemGutterSM            = SharedToken.SpacingXS;
+        ProgressFramePadding       = new Thickness(SharedToken.LineWidthBold * 2);
+        ProgressFramePaddingSM     = new Thickness(SharedToken.LineWidthBold);
     }
 }

@@ -1,11 +1,13 @@
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -91,7 +93,28 @@ internal class StepsItemIndicator : TemplatedControl
             nameof(IsItemHover),
             o => o.IsItemHover,
             (o, v) => o.IsItemHover = v);
+    
+    internal static readonly DirectProperty<StepsItemIndicator, bool> IsShowProgressProperty =
+        AvaloniaProperty.RegisterDirect<StepsItemIndicator, bool>(
+            nameof(IsShowProgress),
+            o => o.IsShowProgress,
+            (o, v) => o.IsShowProgress = v);
+    
+    internal static readonly DirectProperty<StepsItemIndicator, double> ProgressValueProperty =
+        AvaloniaProperty.RegisterDirect<StepsItemIndicator, double>(
+            nameof(ProgressValue),
+            o => o.ProgressValue,
+            (o, v) => o.ProgressValue = v);
+    
+    internal static readonly StyledProperty<double> ProgressLineThicknessProperty =
+        AvaloniaProperty.Register<StepsItemIndicator, double>(nameof(ProgressLineThickness));
+    
+    internal static readonly StyledProperty<IBrush?> ProgressGrooveColorProperty =
+        AvaloniaProperty.Register<StepsItemIndicator, IBrush?>(nameof(ProgressGrooveColor));
 
+    internal static readonly StyledProperty<IBrush?> ProgressColorProperty =
+        AvaloniaProperty.Register<StepsItemIndicator, IBrush?>(nameof(ProgressColor));
+    
     private int _position;
 
     internal int Position
@@ -131,11 +154,46 @@ internal class StepsItemIndicator : TemplatedControl
         get => _isItemHover;
         set => SetAndRaise(IsItemHoverProperty, ref _isItemHover, value);
     }
+    
+    private bool _isShowProgress;
+
+    internal bool IsShowProgress
+    {
+        get => _isShowProgress;
+        set => SetAndRaise(IsShowProgressProperty, ref _isShowProgress, value);
+    }
+    
+    private double _progressValue;
+
+    internal double ProgressValue
+    {
+        get => _progressValue;
+        set => SetAndRaise(ProgressValueProperty, ref _progressValue, value);
+    }
+    
+    internal double ProgressLineThickness
+    {
+        get => GetValue(ProgressLineThicknessProperty);
+        set => SetValue(ProgressLineThicknessProperty, value);
+    }
+    
+    internal IBrush? ProgressGrooveColor
+    {
+        get => GetValue(ProgressGrooveColorProperty);
+        set => SetValue(ProgressGrooveColorProperty, value);
+    }
+    
+    internal IBrush? ProgressColor
+    {
+        get => GetValue(ProgressColorProperty);
+        set => SetValue(ProgressColorProperty, value);
+    }
     #endregion
 
     static StepsItemIndicator()
     {
-        AffectsMeasure<StepsItemIndicator>(SizeTypeProperty, IndicatorTypeProperty, IsCurrentProperty);
+        AffectsMeasure<StepsItemIndicator>(SizeTypeProperty, IndicatorTypeProperty, IsCurrentProperty,
+            IsShowProgressProperty);
     }
     
     protected override void OnSizeChanged(SizeChangedEventArgs e)
@@ -192,5 +250,29 @@ internal class StepsItemIndicator : TemplatedControl
     {
         base.OnUnloaded(e);
         Transitions = null;
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        base.Render(context);
+        if (IsShowProgress)
+        {
+            var progressRect = new Rect(DesiredSize).Deflate(ProgressLineThickness / 2);
+            {
+                var pen          = new Pen(ProgressGrooveColor, ProgressLineThickness);
+                context.DrawEllipse(null, pen, progressRect);
+            }
+
+            {
+                var pen = new Pen(ProgressColor, ProgressLineThickness)
+                {
+                    LineCap = PenLineCap.Round
+                };
+
+                double startAngle = -90;
+                var indicatorAngle = 360 * ProgressValue / 100;
+                context.DrawArc(pen, progressRect, startAngle, indicatorAngle);
+            }
+        }
     }
 }

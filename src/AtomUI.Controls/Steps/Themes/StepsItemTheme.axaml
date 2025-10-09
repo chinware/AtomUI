@@ -173,7 +173,9 @@
                                                              Icon="{TemplateBinding Icon}"
                                                              VerticalAlignment="Top"
                                                              Status="{TemplateBinding Status}"
-                                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                             IsShowProgress="{TemplateBinding IsEffectiveShowProgress}"
+                                                             ProgressValue="{TemplateBinding ProgressValue}"/>
                                     <StackPanel Orientation="Vertical">
                                         <DockPanel LastChildFill="True">
                                             <StackPanel Orientation="Horizontal"
@@ -253,6 +255,8 @@
                                             VerticalAlignment="Center"
                                             Status="{TemplateBinding Status}"
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                            IsShowProgress="{TemplateBinding IsEffectiveShowProgress}"
+                                            ProgressValue="{TemplateBinding ProgressValue}"
                                             Grid.Column="1" />
                                         <Rectangle Name="EndingSeparatorLine"
                                                    Classes="IndicatorLine"
@@ -361,7 +365,9 @@
                                         Icon="{TemplateBinding Icon}"
                                         VerticalAlignment="Top"
                                         Status="{TemplateBinding Status}"
-                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
+                                        IsShowProgress="{TemplateBinding IsEffectiveShowProgress}"
+                                        ProgressValue="{TemplateBinding ProgressValue}"/>
                                     <Rectangle Name="SeparatorLine"
                                                Classes="IndicatorLine"
                                                Width="1"
@@ -430,7 +436,9 @@
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             Status="{TemplateBinding Status}"
-                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
+                                            IsShowProgress="{TemplateBinding IsEffectiveShowProgress}"
+                                            ProgressValue="{TemplateBinding ProgressValue}"/>
                                     </Panel>
                                     <Rectangle Name="SeparatorLine"
                                                Classes="IndicatorLine"
@@ -621,7 +629,9 @@
                                                                          Icon="{TemplateBinding Icon}"
                                                                          VerticalAlignment="Top"
                                                                          Status="{TemplateBinding Status}"
-                                                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
+                                                                         IsShowProgress="{TemplateBinding IsEffectiveShowProgress}"
+                                                                         ProgressValue="{TemplateBinding ProgressValue}"/>
                                                 <StackPanel Orientation="Vertical">
                                                     <StackPanel Orientation="Horizontal" Name="HeaderLayout"
                                                                 DockPanel.Dock="Left">
@@ -714,7 +724,9 @@
                                                     VerticalAlignment="Center"
                                                     HorizontalAlignment="Center"
                                                     Status="{TemplateBinding Status}"
-                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                    IsShowProgress="{TemplateBinding IsEffectiveShowProgress}"
+                                                    ProgressValue="{TemplateBinding ProgressValue}"/>
                                             </Panel>
                                             <StackPanel Orientation="Horizontal" Name="HeaderLayout"
                                                         HorizontalAlignment="Center">
@@ -816,7 +828,9 @@
                                             Icon="{TemplateBinding Icon}"
                                             VerticalAlignment="Top"
                                             Status="{TemplateBinding Status}"
-                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
+                                            IsShowProgress="{TemplateBinding IsEffectiveShowProgress}"
+                                            ProgressValue="{TemplateBinding ProgressValue}"/>
 
                                         <StackPanel Orientation="Vertical" Name="ContentLayout">
                                             <StackPanel Orientation="Horizontal" Name="HeaderLayout">
@@ -893,7 +907,9 @@
                                                 VerticalAlignment="Center"
                                                 HorizontalAlignment="Center"
                                                 Status="{TemplateBinding Status}"
-                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                IsShowProgress="{TemplateBinding IsEffectiveShowProgress}"
+                                                ProgressValue="{TemplateBinding ProgressValue}"/>
                                         </Panel>
 
                                         <StackPanel Orientation="Vertical" Name="ContentLayout">

@@ -823,6 +823,10 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey ProcessIconColor = new TokenResourceKey("Steps.ProcessIconColor");
         public static readonly TokenResourceKey ProcessTailColor = new TokenResourceKey("Steps.ProcessTailColor");
         public static readonly TokenResourceKey ProcessTitleColor = new TokenResourceKey("Steps.ProcessTitleColor");
+        public static readonly TokenResourceKey ProgressColor = new TokenResourceKey("Steps.ProgressColor");
+        public static readonly TokenResourceKey ProgressFramePadding = new TokenResourceKey("Steps.ProgressFramePadding");
+        public static readonly TokenResourceKey ProgressFramePaddingSM = new TokenResourceKey("Steps.ProgressFramePaddingSM");
+        public static readonly TokenResourceKey ProgressGrooveColor = new TokenResourceKey("Steps.ProgressGrooveColor");
         public static readonly TokenResourceKey StepsNavActiveColor = new TokenResourceKey("Steps.StepsNavActiveColor");
         public static readonly TokenResourceKey StepsProgressSize = new TokenResourceKey("Steps.StepsProgressSize");
         public static readonly TokenResourceKey VerticalDescriptionPadding = new TokenResourceKey("Steps.VerticalDescriptionPadding");

@@ -138,6 +138,24 @@ public class StepsItem : HeaderedContentControl, ISelectable
             o => o.IsLast,
             (o, v) => o.IsLast = v);
     
+    internal static readonly DirectProperty<StepsItem, bool> IsShowProgressProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, bool>(
+            nameof(IsShowProgress),
+            o => o.IsShowProgress,
+            (o, v) => o.IsShowProgress = v);
+    
+    internal static readonly DirectProperty<StepsItem, bool> IsEffectiveShowProgressProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, bool>(
+            nameof(IsEffectiveShowProgress),
+            o => o.IsEffectiveShowProgress,
+            (o, v) => o.IsEffectiveShowProgress = v);
+    
+    internal static readonly DirectProperty<StepsItem, double> ProgressValueProperty =
+        AvaloniaProperty.RegisterDirect<StepsItem, double>(
+            nameof(ProgressValue),
+            o => o.ProgressValue,
+            (o, v) => o.ProgressValue = v);
+    
     internal static readonly StyledProperty<Orientation> OrientationProperty =
         ScrollBar.OrientationProperty.AddOwner<StepsItem>();
     
@@ -244,6 +262,30 @@ public class StepsItem : HeaderedContentControl, ISelectable
         get => GetValue(NavIndicatorLineRenderTransformProperty);
         set => SetValue(NavIndicatorLineRenderTransformProperty, value);
     }
+    
+    private bool _isShowProgress;
+
+    internal bool IsShowProgress
+    {
+        get => _isShowProgress;
+        set => SetAndRaise(IsShowProgressProperty, ref _isShowProgress, value);
+    }
+    
+    private bool _isEffectiveShowProgress;
+
+    internal bool IsEffectiveShowProgress
+    {
+        get => _isEffectiveShowProgress;
+        set => SetAndRaise(IsEffectiveShowProgressProperty, ref _isEffectiveShowProgress, value);
+    }
+    
+    private double _progressValue;
+
+    internal double ProgressValue
+    {
+        get => _progressValue;
+        set => SetAndRaise(ProgressValueProperty, ref _progressValue, value);
+    }
     #endregion
     
     private StepsItemIndicator? _indicator;
@@ -262,6 +304,7 @@ public class StepsItem : HeaderedContentControl, ISelectable
         base.OnApplyTemplate(e);
         _indicator = e.NameScope.Find<StepsItemIndicator>(StepsItemThemeConstants.IndicatorPart);
         UpdatePseudoClasses();
+        ConfigureEffectiveShowProgress();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -286,6 +329,17 @@ public class StepsItem : HeaderedContentControl, ISelectable
                 _indicator.IsItemHover = false;
             }
         }
+        else if (change.Property == IsShowProgressProperty ||
+                 change.Property == StyleProperty ||
+                 change.Property == IndicatorTypeProperty)
+        {
+            ConfigureEffectiveShowProgress();
+        }
+    }
+
+    private void ConfigureEffectiveShowProgress()
+    {
+        SetCurrentValue(IsEffectiveShowProgressProperty, IsShowProgress && Style != StepsStyle.Inline && Icon == null &&IndicatorType != StepsItemIndicatorType.Dot && Status == StepsItemStatus.Process);
     }
     
     private void ConfigureTransitions(bool force)

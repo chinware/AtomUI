@@ -8,30 +8,35 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Panel>
-                        <Panel IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNull}}">
+                        <Border Name="ProgressFrame">
                             <Border Name="Frame"
+                                    IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNull}}"
                                     BorderThickness="1"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     Background="{TemplateBinding Background}"
-                                    CornerRadius="{TemplateBinding CornerRadius}" />
-                            <TextBlock Name="PositionText"
-                                       Text="{TemplateBinding Position}"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"
-                                       IsVisible="True" />
-                            <atom:Icon Name="FinishedMark"
-                                       IconInfo="{atom:IconInfoProvider Kind=CheckOutlined}"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"
-                                       IsVisible="False"
-                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                            <atom:Icon Name="ErrorMark"
-                                       IconInfo="{atom:IconInfoProvider Kind=CloseOutlined}"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"
-                                       IsVisible="False"
-                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                        </Panel>
+                                    CornerRadius="{TemplateBinding CornerRadius}">
+                                <Panel>
+                                    <TextBlock Name="PositionText"
+                                               Text="{TemplateBinding Position}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               IsVisible="True" />
+                                    <atom:Icon Name="FinishedMark"
+                                               IconInfo="{atom:IconInfoProvider Kind=CheckOutlined}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               IsVisible="False"
+                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                    <atom:Icon Name="ErrorMark"
+                                               IconInfo="{atom:IconInfoProvider Kind=CloseOutlined}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               IsVisible="False"
+                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                </Panel>
+                            </Border>
+                        </Border>
+                        
                         <atom:IconPresenter
                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                             Name="CustomIconPresenter"
@@ -39,6 +44,22 @@
                     </Panel>
                 </ControlTemplate>
             </Setter>
+            
+            <Style Selector="^[IsShowProgress=True]">
+                <Setter Property="ProgressGrooveColor" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressGrooveColor}}" />
+                <Setter Property="ProgressColor" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressColor}}" />
+                <Setter Property="ProgressLineThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidthBold}}" />
+                <Style Selector="^ /template/ Border#ProgressFrame">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressFramePadding}}" />
+                </Style>
+                
+                <Style Selector="^[SizeType=Small]">
+                    <Setter Property="ProgressLineThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidth}}" />
+                    <Style Selector="^ /template/ Border#ProgressFrame">
+                        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressFramePaddingSM}}" />
+                    </Style>
+                </Style>
+            </Style>
 
             <Style Selector="^[Status=Finish]">
                 <Style Selector="^ /template/ TextBlock#PositionText">
@@ -59,30 +80,23 @@
             </Style>
 
             <Style Selector="^[IsCustom=False]">
-                <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ Border#Frame">
                     <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
                     <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
-                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-
-                    <Style Selector="^ /template/ atom|Icon">
-                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-                        <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-                    </Style>
-
                 </Style>
-                <Style Selector="^[SizeType=Middle]">
-                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
-                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
-                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-                    <Style Selector="^ /template/ atom|Icon">
-                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-                        <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-                    </Style>
+                   
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
 
+                <Style Selector="^ /template/ atom|Icon">
+                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
                 </Style>
+                
                 <Style Selector="^[SizeType=Small]">
-                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
-                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                    <Style Selector="^ /template/ Border#Frame">
+                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                        <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                    </Style>
                     <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
                     <Style Selector="^ /template/ atom|Icon">
                         <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />

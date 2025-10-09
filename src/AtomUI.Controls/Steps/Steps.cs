@@ -52,8 +52,8 @@ public class Steps : SelectingItemsControl,
     public static readonly StyledProperty<int> InitialStepProperty =
         AvaloniaProperty.Register<Steps, int>(nameof(InitialStep), -1);
     
-    public static readonly StyledProperty<double> PercentValueProperty =
-        AvaloniaProperty.Register<Steps, double>(nameof(PercentValue), 0);
+    public static readonly StyledProperty<double> ProgressValueProperty =
+        AvaloniaProperty.Register<Steps, double>(nameof(ProgressValue), 0, coerce:CoerceProgressValue);
     
     public static readonly StyledProperty<StepsItemStatus> CurrentStepStatusProperty =
         AvaloniaProperty.Register<Steps, StepsItemStatus>(nameof(CurrentStepStatus), StepsItemStatus.Process);
@@ -79,6 +79,9 @@ public class Steps : SelectingItemsControl,
     public static readonly StyledProperty<bool> IsItemClickableProperty =
         AvaloniaProperty.Register<Steps, bool>(nameof(IsItemClickable), false);
     
+    public static readonly StyledProperty<bool> IsShowItemProgressProperty =
+        AvaloniaProperty.Register<Steps, bool>(nameof(IsShowItemProgress), false);
+    
     public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty =
         ContentControl.ContentTemplateProperty.AddOwner<Steps>();
     
@@ -100,10 +103,10 @@ public class Steps : SelectingItemsControl,
         set => SetValue(InitialStepProperty, value);
     }
     
-    public double PercentValue
+    public double ProgressValue
     {
-        get => GetValue(PercentValueProperty);
-        set => SetValue(PercentValueProperty, value);
+        get => GetValue(ProgressValueProperty);
+        set => SetValue(ProgressValueProperty, value);
     }
     
     public StepsItemStatus CurrentStepStatus
@@ -152,6 +155,12 @@ public class Steps : SelectingItemsControl,
     {
         get => GetValue(IsItemClickableProperty);
         set => SetValue(IsItemClickableProperty, value);
+    }
+    
+    public bool IsShowItemProgress
+    {
+        get => GetValue(IsShowItemProgressProperty);
+        set => SetValue(IsShowItemProgressProperty, value);
     }
     
     public IDataTemplate? ContentTemplate
@@ -221,6 +230,19 @@ public class Steps : SelectingItemsControl,
         SelectionMode           =  SelectionMode.Single;
     }
     
+    private static double CoerceProgressValue(AvaloniaObject sender, double value)
+    {
+        if (value < 0.0)
+        {
+            return 0.0;
+        }
+        if (value > 100.0)
+        {
+            return 100.0;
+        }
+        return value;
+    }
+    
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.OldItems != null)
@@ -280,6 +302,8 @@ public class Steps : SelectingItemsControl,
             disposables.Add(BindUtils.RelayBind(this, IsItemClickableProperty, stepsItem, StepsItem.IsClickableProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, stepsItem, StepsItem.IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, OrientationProperty, stepsItem, StepsItem.OrientationProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsShowItemProgressProperty, stepsItem, StepsItem.IsShowProgressProperty));
+            disposables.Add(BindUtils.RelayBind(this, ProgressValueProperty, stepsItem, StepsItem.ProgressValueProperty));
             
             PrepareStepsItem(stepsItem, item, index, disposables);
             
