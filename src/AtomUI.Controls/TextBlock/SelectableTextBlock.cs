@@ -1,15 +1,13 @@
-using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Media.TextFormatting;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
+using Avalonia.Styling;
 using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
@@ -41,10 +39,6 @@ public class SelectableTextBlock : TextBlock
     public static readonly RoutedEvent<RoutedEventArgs> CopyingToClipboardEvent =
         RoutedEvent.Register<SelectableTextBlock, RoutedEventArgs>(
             nameof(CopyingToClipboard), RoutingStrategies.Bubble);
-
-    private bool _canCopy;
-    private int _wordSelectionStart = -1;
-    private CompositeDisposable? _tokenBindingDisposables;
 
     static SelectableTextBlock()
     {
@@ -112,6 +106,18 @@ public class SelectableTextBlock : TextBlock
     }
 
     #endregion
+    
+    private bool _canCopy;
+    private int _wordSelectionStart = -1;
+
+    public SelectableTextBlock()
+    {
+        var styles = new Style();
+        styles.Add(SelectionBrushProperty, SharedTokenKey.SelectionBackground);
+        styles.Add(SelectionForegroundBrushProperty, SharedTokenKey.SelectionForeground);
+        styles.Add(CursorProperty, new Cursor(StandardCursorType.Ibeam));
+        Styles.Add(styles);
+    }
 
     /// <summary>
     /// Copies the current selection to the Clipboard.
@@ -267,7 +273,6 @@ public class SelectableTextBlock : TextBlock
         base.OnKeyDown(e);
 
         var handled   = false;
-        var modifiers = e.KeyModifiers;
         var keymap    = AtomApplication.Current!.PlatformSettings!.HotkeyConfiguration;
 
         bool Match(List<KeyGesture> gestures) => gestures.Any(g => g.Matches(e));
@@ -496,21 +501,5 @@ public class SelectableTextBlock : TextBlock
         var selectedText = text!.Substring(start, length);
 
         return selectedText;
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingDisposables = new CompositeDisposable(2);
-        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, SelectionBrushProperty,
-            SharedTokenKey.SelectionBackground));
-        _tokenBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, SelectionForegroundBrushProperty,
-            SharedTokenKey.SelectionForeground));
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _tokenBindingDisposables?.Dispose();
     }
 }

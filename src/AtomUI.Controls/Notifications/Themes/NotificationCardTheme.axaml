@@ -11,7 +11,7 @@
             <ControlTemplate>
                 <atom:LayoutAwareMotionActor Name="{x:Static atom:NotificationCardThemeConstants.MotionActorPart}"
                                              ClipToBounds="False">
-                    <Border Name="{x:Static atom:NotificationCardThemeConstants.FramePart}">
+                    <Border Name="Frame">
                         <Grid ColumnDefinitions="Auto, *"
                               RowDefinitions="Auto, *, Auto">
                             <atom:IconPresenter
@@ -27,21 +27,22 @@
                                 LastChildFill="True">
                                 <atom:IconButton
                                     Name="{x:Static atom:NotificationCardThemeConstants.CloseButtonPart}"
+                                    Icon="{atom:IconProvider Kind=CloseOutlined}"
                                     DockPanel.Dock="Right" />
-                                <SelectableTextBlock
+                                <atom:SelectableTextBlock
                                     Name="{x:Static atom:NotificationCardThemeConstants.HeaderTitlePart}"
                                     Text="{TemplateBinding Title}" />
                             </DockPanel>
 
                             <ContentPresenter
-                                Name="{x:Static atom:NotificationCardThemeConstants.ContentPart}"
+                                Name="Content"
                                 TextWrapping="Wrap"
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Content="{TemplateBinding Content, Converter={StaticResource StringToSelectableTextBlockConverter}}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}" />
                             <atom:NotificationProgressBar
-                                Name="{x:Static atom:NotificationCardThemeConstants.ProgressBarPart}"
+                                Name="ProgressBar"
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
@@ -66,48 +67,48 @@
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}" />
         <Setter Property="ClipToBounds" Value="False" />
 
-        <Style Selector="^ /template/ atom|NotificationProgressBar#PART_ProgressBar">
+        <Style Selector="^ /template/ atom|NotificationProgressBar#ProgressBar">
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationProgressMargin}}" />
         </Style>
 
         <Style Selector="^[Position=TopLeft]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationTopMargin}}" />
             </Style>
         </Style>
 
         <Style Selector="^[Position=TopCenter]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationTopMargin}}" />
             </Style>
         </Style>
 
         <Style Selector="^[Position=TopRight]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationTopMargin}}" />
             </Style>
         </Style>
 
         <Style Selector="^[Position=BottomLeft]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationBottomMargin}}" />
             </Style>
         </Style>
 
         <Style Selector="^[Position=BottomCenter]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationBottomMargin}}" />
             </Style>
         </Style>
 
         <Style Selector="^[Position=BottomRight]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Margin"
                         Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationBottomMargin}}" />
             </Style>
@@ -115,7 +116,7 @@
 
         <Setter Property="Width" Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationWidth}}" />
 
-        <Style Selector="^ /template/ Border#PART_Frame">
+        <Style Selector="^ /template/ Border#Frame">
             <Setter Property="Padding"
                     Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationPadding}}" />
             <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadows}}" />
@@ -165,7 +166,7 @@
         <!-- BuildIconStyle end -->
 
         <!-- BuildHeaderStyle begin -->
-        <Style Selector="^ /template/ SelectableTextBlock#PART_HeaderTitle">
+        <Style Selector="^ /template/ atom|SelectableTextBlock#PART_HeaderTitle">
             <Setter Property="LineHeight"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
             <Setter Property="FontSize"
@@ -199,7 +200,7 @@
         </Style>
         <!-- BuildHeaderStyle end -->
 
-        <Style Selector="^ /template/ ContentPresenter#PART_Content">
+        <Style Selector="^ /template/ ContentPresenter#Content">
             <Setter Property="Foreground"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
             <Setter Property="FontSize"
