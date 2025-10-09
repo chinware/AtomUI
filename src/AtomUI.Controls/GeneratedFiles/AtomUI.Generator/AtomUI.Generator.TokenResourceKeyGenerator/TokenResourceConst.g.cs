@@ -811,6 +811,9 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey IconSize = new TokenResourceKey("Steps.IconSize");
         public static readonly TokenResourceKey IconSizeSM = new TokenResourceKey("Steps.IconSizeSM");
         public static readonly TokenResourceKey InlineDotSize = new TokenResourceKey("Steps.InlineDotSize");
+        public static readonly TokenResourceKey InlineHeaderMargin = new TokenResourceKey("Steps.InlineHeaderMargin");
+        public static readonly TokenResourceKey InlineHeaderPadding = new TokenResourceKey("Steps.InlineHeaderPadding");
+        public static readonly TokenResourceKey InlineItemPadding = new TokenResourceKey("Steps.InlineItemPadding");
         public static readonly TokenResourceKey InlineTailColor = new TokenResourceKey("Steps.InlineTailColor");
         public static readonly TokenResourceKey InlineTitleColor = new TokenResourceKey("Steps.InlineTitleColor");
         public static readonly TokenResourceKey NavArrowColor = new TokenResourceKey("Steps.NavArrowColor");

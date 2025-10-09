@@ -4,231 +4,291 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:StepsItemIndicator}" TargetType="atom:StepsItemIndicator">
-        <Style Selector="^[IndicatorType=Default]">
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <Panel>
-                        <Border Name="ProgressFrame">
-                            <Border Name="Frame"
-                                    IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNull}}"
-                                    BorderThickness="1"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    Background="{TemplateBinding Background}"
-                                    CornerRadius="{TemplateBinding CornerRadius}">
-                                <Panel>
-                                    <TextBlock Name="PositionText"
-                                               Text="{TemplateBinding Position}"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"
-                                               IsVisible="True" />
-                                    <atom:Icon Name="FinishedMark"
-                                               IconInfo="{atom:IconInfoProvider Kind=CheckOutlined}"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"
-                                               IsVisible="False"
-                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                                    <atom:Icon Name="ErrorMark"
-                                               IconInfo="{atom:IconInfoProvider Kind=CloseOutlined}"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"
-                                               IsVisible="False"
-                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                                </Panel>
+
+        <Style Selector="^:not(^[Style=Inline])">
+            <Style Selector="^[IndicatorType=Default]">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Panel>
+                            <Border Name="ProgressFrame">
+                                <Border Name="Frame"
+                                        IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNull}}"
+                                        BorderThickness="1"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        Background="{TemplateBinding Background}"
+                                        CornerRadius="{TemplateBinding CornerRadius}">
+                                    <Panel>
+                                        <TextBlock Name="PositionText"
+                                                   Text="{TemplateBinding Position}"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   IsVisible="True" />
+                                        <atom:Icon Name="FinishedMark"
+                                                   IconInfo="{atom:IconInfoProvider Kind=CheckOutlined}"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   IsVisible="False"
+                                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                        <atom:Icon Name="ErrorMark"
+                                                   IconInfo="{atom:IconInfoProvider Kind=CloseOutlined}"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   IsVisible="False"
+                                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                    </Panel>
+                                </Border>
                             </Border>
-                        </Border>
-                        
-                        <atom:IconPresenter
-                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                            Name="CustomIconPresenter"
-                            Icon="{TemplateBinding Icon}" />
-                    </Panel>
-                </ControlTemplate>
-            </Setter>
-            
-            <Style Selector="^[IsShowProgress=True]">
-                <Setter Property="ProgressGrooveColor" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressGrooveColor}}" />
-                <Setter Property="ProgressColor" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressColor}}" />
-                <Setter Property="ProgressLineThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidthBold}}" />
-                <Style Selector="^ /template/ Border#ProgressFrame">
-                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressFramePadding}}" />
-                </Style>
-                
-                <Style Selector="^[SizeType=Small]">
-                    <Setter Property="ProgressLineThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidth}}" />
+
+                            <atom:IconPresenter
+                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                Name="CustomIconPresenter"
+                                Icon="{TemplateBinding Icon}" />
+                        </Panel>
+                    </ControlTemplate>
+                </Setter>
+
+                <Style Selector="^[IsShowProgress=True]">
+                    <Setter Property="ProgressGrooveColor"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressGrooveColor}}" />
+                    <Setter Property="ProgressColor"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressColor}}" />
+                    <Setter Property="ProgressLineThickness"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidthBold}}" />
                     <Style Selector="^ /template/ Border#ProgressFrame">
-                        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressFramePaddingSM}}" />
-                    </Style>
-                </Style>
-            </Style>
-
-            <Style Selector="^[Status=Finish]">
-                <Style Selector="^ /template/ TextBlock#PositionText">
-                    <Setter Property="IsVisible" Value="False" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#FinishedMark">
-                    <Setter Property="IsVisible" Value="True" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[Status=Error]">
-                <Style Selector="^ /template/ TextBlock#PositionText">
-                    <Setter Property="IsVisible" Value="False" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#ErrorMark">
-                    <Setter Property="IsVisible" Value="True" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[IsCustom=False]">
-                <Style Selector="^ /template/ Border#Frame">
-                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
-                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
-                </Style>
-                   
-                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-
-                <Style Selector="^ /template/ atom|Icon">
-                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
-                </Style>
-                
-                <Style Selector="^[SizeType=Small]">
-                    <Style Selector="^ /template/ Border#Frame">
-                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
-                        <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
-                    </Style>
-                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
-                    <Style Selector="^ /template/ atom|Icon">
-                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
-                        <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+                        <Setter Property="Padding"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressFramePadding}}" />
                     </Style>
 
-                </Style>
-            </Style>
-
-            <Style Selector="^[IsCustom=True]">
-                <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconSize}}" />
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconSize}}" />
-                <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                    <Setter Property="IconWidth"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconFontSize}}" />
-                    <Setter Property="IconHeight"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconFontSize}}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[Status=Wait]">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconBgColor}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconBorderColor}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconColor}}" />
-
-                <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                    <Setter Property="NormalFilledBrush"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDotColor}}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[Status=Process]">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBgColor}}" />
-                <Setter Property="BorderBrush"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconColor}}" />
-
-                <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                    <Setter Property="NormalFilledBrush"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDotColor}}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[Status=Finish]">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconBgColor}}" />
-                <Setter Property="BorderBrush"
-                        Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconBorderColor}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconColor}}" />
-
-                <Style Selector="^ /template/ atom|Icon#FinishedMark">
-                    <Setter Property="NormalFilledBrush"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconColor}}" />
+                    <Style Selector="^[SizeType=Small]">
+                        <Setter Property="ProgressLineThickness"
+                                Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidth}}" />
+                        <Style Selector="^ /template/ Border#ProgressFrame">
+                            <Setter Property="Padding"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.ProgressFramePaddingSM}}" />
+                        </Style>
+                    </Style>
                 </Style>
 
-                <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                    <Setter Property="NormalFilledBrush"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDotColor}}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[Status=Error]">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconBgColor}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconBorderColor}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconColor}}" />
-                <Style Selector="^ /template/ atom|Icon#ErrorMark">
-                    <Setter Property="NormalFilledBrush"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconColor}}" />
+                <Style Selector="^[Status=Finish]">
+                    <Style Selector="^ /template/ TextBlock#PositionText">
+                        <Setter Property="IsVisible" Value="False" />
+                    </Style>
+                    <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                        <Setter Property="IsVisible" Value="True" />
+                    </Style>
                 </Style>
 
-                <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                    <Setter Property="NormalFilledBrush"
-                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDotColor}}" />
+                <Style Selector="^[Status=Error]">
+                    <Style Selector="^ /template/ TextBlock#PositionText">
+                        <Setter Property="IsVisible" Value="False" />
+                    </Style>
+                    <Style Selector="^ /template/ atom|Icon#ErrorMark">
+                        <Setter Property="IsVisible" Value="True" />
+                    </Style>
                 </Style>
-            </Style>
 
-            <Style Selector="^[IsClickable=True]">
                 <Style Selector="^[IsCustom=False]">
-                    <Style Selector="^[IsItemHover=True]">
-                        <Style Selector="^:not(^[Status=Process])">
-                            <Setter Property="BorderBrush"
-                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
-                            <Setter Property="Foreground"
-                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
+                    <Style Selector="^ /template/ Border#Frame">
+                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
+                        <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSize}}" />
+                    </Style>
+
+                    <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+
+                    <Style Selector="^ /template/ atom|Icon">
+                        <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+                        <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconFontSize}}" />
+                    </Style>
+
+                    <Style Selector="^[SizeType=Small]">
+                        <Style Selector="^ /template/ Border#Frame">
+                            <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                            <Setter Property="Height"
+                                    Value="{DynamicResource {x:Static atom:StepsTokenKey.IconSizeSM}}" />
+                        </Style>
+                        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+                        <Style Selector="^ /template/ atom|Icon">
+                            <Setter Property="Width"
+                                    Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+                            <Setter Property="Height"
+                                    Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
                         </Style>
 
-                        <Style Selector="^:not(^[Status=Process])">
-                            <Style Selector="^ /template/ atom|Icon#ErrorMark">
-                                <Setter Property="NormalFilledBrush"
+                    </Style>
+                </Style>
+
+                <Style Selector="^[IsCustom=True]">
+                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconSize}}" />
+                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconSize}}" />
+                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
+                        <Setter Property="IconWidth"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconFontSize}}" />
+                        <Setter Property="IconHeight"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconFontSize}}" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[Status=Wait]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconBgColor}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconBorderColor}}" />
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconColor}}" />
+
+                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
+                        <Setter Property="NormalFilledBrush"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDotColor}}" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[Status=Process]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBgColor}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconColor}}" />
+
+                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
+                        <Setter Property="NormalFilledBrush"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDotColor}}" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[Status=Finish]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconBgColor}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconBorderColor}}" />
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconColor}}" />
+
+                    <Style Selector="^ /template/ atom|Icon#FinishedMark">
+                        <Setter Property="NormalFilledBrush"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconColor}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
+                        <Setter Property="NormalFilledBrush"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDotColor}}" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[Status=Error]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconBgColor}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconBorderColor}}" />
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconColor}}" />
+                    <Style Selector="^ /template/ atom|Icon#ErrorMark">
+                        <Setter Property="NormalFilledBrush"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconColor}}" />
+                    </Style>
+
+                    <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
+                        <Setter Property="NormalFilledBrush"
+                                Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDotColor}}" />
+                    </Style>
+                </Style>
+
+                <Style Selector="^[IsClickable=True]">
+                    <Style Selector="^[IsCustom=False]">
+                        <Style Selector="^[IsItemHover=True]">
+                            <Style Selector="^:not(^[Status=Process])">
+                                <Setter Property="BorderBrush"
                                         Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
+                            </Style>
+
+                            <Style Selector="^:not(^[Status=Process])">
+                                <Style Selector="^ /template/ atom|Icon#ErrorMark">
+                                    <Setter Property="NormalFilledBrush"
+                                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
+                                </Style>
                             </Style>
                         </Style>
                     </Style>
                 </Style>
             </Style>
+
+            <Style Selector="^[IndicatorType=Dot]">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Border Name="Frame"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}" />
+                    </ControlTemplate>
+                </Setter>
+
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotSize}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotSize}}" />
+
+                <Style Selector="^[IsCurrent=True]">
+                    <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
+                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
+                </Style>
+
+                <Style Selector="^[Status=Wait]">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDotColor}}" />
+                </Style>
+
+                <Style Selector="^[Status=Process]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDotColor}}" />
+                </Style>
+
+                <Style Selector="^[Status=Finish]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDotColor}}" />
+                </Style>
+
+                <Style Selector="^[Status=Error]">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDotColor}}" />
+                </Style>
+            </Style>
         </Style>
 
-        <Style Selector="^[IndicatorType=Dot]">
+        <Style Selector="^[Style=Inline]">
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Name="Frame"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}" 
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
                             Width="{TemplateBinding Width}"
-                            Height="{TemplateBinding Height}"/>
+                            Height="{TemplateBinding Height}" />
                 </ControlTemplate>
             </Setter>
 
-            <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotSize}}" />
-            <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotSize}}" />
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.InlineDotSize}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.InlineDotSize}}" />
 
             <Style Selector="^[IsCurrent=True]">
-                <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.DotCurrentSize}}" />
-            </Style>
 
+            </Style>
             <Style Selector="^[Status=Wait]">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDotColor}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderBg}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:StepsTokenKey.InlineTailColor}}" />
+                <Setter Property="BorderThickness" Value="1" />
             </Style>
-
             <Style Selector="^[Status=Process]">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDotColor}}" />
             </Style>
 
             <Style Selector="^[Status=Finish]">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDotColor}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.InlineTailColor}}" />
             </Style>
 
             <Style Selector="^[Status=Error]">
                 <Setter Property="Background" Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDotColor}}" />
             </Style>
+
         </Style>
 
     </ControlTheme>

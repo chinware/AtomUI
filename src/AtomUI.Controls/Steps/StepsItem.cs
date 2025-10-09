@@ -339,7 +339,7 @@ public class StepsItem : HeaderedContentControl, ISelectable
 
     private void ConfigureEffectiveShowProgress()
     {
-        SetCurrentValue(IsEffectiveShowProgressProperty, IsShowProgress && Style != StepsStyle.Inline && Icon == null &&IndicatorType != StepsItemIndicatorType.Dot && Status == StepsItemStatus.Process);
+        SetCurrentValue(IsEffectiveShowProgressProperty, IsShowProgress && Style != StepsStyle.Inline && Icon == null &&IndicatorType != StepsItemIndicatorType.Dot);
     }
     
     private void ConfigureTransitions(bool force)

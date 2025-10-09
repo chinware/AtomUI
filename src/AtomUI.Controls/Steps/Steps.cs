@@ -304,6 +304,7 @@ public class Steps : SelectingItemsControl,
             disposables.Add(BindUtils.RelayBind(this, OrientationProperty, stepsItem, StepsItem.OrientationProperty));
             disposables.Add(BindUtils.RelayBind(this, IsShowItemProgressProperty, stepsItem, StepsItem.IsShowProgressProperty));
             disposables.Add(BindUtils.RelayBind(this, ProgressValueProperty, stepsItem, StepsItem.ProgressValueProperty));
+            disposables.Add(BindUtils.RelayBind(this, LabelPlacementProperty, stepsItem, StepsItem.LabelPlacementProperty));
             
             PrepareStepsItem(stepsItem, item, index, disposables);
             

@@ -30,6 +30,9 @@ internal class StepsItemIndicator : TemplatedControl
     public static readonly StyledProperty<Icon?> IconProperty =
         StepsItem.IconProperty.AddOwner<StepsItemIndicator>();
     
+    public static readonly StyledProperty<StepsStyle> StyleProperty =
+        Steps.StyleProperty.AddOwner<StepsItemIndicator>();
+    
     public StepsItemStatus Status
     {
         get => GetValue(StatusProperty);
@@ -58,6 +61,12 @@ internal class StepsItemIndicator : TemplatedControl
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
+    }
+    
+    public StepsStyle Style
+    {
+        get => GetValue(StyleProperty);
+        set => SetValue(StyleProperty, value);
     }
 
     #endregion
@@ -193,7 +202,8 @@ internal class StepsItemIndicator : TemplatedControl
     static StepsItemIndicator()
     {
         AffectsMeasure<StepsItemIndicator>(SizeTypeProperty, IndicatorTypeProperty, IsCurrentProperty,
-            IsShowProgressProperty);
+            IsShowProgressProperty,
+            StyleProperty);
     }
     
     protected override void OnSizeChanged(SizeChangedEventArgs e)
@@ -255,9 +265,9 @@ internal class StepsItemIndicator : TemplatedControl
     public override void Render(DrawingContext context)
     {
         base.Render(context);
-        if (IsShowProgress)
+        if (IsShowProgress && IsCurrent)
         {
-            var progressRect = new Rect(DesiredSize).Deflate(ProgressLineThickness / 2);
+            var progressRect = new Rect(DesiredSize.Deflate(Margin)).Deflate(ProgressLineThickness / 2);
             {
                 var pen          = new Pen(ProgressGrooveColor, ProgressLineThickness);
                 context.DrawEllipse(null, pen, progressRect);
