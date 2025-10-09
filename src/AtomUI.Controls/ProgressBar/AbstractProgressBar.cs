@@ -79,6 +79,12 @@ public abstract class AbstractProgressBar : RangeBase,
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractProgressBar>();
+    
+    public static readonly StyledProperty<Icon?> ExceptionCompletedIconProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, Icon?>(nameof(ExceptionCompletedIcon));
+    
+    public static readonly StyledProperty<Icon?> SuccessCompletedIconProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, Icon?>(nameof(SuccessCompletedIcon));
 
     /// <summary>
     /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
@@ -176,7 +182,18 @@ public abstract class AbstractProgressBar : RangeBase,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    public Icon? ExceptionCompletedIcon
+    {
+        get => GetValue(ExceptionCompletedIconProperty);
+        set => SetValue(ExceptionCompletedIconProperty, value);
+    }
 
+    public Icon? SuccessCompletedIcon
+    {
+        get => GetValue(SuccessCompletedIconProperty);
+        set => SetValue(SuccessCompletedIconProperty, value);
+    }
     #endregion
 
     #region 内部属性定义
@@ -251,8 +268,8 @@ public abstract class AbstractProgressBar : RangeBase,
 
     protected LayoutTransformControl? _layoutTransformLabel;
     protected Label? _percentageLabel;
-    protected Icon? _successCompletedIcon;
-    protected Icon? _exceptionCompletedIcon;
+    protected IconPresenter? _successCompletedIconPresenter;
+    protected IconPresenter? _exceptionCompletedIconPresenter;
 
     static AbstractProgressBar()
     {
@@ -322,8 +339,8 @@ public abstract class AbstractProgressBar : RangeBase,
         base.OnApplyTemplate(e);
         _layoutTransformLabel = e.NameScope.Find<LayoutTransformControl>(ProgressBarThemeConstants.LayoutTransformControlPart);
         _percentageLabel = e.NameScope.Find<Label>(ProgressBarThemeConstants.PercentageLabelPart);
-        _exceptionCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.ExceptionCompletedIconPart);
-        _successCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.SuccessCompletedIconPart);
+        _exceptionCompletedIconPresenter = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.ExceptionCompletedIconPresenterPart);
+        _successCompletedIconPresenter = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.SuccessCompletedIconPresenterPart);
         NotifySetupUI();
         NotifyUiStructureReady();
     }

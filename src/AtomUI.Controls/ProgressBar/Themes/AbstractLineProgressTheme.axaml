@@ -19,13 +19,15 @@
                            IsEnabled="{TemplateBinding IsEnabled}" />
                 </LayoutTransformControl>
                 
-                <atom:Icon Name="{x:Static atom:ProgressBarThemeConstants.ExceptionCompletedIconPart}"
-                           IconInfo="{atom:IconInfoProvider CloseCircleFilled}"
-                           HorizontalAlignment="Left"/>
+                <atom:IconPresenter
+                    Name="{x:Static atom:ProgressBarThemeConstants.ExceptionCompletedIconPresenterPart}"
+                    Icon="{TemplateBinding ExceptionCompletedIcon}"
+                    HorizontalAlignment="Left"/>
                 
-                <atom:Icon Name="{x:Static atom:ProgressBarThemeConstants.SuccessCompletedIconPart}"
-                           IconInfo="{atom:IconInfoProvider CheckCircleFilled}"
-                           HorizontalAlignment="Left"/>
+                <atom:IconPresenter
+                    Name="{x:Static atom:ProgressBarThemeConstants.SuccessCompletedIconPresenterPart}"
+                    Icon="{TemplateBinding SuccessCompletedIcon}"
+                    HorizontalAlignment="Left"/>
                 
             </Canvas>
         </ControlTemplate>
@@ -35,12 +37,12 @@
         <Setter Property="LineProgressPadding" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineProgressPadding}}" />
         <Setter Property="LineExtraInfoMargin" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineExtraInfoMargin}}" />
         
-        <Style Selector="^ /template/ atom|Icon#PART_ExceptionCompletedIcon">
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ExceptionCompletedIconPresenter">
             <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
             <Setter Property="DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
         </Style>
         
-        <Style Selector="^ /template/ atom|Icon#PART_SuccessCompletedIcon">
+        <Style Selector="^ /template/ atom|IconPresenter#PART_SuccessCompletedIconPresenter">
             <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
             <Setter Property="DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
         </Style>
@@ -48,27 +50,27 @@
         <Style Selector="^[EffectiveSizeType=Large]">
             <Setter Property="LineInfoIconSize" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSize}}" />
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-            <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="Width" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSize}}" />
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSize}}" />
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSize}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSize}}" />
             </Style>
         </Style>
         
         <Style Selector="^[EffectiveSizeType=Middle]">
             <Setter Property="LineInfoIconSize" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSize}}" />
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
-            <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="Width" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
             </Style>
         </Style>
         
         <Style Selector="^[EffectiveSizeType=Small]">
             <Setter Property="LineInfoIconSize" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
-            <Style Selector="^ /template/ atom|Icon">
-                <Setter Property="Width" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
+                <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineInfoIconSizeSM}}" />
             </Style>
         </Style>
     </Style>

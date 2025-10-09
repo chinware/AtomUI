@@ -128,16 +128,16 @@ public class ProgressBar : AbstractLineProgress
                 Canvas.SetLeft(_layoutTransformLabel, extraInfoRect.Left);
             }
 
-            if (_successCompletedIcon is not null)
+            if (_successCompletedIconPresenter is not null)
             {
-                Canvas.SetLeft(_successCompletedIcon, extraInfoRect.Left);
-                Canvas.SetTop(_successCompletedIcon, extraInfoRect.Top);
+                Canvas.SetLeft(_successCompletedIconPresenter, extraInfoRect.Left);
+                Canvas.SetTop(_successCompletedIconPresenter, extraInfoRect.Top);
             }
 
-            if (_exceptionCompletedIcon is not null)
+            if (_exceptionCompletedIconPresenter is not null)
             {
-                Canvas.SetLeft(_exceptionCompletedIcon, extraInfoRect.Left);
-                Canvas.SetTop(_exceptionCompletedIcon, extraInfoRect.Top);
+                Canvas.SetLeft(_exceptionCompletedIconPresenter, extraInfoRect.Left);
+                Canvas.SetTop(_exceptionCompletedIconPresenter, extraInfoRect.Top);
             }
         }
 

@@ -1,11 +1,13 @@
 using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
+using AtomUI.IconPkg.AntDesign;
 using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
@@ -156,8 +158,17 @@ public abstract class AbstractLineProgress : AbstractProgressBar
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _exceptionCompletedIcon = e.NameScope.Find<Icon>(ProgressBarThemeConstants.ExceptionCompletedIconPart);
-        _successCompletedIcon   = e.NameScope.Find<Icon>(ProgressBarThemeConstants.SuccessCompletedIconPart);
+        _exceptionCompletedIconPresenter = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.ExceptionCompletedIconPresenterPart);
+        _successCompletedIconPresenter   = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.SuccessCompletedIconPresenterPart);
+        if (ExceptionCompletedIcon == null)
+        {
+            SetValue(ExceptionCompletedIconProperty, AntDesignIconPackage.CloseCircleFilled(), BindingPriority.Template);
+        }
+        
+        if (SuccessCompletedIcon == null)
+        {
+            SetValue(SuccessCompletedIconProperty, AntDesignIconPackage.CheckCircleFilled(), BindingPriority.Template);
+        }
     }
 
     protected virtual void NotifyOrientationChanged()

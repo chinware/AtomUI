@@ -20,19 +20,19 @@
         <Style Selector="^[ShowProgressInfo=True]">
             <Style Selector="^[Orientation=Horizontal]">
                 <Style Selector="^[PercentPosition=Start]">
-                    <Style Selector="^ /template/ atom|Icon">
+                    <Style Selector="^ /template/ atom|IconPresenter">
                         <Setter Property="HorizontalAlignment" Value="Right" />
                     </Style>
                 </Style>
 
                 <Style Selector="^[PercentPosition=Center]">
-                    <Style Selector="^ /template/ atom|Icon">
+                    <Style Selector="^ /template/ atom|IconPresenter">
                         <Setter Property="HorizontalAlignment" Value="Center" />
                     </Style>
                 </Style>
 
                 <Style Selector="^[PercentPosition=End]">
-                    <Style Selector="^ /template/ atom|Icon">
+                    <Style Selector="^ /template/ atom|IconPresenter">
                         <Setter Property="HorizontalAlignment" Value="Left" />
                     </Style>
                 </Style>
@@ -40,19 +40,19 @@
 
             <Style Selector="^[Orientation=Vertical]">
                 <Style Selector="^[PercentPosition=Start]">
-                    <Style Selector="^ /template/ atom|Icon">
+                    <Style Selector="^ /template/ atom|IconPresenter">
                         <Setter Property="VerticalAlignment" Value="Bottom" />
                     </Style>
                 </Style>
 
                 <Style Selector="^[PercentPosition=Center]">
-                    <Style Selector="^ /template/ atom|Icon">
+                    <Style Selector="^ /template/ atom|IconPresenter">
                         <Setter Property="VerticalAlignment" Value="Center" />
                     </Style>
                 </Style>
 
                 <Style Selector="^[PercentPosition=End]">
-                    <Style Selector="^ /template/ atom|Icon">
+                    <Style Selector="^ /template/ atom|IconPresenter">
                         <Setter Property="VerticalAlignment" Value="Top" />
                     </Style>
                 </Style>
