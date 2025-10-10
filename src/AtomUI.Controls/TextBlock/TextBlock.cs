@@ -1,7 +1,6 @@
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -9,21 +8,16 @@ using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 
 public class TextBlock : AvaloniaTextBlock
 {
-    private IDisposable? _disposable;
     static TextBlock()
     {
         FontStyleProperty.OverrideDefaultValue<TextBlock>(FontStyle.Normal);
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    public TextBlock()
     {
-        base.OnAttachedToLogicalTree(e);
-        _disposable = TokenResourceBinder.CreateTokenBinding(this, LineHeightProperty, SharedTokenKey.FontHeight);
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _disposable?.Dispose();
+        var styles = new Style();
+        styles.Add(LineHeightProperty, SharedTokenKey.FontHeight);
+        styles.Add(ClipToBoundsProperty, false);
+        Styles.Add(styles);
     }
 }

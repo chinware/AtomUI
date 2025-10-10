@@ -44,7 +44,7 @@
                     </atom:IconPresenter>
                     <atom:TextBlock
                         Name="{x:Static atom:ButtonThemeConstants.LabelPart}"
-                        Text="{TemplateBinding Content}" />
+                        Text="{TemplateBinding Content}"/>
                 </DockPanel>
             </Border>
             </Panel>

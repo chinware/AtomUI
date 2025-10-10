@@ -38,7 +38,6 @@
                                     Text="{TemplateBinding Text}"
                                     RenderTransform="{TemplateBinding TextRenderTransform}"
                                     IsVisible="False" 
-                                    ClipToBounds="False"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"/>
                 </Panel>
