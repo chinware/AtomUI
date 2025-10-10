@@ -140,7 +140,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         IThemeVariantCalculator? calculator     = null;
         foreach (var algorithm in algorithms)
         {
-            calculator     = ThemeManager.Current.CreateThemeVariantCalculator(algorithm, baseCalculator);
+            calculator     = ThemeManager.Current?.CreateThemeVariantCalculator(algorithm, baseCalculator);
             baseCalculator = calculator;
         }
 
@@ -264,7 +264,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     protected void CollectControlTokens()
     {
         _controlTokens.Clear();
-        var controlTokenTypes = ThemeManager.Current.ControlTokenTypes;
+        var controlTokenTypes = ThemeManager.Current?.ControlTokenTypes ?? [];
         foreach (var tokenType in controlTokenTypes)
         {
             var obj = Activator.CreateInstance(tokenType);

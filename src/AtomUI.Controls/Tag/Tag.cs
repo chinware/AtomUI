@@ -187,13 +187,19 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
-        ThemeManager.Current.ThemeChanged += HandleActualThemeVariantChanged;
+        if (ThemeManager.Current != null)
+        {
+            ThemeManager.Current.ThemeChanged += HandleActualThemeVariantChanged;
+        }
     }
     
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        ThemeManager.Current.ThemeChanged -= HandleActualThemeVariantChanged;
+        if (ThemeManager.Current != null)
+        {
+            ThemeManager.Current.ThemeChanged -= HandleActualThemeVariantChanged;
+        }
         _borderThicknessDisposable?.Dispose();
     }
     
@@ -267,7 +273,7 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
             {
                 PresetColorMap.Clear();
             }
-            var activatedTheme = ThemeManager.Current.ActivatedTheme;
+            var activatedTheme = ThemeManager.Current?.ActivatedTheme;
             var sharedToken    = activatedTheme?.SharedToken;
             if (sharedToken == null)
             {
@@ -298,7 +304,7 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
             {
                 StatusColorMap.Clear();
             }
-            var activatedTheme = ThemeManager.Current.ActivatedTheme;
+            var activatedTheme = ThemeManager.Current?.ActivatedTheme;
             var sharedToken    = activatedTheme?.SharedToken;
             if (sharedToken == null)
             {

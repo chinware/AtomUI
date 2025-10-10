@@ -249,7 +249,7 @@ internal class Theme : AvaloniaObject, ITheme
     protected void CollectControlTokens()
     {
         ControlTokens.Clear();
-        var controlTokenTypes = ThemeManager.Current.ControlTokenTypes;
+        var controlTokenTypes = ThemeManager.Current?.ControlTokenTypes ?? [];
         foreach (var tokenType in controlTokenTypes)
         {
             var obj = Activator.CreateInstance(tokenType);

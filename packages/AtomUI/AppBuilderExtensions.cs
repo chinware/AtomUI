@@ -29,7 +29,7 @@ public static class AtomUIExtensions
                     loadedTheme.ThemeResource[SharedTokenKey.FontFamily] = defaultFontFamily;
                 }
             };
-            ThemeManager.Current     =  themeManager;
+            AvaloniaLocator.CurrentMutable.BindToSelf(themeManager);
             themeManager.NotifyInitialized();
             var application = builder.Instance as AtomApplication;
             if (application == null)

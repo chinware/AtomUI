@@ -82,24 +82,27 @@ internal static class DateTimeHelper
 
     public static DateTimeFormatInfo GetCurrentDateFormat()
     {
-        var culture = ThemeManager.Current.ActualLanguageVariant.ToCultureInfo();
-        if (culture.Calendar is GregorianCalendar)
+        var culture = ThemeManager.Current?.ActualLanguageVariant.ToCultureInfo();
+        if (culture?.Calendar is GregorianCalendar)
         {
             return culture.DateTimeFormat;
         }
 
-        foreach (var cal in culture.OptionalCalendars)
+        if (culture != null)
         {
-            if (cal is GregorianCalendar)
+            foreach (var cal in culture.OptionalCalendars)
             {
-                // if the default calendar is not Gregorian, return the
-                // first supported GregorianCalendar dtfi
-                var dtfi = new CultureInfo(culture.Name).DateTimeFormat;
-                dtfi.Calendar = cal;
-                return dtfi;
+                if (cal is GregorianCalendar)
+                {
+                    // if the default calendar is not Gregorian, return the
+                    // first supported GregorianCalendar dtfi
+                    var dtfi = new CultureInfo(culture.Name).DateTimeFormat;
+                    dtfi.Calendar = cal;
+                    return dtfi;
+                }
             }
         }
-
+        
         // if there are no GregorianCalendars in the OptionalCalendars
         // list, use the invariant dtfi
         var dt = new CultureInfo(CultureInfo.InvariantCulture.Name).DateTimeFormat;

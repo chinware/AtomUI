@@ -35,7 +35,7 @@ internal class ThemeManager : Styles, IThemeManager
     
     public ITheme? ActivatedTheme => _activatedTheme;
     public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
-    public static ThemeManager Current { get; internal set; } = null!;
+    public static ThemeManager? Current { get; internal set; } = AvaloniaLocator.Current.GetService<ThemeManager>();
     public string DefaultThemeId { get; set; }
     public FontFamily? FontFamily { get; internal set; }
     internal List<Type> ControlTokenTypes { get; set; }

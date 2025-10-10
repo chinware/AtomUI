@@ -24,7 +24,7 @@ internal static class TokenFinderUtils
 
         if (token is null)
         {
-            var theme = ThemeManager.Current.ActivatedTheme;
+            var theme = ThemeManager.Current?.ActivatedTheme;
             Debug.Assert(theme != null);
             token = theme.SharedToken;
         }
@@ -51,7 +51,7 @@ internal static class TokenFinderUtils
 
         if (token is null)
         {
-            var theme = ThemeManager.Current.ActivatedTheme;
+            var theme = ThemeManager.Current?.ActivatedTheme;
             if (theme is not null)
             {
                 token = theme.GetControlToken(tokenId, catalog);
@@ -78,7 +78,7 @@ internal static class TokenFinderUtils
 
         if (themeVariant is null)
         {
-            var theme = ThemeManager.Current.ActivatedTheme;
+            var theme = ThemeManager.Current?.ActivatedTheme;
             themeVariant = theme?.ThemeVariant;
         }
         return themeVariant;
