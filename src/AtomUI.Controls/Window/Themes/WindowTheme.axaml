@@ -16,7 +16,8 @@
                         ClipToBounds="True">
                     <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                         <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
-                            <Border Padding="{TemplateBinding TitleBarOSOffsetMargin}" DockPanel.Dock="Top">
+                            <Border Padding="{TemplateBinding TitleBarOSOffsetMargin}" DockPanel.Dock="Top"
+                                    IsVisible="{TemplateBinding IsTitleBarVisible}">
                                 <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
                                                Content="{TemplateBinding Title}"
                                                Logo="{TemplateBinding Logo}" />
