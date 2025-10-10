@@ -249,9 +249,9 @@ public class TabStripItem : AvaloniaTabStripItem
                 resourceKey = TabStripThemeConstants.CardTabStripItemThemeId;
             }
             
-            if (AtomApplication.Current != null)
+            if (Application.Current != null)
             {
-                if (AtomApplication.Current.TryFindResource(resourceKey, out var resource))
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
                 {
                     if (resource is ControlTheme theme)
                     {

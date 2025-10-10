@@ -82,7 +82,7 @@ internal static class DateTimeHelper
 
     public static DateTimeFormatInfo GetCurrentDateFormat()
     {
-        var culture = ThemeManager.Current?.ActualLanguageVariant.ToCultureInfo();
+        var culture = ThemeManager.Current?.LanguageVariant.ToCultureInfo();
         if (culture?.Calendar is GregorianCalendar)
         {
             return culture.DateTimeFormat;

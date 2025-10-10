@@ -3,6 +3,7 @@ using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Data;
+using Avalonia.Styling;
 
 namespace AtomUI.Theme;
 
@@ -31,13 +32,14 @@ public static class AtomUIExtensions
             };
             AvaloniaLocator.CurrentMutable.BindToSelf(themeManager);
             themeManager.NotifyInitialized();
-            var application = builder.Instance as AtomApplication;
+            var application = builder.Instance;
             if (application == null)
             {
-                throw new AtomUIBootstrapException("Application is not null and its type must inherit from AtomUI.Controls.Application.");
+                throw new AtomUIBootstrapException("Application is can't null");
             }
-            application.AttachThemeManager(themeManager);
-            application.SetValue(AtomApplication.RequestedLanguageProperty, themeManagerBuilder.LanguageVariant, BindingPriority.Template);
+            application.RequestedThemeVariant = new ThemeVariant(themeManager.DefaultThemeId, null);
+            themeManager.SetValue(ThemeManager.LanguageVariantProperty, themeManagerBuilder.LanguageVariant, BindingPriority.Template);
+            themeManager.AttachApplication(application);
             themeManagerBuilder = null;
         });
         return builder.WithAlibabaSansFont();

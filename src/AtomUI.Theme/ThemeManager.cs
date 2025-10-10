@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -20,17 +23,63 @@ internal class ThemeManager : Styles, IThemeManager
 
     #region 公共属性定义
     
-    public static readonly StyledProperty<LanguageVariant> ActualLanguageVariantProperty =
-        LanguageVariant.ActualLanguageVariantProperty.AddOwner<ThemeManager>();
+    public static readonly StyledProperty<ThemeVariant> ThemeVariantProperty =
+        IThemeManager.ThemeVariantProperty.AddOwner<ThemeManager>();
     
-    public LanguageVariant ActualLanguageVariant
+    public static readonly StyledProperty<LanguageVariant> LanguageVariantProperty = 
+        LanguageVariant.LanguageVariantProperty.AddOwner<ThemeManager>();
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ThemeManager>();
+    
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<ThemeManager>();
+    
+    public static readonly StyledProperty<bool> IsDarkThemeModeProperty =
+        IThemeManager.IsDarkThemeModeProperty.AddOwner<ThemeManager>();
+    
+    public static readonly StyledProperty<bool> IsCompactThemeModeProperty =
+        IThemeManager.IsCompactThemeModeProperty.AddOwner<ThemeManager>();
+    
+    public ThemeVariant ThemeVariant
     {
-        get => GetValue(ActualLanguageVariantProperty);
-        set => SetValue(ActualLanguageVariantProperty, value);
+        get => GetValue(ThemeVariantProperty);
+        set => SetValue(ThemeVariantProperty, value);
     }
-
-    public IList<ThemeAlgorithm>? ActivatedThemeAlgorithms { get; internal set; }
     
+    public LanguageVariant LanguageVariant
+    {
+        get => GetValue(LanguageVariantProperty);
+        set => SetValue(LanguageVariantProperty, value);
+    }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public bool IsWaveSpiritEnabled
+    {
+        get => GetValue(IsWaveSpiritEnabledProperty);
+        set => SetValue(IsWaveSpiritEnabledProperty, value);
+    }
+    
+    public bool IsDarkThemeMode
+    {
+        get => GetValue(IsDarkThemeModeProperty);
+        set => SetValue(IsDarkThemeModeProperty, value);
+    }
+    
+    public bool IsCompactThemeMode
+    {
+        get => GetValue(IsCompactThemeModeProperty);
+        set => SetValue(IsCompactThemeModeProperty, value);
+    }
+    
+    public IList<ThemeAlgorithm>? ActivatedThemeAlgorithms { get; internal set; }
+    public AvaloniaObject BindingSource => this;
+
     #endregion
     
     public ITheme? ActivatedTheme => _activatedTheme;
@@ -49,6 +98,7 @@ internal class ThemeManager : Styles, IThemeManager
     public event EventHandler<ThemeOperateEventArgs>? ThemeUnloaded;
     public event EventHandler<ThemeOperateEventArgs>? ThemeAboutToChange;
     public event EventHandler<ThemeChangedEventArgs>? ThemeChanged;
+    public event EventHandler<LanguageVariantChangedEventArgs>? LanguageVariantChanged;
 
     public event EventHandler? Initialized;
     
@@ -61,6 +111,7 @@ internal class ThemeManager : Styles, IThemeManager
     
     private readonly Dictionary<LanguageVariant, ResourceDictionary> _languages;
     private List<ILanguageProvider>? _languageProviders;
+    private CompositeDisposable? _applicationDisposables;
     
     internal ThemeManager()
     {
@@ -346,7 +397,7 @@ internal class ThemeManager : Styles, IThemeManager
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ActualLanguageVariantProperty)
+        if (change.Property == LanguageVariantProperty)
         {
             if (change.OldValue is LanguageVariant oldLangVariant)
             {
@@ -363,8 +414,30 @@ internal class ThemeManager : Styles, IThemeManager
             languageResource ??= _languages[IThemeManager.DEFAULT_LANGUAGE];
             
             Resources.MergedDictionaries.Add(languageResource);
+            NotifyLanguageVariantChanged();
+            LanguageVariantChanged?.Invoke(this, new LanguageVariantChangedEventArgs(LanguageVariant, change.GetOldValue<LanguageVariant>()));
+        }
+        else if (change.Property == ThemeVariantProperty)
+        {
+            ConfigureThemeVariant(ThemeVariant);
+        }
+        else if (change.Property == IsDarkThemeModeProperty ||
+                 change.Property == IsCompactThemeModeProperty)
+        {
+            ConfigureActiveThemeAlgorithms();
+        }
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            ConfigureEnableMotion();
+        }
+        else if (change.Property == IsWaveSpiritEnabledProperty)
+        {
+            ConfigureEnableWaveSpirit();
         }
     }
+    
+    protected virtual void NotifyLanguageVariantChanged()
+    {}
 
     internal IThemeVariantCalculator CreateThemeVariantCalculator(ThemeAlgorithm algorithm, IThemeVariantCalculator? baseCalculator)
     {
@@ -389,6 +462,83 @@ internal class ThemeManager : Styles, IThemeManager
         }
 
         throw new ArgumentOutOfRangeException(nameof(algorithm), $"Unsupported theme variant algorithm: {algorithm}");
+    }
+
+    public void AttachApplication(Application application)
+    {
+        _applicationDisposables?.Dispose();
+        _applicationDisposables = new CompositeDisposable();
+        _applicationDisposables.Add(BindUtils.RelayBind(application, Application.ActualThemeVariantProperty, this, ThemeVariantProperty));
+        // TODO 需要审查
+        ConfigureThemeVariant(application.ActualThemeVariant);
+        application.Styles.Add(this);
+        NotifyAttachedToApplication();
+    }
+
+    private void ConfigureThemeVariant(ThemeVariant variant)
+    {
+        SetActiveTheme(variant);
+        var algorithms = ActivatedThemeAlgorithms;
+        if (algorithms != null)
+        {
+            IsDarkThemeMode    = algorithms.Contains(ThemeAlgorithm.Dark);
+            IsCompactThemeMode = algorithms.Contains(ThemeAlgorithm.Compact);
+            if (TryGetResource(SharedTokenKey.EnableMotion, variant, out var enableMotionResource))
+            {
+                if (enableMotionResource is bool enableMotion)
+                {
+                    IsMotionEnabled = enableMotion;
+                }
+            }
+                
+            if (TryGetResource(SharedTokenKey.EnableWaveSpirit, variant, out var enableWaveSpiritResource))
+            {
+                if (enableWaveSpiritResource is bool enableWaveSpirit)
+                {
+                    IsWaveSpiritEnabled = enableWaveSpirit;
+                }
+            }
+        }
+    }
+    
+    private void ConfigureActiveThemeAlgorithms()
+    {
+        var newAlgorithms = new List<ThemeAlgorithm>()
+        {
+            ThemeAlgorithm.Default
+        };
+        if (IsDarkThemeMode)
+        {
+            newAlgorithms.Add(ThemeAlgorithm.Dark);
+        }
+
+        if (IsCompactThemeMode)
+        {
+            newAlgorithms.Add(ThemeAlgorithm.Compact);
+        }
+
+        if (ActivatedTheme != null && Application.Current != null)
+        {
+            Application.Current.RequestedThemeVariant = Theme.BuildThemeVariant(ActivatedTheme.Id, newAlgorithms);
+        }
+    }
+
+    private void ConfigureEnableMotion()
+    {
+        var themeResource = Resources.ThemeDictionaries[ThemeVariant];
+        if (themeResource is ResourceDictionary globalResourceDictionary)
+        {
+            globalResourceDictionary[SharedTokenKey.EnableMotion] = IsMotionEnabled;
+        }
+    }
+    
+    private void ConfigureEnableWaveSpirit()
+    {
+        var themeResource = Resources.ThemeDictionaries[ThemeVariant];
+        if (themeResource is ResourceDictionary globalResourceDictionary)
+        {
+            globalResourceDictionary[SharedTokenKey.EnableWaveSpirit] = IsWaveSpiritEnabled;
+        }
     }
 }
 

@@ -273,7 +273,7 @@ public class SelectableTextBlock : TextBlock
         base.OnKeyDown(e);
 
         var handled   = false;
-        var keymap    = AtomApplication.Current!.PlatformSettings!.HotkeyConfiguration;
+        var keymap    = Application.Current!.PlatformSettings!.HotkeyConfiguration;
 
         bool Match(List<KeyGesture> gestures) => gestures.Any(g => g.Matches(e));
 

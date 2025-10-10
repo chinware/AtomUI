@@ -7,27 +7,16 @@ namespace AtomUI.Theme.Language;
 [TypeConverter(typeof(LanguageVariantTypeConverter))]
 public sealed record LanguageVariant
 {
-    /// <summary>
-    /// Defines the ActualLanguageVariant property.
-    /// </summary>
-    internal static readonly StyledProperty<LanguageVariant> ActualLanguageVariantProperty =
-        AvaloniaProperty.Register<StyledElement, LanguageVariant>(
-            "ActualLanguageVariant",
-            inherits: true);
-
-    /// <summary>
-    /// Defines the RequestedLanguageVariant property.
-    /// </summary>
-    internal static readonly StyledProperty<LanguageVariant?> RequestedLanguageVariantProperty =
-        AvaloniaProperty.Register<StyledElement, LanguageVariant?>(
-            "RequestedLanguageVariant", defaultValue: en_US);
-    
     public static LanguageVariant zh_CN { get; } = new(LanguageCode.zh_CN);
     public static LanguageVariant en_US { get; } = new(LanguageCode.en_US);
+    
+    internal static readonly StyledProperty<LanguageVariant> LanguageVariantProperty =
+        AvaloniaProperty.Register<StyledElement, LanguageVariant>(
+            "LanguageVariant", defaultValue: en_US);
 
     private LanguageVariant(LanguageCode code)
     {
-        Code        = code;
+        Code = code;
     }
     
     public LanguageCode Code { get; }

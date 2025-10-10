@@ -586,7 +586,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     {
         if (!e.Handled && IsOpen && Target?.ContextFlyout == this)
         {
-            var keymap = AtomApplication.Current!.PlatformSettings?.HotkeyConfiguration;
+            var keymap = Application.Current!.PlatformSettings?.HotkeyConfiguration;
             if (keymap?.OpenContextMenu.Any(k => k.Matches(e)) == true)
             {
                 e.Handled = HideCore();

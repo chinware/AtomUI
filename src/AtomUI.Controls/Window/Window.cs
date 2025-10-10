@@ -2,7 +2,6 @@
 
 using System.Runtime.InteropServices;
 using AtomUI.Controls.Themes;
-using AtomUI.Native;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -10,7 +9,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -297,7 +295,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     {
         base.OnLoaded(e);
 
-        if (AtomApplication.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
         }

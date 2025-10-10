@@ -344,9 +344,9 @@ public class NavMenu : NavMenuBase
             {
                 resourceKey = NavMenuThemeConstants.VerticalNavMenuThemeId;
             }
-            if (AtomApplication.Current != null)
+            if (Application.Current != null)
             {
-                if (AtomApplication.Current.TryFindResource(resourceKey, out var resource))
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
                 {
                     if (resource is ControlTheme theme)
                     {
@@ -375,9 +375,9 @@ public class NavMenu : NavMenuBase
                 resourceKey = NavMenuThemeConstants.TopLevelHorizontalNavMenuItemThemeId;
             }
 
-            if (AtomApplication.Current != null)
+            if (Application.Current != null)
             {
-                if (AtomApplication.Current.TryFindResource(resourceKey, out var resource))
+                if (Application.Current.TryFindResource(resourceKey, out var resource))
                 {
                     if (resource is ControlTheme theme)
                     {
