@@ -1,0 +1,124 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type atom:HorizontalNavMenuItemHeader}" TargetType="atom:HorizontalNavMenuItemHeader">
+        <ControlTheme.BasedOn>
+            <atom:BaseNavMenuItemHeaderTheme TargetType="atom:HorizontalNavMenuItemHeader" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        MinHeight="{TemplateBinding MinHeight}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}">
+                    <Panel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"
+                                                  SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto"
+                                                  SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
+                            </Grid.ColumnDefinitions>
+                            <atom:IconPresenter
+                                Name="ItemIconPresenter"
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsEnabled="{TemplateBinding IsEnabled}"
+                                Icon="{TemplateBinding Icon}"
+                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <ContentPresenter
+                                Name="ItemTextPresenter"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"
+                                IsHitTestVisible="False"
+                                Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemHeaderTheme.StringToTextBlockConverter}}"
+                                ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                            <atom:Icon
+                                Name="MenuIndicatorIcon"
+                                Grid.Column="2"
+                                IconInfo="{atom:IconInfoProvider RightOutlined}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                IsEnabled="{TemplateBinding IsEnabled}"
+                                IsVisible="{TemplateBinding IsTopLevel, Converter={x:Static BoolConverters.Not}}" />
+                        </Grid>
+
+                        <Rectangle
+                            Name="{x:Static atom:TopLevelHorizontalNavMenuItemThemeConstants.ActiveIndicatorPart}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Bottom"
+                            Fill="{TemplateBinding ActiveBarColor}"
+                            Height="{TemplateBinding ActiveBarHeight}"
+                            IsVisible="False" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+
+        <Style Selector="^[IsTopLevel=True]">
+
+            <Setter Property="ActiveBarScaleX"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ActiveBarScaleX}}" />
+            <Setter Property="ActiveBarHeight"
+                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ActiveBarHeight}}" />
+            <Setter Property="Background" Value="Transparent" />
+
+            <Style Selector="^[IsDarkStyle=False]">
+                <Setter Property="Padding" Value="0" />
+                <Style Selector="^[IsSelected=True]">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+                <Style Selector="^ /template/ Rectangle#PART_ActiveIndicator">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+                <Style Selector="^:pointerover">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[IsDarkStyle=True]">
+                <Style Selector="^[IsSelected=True]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemSelectedBg}}" />
+                    <Setter Property="CornerRadius" Value="0" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Margin"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.HorizontalItemMargin}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                <Setter Property="LineHeight"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.HorizontalLineHeight}}" />
+            </Style>
+
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.IconMargin}}" />
+            </Style>
+
+            <Setter Property="ActiveBarColor" Value="Transparent" />
+
+            <Style Selector="^:pointerover, ^[IsSubMenuOpen=True], ^[IsSelected=True]">
+                <Setter Property="ActiveBarColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">
+                <Setter Property="Margin" Value="0" />
+            </Style>
+
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

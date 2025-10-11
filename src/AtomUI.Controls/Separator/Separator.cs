@@ -202,7 +202,7 @@ public class Separator : AvaloniaSeparator,
 
     #endregion
     
-    private Label? _titleLabel;
+    private TextBlock? _titleLabel;
     private double _currentEdgeDistance;
     private static ImmutableDashStyle? s_dash;
     private static ImmutableDashStyle? s_dot;
@@ -235,7 +235,7 @@ public class Separator : AvaloniaSeparator,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _titleLabel = e.NameScope.Find<Label>(SeparatorThemeConstants.TitlePart);
+        _titleLabel = e.NameScope.Find<TextBlock>(SeparatorThemeConstants.TitlePart);
         UpdatePseudoClasses();
     }
     

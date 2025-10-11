@@ -5,7 +5,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Themes;
 
-internal class BaseNavMenuItemTheme : ControlTheme
+internal class BaseNavMenuItemHeaderTheme : ControlTheme
 {
     public static readonly StringToTextBlockConverter StringToTextBlockConverter = new()
     {

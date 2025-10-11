@@ -1,0 +1,55 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:VerticalNavMenuItemHeader}" TargetType="atom:VerticalNavMenuItemHeader">
+        <ControlTheme.BasedOn>
+            <themes:BaseNavMenuItemHeaderTheme TargetType="atom:VerticalNavMenuItemHeader" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        MinHeight="{TemplateBinding MinHeight}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto"
+                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
+                        </Grid.ColumnDefinitions>
+                        <atom:IconPresenter
+                            Name="ItemIconPresenter"
+                            Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsEnabled="{TemplateBinding IsEnabled}"
+                            Icon="{TemplateBinding Icon}" 
+                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        <ContentPresenter
+                            Name="ItemTextPresenter"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True"
+                            IsHitTestVisible="False"
+                            Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemHeaderTheme.StringToTextBlockConverter}}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        <atom:Icon
+                            Grid.Column="2"
+                            Name="MenuIndicatorIcon"
+                            IconInfo="{atom:IconInfoProvider RightOutlined}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            IsEnabled="{TemplateBinding IsEnabled}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

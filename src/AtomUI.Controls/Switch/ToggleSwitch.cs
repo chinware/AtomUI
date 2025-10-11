@@ -366,7 +366,7 @@ public class ToggleSwitch : ToggleButton,
         
         _offContentPresenter?.Arrange(new Rect(new Point(OffContentOffset.X, OffContentOffset.Y), _offContentPresenter.DesiredSize));
         _onContentPresenter?.Arrange(new Rect(new Point(OnContentOffset.X, OnContentOffset.Y), _onContentPresenter.DesiredSize));
-        _waveSpiritDecorator?.Arrange(new Rect(DesiredSize));
+        _waveSpiritDecorator?.Arrange(new Rect(new Point(0, 0), DesiredSize.Deflate(Margin)));
         
         return finalSize;
     }

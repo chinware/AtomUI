@@ -168,7 +168,7 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// <summary>
     /// 菜单项指示条宽度
     /// </summary>
-    public double ActiveBarWidth { get; set; } = double.NaN;
+    public double ActiveBarScaleX { get; set; } = double.NaN;
     
     /// <summary>
     /// 菜单项指示条高度
@@ -261,6 +261,10 @@ internal class NavMenuToken : AbstractControlDesignToken
     public double CollapsedIconSize { get; set; }
     
     // Dark
+    /// <summary>
+    /// 暗色模式下的菜单的背景颜色
+    /// </summary>
+    public Color DarkMenuBg { get; set; }
     /// <summary>
     /// 暗色模式下的浮层菜单的背景颜色
     /// </summary>
@@ -366,7 +370,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         
         var colorTextLightSolid = SharedToken.ColorTextLightSolid;
         
-        var activeBarWidth = !double.IsNaN(ActiveBarWidth) ? ActiveBarWidth : 1.0d;
+        var activeBarWidth = !double.IsNaN(ActiveBarScaleX) ? ActiveBarScaleX : 1.0d;
         var activeBarHeight = !double.IsNaN(ActiveBarHeight)
             ? ActiveBarHeight
             : SharedToken.LineWidthBold;
@@ -391,7 +395,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         SubMenuItemBg               = SharedToken.ColorFillAlter;
         ItemSelectedBg              = SharedToken.ControlItemBgActive;
         HorizontalItemSelectedBg    = Colors.Transparent;
-        ActiveBarWidth              = activeBarWidth;
+        ActiveBarScaleX              = activeBarWidth;
         ActiveBarHeight             = activeBarHeight;
         
         // Disabled
@@ -426,7 +430,8 @@ internal class NavMenuToken : AbstractControlDesignToken
         // Dark
         DarkItemColor       = colorTextDark;
         DarkDangerItemColor = SharedToken.ColorError;
-        DarkItemBg          = Color.Parse("#001529");
+        DarkItemBg          = Colors.Transparent;
+        DarkMenuBg          = Color.Parse("#001529");
         DarkMenuPopupBg     = Color.Parse("#001529");
         DarkSubMenuItemBg   = Color.Parse("#000c17");
 
