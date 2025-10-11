@@ -456,7 +456,7 @@ public class NavMenu : NavMenuBase
             foreach (var defaultOpenPath in DefaultOpenPaths)
             {
                 var itemPath = FindMenuItemByPath(defaultOpenPath);
-                OpenMenuItemPath(itemPath, 0, this);
+                OpenMenuItemPaths(itemPath);
             }
         }
     }
@@ -493,24 +493,56 @@ public class NavMenu : NavMenuBase
         return pathNodes;
     }
 
-    private void OpenMenuItemPath(IList<ITreeNode> pathNodes, int currentIndex, ItemsControl current)
+    private void OpenMenuItemPaths(IList<ITreeNode> pathNodes)
     {
         if (pathNodes.Count == 0)
         {
             return;
         }
 
-        if (current.ContainerFromItem(pathNodes[currentIndex]) is NavMenuItem navMenuItem)
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            navMenuItem.SubmenuOpened += (sender, args) =>
+            await OpenMenuItemPathAsync(pathNodes);
+        });
+    }
+
+    private async Task OpenMenuItemPathAsync(IList<ITreeNode> pathNodes)
+    {
+        ItemsControl current = this;
+        foreach (var pathNode in pathNodes)
+        {
+            var child = await GetNavMenuItemContainerAsync(pathNode, current);
+            if (child != null)
             {
-                DispatcherTimer.RunOnce(() =>
-                {
-                    OpenMenuItemPath(pathNodes, ++currentIndex, navMenuItem);
-                },TimeSpan.FromMilliseconds(1000));
-            };
-            navMenuItem.IsSubMenuOpen = true;
-            Console.WriteLine(navMenuItem.Header);
+                current = child;
+                child.IsSubMenuOpen = true;
+            }
         }
+    }
+
+    private async Task<NavMenuItem?> GetNavMenuItemContainerAsync(ITreeNode childNode, ItemsControl current)
+    {
+        var cycleCount = 10;
+        NavMenuItem? target = null;
+        while (cycleCount > 0)
+        {
+            target = current.ContainerFromItem(childNode) as NavMenuItem;
+            if (target == null)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(50));
+            }
+            else
+            {
+                break; 
+            }
+            --cycleCount;
+        }
+        return target;
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureDefaultOpenedPaths();
     }
 }

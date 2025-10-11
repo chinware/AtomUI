@@ -2,7 +2,7 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Controls.Converters;
 
 internal class MarginMultiplierConverter : IMultiValueConverter
 {

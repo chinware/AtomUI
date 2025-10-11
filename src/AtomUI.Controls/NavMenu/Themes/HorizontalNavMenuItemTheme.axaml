@@ -4,7 +4,7 @@
     xmlns:atom="https://atomui.net"
     xmlns:converters="using:AtomUI.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <converters:NavMenuIsSubMenuOpenConverter x:Key="IsSubMenuOpenConverter"/>
     <ControlTheme x:Key="{x:Static atom:NavMenuThemeConstants.HorizontalNavMenuItemThemeId}"
                   TargetType="atom:NavMenuItem">
         <Setter Property="Template">
@@ -23,8 +23,13 @@
                                                       IsTopLevel="{TemplateBinding IsTopLevel}" />
                     <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
                                 WindowManagerAddShadowHint="False"
-                                IsLightDismissEnabled="False"
-                                IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                                IsLightDismissEnabled="False">
+                        <atom:Popup.IsMotionAwareOpen>
+                            <MultiBinding Converter="{StaticResource IsSubMenuOpenConverter}">
+                                <Binding Path="IsSubMenuOpen" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="HasSubMenu" RelativeSource="{RelativeSource TemplatedParent}" />
+                            </MultiBinding>
+                        </atom:Popup.IsMotionAwareOpen>
                         <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}"
                                 MinWidth="{TemplateBinding EffectivePopupMinWidth}">
                             <atom:MenuScrollViewer IsMotionEnabled="{TemplateBinding IsMotionEnabled}">

@@ -634,7 +634,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 e.NameScope.Find<BaseMotionActor>(InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart);
             if (_childItemsLayoutTransform is not null)
             {
-                _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, IsSubMenuOpen);
+                _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, IsSubMenuOpen && HasSubMenu);
             }
         }
     }
@@ -899,15 +899,15 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                 {
                     item.TryUpdateCanExecute();
                 }
-
+                
+                OpenInlineItem();
                 RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
                 PseudoClasses.Add(StdPseudoClass.Open);
-                OpenInlineItem();
             }
             else
             {
-                PseudoClasses.Remove(StdPseudoClass.Open);
                 CloseInlineItem();
+                PseudoClasses.Remove(StdPseudoClass.Open);
             }
         }
         else
@@ -932,7 +932,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     private void OpenInlineItem(bool forceDisableMotion = false)
     {
-        if (_childItemsLayoutTransform is not null)
+        if (HasSubMenu && _childItemsLayoutTransform is not null)
         {
             if (IsMotionEnabled && !forceDisableMotion)
             {
@@ -960,7 +960,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     internal void CloseInlineItem(bool forceDisableMotion = false)
     {
-        if (_childItemsLayoutTransform is not null)
+        if (HasSubMenu && _childItemsLayoutTransform is not null)
         {
             if (IsMotionEnabled && !forceDisableMotion && _childItemsLayoutTransform.IsVisible)
             {

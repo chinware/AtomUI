@@ -2,7 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters"
     x:ClassModifier="internal">
+    <converters:NavMenuIsSubMenuOpenConverter x:Key="IsSubMenuOpenConverter"/>
     <ControlTheme x:Key="{x:Static atom:NavMenuThemeConstants.VerticalNavMenuItemThemeId}"
                   TargetType="atom:NavMenuItem">
         <Setter Property="Template">
@@ -24,8 +26,14 @@
                                 IsLightDismissEnabled="False"
                                 IsDetectMouseClickEnabled="False"
                                 Placement="RightEdgeAlignedTop"
-                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=OneWay}">
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                        <atom:Popup.IsMotionAwareOpen>
+                            <MultiBinding Converter="{StaticResource IsSubMenuOpenConverter}">
+                                <Binding Path="IsSubMenuOpen" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="HasSubMenu" RelativeSource="{RelativeSource TemplatedParent}" />
+                            </MultiBinding>
+                        </atom:Popup.IsMotionAwareOpen>
+                        
                         <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}">
                             <atom:MenuScrollViewer>
                                 <ItemsPresenter Name="{x:Static atom:NavMenuItemThemeConstants.ItemsPresenterPart}"
