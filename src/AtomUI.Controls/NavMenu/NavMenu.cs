@@ -449,15 +449,31 @@ public class NavMenu : NavMenuBase
         HandleModeChanged();
     }
 
-    protected void ConfigureDefaultOpenedPaths()
+    private void ConfigureDefaultOpenedPaths()
     {
         if (DefaultOpenPaths != null)
         {
             foreach (var defaultOpenPath in DefaultOpenPaths)
             {
-                var itemPath = FindMenuItemByPath(defaultOpenPath);
-                OpenMenuItemPaths(itemPath);
+                var pathNodes = FindMenuItemByPath(defaultOpenPath);
+                OpenMenuItemPaths(pathNodes);
             }
+        }
+    }
+
+    private void ConfigureDefaultSelectedPath()
+    {
+        if (DefaultSelectedPath != null)
+        {
+            var pathNodes = FindMenuItemByPath(DefaultSelectedPath);
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                var navMenuItems = await OpenMenuItemPathAsync(pathNodes);
+                foreach (var navMenuItem in navMenuItems)
+                {
+                    navMenuItem.IsSelected = true;
+                }
+            });
         }
     }
 
@@ -506,18 +522,34 @@ public class NavMenu : NavMenuBase
         });
     }
 
-    private async Task OpenMenuItemPathAsync(IList<ITreeNode> pathNodes)
+    private async Task<List<NavMenuItem>> OpenMenuItemPathAsync(IList<ITreeNode> pathNodes)
     {
-        ItemsControl current = this;
-        foreach (var pathNode in pathNodes)
+        List<NavMenuItem> items = new List<NavMenuItem>();
+        try
         {
-            var child = await GetNavMenuItemContainerAsync(pathNode, current);
-            if (child != null)
+            ItemsControl current = this;
+            foreach (var pathNode in pathNodes)
             {
-                current = child;
-                child.IsSubMenuOpen = true;
+                var child = await GetNavMenuItemContainerAsync(pathNode, current);
+            
+                if (child != null)
+                {
+                    items.Add(child);
+                    current             = child;
+                    child.IsMotionEnabled = false;
+                    child.IsSubMenuOpen = true;
+                }
             }
         }
+        finally
+        {
+            foreach (var item in items)
+            {
+                item.IsMotionEnabled = true;
+            }
+        }
+
+        return items;
     }
 
     private async Task<NavMenuItem?> GetNavMenuItemContainerAsync(ITreeNode childNode, ItemsControl current)
@@ -533,7 +565,7 @@ public class NavMenu : NavMenuBase
             }
             else
             {
-                break; 
+                break;
             }
             --cycleCount;
         }
@@ -544,5 +576,6 @@ public class NavMenu : NavMenuBase
     {
         base.OnLoaded(e);
         ConfigureDefaultOpenedPaths();
+        ConfigureDefaultSelectedPath();
     }
 }
