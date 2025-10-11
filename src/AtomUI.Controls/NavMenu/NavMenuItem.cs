@@ -7,7 +7,6 @@ using AtomUI.Exceptions;
 using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.MotionScene;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -377,6 +376,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         ItemsPanelProperty.OverrideDefaultValue<NavMenuItem>(DefaultPanel);
         ClickEvent.AddClassHandler<NavMenuItem>((x, e) => x.OnClick(e));
         SubmenuOpenedEvent.AddClassHandler<NavMenuItem>((x, e) => x.OnSubmenuOpened(e));
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<NavMenuItem>(false);
     }
 
     public NavMenuItem()

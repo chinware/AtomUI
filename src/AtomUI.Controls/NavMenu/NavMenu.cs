@@ -223,24 +223,53 @@ public class NavMenu : NavMenuBase
         }
     }
 
-    protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
-        base.PrepareContainerForItemOverride(element, item, index);
+        base.PrepareContainerForItemOverride(container, item, index);
         // Child menu items should not inherit the menu's ItemContainerTheme as that is specific
         // for top-level menu items.
-        if ((element as NavMenuItem)?.ItemContainerTheme == ItemContainerTheme)
+        if ((container as NavMenuItem)?.ItemContainerTheme == ItemContainerTheme)
         {
-            element.ClearValue(ItemContainerThemeProperty);
+            container.ClearValue(ItemContainerThemeProperty);
         }
 
-        if (element is NavMenuItem navMenuItem)
+        if (container is NavMenuItem navMenuItem)
         {
             var disposables = new CompositeDisposable(6);
       
+            if (item != null && item is not Visual)
+            {
+                if (!navMenuItem.IsSet(NavMenuItem.HeaderProperty))
+                {
+                    navMenuItem.SetCurrentValue(NavMenuItem.HeaderProperty, item);
+                }
+
+                if (item is ITreeNode treeNode)
+                {
+                    if (!navMenuItem.IsSet(NavMenuItem.IconProperty))
+                    {
+                        navMenuItem.SetCurrentValue(NavMenuItem.IconProperty, treeNode.Icon);
+                    }
+
+                    if (navMenuItem.ItemKey == null)
+                    {
+                        navMenuItem.ItemKey = treeNode.ItemKey;
+                    }
+                }
+             
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, navMenuItem, NavMenuItem.HeaderTemplateProperty));
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty));
             disposables.Add(BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, NavMenuItem.IsMotionEnabledProperty));
+            
+            PrepareNavMenuItem(navMenuItem, item, index, disposables);
             
             if (_itemsBindingDisposables.TryGetValue(navMenuItem, out var oldDisposables))
             {
@@ -249,6 +278,14 @@ public class NavMenu : NavMenuBase
             }
             _itemsBindingDisposables.Add(navMenuItem, disposables);
         }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type NavMenuItem.");
+        }
+    }
+    
+    protected virtual void PrepareNavMenuItem(NavMenuItem navMenuItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     private void UpdatePseudoClasses()
@@ -471,7 +508,19 @@ public class NavMenu : NavMenuBase
                 var navMenuItems = await OpenMenuItemPathAsync(pathNodes);
                 foreach (var navMenuItem in navMenuItems)
                 {
-                    navMenuItem.IsSelected = true;
+                    var oldFocusable = navMenuItem.Focusable;
+                    try
+                    {
+                        navMenuItem.Focusable  = false;
+                        navMenuItem.IsSelected = true;
+                    }
+                    finally
+                    {
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            navMenuItem.Focusable = oldFocusable;
+                        });
+                    }
                 }
             });
         }
@@ -535,9 +584,9 @@ public class NavMenu : NavMenuBase
                 if (child != null)
                 {
                     items.Add(child);
-                    current             = child;
+                    current               = child;
                     child.IsMotionEnabled = false;
-                    child.IsSubMenuOpen = true;
+                    child.IsSubMenuOpen   = true;
                 }
             }
         }
