@@ -6,13 +6,11 @@
     <ControlTheme x:Key="{x:Type atom:Separator}" TargetType="atom:Separator">
         <Setter Property="Template">
             <ControlTemplate>
-                <Label Name="{x:Static atom:SeparatorThemeConstants.TitlePart}"
+                <atom:TextBlock Name="{x:Static atom:SeparatorThemeConstants.TitlePart}"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
-                       HorizontalContentAlignment="Center"
-                       VerticalContentAlignment="Center"
                        Padding="0"
-                       Content="{TemplateBinding Title}"
+                       Text="{TemplateBinding Title}"
                        FontSize="{TemplateBinding FontSize}"
                        Foreground="{TemplateBinding TitleColor}"
                        IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}"/>
@@ -27,13 +25,13 @@
         <Setter Property="LineWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidth}}" />
         
         <Style Selector="^[IsPlain=True]">
-            <Style Selector="^ /template/ Label#PART_Title">
+            <Style Selector="^ /template/ atom|TextBlock#PART_Title">
                 <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
                 <Setter Property="FontWeight" Value="Normal" />
             </Style>
         </Style>
         <Style Selector="^[IsPlain=False]">
-            <Style Selector="^ /template/ Label#PART_Title">
+            <Style Selector="^ /template/ atom|TextBlock#PART_Title">
                 <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
                 <Setter Property="FontWeight" Value="500" />
             </Style>
@@ -42,7 +40,7 @@
         <Style Selector="^[Orientation=Horizontal]">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Style Selector="^ /template/ Label#PART_Title">
+            <Style Selector="^ /template/ atom|TextBlock#PART_Title">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
             
@@ -70,7 +68,7 @@
         <Style Selector="^[Orientation=Vertical]">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Style Selector="^ /template/ Label#PART_Title">
+            <Style Selector="^ /template/ atom|TextBlock#PART_Title">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
             

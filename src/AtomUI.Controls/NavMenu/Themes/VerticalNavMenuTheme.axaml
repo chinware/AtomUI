@@ -42,7 +42,7 @@
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
             <Style Selector="^[IsDarkStyle=True]">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemBg}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkMenuBg}}" />
             </Style>
             <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
                 <Setter Property="Spacing"
@@ -57,7 +57,7 @@
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
             <Style Selector="^[IsDarkStyle=True]">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemBg}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkMenuBg}}" />
             </Style>
             <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
                 <Setter Property="Spacing"

@@ -1,4 +1,6 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Controls.Primitives;
+using AtomUI.Exceptions;
+using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -17,6 +19,17 @@ public abstract class NavMenuBase : SelectingItemsControl,
                                     IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
+    public static readonly DirectProperty<NavMenuBase, IList<TreeNodePath>?> DefaultOpenPathsProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuBase, IList<TreeNodePath>?>(
+            nameof(DefaultOpenPaths),
+            o => o.DefaultOpenPaths,
+            (o, v) => o.DefaultOpenPaths = v);
+    
+    public static readonly DirectProperty<NavMenuBase, TreeNodePath?> DefaultSelectedPathProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuBase, TreeNodePath?>(
+            nameof(DefaultSelectedPath),
+            o => o.DefaultSelectedPath,
+            (o, v) => o.DefaultSelectedPath = v);
     
     public static readonly DirectProperty<NavMenuBase, bool> IsOpenProperty =
         AvaloniaProperty.RegisterDirect<NavMenuBase, bool>(
@@ -27,8 +40,24 @@ public abstract class NavMenuBase : SelectingItemsControl,
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuBase>();
     
     public static readonly StyledProperty<bool> IsAccordionModeProperty =
-        AvaloniaProperty.Register<NavMenu, bool>(nameof(IsAccordionMode), false);
-
+        AvaloniaProperty.Register<NavMenuBase, bool>(nameof(IsAccordionMode), false);
+    
+    private IList<TreeNodePath>? _defaultOpenPaths;
+    
+    public IList<TreeNodePath>? DefaultOpenPaths
+    {
+        get => _defaultOpenPaths;
+        set => SetAndRaise(DefaultOpenPathsProperty, ref _defaultOpenPaths, value);
+    }
+    
+    private TreeNodePath? _defaultSelectedPath;
+    
+    public TreeNodePath? DefaultSelectedPath
+    {
+        get => _defaultSelectedPath;
+        set => SetAndRaise(DefaultSelectedPathProperty, ref _defaultSelectedPath, value);
+    }
+    
     private bool _isOpen;
     
     public bool IsOpen
@@ -192,6 +221,19 @@ public abstract class NavMenuBase : SelectingItemsControl,
                     child.IsSubMenuOpen = false;
                 }
             }
+        }
+        else if (change.Property == SelectionModeProperty)
+        {
+            ValidateSelectionMode();
+        }
+    }
+
+    private void ValidateSelectionMode()
+    {
+        if (SelectionMode.HasFlag(SelectionMode.Multiple))
+        {
+            throw new InvalidPropertyValueException(SelectionModeProperty.Name, SelectionMode.Multiple,
+                $"The value '{SelectionMode.Multiple}' is invalid for the '{SelectionModeProperty.Name}' property in NavMenuItem.");
         }
     }
 }

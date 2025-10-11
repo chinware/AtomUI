@@ -1,9 +1,11 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
@@ -18,6 +20,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -49,13 +52,6 @@ public class NavMenu : NavMenuBase
     public static readonly StyledProperty<bool> IsDarkStyleProperty =
         AvaloniaProperty.Register<NavMenu, bool>(nameof(IsDarkStyle), false);
 
-    public static readonly StyledProperty<double> ActiveBarWidthProperty =
-        AvaloniaProperty.Register<NavMenu, double>(nameof(ActiveBarWidth), 1.0d,
-            coerce: (o, v) => Math.Max(Math.Min(v, 1.0), 0.0));
-
-    public static readonly StyledProperty<double> ActiveBarHeightProperty =
-        AvaloniaProperty.Register<NavMenu, double>(nameof(ActiveBarHeight));
-
     public NavMenuMode Mode
     {
         get => GetValue(ModeProperty);
@@ -66,18 +62,6 @@ public class NavMenu : NavMenuBase
     {
         get => GetValue(IsDarkStyleProperty);
         set => SetValue(IsDarkStyleProperty, value);
-    }
-
-    public double ActiveBarWidth
-    {
-        get => GetValue(ActiveBarWidthProperty);
-        set => SetValue(ActiveBarWidthProperty, value);
-    }
-
-    public double ActiveBarHeight
-    {
-        get => GetValue(ActiveBarHeightProperty);
-        set => SetValue(ActiveBarHeightProperty, value);
     }
 
     #endregion
@@ -102,7 +86,7 @@ public class NavMenu : NavMenuBase
     internal static readonly StyledProperty<double> HorizontalBorderThicknessProperty =
         AvaloniaProperty.Register<NavMenuItem, double>(nameof(HorizontalBorderThickness));
 
-    public double HorizontalBorderThickness
+    internal double HorizontalBorderThickness
     {
         get => GetValue(HorizontalBorderThicknessProperty);
         set => SetValue(HorizontalBorderThicknessProperty, value);
@@ -252,16 +236,8 @@ public class NavMenu : NavMenuBase
         if (element is NavMenuItem navMenuItem)
         {
             var disposables = new CompositeDisposable(6);
-            if (Mode == NavMenuMode.Horizontal)
-            {
-                disposables.Add(BindUtils.RelayBind(this, ActiveBarHeightProperty, navMenuItem, NavMenuItem.ActiveBarHeightProperty));
-                disposables.Add(BindUtils.RelayBind(this, ActiveBarWidthProperty, navMenuItem, NavMenuItem.ActiveBarWidthProperty));
-            }
-            else
-            {
-                disposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty));
-            }
-
+      
+            disposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty));
             disposables.Add(BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, NavMenuItem.IsMotionEnabledProperty));
@@ -372,7 +348,7 @@ public class NavMenu : NavMenuBase
             }
             else
             {
-                resourceKey = NavMenuThemeConstants.TopLevelHorizontalNavMenuItemThemeId;
+                resourceKey = NavMenuThemeConstants.HorizontalNavMenuItemThemeId;
             }
 
             if (Application.Current != null)
@@ -471,5 +447,70 @@ public class NavMenu : NavMenuBase
         _menuItemsPresenter = e.NameScope.Find<ItemsPresenter>(NavMenuThemeConstants.ItemsPresenterPart);
         SetupMenuItemsPresenter();
         HandleModeChanged();
+    }
+
+    protected void ConfigureDefaultOpenedPaths()
+    {
+        if (DefaultOpenPaths != null)
+        {
+            foreach (var defaultOpenPath in DefaultOpenPaths)
+            {
+                var itemPath = FindMenuItemByPath(defaultOpenPath);
+                OpenMenuItemPath(itemPath, 0, this);
+            }
+        }
+    }
+
+    private IList<ITreeNode> FindMenuItemByPath(TreeNodePath treeNodePath)
+    {
+        if (treeNodePath.Length == 0)
+        {
+            return [];
+        }
+        var              segments   = treeNodePath.Segments;
+        IList<ITreeNode> items      = Items.OfType<ITreeNode>().ToList();
+        IList<ITreeNode> pathNodes = new List<ITreeNode>();
+        foreach (var segment in segments)
+        {
+            bool childFound = false;
+            for (var i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                if (item.ItemKey == segment)
+                {
+                    items      = item.Children;
+                    childFound = true;
+                    pathNodes.Add(item);
+                    break;
+                }
+            }
+
+            if (!childFound)
+            {
+                return [];
+            }
+        }
+        return pathNodes;
+    }
+
+    private void OpenMenuItemPath(IList<ITreeNode> pathNodes, int currentIndex, ItemsControl current)
+    {
+        if (pathNodes.Count == 0)
+        {
+            return;
+        }
+
+        if (current.ContainerFromItem(pathNodes[currentIndex]) is NavMenuItem navMenuItem)
+        {
+            navMenuItem.SubmenuOpened += (sender, args) =>
+            {
+                DispatcherTimer.RunOnce(() =>
+                {
+                    OpenMenuItemPath(pathNodes, ++currentIndex, navMenuItem);
+                },TimeSpan.FromMilliseconds(1000));
+            };
+            navMenuItem.IsSubMenuOpen = true;
+            Console.WriteLine(navMenuItem.Header);
+        }
     }
 }

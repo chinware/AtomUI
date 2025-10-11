@@ -195,7 +195,7 @@ internal class ThemeManager : Styles, IThemeManager
         ThemeUnloaded?.Invoke(this, new ThemeOperateEventArgs(theme));
     }
 
-    public void SetActiveTheme(ThemeVariant themeVariant)
+    public Theme? SetActiveTheme(ThemeVariant themeVariant)
     {
         if (!_themePool.ContainsKey(themeVariant))
         {
@@ -233,6 +233,7 @@ internal class ThemeManager : Styles, IThemeManager
         ActivatedThemeAlgorithms = theme.Algorithms;
 
         ThemeChanged?.Invoke(this, new ThemeChangedEventArgs(theme, oldTheme));
+        return oldTheme;
     }
     
     public void RegisterControlThemesProvider(IControlThemesProvider controlThemesProvider)
@@ -477,25 +478,33 @@ internal class ThemeManager : Styles, IThemeManager
 
     private void ConfigureThemeVariant(ThemeVariant variant)
     {
-        SetActiveTheme(variant);
+        var oldTheme = SetActiveTheme(variant);
         var algorithms = ActivatedThemeAlgorithms;
         if (algorithms != null)
         {
             IsDarkThemeMode    = algorithms.Contains(ThemeAlgorithm.Dark);
             IsCompactThemeMode = algorithms.Contains(ThemeAlgorithm.Compact);
-            if (TryGetResource(SharedTokenKey.EnableMotion, variant, out var enableMotionResource))
+            if (oldTheme != null)
             {
-                if (enableMotionResource is bool enableMotion)
-                {
-                    IsMotionEnabled = enableMotion;
-                }
+                ConfigureEnableMotion();
+                ConfigureEnableWaveSpirit();
             }
-                
-            if (TryGetResource(SharedTokenKey.EnableWaveSpirit, variant, out var enableWaveSpiritResource))
+            else
             {
-                if (enableWaveSpiritResource is bool enableWaveSpirit)
+                if (TryGetResource(SharedTokenKey.EnableMotion, variant, out var enableMotionResource))
                 {
-                    IsWaveSpiritEnabled = enableWaveSpirit;
+                    if (enableMotionResource is bool enableMotion)
+                    {
+                        IsMotionEnabled = enableMotion;
+                    }
+                }
+                
+                if (TryGetResource(SharedTokenKey.EnableWaveSpirit, variant, out var enableWaveSpiritResource))
+                {
+                    if (enableWaveSpiritResource is bool enableWaveSpirit)
+                    {
+                        IsWaveSpiritEnabled = enableWaveSpirit;
+                    }
                 }
             }
         }
