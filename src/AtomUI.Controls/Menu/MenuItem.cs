@@ -219,6 +219,7 @@ public class MenuItem : AvaloniaMenuItem,
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
             PrepareMenuItem(menuItem, item, index, disposables);
+            
             if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();

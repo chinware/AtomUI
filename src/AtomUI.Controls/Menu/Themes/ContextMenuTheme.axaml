@@ -6,31 +6,28 @@
     <ControlTheme x:Key="{x:Type atom:ContextMenu}" TargetType="atom:ContextMenu">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:ContextMenuThemeConstants.RootContainerPart}">
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
                     <atom:MenuScrollViewer IsScrollChainingEnabled="False"
                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                         <ItemsPresenter Name="{x:Static atom:ContextMenuThemeConstants.ItemsPresenterPart}"
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
                                         KeyboardNavigation.TabNavigation="Continue"
-                                        Grid.IsSharedSizeScope="True"
-                                        />
+                                        Grid.IsSharedSizeScope="True" />
                     </atom:MenuScrollViewer>
                 </Border>
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}"/>
-        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
-        
-        <Style Selector="^ /template/ Border#PART_RootContainer">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ContextMenuBgColor}}"/>
-            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}"/>
-            <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}"/>
-            <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}"/>
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupContentPadding}}"/>
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}"/>
-        </Style>
-        
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupContentPadding}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ContextMenuBgColor}}" />
+        <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
+        <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
+        <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />
+
     </ControlTheme>
 </ResourceDictionary>

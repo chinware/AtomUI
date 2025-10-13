@@ -3,7 +3,6 @@ namespace AtomUI.Controls.Themes;
 internal static class ContextMenuThemeConstants
 {
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
-    public const string RootContainerPart = "PART_RootContainer";
 }
 
 internal static class MenuItemThemeConstants

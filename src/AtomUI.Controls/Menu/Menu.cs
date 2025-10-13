@@ -55,7 +55,7 @@ public class Menu : AvaloniaMenu,
 
     public Menu()
     {
-        Items.CollectionChanged  += HandleItemsCollectionChanged;
+        Items.CollectionChanged += HandleItemsCollectionChanged;
         this.RegisterResources();
     }
 
@@ -145,13 +145,16 @@ public class Menu : AvaloniaMenu,
             disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.ItemTemplateProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            
+            PrepareMenuItem(menuItem, item, index, disposables);
+            
             if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();
                 _itemsBindingDisposables.Remove(menuItem);
             }
             _itemsBindingDisposables.Add(menuItem, disposables);
-        } 
+        }
         else if (container is MenuSeparator menuSeparator)
         {
             menuSeparator.Orientation = Orientation.Vertical;
@@ -160,6 +163,10 @@ public class Menu : AvaloniaMenu,
         {
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type MenuItem or MenuSeparator.");
         }
+    }
+    
+    protected virtual void PrepareMenuItem(MenuItem menuItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
