@@ -33,7 +33,7 @@ public partial class DesignToken : AbstractDesignToken
         ColorWarning     = Color.Parse("#faad14");
         ColorError       = Color.Parse("#ff4d4f");
         ColorInfo        = Color.Parse("#1677ff");
-        FontFamily       = FontFamily.Parse("fonts:AlibabaSans#Alibaba Sans, $Default");
+        FontFamily       = FontFamily.Parse("fonts:AlibabaSans#Alibaba Sans, Segoe UI, Segoe UI Symbol, Helvetica Neue, Noto Sans, Noto Sans CJK SC, 文泉驿正黑, Microsoft YaHei, PingFang SC, $Default");
         BorderRadius     = new CornerRadius(6);
         ColorTransparent = Colors.Transparent;
     }
