@@ -868,18 +868,6 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         {
             Focus();
         }
-
-        if (Icon is not null)
-        {
-            if (isSelected)
-            {
-                Icon.SetValue(Icon.IconModeProperty, IconMode.Selected);
-            }
-            else
-            {
-                Icon.SetValue(Icon.IconModeProperty, IconMode.Normal);
-            }
-        }
     }
 
     /// <summary>

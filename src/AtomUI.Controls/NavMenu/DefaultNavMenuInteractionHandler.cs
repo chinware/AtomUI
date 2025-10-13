@@ -27,9 +27,8 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     {
     }
 
-    public DefaultNavMenuInteractionHandler(
-        IInputManager? inputManager,
-        Func<Action, TimeSpan, IDisposable> delayRun)
+    public DefaultNavMenuInteractionHandler(IInputManager? inputManager,
+                                            Func<Action, TimeSpan, IDisposable> delayRun)
     {
         delayRun = delayRun ?? throw new ArgumentNullException(nameof(delayRun));
         
@@ -113,14 +112,14 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             return;
         }
-
+    
         if (item is NavMenuItem navMenuItem)
         {
             if (!navMenuItem.PointInNavMenuItemHeader(e.GetCurrentPoint(navMenuItem).Position))
             {
                 return;
             }
-
+    
             _currentPressedIsValid = true;
             if (sender is Visual visual &&
                 e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
@@ -241,24 +240,42 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         if (mouse?.Type == RawPointerEventType.NonClientLeftButtonDown)
         {
-            NavMenu?.Close();
+            if (LatestSelectedItem is INavMenuItem latestSelectedItem)
+            {
+                var topLevelItem = FindTopLevelMenuItem(latestSelectedItem);
+                if (topLevelItem != null && topLevelItem.IsSubMenuOpen)
+                {
+                    topLevelItem.IsSubMenuOpen = false;
+                }
+            }
         }
     }
 
     protected virtual void RootPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (NavMenu?.IsOpen == true)
+        if (LatestSelectedItem is INavMenuItem latestSelectedItem)
         {
-            if (e.Source is ILogical control && !NavMenu.IsLogicalAncestorOf(control))
+            var topLevelItem = FindTopLevelMenuItem(latestSelectedItem);
+            if (topLevelItem != null && topLevelItem.IsSubMenuOpen)
             {
-                NavMenu.Close();
+                if (e.Source is ILogical control && !topLevelItem.IsLogicalAncestorOf(control))
+                {
+                    topLevelItem.IsSubMenuOpen = false;
+                }
             }
         }
     }
 
     protected virtual void WindowDeactivated(object? sender, EventArgs e)
     {
-        NavMenu?.Close();
+        if (LatestSelectedItem is INavMenuItem latestSelectedItem)
+        {
+            var topLevelItem = FindTopLevelMenuItem(latestSelectedItem);
+            if (topLevelItem != null && topLevelItem.IsSubMenuOpen)
+            {
+                topLevelItem.IsSubMenuOpen = false;
+            }
+        }
     }
 
     internal static NavMenuItem? GetMenuItem(StyledElement? item) => (NavMenuItem?)GetMenuItemCore(item);
@@ -331,8 +348,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         _inputManagerSubscription?.Dispose();
 
-        NavMenu  = null;
-        _root = null;
+        NavMenu            = null;
+        LatestSelectedItem = null;
+        _root              = null;
     }
 
     internal void Click(INavMenuItem item)
@@ -340,17 +358,26 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         item.RaiseClick();
         var navMenu = FindNavMenu(item);
         navMenu?.RaiseNavMenuItemClick(item);
-        
         if (!item.StaysOpenOnClick)
         {
-            CloseMenu(item);
+            var topLevelItem = FindTopLevelMenuItem(item);
+            topLevelItem?.Close();
         }
     }
 
-    internal void CloseMenu(INavMenuItem item)
+    private static INavMenuItem? FindTopLevelMenuItem(INavMenuItem item)
     {
-        var navMenu = FindNavMenu(item);
-        navMenu?.Close();
+        if (item.IsTopLevel)
+        {
+            return item;
+        }
+
+        var current = item;
+        while (current != null && !current.IsTopLevel)
+        {
+            current = current.Parent as INavMenuItem;
+        }
+        return current;
     }
 
     private static NavMenu? FindNavMenu(INavMenuItem item)

@@ -106,7 +106,12 @@
             <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
                 <Setter Property="IconMode" Value="Selected" />
             </Style>
+            
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+                <Setter Property="IconMode" Value="Selected" />
+            </Style>
         </Style>
+        
         <Style Selector="^[HasSubMenu=False]">
             <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
                 <Setter Property="IsVisible" Value="False" />
