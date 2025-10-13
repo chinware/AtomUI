@@ -10,13 +10,13 @@
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}">
-                    <atom:MenuScrollViewer IsScrollChainingEnabled="False"
-                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                    <atom:UpDownScrollerViewer IsScrollChainingEnabled="False"
+                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                         <ItemsPresenter Name="{x:Static atom:ContextMenuThemeConstants.ItemsPresenterPart}"
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
                                         KeyboardNavigation.TabNavigation="Continue"
                                         Grid.IsSharedSizeScope="True" />
-                    </atom:MenuScrollViewer>
+                    </atom:UpDownScrollerViewer>
                 </Border>
             </ControlTemplate>
         </Setter>

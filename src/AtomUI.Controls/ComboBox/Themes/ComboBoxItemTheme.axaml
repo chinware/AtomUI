@@ -4,13 +4,12 @@
     xmlns:atom="https://atomui.net"
     xmlns:converters="using:AtomUI.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
-                                           VerticalAlignment="Center" />
+    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:ComboBoxItem}" TargetType="atom:ComboBoxItem">
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter
-                    Name="{x:Static atom:ComboBoxThemeConstants.SelectedContentPresenterPart}"
+                    Name="ContentPresenter"
                     Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
                     ContentTemplate="{TemplateBinding ContentTemplate}"
                     HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -22,7 +21,6 @@
         </Setter>
         
         <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemMargin}}" />
-
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemColor}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemBgColor}}" />
         <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />

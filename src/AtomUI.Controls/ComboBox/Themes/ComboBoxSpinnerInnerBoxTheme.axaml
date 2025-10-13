@@ -19,7 +19,6 @@
                     BorderBrush="{TemplateBinding BorderBrush}">
                     <DockPanel LastChildFill="True">
                         <ContentPresenter
-                            Name="{x:Static atom:ComboBoxThemeConstants.SpinnerHandlePart}"
                             ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
                             HorizontalAlignment="Right"
                             Content="{TemplateBinding SpinnerContent}"

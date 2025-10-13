@@ -8,7 +8,6 @@
             <ControlTemplate>
                 <Panel>
                     <atom:AddOnDecoratedBox
-                        Name="{x:Static atom:ComboBoxThemeConstants.DecoratedBoxPart}"
                         Focusable="True"
                         StyleVariant="{TemplateBinding StyleVariant}"
                         SizeType="{TemplateBinding SizeType}"
@@ -30,108 +29,111 @@
                             Status="{TemplateBinding Status}">
                             <atom:ComboBoxSpinnerInnerBox.SpinnerContent>
                                 <atom:ComboBoxHandle
-                                    IsMotionEnabled="{Binding (atom:ComboBox.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"/>
+                                    IsMotionEnabled="{Binding (atom:ComboBox.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ComboBox}}" />
                             </atom:ComboBoxSpinnerInnerBox.SpinnerContent>
-                            
+
                             <Panel>
                                 <atom:TextBlock
-                                    Name="{x:Static atom:ComboBoxThemeConstants.PlaceholderTextPart}"
+                                    Name="PlaceholderText"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     TextTrimming="CharacterEllipsis"
                                     Opacity="0.3"
                                     IsVisible="{TemplateBinding SelectingItemsControl.SelectedItem, Converter={x:Static ObjectConverters.IsNull}}"
-                                    Text="{TemplateBinding PlaceholderText}"
-                                    />
+                                    Text="{TemplateBinding PlaceholderText}" />
                                 <ContentPresenter
-                                    Name="{x:Static atom:ComboBoxThemeConstants.SelectedContentPresenterPart}"
+                                    Name="SelectedContentPresenter"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Content="{TemplateBinding SelectionBoxItem}"
-                                    ContentTemplate="{TemplateBinding ItemTemplate}"
-                                    />
+                                    ContentTemplate="{TemplateBinding ItemTemplate}" />
                             </Panel>
                         </atom:ComboBoxSpinnerInnerBox>
                     </atom:AddOnDecoratedBox>
-                    
+
                     <atom:Popup Name="PART_Popup"
-                           WindowManagerAddShadowHint="False"
-                           IsLightDismissEnabled="False"
-                           IsDetectMouseClickEnabled="True"
-                           Placement="BottomEdgeAlignedLeft"
-                           MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                           IsMotionAwareOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
+                                WindowManagerAddShadowHint="False"
+                                IsLightDismissEnabled="False"
+                                IsDetectMouseClickEnabled="True"
+                                Placement="BottomEdgeAlignedLeft"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                IsMotionAwareOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border
-                            Name="{x:Static atom:ComboBoxThemeConstants.PopupFramePart}"
+                            Name="PopupFrame"
                             HorizontalAlignment="Stretch"
                             MinWidth="{TemplateBinding EffectivePopupWidth}">
-                            <atom:MenuScrollViewer>
+                            <atom:UpDownScrollerViewer>
                                 <ItemsPresenter
                                     Name="{x:Static atom:ComboBoxThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
-                                    Grid.IsSharedSizeScope="True"
-                                    />
-                            </atom:MenuScrollViewer>
+                                    Grid.IsSharedSizeScope="True" />
+                            </atom:UpDownScrollerViewer>
                         </Border>
                     </atom:Popup>
                 </Panel>
             </ControlTemplate>
         </Setter>
-        
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
-        
-        <Setter Property="OptionFontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
-        
+
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+
+        <Setter Property="OptionFontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}"/>
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}"/>
-            <Style Selector="^ /template/ ContentPresenter#PART_SelectedContentPresenter">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+            <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
                 <Setter Property="Margin" Value="0, 1, 0, 1" />
             </Style>
         </Style>
-        
+
         <Style Selector="^ /template/ atom|Popup#PART_Popup">
-            <Setter Property="MarginToAnchor" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupMarginToAnchor}}"/>
-            <Setter Property="MaskShadows" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBoxShadows}}"/>
+            <Setter Property="MarginToAnchor"
+                    Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupMarginToAnchor}}" />
+            <Setter Property="MaskShadows" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBoxShadows}}" />
         </Style>
-        <Style Selector="^ /template/ Border#PART_PopupFrame">
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}"/>
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBorderRadius}}"/>
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}"/>
+        <Style Selector="^ /template/ Border#PopupFrame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
+            <Setter Property="CornerRadius"
+                    Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBorderRadius}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}" />
         </Style>
-        
+
         <Style Selector="^[StyleVariant=Borderless]">
             <Style Selector="^:error">
-                <Style Selector="^ /template/ ContentPresenter#PART_SelectedContentPresenter">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}"/>
+                <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
                 </Style>
             </Style>
             <Style Selector="^:warning">
-                <Style Selector="^ /template/ ContentPresenter#PART_SelectedContentPresenter">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}"/>
+                <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
                 </Style>
             </Style>
         </Style>
-        
+
         <Style Selector="^[StyleVariant=Filled]">
             <Style Selector="^:error">
-                <Style Selector="^ /template/ ContentPresenter#PART_SelectedContentPresenter">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}"/>
+                <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
                 </Style>
             </Style>
             <Style Selector="^:warning">
-                <Style Selector="^ /template/ ContentPresenter#PART_SelectedContentPresenter">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}"/>
+                <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
                 </Style>
             </Style>
         </Style>

@@ -1,12 +1,8 @@
-﻿using AtomUI.Controls.Themes;
-using Avalonia;
-using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
+﻿using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(ComboBoxThemeConstants.SpinnerHandlePart, typeof(ContentPresenter))]
 internal class ComboBoxSpinnerInnerBox : AddOnDecoratedInnerBox
 {
     #region 公共属性定义

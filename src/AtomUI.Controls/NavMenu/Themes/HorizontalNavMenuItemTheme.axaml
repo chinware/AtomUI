@@ -32,13 +32,13 @@
                         </atom:Popup.IsMotionAwareOpen>
                         <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}"
                                 MinWidth="{TemplateBinding EffectivePopupMinWidth}">
-                            <atom:MenuScrollViewer IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                            <atom:UpDownScrollerViewer IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                 <ItemsPresenter
                                     Name="{x:Static atom:NavMenuItemThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     Grid.IsSharedSizeScope="True"
                                     KeyboardNavigation.TabNavigation="Continue" />
-                            </atom:MenuScrollViewer>
+                            </atom:UpDownScrollerViewer>
                         </Border>
                     </atom:Popup>
                 </Panel>

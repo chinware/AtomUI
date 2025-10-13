@@ -25,7 +25,7 @@
                                 IsDetectMouseClickEnabled="True"
                                 IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                         <Border Name="PopupFrame">
-                            <atom:MenuScrollViewer
+                            <atom:UpDownScrollerViewer
                                 IsScrollChainingEnabled="False"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                 <ItemsPresenter
@@ -33,7 +33,7 @@
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     Grid.IsSharedSizeScope="True"
                                     KeyboardNavigation.TabNavigation="Continue" />
-                            </atom:MenuScrollViewer>
+                            </atom:UpDownScrollerViewer>
                         </Border>
                     </atom:Popup>
                 </Panel>

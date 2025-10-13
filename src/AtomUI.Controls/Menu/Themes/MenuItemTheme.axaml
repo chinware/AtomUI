@@ -81,12 +81,12 @@
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                     <Border Name="PopupFrame">
-                        <atom:MenuScrollViewer IsScrollChainingEnabled="False"
-                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                        <atom:UpDownScrollerViewer IsScrollChainingEnabled="False"
+                                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                             <ItemsPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemsPresenterPart}"
                                             ItemsPanel="{TemplateBinding ItemsPanel}"
                                             Grid.IsSharedSizeScope="True" />
-                        </atom:MenuScrollViewer>
+                        </atom:UpDownScrollerViewer>
                     </Border>
                 </atom:Popup>
             </Panel>

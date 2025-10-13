@@ -3,6 +3,7 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="WaveSpiritDecoratorTheme.axaml"/>
+        <ResourceInclude Source="../UpDownScrollerViewer/Themes/UpDownScrollerViewerTheme.axaml"/>
         <ResourceInclude Source="../InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
         <ResourceInclude Source="../SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />
     </ResourceDictionary.MergedDictionaries>

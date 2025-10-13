@@ -9,14 +9,14 @@
             <atom:ArrowDecoratedBox Name="{x:Static atom:MenuFlyoutThemeConstants.ArrowDecoratorPart}"
                                     IsShowArrow="{TemplateBinding IsShowArrow}"
                                     ArrowPosition="{TemplateBinding ArrowPosition}">
-                <atom:MenuScrollViewer HorizontalAlignment="Stretch"
-                                       VerticalAlignment="Stretch"
-                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                <atom:UpDownScrollerViewer HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Stretch"
+                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                     <ItemsPresenter Name="{x:Static atom:MenuFlyoutThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     KeyboardNavigation.TabNavigation="Continue"
                                     Grid.IsSharedSizeScope="True" />
-                </atom:MenuScrollViewer>
+                </atom:UpDownScrollerViewer>
             </atom:ArrowDecoratedBox>
         </ControlTemplate>
     </Setter>

@@ -6,34 +6,32 @@
     <ControlTheme x:Key="{x:Type atom:ComboBoxHandle}" TargetType="atom:ComboBoxHandle">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border
-                    Name="{x:Static atom:ComboBoxThemeConstants.SpinnerHandleDecoratorPart}"
-                    BackgroundSizing="InnerBorderEdge"
-                    ClipToBounds="True">
+                <Border BackgroundSizing="InnerBorderEdge"
+                        ClipToBounds="True">
                     <atom:IconButton
-                        Name="{x:Static atom:ComboBoxThemeConstants.OpenIndicatorButtonPart}"
+                        Name="OpenIndicatorButton"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         Icon="{atom:IconProvider DownOutlined}"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
-                        BackgroundSizing="InnerBorderEdge"/>
+                        BackgroundSizing="InnerBorderEdge" />
                 </Border>
             </ControlTemplate>
         </Setter>
-        
+
         <Style
-            Selector="^ /template/ atom|IconButton#PART_OpenIndicatorButton">
+            Selector="^ /template/ atom|IconButton#OpenIndicatorButton">
             <Setter Property="ActiveIconBrush"
                     Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleHoverColor}}" />
             <Setter Property="SelectedIconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
             <Setter Property="DisabledIconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-            
+
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="IconHeight"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.OpenIndicatorPadding}}"/>
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.OpenIndicatorPadding}}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

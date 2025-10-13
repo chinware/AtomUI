@@ -17,7 +17,6 @@ internal static class MenuScrollViewerThemeConstants
 {
     public const string ScrollUpButtonPart = "PART_ScrollUpButton";
     public const string ScrollDownButtonPart = "PART_ScrollDownButton";
-    public const string ScrollViewContentPart = "PART_ContentPresenter";
 }
 
 internal static class TopLevelMenuItemThemeConstants

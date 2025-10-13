@@ -990,4 +990,11 @@ namespace AtomUI.Controls.Primitives.DesignTokens
         public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("InfoPickerInput.RangePickerArrowMargin");
         public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("InfoPickerInput.RangePickerIndicatorThickness");
     }
+
+    public static class UpDownScrollerViewerTokenKey
+    {
+        public static readonly TokenResourceKey ScrollButtonIconSize = new TokenResourceKey("UpDownScrollerViewer.ScrollButtonIconSize");
+        public static readonly TokenResourceKey ScrollButtonMargin = new TokenResourceKey("UpDownScrollerViewer.ScrollButtonMargin");
+        public static readonly TokenResourceKey ScrollButtonPadding = new TokenResourceKey("UpDownScrollerViewer.ScrollButtonPadding");
+    }
 }

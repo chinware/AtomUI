@@ -205,7 +205,7 @@ public class ComboBox : AvaloniaComboBox,
     {
         base.OnApplyTemplate(e);
         this.SetPopup(null); // 情况父类，方式鼠标点击的错误处理
-        _popup               = e.NameScope.Find<Popup>(ComboBoxThemeConstants.PopupPart);
+        _popup = e.NameScope.Find<Popup>(ComboBoxThemeConstants.PopupPart);
         var spinnerHandle = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxThemeConstants.SpinnerInnerBoxPart);
         if (spinnerHandle?.SpinnerContent is ComboBoxHandle handle)
         {
@@ -236,13 +236,44 @@ public class ComboBox : AvaloniaComboBox,
             }
         }
     }
+    
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        return new ComboBoxItem();
+    }
+    
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        if (item is ComboBoxItem)
+        {
+            recycleKey = null;
+            return false;
+        }
+
+        recycleKey = DefaultRecycleKey;
+        return true;
+    }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is ComboBoxItem comboBoxItem)
         {
-            var disposables = new CompositeDisposable(2);
+            var disposables = new CompositeDisposable(4);
+            
+            if (item != null && item is not Visual)
+            {
+                if (!comboBoxItem.IsSet(ComboBoxItem.ContentProperty))
+                {
+                    comboBoxItem.SetCurrentValue(ComboBoxItem.ContentProperty, item);
+                }
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, comboBoxItem, ComboBoxItem.ContentTemplateProperty));
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, comboBoxItem, ComboBoxItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, OptionFontSizeProperty, comboBoxItem, ComboBoxItem.FontSizeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, comboBoxItem, ComboBoxItem.IsMotionEnabledProperty));

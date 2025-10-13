@@ -1,28 +1,20 @@
-﻿using System.Globalization;
-using AtomUI.Controls.Themes;
+using System.Globalization;
+using AtomUI.Controls.Primitives.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
-using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Primitives;
 
 using AvaloniaScrollViewer = ScrollViewer;
 
-[TemplatePart(MenuScrollViewerThemeConstants.ScrollDownButtonPart, typeof(IconButton))]
-[TemplatePart(MenuScrollViewerThemeConstants.ScrollUpButtonPart, typeof(IconButton))]
-[TemplatePart(MenuScrollViewerThemeConstants.ScrollViewContentPart, typeof(ScrollContentPresenter))]
-internal class MenuScrollViewer : AvaloniaScrollViewer
+internal class UpDownScrollerViewer : AvaloniaScrollViewer
 {
-    private IconButton? _scrollUpButton;
-    private IconButton? _scrollDownButton;
-
     #region 内部属性定义
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuScrollViewer>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<UpDownScrollerViewer>();
 
     public bool IsMotionEnabled
     {
@@ -32,11 +24,14 @@ internal class MenuScrollViewer : AvaloniaScrollViewer
     
     #endregion
     
+    private IconButton? _scrollUpButton;
+    private IconButton? _scrollDownButton;
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _scrollUpButton   = e.NameScope.Find<IconButton>(MenuScrollViewerThemeConstants.ScrollUpButtonPart);
-        _scrollDownButton = e.NameScope.Find<IconButton>(MenuScrollViewerThemeConstants.ScrollDownButtonPart);
+        _scrollUpButton   = e.NameScope.Find<IconButton>(UpDownScrollerViewerThemeConstants.ScrollUpButtonPart);
+        _scrollDownButton = e.NameScope.Find<IconButton>(UpDownScrollerViewerThemeConstants.ScrollDownButtonPart);
 
         SetupScrollButtonVisibility();
     }

@@ -3,12 +3,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:MenuScrollViewer}" TargetType="atom:MenuScrollViewer">
+    <ControlTheme x:Key="{x:Type atom:UpDownScrollerViewer}" TargetType="atom:UpDownScrollerViewer">
         <Setter Property="Template">
             <ControlTemplate>
                 <DockPanel>
                     <atom:IconButton
-                        Name="{x:Static atom:MenuScrollViewerThemeConstants.ScrollUpButtonPart}"
+                        Name="{x:Static atom:UpDownScrollerViewerThemeConstants.ScrollUpButtonPart}"
                         DockPanel.Dock="Top"
                         Icon="{atom:IconProvider UpOutlined}"
                         HorizontalAlignment="Center"
@@ -17,7 +17,7 @@
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         Command="{Binding LineUp, RelativeSource={RelativeSource TemplatedParent}}" />
                     <atom:IconButton
-                        Name="{x:Static atom:MenuScrollViewerThemeConstants.ScrollDownButtonPart}"
+                        Name="{x:Static atom:UpDownScrollerViewerThemeConstants.ScrollDownButtonPart}"
                         DockPanel.Dock="Bottom"
                         Icon="{atom:IconProvider DownOutlined}"
                         HorizontalAlignment="Center"
@@ -25,7 +25,7 @@
                         IsEnableHoverEffect="True"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         Command="{Binding LineDown, RelativeSource={RelativeSource TemplatedParent}}" />
-                    <ScrollContentPresenter Name="{x:Static atom:MenuScrollViewerThemeConstants.ScrollViewContentPart}"
+                    <ScrollContentPresenter Name="ContentPresenter"
                                             Margin="{TemplateBinding Padding}"
                                             HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
                                             HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
@@ -33,9 +33,9 @@
                                             VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}">
                         <ScrollContentPresenter.GestureRecognizers>
                             <ScrollGestureRecognizer
-                                CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
-                                CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
-                                IsScrollInertiaEnabled="{Binding IsScrollInertiaEnabled, RelativeSource={RelativeSource AncestorType=atom:MenuScrollViewer}}" />
+                                CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=ContentPresenter}"
+                                CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=ContentPresenter}"
+                                IsScrollInertiaEnabled="{Binding IsScrollInertiaEnabled, RelativeSource={RelativeSource AncestorType=atom:UpDownScrollerViewer}}" />
                         </ScrollContentPresenter.GestureRecognizers>
                     </ScrollContentPresenter>
                 </DockPanel>
@@ -43,10 +43,10 @@
         </Setter>
 
         <Style Selector="^ /template/ atom|IconButton">
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.ScrollButtonPadding}}" />
-            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ScrollButtonMargin}}" />
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.ScrollButtonIconSize}}" />
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ScrollButtonIconSize}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:UpDownScrollerViewerTokenKey.ScrollButtonPadding}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:UpDownScrollerViewerTokenKey.ScrollButtonMargin}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:UpDownScrollerViewerTokenKey.ScrollButtonIconSize}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:UpDownScrollerViewerTokenKey.ScrollButtonIconSize}}" />
         </Style>
 
     </ControlTheme>

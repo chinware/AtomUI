@@ -33,5 +33,9 @@
     <ItemGroup>
       <AvaloniaXaml Remove="NavMenu\Themes\BaseNavMenuItemTheme.axaml" />
     </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Primitives\UpDownScrollerViewer\UpDownScrollerViewerTheme.axaml" />
+    </ItemGroup>
     
 </Project>
