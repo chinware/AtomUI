@@ -5,7 +5,6 @@ using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
@@ -403,9 +402,10 @@ public class NavMenu : NavMenuBase
 
     internal void ClearSelection()
     {
-        foreach (var item in Items)
+        for (var i = 0; i < ItemCount; i++)
         {
-            if (item is NavMenuItem navMenuItem)
+            var container = ContainerFromIndex(i);
+            if (container is NavMenuItem navMenuItem)
             {
                 ClearSelectionRecursively(navMenuItem);
             }
@@ -418,14 +418,16 @@ public class NavMenu : NavMenuBase
         {
             item.IsSelected = false;
         }
-
-        foreach (var childItem in item.Items)
+        
+        for (var i = 0; i < item.ItemCount; i++)
         {
-            if (childItem is NavMenuItem navMenuItem)
+            var container = item.ContainerFromIndex(i);
+            if (container is NavMenuItem navMenuItem)
             {
                 ClearSelectionRecursively(navMenuItem);
             }
         }
+        
     }
 
     private void CloseChildItemsRecursively()
@@ -439,9 +441,10 @@ public class NavMenu : NavMenuBase
 
     private void RegenerateContainersRecursively()
     {
-        foreach (var item in Items)
+        for (var i = 0; i < ItemCount; i++)
         {
-            if (item is NavMenuItem navMenuItem)
+            var container = ContainerFromIndex(i);
+            if (container is NavMenuItem navMenuItem)
             {
                 navMenuItem.RegenerateContainers();
             }
@@ -450,9 +453,10 @@ public class NavMenu : NavMenuBase
 
     private void CloseInlineItems()
     {
-        foreach (var item in Items)
+        for (var i = 0; i < ItemCount; i++)
         {
-            if (item is NavMenuItem navMenuItem)
+            var container = ContainerFromIndex(i);
+            if (container is NavMenuItem navMenuItem)
             {
                 CloseInlineItemRecursively(navMenuItem);
             }
@@ -461,9 +465,10 @@ public class NavMenu : NavMenuBase
 
     private void CloseInlineItemRecursively(NavMenuItem navMenuItem)
     {
-        foreach (var item in navMenuItem.Items)
+        for (var i = 0; i < navMenuItem.ItemCount; i++)
         {
-            if (item is NavMenuItem childNavMenuItem)
+            var container = navMenuItem.ContainerFromIndex(i);
+            if (container is NavMenuItem childNavMenuItem)
             {
                 CloseInlineItemRecursively(childNavMenuItem);
             }
@@ -506,19 +511,28 @@ public class NavMenu : NavMenuBase
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 var navMenuItems = await OpenMenuItemPathAsync(pathNodes);
-                foreach (var navMenuItem in navMenuItems)
+                if (InteractionHandler is not null)
                 {
-                    var oldFocusable = navMenuItem.Focusable;
+                    List<bool> oldFocusables = [];
+                    foreach (var item in navMenuItems)
+                    {
+                        oldFocusables.Add(item.Focusable);
+                        item.Focusable = false;
+                    }
                     try
                     {
-                        navMenuItem.Focusable  = false;
-                        navMenuItem.IsSelected = true;
+                        InteractionHandler.Select(navMenuItems.Last());
                     }
                     finally
                     {
                         Dispatcher.UIThread.Post(() =>
                         {
-                            navMenuItem.Focusable = oldFocusable;
+                            for (var i = 0; i < oldFocusables.Count; i++)
+                            {
+                                var item = navMenuItems[i];
+                                var oldFocusable = oldFocusables[i];
+                                item.Focusable = oldFocusable;
+                            }
                         });
                     }
                 }

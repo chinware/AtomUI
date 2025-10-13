@@ -15,7 +15,7 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
     public void Detach(NavMenuBase navMenu) => DetachCore(navMenu);
 
     private bool _currentPressedIsValid = false;
-    private StyledElement? _latestSelectedItem = null;
+    internal StyledElement? LatestSelectedItem = null;
 
     internal void AttachCore(INavMenu navMenu)
     {
@@ -52,47 +52,51 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         if (sender is Visual visual &&
             e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
         {
-            if (item.HasSubMenu)
+            Select(item);
+            e.Handled = true;
+        }
+    }
+
+    public void Select(NavMenuItem navMenuItem)
+    {
+        if (navMenuItem.HasSubMenu)
+        {
+            if (navMenuItem.IsSubMenuOpen)
             {
-                if (item.IsSubMenuOpen)
-                {
-                    item.Close();
-                }
-                else
-                {
-                    Open(item);
-                }
+                navMenuItem.Close();
             }
             else
             {
-                // 判断当前选中的是不是自己
-                if (!ReferenceEquals(_latestSelectedItem, item))
+                Open(navMenuItem);
+            }
+        }
+        else
+        {
+            // 判断当前选中的是不是自己
+            if (!ReferenceEquals(LatestSelectedItem, navMenuItem))
+            {
+                if (LatestSelectedItem != null)
                 {
-                    if (_latestSelectedItem != null)
+                    var ancestorInfo = HasCommonAncestor(LatestSelectedItem, navMenuItem);
+                    if (!ancestorInfo.Item1)
                     {
-                        var ancestorInfo = HasCommonAncestor(_latestSelectedItem, item);
-                        if (!ancestorInfo.Item1)
+                        if (NavMenu is NavMenu navMenu)
                         {
-                            if (NavMenu is NavMenu navMenu)
-                            {
-                                navMenu.ClearSelection();
-                            }
-                        }
-                        else
-                        {
-                            if (ancestorInfo.Item2 is NavMenuItem neededClearAncestor)
-                            {
-                                NavMenuControl.ClearSelectionRecursively(neededClearAncestor, true);
-                            }
+                            navMenu.ClearSelection();
                         }
                     }
-                    
-                    item.SelectItemRecursively();
+                    else
+                    {
+                        if (ancestorInfo.Item2 is NavMenuItem neededClearAncestor)
+                        {
+                            NavMenuControl.ClearSelectionRecursively(neededClearAncestor, true);
+                        }
+                    }
                 }
-                _latestSelectedItem = item;
+                
+                navMenuItem.SelectItemRecursively();
+                LatestSelectedItem = navMenuItem;
             }
-            
-            e.Handled = true;
         }
     }
 

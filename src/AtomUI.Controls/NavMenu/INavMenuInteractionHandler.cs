@@ -12,4 +12,10 @@ public interface INavMenuInteractionHandler
     /// Detaches the interaction handler from the attached menu.
     /// </summary>
     void Detach(NavMenuBase menu);
+    
+    /// <summary>
+    /// Select the specified NavMenuItem
+    /// </summary>
+    /// <param name="navMenuItem"></param>
+    void Select(NavMenuItem navMenuItem);
 }

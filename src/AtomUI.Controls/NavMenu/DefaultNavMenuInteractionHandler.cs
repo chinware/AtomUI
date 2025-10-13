@@ -20,7 +20,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     private IDisposable? _currentOpenDelayRunDisposable;
     private IDisposable? _currentCloseDelayRunDisposable;
     private bool _currentPressedIsValid = false;
-    private INavMenuItem? _latestSelectedItem = null;
+    internal StyledElement? LatestSelectedItem = null;
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -125,45 +125,50 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             if (sender is Visual visual &&
                 e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
             {
-                if (navMenuItem.HasSubMenu)
-                {
-                    if (!navMenuItem.IsSubMenuOpen)
-                    {
-                        navMenuItem.Open();
-                    }
-                }
-                else
-                {
-                    // 判断当前选中的是不是自己
-                    if (!ReferenceEquals(_latestSelectedItem, item))
-                    {
-                        if (_latestSelectedItem is StyledElement latestStyleItem && item is StyledElement styledItem)
-                        {
-                            var ancestorInfo = HasCommonAncestor(latestStyleItem, styledItem);
-                            if (!ancestorInfo.Item1)
-                            {
-                                if (NavMenu is NavMenu navMenu)
-                                {
-                                    navMenu.ClearSelection();
-                                }
-                            }
-                            else
-                            {
-                                if (ancestorInfo.Item2 is NavMenuItem neededClearAncestor)
-                                {
-                                    NavMenuControl.ClearSelectionRecursively(neededClearAncestor, true);
-                                }
-                            }
-                        }
-                    }
-                    _latestSelectedItem = item;
-                }
-            
+                Select(navMenuItem);
                 e.Handled = true;
             }
         }
     }
-    
+
+    public void Select(NavMenuItem navMenuItem)
+    {
+        if (navMenuItem.HasSubMenu)
+        {
+            if (!navMenuItem.IsSubMenuOpen)
+            {
+                navMenuItem.Open();
+            }
+        }
+        else
+        {
+            // 判断当前选中的是不是自己
+            if (!ReferenceEquals(LatestSelectedItem, navMenuItem))
+            {
+                if (LatestSelectedItem != null)
+                {
+                    var ancestorInfo = HasCommonAncestor(LatestSelectedItem, navMenuItem);
+                    if (!ancestorInfo.Item1)
+                    {
+                        if (NavMenu is NavMenu navMenu)
+                        {
+                            navMenu.ClearSelection();
+                        }
+                    }
+                    else
+                    {
+                        if (ancestorInfo.Item2 is NavMenuItem neededClearAncestor)
+                        {
+                            NavMenuControl.ClearSelectionRecursively(neededClearAncestor, true);
+                        }
+                    }
+                }
+                navMenuItem.SelectItemRecursively();
+                LatestSelectedItem = navMenuItem;
+            }
+        }
+    }
+
     private IList<StyledElement> CollectAncestors(StyledElement control)
     {
         var            ancestors = new List<StyledElement>();
@@ -222,10 +227,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         if (e.InitialPressMouseButton == MouseButton.Left && item.HasSubMenu == false)
         {
             Click(item);
-            if (item is NavMenuItem navMenuItem)
-            {
-                navMenuItem.SelectItemRecursively();
-            }
             e.Handled = true;
         }
     }
