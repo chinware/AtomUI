@@ -7,8 +7,11 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:MenuItem">
             <Panel>
-                <Border Name="{x:Static atom:MenuItemThemeConstants.ItemDecoratorPart}">
-                    <Grid Name="{x:Static atom:MenuItemThemeConstants.MainContainerPart}">
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="ToggleItemsLayout" />
                             <ColumnDefinition Width="Auto" SharedSizeGroup="IconPresenter" />
@@ -17,7 +20,7 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="MenuIndicatorIcon" />
                         </Grid.ColumnDefinitions>
 
-                        <Panel Name="{x:Static atom:MenuItemThemeConstants.ToggleItemsLayoutPart}"
+                        <Panel Name="ToggleItemsLayout"
                                Grid.Column="0"
                                IsEnabled="{TemplateBinding IsEnabled}">
                             <Panel.IsVisible>
@@ -41,13 +44,13 @@
                                               IsVisible="False"/>
                         </Panel>
 
-                        <atom:IconPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemIconPresenterPart}"
+                        <atom:IconPresenter Name="ItemIconPresenter"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Icon="{TemplateBinding Icon}"
                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                             Grid.Column="1" />
-                        <ContentPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemTextPresenterPart}"
+                        <ContentPresenter Name="ItemTextPresenter"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Center"
                                           RecognizesAccessKey="True"
@@ -55,7 +58,7 @@
                                           Content="{TemplateBinding Header, Converter={x:Static atom:MenuItemTheme.StringToTextBlockConverter}}"
                                           ContentTemplate="{TemplateBinding HeaderTemplate}"
                                           Grid.Column="2" />
-                        <atom:TextBlock Name="{x:Static atom:MenuItemThemeConstants.InputGestureTextPart}"
+                        <atom:TextBlock Name="InputGestureText"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         TextAlignment="Right"
@@ -63,7 +66,7 @@
                                         IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
                                         Grid.Column="3" />
 
-                        <atom:Icon Name="{x:Static atom:MenuItemThemeConstants.MenuIndicatorIconPart}"
+                        <atom:Icon Name="MenuIndicatorIcon"
                                    IconInfo="{atom:IconInfoProvider RightOutlined}"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
@@ -77,7 +80,7 @@
                             Placement="RightEdgeAlignedTop"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
-                    <Border Name="{x:Static atom:MenuItemThemeConstants.PopupFramePart}">
+                    <Border Name="PopupFrame">
                         <atom:MenuScrollViewer IsScrollChainingEnabled="False"
                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                             <ItemsPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemsPresenterPart}"
@@ -124,56 +127,52 @@
             </Style>
         </Style>
 
-        <Style Selector="^ /template/ Panel#PART_ToggleItemsLayout">
+        <Style Selector="^ /template/ Panel#ToggleItemsLayout">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
         </Style>
 
-        <Style Selector="^ /template/ atom|TextBlock#PART_InputGestureText">
+        <Style Selector="^ /template/ atom|TextBlock#InputGestureText">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.KeyGestureColor}}" />
         </Style>
 
-        <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+        <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
         </Style>
 
-        <Style Selector="^ /template/ ContentPresenter#PART_ItemTextPresenter">
+        <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#PART_ItemDecorator">
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemPaddingInline}}" />
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBg}}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBorderRadius}}" />
-        </Style>
-
+        <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemPaddingInline}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBg}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBorderRadius}}" />
+        
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverColor}}" />
-            <Style Selector="^ /template/ Border#PART_ItemDecorator">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverBg}}" />
-            </Style>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverBg}}" />
         </Style>
 
-        <Style Selector="^ /template/ atom|Icon#PART_MenuIndicatorIcon">
+        <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
             <Setter Property="IsVisible" Value="True" />
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
         </Style>
 
         <Style Selector="^:empty">
-            <Style Selector="^ /template/ atom|Icon#PART_MenuIndicatorIcon">
+            <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
         </Style>
 
-        <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+        <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#PART_PopupFrame">
+        <Style Selector="^ /template/ Border#PopupFrame">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
             <Setter Property="CornerRadius"
                     Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />

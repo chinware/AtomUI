@@ -2,10 +2,11 @@ using AtomUI.IconPkg;
 
 namespace AtomUI.Controls;
 
-public class NavMenuTreeNode : ITreeNode
+public class NavMenuItemData : INavMenuItemData
 {
     public string? ItemKey { get; set; }
     public object? Header { get; set; }
     public Icon? Icon { get; set; }
-    public IList<ITreeNode> Children { get; set; } = [];
+    public bool IsEnabled { get; set; } = true;
+    public IList<INavMenuItemData> Children { get; set; } = [];
 }

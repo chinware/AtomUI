@@ -88,10 +88,10 @@
             </Style>
 
             <Style Selector="^[IsDarkStyle=True]">
+                <Setter Property="CornerRadius" Value="0" />
                 <Style Selector="^[IsSelected=True]">
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemSelectedBg}}" />
-                    <Setter Property="CornerRadius" Value="0" />
                 </Style>
             </Style>
 

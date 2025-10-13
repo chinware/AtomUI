@@ -6,6 +6,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -79,11 +80,69 @@ public class Menu : AvaloniaMenu,
         }
     }
 
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        if (item is MenuSeparatorData)
+        {
+            return new MenuSeparator();
+        }
+        return new MenuItem();
+    }
+    
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        if (item is MenuItem or MenuSeparator)
+        {
+            recycleKey = null;
+            return false;
+        }
+
+        recycleKey = DefaultRecycleKey;
+        return true;
+    }
+    
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
+        base.PrepareContainerForItemOverride(container, item, index);
         if (container is MenuItem menuItem)
         {
-            var disposables = new CompositeDisposable(2);
+            var disposables = new CompositeDisposable(4);
+            
+            if (item != null && item is not Visual)
+            {
+                if (!menuItem.IsSet(MenuItem.HeaderProperty))
+                {
+                    menuItem.SetCurrentValue(MenuItem.HeaderProperty, item);
+                }
+
+                if (item is IMenuItemData menuItemData)
+                {
+                    if (!menuItem.IsSet(MenuItem.IconProperty))
+                    {
+                        menuItem.SetCurrentValue(MenuItem.IconProperty, menuItemData.Icon);
+                    }
+
+                    if (menuItem.ItemKey == null)
+                    {
+                        menuItem.ItemKey = menuItemData.ItemKey;
+                    }
+                    if (!menuItem.IsSet(MenuItem.IsEnabledProperty))
+                    {
+                        menuItem.SetCurrentValue(IsEnabledProperty, menuItemData.IsEnabled);
+                    }
+                    if (!menuItem.IsSet(MenuItem.InputGestureProperty))
+                    {
+                        menuItem.SetCurrentValue(MenuItem.InputGestureProperty, menuItemData.InputGesture);
+                    }
+                }
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.HeaderTemplateProperty));
+            }
+            
+            disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.ItemTemplateProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
             if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
@@ -92,9 +151,15 @@ public class Menu : AvaloniaMenu,
                 _itemsBindingDisposables.Remove(menuItem);
             }
             _itemsBindingDisposables.Add(menuItem, disposables);
+        } 
+        else if (container is MenuSeparator menuSeparator)
+        {
+            menuSeparator.Orientation = Orientation.Vertical;
         }
-
-        base.PrepareContainerForItemOverride(container, item, index);
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type MenuItem or MenuSeparator.");
+        }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

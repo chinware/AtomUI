@@ -6,5 +6,6 @@
     <ControlTheme x:Key="{x:Type atom:MenuSeparator}" TargetType="atom:MenuSeparator">
         <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.SeparatorItemHeight}}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
+        <Setter Property="LineWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidth}}"/>
     </ControlTheme>
 </ResourceDictionary>

@@ -221,6 +221,23 @@ public class NavMenu : NavMenuBase
             }
         }
     }
+    
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        return new NavMenuItem();
+    }
+    
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        if (item is NavMenuItem)
+        {
+            recycleKey = null;
+            return false;
+        }
+
+        recycleKey = DefaultRecycleKey;
+        return true;
+    }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
@@ -243,19 +260,22 @@ public class NavMenu : NavMenuBase
                     navMenuItem.SetCurrentValue(NavMenuItem.HeaderProperty, item);
                 }
 
-                if (item is ITreeNode treeNode)
+                if (item is INavMenuItemData menuItemData)
                 {
                     if (!navMenuItem.IsSet(NavMenuItem.IconProperty))
                     {
-                        navMenuItem.SetCurrentValue(NavMenuItem.IconProperty, treeNode.Icon);
+                        navMenuItem.SetCurrentValue(NavMenuItem.IconProperty, menuItemData.Icon);
                     }
 
                     if (navMenuItem.ItemKey == null)
                     {
-                        navMenuItem.ItemKey = treeNode.ItemKey;
+                        navMenuItem.ItemKey = menuItemData.ItemKey;
+                    }
+                    if (!navMenuItem.IsSet(IsEnabledProperty))
+                    {
+                        navMenuItem.SetCurrentValue(IsEnabledProperty, menuItemData.IsEnabled);
                     }
                 }
-             
             }
             
             if (ItemTemplate != null)
@@ -540,15 +560,15 @@ public class NavMenu : NavMenuBase
         }
     }
 
-    private IList<ITreeNode> FindMenuItemByPath(TreeNodePath treeNodePath)
+    private IList<INavMenuItemData> FindMenuItemByPath(TreeNodePath treeNodePath)
     {
         if (treeNodePath.Length == 0)
         {
             return [];
         }
         var              segments   = treeNodePath.Segments;
-        IList<ITreeNode> items      = Items.OfType<ITreeNode>().ToList();
-        IList<ITreeNode> pathNodes = new List<ITreeNode>();
+        IList<INavMenuItemData> items      = Items.OfType<INavMenuItemData>().ToList();
+        IList<INavMenuItemData> pathNodes = new List<INavMenuItemData>();
         foreach (var segment in segments)
         {
             bool childFound = false;
@@ -572,7 +592,7 @@ public class NavMenu : NavMenuBase
         return pathNodes;
     }
 
-    private void OpenMenuItemPaths(IList<ITreeNode> pathNodes)
+    private void OpenMenuItemPaths(IList<INavMenuItemData> pathNodes)
     {
         if (pathNodes.Count == 0)
         {
@@ -585,7 +605,7 @@ public class NavMenu : NavMenuBase
         });
     }
 
-    private async Task<List<NavMenuItem>> OpenMenuItemPathAsync(IList<ITreeNode> pathNodes)
+    private async Task<List<NavMenuItem>> OpenMenuItemPathAsync(IList<INavMenuItemData> pathNodes)
     {
         List<NavMenuItem> items = new List<NavMenuItem>();
         try
@@ -615,7 +635,7 @@ public class NavMenu : NavMenuBase
         return items;
     }
 
-    private async Task<NavMenuItem?> GetNavMenuItemContainerAsync(ITreeNode childNode, ItemsControl current)
+    private async Task<NavMenuItem?> GetNavMenuItemContainerAsync(INavMenuItemData childNode, ItemsControl current)
     {
         var cycleCount = 10;
         NavMenuItem? target = null;

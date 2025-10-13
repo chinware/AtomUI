@@ -38,7 +38,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
                            ICommandSource,
                            IClickableControl,
                            ICustomHitTest,
-                           ITreeNode
+                           INavMenuItemData
 {
     #region 公共属性定义
     
@@ -187,7 +187,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     
     INavMenuElement? INavMenuItem.Parent => Parent as INavMenuElement;
     
-    IList<ITreeNode> ITreeNode.Children => Items.OfType<ITreeNode>().ToList();
+    IList<INavMenuItemData> ITreeNode<INavMenuItemData>.Children => Items.OfType<INavMenuItemData>().ToList();
 
     protected override bool IsEnabledCore => base.IsEnabledCore && _commandCanExecute;
     
@@ -1039,16 +1039,43 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         return true;
     }
 
-    protected override void PrepareContainerForItemOverride(Control element, object? item, int index)
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
-        base.PrepareContainerForItemOverride(element, item, index);
-        if (element is NavMenuItem navMenuItem)
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (container is NavMenuItem navMenuItem)
         {
             var disposables = new CompositeDisposable(4);
+            
+            if (item != null && item is not Visual)
+            {
+                if (!navMenuItem.IsSet(HeaderProperty))
+                {
+                    navMenuItem.SetCurrentValue(HeaderProperty, item);
+                }
+
+                if (item is INavMenuItemData menuItemData)
+                {
+                    if (!navMenuItem.IsSet(IconProperty))
+                    {
+                        navMenuItem.SetCurrentValue(IconProperty, menuItemData.Icon);
+                    }
+
+                    if (navMenuItem.ItemKey == null)
+                    {
+                        navMenuItem.ItemKey = menuItemData.ItemKey;
+                    }
+                    if (!navMenuItem.IsSet(IsEnabledProperty))
+                    {
+                        navMenuItem.SetCurrentValue(IsEnabledProperty, menuItemData.IsEnabled);
+                    }
+                }
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, ModeProperty, navMenuItem, ModeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty));
+            PrepareNavMenuItem(navMenuItem, item, index, disposables);
             if (_itemsBindingDisposables.TryGetValue(navMenuItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();
@@ -1056,6 +1083,14 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             }
             _itemsBindingDisposables.Add(navMenuItem, disposables);
         }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type NavMenuItem.");
+        }
+    }
+
+    protected virtual void PrepareNavMenuItem(NavMenuItem navMenuItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     internal void SelectItemRecursively()

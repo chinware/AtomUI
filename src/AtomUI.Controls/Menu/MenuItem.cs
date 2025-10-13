@@ -14,6 +14,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -21,9 +22,12 @@ namespace AtomUI.Controls;
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
 [PseudoClasses(MenuItemPseudoClass.TopLevel)]
-public class MenuItem : AvaloniaMenuItem
+public class MenuItem : AvaloniaMenuItem,
+                        IMenuItemData
 {
     #region 公共属性定义
+    
+    public new static readonly StyledProperty<Icon?> IconProperty = AvaloniaProperty.Register<MenuItem, Icon?>(nameof (Icon));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
@@ -33,8 +37,17 @@ public class MenuItem : AvaloniaMenuItem
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
+    
+    public new Icon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
 
     #endregion
+    
+    IList<IMenuItemData> ITreeNode<IMenuItemData>.Children => Items.OfType<IMenuItemData>().ToList();
+    public string? ItemKey { get; set; }
 
     #region 公共事件定义
 
@@ -53,7 +66,7 @@ public class MenuItem : AvaloniaMenuItem
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuItem>();
-
+    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -63,9 +76,7 @@ public class MenuItem : AvaloniaMenuItem
     #endregion
 
     internal PopupRoot? SubmenuPopupRoot => _popup?.Host as PopupRoot;
-    
-    private Border? _itemDecorator;
-    private ContentPresenter? _headerPresenter;
+
     private RadioButton? _radioButton;
     private CheckBox? _checkBox;
     private Popup? _popup;
@@ -133,8 +144,7 @@ public class MenuItem : AvaloniaMenuItem
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureHeaderPresenterTransitions(true);
-                ConfigureItemDecoratorTransitions(true);
+                ConfigureTransitions(true);
             }
         }
     }
@@ -143,14 +153,72 @@ public class MenuItem : AvaloniaMenuItem
     {
         PseudoClasses.Set(MenuItemPseudoClass.TopLevel, IsTopLevel);
     }
+    
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        if (item is MenuSeparatorData)
+        {
+            return new MenuSeparator();
+        }
+        return new MenuItem();
+    }
+    
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        if (item is MenuItem or MenuSeparator)
+        {
+            recycleKey = null;
+            return false;
+        }
+
+        recycleKey = DefaultRecycleKey;
+        return true;
+    }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
+        base.PrepareContainerForItemOverride(container, item, index);
         if (container is MenuItem menuItem)
         {
-            var disposables = new CompositeDisposable(2);
-            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            var disposables = new CompositeDisposable(4);
+                    
+            if (item != null && item is not Visual)
+            {
+                if (!menuItem.IsSet(HeaderProperty))
+                {
+                    menuItem.SetCurrentValue(HeaderProperty, item);
+                }
+
+                if (item is IMenuItemData menuItemData)
+                {
+                    if (!menuItem.IsSet(IconProperty))
+                    {
+                        menuItem.SetCurrentValue(IconProperty, menuItemData.Icon);
+                    }
+
+                    if (menuItem.ItemKey == null)
+                    {
+                        menuItem.ItemKey = menuItemData.ItemKey;
+                    }
+                    if (!menuItem.IsSet(IsEnabledProperty))
+                    {
+                        menuItem.SetCurrentValue(IsEnabledProperty, menuItemData.IsEnabled);
+                    }
+                    if (!menuItem.IsSet(InputGestureProperty))
+                    {
+                        menuItem.SetCurrentValue(InputGestureProperty, menuItemData.InputGesture);
+                    }
+                }
+            }
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.HeaderTemplateProperty));
+            }
+            
+            disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.ItemTemplateProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            PrepareMenuItem(menuItem, item, index, disposables);
             if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();
@@ -158,15 +226,23 @@ public class MenuItem : AvaloniaMenuItem
             }
             _itemsBindingDisposables.Add(menuItem, disposables);
         }
-
-        base.PrepareContainerForItemOverride(container, item, index);
+        else if (container is MenuSeparator menuSeparator)
+        {
+            menuSeparator.Orientation = Orientation.Horizontal;
+        }
+        else if (container is not MenuSeparator)
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type MenuItem or MenuSeparator.");
+        }
+    }
+    
+    protected virtual void PrepareMenuItem(MenuItem menuItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _itemDecorator       = e.NameScope.Find<Border>(MenuItemThemeConstants.ItemDecoratorPart);
-        _headerPresenter = e.NameScope.Find<ContentPresenter>(TopLevelMenuItemThemeConstants.HeaderPresenterPart);
         _radioButton         = e.NameScope.Find<RadioButton>(MenuItemThemeConstants.ToggleRadioPart);
         _checkBox            = e.NameScope.Find<CheckBox>(MenuItemThemeConstants.ToggleCheckboxPart);
         _popup               = e.NameScope.Find<Popup>(MenuItemThemeConstants.PopupPart);
@@ -194,30 +270,6 @@ public class MenuItem : AvaloniaMenuItem
                 {
                     IsChecked = _checkBox.IsChecked == true;
                 }
-            };
-        }
-
-        if (_itemDecorator != null)
-        {
-            _itemDecorator.Loaded += (sender, args) =>
-            {
-                ConfigureItemDecoratorTransitions(false);
-            };
-            _itemDecorator.Unloaded += (sender, args) =>
-            {
-                _itemDecorator.Transitions = null;
-            };
-        }
-
-        if (_headerPresenter != null)
-        {
-            _headerPresenter.Loaded += (sender, args) =>
-            {
-                ConfigureHeaderPresenterTransitions(false);
-            };
-            _headerPresenter.Unloaded += (sender, args) =>
-            {
-                _headerPresenter.Transitions = null;
             };
         }
         
@@ -259,55 +311,35 @@ public class MenuItem : AvaloniaMenuItem
         }
         return popupRoots;
     }
-
-    private void ConfigureItemDecoratorTransitions(bool force)
+    
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (_itemDecorator != null)
+            if (force || Transitions == null)
             {
-                if (force || _itemDecorator.Transitions == null)
-                {
-                    _itemDecorator.Transitions = [
-                        TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
-                    ];
-                }
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)
+                ];
             }
         }
         else
         {
-            if (_itemDecorator != null)
-            {
-                _itemDecorator.Transitions = null;
-            }
+            Transitions = null;
         }
     }
     
-    private void ConfigureHeaderPresenterTransitions(bool force)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        if (IsMotionEnabled)
-        {
-            if (IsTopLevel)
-            {
-                if (_headerPresenter != null)
-                {
-                    if (force || _headerPresenter.Transitions == null)
-                    {
-                        _headerPresenter.Transitions = [
-                            TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.BackgroundProperty),
-                            TransitionUtils.CreateTransition<SolidColorBrushTransition>(ContentPresenter.ForegroundProperty)
-                        ];
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (_headerPresenter != null)
-            {
-                _headerPresenter.Transitions = null;
-            }
-        }
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
     
     public async Task CloseItemAsync()
