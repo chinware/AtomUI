@@ -41,11 +41,6 @@ internal class MenuToken : AbstractControlDesignToken
     public double MenuPopupMaxWidth { get; set; }
 
     /// <summary>
-    /// 菜单 Popup 最大高度
-    /// </summary>
-    public double MenuPopupMaxHeight { get; set; }
-
-    /// <summary>
     /// 分离菜单项的高度，这个用于菜单中快捷功能的图标显示
     /// TODO 暂时还没实现，但是最终会实现
     /// </summary>
@@ -227,21 +222,6 @@ internal class MenuToken : AbstractControlDesignToken
     public double TopLevelItemPopupMarginToAnchor { get; set; }
 
     /// <summary>
-    /// 滚动按钮 Icon 大小
-    /// </summary>
-    public double ScrollButtonIconSize { get; set; }
-
-    /// <summary>
-    /// 滚动按内边距
-    /// </summary>
-    public Thickness ScrollButtonPadding { get; set; }
-
-    /// <summary>
-    /// 滚动按内边距
-    /// </summary>
-    public Thickness ScrollButtonMargin { get; set; }
-
-    /// <summary>
     /// 菜单分割项的高度
     /// </summary>
     public double SeparatorItemHeight { get; set; }
@@ -279,13 +259,13 @@ internal class MenuToken : AbstractControlDesignToken
         DangerItemColor      = colorError;
         DangerItemHoverColor = colorError;
 
-        ItemHeight         = controlHeightSM;
+        ItemHeight         = controlHeight;
         MenuBgColor        = SharedToken.ColorBgContainer;
         ContextMenuBgColor = SharedToken.ColorBgElevated;
 
         ItemPaddingInline       = new Thickness(padding, SharedToken.UniformlyPaddingXXS);
         ItemIconSize            = SharedToken.IconSize;
-        ItemIconMarginInlineEnd = controlHeightSM - fontSize;
+        ItemIconMarginInlineEnd = controlHeight - fontSize;
 
         TopLevelItemColor         = SharedToken.ColorText;
         TopLevelItemSelectedColor = SharedToken.ColorTextSecondary;
@@ -326,18 +306,11 @@ internal class MenuToken : AbstractControlDesignToken
 
         MenuPopupMinWidth = 120;
         MenuPopupMaxWidth = 800;
-        
-        MenuPopupMaxHeight = ItemHeight * 15;
 
         SeparatorItemHeight = SharedToken.LineWidth * 5; // 上下两像素，留一像素给自己
-
         MenuTearOffHeight = ItemHeight * 1.2; // 暂时这么定义吧
 
         MenuPopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, MenuPopupBorderRadius.TopLeft / 2);
         MenuPopupBoxShadows     = SharedToken.BoxShadowsSecondary;
-
-        ScrollButtonIconSize = SharedToken.IconSizeSM;
-        ScrollButtonPadding  = SharedToken.PaddingXS;
-        ScrollButtonMargin   = new Thickness(SharedToken.UniformlyMarginXXS / 2);
     }
 }

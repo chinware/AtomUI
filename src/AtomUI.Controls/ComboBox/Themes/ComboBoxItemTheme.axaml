@@ -16,14 +16,13 @@
                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                     CornerRadius="{TemplateBinding CornerRadius}"
                     Background="{TemplateBinding Background}"
-                    Padding="{TemplateBinding Padding}" />
+                    Padding="{TemplateBinding Padding}"
+                    Margin="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemMargin}}" />
             </ControlTemplate>
         </Setter>
-        
-        <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemMargin}}" />
+
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemColor}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemBgColor}}" />
-        <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.ItemPadding}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
 

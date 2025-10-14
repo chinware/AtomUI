@@ -1,9 +1,11 @@
 using System.Globalization;
-using AtomUI.Controls.Primitives.Themes;
+using AtomUI.Controls.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls.Primitives;
 
@@ -15,24 +17,36 @@ internal class UpDownScrollerViewer : AvaloniaScrollViewer
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<UpDownScrollerViewer>();
-
+    
+    public static readonly StyledProperty<double> ScrollUpButtonOpacityProperty = 
+        AvaloniaProperty.Register<UpDownScrollerViewer, double>(nameof(ScrollUpButtonOpacity));
+    
+    public static readonly StyledProperty<double> ScrollDownButtonOpacityProperty = 
+        AvaloniaProperty.Register<UpDownScrollerViewer, double>(nameof(ScrollDownButtonOpacity));
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    #endregion
+    public double ScrollUpButtonOpacity
+    {
+        get => GetValue(ScrollUpButtonOpacityProperty);
+        set => SetValue(ScrollUpButtonOpacityProperty, value);
+    }
     
-    private IconButton? _scrollUpButton;
-    private IconButton? _scrollDownButton;
+    public double ScrollDownButtonOpacity
+    {
+        get => GetValue(ScrollDownButtonOpacityProperty);
+        set => SetValue(ScrollDownButtonOpacityProperty, value);
+    }
+    
+    #endregion
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _scrollUpButton   = e.NameScope.Find<IconButton>(UpDownScrollerViewerThemeConstants.ScrollUpButtonPart);
-        _scrollDownButton = e.NameScope.Find<IconButton>(UpDownScrollerViewerThemeConstants.ScrollDownButtonPart);
-
         SetupScrollButtonVisibility();
     }
     
@@ -47,18 +61,16 @@ internal class UpDownScrollerViewer : AvaloniaScrollViewer
             MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 0d, CultureInfo.CurrentCulture);
         var scrollDownVisibility =
             MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 100d, CultureInfo.CurrentCulture);
-        if (_scrollUpButton is not null &&
-            scrollUpVisibility is not null &&
+        if (scrollUpVisibility is not null &&
             scrollUpVisibility != AvaloniaProperty.UnsetValue)
         {
-            _scrollUpButton.IsVisible = (bool)scrollUpVisibility;
+            ScrollUpButtonOpacity = (bool)scrollUpVisibility && IsPointerOver ? 1.0 : 0.0;
         }
 
-        if (_scrollDownButton is not null &&
-            scrollDownVisibility is not null &&
+        if (scrollDownVisibility is not null &&
             scrollDownVisibility != AvaloniaProperty.UnsetValue)
         {
-            _scrollDownButton.IsVisible = (bool)scrollDownVisibility;
+            ScrollDownButtonOpacity = (bool)scrollDownVisibility && IsPointerOver ? 1.0 : 0.0;
         }
     }
 
@@ -68,9 +80,47 @@ internal class UpDownScrollerViewer : AvaloniaScrollViewer
         if (change.Property == VerticalScrollBarVisibilityProperty ||
             change.Property == OffsetProperty ||
             change.Property == ExtentProperty ||
-            change.Property == ViewportProperty)
+            change.Property == ViewportProperty ||
+            change.Property == IsPointerOverProperty)
         {
             SetupScrollButtonVisibility();
         }
+        if (IsLoaded)
+        {
+            if (change.Property == IsMotionEnabledProperty)
+            {
+                ConfigureTransitions(true);
+            }
+        }
+    }
+    
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                Transitions = [
+                    TransitionUtils.CreateTransition<DoubleTransition>(ScrollDownButtonOpacityProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(ScrollUpButtonOpacityProperty)
+                ];
+            }
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

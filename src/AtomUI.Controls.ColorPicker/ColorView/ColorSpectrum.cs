@@ -627,7 +627,7 @@ internal class ColorSpectrum : TemplatedControl
             {
                 throw new ArgumentException("MinHue must be between 0 and 359.");
             }
-            else if (maxHue < 0 || maxHue > 359)
+            if (maxHue < 0 || maxHue > 359)
             {
                 throw new ArgumentException("MaxHue must be between 0 and 359.");
             }
@@ -652,7 +652,7 @@ internal class ColorSpectrum : TemplatedControl
             {
                 throw new ArgumentException("MinSaturation must be between 0 and 100.");
             }
-            else if (maxSaturation < 0 || maxSaturation > 100)
+            if (maxSaturation < 0 || maxSaturation > 100)
             {
                 throw new ArgumentException("MaxSaturation must be between 0 and 100.");
             }
@@ -677,7 +677,7 @@ internal class ColorSpectrum : TemplatedControl
             {
                 throw new ArgumentException("MinValue must be between 0 and 100.");
             }
-            else if (maxValue < 0 || maxValue > 100)
+            if (maxValue < 0 || maxValue > 100)
             {
                 throw new ArgumentException("MaxValue must be between 0 and 100.");
             }
@@ -1463,6 +1463,7 @@ internal class ColorSpectrum : TemplatedControl
         {
             return;
         }
+ 
         HsvColor                hsvColor   = HsvColor;
         ColorSpectrumComponents components = Components;
 

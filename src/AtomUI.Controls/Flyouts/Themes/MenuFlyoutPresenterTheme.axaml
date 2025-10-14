@@ -8,7 +8,9 @@
         <ControlTemplate TargetType="atom:MenuFlyoutPresenter">
             <atom:ArrowDecoratedBox Name="{x:Static atom:MenuFlyoutThemeConstants.ArrowDecoratorPart}"
                                     IsShowArrow="{TemplateBinding IsShowArrow}"
-                                    ArrowPosition="{TemplateBinding ArrowPosition}">
+                                    ArrowPosition="{TemplateBinding ArrowPosition}"
+                                    Padding="{TemplateBinding Padding}"
+                                    MaxHeight="{TemplateBinding MaxPopupHeight}">
                 <atom:UpDownScrollerViewer HorizontalAlignment="Stretch"
                                            VerticalAlignment="Stretch"
                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
@@ -25,13 +27,13 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupBorderRadius}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupContentPadding}}" />
+        <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
+        
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
             <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
             <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
-            <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupContentPadding}}" />
         </Style>
     </Style>
 

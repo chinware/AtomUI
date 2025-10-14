@@ -6,31 +6,15 @@
     <ControlTheme x:Key="{x:Type atom:UpDownScrollerViewer}" TargetType="atom:UpDownScrollerViewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel>
-                    <atom:IconButton
-                        Name="{x:Static atom:UpDownScrollerViewerThemeConstants.ScrollUpButtonPart}"
-                        DockPanel.Dock="Top"
-                        Icon="{atom:IconProvider UpOutlined}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsEnableHoverEffect="True"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                        Command="{Binding LineUp, RelativeSource={RelativeSource TemplatedParent}}" />
-                    <atom:IconButton
-                        Name="{x:Static atom:UpDownScrollerViewerThemeConstants.ScrollDownButtonPart}"
-                        DockPanel.Dock="Bottom"
-                        Icon="{atom:IconProvider DownOutlined}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsEnableHoverEffect="True"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                        Command="{Binding LineDown, RelativeSource={RelativeSource TemplatedParent}}" />
+                <Panel>
+                    <Border Background="{TemplateBinding Background}"/>
                     <ScrollContentPresenter Name="ContentPresenter"
                                             Margin="{TemplateBinding Padding}"
                                             HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
                                             HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
                                             VerticalSnapPointsAlignment="{TemplateBinding VerticalSnapPointsAlignment}"
-                                            VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}">
+                                            VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
+                                            IsScrollChainingEnabled="{TemplateBinding IsScrollChainingEnabled}">
                         <ScrollContentPresenter.GestureRecognizers>
                             <ScrollGestureRecognizer
                                 CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=ContentPresenter}"
@@ -38,11 +22,31 @@
                                 IsScrollInertiaEnabled="{Binding IsScrollInertiaEnabled, RelativeSource={RelativeSource AncestorType=atom:UpDownScrollerViewer}}" />
                         </ScrollContentPresenter.GestureRecognizers>
                     </ScrollContentPresenter>
-                </DockPanel>
+                    <atom:IconButton
+                        Name="ScrollUpButton"
+                        Opacity="{TemplateBinding ScrollUpButtonOpacity}"
+                        Icon="{atom:IconProvider UpOutlined}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        IsEnableHoverEffect="True"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                        Command="{Binding LineUp, RelativeSource={RelativeSource TemplatedParent}}" />
+                    <atom:IconButton
+                        Name="ScrollDownButton"
+                        Icon="{atom:IconProvider DownOutlined}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        IsEnableHoverEffect="True"
+                        Opacity="{TemplateBinding ScrollDownButtonOpacity}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                        Command="{Binding LineDown, RelativeSource={RelativeSource TemplatedParent}}" />
+                </Panel>
             </ControlTemplate>
         </Setter>
-
+        
+        <Setter Property="Background" Value="Transparent" />
         <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:UpDownScrollerViewerTokenKey.ScrollButtonPadding}}" />
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:UpDownScrollerViewerTokenKey.ScrollButtonMargin}}" />
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:UpDownScrollerViewerTokenKey.ScrollButtonIconSize}}" />

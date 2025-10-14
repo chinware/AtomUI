@@ -480,13 +480,9 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey MenuPopupBorderRadius = new TokenResourceKey("Menu.MenuPopupBorderRadius");
         public static readonly TokenResourceKey MenuPopupBoxShadows = new TokenResourceKey("Menu.MenuPopupBoxShadows");
         public static readonly TokenResourceKey MenuPopupContentPadding = new TokenResourceKey("Menu.MenuPopupContentPadding");
-        public static readonly TokenResourceKey MenuPopupMaxHeight = new TokenResourceKey("Menu.MenuPopupMaxHeight");
         public static readonly TokenResourceKey MenuPopupMaxWidth = new TokenResourceKey("Menu.MenuPopupMaxWidth");
         public static readonly TokenResourceKey MenuPopupMinWidth = new TokenResourceKey("Menu.MenuPopupMinWidth");
         public static readonly TokenResourceKey MenuTearOffHeight = new TokenResourceKey("Menu.MenuTearOffHeight");
-        public static readonly TokenResourceKey ScrollButtonIconSize = new TokenResourceKey("Menu.ScrollButtonIconSize");
-        public static readonly TokenResourceKey ScrollButtonMargin = new TokenResourceKey("Menu.ScrollButtonMargin");
-        public static readonly TokenResourceKey ScrollButtonPadding = new TokenResourceKey("Menu.ScrollButtonPadding");
         public static readonly TokenResourceKey SeparatorItemHeight = new TokenResourceKey("Menu.SeparatorItemHeight");
         public static readonly TokenResourceKey TopLevelItemBg = new TokenResourceKey("Menu.TopLevelItemBg");
         public static readonly TokenResourceKey TopLevelItemBorderRadius = new TokenResourceKey("Menu.TopLevelItemBorderRadius");

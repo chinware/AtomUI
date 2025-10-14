@@ -27,6 +27,9 @@ public class Menu : AvaloniaMenu,
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Menu>();
+    
+    public static readonly StyledProperty<int> DisplayPageSizeProperty = 
+        AvaloniaProperty.Register<Menu, int>(nameof (DisplayPageSize), 10);
 
     public SizeType SizeType
     {
@@ -38,6 +41,12 @@ public class Menu : AvaloniaMenu,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public int DisplayPageSize
+    {
+        get => GetValue(DisplayPageSizeProperty);
+        set => SetValue(DisplayPageSizeProperty, value);
     }
 
     #endregion
@@ -142,6 +151,7 @@ public class Menu : AvaloniaMenu,
                 disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.HeaderTemplateProperty));
             }
             
+            disposables.Add(BindUtils.RelayBind(this, DisplayPageSizeProperty, menuItem, MenuItem.DisplayPageSizeProperty));
             disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.ItemTemplateProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
