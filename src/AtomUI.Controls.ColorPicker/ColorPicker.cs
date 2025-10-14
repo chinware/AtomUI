@@ -54,7 +54,14 @@ public class ColorPicker : AbstractColorPicker
     #endregion
     
     #region 公共事件定义
+    /// <summary>
+    /// Keep distributing as long as there are changes
+    /// </summary>
     public event EventHandler<ColorChangedEventArgs>? ValueChanged;
+    /// <summary>
+    /// Dispatched once when Flyout is closed
+    /// </summary>
+    public event EventHandler<ColorSelectedEventArgs>? ValueSelected;
     #endregion
 
     #region 内部属性定义
@@ -179,11 +186,7 @@ public class ColorPicker : AbstractColorPicker
     {
         if (control is FlyoutPresenter flyoutPresenter && flyoutPresenter.Content is ColorPickerView presenter)
         {
-            _presenter                   =  presenter;
-            _presenter.ValueChanged      += HandleColorPickerViewValueChanged;
-            _presenter.ColorValueCleared += HandleColorCleared;
-            var effectiveColor = Value ?? DefaultValue;
-            _presenter.SetCurrentValue(ColorPickerView.ValueProperty, effectiveColor);
+            _presenter = presenter;
         }
     }
 
@@ -199,6 +202,17 @@ public class ColorPicker : AbstractColorPicker
         }
     }
     
+    protected override void NotifyFlyoutOpened()
+    {
+        if (_presenter != null)
+        {
+            var effectiveColor = Value ?? DefaultValue;
+            _presenter.SetCurrentValue(ColorPickerView.ValueProperty, effectiveColor);
+            _presenter.ValueChanged      += HandleColorPickerViewValueChanged;
+            _presenter.ColorValueCleared += HandleColorCleared;
+        }
+    }
+    
     protected override void NotifyFlyoutClosed()
     {
         if (_presenter != null)
@@ -207,9 +221,13 @@ public class ColorPicker : AbstractColorPicker
             {
                 SetCurrentValue(ValueProperty, _latestSyncValue);
             }
+
+            if (Value != null)
+            {
+                ValueSelected?.Invoke(this, new ColorSelectedEventArgs(Value.Value));
+            }
             _presenter.ValueChanged      -= HandleColorPickerViewValueChanged;
             _presenter.ColorValueCleared -= HandleColorCleared;
-            _presenter                   =  null;
         }
     }
     

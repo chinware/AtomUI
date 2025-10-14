@@ -47,7 +47,15 @@ public class GradientColorPicker : AbstractColorPicker
     #endregion
     
     #region 公共事件定义
+    /// <summary>
+    /// Keep distributing as long as there are changes
+    /// </summary>
     public event EventHandler<GradientColorChangedEventArgs>? GradientValueChanged;
+    
+    /// <summary>
+    /// Dispatched once when Flyout is closed
+    /// </summary>
+    public event EventHandler<GradientColorSelectedEventArgs>? ValueSelected;
     #endregion
 
     #region 内部事件定义
@@ -244,15 +252,6 @@ public class GradientColorPicker : AbstractColorPicker
         if (control is FlyoutPresenter flyoutPresenter && flyoutPresenter.Content is GradientColorPickerView presenter)
         {
             _presenter                      =  presenter;
-            _presenter.GradientValueChanged += HandleColorPickerViewValueChanged;
-            _presenter.ColorValueCleared    += HandleColorCleared;
-            var effectiveColor = Value ?? DefaultValue;
-            if (effectiveColor != null)
-            {
-                _presenter.SetCurrentValue(GradientColorPickerView.ValueProperty, effectiveColor);
-                _presenter.SetCurrentValue(GradientColorPickerView.ActivatedStopIndexProperty, _latestActivatedStopIndex ?? 0);
-            }
-            _activeStopIndexChangedDisposable = BindUtils.RelayBind(_presenter, GradientColorPickerView.ActivatedStopIndexProperty, this, ActivatedStopIndexProperty);
         }
     }
 
@@ -263,15 +262,34 @@ public class GradientColorPicker : AbstractColorPicker
             SetCurrentValue(ValueProperty, args.NewColor);
         }
     }
-    
+
+    protected override void NotifyFlyoutOpened()
+    {
+        if (_presenter != null)
+        {
+            _presenter.GradientValueChanged += HandleColorPickerViewValueChanged;
+            _presenter.ColorValueCleared    += HandleColorCleared;
+            var effectiveColor = Value ?? DefaultValue;
+            _activeStopIndexChangedDisposable = BindUtils.RelayBind(_presenter, GradientColorPickerView.ActivatedStopIndexProperty, this, ActivatedStopIndexProperty);
+            if (effectiveColor != null)
+            {
+                _presenter.SetCurrentValue(GradientColorPickerView.ValueProperty, effectiveColor);
+                _presenter.SetCurrentValue(GradientColorPickerView.ActivatedStopIndexProperty, _latestActivatedStopIndex ?? 0);
+            }
+        }
+    }
+
     protected override void NotifyFlyoutClosed()
     {
         if (_presenter != null)
         {
+            if (Value != null)
+            {
+                ValueSelected?.Invoke(this, new GradientColorSelectedEventArgs(Value));
+            }
             _latestActivatedStopIndex       =  ActivatedStopIndex;
             _presenter.GradientValueChanged -= HandleColorPickerViewValueChanged;
             _presenter.ColorValueCleared    -= HandleColorCleared;
-            _presenter                      =  null;
             _activeStopIndexChangedDisposable?.Dispose();
             _activeStopIndexChangedDisposable = null;
             SetCurrentValue(ActivatedStopIndexProperty, null);
