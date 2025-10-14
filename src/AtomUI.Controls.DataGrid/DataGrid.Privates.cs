@@ -4326,23 +4326,26 @@ public partial class DataGrid
                 action = DataGridSelectionAction.SelectCurrent;
             }
 
-            var updateSelection = true;
-            var column          = ColumnsInternal[columnIndex];
-            if (column is DataGridSelectionColumn selectionColumn)
+            var updateSelection = false;
+            if (columnIndex != -1)
             {
-                var row = DisplayData.GetDisplayedElement(slot) as DataGridRow;
-                Debug.Assert(row != null);
-                var dataGridCell = row.Cells[columnIndex];
-                updateSelection = selectionColumn.NotifyAboutToUpdateSelection(pointerPressedEventArgs, dataGridCell);
+                var column          = ColumnsInternal[columnIndex];
+                if (column is DataGridSelectionColumn selectionColumn)
+                {
+                    var row = DisplayData.GetDisplayedElement(slot) as DataGridRow;
+                    Debug.Assert(row != null);
+                    var dataGridCell = row.Cells[columnIndex];
+                    updateSelection = selectionColumn.NotifyAboutToUpdateSelection(pointerPressedEventArgs, dataGridCell);
+                    if (updateSelection)
+                    {
+                        action = selectionColumn.GetSelectionAction(dataGridCell);
+                    }
+                }
+
                 if (updateSelection)
                 {
-                    action = selectionColumn.GetSelectionAction(dataGridCell);
+                    UpdateSelectionAndCurrency(columnIndex, slot, action, scrollIntoView: false);
                 }
-            }
-
-            if (updateSelection)
-            {
-                UpdateSelectionAndCurrency(columnIndex, slot, action, scrollIntoView: false);
             }
         }
         finally
