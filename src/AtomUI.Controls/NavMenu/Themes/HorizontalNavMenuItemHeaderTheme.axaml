@@ -12,7 +12,6 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="Frame"
-                        MinHeight="{TemplateBinding MinHeight}"
                         Padding="{TemplateBinding Padding}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Background="{TemplateBinding Background}">

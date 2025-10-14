@@ -12,9 +12,9 @@
             <ControlTemplate>
                 <Border Name="Frame"
                         Background="{TemplateBinding Background}"
-                        MinHeight="{TemplateBinding MinHeight}"
                         Padding="{TemplateBinding Padding}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Height="{TemplateBinding Height}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"

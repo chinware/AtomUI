@@ -143,6 +143,10 @@
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
+            <Setter Property="DisabledFilledBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">
@@ -170,12 +174,6 @@
             </Style>
         </Style>
 
-        <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
-        </Style>
-
         <Style Selector="^ /template/ Border#PopupFrame">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
             <Setter Property="CornerRadius"
@@ -192,6 +190,10 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
+            
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+                <Setter Property="IconMode" Value="Disabled" />
+            </Style>
         </Style>
     </Style>
 </ControlTheme>

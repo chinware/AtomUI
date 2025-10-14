@@ -24,6 +24,7 @@
                     </ScrollContentPresenter>
                     <atom:IconButton
                         Name="ScrollUpButton"
+                        IsVisible="{TemplateBinding ScrollUpButtonVisible}"
                         Opacity="{TemplateBinding ScrollUpButtonOpacity}"
                         Icon="{atom:IconProvider UpOutlined}"
                         HorizontalAlignment="Center"
@@ -37,6 +38,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
                         IsEnableHoverEffect="True"
+                        IsVisible="{TemplateBinding ScrollDownButtonVisible}"
                         Opacity="{TemplateBinding ScrollDownButtonOpacity}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         Command="{Binding LineDown, RelativeSource={RelativeSource TemplatedParent}}" />

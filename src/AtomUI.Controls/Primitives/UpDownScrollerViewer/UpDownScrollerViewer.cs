@@ -24,6 +24,12 @@ internal class UpDownScrollerViewer : AvaloniaScrollViewer
     public static readonly StyledProperty<double> ScrollDownButtonOpacityProperty = 
         AvaloniaProperty.Register<UpDownScrollerViewer, double>(nameof(ScrollDownButtonOpacity));
     
+    public static readonly StyledProperty<bool> ScrollUpButtonVisibleProperty = 
+        AvaloniaProperty.Register<UpDownScrollerViewer, bool>(nameof(ScrollUpButtonVisible));
+    
+    public static readonly StyledProperty<bool> ScrollDownButtonVisibleProperty = 
+        AvaloniaProperty.Register<UpDownScrollerViewer, bool>(nameof(ScrollDownButtonVisible));
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -42,6 +48,18 @@ internal class UpDownScrollerViewer : AvaloniaScrollViewer
         set => SetValue(ScrollDownButtonOpacityProperty, value);
     }
     
+    public bool ScrollUpButtonVisible
+    {
+        get => GetValue(ScrollUpButtonVisibleProperty);
+        set => SetValue(ScrollUpButtonVisibleProperty, value);
+    }
+    
+    public bool ScrollDownButtonVisible
+    {
+        get => GetValue(ScrollDownButtonVisibleProperty);
+        set => SetValue(ScrollDownButtonVisibleProperty, value);
+    }
+
     #endregion
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -58,19 +76,21 @@ internal class UpDownScrollerViewer : AvaloniaScrollViewer
         args.Add(Extent.Height);
         args.Add(Viewport.Height);
         var scrollUpVisibility =
-            MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 0d, CultureInfo.CurrentCulture);
+            MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 0d, CultureInfo.CurrentCulture) ?? false;
         var scrollDownVisibility =
-            MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 100d, CultureInfo.CurrentCulture);
-        if (scrollUpVisibility is not null &&
-            scrollUpVisibility != AvaloniaProperty.UnsetValue)
+            MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 100d, CultureInfo.CurrentCulture) ?? false;
+        if (scrollUpVisibility != AvaloniaProperty.UnsetValue)
         {
-            ScrollUpButtonOpacity = (bool)scrollUpVisibility && IsPointerOver ? 1.0 : 0.0;
+            var scrollUpButtonVisible = (bool)scrollUpVisibility && IsPointerOver;
+            ScrollUpButtonOpacity = scrollUpButtonVisible ? 1.0 : 0.0;
+            ScrollUpButtonVisible = scrollUpButtonVisible;
         }
 
-        if (scrollDownVisibility is not null &&
-            scrollDownVisibility != AvaloniaProperty.UnsetValue)
+        if (scrollDownVisibility != AvaloniaProperty.UnsetValue)
         {
-            ScrollDownButtonOpacity = (bool)scrollDownVisibility && IsPointerOver ? 1.0 : 0.0;
+            var scrollDownButtonVisible   = (bool)scrollDownVisibility && IsPointerOver;
+            ScrollDownButtonOpacity = scrollDownButtonVisible ? 1.0 : 0.0;
+            ScrollDownButtonVisible = scrollDownButtonVisible;
         }
     }
 
