@@ -1,6 +1,4 @@
-﻿using AtomUI.Theme;
-using AtomUI.Theme.Language;
-using AtomUI.Utils;
+﻿using AtomUI.Theme.Language;
 
 namespace AtomUI.Controls.DataGridLocalization;
 
@@ -13,4 +11,5 @@ internal class en_US : LanguageProvider
     public const string CancelTooltip = "Click to cancel sorting";
     public const string DeleteConfirmText = "Sure to delete?";
     public const string CancelConfirmText = "Sure to cancel?";
+    public const string Operating = "Operation in progress, please wait.";
 }

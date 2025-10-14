@@ -13,4 +13,5 @@ internal class zh_CN : LanguageProvider
     public const string CancelTooltip = "取消排序";
     public const string DeleteConfirmText = "确认删除？";
     public const string CancelConfirmText = "确认取消？";
+    public const string Operating = "正在操作中，请稍后";
 }

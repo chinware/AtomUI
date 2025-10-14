@@ -1,0 +1,64 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Spin}" TargetType="atom:Spin">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="RootLayout">
+                    <ContentPresenter Name="ContentPresenter"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                    <Panel Name="MaskLayout" IsVisible="{TemplateBinding IsSpinning}">
+                        <Border Name="Mask" Background="Transparent"/>
+                        <StackPanel Orientation="Vertical"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Name="IndicatorLayout">
+                            <Panel>
+                                <ContentPresenter
+                                    Name="CustomIndicator"
+                                    Content="{TemplateBinding CustomIndicator}"
+                                    ContentTemplate="{TemplateBinding CustomIndicatorTemplate}"
+                                    IsVisible="{TemplateBinding IsCustomIndicator}"
+                                    HorizontalAlignment="Center"/>
+                                <atom:SpinIndicator Name="Indicator"
+                                                    SizeType="{TemplateBinding SizeType}"
+                                                    MotionDuration="{TemplateBinding MotionDuration}"
+                                                    MotionEasingCurve="{TemplateBinding MotionEasingCurve}"
+                                                    HorizontalAlignment="Center"
+                                                    IsVisible="{TemplateBinding IsCustomIndicator, Converter={x:Static BoolConverters.Not}}"/>
+                            </Panel>
+                            <atom:TextBlock
+                                Name="Tip"
+                                Text="{TemplateBinding Tip}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsVisible="{TemplateBinding IsShowTip}"/>
+                        </StackPanel>
+                    </Panel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="MotionEasingCurve" Value="LinearEasing" />
+        <Setter Property="MotionDuration"
+                Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorDuration}}" />
+        <Style Selector="^ /template/ atom|TextBlock#Tip">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+        </Style>
+        
+        <Style Selector="^[IsSpinning=True]">
+            <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Effect">
+                    <BlurEffect Radius="5"/>
+                </Setter>
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ StackPanel#IndicatorLayout">
+            <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

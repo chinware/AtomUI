@@ -1,0 +1,56 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SpinIndicator}" TargetType="atom:SpinIndicator">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter
+                    Name="{x:Static atom:SpinThemeConstants.CustomIndicatorPresenterPart}"
+                    Content="{TemplateBinding CustomIndicator}"
+                    ContentTemplate="{TemplateBinding CustomIndicatorTemplate}"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"/>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="MotionEasingCurve" Value="LinearEasing" />
+        <Setter Property="MotionDuration"
+                Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorDuration}}" />
+        <Setter Property="DotBgBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="DotSize" Value="{DynamicResource {x:Static atom:SpinTokenKey.DotSizeLG}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="DotSize" Value="{DynamicResource {x:Static atom:SpinTokenKey.DotSize}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="DotSize" Value="{DynamicResource {x:Static atom:SpinTokenKey.DotSizeSM}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorSizeLG}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorSizeLG}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorSize}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorSize}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
+                <Setter Property="Width" Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorSizeSM}}" />
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorSizeSM}}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

@@ -442,17 +442,6 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("ListBox.ItemSelectedColor");
     }
 
-    public static class LoadingIndicatorTokenKey
-    {
-        public static readonly TokenResourceKey DotSize = new TokenResourceKey("LoadingIndicator.DotSize");
-        public static readonly TokenResourceKey DotSizeLG = new TokenResourceKey("LoadingIndicator.DotSizeLG");
-        public static readonly TokenResourceKey DotSizeSM = new TokenResourceKey("LoadingIndicator.DotSizeSM");
-        public static readonly TokenResourceKey IndicatorDuration = new TokenResourceKey("LoadingIndicator.IndicatorDuration");
-        public static readonly TokenResourceKey IndicatorSize = new TokenResourceKey("LoadingIndicator.IndicatorSize");
-        public static readonly TokenResourceKey IndicatorSizeLG = new TokenResourceKey("LoadingIndicator.IndicatorSizeLG");
-        public static readonly TokenResourceKey IndicatorSizeSM = new TokenResourceKey("LoadingIndicator.IndicatorSizeSM");
-    }
-
     public static class MarqueeLabelTokenKey
     {
         public static readonly TokenResourceKey CycleSpace = new TokenResourceKey("MarqueeLabel.CycleSpace");
@@ -778,6 +767,17 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey TrackBg = new TokenResourceKey("Slider.TrackBg");
         public static readonly TokenResourceKey TrackBgDisabled = new TokenResourceKey("Slider.TrackBgDisabled");
         public static readonly TokenResourceKey TrackHoverBg = new TokenResourceKey("Slider.TrackHoverBg");
+    }
+
+    public static class SpinTokenKey
+    {
+        public static readonly TokenResourceKey DotSize = new TokenResourceKey("Spin.DotSize");
+        public static readonly TokenResourceKey DotSizeLG = new TokenResourceKey("Spin.DotSizeLG");
+        public static readonly TokenResourceKey DotSizeSM = new TokenResourceKey("Spin.DotSizeSM");
+        public static readonly TokenResourceKey IndicatorDuration = new TokenResourceKey("Spin.IndicatorDuration");
+        public static readonly TokenResourceKey IndicatorSize = new TokenResourceKey("Spin.IndicatorSize");
+        public static readonly TokenResourceKey IndicatorSizeLG = new TokenResourceKey("Spin.IndicatorSizeLG");
+        public static readonly TokenResourceKey IndicatorSizeSM = new TokenResourceKey("Spin.IndicatorSizeSM");
     }
 
     public static class StepsTokenKey

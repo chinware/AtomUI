@@ -6,7 +6,6 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -22,7 +21,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Utilities;
@@ -47,61 +45,40 @@ public partial class DataGrid : TemplatedControl,
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGrid>();
+    
+    public static readonly StyledProperty<bool> IsOperatingProperty =
+        AvaloniaProperty.Register<DataGrid, bool>(nameof(IsOperating));
+    
+    public static readonly StyledProperty<string?> OperatingMsgProperty =
+        AvaloniaProperty.Register<DataGrid, string?>(nameof(OperatingMsg));
 
     public static readonly StyledProperty<bool> IsShowFrameBorderProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(IsShowFrameBorder), false);
-
-    /// <summary>
-    /// Identifies the CanUserReorderColumns dependency property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> CanUserReorderColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserReorderColumns));
-
-    /// <summary>
-    /// Identifies the CanUserResizeColumns dependency property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> CanUserResizeColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserResizeColumns));
-
-    /// <summary>
-    /// Identifies the CanUserSortColumns dependency property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> CanUserSortColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserSortColumns), false);
-
-    /// <summary>
-    /// Identifies the CanUserFilterColumns dependency property.
-    /// </summary>
+    
     public static readonly StyledProperty<bool> CanUserFilterColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserFilterColumns), false);
     
-    /// <summary>
-    /// Identifies the CanUserReorderColumns dependency property.
-    /// </summary>
     public static readonly StyledProperty<bool> CanUserReorderRowsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserReorderRows), false);
-
-    /// <summary>
-    /// If header show next sorter direction tooltip
-    /// </summary>
+    
     public static readonly StyledProperty<bool> ShowSorterTooltipProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(ShowSorterTooltip), true);
-
-    /// <summary>
-    /// Identifies the ColumnHeaderHeight dependency property.
-    /// </summary>
+    
     public static readonly StyledProperty<double> ColumnHeaderHeightProperty = 
         AvaloniaProperty.Register<DataGrid, double>(nameof(ColumnHeaderHeight), defaultValue: double.NaN, validate: IsValidColumnHeaderHeight);
-
-    /// <summary>
-    /// Identifies the ColumnWidth dependency property.
-    /// </summary>
+    
     public static readonly StyledProperty<DataGridLength> ColumnWidthProperty =
         AvaloniaProperty.Register<DataGrid, DataGridLength>(nameof(ColumnWidth), defaultValue: DataGridLength.Auto);
-
-    /// <summary>
-    /// Identifies the <see cref="RowGroupTheme"/> dependency property.
-    /// </summary>
+    
     public static readonly StyledProperty<ControlTheme> RowGroupThemeProperty =
         AvaloniaProperty.Register<DataGrid, ControlTheme>(nameof(RowGroupTheme));
 
@@ -242,7 +219,7 @@ public partial class DataGrid : TemplatedControl,
         AvaloniaProperty.Register<DataGrid, int>(nameof(PageSize), DEFAULT_PAGE_SIZE);
     
     public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
-        Pagination.IsHideOnSinglePageProperty.AddOwner<DataGrid>();
+        AbstractPagination.IsHideOnSinglePageProperty.AddOwner<DataGrid>();
 
     public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
@@ -254,6 +231,18 @@ public partial class DataGrid : TemplatedControl,
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+    
+    public bool IsOperating
+    {
+        get => GetValue(IsOperatingProperty);
+        set => SetValue(IsOperatingProperty, value);
+    }
+    
+    public string? OperatingMsg
+    {
+        get => GetValue(OperatingMsgProperty);
+        set => SetValue(OperatingMsgProperty, value);
     }
 
     public bool IsShowFrameBorder

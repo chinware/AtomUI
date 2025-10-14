@@ -33,7 +33,6 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.GroupBoxToken));
             tokenTypes.Add(typeof(AtomUI.Controls.LineEditToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ListBoxToken));
-            tokenTypes.Add(typeof(AtomUI.Controls.LoadingIndicatorToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MenuToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MessageBoxToken));
@@ -53,6 +52,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.SeparatorToken));
             tokenTypes.Add(typeof(AtomUI.Controls.SkeletonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.SliderToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.SpinToken));
             tokenTypes.Add(typeof(AtomUI.Controls.StepsToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TabControlToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TagToken));

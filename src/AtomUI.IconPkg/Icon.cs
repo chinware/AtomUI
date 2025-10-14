@@ -185,10 +185,6 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
             FilledBrushProperty,
             PrimaryFilledBrushProperty,
             SecondaryFilledBrushProperty);
-        HorizontalAlignmentProperty.OverrideDefaultValue<Icon>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<Icon>(VerticalAlignment.Center);
-        WidthProperty.OverrideDefaultValue<Icon>(14d);
-        HeightProperty.OverrideDefaultValue<Icon>(14d);
     }
 
     public Icon()

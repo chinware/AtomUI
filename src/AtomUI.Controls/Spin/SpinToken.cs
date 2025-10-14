@@ -3,11 +3,11 @@
 namespace AtomUI.Controls;
 
 [ControlDesignToken]
-internal class LoadingIndicatorToken : AbstractControlDesignToken
+internal class SpinToken : AbstractControlDesignToken
 {
-    public const string ID = "LoadingIndicator";
+    public const string ID = "Spin";
 
-    public LoadingIndicatorToken()
+    public SpinToken()
         : base(ID)
     {
     }
@@ -52,12 +52,15 @@ internal class LoadingIndicatorToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         var controlHeightLG = SharedToken.ControlHeightLG;
         var controlHeight   = SharedToken.ControlHeight;
-        DotSize           = controlHeightLG / 2;
-        DotSizeSM         = controlHeightLG * 0.35;
-        DotSizeLG         = controlHeight;
+        var indicatorSize     = controlHeightLG / 2;
+        var indicatorSizeSM   = controlHeightLG * 0.35;
+        var indicatorSizeLG   = controlHeight;
         IndicatorDuration = SharedToken.MotionDurationSlow * 4;
-        IndicatorSizeLG   = 48;
-        IndicatorSize     = 32;
-        IndicatorSizeSM   = 16;
+        DotSize           = ((indicatorSize - SharedToken.UniformlyMarginXXS / 2) / 2) * 0.75;
+        DotSizeLG         = ((indicatorSizeLG - SharedToken.UniformlyMarginXXS) / 2) * 0.75;
+        DotSizeSM         = ((indicatorSizeSM - SharedToken.UniformlyMarginXXS / 2) / 2) * 0.75;
+        IndicatorSize     = indicatorSize + 2;
+        IndicatorSizeSM   = indicatorSizeSM + 1;
+        IndicatorSizeLG   = indicatorSizeLG + 4;
     }
 }
