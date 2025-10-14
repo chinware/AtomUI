@@ -63,6 +63,9 @@ public class ComboBox : AvaloniaComboBox,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
     
+    public static readonly StyledProperty<int> DropDownDisplayPageSizeProperty = 
+        AvaloniaProperty.Register<ComboBox, int>(nameof (DropDownDisplayPageSize), 10);
+    
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -146,6 +149,12 @@ public class ComboBox : AvaloniaComboBox,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    public int DropDownDisplayPageSize
+    {
+        get => GetValue(DropDownDisplayPageSizeProperty);
+        set => SetValue(DropDownDisplayPageSizeProperty, value);
+    }
 
     #endregion
 
@@ -157,12 +166,30 @@ public class ComboBox : AvaloniaComboBox,
             o => o.EffectivePopupWidth,
             (o, v) => o.EffectivePopupWidth = v);
     
+    internal static readonly StyledProperty<double> ItemHeightProperty =
+        AvaloniaProperty.Register<ComboBox, double>(nameof(ItemHeight));
+    
+    internal static readonly StyledProperty<Thickness> PopupContentPaddingProperty =
+        AvaloniaProperty.Register<ComboBox, Thickness>(nameof(PopupContentPadding));
+    
     private double _effectivePopupWidth;
 
     internal double EffectivePopupWidth
     {
         get => _effectivePopupWidth;
         set => SetAndRaise(EffectivePopupWidthProperty, ref _effectivePopupWidth, value);
+    }
+    
+    internal double ItemHeight
+    {
+        get => GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
+    }
+    
+    internal Thickness PopupContentPadding
+    {
+        get => GetValue(PopupContentPaddingProperty);
+        set => SetValue(PopupContentPaddingProperty, value);
     }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -216,6 +243,7 @@ public class ComboBox : AvaloniaComboBox,
             popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
         }
         UpdatePseudoClasses();
+        ConfigureMaxDropdownHeight();
     }
 
     private void HandleOpenPopupClicked(object? sender, EventArgs e)
@@ -277,6 +305,8 @@ public class ComboBox : AvaloniaComboBox,
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, comboBoxItem, ComboBoxItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, OptionFontSizeProperty, comboBoxItem, ComboBoxItem.FontSizeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, comboBoxItem, ComboBoxItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, ItemHeightProperty, comboBoxItem, ComboBoxItem.HeightProperty));
+            
             if (_itemsBindingDisposables.TryGetValue(comboBoxItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();
@@ -293,6 +323,12 @@ public class ComboBox : AvaloniaComboBox,
         if (change.Property == StatusProperty)
         {
             UpdatePseudoClasses();
+        }
+        else if (change.Property == DropDownDisplayPageSizeProperty ||
+                 change.Property == ItemHeightProperty ||
+                 change.Property == PopupContentPaddingProperty)
+        {
+            ConfigureMaxDropdownHeight();
         }
     }
     
@@ -321,5 +357,10 @@ public class ComboBox : AvaloniaComboBox,
     {
         base.OnSizeChanged(e);
         EffectivePopupWidth = e.NewSize.Width;
+    }
+
+    private void ConfigureMaxDropdownHeight()
+    {
+        SetCurrentValue(MaxDropDownHeightProperty, DropDownDisplayPageSize * ItemHeight + PopupContentPadding.Top + PopupContentPadding.Bottom);
     }
 }

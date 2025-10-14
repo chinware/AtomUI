@@ -9,7 +9,8 @@
                 <Border Name="Frame"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
+                        Padding="{TemplateBinding Padding}"
+                        MaxHeight="{TemplateBinding MaxPopupHeight}">
                     <atom:UpDownScrollerViewer IsScrollChainingEnabled="False"
                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                         <ItemsPresenter Name="{x:Static atom:ContextMenuThemeConstants.ItemsPresenterPart}"
@@ -27,7 +28,7 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ContextMenuBgColor}}" />
         <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
         <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
-        <Setter Property="MaxHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxHeight}}" />
+        <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
 
     </ControlTheme>
 </ResourceDictionary>

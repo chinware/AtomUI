@@ -7,7 +7,7 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:IconButton">
             <Border
-                Name="{x:Static atom:IconButtonThemeConstants.FramePart}"
+                Name="Frame"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 BorderBrush="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding CornerRadius}"
@@ -16,7 +16,7 @@
                 VerticalAlignment="Stretch"
                 Padding="{TemplateBinding Padding}">
                 <atom:IconPresenter
-                    Name="{x:Static atom:IconButtonThemeConstants.IconContentPart}"
+                    Name="IconPresenter"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Icon="{TemplateBinding Icon}"
@@ -52,24 +52,24 @@
             </Style>
         </Style>
 
-        <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="IconMode" Value="Normal" />
         </Style>
 
         <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconMode" Value="Active" />
             </Style>
         </Style>
 
         <Style Selector="^:pressed">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconMode" Value="Selected" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconContent">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconMode" Value="Disabled" />
             </Style>
         </Style>

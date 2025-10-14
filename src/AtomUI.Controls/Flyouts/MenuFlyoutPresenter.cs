@@ -11,7 +11,6 @@ using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -27,6 +26,9 @@ public class MenuFlyoutPresenter : MenuBase,
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         ArrowDecoratedBox.ArrowPositionProperty.AddOwner<MenuFlyoutPresenter>();
+    
+    public static readonly StyledProperty<int> DisplayPageSizeProperty = 
+        Menu.DisplayPageSizeProperty.AddOwner<MenuFlyoutPresenter>();
 
     public static readonly RoutedEvent<FlyoutMenuItemClickedEventArgs> MenuItemClickedEvent =
         RoutedEvent.Register<MenuFlyoutPresenter, FlyoutMenuItemClickedEventArgs>(
@@ -54,6 +56,12 @@ public class MenuFlyoutPresenter : MenuBase,
         set => SetValue(ArrowPositionProperty, value);
     }
     
+    public int DisplayPageSize
+    {
+        get => GetValue(DisplayPageSizeProperty);
+        set => SetValue(DisplayPageSizeProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -72,6 +80,24 @@ public class MenuFlyoutPresenter : MenuBase,
 
     #region 内部属性定义
 
+    internal static readonly StyledProperty<double> ItemHeightProperty =
+        AvaloniaProperty.Register<MenuFlyoutPresenter, double>(nameof(ItemHeight));
+    
+    internal static readonly StyledProperty<double> MaxPopupHeightProperty =
+        AvaloniaProperty.Register<MenuFlyoutPresenter, double>(nameof(MaxPopupHeight));
+        
+    internal double ItemHeight
+    {
+        get => GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
+    }
+
+    internal double MaxPopupHeight
+    {
+        get => GetValue(MaxPopupHeightProperty);
+        set => SetValue(MaxPopupHeightProperty, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
@@ -126,6 +152,16 @@ public class MenuFlyoutPresenter : MenuBase,
         }
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == DisplayPageSizeProperty ||
+            change.Property == ItemHeightProperty)
+        {
+            ConfigureMaxPopupHeight();
+        }
+    }
+    
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
     {
         base.ContainerForItemPreparedOverride(container, item, index);
@@ -190,6 +226,7 @@ public class MenuFlyoutPresenter : MenuBase,
     {
         base.OnApplyTemplate(e);
         _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutThemeConstants.ArrowDecoratorPart);
+        ConfigureMaxPopupHeight();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -282,6 +319,11 @@ public class MenuFlyoutPresenter : MenuBase,
         }
 
         base.PrepareContainerForItemOverride(container, item, index);
+    }
+    
+    private void ConfigureMaxPopupHeight()
+    {
+        SetCurrentValue(MaxPopupHeightProperty, ItemHeight * DisplayPageSize + Padding.Top + Padding.Bottom);
     }
 }
 

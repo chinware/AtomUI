@@ -29,6 +29,9 @@ public class ContextMenu : AvaloniaContextMenu,
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
+    
+    public static readonly StyledProperty<int> DisplayPageSizeProperty = 
+        Menu.DisplayPageSizeProperty.AddOwner<ContextMenu>();
 
     public SizeType SizeType
     {
@@ -42,10 +45,32 @@ public class ContextMenu : AvaloniaContextMenu,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    public int DisplayPageSize
+    {
+        get => GetValue(DisplayPageSizeProperty);
+        set => SetValue(DisplayPageSizeProperty, value);
+    }
     #endregion
 
     #region 内部属性定义
 
+    internal static readonly StyledProperty<double> ItemHeightProperty =
+        AvaloniaProperty.Register<ContextMenu, double>(nameof(ItemHeight));
+    
+    internal static readonly StyledProperty<double> MaxPopupHeightProperty =
+        AvaloniaProperty.Register<ContextMenu, double>(nameof(MaxPopupHeight));
+    
+    internal double ItemHeight
+    {
+        get => GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
+    }
+
+    internal double MaxPopupHeight
+    {
+        get => GetValue(MaxPopupHeightProperty);
+        set => SetValue(MaxPopupHeightProperty, value);
+    }
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => MenuToken.ID;
@@ -214,6 +239,7 @@ public class ContextMenu : AvaloniaContextMenu,
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.ItemTemplateProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, DisplayPageSizeProperty, menuItem, MenuItem.DisplayPageSizeProperty));
             
             PrepareMenuItem(menuItem, item, index, disposables);
             
@@ -273,5 +299,26 @@ public class ContextMenu : AvaloniaContextMenu,
             }
             _popup.IsMotionAwareOpen = false;
         }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == DisplayPageSizeProperty ||
+            change.Property == ItemHeightProperty)
+        {
+            ConfigureMaxPopupHeight();
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureMaxPopupHeight();
+    }
+
+    private void ConfigureMaxPopupHeight()
+    {
+        SetCurrentValue(MaxPopupHeightProperty, ItemHeight * DisplayPageSize + Padding.Top + Padding.Bottom);
     }
 }

@@ -22,8 +22,7 @@ namespace AtomUI.Controls;
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
 [PseudoClasses(MenuItemPseudoClass.TopLevel)]
-public class MenuItem : AvaloniaMenuItem,
-                        IMenuItemData
+public class MenuItem : AvaloniaMenuItem, IMenuItemData
 {
     #region 公共属性定义
     
@@ -31,6 +30,9 @@ public class MenuItem : AvaloniaMenuItem,
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
+    
+    public static readonly StyledProperty<int> DisplayPageSizeProperty = 
+        Menu.DisplayPageSizeProperty.AddOwner<MenuItem>();
 
     public SizeType SizeType
     {
@@ -42,6 +44,12 @@ public class MenuItem : AvaloniaMenuItem,
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
+    }
+    
+    public int DisplayPageSize
+    {
+        get => GetValue(DisplayPageSizeProperty);
+        set => SetValue(DisplayPageSizeProperty, value);
     }
 
     #endregion
@@ -67,12 +75,39 @@ public class MenuItem : AvaloniaMenuItem,
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuItem>();
     
+    internal static readonly StyledProperty<double> MaxPopupHeightProperty =
+        AvaloniaProperty.Register<MenuItem, double>(nameof(MaxPopupHeight));
+    
+    internal static readonly StyledProperty<double> ItemHeightProperty =
+        AvaloniaProperty.Register<MenuItem, double>(nameof(ItemHeight));
+    
+    internal static readonly StyledProperty<Thickness> PopupPaddingProperty =
+        AvaloniaProperty.Register<MenuItem, Thickness>(nameof(PopupPadding));
+    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
+    
+    internal double MaxPopupHeight
+    {
+        get => GetValue(MaxPopupHeightProperty);
+        set => SetValue(MaxPopupHeightProperty, value);
+    }
+    
+    internal double ItemHeight
+    {
+        get => GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
+    }
+    
+    internal Thickness PopupPadding
+    {
+        get => GetValue(PopupPaddingProperty);
+        set => SetValue(PopupPaddingProperty, value);
+    }
+    
     #endregion
 
     internal PopupRoot? SubmenuPopupRoot => _popup?.Host as PopupRoot;
@@ -138,6 +173,11 @@ public class MenuItem : AvaloniaMenuItem,
         else if (change.Property == IsCheckedProperty)
         {
             RaiseEvent(new RoutedEventArgs(IsCheckStateChangedEvent, this));
+        }
+        else if (change.Property == DisplayPageSizeProperty ||
+                 change.Property == ItemHeightProperty)
+        {
+            ConfigureMaxPopupHeight();
         }
 
         if (IsLoaded)
@@ -275,6 +315,7 @@ public class MenuItem : AvaloniaMenuItem,
         }
         
         UpdatePseudoClasses();
+        ConfigureMaxPopupHeight();
     }
 
     private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
@@ -360,5 +401,10 @@ public class MenuItem : AvaloniaMenuItem,
         }
 
         IsSubMenuOpen = false;
+    }
+
+    private void ConfigureMaxPopupHeight()
+    {
+        SetCurrentValue(MaxPopupHeightProperty, ItemHeight * DisplayPageSize + PopupPadding.Top + PopupPadding.Bottom);
     }
 }

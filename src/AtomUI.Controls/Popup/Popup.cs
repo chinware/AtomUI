@@ -2,7 +2,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
-using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
@@ -650,13 +649,13 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             closed?.Invoke();
             return;
         }
-
+        
         if (MotionActor == null)
         {
             closed?.Invoke();
             return;
         }
-    
+        
         if (!IsMotionEnabled || popupRoot == null)
         {
             _isNeedDetectFlip = true;
@@ -667,7 +666,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             {
                 SetCurrentValue(IsMotionAwareOpenProperty, false);
             }
-
+        
             _buddyLayer = null;
             return;
         }
@@ -678,7 +677,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
         
         _closeAnimating    = true;
-
+        
         var shadowAwareLayer = _buddyLayer as IShadowAwareLayer;
         Debug.Assert(shadowAwareLayer != null);
         shadowAwareLayer.RunCloseMotion(null, () =>

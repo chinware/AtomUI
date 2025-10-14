@@ -56,13 +56,15 @@
                                 IsLightDismissEnabled="False"
                                 IsDetectMouseClickEnabled="True"
                                 Placement="BottomEdgeAlignedLeft"
-                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                 IsMotionAwareOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border
                             Name="PopupFrame"
+                            MaxHeight="{TemplateBinding MaxDropDownHeight}"
                             HorizontalAlignment="Stretch"
-                            MinWidth="{TemplateBinding EffectivePopupWidth}">
-                            <atom:UpDownScrollerViewer>
+                            MinWidth="{TemplateBinding EffectivePopupWidth}"
+                            Padding="{TemplateBinding PopupContentPadding}">
+                            <atom:UpDownScrollerViewer
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                 <ItemsPresenter
                                     Name="{x:Static atom:ComboBoxThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -77,9 +79,10 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-
+        <Setter Property="PopupContentPadding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}" />
         <Setter Property="OptionFontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-
+        <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+        
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
@@ -105,7 +108,6 @@
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
             <Setter Property="CornerRadius"
                     Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBorderRadius}}" />
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}" />
         </Style>
 
         <Style Selector="^[StyleVariant=Borderless]">
