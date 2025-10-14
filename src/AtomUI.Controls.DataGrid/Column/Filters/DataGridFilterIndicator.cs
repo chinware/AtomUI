@@ -54,9 +54,11 @@ internal class DataGridFilterIndicator : IconButton
     }
     #endregion
     
+    protected override Type StyleKeyOverride { get; } = typeof(DataGridFilterIndicator);
+    
     private DataGridColumn? _owningColumn;
     private static int _indicatorSeed = 0;
-    private string _treeRadioCheckGroupName;
+    private readonly string _treeRadioCheckGroupName;
     private CompositeDisposable? _bindingDisposables;
 
     internal DataGridColumn? OwningColumn

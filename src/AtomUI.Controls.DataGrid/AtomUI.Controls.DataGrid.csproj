@@ -36,4 +36,9 @@
         <PackageReference Include="Avalonia"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Themes\Filters\DataGridFilterIndicatorTheme.axaml" />
+      <AdditionalFiles Include="Themes\Filters\DataGridSortIndicatorTheme.axaml" />
+    </ItemGroup>
+
 </Project>
