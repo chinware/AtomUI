@@ -3,6 +3,6 @@
         <NoWarn>$(NoWarn);CS7035</NoWarn>
         <AvaloniaVersion>11.3.6</AvaloniaVersion>
         <AtomUIVersion>5.0.0</AtomUIVersion>
-        <AtomUINativeVersion>0.1.2</AtomUINativeVersion>
+        <AtomUINativeVersion>1.0.0</AtomUINativeVersion>
     </PropertyGroup>
 </Project>

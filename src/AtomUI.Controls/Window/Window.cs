@@ -53,12 +53,6 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     public static readonly StyledProperty<bool> IsMoveEnabledProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsMoveEnabled), defaultValue: true);
     
-    public static readonly StyledProperty<Point> MacOSCaptionGroupOffsetProperty =
-        AvaloniaProperty.Register<Window, Point>(nameof(MacOSCaptionGroupOffset), defaultValue: new Point(10, 0));
-    
-    public static readonly StyledProperty<double> MacOSCaptionGroupSpacingProperty =
-        AvaloniaProperty.Register<Window, double>(nameof(MacOSCaptionGroupSpacing), 10.0);
-    
     public static readonly StyledProperty<OsType> OsTypeProperty =
         OperationSystemAwareControlProperty.OsTypeProperty.AddOwner<Window>();
     
@@ -131,6 +125,19 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(IsMoveEnabledProperty, value);
     }
     
+    public OsType OsType => GetValue(OsTypeProperty);
+    public Version OsVersion => GetValue(OsVersionProperty);
+    
+    #endregion
+
+    #region macOS 特有属性
+
+    public static readonly StyledProperty<Point> MacOSCaptionGroupOffsetProperty =
+        AvaloniaProperty.Register<Window, Point>(nameof(MacOSCaptionGroupOffset), defaultValue: new Point(10, 0));
+    
+    public static readonly StyledProperty<double> MacOSCaptionGroupSpacingProperty =
+        AvaloniaProperty.Register<Window, double>(nameof(MacOSCaptionGroupSpacing), 10.0);
+    
     public Point MacOSCaptionGroupOffset
     {
         get => GetValue(MacOSCaptionGroupOffsetProperty);
@@ -142,10 +149,7 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         get => GetValue(MacOSCaptionGroupSpacingProperty);
         set => SetValue(MacOSCaptionGroupSpacingProperty, value);
     }
-    
-    public OsType OsType => GetValue(OsTypeProperty);
-    public Version OsVersion => GetValue(OsVersionProperty);
-    
+
     #endregion
 
     #region 内部属性定义
@@ -230,15 +234,17 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
             }
             HandleWindowStateChanged(oldWindowState, newWindowState);
         }
-#if PLATFORM_MACOS
-        if (this.IsAttachedToVisualTree())
+
+        if (OsType == OsType.macOS)
         {
-            if (change.Property == IsCloseCaptionButtonEnabledProperty)
+            if (this.IsAttachedToVisualTree())
             {
-                this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
+                if (change.Property == IsCloseCaptionButtonEnabledProperty)
+                {
+                    this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
+                }
             }
         }
-#endif
     }
     
     private void HandleWindowStateChanged(WindowState oldState, WindowState newState)
@@ -281,9 +287,11 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
                 _titleBar.PointerMoved    -= HandleTitleBarPointerMoved;
             });
         }
-#if PLATFORM_MACOS
-        this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
-#endif
+
+        if (OsType == OsType.macOS)
+        {
+            this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
+        }
         ConfigureCustomResizerVisible();
     }
 
@@ -306,9 +314,11 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         {
             Icon ??= window.Icon;
         }
-#if PLATFORM_MACOS
-        this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
-#endif
+
+        if (OsType == OsType.macOS)
+        {
+            this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
+        }
     }
 
     private void HandleScalingChanged(object? sender, EventArgs e)
@@ -400,19 +410,22 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
-#if PLATFORM_MACOS
-        ConfigureMacOSCaptionGroupOffset();
-#endif
+        if (OsType == OsType.macOS)
+        {
+            ConfigureMacOSCaptionGroupOffset();
+        }
     }
 
-#if PLATFORM_MACOS
+    #region macOS 特有方法
+
     private void ConfigureMacOSCaptionGroupOffset()
     {
         this.SetMacOSOptionButtonsPosition(MacOSCaptionGroupOffset.X, MacOSCaptionGroupOffset.Y, MacOSCaptionGroupSpacing);
         var cationsSize = this.GetMacOSOptionsSize(MacOSCaptionGroupSpacing);
         SetCurrentValue(TitleBarOSOffsetMarginProperty, new Thickness(cationsSize.Width + MacOSCaptionGroupOffset.X, 0, 0, 0));
     }
-#endif
+
+    #endregion
     
     void IOperationSystemAware.SetOsType(OsType osType)
     {

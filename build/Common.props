@@ -33,22 +33,4 @@
 
     </PropertyGroup>
 
-    <Choose>
-        <When Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-            <PropertyGroup>
-                <DefineConstants>$(DefineConstants);PLATFORM_WINDOWS</DefineConstants>
-            </PropertyGroup>
-        </When>
-        <When Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-            <PropertyGroup>
-                <DefineConstants>$(DefineConstants);PLATFORM_MACOS</DefineConstants>
-            </PropertyGroup>
-        </When>
-        <When Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-            <PropertyGroup>
-                <DefineConstants>$(DefineConstants);PLATFORM_LINUX</DefineConstants>
-            </PropertyGroup>
-        </When>
-    </Choose>
-
 </Project>

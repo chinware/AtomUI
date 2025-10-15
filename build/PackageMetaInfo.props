@@ -9,7 +9,7 @@
         <ProjectUrl>https://qinware.com</ProjectUrl>
         <RepositoryUrl>https://github.com/chinware/AtomUI</RepositoryUrl>
         <Company>Qinware Technologies Ltd.</Company>
-        <Copyright>Copyright ©2018-2025, Qinware Technologies Ltd., All Rights Reserved.</Copyright>
+        <Copyright>Copyright ©2018-2025, Qinware Technologies Co.,Ltd., All Rights Reserved.</Copyright>
         <PackageIcon>logo.png</PackageIcon>
         <PackageReadmeFile>README.nuget.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
