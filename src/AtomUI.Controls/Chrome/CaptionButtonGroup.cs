@@ -234,13 +234,8 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         {
             _maximizeButton.Click += HandleMaximizeButtonClicked;
             _disposeActions.Add(() => _maximizeButton.Click -= HandleMaximizeButtonClicked);
-            if (OsType == OsType.Windows)
-            {
-                if (OsVersion.Major > 10)
-                {
-                    EnableWindowsSnapLayout(_maximizeButton);
-                }
-            }
+            // TODO 目前有点问题暂时关闭
+            // EnableWindowsSnapLayout(_maximizeButton);
         }
 
         if (_fullScreenButton != null)
@@ -370,7 +365,6 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
                         pointerOnButton = true;
                         pointerOverSetter.SetValue(maximizeButton, true);
                     }
-
                     return HTMAXBUTTON;
                 }
                 if (pointerOnButton)
