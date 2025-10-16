@@ -222,12 +222,10 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             var qualifiedTokenKey =
                 AtomUITheme.GenerateTokenQualifiedKey(controlToken.GetId(), tokenAttr?.ResourceCatalog);
 
-            if (!controlTokenConfig.TryGetValue(qualifiedTokenKey, out var tokenConfigInfo))
+            if (controlTokenConfig.TryGetValue(qualifiedTokenKey, out var tokenConfigInfo))
             {
-                continue;
+                controlToken.LoadConfig(tokenConfigInfo.Tokens);
             }
-            
-            controlToken.LoadConfig(tokenConfigInfo.Tokens);
 
             controlToken.BuildResourceDictionary(resourceDictionary);
             if (controlToken.HasCustomTokenConfig())
@@ -235,7 +233,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
                 controlToken.BuildSharedResourceDeltaDictionary(_sharedToken);
             }
         }
-
+        
         Resources.MergedDictionaries.Add(resourceDictionary);
     }
 
