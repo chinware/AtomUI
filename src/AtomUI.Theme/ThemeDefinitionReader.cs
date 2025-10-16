@@ -26,6 +26,7 @@ internal class ThemeDefinitionReader
     private const string TokenElementName = "Token";
     private const string NameAttrName = "Name";
     private const string ValueAttrName = "Value";
+    private const string IsShardAttrName = "IsShared";
     
     private const string ControlTokenElementName = "ControlToken";
     private const string IdAttrName = "Id";
@@ -241,7 +242,24 @@ internal class ThemeDefinitionReader
         }
         else if (_inControlTokenCtx)
         {
-            _currentControlToken!.Tokens.Add(tokenName!, tokenValue);
+            var isShared         = false;
+            var isSharedValueStr = reader.GetAttribute(IsShardAttrName);
+            if (isSharedValueStr is not null)
+            {
+                isSharedValueStr = isSharedValueStr.Trim().ToLower();
+                if (isSharedValueStr == "true")
+                {
+                    isShared = true;
+                }
+            }
+            if (isShared)
+            {
+                _currentControlToken!.SharedTokens.Add(tokenName!, tokenValue);
+            }
+            else
+            {
+                _currentControlToken!.Tokens.Add(tokenName!, tokenValue);
+            }
         }
         else
         {

@@ -43,8 +43,8 @@ internal class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<bool> IsClearButtonVisibleProperty =
         AvaloniaProperty.Register<AddOnDecoratedInnerBox, bool>(nameof(IsClearButtonVisible));
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedInnerBox>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedInnerBox>();
 
     public SizeType SizeType
     {

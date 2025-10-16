@@ -9,10 +9,12 @@ internal class ControlTokenConfigInfo
     public string TokenId { get; set; } = string.Empty;
     
     public IDictionary<string, string> Tokens { get; set; }
+    public IDictionary<string, string> SharedTokens { get; set; }
 
     public ControlTokenConfigInfo()
     {
-        Tokens = new Dictionary<string, string>();
+        Tokens       = new Dictionary<string, string>();
+        SharedTokens = new Dictionary<string, string>();
     }
 
     internal ControlTokenConfigInfo Clone()
@@ -24,6 +26,11 @@ internal class ControlTokenConfigInfo
         foreach (var key in Tokens.Keys)
         {
             cloned.Tokens[key] = Tokens[key];
+        }
+
+        foreach (var key in SharedTokens.Keys)
+        {
+            cloned.SharedTokens[key] = SharedTokens[key];
         }
         return cloned;
     }

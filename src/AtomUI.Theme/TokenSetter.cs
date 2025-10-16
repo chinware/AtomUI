@@ -22,3 +22,6 @@ public class TokenSetter
         Value   = value;
     }
 }
+
+public class ControlTokenSetter : TokenSetter 
+{}

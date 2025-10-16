@@ -129,15 +129,49 @@ internal class Theme : AvaloniaObject, ITheme
         }
     
         Debug.Assert(calculator != null);
-        _sharedToken.LoadConfig(ThemeDefinition.SharedTokens);
-
+        
+        // TODO 看后期是否需要改进，做一个缓存
+        var seedTokenKeys  = DesignToken.GetTokenProperties(DesignTokenKind.Seed).Select(p => p.Name).ToHashSet();
+        var mapTokenKeys   = DesignToken.GetTokenProperties(DesignTokenKind.Map).Select(p => p.Name).ToHashSet();
+        var aliasTokenKeys =  DesignToken.GetTokenProperties(DesignTokenKind.Alias).Select(p => p.Name).ToHashSet();
+        
+        var sharedTokenConfigMap = new Dictionary<DesignTokenKind, Dictionary<string, string>>();
+        
+        sharedTokenConfigMap[DesignTokenKind.Seed]  = new Dictionary<string, string>();
+        sharedTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
+        sharedTokenConfigMap[DesignTokenKind.Alias] = new Dictionary<string, string>();
+        
+        foreach (var tokenSetter in ThemeDefinition.SharedTokens)
+        {
+            if (seedTokenKeys.Contains(tokenSetter.Key))
+            {
+                sharedTokenConfigMap[DesignTokenKind.Seed].Add(tokenSetter.Key, tokenSetter.Value);
+            }
+            else if (mapTokenKeys.Contains(tokenSetter.Key))
+            {
+                sharedTokenConfigMap[DesignTokenKind.Map].Add(tokenSetter.Key, tokenSetter.Value);
+            }
+            else if (aliasTokenKeys.Contains(tokenSetter.Key))
+            {
+                sharedTokenConfigMap[DesignTokenKind.Alias].Add(tokenSetter.Key, tokenSetter.Value);
+            }
+        }
+        
+        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Seed]);
+        // 计算得到 Map Tokens
         calculator.Calculate(_sharedToken);
+        // 覆盖 Map Token
+        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Map]);
 
         // 交付最终的基础色
         _sharedToken.ColorBgBase   = calculator.ColorBgBase;
         _sharedToken.ColorTextBase = calculator.ColorTextBase;
 
         _sharedToken.CalculateAliasTokenValues();
+        
+        // 覆盖 Alias Token
+        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Alias]);
+        
         _sharedToken.BuildResourceDictionary(ResourceDictionary);
 
         CollectControlTokens();
@@ -156,12 +190,41 @@ internal class Theme : AvaloniaObject, ITheme
             }
 
             var copiedSharedToken = (DesignToken)_sharedToken.Clone();
-            copiedSharedToken.LoadConfig(ExtraSharedTokenInfos(controlTokenInfo));
-
+            
+            var controlTokenConfigMap = new Dictionary<DesignTokenKind, Dictionary<string, string>>();
+            controlTokenConfigMap[DesignTokenKind.Seed]  = new Dictionary<string, string>();
+            controlTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
+            controlTokenConfigMap[DesignTokenKind.Alias] = new Dictionary<string, string>();
+            
+            foreach (var tokenSetter in controlTokenInfo.SharedTokens)
+            {
+                if (seedTokenKeys.Contains(tokenSetter.Key))
+                {
+                    controlTokenConfigMap[DesignTokenKind.Seed].Add(tokenSetter.Key, tokenSetter.Value);
+                }
+                else if (mapTokenKeys.Contains(tokenSetter.Key))
+                {
+                    controlTokenConfigMap[DesignTokenKind.Map].Add(tokenSetter.Key, tokenSetter.Value);
+                }
+                else if (aliasTokenKeys.Contains(tokenSetter.Key))
+                {
+                    controlTokenConfigMap[DesignTokenKind.Alias].Add(tokenSetter.Key, tokenSetter.Value);
+                }
+            }
+            
             if (controlTokenInfo.EnableAlgorithm)
             {
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Seed]);
                 calculator.Calculate(copiedSharedToken);
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Map]);
                 copiedSharedToken.CalculateAliasTokenValues();
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Alias]);
+            }
+            else
+            {
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Seed]);
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Map]);
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Alias]);
             }
 
             var controlToken = (ControlTokens[entry.Key] as AbstractControlDesignToken)!;
@@ -208,27 +271,6 @@ internal class Theme : AvaloniaObject, ITheme
         }
 
         return new ThemeVariant(string.Join("-", parts), null);
-    }
-
-    private IDictionary<string, string> ExtraSharedTokenInfos(ControlTokenConfigInfo controlTokenConfigInfo)
-    {
-        var qualifiedKey = GenerateTokenQualifiedKey(controlTokenConfigInfo.TokenId, controlTokenConfigInfo.Catalog);
-        var tokenType    = ControlTokens[qualifiedKey].GetType();
-        var tokenInfos   = new Dictionary<string, string>();
-        var tokenProperties = tokenType.GetProperties(BindingFlags.Public |
-                                                      BindingFlags.NonPublic |
-                                                      BindingFlags.Instance |
-                                                      BindingFlags.FlattenHierarchy)
-                                       .Select(p => p.Name).ToHashSet();
-        foreach (var entry in controlTokenConfigInfo.Tokens)
-        {
-            if (!tokenProperties.Contains(entry.Key))
-            {
-                tokenInfos.Add(entry.Key, entry.Value);
-            }
-        }
-
-        return tokenInfos;
     }
 
     internal static ISet<ThemeAlgorithm> CheckAlgorithmNames(IList<string> algorithmNames)
@@ -295,7 +337,7 @@ internal class Theme : AvaloniaObject, ITheme
 
     internal virtual void NotifyDeActivated()
     {
-        Activated         = false;
+        Activated = false;
     }
 
     internal virtual void NotifyAboutToLoad()

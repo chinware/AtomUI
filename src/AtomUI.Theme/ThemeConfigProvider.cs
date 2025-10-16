@@ -156,8 +156,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         sharedTokenConfigMap[DesignTokenKind.Seed] = new Dictionary<string, string>();
         sharedTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
         sharedTokenConfigMap[DesignTokenKind.Alias]   = new Dictionary<string, string>();
-        
-        var sharedTokenConfig = new Dictionary<string, string>();
+
         foreach (var tokenSetter in SharedTokenSetters)
         {
             if (seedTokenKeys.Contains(tokenSetter.Key))
@@ -210,7 +209,14 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             configInfo.EnableAlgorithm = controlTokenInfoSetter.EnableAlgorithm;
             foreach (var setter in controlTokenInfoSetter.Setters)
             {
-                configInfo.Tokens.Add(setter.Key, setter.Value);
+                if (setter is ControlTokenSetter)
+                {
+                    configInfo.Tokens.Add(setter.Key, setter.Value);
+                }
+                else
+                {
+                    configInfo.SharedTokens.Add(setter.Key, setter.Value);
+                }
             }
 
             controlTokenConfig.Add(key, configInfo);
@@ -228,12 +234,42 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             }
 
             var copiedSharedToken = (DesignToken)_sharedToken.Clone();
-            copiedSharedToken.LoadConfig(ExtraSharedTokenInfos(controlTokenInfo));
+
+            var controlTokenConfigMap = new Dictionary<DesignTokenKind, Dictionary<string, string>>();
+
+            controlTokenConfigMap[DesignTokenKind.Seed]  = new Dictionary<string, string>();
+            controlTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
+            controlTokenConfigMap[DesignTokenKind.Alias] = new Dictionary<string, string>();
+
+            foreach (var tokenSetter in controlTokenInfo.SharedTokens)
+            {
+                if (seedTokenKeys.Contains(tokenSetter.Key))
+                {
+                    controlTokenConfigMap[DesignTokenKind.Seed].Add(tokenSetter.Key, tokenSetter.Value);
+                }
+                else if (mapTokenKeys.Contains(tokenSetter.Key))
+                {
+                    controlTokenConfigMap[DesignTokenKind.Map].Add(tokenSetter.Key, tokenSetter.Value);
+                }
+                else if (aliasTokenKeys.Contains(tokenSetter.Key))
+                {
+                    controlTokenConfigMap[DesignTokenKind.Alias].Add(tokenSetter.Key, tokenSetter.Value);
+                }
+            }
 
             if (controlTokenInfo.EnableAlgorithm)
             {
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Seed]);
                 calculator.Calculate(copiedSharedToken);
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Map]);
                 copiedSharedToken.CalculateAliasTokenValues();
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Alias]);
+            }
+            else
+            {
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Seed]);
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Map]);
+                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Alias]);
             }
 
             var controlToken = (ControlTokens[qualifiedTokenKey] as AbstractControlDesignToken)!;
@@ -257,6 +293,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             }
 
             controlToken.BuildResourceDictionary(resourceDictionary);
+            
             if (controlToken.HasCustomTokenConfig())
             {
                 controlToken.BuildSharedResourceDeltaDictionary(_sharedToken);
@@ -264,28 +301,6 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         }
         
         Resources.MergedDictionaries.Add(resourceDictionary);
-    }
-
-    private IDictionary<string, string> ExtraSharedTokenInfos(ControlTokenConfigInfo controlTokenConfigInfo)
-    {
-        var qualifiedKey =
-            AtomUITheme.GenerateTokenQualifiedKey(controlTokenConfigInfo.TokenId, controlTokenConfigInfo.Catalog);
-        var tokenType  = ControlTokens[qualifiedKey].GetType();
-        var tokenInfos = new Dictionary<string, string>();
-        var tokenProperties = tokenType.GetProperties(BindingFlags.Public |
-                                                      BindingFlags.NonPublic |
-                                                      BindingFlags.Instance |
-                                                      BindingFlags.FlattenHierarchy)
-            .Select(p => p.Name).ToHashSet();
-        foreach (var entry in controlTokenConfigInfo.Tokens)
-        {
-            if (!tokenProperties.Contains(entry.Key))
-            {
-                tokenInfos.Add(entry.Key, entry.Value);
-            }
-        }
-
-        return tokenInfos;
     }
 
     protected void CollectControlTokens()
