@@ -1,4 +1,5 @@
-﻿using AtomUI.Media;
+﻿using System.Reflection;
+using AtomUI.Media;
 using AtomUI.Theme.Palette;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -273,5 +274,19 @@ public partial class DesignToken : AbstractDesignToken
                 Spread  = 0,
                 Color   = ColorUtils.FromRgbF(0.02, 0, 0, 0)
             }]);
+    }
+    
+    internal static IEnumerable<PropertyInfo> GetTokenProperties(DesignTokenKind kind)
+    {
+        var type = typeof(DesignToken);
+        var tokenProperties = type.GetProperties(BindingFlags.Public |
+                                                 BindingFlags.NonPublic |
+                                                 BindingFlags.Instance |
+                                                 BindingFlags.FlattenHierarchy);
+        return tokenProperties.Where(prop =>
+        {
+            var attribute = prop.GetCustomAttribute<DesignTokenKindAttribute>();
+            return attribute != null && attribute.Kind == kind;
+        });
     }
 }

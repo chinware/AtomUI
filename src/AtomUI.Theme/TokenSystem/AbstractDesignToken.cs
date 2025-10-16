@@ -8,7 +8,7 @@ namespace AtomUI.Theme.TokenSystem;
 
 public abstract class AbstractDesignToken : IDesignToken
 {
-    private readonly IDictionary<string, object?> _tokenAccessCache;
+    private readonly Dictionary<string, object?> _tokenAccessCache = new Dictionary<string, object?>();
     private static readonly Dictionary<Type, ITokenValueConverter> _valueConverters;
 
     static AbstractDesignToken()
@@ -24,44 +24,42 @@ public abstract class AbstractDesignToken : IDesignToken
             _valueConverters.Add(valueConverter.TargetType(), valueConverter);
         }
     }
-
-    public AbstractDesignToken()
-    {
-        _tokenAccessCache = new Dictionary<string, object?>();
-    }
-
+    
     internal virtual void LoadConfig(IDictionary<string, string> tokenConfigInfo)
     {
         try
         {
-            var type = GetType();
-            var tokenPropertyMap =
-                type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-                    .ToDictionary(p => p.Name);
-            foreach (var tokenInfo in tokenConfigInfo)
+            if (tokenConfigInfo.Count > 0)
             {
-                var tokenName = tokenInfo.Key;
-                if (!tokenPropertyMap.ContainsKey(tokenInfo.Key))
+                var type = GetType();
+                var tokenPropertyMap =
+                    type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+                        .ToDictionary(p => p.Name);
+                foreach (var tokenInfo in tokenConfigInfo)
                 {
-                    var logger = Logger.TryGet(LogEventLevel.Warning, AtomUILogArea.Theme);
-                    logger?.Log(this, $"Token property: '{tokenInfo.Key}' found in token {type.Name}.'");
-                    continue;
-                }
-                var property     = tokenPropertyMap[tokenName];
-                var propertyType = property.PropertyType;
-                if (_valueConverters.ContainsKey(propertyType))
-                {
-                    property.SetValue(this, _valueConverters[propertyType].Convert(tokenConfigInfo[tokenName]));
-                }
-                else
-                {
-                    try
+                    var tokenName = tokenInfo.Key;
+                    if (!tokenPropertyMap.ContainsKey(tokenInfo.Key))
                     {
-                        property.SetValue(tokenName, tokenConfigInfo[tokenName]);
+                        var logger = Logger.TryGet(LogEventLevel.Warning, AtomUILogArea.Theme);
+                        logger?.Log(this, $"Token property: '{tokenInfo.Key}' found in token {type.Name}.'");
+                        continue;
                     }
-                    catch (Exception ex)
+                    var property     = tokenPropertyMap[tokenName];
+                    var propertyType = property.PropertyType;
+                    if (_valueConverters.ContainsKey(propertyType))
                     {
-                        throw new InvalidOperationException($"Unable to set token property: {tokenName}, maybe value type mismatch.", ex);
+                        property.SetValue(this, _valueConverters[propertyType].Convert(tokenConfigInfo[tokenName]));
+                    }
+                    else
+                    {
+                        try
+                        {
+                            property.SetValue(tokenName, tokenConfigInfo[tokenName]);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException($"Unable to set token property: {tokenName}, maybe value type mismatch.", ex);
+                        }
                     }
                 }
             }

@@ -145,20 +145,49 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         }
 
         Debug.Assert(calculator != null);
-
+        
+        // TODO 看后期是否需要改进，做一个缓存
+        var seedTokenKeys = DesignToken.GetTokenProperties(DesignTokenKind.Seed).Select(p => p.Name).ToHashSet();
+        var mapTokenKeys = DesignToken.GetTokenProperties(DesignTokenKind.Map).Select(p => p.Name).ToHashSet();
+        var aliasTokenKeys =  DesignToken.GetTokenProperties(DesignTokenKind.Alias).Select(p => p.Name).ToHashSet();
+        
+        var sharedTokenConfigMap = new Dictionary<DesignTokenKind, Dictionary<string, string>>();
+        
+        sharedTokenConfigMap[DesignTokenKind.Seed] = new Dictionary<string, string>();
+        sharedTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
+        sharedTokenConfigMap[DesignTokenKind.Alias]   = new Dictionary<string, string>();
+        
         var sharedTokenConfig = new Dictionary<string, string>();
         foreach (var tokenSetter in SharedTokenSetters)
         {
-            sharedTokenConfig.Add(tokenSetter.Key, tokenSetter.Value);
+            if (seedTokenKeys.Contains(tokenSetter.Key))
+            {
+                sharedTokenConfigMap[DesignTokenKind.Seed].Add(tokenSetter.Key, tokenSetter.Value);
+            }
+            else if (mapTokenKeys.Contains(tokenSetter.Key))
+            {
+                sharedTokenConfigMap[DesignTokenKind.Map].Add(tokenSetter.Key, tokenSetter.Value);
+            }
+            else if (aliasTokenKeys.Contains(tokenSetter.Key))
+            {
+                sharedTokenConfigMap[DesignTokenKind.Alias].Add(tokenSetter.Key, tokenSetter.Value);
+            }
         }
 
-        _sharedToken.LoadConfig(sharedTokenConfig);
+        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Seed]);
+        // 计算得到 Map Tokens
         calculator.Calculate(_sharedToken);
+
+        // 覆盖 Map Token
+        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Map]);
 
         // 交付最终的基础色
         _sharedToken.ColorBgBase   = calculator.ColorBgBase;
         _sharedToken.ColorTextBase = calculator.ColorTextBase;
         _sharedToken.CalculateAliasTokenValues();
+        
+        // 覆盖 Alias Token
+        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Alias]);
 
         var resourceDictionary = new ResourceDictionary();
         _sharedToken.BuildResourceDictionary(resourceDictionary);
