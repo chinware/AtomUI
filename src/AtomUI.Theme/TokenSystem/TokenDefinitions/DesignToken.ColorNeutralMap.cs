@@ -99,4 +99,23 @@ public partial class DesignToken
     /// 控制毛玻璃容器的背景色，通常为透明色。
     /// </summary>
     public Color ColorBgBlur { get; set; }
+    
+    // ----------   Solid   ---------- //
+    /// <summary>
+    /// 实心的背景颜色，目前只用在默认实心按钮背景色上。
+    /// Solid background color active state, currently only used in the active effect of the default solid button.
+    /// </summary>
+    public Color ColorBgSolid { get; set; }
+    
+    /// <summary>
+    /// 实心的背景颜色激活态，目前只用在默认实心按钮的 active 效果。
+    /// Solid background color active state, currently only used in the active effect of the default solid button.
+    /// </summary>
+    public Color ColorBgSolidActive { get; set; }
+    
+    /// <summary>
+    /// 实心的背景颜色悬浮态，目前只用在默认实心按钮的 hover 效果。
+    /// Solid background color hover state, currently only used in the hover effect of the default solid button.
+    /// </summary>
+    public Color ColorBgSolidHover { get; set; }
 }

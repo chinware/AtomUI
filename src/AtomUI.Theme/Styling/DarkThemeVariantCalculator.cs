@@ -66,37 +66,41 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
     }
 
     protected override void CalculateNeutralColorPalettes(Color? bgBaseColor, Color? textBaseColor, 
-        DesignToken designToken)
+                                                          DesignToken designToken)
     {
         var colorBgBase   = bgBaseColor ?? _colorBgBase;
         var colorTextBase = textBaseColor ?? _colorTextBase;
 
-        designToken.ColorText           = AlphaColor(colorTextBase, 0.85);
-        designToken.ColorTextSecondary  = AlphaColor(colorTextBase, 0.65);
-        designToken.ColorTextTertiary   = AlphaColor(colorTextBase, 0.45);
-        designToken.ColorTextQuaternary = AlphaColor(colorTextBase, 0.25);
+        designToken.ColorText           = CalculateAlphaColor(colorTextBase, 0.85);
+        designToken.ColorTextSecondary  = CalculateAlphaColor(colorTextBase, 0.65);
+        designToken.ColorTextTertiary   = CalculateAlphaColor(colorTextBase, 0.45);
+        designToken.ColorTextQuaternary = CalculateAlphaColor(colorTextBase, 0.25);
 
-        designToken.ColorFill           = AlphaColor(colorTextBase, 0.18);
-        designToken.ColorFillSecondary  = AlphaColor(colorTextBase, 0.12);
-        designToken.ColorFillTertiary   = AlphaColor(colorTextBase, 0.08);
-        designToken.ColorFillQuaternary = AlphaColor(colorTextBase, 0.04);
+        designToken.ColorFill           = CalculateAlphaColor(colorTextBase, 0.18);
+        designToken.ColorFillSecondary  = CalculateAlphaColor(colorTextBase, 0.12);
+        designToken.ColorFillTertiary   = CalculateAlphaColor(colorTextBase, 0.08);
+        designToken.ColorFillQuaternary = CalculateAlphaColor(colorTextBase, 0.04);
 
-        designToken.ColorBgElevated  = SolidColor(colorBgBase, 12);
-        designToken.ColorBgContainer = SolidColor(colorBgBase, 8);
-        designToken.ColorBgLayout    = SolidColor(colorBgBase, 0);
-        designToken.ColorBgSpotlight = SolidColor(colorBgBase, 26);
-        designToken.ColorBgBlur      = AlphaColor(colorTextBase, 0.04);
+        designToken.ColorBgSolid       = CalculateAlphaColor(colorTextBase, 1);
+        designToken.ColorBgSolidHover  = CalculateAlphaColor(colorTextBase, 0.75);
+        designToken.ColorBgSolidActive = CalculateAlphaColor(colorTextBase, 0.95);
 
-        designToken.ColorBorder          = SolidColor(colorBgBase, 26);
-        designToken.ColorBorderSecondary = SolidColor(colorBgBase, 19);
+        designToken.ColorBgElevated  = CalculateSolidColor(colorBgBase, 12);
+        designToken.ColorBgContainer = CalculateSolidColor(colorBgBase, 8);
+        designToken.ColorBgLayout    = CalculateSolidColor(colorBgBase, 0);
+        designToken.ColorBgSpotlight = CalculateSolidColor(colorBgBase, 26);
+        designToken.ColorBgBlur      = CalculateAlphaColor(colorTextBase, 0.04);
+
+        designToken.ColorBorder          = CalculateSolidColor(colorBgBase, 26);
+        designToken.ColorBorderSecondary = CalculateSolidColor(colorBgBase, 19);
     }
 
-    private Color AlphaColor(in Color baseColor, double alpha)
+    private Color CalculateAlphaColor(in Color baseColor, double alpha)
     {
         return Color.FromArgb((byte)(alpha * 255), baseColor.R, baseColor.G, baseColor.B);
     }
 
-    private Color SolidColor(Color baseColor, int brightness)
+    private Color CalculateSolidColor(Color baseColor, int brightness)
     {
         return baseColor.Lighten(brightness);
     }

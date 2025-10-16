@@ -1,3 +1,4 @@
+using AtomUI.Media;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
@@ -109,6 +110,33 @@ internal class ButtonToken : AbstractControlDesignToken
     /// 默认幽灵按钮边框颜色
     /// </summary>
     public Color DefaultGhostBorderColor { get; set; }
+    
+    // 主要填充按钮的浅色背景颜色
+    // Background color of primary filled button
+    
+    /// <summary>
+    /// 默认实心按钮的文本色
+    /// Default text color for solid buttons.
+    /// </summary>
+    public Color SolidTextColor { get; set; }
+    
+    /// <summary>
+    /// 默认文本按钮的文本色
+    /// Default text color for text buttons on hover
+    /// </summary>
+    public Color TextTextColor { get; set; }
+    
+    /// <summary>
+    /// 默认文本按钮悬浮态文本颜色
+    /// Default text color for text buttons on hover
+    /// </summary>
+    public Color TextTextHoverColor { get; set; }
+    
+    /// <summary>
+    /// 默认文本按钮激活态文字颜色
+    /// Default text color for text buttons on active
+    /// </summary>
+    public Color TextTextActiveColor { get; set; }
 
     /// <summary>
     /// 按钮内间距
@@ -315,7 +343,7 @@ internal class ButtonToken : AbstractControlDesignToken
         LinkHoverBg                = Colors.Transparent;
         TextHoverBg                = SharedToken.ColorBgTextHover;
         DefaultColor               = SharedToken.ColorText;
-        DefaultBg                  = SharedToken.ColorTransparent;
+        DefaultBg                  = SharedToken.ColorBgContainer;
         DefaultBorderColor         = SharedToken.ColorBorder;
         DefaultBorderColorDisabled = SharedToken.ColorBorder;
         DefaultHoverBg             = SharedToken.ColorBgContainer;
@@ -324,6 +352,20 @@ internal class ButtonToken : AbstractControlDesignToken
         DefaultActiveBg            = SharedToken.ColorBgContainer;
         DefaultActiveColor         = SharedToken.ColorPrimaryActive;
         DefaultActiveBorderColor   = SharedToken.ColorPrimaryActive;
+
+        var isBright = ColorUtils.IsBright(SharedToken.ColorBgSolid, Colors.White);
+        if (isBright)
+        {
+            SolidTextColor = Colors.Black;
+        }
+        else
+        {
+            SolidTextColor = Colors.White;
+        }
+
+        TextTextColor       = SharedToken.ColorText;
+        TextTextHoverColor  = SharedToken.ColorText;
+        TextTextActiveColor = SharedToken.ColorText;
 
         var controlHeightSM = SharedToken.ControlHeightSM;
         var controlHeight   = SharedToken.ControlHeight;

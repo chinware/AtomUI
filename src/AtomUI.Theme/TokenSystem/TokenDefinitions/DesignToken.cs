@@ -77,7 +77,7 @@ public partial class DesignToken : AbstractDesignToken
 
         // ============== Split ============== //
         ColorBorderBg = ColorBgContainer;
-        ColorSplit    = ColorUtils.AlphaColor(ColorBorderSecondary, ColorBgContainer);
+        ColorSplit    = ColorUtils.CalculateAlphaColor(ColorBorderSecondary, ColorBgContainer);
 
         // ============== Text ============== //
         ColorTextPlaceholder = ColorTextQuaternary;
@@ -93,8 +93,8 @@ public partial class DesignToken : AbstractDesignToken
         ColorIcon      = ColorTextTertiary;
         ColorIconHover = ColorText;
 
-        ColorErrorOutline   = ColorUtils.AlphaColor(ColorErrorBg, ColorBgContainer);
-        ColorWarningOutline = ColorUtils.AlphaColor(ColorWarningBg, ColorBgContainer);
+        ColorErrorOutline   = ColorUtils.CalculateAlphaColor(ColorErrorBg, ColorBgContainer);
+        ColorWarningOutline = ColorUtils.CalculateAlphaColor(ColorWarningBg, ColorBgContainer);
 
         // Font
         FontSizeIcon = FontSizeSM;
@@ -122,7 +122,7 @@ public partial class DesignToken : AbstractDesignToken
         ControlItemBgActive         = ColorPrimaryBg;
         ControlItemBgActiveHover    = ColorPrimaryBgHover;
         ControlItemBgActiveDisabled = ColorFill;
-        ColorControlOutline         = ColorUtils.AlphaColor(ColorPrimaryBg, ColorBgContainer);
+        ColorControlOutline         = ColorUtils.CalculateAlphaColor(ColorPrimaryBg, ColorBgContainer);
 
         FontWeightStrong    = FontWeight.SemiBold;
         OpacityLoading      = 0.65;

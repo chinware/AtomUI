@@ -20,6 +20,9 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ColorBgElevated = new TokenResourceKey("ColorBgElevated");
         public static readonly TokenResourceKey ColorBgLayout = new TokenResourceKey("ColorBgLayout");
         public static readonly TokenResourceKey ColorBgMask = new TokenResourceKey("ColorBgMask");
+        public static readonly TokenResourceKey ColorBgSolid = new TokenResourceKey("ColorBgSolid");
+        public static readonly TokenResourceKey ColorBgSolidActive = new TokenResourceKey("ColorBgSolidActive");
+        public static readonly TokenResourceKey ColorBgSolidHover = new TokenResourceKey("ColorBgSolidHover");
         public static readonly TokenResourceKey ColorBgSpotlight = new TokenResourceKey("ColorBgSpotlight");
         public static readonly TokenResourceKey ColorBgTextActive = new TokenResourceKey("ColorBgTextActive");
         public static readonly TokenResourceKey ColorBgTextHover = new TokenResourceKey("ColorBgTextHover");

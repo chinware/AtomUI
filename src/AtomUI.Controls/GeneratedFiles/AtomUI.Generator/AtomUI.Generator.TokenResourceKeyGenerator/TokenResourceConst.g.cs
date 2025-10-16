@@ -149,7 +149,11 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("Button.PaddingSM");
         public static readonly TokenResourceKey PrimaryColor = new TokenResourceKey("Button.PrimaryColor");
         public static readonly TokenResourceKey PrimaryShadow = new TokenResourceKey("Button.PrimaryShadow");
+        public static readonly TokenResourceKey SolidTextColor = new TokenResourceKey("Button.SolidTextColor");
         public static readonly TokenResourceKey TextHoverBg = new TokenResourceKey("Button.TextHoverBg");
+        public static readonly TokenResourceKey TextTextActiveColor = new TokenResourceKey("Button.TextTextActiveColor");
+        public static readonly TokenResourceKey TextTextColor = new TokenResourceKey("Button.TextTextColor");
+        public static readonly TokenResourceKey TextTextHoverColor = new TokenResourceKey("Button.TextTextHoverColor");
     }
 
     public static class ButtonSpinnerTokenKey

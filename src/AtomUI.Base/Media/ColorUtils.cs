@@ -98,17 +98,50 @@ public static class ColorUtils
         return FromRgbF(na, nr, ng, nb);
     }
 
-    public static bool IsStableColor(int color)
+    private static bool IsStableColor(int color)
     {
         return color >= 0 && color <= 255;
     }
-
-    public static bool IsStableColor(double color)
+    
+    private static bool IsStableColor(double color)
     {
         return MathUtils.GreaterThanOrClose(color, 0.0d) && MathUtils.LessThanOrClose(color, 255.0d);
     }
+    
+    public static double GetRelativeLuminance(Color color)
+    {
+        // The equation for relative luminance is given by
+        //
+        // L = 0.2126 * Rg + 0.7152 * Gg + 0.0722 * Bg
+        //
+        // where Xg = { X/3294 if X <= 10, (R/269 + 0.0513)^2.4 otherwise }
+        //
+        // If L is closer to 1, then the color is closer to white; if it is closer to 0,
+        // then the color is closer to black.  This is based on the fact that the human
+        // eye perceives green to be much brighter than red, which in turn is perceived to be
+        // brighter than blue.
 
-    public static Color AlphaColor(in Color frontColor, in Color backgroundColor)
+        double rg = color.R <= 10 ? color.R / 3294.0 : Math.Pow(color.R / 269.0 + 0.0513, 2.4);
+        double gg = color.G <= 10 ? color.G / 3294.0 : Math.Pow(color.G / 269.0 + 0.0513, 2.4);
+        double bg = color.B <= 10 ? color.B / 3294.0 : Math.Pow(color.B / 269.0 + 0.0513, 2.4);
+
+        return (0.2126 * rg + 0.7152 * gg + 0.0722 * bg);
+    }
+    
+    public static bool IsBright(Color color)
+    {
+        var lum = GetRelativeLuminance(color);
+        return lum <= 0.5;
+    }
+    
+    public static bool IsBright(Color color, Color bgColor)
+    {
+        var resultColor = OnBackground(color, bgColor);
+        var lum         = GetRelativeLuminance(resultColor);
+        return lum <= 0.5;
+    }
+
+    public static Color CalculateAlphaColor(in Color frontColor, in Color backgroundColor)
     {
         var fR          = frontColor.R;
         var fG          = frontColor.G;
@@ -221,9 +254,8 @@ public static class ColorUtils
     /// ---------------------
     /// <http:// www.w3.org/ TR/2008/ REC-WCAG20-20081211/# contrast-ratiodef ( WCAG Version 2)
     /// AKA ` contrast`
-    /// Analyze the 2 colors and returns the color contrast defined by ( WCAG Version
-    /// 2
-    /// )
+    /// Analyze the 2 colors and returns the color contrast defined by ( WCAG Version 2)
+    
     public static double Readability(Color color1, Color color2)
     {
         return (Math.Max(color1.GetLuminance(), color2.GetLuminance()) + 0.05) /
