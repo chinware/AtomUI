@@ -51,6 +51,12 @@ public partial class DataGrid : TemplatedControl,
     
     public static readonly StyledProperty<string?> OperatingMsgProperty =
         AvaloniaProperty.Register<DataGrid, string?>(nameof(OperatingMsg));
+    
+    public static readonly StyledProperty<object?> CustomOperatingIndicatorProperty =
+        AvaloniaProperty.Register<DataGrid, object?>(nameof(CustomOperatingIndicator));
+
+    public static readonly StyledProperty<IDataTemplate?> CustomOperatingIndicatorTemplateProperty =
+        AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(CustomOperatingIndicatorTemplate));
 
     public static readonly StyledProperty<bool> IsShowFrameBorderProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(IsShowFrameBorder), false);
@@ -243,6 +249,19 @@ public partial class DataGrid : TemplatedControl,
     {
         get => GetValue(OperatingMsgProperty);
         set => SetValue(OperatingMsgProperty, value);
+    }
+    
+    [DependsOn(nameof(CustomOperatingIndicatorTemplate))]
+    public object? CustomOperatingIndicator
+    {
+        get => GetValue(CustomOperatingIndicatorProperty);
+        set => SetValue(CustomOperatingIndicatorProperty, value);
+    }
+    
+    public IDataTemplate? CustomOperatingIndicatorTemplate
+    {
+        get => GetValue(CustomOperatingIndicatorTemplateProperty);
+        set => SetValue(CustomOperatingIndicatorTemplateProperty, value);
     }
 
     public bool IsShowFrameBorder
