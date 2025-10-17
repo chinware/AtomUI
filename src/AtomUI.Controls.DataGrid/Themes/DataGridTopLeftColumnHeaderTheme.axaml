@@ -11,7 +11,7 @@
 
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:DataGridColumnHeader">
-                <Border Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FramePart}"
+                <Border Name="Frame"
                         Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}"
                         CornerRadius="{TemplateBinding CornerRadius}">

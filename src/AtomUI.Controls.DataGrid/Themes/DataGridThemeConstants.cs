@@ -19,7 +19,6 @@ internal static class DataGridColumnGroupHeaderThemeConstants
 
 internal static class DataGridColumnHeaderThemeConstants
 {
-    public const string FramePart = "PART_Frame";
     public const string HeaderRootLayoutPart = "PART_HeaderRootLayout";
     public const string VerticalSeparatorPart = "PART_VerticalSeparator";
     public const string ContentDecoratorPart = "PART_ContentDecorator";

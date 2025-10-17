@@ -9,7 +9,6 @@ using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -19,9 +18,9 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Utilities;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -254,7 +253,6 @@ internal partial class DataGridColumnHeader : ContentControl
     private bool _desiredSeparatorVisibility = true;
     private StackPanel? _indicatorsLayout;
     private static Lazy<Cursor> _resizeCursor = new (() => new Cursor(StandardCursorType.SizeWestEast));
-    private Border? _frame;
     
     static DataGridColumnHeader()
     {
@@ -906,7 +904,6 @@ internal partial class DataGridColumnHeader : ContentControl
         base.OnApplyTemplate(e);
         _indicatorsLayout = e.NameScope.Find<StackPanel>(DataGridColumnHeaderThemeConstants.IndicatorsLayoutPart);
         _filterIndicator = e.NameScope.Find<DataGridFilterIndicator>(DataGridColumnHeaderThemeConstants.FilterIndicatorPart);
-        _frame = e.NameScope.Find<Border>(DataGridColumnHeaderThemeConstants.FramePart);
         if (_filterIndicator != null && OwningColumn != null)
         {
             _filterIndicator.OwningColumn = OwningColumn;
@@ -917,21 +914,19 @@ internal partial class DataGridColumnHeader : ContentControl
         {
             _indicatorsLayout.Children.CollectionChanged += HandleIndicatorLayoutChildrenChanged;
         }
-
-        ConfigureTransitions();
+        
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
-
         NotifyPropertyChangedForSorting(change);
     }
 
@@ -941,25 +936,33 @@ internal partial class DataGridColumnHeader : ContentControl
         _indicatorsLayout.IsVisible = _indicatorsLayout.Children.Count > 0;
     }
     
-    private void ConfigureTransitions()
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (_frame != null)
+            if (force || Transitions == null)
             {
-                _frame.Transitions = new Transitions()
-                {
+                Transitions =
+                [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
-                };
+                ];
             }
         }
         else
         {
-            if (_frame != null)
-            {
-                _frame.Transitions?.Clear();
-                _frame.Transitions = null;
-            }
+            Transitions = null;
         }
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }
