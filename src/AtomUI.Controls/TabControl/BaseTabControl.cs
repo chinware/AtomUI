@@ -681,14 +681,18 @@ public class BaseTabControl : SelectingItemsControl,
     public bool CloseTab(TabItem tabItem)
     {
         if (tabItem == null)
+        { 
             return false;
-            
+        }
+
         var closingArgs = new TabClosingEventArgs(ClosingEvent, tabItem);
         RaiseEvent(closingArgs);
-        
+
         if (closingArgs.Cancel)
+        { 
             return false;
-            
+        }
+
         if (SelectedItem == tabItem)
         {
             var index = Items.IndexOf(tabItem);
