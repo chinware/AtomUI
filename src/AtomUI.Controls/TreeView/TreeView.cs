@@ -209,6 +209,7 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
     internal bool IsExpandAllProcess { get; set; }
     internal bool IsContainerPreparingProcess { get; set; }
     private readonly HashSet<TreeViewItem> _pendingParentStatusUpdates = new();
+    private bool _hasPendingStatusUpdates = false;
 
     static TreeView()
     {
@@ -386,13 +387,17 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
                     ancestor = ancestor.Parent as TreeViewItem;
                 }
 
-                // 收集需要更新的父节点,批量处理
+                // 收集需要更新的父节点
                 if (treeViewItem.Parent is TreeViewItem parent)
                 {
-                    if (_pendingParentStatusUpdates.Add(parent))
+                    _pendingParentStatusUpdates.Add(parent);
+
+                    // 标记有待处理的更新，在下一次布局更新后同步处理
+                    if (!_hasPendingStatusUpdates)
                     {
-                        // 第一次添加时,提交延迟更新任务
-                        Dispatcher.UIThread.Post(ProcessPendingParentStatusUpdates, DispatcherPriority.Background);
+                        _hasPendingStatusUpdates = true;
+                        // 使用 Dispatcher.Post 但优先级设为 Render，在当前批次容器创建完成、渲染之前执行
+                        Dispatcher.UIThread.Post(ProcessPendingParentStatusUpdates, DispatcherPriority.Render);
                     }
                 }
             }
@@ -430,6 +435,8 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
 
     private void ProcessPendingParentStatusUpdates()
     {
+        _hasPendingStatusUpdates = false;
+
         if (_pendingParentStatusUpdates.Count == 0)
         {
             return;
