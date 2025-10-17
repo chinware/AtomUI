@@ -400,7 +400,7 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
         {
             if (item is TreeViewItem treeViewItem)
             {
-                return treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
+                return treeViewItem.IsChecked == true;
             }
 
             return false;
@@ -410,7 +410,8 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
         {
             if (item is TreeViewItem treeViewItem)
             {
-                return treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
+                // 子节点是 true(全选) 或 null(半选) 都应该让父节点至少是半选状态
+                return treeViewItem.IsChecked != false;
             }
 
             return false;
@@ -427,6 +428,12 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
         else
         {
             parent.IsChecked = false;
+        }
+
+        // 递归向上更新祖先节点
+        if (parent.Parent is TreeViewItem grandParent)
+        {
+            SetupParentNodeCheckedStatus(grandParent);
         }
     }
 
