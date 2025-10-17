@@ -205,8 +205,10 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
     private TreeViewItem? _dropTargetNode; // 目标释放节点
     private DropTargetInfo? _dropTargetInfo;
     private readonly Dictionary<TreeViewItem, CompositeDisposable> _itemsBindingDisposables = new();
-    
+
     internal bool IsExpandAllProcess { get; set; }
+    internal bool IsContainerPreparingProcess { get; set; }
+    private readonly HashSet<TreeViewItem> _pendingParentStatusUpdates = new();
 
     static TreeView()
     {
@@ -275,9 +277,11 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
             layoutManager.ExecuteLayoutPass();
         }
 
-        foreach (var childItem in item.Items)
+        // 遍历子容器而不是数据项
+        for (var i = 0; i < item.ItemCount; i++)
         {
-            if (childItem is TreeViewItem treeViewItem)
+            var childContainer = item.ContainerFromIndex(i);
+            if (childContainer is TreeViewItem treeViewItem)
             {
                 CheckedSubTree(treeViewItem);
             }
@@ -303,9 +307,11 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
             layoutManager.ExecuteLayoutPass();
         }
 
-        foreach (var childItem in item.Items)
+        // 遍历子容器而不是数据项
+        for (var i = 0; i < item.ItemCount; i++)
         {
-            if (childItem is TreeViewItem treeViewItem)
+            var childContainer = item.ContainerFromIndex(i);
+            if (childContainer is TreeViewItem treeViewItem)
             {
                 UnCheckedSubTree(treeViewItem);
             }
@@ -362,6 +368,34 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
                 _itemsBindingDisposables.Remove(treeViewItem);
             }
             _itemsBindingDisposables.Add(treeViewItem, disposables);
+
+            // 如果任何祖先节点被选中,自动选中新创建的容器
+            // 注意:只设置当前容器的状态,子节点容器创建时会自动继承
+            if (ToggleType == ItemToggleType.CheckBox)
+            {
+                var ancestor = treeViewItem.Parent as TreeViewItem;
+                while (ancestor != null)
+                {
+                    if (ancestor.IsChecked == true)
+                    {
+                        IsContainerPreparingProcess = true;
+                        treeViewItem.IsChecked = true;
+                        IsContainerPreparingProcess = false;
+                        break;
+                    }
+                    ancestor = ancestor.Parent as TreeViewItem;
+                }
+
+                // 收集需要更新的父节点,批量处理
+                if (treeViewItem.Parent is TreeViewItem parent)
+                {
+                    if (_pendingParentStatusUpdates.Add(parent))
+                    {
+                        // 第一次添加时,提交延迟更新任务
+                        Dispatcher.UIThread.Post(ProcessPendingParentStatusUpdates, DispatcherPriority.Background);
+                    }
+                }
+            }
         }
     }
 
@@ -394,7 +428,29 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
         DefaultCheckedItems.Clear();
     }
 
-    private void SetupParentNodeCheckedStatus(TreeViewItem parent)
+    private void ProcessPendingParentStatusUpdates()
+    {
+        if (_pendingParentStatusUpdates.Count == 0)
+        {
+            return;
+        }
+
+        IsContainerPreparingProcess = true;
+
+        // 复制并清空待处理集合
+        var parentsToUpdate = _pendingParentStatusUpdates.ToList();
+        _pendingParentStatusUpdates.Clear();
+
+        // 批量更新所有父节点状态
+        foreach (var parent in parentsToUpdate)
+        {
+            SetupParentNodeCheckedStatus(parent);
+        }
+
+        IsContainerPreparingProcess = false;
+    }
+
+    internal void SetupParentNodeCheckedStatus(TreeViewItem parent)
     {
         var isAllChecked = parent.Items.All(item =>
         {

@@ -183,7 +183,9 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
         }
         else if (TreeView?.ToggleType == ItemToggleType.CheckBox)
         {
-            if (item.IsChecked.HasValue)
+            // 在容器准备阶段,不要调用 CheckedSubTree/UnCheckedSubTree
+            // 因为此时子容器可能还没创建,子容器创建时会自动继承父节点状态
+            if (item.IsChecked.HasValue && !TreeView.IsContainerPreparingProcess)
             {
                 if (item.IsChecked.Value)
                 {
