@@ -1,6 +1,5 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Theme.Data;
@@ -281,6 +280,6 @@ internal class RadioIndicator : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(RadioButtonThemeConstants.WaveSpiritPart);
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(WaveSpiritDecorator.WaveSpiritPart);
     }
 }

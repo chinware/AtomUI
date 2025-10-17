@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:WaveSpiritDecorator Name="{x:Static atom:RadioButtonThemeConstants.WaveSpiritPart}"/>
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>

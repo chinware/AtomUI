@@ -6,36 +6,32 @@
     <ControlTheme x:Key="{x:Type atom:RadioButton}" TargetType="atom:RadioButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
-                    <atom:WaveSpiritDecorator Name="{x:Static atom:RadioButtonThemeConstants.WaveSpiritPart}"
-                                              CornerRadius="{TemplateBinding CornerRadius}"/>
-                    <Border Name="{x:Static atom:RadioButtonThemeConstants.FramePart}"
-                            Padding="0, 1, 0, 1"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
-                        <DockPanel LastChildFill="True">
-                            <atom:RadioIndicator Name="{x:Static atom:RadioButtonThemeConstants.IndicatorPart}"
-                                                 VerticalAlignment="Center"
-                                                 DockPanel.Dock="Left"
-                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                 IsWaveAnimationEnabled="{TemplateBinding IsWaveSpiritEnabled}"
-                                                 IsEnabled="{TemplateBinding IsEnabled}"
-                                                 IsChecked="{TemplateBinding IsChecked}" />
-                            <atom:TextBlock Name="{x:Static atom:RadioButtonThemeConstants.LabelTextPart}"
-                                            VerticalAlignment="Center"
-                                            Text="{TemplateBinding Content}"
-                                            FontSize="{TemplateBinding FontSize}"
-                                            IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        </DockPanel>
-                    </Border>
-                </Panel>
+                <Border Name="Frame"
+                        Padding="0, 1, 0, 1"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <DockPanel LastChildFill="True">
+                        <atom:RadioIndicator Name="Indicator"
+                                             VerticalAlignment="Center"
+                                             DockPanel.Dock="Left"
+                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                             IsWaveAnimationEnabled="{TemplateBinding IsWaveSpiritEnabled}"
+                                             IsEnabled="{TemplateBinding IsEnabled}"
+                                             IsChecked="{TemplateBinding IsChecked}" />
+                        <ContentPresenter Name="ContentPresenter"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    </DockPanel>
+                </Border>
             </ControlTemplate>
         </Setter>
 
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         <Setter Property="Background" Value="Transparent" />
@@ -43,15 +39,15 @@
         <Setter Property="IsWaveSpiritEnabled"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
 
-        <Style Selector="^ /template/ atom|TextBlock#PART_LabelText">
+        <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.TextMargin}}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
-        
-        <Style Selector="^ /template/ atom|RadioIndicator#PART_Indicator">
+
+        <Style Selector="^ /template/ atom|RadioIndicator#Indicator">
             <Setter Property="RadioSize" Value="{DynamicResource {x:Static atom:RadioButtonTokenKey.RadioSize}}" />
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:RadioButtonTokenKey.RadioSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:RadioButtonTokenKey.RadioSize}}" />
@@ -64,7 +60,7 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         </Style>
         <Style Selector="^:checked">
-            <Style Selector="^ /template/ atom|RadioIndicator#PART_Indicator">
+            <Style Selector="^ /template/ atom|RadioIndicator#Indicator">
                 <Setter Property="RadioBorderBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
                 <Setter Property="RadioBackground"
@@ -72,19 +68,19 @@
             </Style>
         </Style>
         <Style Selector="^:not(:checked)">
-            <Style Selector="^ /template/ atom|RadioIndicator#PART_Indicator">
+            <Style Selector="^ /template/ atom|RadioIndicator#Indicator">
                 <Setter Property="RadioBackground"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
             </Style>
         </Style>
         <Style Selector="^:not(:checked):pointerover">
-            <Style Selector="^ /template/ atom|RadioIndicator#PART_Indicator">
+            <Style Selector="^ /template/ atom|RadioIndicator#Indicator">
                 <Setter Property="RadioBorderBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             </Style>
         </Style>
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|RadioIndicator#PART_Indicator">
+            <Style Selector="^ /template/ atom|RadioIndicator#Indicator">
                 <Setter Property="RadioBackground"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
                 <Setter Property="RadioBorderBrush"
