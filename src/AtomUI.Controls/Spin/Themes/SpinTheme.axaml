@@ -9,7 +9,8 @@
                 <Panel Name="RootLayout">
                     <ContentPresenter Name="ContentPresenter"
                         Content="{TemplateBinding Content}"
-                        ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        Opacity="{TemplateBinding MaskOpacity}" />
                     <Panel Name="MaskLayout" IsVisible="{TemplateBinding IsSpinning}">
                         <Border Name="Mask" Background="Transparent"/>
                         <StackPanel Orientation="Vertical"
@@ -43,6 +44,8 @@
         </Setter>
         
         <Setter Property="MotionEasingCurve" Value="LinearEasing" />
+        <Setter Property="MaskOpacity" Value="1.0" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="MotionDuration"
                 Value="{DynamicResource {x:Static atom:SpinTokenKey.IndicatorDuration}}" />
         <Style Selector="^ /template/ atom|TextBlock#Tip">
@@ -50,11 +53,25 @@
         </Style>
         
         <Style Selector="^[IsSpinning=True]">
-            <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
-                <Setter Property="Effect">
-                    <BlurEffect Radius="5"/>
-                </Setter>
+            
+            <Style Selector="^[IsMaskBlurEnabled=True]">
+                <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+                    <Setter Property="Effect">
+                        <BlurEffect Radius="5"/>
+                    </Setter>
+                </Style>
             </Style>
+            
+            <Style Selector="^[IsMaskBlurEnabled=False]">
+                <Setter Property="MaskOpacity" Value="0.5" />
+            </Style>
+            
+            <Style Selector="^[IsMaskBackgroundEnabled=True]">
+                <Style Selector="^ /template/ Border#Mask">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgMask}}" />
+                </Style>
+            </Style>
+            
         </Style>
         
         <Style Selector="^ /template/ StackPanel#IndicatorLayout">

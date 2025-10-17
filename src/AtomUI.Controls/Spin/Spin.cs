@@ -1,13 +1,16 @@
-﻿using Avalonia;
+﻿using AtomUI.Controls.Utils;
+using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
 using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-public class Spin : ContentControl
+public class Spin : ContentControl, IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -34,6 +37,15 @@ public class Spin : ContentControl
 
     public static readonly StyledProperty<bool> IsSpinningProperty =
         AvaloniaProperty.Register<Spin, bool>(nameof(IsSpinning));
+    
+    public static readonly StyledProperty<bool> IsMaskBlurEnabledProperty =
+        AvaloniaProperty.Register<Spin, bool>(nameof(IsMaskBlurEnabled));
+    
+    public static readonly StyledProperty<bool> IsMaskBackgroundEnabledProperty =
+        AvaloniaProperty.Register<Spin, bool>(nameof(IsMaskBackgroundEnabled));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Spin>();
 
     public SizeType SizeType
     {
@@ -83,6 +95,24 @@ public class Spin : ContentControl
         get => GetValue(IsSpinningProperty);
         set => SetValue(IsSpinningProperty, value);
     }
+    
+    public bool IsMaskBlurEnabled
+    {
+        get => GetValue(IsMaskBlurEnabledProperty);
+        set => SetValue(IsMaskBlurEnabledProperty, value);
+    }
+    
+    public bool IsMaskBackgroundEnabled
+    {
+        get => GetValue(IsMaskBackgroundEnabledProperty);
+        set => SetValue(IsMaskBackgroundEnabledProperty, value);
+    }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
 
     #endregion
 
@@ -100,7 +130,17 @@ public class Spin : ContentControl
         get => _isCustomIndicator;
         set => SetAndRaise(IsCustomIndicatorProperty, ref _isCustomIndicator, value);
     }
+    
+    internal static readonly StyledProperty<double> MaskOpacityProperty =
+        AvaloniaProperty.Register<Spin, double>(nameof(MaskOpacity));
 
+    internal double MaskOpacity
+    {
+        get => GetValue(MaskOpacityProperty);
+        set => SetValue(MaskOpacityProperty, value);
+    }
+    
+    Control IMotionAwareControl.PropertyBindTarget => this;
     #endregion
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -117,5 +157,34 @@ public class Spin : ContentControl
     {
         base.OnApplyTemplate(e);
         SetCurrentValue(IsCustomIndicatorProperty, CustomIndicator != null || CustomIndicatorTemplate != null);
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+    
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                Transitions = [
+                    TransitionUtils.CreateTransition<DoubleTransition>(MaskOpacityProperty)
+                ];
+            }
+        }
+        else
+        {
+            Transitions = null;
+        }
     }
 }
