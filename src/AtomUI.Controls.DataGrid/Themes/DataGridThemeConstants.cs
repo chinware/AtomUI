@@ -19,16 +19,16 @@ internal static class DataGridColumnGroupHeaderThemeConstants
 
 internal static class DataGridColumnHeaderThemeConstants
 {
-    public const string HeaderRootLayoutPart = "PART_HeaderRootLayout";
-    public const string VerticalSeparatorPart = "PART_VerticalSeparator";
-    public const string ContentDecoratorPart = "PART_ContentDecorator";
-    public const string ContentPresenterPart = "PART_ContentPresenter";
+    // public const string HeaderRootLayoutPart = "PART_HeaderRootLayout";
+    // public const string VerticalSeparatorPart = "PART_VerticalSeparator";
+    // public const string ContentDecoratorPart = "PART_ContentDecorator";
+    // public const string ContentPresenterPart = "PART_ContentPresenter";
     public const string SortIndicatorPart = "PART_SortIndicator";
     public const string FilterIndicatorPart = "PART_FilterIndicator";
     public const string IndicatorsLayoutPart = "PART_IndicatorsLayout";
-    public const string FocusVisualPart = "PART_FocusVisual";
-    public const string FocusVisualPrimaryPart = "PART_FocusVisualPrimary";
-    public const string FocusVisualSecondaryPart = "PART_FocusVisualSecondary";
+    // public const string FocusVisualPart = "PART_FocusVisual";
+    // public const string FocusVisualPrimaryPart = "PART_FocusVisualPrimary";
+    // public const string FocusVisualSecondaryPart = "PART_FocusVisualSecondary";
 }
 
 internal static class DataGridHeaderViewItemThemeConstants

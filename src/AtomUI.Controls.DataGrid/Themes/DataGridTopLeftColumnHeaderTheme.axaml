@@ -15,43 +15,41 @@
                         Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.HeaderRootLayoutPart}">
-                        <Decorator Name="{x:Static atom:DataGridColumnHeaderThemeConstants.ContentDecoratorPart}">
-                            <ContentPresenter
-                                Name="{x:Static atom:DataGridColumnHeaderThemeConstants.ContentPresenterPart}"
-                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        </Decorator>
-                        <Rectangle Name="{x:Static atom:DataGridColumnHeaderThemeConstants.VerticalSeparatorPart}"
+                    <Panel Name="RootLayout">
+                        <ContentPresenter
+                            Name="ContentPresenter"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        <Rectangle Name="VerticalSeparator"
                                    Width="1.0"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                    IsVisible="{TemplateBinding IsSeparatorsVisible}" />
-                        <Panel Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualPart}"
+                        <Panel Name="FocusVisual"
                                IsVisible="False"
                                IsHitTestVisible="False">
-                            <Rectangle Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualPrimaryPart}"
+                            <Rectangle Name="FocusVisualPrimary"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
                                        Fill="Transparent"
                                        IsHitTestVisible="False"
                                        StrokeThickness="2" />
-                            <Rectangle
-                                Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FocusVisualSecondaryPart}"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                Fill="Transparent"
-                                IsHitTestVisible="False"
-                                StrokeThickness="1" />
+                            <Rectangle Name="FocusVisualSecondary"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Fill="Transparent"
+                                       IsHitTestVisible="False"
+                                       StrokeThickness="1" />
                         </Panel>
                     </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>
-        
+
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableHeaderBg}}" />
-        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableTopLeftColumnCornerRadius}}"/>
+        <Setter Property="CornerRadius"
+                Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableTopLeftColumnCornerRadius}}" />
     </ControlTheme>
 </ResourceDictionary>
