@@ -1,4 +1,4 @@
-﻿using AtomUI.Animations;
+using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
@@ -184,25 +184,8 @@ public class TabItem : HeaderedContentControl, ISelectable
     {
         if (Parent is BaseTabControl tabControl)
         {
-            if (tabControl.SelectedItem is TabItem selectedItem)
-            {
-                if (selectedItem == this)
-                {
-                    var     selectedIndex   = tabControl.SelectedIndex;
-                    object? newSelectedItem = null;
-                    if (selectedIndex != 0)
-                    {
-                        newSelectedItem = tabControl.Items[--selectedIndex];
-                    }
-
-                    tabControl.Items.Remove(this);
-                    tabControl.SelectedItem = newSelectedItem;
-                }
-                else
-                {
-                    tabControl.Items.Remove(this);
-                }
-            }
+            // 使用新的统一关闭方法
+            tabControl.CloseTab(this);
         }
     }
 
