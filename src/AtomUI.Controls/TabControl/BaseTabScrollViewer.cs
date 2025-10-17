@@ -14,10 +14,6 @@ using GradientStop = Avalonia.Media.GradientStop;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(TabScrollViewerThemeConstants.ScrollStartEdgeIndicatorPart, typeof(Control))]
-[TemplatePart(TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart, typeof(Control))]
-[TemplatePart(TabScrollViewerThemeConstants.ScrollMenuIndicatorPart, typeof(IconButton))]
-[TemplatePart(TabScrollViewerThemeConstants.ScrollViewContentPart, typeof(ScrollContentPresenter))]
 internal abstract class BaseTabScrollViewer : ScrollViewer
 {
     private const int EdgeIndicatorZIndex = 1000;

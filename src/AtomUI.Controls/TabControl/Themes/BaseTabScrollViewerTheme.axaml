@@ -6,19 +6,19 @@
     <ControlTheme x:Key="{x:Type atom:BaseTabScrollViewer}" TargetType="atom:BaseTabScrollViewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollViewWrapperLayoutPart}">
+                <Panel Name="RootLayout">
                     <Border Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollStartEdgeIndicatorPart}"
                             IsHitTestVisible="False" />
                     <Border Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart}"
                             IsHitTestVisible="False" />
 
-                    <DockPanel Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollViewLayoutPart}">
+                    <DockPanel Name="ScrollViewLayout">
                         <atom:IconButton Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollMenuIndicatorPart}"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Stretch"
                                          Icon="{atom:IconProvider EllipsisOutlined}" />
                         <atom:TabScrollContentPresenter
-                            Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollViewContentPart}"
+                            Name="ScrollViewContent"
                             TabStripPlacement="{TemplateBinding TabStripPlacement}"
                             Margin="{TemplateBinding Padding}"
                             HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
@@ -48,7 +48,7 @@
         </Style>
         
         <Style Selector="^[TabStripPlacement=Top]">
-            <Style Selector="^ /template/ atom|TabScrollContentPresenter#PART_ContentPresenter">
+            <Style Selector="^ /template/ atom|TabScrollContentPresenter#ScrollViewContent">
                 <Setter Property="DockPanel.Dock" Value="Left"/>
             </Style>
             
@@ -71,7 +71,7 @@
         </Style>
         
         <Style Selector="^[TabStripPlacement=Right]">
-            <Style Selector="^ /template/ atom|TabScrollContentPresenter#PART_ContentPresenter">
+            <Style Selector="^ /template/ atom|TabScrollContentPresenter#ScrollViewContent">
                 <Setter Property="DockPanel.Dock" Value="Top"/>
             </Style>
             
@@ -94,7 +94,7 @@
         </Style>
         
         <Style Selector="^[TabStripPlacement=Bottom]">
-            <Style Selector="^ /template/ atom|TabScrollContentPresenter#PART_ContentPresenter">
+            <Style Selector="^ /template/ atom|TabScrollContentPresenter#ScrollViewContent">
                 <Setter Property="DockPanel.Dock" Value="Left"/>
             </Style>
             
@@ -117,7 +117,7 @@
         </Style>
         
         <Style Selector="^[TabStripPlacement=Left]">
-            <Style Selector="^ /template/ atom|TabScrollContentPresenter#PART_ContentPresenter">
+            <Style Selector="^ /template/ atom|TabScrollContentPresenter#ScrollViewContent">
                 <Setter Property="DockPanel.Dock" Value="Top"/>
             </Style>
             

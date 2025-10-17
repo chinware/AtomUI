@@ -6,7 +6,7 @@
               x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:BaseTabStrip">
-            <Border Name="{x:Static atom:TabStripThemeConstants.FramePart}"/>
+            <Border Name="Frame"/>
         </ControlTemplate>
     </Setter>
     

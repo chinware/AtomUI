@@ -186,22 +186,7 @@ public class TabStripItem : AvaloniaTabStripItem
         {
             if (tabStrip.SelectedItem is TabStripItem selectedItem)
             {
-                if (selectedItem == this)
-                {
-                    var     selectedIndex   = tabStrip.SelectedIndex;
-                    object? newSelectedItem = null;
-                    if (selectedIndex != 0)
-                    {
-                        newSelectedItem = tabStrip.Items[--selectedIndex];
-                    }
-
-                    tabStrip.Items.Remove(this);
-                    tabStrip.SelectedItem = newSelectedItem;
-                }
-                else
-                {
-                    tabStrip.Items.Remove(this);
-                }
+                tabStrip.CloseTab(selectedItem);
             }
         }
     }

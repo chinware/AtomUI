@@ -10,8 +10,8 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:TabStripThemeConstants.FramePart}">
-                    <Panel Name="{x:Static atom:TabStripThemeConstants.AlignWrapperPart}">
+                <Border Name="Frame">
+                    <Panel Name="AlignWrapper">
                         <Border Padding="{TemplateBinding EffectiveHeaderPadding}">
                             <DockPanel LastChildFill="True" Name="HeaderLayout">
                                 <ContentPresenter Name="HeaderStartExtraContent"

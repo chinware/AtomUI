@@ -8,14 +8,17 @@
     <ControlTheme x:Key="{x:Type atom:BaseOverflowMenuItem}" TargetType="atom:BaseOverflowMenuItem">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:OverflowMenuItemThemeConstants.ItemDecoratorPart}">
-                    <Grid Name="{x:Static atom:OverflowMenuItemThemeConstants.MainContainerPart}">
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" SharedSizeGroup="MenuCloseIcon" />
                         </Grid.ColumnDefinitions>
 
-                        <ContentPresenter Name="{x:Static atom:OverflowMenuItemThemeConstants.ItemTextPresenterPart}"
+                        <ContentPresenter Name="ItemTextPresenter"
                                           Grid.Column="0"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Center"
@@ -35,25 +38,21 @@
 
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
 
-        <Style Selector="^ /template/ Border#PART_ItemDecorator">
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
-            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemPaddingInline}}" />
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBg}}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBorderRadius}}" />
-        </Style>
-
+        <Setter Property="Height" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemPaddingInline}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBg}}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemBorderRadius}}" />
+        
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverColor}}" />
-            <Style Selector="^ /template/ Border#PART_ItemDecorator">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverBg}}" />
-            </Style>
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHoverBg}}" />
         </Style>
 
-        <Style Selector="^ /template/ ContentPresenter#PART_ItemTextPresenter">
+        <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
         </Style>
 
-        <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseIcon">
+        <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
             <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
             <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />

@@ -94,13 +94,13 @@ public class TabItem : HeaderedContentControl, ISelectable
     internal static readonly StyledProperty<double> CloseButtonOpacityProperty =
         AvaloniaProperty.Register<TabItem, double>(nameof(CloseButtonOpacity));
 
-    public SizeType SizeType
+    internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
 
-    public TabSharp Shape
+    internal TabSharp Shape
     {
         get => GetValue(ShapeProperty);
         set => SetValue(ShapeProperty, value);
@@ -184,7 +184,6 @@ public class TabItem : HeaderedContentControl, ISelectable
     {
         if (Parent is BaseTabControl tabControl)
         {
-            // 使用新的统一关闭方法
             tabControl.CloseTab(this);
         }
     }

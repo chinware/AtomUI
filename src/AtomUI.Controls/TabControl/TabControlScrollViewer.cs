@@ -1,5 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Data;
+﻿using AtomUI.Data;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -18,7 +17,6 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
     protected override Type StyleKeyOverride => typeof(BaseTabScrollViewer);
     
     private IDisposable? _flyoutBindingDisposable;
-    private CompositeDisposable? _itemBindingDisposables;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -73,8 +71,6 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
 
         if (TabControl is not null)
         {
-            _itemBindingDisposables?.Dispose();
-            _itemBindingDisposables = new CompositeDisposable(TabControl.ItemCount);
             for (var i = 0; i < TabControl.ItemCount; i++)
             {
                 var itemContainer = TabControl.ContainerFromIndex(i)!;
@@ -110,7 +106,6 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
                             TabItem    = tabItem,
                             IsClosable = tabItem.IsClosable
                         };
-                        _itemBindingDisposables.Add(BindUtils.RelayBind(TabControl, MotionAwareControlProperty.IsMotionEnabledProperty, menuItem, MotionAwareControlProperty.IsMotionEnabledProperty));
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
                         MenuFlyout.Items.Add(menuItem);

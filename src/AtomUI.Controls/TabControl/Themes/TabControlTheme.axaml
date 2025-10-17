@@ -10,8 +10,8 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:TabControlThemeConstants.FramePart}">
-                    <DockPanel Name="{x:Static atom:TabControlThemeConstants.MainLayoutContainerPart}">
+                <Border Name="Frame">
+                    <DockPanel>
                         <Panel Name="{x:Static atom:TabControlThemeConstants.AlignWrapperPart}"
                                DockPanel.Dock="{TemplateBinding TabStripPlacement}"
                                Margin="{TemplateBinding TabStripMargin}">
@@ -40,8 +40,7 @@
                             </Border>
                         </Panel>
 
-                        <ContentPresenter Name="{x:Static atom:TabControlThemeConstants.SelectedContentHostPart}"
-                                          Padding="{TemplateBinding ContentPadding}"
+                        <ContentPresenter Padding="{TemplateBinding ContentPadding}"
                                           Content="{TemplateBinding SelectedContent}"
                                           ContentTemplate="{TemplateBinding SelectedContentTemplate}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"

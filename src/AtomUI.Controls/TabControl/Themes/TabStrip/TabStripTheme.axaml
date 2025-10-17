@@ -10,8 +10,8 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:TabStripThemeConstants.FramePart}">
-                    <Panel Name="{x:Static atom:TabStripThemeConstants.AlignWrapperPart}">
+                <Border Name="Frame">
+                    <Panel Name="AlignWrapper">
                         <Border Padding="{TemplateBinding EffectiveHeaderPadding}">
                             <DockPanel LastChildFill="True" Name="HeaderLayout">
                                 <ContentPresenter Name="HeaderStartExtraContent"
@@ -63,7 +63,7 @@
             
             <!-- tabs 是否居中 -->
             <Style Selector="^[TabAlignmentCenter=True]">
-                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                <Style Selector="^ /template/ Panel#AlignWrapper > Border">
                     <Setter Property="HorizontalAlignment" Value="Center" />
                 </Style>
             </Style>
@@ -97,7 +97,7 @@
             
             <!-- tabs 是否居中 -->
             <Style Selector="^[TabAlignmentCenter=True]">
-                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                <Style Selector="^ /template/ Panel#AlignWrapper > Border">
                     <Setter Property="HorizontalAlignment" Value="Center" />
                 </Style>
             </Style>
@@ -131,7 +131,7 @@
             
             <!-- tabs 是否居中 -->
             <Style Selector="^[TabAlignmentCenter=True]">
-                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                <Style Selector="^ /template/ Panel#AlignWrapper > Border">
                     <Setter Property="HorizontalAlignment" Value="Center" />
                 </Style>
             </Style>
@@ -165,7 +165,7 @@
             
             <!-- tabs 是否居中 -->
             <Style Selector="^[TabAlignmentCenter=True]">
-                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                <Style Selector="^ /template/ Panel#AlignWrapper > Border">
                     <Setter Property="HorizontalAlignment" Value="Center" />
                 </Style>
             </Style>

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
@@ -88,7 +87,7 @@ public class BaseTabControl : SelectingItemsControl,
     public static readonly StyledProperty<bool> IsTabAutoHideCloseButtonProperty =
         AvaloniaProperty.Register<ContentControl, bool>(nameof(IsTabAutoHideCloseButton));
 
-    #region 事件定义
+    #region 公共事件定义
     
     public static readonly RoutedEvent<TabClosingEventArgs> ClosingEvent =
         RoutedEvent.Register<BaseTabControl, TabClosingEventArgs>(nameof(Closing), RoutingStrategies.Bubble);
@@ -288,6 +287,45 @@ public class BaseTabControl : SelectingItemsControl,
     {
         this.RegisterResources();
         Items.CollectionChanged += HandleCollectionChanged;
+    }
+    
+    public bool CloseTab(TabItem tabItem)
+    {
+        if (tabItem.IsClosable)
+        {
+            return false;
+        }
+        var closingArgs = new TabClosingEventArgs(ClosingEvent, tabItem);
+        RaiseEvent(closingArgs);
+
+        if (closingArgs.Cancel)
+        { 
+            return false;
+        }
+
+        if (SelectedItem == tabItem)
+        {
+            var index = Items.IndexOf(tabItem);
+            if (index > 0)
+            {
+                SelectedIndex = index - 1;
+            }
+            else if (Items.Count > 1)
+            {
+                SelectedIndex = 1;
+            }
+            else
+            {
+                SelectedIndex = -1;
+            }
+        }
+        
+        Items.Remove(tabItem);
+        
+        var closedArgs = new TabClosedEventArgs(ClosedEvent, tabItem);
+        RaiseEvent(closedArgs);
+        
+        return true;
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -677,46 +715,6 @@ public class BaseTabControl : SelectingItemsControl,
         tabItem.SetValue(TabItem.IsClosableProperty, IsTabClosable, BindingPriority.Template);
         tabItem.SetValue(TabItem.IsAutoHideCloseButtonProperty, IsTabAutoHideCloseButton, BindingPriority.Template);
     }
-    
-    public bool CloseTab(TabItem tabItem)
-    {
-        if (tabItem == null)
-        { 
-            return false;
-        }
-
-        var closingArgs = new TabClosingEventArgs(ClosingEvent, tabItem);
-        RaiseEvent(closingArgs);
-
-        if (closingArgs.Cancel)
-        { 
-            return false;
-        }
-
-        if (SelectedItem == tabItem)
-        {
-            var index = Items.IndexOf(tabItem);
-            if (index > 0)
-            {
-                SelectedIndex = index - 1;
-            }
-            else if (Items.Count > 1)
-            {
-                SelectedIndex = 1;
-            }
-            else
-            {
-                SelectedIndex = -1;
-            }
-        }
-        
-        Items.Remove(tabItem);
-        
-        var closedArgs = new TabClosedEventArgs(ClosedEvent, tabItem);
-        RaiseEvent(closedArgs);
-        
-        return true;
-    }
 }
 
 
@@ -731,7 +729,6 @@ public class TabClosingEventArgs : RoutedEventArgs
     public TabItem TabItem { get; }
     public bool Cancel { get; set; }
 }
-
 
 public class TabClosedEventArgs : RoutedEventArgs
 {

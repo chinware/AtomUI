@@ -10,19 +10,18 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:TabItemThemeConstants.FramePart}"
+                <Border Name="Frame"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Margin="{TemplateBinding Margin}"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         Padding="{TemplateBinding Padding}">
-                    <StackPanel Name="{x:Static atom:TabItemThemeConstants.ContentLayoutPart}"
-                                Orientation="Horizontal">
-                        <atom:IconPresenter Name="{x:Static atom:TabItemThemeConstants.ItemIconPresenterPart}"
+                    <StackPanel Orientation="Horizontal">
+                        <atom:IconPresenter Name="ItemIconPresenter"
                                             Icon="{TemplateBinding Icon}"
                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        <ContentPresenter Name="{x:Static atom:TabItemThemeConstants.ContentPresenterPart}"
+                        <ContentPresenter Name="ContentPresenter"
                                           Content="{TemplateBinding Header}"
                                           ContentTemplate="{TemplateBinding HeaderTemplate, Converter={x:Static atom:BaseTabItemTheme.StringToTextBlockConverter}}" />
                         <atom:IconButton Name="{x:Static atom:TabItemThemeConstants.ItemCloseButtonPart}"
@@ -75,25 +74,25 @@
         
         <!-- 分为上、右、下、左 -->
         <Style Selector="^[TabStripPlacement=Top]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Style>
 
         <Style Selector="^[TabStripPlacement=Right]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
         </Style>
 
         <Style Selector="^[TabStripPlacement=Bottom]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Style>
 
         <Style Selector="^[TabStripPlacement=Left]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ItemIconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
         </Style>

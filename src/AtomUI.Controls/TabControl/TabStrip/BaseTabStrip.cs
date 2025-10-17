@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -139,6 +140,28 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
 
     #endregion
     
+    #region 公共事件定义
+    
+    public static readonly RoutedEvent<TabStripClosingEventArgs> ClosingEvent =
+        RoutedEvent.Register<BaseTabStrip, TabStripClosingEventArgs>(nameof(Closing), RoutingStrategies.Bubble);
+
+    public static readonly RoutedEvent<TabStripClosedEventArgs> ClosedEvent =
+        RoutedEvent.Register<BaseTabStrip, TabStripClosedEventArgs>(nameof(Closed), RoutingStrategies.Bubble);
+
+    public event EventHandler<TabStripClosingEventArgs>? Closing
+    {
+        add => AddHandler(ClosingEvent, value);
+        remove => RemoveHandler(ClosingEvent, value);
+    }
+
+    public event EventHandler<TabStripClosedEventArgs>? Closed
+    {
+        add => AddHandler(ClosedEvent, value);
+        remove => RemoveHandler(ClosedEvent, value);
+    }
+    
+    #endregion
+    
     #region 内部属性定义
     internal static readonly DirectProperty<BaseTabStrip, Thickness> EffectiveHeaderPaddingProperty =
         AvaloniaProperty.RegisterDirect<BaseTabStrip, Thickness>(nameof(EffectiveHeaderPadding),
@@ -175,6 +198,45 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     {
         this.RegisterResources();
         Items.CollectionChanged += HandleCollectionChanged;
+    }
+    
+    public bool CloseTab(TabStripItem tabStripItem)
+    {
+        if (tabStripItem.IsClosable)
+        {
+            return false;
+        }
+        var closingArgs = new TabStripClosingEventArgs(ClosingEvent, tabStripItem);
+        RaiseEvent(closingArgs);
+
+        if (closingArgs.Cancel)
+        { 
+            return false;
+        }
+
+        if (SelectedItem == tabStripItem)
+        {
+            var index = Items.IndexOf(tabStripItem);
+            if (index > 0)
+            {
+                SelectedIndex = index - 1;
+            }
+            else if (Items.Count > 1)
+            {
+                SelectedIndex = 1;
+            }
+            else
+            {
+                SelectedIndex = -1;
+            }
+        }
+        
+        Items.Remove(tabStripItem);
+        
+        var closedArgs = new TabStripClosedEventArgs(ClosedEvent, tabStripItem);
+        RaiseEvent(closedArgs);
+        
+        return true;
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -368,4 +430,27 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         tabItem.SetValue(TabStripItem.IsClosableProperty, IsTabClosable, BindingPriority.Template);
         tabItem.SetValue(TabStripItem.IsAutoHideCloseButtonProperty, IsTabAutoHideCloseButton, BindingPriority.Template);
     }
+}
+
+public class TabStripClosingEventArgs : RoutedEventArgs
+{
+    public TabStripClosingEventArgs(RoutedEvent routedEvent, TabStripItem tabStripItem)
+        : base(routedEvent)
+    {
+        TabStripItem = tabStripItem;
+    }
+    
+    public TabStripItem TabStripItem { get; }
+    public bool Cancel { get; set; }
+}
+
+public class TabStripClosedEventArgs : RoutedEventArgs
+{
+    public TabStripClosedEventArgs(RoutedEvent routedEvent, TabStripItem tabStripItem)
+        : base(routedEvent)
+    {
+        TabStripItem = tabStripItem;
+    }
+    
+    public TabStripItem TabStripItem { get; }
 }
