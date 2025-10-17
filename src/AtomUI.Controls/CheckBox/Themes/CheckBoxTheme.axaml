@@ -8,7 +8,7 @@
     <ControlTheme x:Key="{x:Type atom:CheckBox}" TargetType="atom:CheckBox">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:CheckBoxThemeConstants.FramePart}"
+                <Border Name="Frame"
                         Padding="0, 1, 0, 1">
                     <DockPanel LastChildFill="True">
                         <atom:CheckBoxIndicator Name="Indicator"
@@ -17,11 +17,11 @@
                                                  IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"
                                                  IsEnabled="{TemplateBinding IsEnabled}"
                                                  State="{TemplateBinding IsChecked, Converter={StaticResource CheckBoxIndicatorStateConverter}}" />
-                        <atom:TextBlock Name="{x:Static atom:CheckBoxThemeConstants.LabelTextPart}"
-                                        VerticalAlignment="Center"
-                                        Text="{TemplateBinding Content}"
-                                        FontSize="{TemplateBinding FontSize}"
-                                        IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <ContentPresenter Name="ContentPresenter"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                     </DockPanel>
                 </Border>
             </ControlTemplate>
@@ -36,15 +36,14 @@
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
 
-        <Style Selector="^ /template/ atom|TextBlock#PART_LabelText">
+        <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.TextMargin}}" />
         </Style>
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
-
-        <!-- BuildIndicatorStyle 开始 -->
+        
         <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckIndicatorSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckIndicatorSize}}" />
@@ -105,8 +104,6 @@
                 </Style>
             </Style>
         </Style>
-
-        <!-- BuildIndicatorStyle 结束 -->
 
     </ControlTheme>
 </ResourceDictionary>
