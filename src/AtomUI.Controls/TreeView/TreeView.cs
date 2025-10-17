@@ -278,7 +278,6 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
             layoutManager.ExecuteLayoutPass();
         }
 
-        // 遍历子容器而不是数据项
         for (var i = 0; i < item.ItemCount; i++)
         {
             var childContainer = item.ContainerFromIndex(i);
@@ -308,7 +307,6 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
             layoutManager.ExecuteLayoutPass();
         }
 
-        // 遍历子容器而不是数据项
         for (var i = 0; i < item.ItemCount; i++)
         {
             var childContainer = item.ContainerFromIndex(i);
@@ -371,7 +369,6 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
             _itemsBindingDisposables.Add(treeViewItem, disposables);
 
             // 如果任何祖先节点被选中,自动选中新创建的容器
-            // 注意:只设置当前容器的状态,子节点容器创建时会自动继承
             if (ToggleType == ItemToggleType.CheckBox)
             {
                 var ancestor = treeViewItem.Parent as TreeViewItem;
