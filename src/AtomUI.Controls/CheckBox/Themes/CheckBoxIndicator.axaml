@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:WaveSpiritDecorator Name="{x:Static atom:CheckBoxIndicatorThemeConstants.WaveSpiritPart}"
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}"
                                               CornerRadius="{TemplateBinding CornerRadius}"/>
                     <Border Name="Frame"
                             BorderThickness="{TemplateBinding BorderThickness}"
@@ -15,13 +15,15 @@
                             Background="{TemplateBinding Background}"
                             CornerRadius="{TemplateBinding CornerRadius}">
                         <Panel>
-                            <atom:Icon Name="{x:Static atom:CheckBoxIndicatorThemeConstants.CheckedMarkPart}"
+                            <atom:Icon Name="CheckedMark"
                                        IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" 
                                        NormalFilledBrush="{TemplateBinding CheckedMarkBrush}"
+                                       RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
+                                       RenderTransformOrigin="{x:Static RelativePoint.Center}"
                                        IsVisible="False"/>
-                            <Rectangle Name="{x:Static atom:CheckBoxIndicatorThemeConstants.TristateMarkPart}"
+                            <Rectangle Name="TristateMark"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
                                        Fill="{TemplateBinding TristateMarkBrush}"
@@ -39,20 +41,21 @@
             <Setter Property="WaveType" Value="RoundRectWave"/>
         </Style>
         
-        <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
+        <Setter Property="CheckedMarkRenderTransform" Value="scale(0.1)"/>
+        
+        <Style Selector="^ /template/ atom|Icon#CheckedMark">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckedMarkSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:CheckBoxTokenKey.CheckedMarkSize}}" />
-            <Setter Property="RenderTransform" Value="scale(0.1)"/>
         </Style>
         
         <Style Selector="^[State=Checked]">
-            <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
+            <Setter Property="CheckedMarkRenderTransform" Value="scale(1.0)"/>
+            <Style Selector="^ /template/ atom|Icon#CheckedMark">
                 <Setter Property="IsVisible" Value="True" />
-                <Setter Property="RenderTransform" Value="scale(1.0)"/>
             </Style>
         </Style>
         <Style Selector="^[State=Indeterminate]">
-            <Style Selector="^ /template/ Rectangle#PART_TristateMark">
+            <Style Selector="^ /template/ Rectangle#TristateMark">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>

@@ -38,6 +38,9 @@ internal class CheckBoxIndicator : TemplatedControl
 
     public static readonly StyledProperty<double> TristateMarkSizeProperty =
         AvaloniaProperty.Register<CheckBoxIndicator, double>(nameof(TristateMarkSize));
+    
+    public static readonly StyledProperty<ITransform?> CheckedMarkRenderTransformProperty =
+        AvaloniaProperty.Register<CheckBoxIndicator, ITransform?>(nameof (CheckedMarkRenderTransform));
 
     public CheckBoxIndicatorState State
     {
@@ -61,6 +64,12 @@ internal class CheckBoxIndicator : TemplatedControl
     {
         get => GetValue(TristateMarkSizeProperty);
         set => SetValue(TristateMarkSizeProperty, value);
+    }
+    
+    public ITransform? CheckedMarkRenderTransform
+    {
+        get => GetValue(CheckedMarkRenderTransformProperty);
+        set => SetValue(CheckedMarkRenderTransformProperty, value);
     }
 
     #endregion
@@ -86,8 +95,7 @@ internal class CheckBoxIndicator : TemplatedControl
     }
 
     #endregion
-
-    private Icon? _checkedMark;
+    
     private IDisposable? _borderThicknessDisposable;
     private WaveSpiritDecorator? _waveSpiritDecorator;
 
@@ -124,7 +132,9 @@ internal class CheckBoxIndicator : TemplatedControl
                 Transitions = [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(TristateMarkBrushProperty)
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(TristateMarkBrushProperty),
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(CheckedMarkRenderTransformProperty, SharedTokenKey.MotionDurationMid,
+                        new BackEaseOut())
                 ];
             }
         }
@@ -133,31 +143,7 @@ internal class CheckBoxIndicator : TemplatedControl
             Transitions = null;
         }
     }
-
-    private void ConfigureCheckedMarkTransitions(bool force)
-    {
-        if (IsMotionEnabled)
-        {
-            if (_checkedMark != null)
-            {
-                if (force || _checkedMark.Transitions == null)
-                {
-                    _checkedMark.Transitions = [
-                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty, SharedTokenKey.MotionDurationMid,
-                            new BackEaseOut()),
-                    ];
-                }
-            }
-        }
-        else
-        {
-            if (_checkedMark != null)
-            {
-                _checkedMark.Transitions = null;
-            }
-        }
-    }
-
+    
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Checked, State == CheckBoxIndicatorState.Checked);
@@ -187,7 +173,6 @@ internal class CheckBoxIndicator : TemplatedControl
             if (e.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
-                ConfigureCheckedMarkTransitions(true);
             }
         }
     }
@@ -207,26 +192,8 @@ internal class CheckBoxIndicator : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _checkedMark = e.NameScope.Find<Icon>(CheckBoxIndicatorThemeConstants.CheckedMarkPart);
-        if (_checkedMark != null)
-        {
-            _checkedMark.Loaded += HandleCheckedMarkLoaded;
-            _checkedMark.Unloaded += HandleCheckedMarkUnLoaded;
-        }
 
-        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(CheckBoxIndicatorThemeConstants.WaveSpiritPart);
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(WaveSpiritDecorator.WaveSpiritPart);
     }
-
-    private void HandleCheckedMarkLoaded(object? sender, RoutedEventArgs e)
-    {
-        ConfigureCheckedMarkTransitions(false);
-    }
-
-    private void HandleCheckedMarkUnLoaded(object? sender, RoutedEventArgs e)
-    {
-        if (_checkedMark != null)
-        {
-            _checkedMark.Transitions = null;
-        }
-    }
+    
 }
