@@ -124,6 +124,12 @@ public enum DataGridSelectionMode
     Single = 2
 }
 
+public enum DataGridSelectTriggerType
+{
+    Cell,
+    SelectIndicator
+}
+
 /// <summary>
 /// Column filter interface type
 /// </summary>

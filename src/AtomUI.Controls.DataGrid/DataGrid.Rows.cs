@@ -193,8 +193,7 @@ public partial class DataGrid
                 // Add the rest of the details beyond the viewport
                 detailsCount += GetDetailsCountInclusive(DisplayData.LastScrollingSlot + 1, SlotCount - 1);
             }
-
-            //
+            
             double totalDetailsHeight = detailsCount * RowDetailsHeightEstimate;
 
             return totalRowsHeight + totalDetailsHeight;

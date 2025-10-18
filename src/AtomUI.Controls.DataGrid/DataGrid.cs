@@ -148,6 +148,9 @@ public partial class DataGrid : TemplatedControl,
 
     public static readonly StyledProperty<DataGridSelectionMode> SelectionModeProperty =
         AvaloniaProperty.Register<DataGrid, DataGridSelectionMode>(nameof(SelectionMode), DataGridSelectionMode.None);
+    
+    public static readonly StyledProperty<DataGridSelectTriggerType> SelectTriggerTypeProperty =
+        AvaloniaProperty.Register<DataGrid, DataGridSelectTriggerType>(nameof(SelectTriggerType), DataGridSelectTriggerType.SelectIndicator);
 
     public static readonly StyledProperty<ScrollBarVisibility> VerticalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(VerticalScrollBarVisibility));
@@ -493,6 +496,15 @@ public partial class DataGrid : TemplatedControl,
     {
         get => GetValue(SelectionModeProperty);
         set => SetValue(SelectionModeProperty, value);
+    }
+    
+    /// <summary>
+    /// Get or trigger the type of row selection
+    /// </summary>
+    public DataGridSelectTriggerType SelectTriggerType
+    {
+        get => GetValue(SelectTriggerTypeProperty);
+        set => SetValue(SelectTriggerTypeProperty, value);
     }
     
     /// <summary>
