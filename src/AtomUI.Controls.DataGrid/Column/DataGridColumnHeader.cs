@@ -908,6 +908,7 @@ internal partial class DataGridColumnHeader : ContentControl
         }
         
         ConfigureFilterIndicator();
+        ConfigureIndicatorLayoutVisible();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -920,9 +921,20 @@ internal partial class DataGridColumnHeader : ContentControl
                 ConfigureTransitions(true);
             }
         }
+
+        if (change.Property == CanUserSortProperty ||
+            change.Property == IsSeparatorsVisibleProperty ||
+            change.Property == CanUserFilterProperty)
+        {
+            ConfigureIndicatorLayoutVisible();
+        }
         NotifyPropertyChangedForSorting(change);
     }
-    
+
+    private void ConfigureIndicatorLayoutVisible()
+    {
+        SetCurrentValue(IndicatorLayoutVisibleProperty, CanUserSort || (IsSeparatorsVisible && CanUserFilter && OwningColumn?.Filters.Count > 0));
+    }
     
     private void ConfigureTransitions(bool force)
     {

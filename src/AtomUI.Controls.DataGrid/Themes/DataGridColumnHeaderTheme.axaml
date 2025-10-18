@@ -13,7 +13,8 @@
                         <DockPanel LastChildFill="True" Name="ContentLayout">
                             <StackPanel Name="IndicatorsLayout"
                                         Orientation="Horizontal"
-                                        DockPanel.Dock="Right">
+                                        DockPanel.Dock="Right"
+                                        IsVisible="{TemplateBinding IndicatorLayoutVisible}">
                                 <atom:DataGridSortIndicator
                                     Name="{x:Static atom:DataGridColumnHeaderThemeConstants.SortIndicatorPart}"
                                     VerticalAlignment="Center"
