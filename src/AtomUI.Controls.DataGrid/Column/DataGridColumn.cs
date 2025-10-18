@@ -69,15 +69,14 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <summary>
     /// Horizontal alignment method for Header content
     /// </summary>
-    public static readonly StyledProperty<HorizontalAlignment> HorizontalAlignmentProperty =
-        Layoutable.HorizontalAlignmentProperty.AddOwner<DataGridColumn>();
+    public static readonly StyledProperty<HorizontalAlignment> HeaderContentHorizontalAlignmentProperty = 
+        AvaloniaProperty.Register<DataGridColumn, HorizontalAlignment>(nameof (HeaderContentHorizontalAlignment), HorizontalAlignment.Left);
     
     /// <summary>
     /// How to vertically align the content of the Header
     /// </summary>
-    public static readonly StyledProperty<VerticalAlignment> VerticalAlignmentProperty =
-        Layoutable.VerticalAlignmentProperty.AddOwner<DataGridColumn>();
-    
+    public static readonly StyledProperty<VerticalAlignment> HeaderContentVerticalAlignmentProperty =
+        AvaloniaProperty.Register<DataGridColumn, VerticalAlignment>(nameof (HeaderContentVerticalAlignment), VerticalAlignment.Center);
     
     /// <summary>
     /// Determines whether or not this column is visible.
@@ -127,16 +126,16 @@ public abstract partial class DataGridColumn : AvaloniaObject
         set => SetValue(SupportedSortDirectionsProperty, value);
     }
     
-    public HorizontalAlignment HorizontalAlignment
+    public HorizontalAlignment HeaderContentHorizontalAlignment
     {
-        get => GetValue(HorizontalAlignmentProperty);
-        set => SetValue(HorizontalAlignmentProperty, value);
+        get => GetValue(HeaderContentHorizontalAlignmentProperty);
+        set => SetValue(HeaderContentHorizontalAlignmentProperty, value);
     }
     
-    public VerticalAlignment VerticalAlignment
+    public VerticalAlignment HeaderContentVerticalAlignment
     {
-        get => GetValue(VerticalAlignmentProperty);
-        set => SetValue(VerticalAlignmentProperty, value);
+        get => GetValue(HeaderContentVerticalAlignmentProperty);
+        set => SetValue(HeaderContentVerticalAlignmentProperty, value);
     }
 
     /// <summary>
@@ -538,12 +537,6 @@ public abstract partial class DataGridColumn : AvaloniaObject
         }
     }
     #endregion
-
-    static DataGridColumn()
-    {
-        HorizontalAlignmentProperty.OverrideDefaultValue<DataGridColumn>(HorizontalAlignment.Left);
-        VerticalAlignmentProperty.OverrideDefaultValue<DataGridColumn>(VerticalAlignment.Center);
-    }
     
     /// <summary>
     /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridColumn" /> class.

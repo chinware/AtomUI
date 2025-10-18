@@ -133,7 +133,7 @@ internal class DataGridOperationButtons : TemplatedControl
 
     internal void NotifyLoadingRow(DataGridRow row)
     {
-        OwningRow                                         = row;
+        OwningRow   = row;
         _disposable = BindUtils.RelayBind(row, DataGridRow.IsEditingModeProperty, this, IsEditingProperty);
     }
     

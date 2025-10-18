@@ -9,7 +9,6 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -59,16 +58,9 @@ public class IconButton : AvaloniaButton,
 
     public static readonly StyledProperty<bool> IsEnableHoverEffectProperty = 
         AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
-    
-    public static readonly StyledProperty<bool> IsPassthroughMouseEventProperty = 
-        AvaloniaProperty.Register<IconButton, bool>(nameof(IsPassthroughMouseEvent), false);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconButton>();
-
-    public event EventHandler<PointerEventArgs>? PassthroughPointerMoved;
-    public event EventHandler<PointerPressedEventArgs>? PassthroughPointerPressed;
-    public event EventHandler<PointerReleasedEventArgs>? PassthroughPointerReleased;
 
     public Icon? Icon
     {
@@ -136,14 +128,9 @@ public class IconButton : AvaloniaButton,
         set => SetValue(DisabledIconBrushProperty, value);
     }
     
-    public bool IsPassthroughMouseEvent
-    {
-        get => GetValue(IsPassthroughMouseEventProperty);
-        set => SetValue(IsPassthroughMouseEventProperty, value);
-    }
     
     #endregion
-
+    
     #region 内部属性定义
 
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -223,32 +210,5 @@ public class IconButton : AvaloniaButton,
     protected bool IsFlyoutOpen()
     {
         return IsFlyoutOpenFieldInfo.Value.GetValue(this) as bool? ?? false;
-    }
-    
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-        if (IsPassthroughMouseEvent)
-        {
-            PassthroughPointerPressed?.Invoke(this, e);
-        }
-    }
-    
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        base.OnPointerReleased(e);
-        if (IsPassthroughMouseEvent)
-        {
-            PassthroughPointerReleased?.Invoke(this, e);
-        }
-    }
-
-    protected override void OnPointerMoved(PointerEventArgs e)
-    {
-        base.OnPointerMoved(e);
-        if (IsPassthroughMouseEvent)
-        {
-            PassthroughPointerMoved?.Invoke(this, e);
-        }
     }
 }

@@ -6,41 +6,21 @@
     <ControlTheme x:Key="{x:Type atom:DataGridCell}" TargetType="atom:DataGridCell">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:DataGridCellThemeConstants.CellFramePart}"
-                        Background="{TemplateBinding Background}">
-                    <Grid Name="{x:Static atom:DataGridCellThemeConstants.CellRootLayoutPart}"
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                    <Grid Name="RootLayout"
                           ColumnDefinitions="*, Auto">
-                        <Rectangle Name="{x:Static atom:DataGridCellThemeConstants.CurrencyVisualPart}"
-                                   IsVisible="False"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Stretch"
-                                   Fill="Transparent"
-                                   IsHitTestVisible="False"
-                                   StrokeThickness="1"
-                                   Grid.Column="0" />
-                        <Grid Name="{x:Static atom:DataGridCellThemeConstants.FocusVisualPart}"
-                              IsVisible="False"
-                              IsHitTestVisible="False"
-                              Grid.Column="0">
-                            <Rectangle IsVisible="False"
-                                       HorizontalAlignment="Stretch"
-                                       VerticalAlignment="Stretch"
-                                       Fill="Transparent"
-                                       IsHitTestVisible="False"
-                                       StrokeThickness="1"
-                                       Grid.Column="0" />
-                        </Grid>
-                        <ContentPresenter Name="{x:Static atom:DataGridCellThemeConstants.ContentPresenterPart}"
+                        <ContentPresenter Name="ContentPresenter"
                                           Grid.Column="0"
-                                          Foreground="{TemplateBinding Foreground}"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Stretch"
-                                          Margin="{TemplateBinding Padding}"
+                                          ClipToBounds="{TemplateBinding IsClipContent}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        <Rectangle Name="{x:Static atom:DataGridCellThemeConstants.InvalidVisualElementPart}"
+                        <Rectangle Name="InvalidVisualElement"
                                    Grid.Column="0"
                                    IsVisible="False"
                                    HorizontalAlignment="Stretch"
@@ -55,13 +35,10 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        <Setter Property="Focusable" Value="False"/>
-        <Setter Property="ClipToBounds" Value="False"/>
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="ClipToBounds" Value="False"/>
         
         <Style Selector="^ /template/ Rectangle#PART_RightGridLine">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}"/>
@@ -90,13 +67,13 @@
 
         <Style Selector="^[IsShowFrozenShadow=True]">
             <Style Selector="^[FrozenShadowPosition=Left]">
-                <Style Selector="^ /template/ Border#PART_CellFrame">
+                <Style Selector="^ /template/ Border#Frame">
                     <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.LeftFrozenShadows}}"/>
                 </Style>
             </Style>
             
             <Style Selector="^[FrozenShadowPosition=Right]">
-                <Style Selector="^ /template/ Border#PART_CellFrame">
+                <Style Selector="^ /template/ Border#Frame">
                     <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:DataGridTokenKey.RightFrozenShadows}}"/>
                 </Style>
             </Style>

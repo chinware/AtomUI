@@ -16,12 +16,6 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridRowGroupHeaderThemeConstants.ExpanderButtonPart,      typeof(ToggleButton))]
-[TemplatePart(DataGridRowGroupHeaderThemeConstants.IndentSpacerPart,        typeof(Control))]
-[TemplatePart(DataGridRowGroupHeaderThemeConstants.ItemCountElementPart,    typeof(TextBlock))]
-[TemplatePart(DataGridRowGroupHeaderThemeConstants.PropertyNameElementPart, typeof(TextBlock))]
-[TemplatePart(DataGridRowThemeConstants.FramePart,        typeof(Panel))]
-[TemplatePart(DataGridRowThemeConstants.RowHeaderPart,   typeof(DataGridRowHeader))]
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Current, StdPseudoClass.Expanded)]
 public class DataGridRowGroupHeader : TemplatedControl
 {
@@ -181,7 +175,7 @@ public class DataGridRowGroupHeader : TemplatedControl
             _expanderButtonSubscription =
                 _expanderButton.GetObservable(ToggleButton.IsCheckedProperty)
                                .Skip(1)
-                               .Subscribe(v => HandleExpanderButtonIsCheckedChanged(v));
+                               .Subscribe(HandleExpanderButtonIsCheckedChanged);
         }
 
         _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowThemeConstants.RowHeaderPart);

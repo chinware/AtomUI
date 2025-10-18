@@ -86,6 +86,7 @@ public class ArrowDecoratedBox : ContentControl,
                                  IMotionAwareControl, 
                                  IControlSharedTokenResourcesHost
 {
+    public const string ArrowDecoratorPart = "PART_ArrowDecorator";
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsShowArrowProperty =

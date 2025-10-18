@@ -6,15 +6,14 @@
     <ControlTheme x:Key="{x:Type atom:DataGridRowReorderHandle}" TargetType="atom:DataGridRowReorderHandle">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:IconButton
+                <atom:RowReorderButton
                     Name = "{x:Static atom:DataGridRowReorderHandleConstants.IndicatorIconButtonPart}"
                     IsEnableHoverEffect="True"
                     Icon="{atom:IconProvider  HolderOutlined}"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                    IsPassthroughMouseEvent="True">
-                </atom:IconButton>
+                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                </atom:RowReorderButton>
             </ControlTemplate>
         </Setter>
         

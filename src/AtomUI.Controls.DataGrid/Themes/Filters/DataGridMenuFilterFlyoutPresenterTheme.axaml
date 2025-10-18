@@ -19,8 +19,7 @@
                                         CornerRadius="{TemplateBinding CornerRadius}"
                                         Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True">
-                        <StackPanel
-                            Name="{x:Static atom:DataGridFilterFlyoutPresenterThemeConstants.ButtonLayoutPart}"
+                        <StackPanel Name="ButtonLayout"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
@@ -39,7 +38,7 @@
                                 Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Ok}}" />
                         </StackPanel>
                         
-                        <Rectangle Name="{x:Static atom:DataGridFilterFlyoutPresenterThemeConstants.ButtonLayoutSeparatorPart}"
+                        <Rectangle Name="ButtonLayoutSeparator"
                                    Height="1.0"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Stretch" 
@@ -57,13 +56,13 @@
             </ControlTemplate>
         </Setter>
         
-        <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
+        <Style Selector="^ /template/ StackPanel#ButtonLayout">
             <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonSpacing}}" />
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonContainerMargin}}" /> 
         </Style>
         
-        <Style Selector="^ /template/ Rectangle#PART_ButtonLayoutSeparator">
+        <Style Selector="^ /template/ Rectangle#ButtonLayoutSeparator">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBorderColor}}" />
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFilterButtonLayoutSeparatorMargin}}" /> 

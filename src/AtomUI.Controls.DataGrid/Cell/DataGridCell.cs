@@ -75,6 +75,12 @@ public class DataGridCell : ContentControl
             o => o.FrozenShadowPosition, 
             (o, v) => o.FrozenShadowPosition = v);
     
+    internal static readonly DirectProperty<DataGridCell, bool> IsClipContentProperty =
+        AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
+            nameof(IsClipContent),
+            o => o.IsClipContent, 
+            (o, v) => o.IsClipContent = v);
+    
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -111,6 +117,14 @@ public class DataGridCell : ContentControl
     {
         get => _isShowFrozenShadow;
         set => SetAndRaise(IsShowFrozenShadowProperty, ref _isShowFrozenShadow, value);
+    }
+    
+    bool _isClipContent = true;
+
+    internal bool IsClipContent
+    {
+        get => _isClipContent;
+        set => SetAndRaise(IsClipContentProperty, ref _isClipContent, value);
     }
     
     FrozenColumnShadowPosition _frozenShadowPosition = FrozenColumnShadowPosition.Right;

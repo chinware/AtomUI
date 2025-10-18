@@ -280,8 +280,8 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
         _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.SizeTypeProperty, result, DataGridColumnHeader.SizeTypeProperty));
         _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.IsMotionEnabledProperty, result, DataGridColumnHeader.IsMotionEnabledProperty));
         _headerBindingDisposables.Add(BindUtils.RelayBind(this, SupportedSortDirectionsProperty, result, DataGridColumnHeader.SupportedSortDirectionsProperty));
-        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HorizontalAlignmentProperty, result, DataGridColumnHeader.HorizontalContentAlignmentProperty));
-        _headerBindingDisposables.Add(BindUtils.RelayBind(this, VerticalAlignmentProperty, result, DataGridColumnHeader.VerticalContentAlignmentProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HeaderContentHorizontalAlignmentProperty, result, DataGridColumnHeader.HorizontalContentAlignmentProperty));
+        _headerBindingDisposables.Add(BindUtils.RelayBind(this, HeaderContentVerticalAlignmentProperty, result, DataGridColumnHeader.VerticalContentAlignmentProperty));
 
         result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
         result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
@@ -393,14 +393,13 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
                 newValue      = Width.Value * newDisplayValue / ActualWidth;
             }
         }
-
+  
         newDisplayValue = Math.Min(double.MaxValue, newValue);
         newWidth        = new DataGridLength(newDisplayValue, newUnitType, newDesiredValue, newDisplayValue);
         SetWidthInternalNoCallback(newWidth);
-        if (newWidth != oldWidth)
-        {
-            OwningGrid.HandleColumnWidthChanged(this);
-        }
+        // TODO 不知道为什么如果这里不强制通知会造成 Header 的分割线渲染宽度丢失
+        // newWidth != oldWidth 命名加上了这个，不知道为啥
+        OwningGrid.HandleColumnWidthChanged(this);
     }
 
     /// <summary>

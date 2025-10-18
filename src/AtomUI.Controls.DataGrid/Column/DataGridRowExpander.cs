@@ -9,12 +9,12 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
-using Avalonia.Rendering;
-using Avalonia.VisualTree;
+using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-internal class DataGridRowExpander : ToggleButton, ICustomHitTest
+internal class DataGridRowExpander : ToggleButton
 {
     internal static readonly DirectProperty<DataGridRowExpander, double> IndicatorThicknessProperty =
         AvaloniaProperty.RegisterDirect<DataGridRowExpander, double>(
@@ -24,6 +24,15 @@ internal class DataGridRowExpander : ToggleButton, ICustomHitTest
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridRowExpander>();
+    
+    internal static readonly StyledProperty<ITransform?> VerticalIndicatorRenderTransformProperty = 
+        AvaloniaProperty.Register<DataGridRowExpander, ITransform?>(nameof (VerticalIndicatorRenderTransform));
+    
+    internal static readonly StyledProperty<ITransform?> HorizontalIndicatorRenderTransformProperty = 
+        AvaloniaProperty.Register<DataGridRowExpander, ITransform?>(nameof (HorizontalIndicatorRenderTransform));
+    
+    internal static readonly StyledProperty<IBrush?> IndicatorFillProperty = 
+        AvaloniaProperty.Register<DataGridRowExpander, IBrush?>(nameof (IndicatorFill));
 
     internal double IndicatorThickness
     {
@@ -38,10 +47,27 @@ internal class DataGridRowExpander : ToggleButton, ICustomHitTest
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    internal ITransform? VerticalIndicatorRenderTransform
+    {
+        get => GetValue(VerticalIndicatorRenderTransformProperty);
+        set => SetValue(VerticalIndicatorRenderTransformProperty, value);
+    }
+    
+    internal ITransform? HorizontalIndicatorRenderTransform
+    {
+        get => GetValue(HorizontalIndicatorRenderTransformProperty);
+        set => SetValue(HorizontalIndicatorRenderTransformProperty, value);
+    }
+
+    internal IBrush? IndicatorFill
+    {
+        get => GetValue(IndicatorFillProperty);
+        set => SetValue(IndicatorFillProperty, value);
+    }
 
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;
-    private Border? _frame;
     private IDisposable? _disposable;
     private IDisposable? _borderThicknessDisposable;
 
@@ -93,11 +119,11 @@ internal class DataGridRowExpander : ToggleButton, ICustomHitTest
             IndicatorThickness = BorderThickness.Left;
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureTransitions();
+                ConfigureTransitions(true);
             }
         }
     }
@@ -107,63 +133,38 @@ internal class DataGridRowExpander : ToggleButton, ICustomHitTest
         base.OnApplyTemplate(e);
         _verticalIndicator   = e.NameScope.Find<Rectangle>(DataGridRowExpanderThemeConstants.VerticalIndicatorPart);
         _horizontalIndicator = e.NameScope.Find<Rectangle>(DataGridRowExpanderThemeConstants.HorizontalIndicatorPart);
-        _frame               = e.NameScope.Find<Border>(DataGridRowExpanderThemeConstants.FramePart);
-        ConfigureTransitions();
     }
-
-    public bool HitTest(Point point)
-    {
-        return true;
-    }
-
-    private void ConfigureTransitions()
+    
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (_frame != null)
+            if (force || Transitions == null)
             {
-                _frame.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty)
-                };
-            }
-
-            if (_verticalIndicator != null)
-            {
-                _verticalIndicator.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty),
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
-                };
-            }
-
-            if (_horizontalIndicator != null)
-            {
-                _horizontalIndicator.Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Rectangle.FillProperty),
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(Visual.RenderTransformProperty)
-                };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(HorizontalIndicatorRenderTransformProperty),
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(HorizontalIndicatorRenderTransformProperty)
+                ];
             }
         }
         else
         {
-            if (_frame != null)
-            {
-                _frame.Transitions?.Clear();
-                _frame.Transitions = null;
-            }
-            if (_verticalIndicator != null)
-            {
-                _verticalIndicator.Transitions?.Clear();
-                _verticalIndicator.Transitions = null;
-            }
-            if (_horizontalIndicator != null)
-            {
-                _horizontalIndicator.Transitions?.Clear();
-                _horizontalIndicator.Transitions = null;
-            }
+            Transitions = null;
         }
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 
     internal void NotifyLoadingRow(DataGridRow row)

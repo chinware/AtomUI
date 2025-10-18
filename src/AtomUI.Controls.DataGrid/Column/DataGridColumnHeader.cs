@@ -3,7 +3,6 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Animations;
@@ -251,8 +250,7 @@ internal partial class DataGridColumnHeader : ContentControl
     private static double _rightFrozenColumnsWidth;
     private bool _areHandlersSuspended;
     private bool _desiredSeparatorVisibility = true;
-    private StackPanel? _indicatorsLayout;
-    private static Lazy<Cursor> _resizeCursor = new (() => new Cursor(StandardCursorType.SizeWestEast));
+    private static Lazy<Cursor> ResizeCursor = new (() => new Cursor(StandardCursorType.SizeWestEast));
     
     static DataGridColumnHeader()
     {
@@ -848,7 +846,7 @@ internal partial class DataGridColumnHeader : ContentControl
         if (HeaderDragMode == DragMode.Resize && _dragColumn != null && _dragStart.HasValue)
         {
             // resize column
-            double mouseDelta   = mousePositionHeaders.X - _dragStart.Value.X;
+            double mouseDelta   = Math.Round(mousePositionHeaders.X - _dragStart.Value.X);
             double desiredWidth = _originalWidth + mouseDelta;
 
             desiredWidth = Math.Max(_dragColumn.ActualMinWidth, Math.Min(_dragColumn.ActualMaxWidth, desiredWidth));
@@ -883,7 +881,7 @@ internal partial class DataGridColumnHeader : ContentControl
         if ((distanceFromRight <= ResizeRegionWidth && currentColumn != null && CanResizeColumn(currentColumn)) ||
             (distanceFromLeft <= ResizeRegionWidth && previousColumn != null && CanResizeColumn(previousColumn)))
         {
-            var resizeCursor = _resizeCursor.Value;
+            var resizeCursor = ResizeCursor.Value;
             if (Cursor != resizeCursor)
             {
                 _originalCursor = Cursor;
@@ -902,19 +900,14 @@ internal partial class DataGridColumnHeader : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _indicatorsLayout = e.NameScope.Find<StackPanel>(DataGridColumnHeaderThemeConstants.IndicatorsLayoutPart);
+
         _filterIndicator = e.NameScope.Find<DataGridFilterIndicator>(DataGridColumnHeaderThemeConstants.FilterIndicatorPart);
         if (_filterIndicator != null && OwningColumn != null)
         {
             _filterIndicator.OwningColumn = OwningColumn;
         }
-
-        ConfigureFilterIndicator();
-        if (_indicatorsLayout != null)
-        {
-            _indicatorsLayout.Children.CollectionChanged += HandleIndicatorLayoutChildrenChanged;
-        }
         
+        ConfigureFilterIndicator();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -929,12 +922,7 @@ internal partial class DataGridColumnHeader : ContentControl
         }
         NotifyPropertyChangedForSorting(change);
     }
-
-    private void HandleIndicatorLayoutChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        Debug.Assert(_indicatorsLayout != null);
-        _indicatorsLayout.IsVisible = _indicatorsLayout.Children.Count > 0;
-    }
+    
     
     private void ConfigureTransitions(bool force)
     {

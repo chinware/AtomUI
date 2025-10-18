@@ -5,7 +5,6 @@
 
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -16,16 +15,12 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridRowThemeConstants.BottomGridLinePart, typeof(Rectangle))]
-[TemplatePart(DataGridRowThemeConstants.CellsPresenterPart, typeof(DataGridCellsPresenter))]
-[TemplatePart(DataGridRowThemeConstants.DetailsPresenterPart, typeof(DataGridDetailsPresenter))]
-[TemplatePart(DataGridRowThemeConstants.FramePart, typeof(Panel))]
-[TemplatePart(DataGridRowThemeConstants.RowHeaderPart, typeof(DataGridRowHeader))]
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Editing, StdPseudoClass.Invalid)]
 public partial class DataGridRow : TemplatedControl
 {
@@ -245,18 +240,9 @@ public partial class DataGridRow : TemplatedControl
         }
 
         //Allow the DataGrid specific components to adjust themselves based on new values
-        if (_headerElement != null)
-        {
-            _headerElement.InvalidateMeasure();
-        }
-        if (_cellsElement != null)
-        {
-            _cellsElement.InvalidateMeasure();
-        }
-        if (_detailsElement != null)
-        {
-            _detailsElement.InvalidateMeasure();
-        }
+        _headerElement?.InvalidateMeasure();
+        _cellsElement?.InvalidateMeasure();
+        _detailsElement?.InvalidateMeasure();
 
         Size desiredSize = base.MeasureOverride(availableSize);
         return desiredSize.WithWidth(Math.Max(desiredSize.Width, OwningGrid.CellsWidth));
@@ -337,8 +323,6 @@ public partial class DataGridRow : TemplatedControl
             ApplyHeaderContentTemplate();
         }
         
-        _rowFrame = e.NameScope.Find<Border>(DataGridRowThemeConstants.FramePart);
-        SetupTransitions();
     }
     
     protected override void OnPointerEntered(PointerEventArgs e)
@@ -355,6 +339,7 @@ public partial class DataGridRow : TemplatedControl
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        base.OnPropertyChanged(change);
         if (change.Property == DataContextProperty)
         {
             var owner = OwningGrid;
@@ -390,37 +375,43 @@ public partial class DataGridRow : TemplatedControl
         {
             LogicIndex = Index + 1;
         }
-        
-        if (this.IsAttachedToVisualTree())
+        if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                SetupTransitions();
+                ConfigureTransitions(true);
             }
         }
 
-        base.OnPropertyChanged(change);
     }
-
-    private void SetupTransitions()
+    
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (_rowFrame != null)
+            if (force || Transitions == null)
             {
-                _rowFrame.Transitions ??= new Transitions
-                {
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty,
-                        SharedTokenKey.MotionDurationSlow)
-                };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                ];
             }
         }
         else
         {
-            if (_rowFrame != null)
-            {
-                _rowFrame.Transitions = null;
-            }
+            Transitions = null;
         }
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

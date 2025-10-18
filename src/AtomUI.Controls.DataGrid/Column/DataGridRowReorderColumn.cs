@@ -28,7 +28,8 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
     {
         Debug.Assert(OwningGrid != null);
         var handle = new DataGridRowReorderHandle();
-        handle.OwningGrid                                         = OwningGrid;
+        handle.OwningGrid       = OwningGrid;
+        handle.Focusable = false;
         BindUtils.RelayBind(OwningGrid, DataGrid.IsMotionEnabledProperty, handle, DataGridRowReorderHandle.IsMotionEnabledProperty);
         BindUtils.RelayBind(OwningGrid, DataGrid.IsEnabledProperty, handle, DataGridRowReorderHandle.IsEnabledProperty);
         return handle;

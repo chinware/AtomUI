@@ -14,11 +14,9 @@
                             Grid.ColumnSpan="2">
                         <Panel>
                             <Rectangle
-                                Name="{x:Static atom:DataGridRowHeaderThemeConstants.RowInvalidVisualElementPart}"
+                                Name="RowInvalidVisualElement"
                                 Opacity="0"
                                 Stretch="Fill" />
-                            <Rectangle Name="{x:Static atom:DataGridRowHeaderThemeConstants.RowBackgroundPart}"
-                                       Stretch="Fill" />
                         </Panel>
                     </Border>
 

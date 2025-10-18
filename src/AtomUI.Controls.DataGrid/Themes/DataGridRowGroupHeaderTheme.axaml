@@ -6,7 +6,7 @@
     <ControlTheme x:Key="{x:Type atom:DataGridRowGroupHeader}" TargetType="atom:DataGridRowGroupHeader">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:DataGridFrozenGrid Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.RootLayoutPart}"
+                <atom:DataGridFrozenGrid Name="RootLayout"
                                          RowDefinitions="*, Auto"
                                          ColumnDefinitions="Auto, Auto, Auto, Auto, *">
                     <Rectangle Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.IndentSpacerPart}"
@@ -30,33 +30,30 @@
                         <atom:TextBlock Margin="4, 0, 0, 0"/>
                         <atom:TextBlock Margin="4, 0, 0, 0"/>
                     </StackPanel>
+
+                    <Rectangle Name="CurrencyVisual"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="5"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch"
+                               Fill="Transparent"
+                               IsHitTestVisible="False"
+                               StrokeThickness="1" />
                     
-                    <Rectangle
-                        Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.CurrencyVisualPart}"
-                        Grid.Row="0" 
-                        Grid.Column="0"
-                        Grid.ColumnSpan="5"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Fill="Transparent"
-                        IsHitTestVisible="False"
-                        StrokeThickness="1"
-                        />
-                    
-                    <!-- FocusVisual -->
-                    <Grid Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.FocusVisualPart}"
+                    <Grid Name="FocusVisual"
                           Grid.Row="0"
                           Grid.Column="0"
                           Grid.ColumnSpan="5"
                           IsVisible="False"
                           IsHitTestVisible="False">
-                        <Rectangle Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.FocusVisualPrimaryPart}"
+                        <Rectangle Name="FocusVisualPrimary"
                                    HorizontalAlignment="Stretch"
                                    VerticalAlignment="Stretch"
                                    Fill="Transparent"
                                    IsHitTestVisible="False"
                                    StrokeThickness="2"/>
-                        <Rectangle Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.FocusVisualSecondaryPart}"
+                        <Rectangle Name="FocusVisualSecondary"
                                    HorizontalAlignment="Stretch"
                                    VerticalAlignment="Stretch"
                                    Fill="Transparent"
@@ -65,18 +62,18 @@
                     </Grid>
                     
                     <atom:DataGridRowHeader
-                        Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.RowHeaderPart}"
+                        Name="RowHeader"
                         Grid.Row="0"
                         Grid.Column="0"
                         Grid.RowSpan="2"
                         atom:DataGridFrozenGrid.IsFrozen="True"
                         />
                     <Rectangle
-                        Name="{x:Static atom:DataGridRowGroupHeaderThemeConstants.BottomGridLinePart}"
+                        Name="BottomGridLine"
                         Grid.Row="1"
                         Grid.Column="0"
                         Grid.ColumnSpan="5"
-                        Height="1"
+                        Height="1" 
                         />
                     
                 </atom:DataGridFrozenGrid>

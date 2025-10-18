@@ -15,7 +15,6 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridRowHeaderThemeConstants.RootLayoutPart, typeof(Control))]
 [PseudoClasses(StdPseudoClass.Invalid, StdPseudoClass.Selected, StdPseudoClass.Editing, StdPseudoClass.Current)]
 public class DataGridRowHeader : ContentControl
 {
@@ -176,9 +175,7 @@ public class DataGridRowHeader : ContentControl
             if (OwningRow != null)
             {
                 PseudoClasses.Set(StdPseudoClass.Invalid, !OwningRow.IsValid);
-
                 PseudoClasses.Set(StdPseudoClass.Selected, OwningRow.IsSelected);
-
                 PseudoClasses.Set(StdPseudoClass.Editing, OwningRow.IsEditing);
 
                 if (OwningGrid != null)

@@ -6,18 +6,19 @@
     <ControlTheme x:Key="{x:Type atom:DataGridRow}" TargetType="atom:DataGridRow">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:DataGridRowThemeConstants.FramePart}">
+                <Border Name="{x:Static atom:DataGridRowThemeConstants.FramePart}"
+                        Background="{TemplateBinding Background}">
                     <atom:DataGridFrozenGrid Name="{x:Static atom:DataGridRowThemeConstants.RootLayoutPart}"
                                              RowDefinitions="*, Auto, Auto"
                                              ColumnDefinitions="Auto, *">
                         <Border
-                            Name="{x:Static atom:DataGridRowThemeConstants.RowCellsFramePart}"
+                            Name="RowCellsFrame"
                             Grid.Row="0"
                             Grid.Column="0"
                             Grid.RowSpan="2"
                             Grid.ColumnSpan="2" />
                         <Rectangle
-                            Name="{x:Static atom:DataGridRowThemeConstants.InvalidVisualElementPart}"
+                            Name="InvalidVisualElement"
                             Grid.Row="0"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
@@ -36,7 +37,7 @@
                             Grid.Column="1"
                             atom:DataGridFrozenGrid.IsFrozen="True" />
                         <Border
-                            Name="{x:Static atom:DataGridRowThemeConstants.DetailsPresenterFramePart}"
+                            Name="DetailsPresenterFrame"
                             Grid.Row="1"
                             Grid.Column="1"
                             IsVisible="{TemplateBinding IsDetailsVisible}">
@@ -59,56 +60,44 @@
         </Style>
         
         <Style Selector="^[IsDragging=True]">
-            <Style Selector="^ /template/ Border#PART_Frame">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRowHoverBg}}" />
-            </Style>
             <Setter Property="ZIndex" Value="1000" />
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRowHoverBg}}" />
         </Style>
         
         <Style Selector="^[IsDragging=False]">
-            <Style Selector="^ /template/ Border#PART_Frame">
-                <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBg}}" />
-            </Style>
-        
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBg}}" />
+            
             <Style Selector="^[IsSelected=True]">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableSelectedRowBg}}" />
-                </Style>
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableSelectedRowBg}}" />
                 <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ Border#PART_Frame">
-                        <Setter Property="Background"
-                                Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableSelectedRowHoverBg}}" />
-                    </Style>
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableSelectedRowHoverBg}}" />
                 </Style>
             </Style>
             <Style Selector="^[IsSelected=False]">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBg}}" />
-                </Style>
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableBg}}" />
                 <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ Border#PART_Frame">
-                        <Setter Property="Background"
-                                Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRowHoverBg}}" />
-                    </Style>
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableRowHoverBg}}" />
                 </Style>
             </Style>
         </Style>
         
-        <Style Selector="^ /template/ Border#PART_DetailsPresenterFrame">
+        <Style Selector="^ /template/ Border#DetailsPresenterFrame">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableExpandedRowBg}}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#PART_DetailsPresenterFrame">
+            <Style Selector="^ /template/ Border#DetailsPresenterFrame">
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePadding}}" />
                 <Setter Property="TextElement.FontSize"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSize}}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ Border#PART_DetailsPresenterFrame">
+            <Style Selector="^ /template/ Border#DetailsPresenterFrame">
                 <Setter Property="Padding"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingMiddle}}" />
                 <Setter Property="TextElement.FontSize"
@@ -116,7 +105,7 @@
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#PART_DetailsPresenterFrame">
+            <Style Selector="^ /template/ Border#DetailsPresenterFrame">
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingSmall}}" />
                 <Setter Property="TextElement.FontSize"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeSmall}}" />

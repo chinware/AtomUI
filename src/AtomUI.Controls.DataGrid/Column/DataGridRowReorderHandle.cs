@@ -33,7 +33,7 @@ internal class DataGridRowReorderHandle : TemplatedControl
     private static Point? _lastMousePositionInPresenter;
     private IconButton? _indicatorButton;
 
-    private void HandlePointerPressed(object? sender, PointerPressedEventArgs e)
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         if (OwningRow == null || !IsEnabled || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
@@ -46,8 +46,9 @@ internal class DataGridRowReorderHandle : TemplatedControl
         e.Handled = handled;
     }
 
-    private void HandlePointerReleased(object? sender, PointerReleasedEventArgs e)
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
+        base.OnPointerReleased(e);
         if (OwningRow == null || !IsEnabled || e.InitialPressMouseButton != MouseButton.Left)
         {
             return;
@@ -100,8 +101,9 @@ internal class DataGridRowReorderHandle : TemplatedControl
         rowsPresenter.InvalidateArrange();
     }
 
-    private void HandlePointerMoved(object? sender, PointerEventArgs e)
+    protected override void OnPointerMoved(PointerEventArgs e)
     {
+        base.OnPointerMoved(e);
         if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed || OwningGrid == null || !IsEnabled || OwningGrid.ColumnHeaders == null)
         {
             return;
@@ -251,11 +253,5 @@ internal class DataGridRowReorderHandle : TemplatedControl
     {
         base.OnApplyTemplate(e);
         _indicatorButton = e.NameScope.Find<IconButton>(DataGridRowReorderHandleConstants.IndicatorIconButtonPart);
-        if (_indicatorButton != null)
-        {
-            _indicatorButton.PassthroughPointerPressed  += HandlePointerPressed;
-            _indicatorButton.PassthroughPointerReleased += HandlePointerReleased;
-            _indicatorButton.PassthroughPointerMoved    += HandlePointerMoved;
-        }
     }
 }

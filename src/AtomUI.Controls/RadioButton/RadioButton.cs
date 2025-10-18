@@ -2,6 +2,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 
 namespace AtomUI.Controls;
 
@@ -33,6 +34,8 @@ public class RadioButton : AvaloniaRadioButton,
 
     #endregion
     
+    protected override Type StyleKeyOverride { get; } = typeof(RadioButton);
+    
     #region 内部属性定义
 
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -44,5 +47,11 @@ public class RadioButton : AvaloniaRadioButton,
     public RadioButton()
     {
         this.RegisterResources();
+    }
+    
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        e.Handled = false;
     }
 }

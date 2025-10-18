@@ -2,57 +2,48 @@
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:converters="using:AtomUI.Controls.Converters"
-              xmlns:themes="using:AtomUI.Controls.Themes"
               x:Class="AtomUI.Controls.Themes.DataGridColumnHeaderTheme"
               x:ClassModifier="internal"
               xmlns:atom="https://atomui.net">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DataGridColumnHeader">
-            <Border Name="Frame"
-                    Padding="{TemplateBinding Padding}"
-                    Background="{TemplateBinding Background}">
+            <Border Name="Frame" Background="{TemplateBinding Background}">
                 <Panel Name="RootLayout">
-                    <Grid ColumnDefinitions="*, Auto"
-                          HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                          VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                        <ContentPresenter
-                            Name="ContentPresenter"
-                            Grid.Column="0"
-                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        <StackPanel
-                            Name="{x:Static atom:DataGridColumnHeaderThemeConstants.IndicatorsLayoutPart}"
-                            Grid.Column="1"
-                            Orientation="Horizontal"
-                            Margin="{Binding (ContentPresenter.Padding),
-                                     ElementName=ContentPresenter,
-                                     Converter={x:Static themes:DataGridColumnHeaderTheme.HeaderIndicatorLayoutMarginsConverter}}"
-                            IsVisible="{TemplateBinding IndicatorLayoutVisible}">
-                            <atom:DataGridSortIndicator
-                                Name="{x:Static atom:DataGridColumnHeaderThemeConstants.SortIndicatorPart}"
-                                VerticalAlignment="Center"
-                                IsVisible="{TemplateBinding CanUserSort}"
-                                SupportedSortDirections="{TemplateBinding SupportedSortDirections}" />
-                            <atom:DataGridFilterIndicator
-                                IsEnableHoverEffect="True"
-                                Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FilterIndicatorPart}"
-                                VerticalAlignment="Center">
-                                <atom:DataGridFilterIndicator.IsVisible>
-                                    <MultiBinding
-                                        Converter="{x:Static converters:DataGridFilterIndicatorVisibleConvert.Default}">
-                                        <Binding Path="IsSeparatorsVisible"
-                                                 RelativeSource="{RelativeSource TemplatedParent}" />
-                                        <Binding Path="CanUserFilter"
-                                                 RelativeSource="{RelativeSource TemplatedParent}" />
-                                        <Binding Path="OwningColumn?.Filters.Count"
-                                                 RelativeSource="{RelativeSource TemplatedParent}" />
-                                    </MultiBinding>
-                                </atom:DataGridFilterIndicator.IsVisible>
-                            </atom:DataGridFilterIndicator>
-                        </StackPanel>
-                    </Grid>
+                    <Border Name="ContentFrame">
+                        <DockPanel LastChildFill="True" Name="ContentLayout">
+                            <StackPanel Name="IndicatorsLayout"
+                                        Orientation="Horizontal"
+                                        DockPanel.Dock="Right">
+                                <atom:DataGridSortIndicator
+                                    Name="{x:Static atom:DataGridColumnHeaderThemeConstants.SortIndicatorPart}"
+                                    VerticalAlignment="Center"
+                                    IsVisible="{TemplateBinding CanUserSort}"
+                                    SupportedSortDirections="{TemplateBinding SupportedSortDirections}" />
+                                <atom:DataGridFilterIndicator
+                                    IsEnableHoverEffect="True"
+                                    Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FilterIndicatorPart}"
+                                    VerticalAlignment="Center">
+                                    <atom:DataGridFilterIndicator.IsVisible>
+                                        <MultiBinding
+                                            Converter="{x:Static converters:DataGridFilterIndicatorVisibleConvert.Default}">
+                                            <Binding Path="IsSeparatorsVisible"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <Binding Path="CanUserFilter"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <Binding Path="OwningColumn?.Filters.Count"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                        </MultiBinding>
+                                    </atom:DataGridFilterIndicator.IsVisible>
+                                </atom:DataGridFilterIndicator>
+                            </StackPanel>
+                            <ContentPresenter
+                                Name="ContentPresenter"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </DockPanel>
+                    </Border>
                     <Rectangle Name="VerticalSeparator"
                                Width="1.0"
                                VerticalAlignment="Center"
@@ -94,38 +85,37 @@
             <Setter Property="atom:ToolTip.ServiceEnabled" Value="True" />
         </Style>
 
-        <!-- BuildSizeTypeStyle 开始 -->
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+            <Style Selector="^ /template/ Border#ContentFrame">
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePadding}}" />
             </Style>
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSize}}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+            <Style Selector="^ /template/ Border#ContentFrame">
                 <Setter Property="Padding"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingMiddle}}" />
             </Style>
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeMiddle}}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+            <Style Selector="^ /template/ Border#ContentFrame">
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TablePaddingSmall}}" />
             </Style>
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:DataGridTokenKey.TableFontSizeSmall}}" />
         </Style>
-        <!-- BuildSizeTypeStyle 结束 -->
 
-        <!-- BuildVerticalSeparatorStyle 开始 -->
         <Style Selector="^ /template/ Rectangle#VerticalSeparator">
             <Setter Property="Fill" Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSplitColor}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
         </Style>
-        <!-- BuildVerticalSeparatorStyle 结束 -->
 
-        <!-- BuildIndicatorsStyle 开始 -->
-        <Style Selector="^ /template/ StackPanel#PART_IndicatorsLayout">
+        <Style Selector="^ /template/ StackPanel#IndicatorsLayout">
             <Setter Property="Spacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXXS}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ DockPanel#ContentLayout">
+            <Setter Property="HorizontalSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}" />
         </Style>
         <Style Selector="^:sort-ascending">
             <Style Selector="^ /template/ atom|DataGridSortIndicator#PART_SortIndicator">
@@ -142,22 +132,23 @@
                 <Setter Property="IsHoverMode" Value="True" />
             </Style>
         </Style>
-        <!-- BuildIndicatorsStyle 结束 -->
-        <!-- BuildSortableColumnStyle 开始 -->
+
         <Style Selector="^[CanUserSort=True]">
             <Style Selector="^:sort-ascending, ^:sort-descending">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortActiveBg}}" />
             </Style>
 
-            <Setter Property="Cursor" Value="Hand" />
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+        
             <Style Selector="^:pointerover">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderSortHoverBg}}" />
             </Style>
         </Style>
 
-        <!-- BuildSortableColumnStyle 结束 -->
         <Style Selector="^:drag-indicator">
             <Setter Property="Background" Value="#808080" />
         </Style>
@@ -185,6 +176,5 @@
                 </Style>
             </Style>
         </Style>
-
     </Style>
 </ControlTheme>

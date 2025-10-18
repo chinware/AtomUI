@@ -1,6 +1,5 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -192,7 +191,7 @@ public class TreeViewFlyoutPresenter : FloatableTreeView,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(TreeViewFlyoutThemeConstants.ArrowDecoratorPart);
+        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(ArrowDecoratedBox.ArrowDecoratorPart);
     } 
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

@@ -31,6 +31,8 @@ public class CheckBox : AvaloniaCheckBox, IWaveSpiritAwareControl, IControlShare
 
     #endregion
 
+    protected override Type StyleKeyOverride { get; } = typeof(CheckBox);
+    
     #region 内部属性定义
 
     Control IMotionAwareControl.PropertyBindTarget => this;

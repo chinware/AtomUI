@@ -40,16 +40,16 @@ public sealed class DataGridSelectionColumn : DataGridColumn
         {
             selector = BuildCheckBox();
         }
+        cell.SetCurrentValue(DataGridCell.IsClipContentProperty, false);
         return selector;
     }
 
     private CheckBox BuildCheckBox()
     {
-        var checkBoxElement = new CheckBox
+        var checkBoxElement = new SelectionCheckBox()
         {
             IsThreeState = false
         };
-        checkBoxElement.IsHitTestVisible    = false;
         checkBoxElement.HorizontalAlignment = HorizontalAlignment.Center;
         checkBoxElement.VerticalAlignment   = VerticalAlignment.Center;
         return checkBoxElement;
@@ -57,13 +57,12 @@ public sealed class DataGridSelectionColumn : DataGridColumn
 
     private RadioButton BuildRadioButton()
     {
-        var radioButton = new RadioButton
+        var radioButton = new SelectionRadioButton
         {
             IsThreeState = false
         };
-        radioButton.IsHitTestVisible    = false;
-        radioButton.HorizontalAlignment = HorizontalAlignment.Center;
-        radioButton.VerticalAlignment   = VerticalAlignment.Center;
+        radioButton.HorizontalAlignment =  HorizontalAlignment.Center;
+        radioButton.VerticalAlignment   =  VerticalAlignment.Center;
         return radioButton;
     }
     
@@ -75,14 +74,10 @@ public sealed class DataGridSelectionColumn : DataGridColumn
     internal bool NotifyAboutToUpdateSelection(PointerPressedEventArgs e, DataGridCell cell)
     {
         Debug.Assert(_owningGrid != null);
-        if (_owningGrid.SelectionMode == DataGridSelectionMode.Single)
-        {
-            return true;
-        }
-        var   checkBox = cell.Content as CheckBox;
-        Debug.Assert(checkBox != null);
-        Point position = e.GetPosition(checkBox);
-        Rect  rect     = new Rect(0, 0, checkBox.Bounds.Width, checkBox.Bounds.Height);
+        var   control = cell.Content as Control;
+        Debug.Assert(control != null);
+        Point position = e.GetPosition(control);
+        Rect  rect     = new Rect(control.Bounds.Size);
         return rect.Contains(position);
     }
 
@@ -106,7 +101,6 @@ public sealed class DataGridSelectionColumn : DataGridColumn
         }
 
         return DataGridSelectionAction.RemoveCurrentFromSelection;
-
     }
     
     private bool EnsureOwningGrid()
@@ -276,8 +270,8 @@ public sealed class DataGridSelectionColumn : DataGridColumn
             _headerBindingDisposables = new CompositeDisposable();
             _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.SizeTypeProperty, header, DataGridColumnHeader.SizeTypeProperty));
             _headerBindingDisposables.Add(BindUtils.RelayBind(this, SupportedSortDirectionsProperty, header, DataGridColumnHeader.SupportedSortDirectionsProperty));
-            _headerBindingDisposables.Add(BindUtils.RelayBind(this, HorizontalAlignmentProperty, header, DataGridColumnHeader.HorizontalContentAlignmentProperty));
-            _headerBindingDisposables.Add(BindUtils.RelayBind(this, VerticalAlignmentProperty, header, DataGridColumnHeader.VerticalContentAlignmentProperty));
+            _headerBindingDisposables.Add(BindUtils.RelayBind(this, HeaderContentHorizontalAlignmentProperty, header, DataGridColumnHeader.HorizontalContentAlignmentProperty));
+            _headerBindingDisposables.Add(BindUtils.RelayBind(this, HeaderContentVerticalAlignmentProperty, header, DataGridColumnHeader.VerticalContentAlignmentProperty));
             _headerBindingDisposables.Add(BindUtils.RelayBind(OwningGrid, DataGrid.IsMotionEnabledProperty, header, DataGridColumnHeader.IsMotionEnabledProperty));
             
             _headerCheckBox       =  new CheckBox();
@@ -312,5 +306,23 @@ public sealed class DataGridSelectionColumn : DataGridColumn
                 throw DataGridError.DataGridColumn.SelectionModeException();
             }
         }
+    }
+}
+
+internal class SelectionRadioButton : RadioButton
+{
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        e.Handled = false;
+    }
+}
+
+internal class SelectionCheckBox : CheckBox
+{
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        e.Handled = false;
     }
 }

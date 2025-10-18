@@ -280,7 +280,7 @@ internal class DataGridToken : AbstractControlDesignToken
         CellFontSize                = SharedToken.FontSize;
         CellFontSizeMD              = SharedToken.FontSize;
         CellFontSizeSM              = SharedToken.FontSize;
-        HeaderSplitColor            = SharedToken.ColorBorderSecondary;
+        HeaderSplitColor            = SharedToken.ColorSplit;
         FixedHeaderSortActiveBg     = colorFillSecondarySolid;
         HeaderFilterHoverBg         = SharedToken.ColorFillContent;
         FilterDropdownMenuBg        = SharedToken.ColorBgContainer;

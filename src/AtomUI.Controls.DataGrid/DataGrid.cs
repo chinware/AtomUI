@@ -27,12 +27,6 @@ using Avalonia.Utilities;
 
 namespace AtomUI.Controls;
 
-[TemplatePart(DataGridThemeConstants.BottomRightCornerPart, typeof(Visual))]
-[TemplatePart(DataGridThemeConstants.HorizontalScrollbarPart, typeof(ScrollBar))]
-[TemplatePart(DataGridThemeConstants.RowsPresenterPart, typeof(DataGridRowsPresenter))]
-[TemplatePart(DataGridThemeConstants.TopLeftCornerPart, typeof(ContentControl))]
-[TemplatePart(DataGridThemeConstants.TopRightCornerPart, typeof(ContentControl))]
-[TemplatePart(DataGridThemeConstants.VerticalScrollbarPart, typeof(ScrollBar))]
 [PseudoClasses(StdPseudoClass.Invalid, DataGridPseudoClass.EmptyRows, DataGridPseudoClass.EmptyColumns)]
 public partial class DataGrid : TemplatedControl,
                                 ISizeTypeAware,
