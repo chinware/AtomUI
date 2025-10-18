@@ -191,12 +191,12 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     protected override bool IsEnabledCore => base.IsEnabledCore && _commandCanExecute;
     
-    INavMenuItem? INavMenuElement.SelectedItem
+    INavMenuItem? INavMenuItem.SelectedItem
     {
         get
         {
             var index = SelectedIndex;
-            return (index != -1) ? (INavMenuItem?)ContainerFromIndex(index) : null;
+            return index != -1 ? (INavMenuItem?)ContainerFromIndex(index) : null;
         }
 
         set => SelectedIndex = value is Control c ? IndexFromContainer(c) : -1;

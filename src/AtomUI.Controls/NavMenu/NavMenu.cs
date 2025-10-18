@@ -3,7 +3,6 @@ using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Exceptions;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -28,59 +27,61 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class NavMenuItemClickEventArgs : RoutedEventArgs
-{
-    public NavMenuItemClickEventArgs(RoutedEvent routedEvent, INavMenuItem navMenuItem)
-        : base(routedEvent)
-    {
-        NavMenuItem = navMenuItem;
-    }
-
-    public INavMenuItem NavMenuItem { get; }
-}
-
 [PseudoClasses(
     NavMenuPseudoClass.InlineMode,
     NavMenuPseudoClass.HorizontalMode,
     NavMenuPseudoClass.VerticalMode,
     NavMenuPseudoClass.DarkStyle,
     NavMenuPseudoClass.LightStyle)]
-public class NavMenu : SelectingItemsControl, 
-                       IFocusScope, 
+public class NavMenu : ItemsControl,
+                       IFocusScope,
                        INavMenu,
                        IMotionAwareControl,
                        IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
-    public static readonly DirectProperty<NavMenu, IList<TreeNodePath>?> DefaultOpenPathsProperty =
-        AvaloniaProperty.RegisterDirect<NavMenu, IList<TreeNodePath>?>(
-            nameof(DefaultOpenPaths),
-            o => o.DefaultOpenPaths,
-            (o, v) => o.DefaultOpenPaths = v);
-    
+    public static readonly DirectProperty<NavMenu, INavMenuItem?> SelectedItemProperty =
+        AvaloniaProperty.RegisterDirect<NavMenu, INavMenuItem?>(
+            nameof(SelectedItem),
+            o => o.SelectedItem);
+
     public static readonly DirectProperty<NavMenu, TreeNodePath?> DefaultSelectedPathProperty =
         AvaloniaProperty.RegisterDirect<NavMenu, TreeNodePath?>(
             nameof(DefaultSelectedPath),
             o => o.DefaultSelectedPath,
             (o, v) => o.DefaultSelectedPath = v);
-    
+
     public static readonly DirectProperty<NavMenu, bool> IsOpenProperty =
         AvaloniaProperty.RegisterDirect<NavMenu, bool>(
             nameof(IsOpen),
             o => o.IsOpen);
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenu>();
-    
+
     public static readonly StyledProperty<bool> IsAccordionModeProperty =
         AvaloniaProperty.Register<NavMenu, bool>(nameof(IsAccordionMode), false);
-    
+
     public static readonly StyledProperty<NavMenuMode> ModeProperty =
         AvaloniaProperty.Register<NavMenu, NavMenuMode>(nameof(Mode), NavMenuMode.Horizontal);
 
     public static readonly StyledProperty<bool> IsDarkStyleProperty =
         AvaloniaProperty.Register<NavMenu, bool>(nameof(IsDarkStyle), false);
+
+    public static readonly DirectProperty<NavMenu, IList<TreeNodePath>?> DefaultOpenPathsProperty =
+        AvaloniaProperty.RegisterDirect<NavMenu, IList<TreeNodePath>?>(
+            nameof(DefaultOpenPaths),
+            o => o.DefaultOpenPaths,
+            (o, v) => o.DefaultOpenPaths = v);
+
+    public INavMenuItem? _selectedItem;
+
+    public INavMenuItem? SelectedItem
+    {
+        get => _selectedItem;
+        private set => SetAndRaise(SelectedItemProperty, ref _selectedItem, value);
+    }
 
     private IList<TreeNodePath>? _defaultOpenPaths;
     
@@ -135,9 +136,10 @@ public class NavMenu : SelectingItemsControl,
     #region 公共事件定义
 
     public static readonly RoutedEvent<NavMenuItemClickEventArgs> NavMenuItemClickEvent =
-        RoutedEvent.Register<NavMenu, NavMenuItemClickEventArgs>(
-            nameof(NavMenuItemClick),
-            RoutingStrategies.Bubble);
+        RoutedEvent.Register<NavMenu, NavMenuItemClickEventArgs>(nameof(NavMenuItemClick), RoutingStrategies.Bubble);
+    
+    public static readonly RoutedEvent<NavMenuItemSelectedEventArgs> NavMenuItemSelectedEvent =
+        RoutedEvent.Register<NavMenu, NavMenuItemSelectedEventArgs>(nameof(NavMenuItemSelected), RoutingStrategies.Bubble);
     
     public static readonly RoutedEvent<RoutedEventArgs> OpenedEvent =
         RoutedEvent.Register<NavMenu, RoutedEventArgs>(nameof(Opened), RoutingStrategies.Bubble);
@@ -149,6 +151,12 @@ public class NavMenu : SelectingItemsControl,
     {
         add => AddHandler(NavMenuItemClickEvent, value);
         remove => RemoveHandler(NavMenuItemClickEvent, value);
+    }
+    
+    public event EventHandler<NavMenuItemSelectedEventArgs>? NavMenuItemSelected
+    {
+        add => AddHandler(NavMenuItemSelectedEvent, value);
+        remove => RemoveHandler(NavMenuItemSelectedEvent, value);
     }
     
     public event EventHandler<RoutedEventArgs>? Opened
@@ -185,17 +193,6 @@ public class NavMenu : SelectingItemsControl,
     
     IRenderRoot? INavMenu.VisualRoot => VisualRoot;
 
-    INavMenuItem? INavMenuElement.SelectedItem
-    {
-        get
-        {
-            var index = SelectedIndex;
-            return (index != -1) ? (INavMenuItem?)ContainerFromIndex(index) : null;
-        }
-
-        set => SelectedIndex = value is Control c ? IndexFromContainer(c) : -1;
-    }
-
     IEnumerable<INavMenuItem> INavMenuElement.SubItems => LogicalChildren.OfType<INavMenuItem>();
 
     /// <summary>
@@ -217,7 +214,6 @@ public class NavMenu : SelectingItemsControl,
             KeyboardNavigationMode.Once);
         AutomationProperties.AccessibilityViewProperty.OverrideDefaultValue<NavMenu>(AccessibilityView.Control);
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
-        AutoScrollToSelectedItemProperty.OverrideDefaultValue<NavMenu>(false);
         NavMenuItem.SubmenuOpenedEvent.AddClassHandler<NavMenu>((x, e) => x.OnSubmenuOpened(e));
     }
     
@@ -240,7 +236,7 @@ public class NavMenu : SelectingItemsControl,
         }
 
         IsOpen        = false;
-        SelectedIndex = -1;
+        SelectedItem = null;
 
         RaiseEvent(new RoutedEventArgs
         {
@@ -286,15 +282,6 @@ public class NavMenu : SelectingItemsControl,
         }
         IsOpen = true;
     }
-
-    private void ValidateSelectionMode()
-    {
-        if (SelectionMode.HasFlag(SelectionMode.Multiple))
-        {
-            throw new InvalidPropertyValueException(SelectionModeProperty.Name, SelectionMode.Multiple,
-                $"The value '{SelectionMode.Multiple}' is invalid for the '{SelectionModeProperty.Name}' property in NavMenuItem.");
-        }
-    }
     
     private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -330,10 +317,6 @@ public class NavMenu : SelectingItemsControl,
                     child.IsSubMenuOpen = false;
                 }
             }
-        }
-        else if (change.Property == SelectionModeProperty)
-        {
-            ValidateSelectionMode();
         }
         if (change.Property == IsDarkStyleProperty ||
             change.Property == ModeProperty)
@@ -658,6 +641,11 @@ public class NavMenu : SelectingItemsControl,
     internal void RaiseNavMenuItemClick(INavMenuItem navMenuItem)
     {
         RaiseEvent(new NavMenuItemClickEventArgs(NavMenuItemClickEvent, navMenuItem));
+    }
+
+    internal void RaiseNavMenuItemSelected(INavMenuItem navMenuItem)
+    {
+        RaiseEvent(new NavMenuItemSelectedEventArgs(NavMenuItemSelectedEvent, navMenuItem));
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

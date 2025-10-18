@@ -3,6 +3,11 @@
 public interface INavMenuItem : INavMenuElement
 {
     /// <summary>
+    /// Gets or sets the currently selected submenu item.
+    /// </summary>
+    INavMenuItem? SelectedItem { get; set; }
+    
+    /// <summary>
     /// Gets or sets a value that item key.
     /// </summary>
     string? ItemKey { get; }

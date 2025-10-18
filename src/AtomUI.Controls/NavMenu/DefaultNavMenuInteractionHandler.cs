@@ -140,15 +140,13 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             // 判断当前选中的是不是自己
             if (!ReferenceEquals(LatestSelectedItem, navMenuItem))
             {
+                var navMenu = Menu as NavMenu;
                 if (LatestSelectedItem != null)
                 {
                     var ancestorInfo = HasCommonAncestor(LatestSelectedItem, navMenuItem);
                     if (!ancestorInfo.Item1)
                     {
-                        if (Menu is NavMenu navMenu)
-                        {
-                            navMenu.ClearSelection();
-                        }
+                        navMenu?.ClearSelection();
                     }
                     else
                     {
@@ -160,6 +158,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                 }
                 navMenuItem.SelectItemRecursively();
                 LatestSelectedItem = navMenuItem;
+                navMenu?.RaiseNavMenuItemSelected(navMenuItem);
             }
         }
     }
@@ -219,7 +218,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
 
         _currentPressedIsValid = false;
-        if (e.InitialPressMouseButton == MouseButton.Left && item.HasSubMenu == false)
+        if (e.InitialPressMouseButton == MouseButton.Left)
         {
             Click(item);
             e.Handled = true;
@@ -264,14 +263,25 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             if (e.Source is ILogical control && !Menu.IsLogicalAncestorOf(control))
             {
-                Menu?.Close();
+                CloseAllTopLevelMenuItems();
             }
         }
     }
 
     protected virtual void WindowDeactivated(object? sender, EventArgs e)
     {
-        Menu?.Close();
+        CloseAllTopLevelMenuItems();
+    }
+
+    private void CloseAllTopLevelMenuItems()
+    {
+        if (Menu != null)
+        {
+            foreach (var i in Menu.SubItems)
+            {
+                i.Close();
+            }
+        }
     }
 
     internal static NavMenuItem? GetMenuItem(StyledElement? item) => (NavMenuItem?)GetMenuItemCore(item);
@@ -352,12 +362,14 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     internal void Click(INavMenuItem item)
     {
         item.RaiseClick();
-        var navMenu = FindNavMenu(item);
-        navMenu?.RaiseNavMenuItemClick(item);
-        if (!item.StaysOpenOnClick)
+        if (Menu is NavMenu navMenu) 
         {
-            var topLevelItem = FindTopLevelMenuItem(item);
-            topLevelItem?.Close();
+            navMenu.RaiseNavMenuItemClick(item);
+            if (!item.HasSubMenu && !item.StaysOpenOnClick)
+            {
+                var topLevelItem = FindTopLevelMenuItem(item);
+                topLevelItem?.Close();
+            }
         }
     }
 

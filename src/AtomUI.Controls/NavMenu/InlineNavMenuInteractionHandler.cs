@@ -9,7 +9,7 @@ using NavMenuControl = NavMenu;
 
 internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
 {
-    internal INavMenu? NavMenu { get; private set; }
+    internal INavMenu? Menu { get; private set; }
     
     public void Attach(NavMenu navMenu) => AttachCore(navMenu);
     public void Detach(NavMenu navMenu) => DetachCore(navMenu);
@@ -19,24 +19,24 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
 
     internal void AttachCore(INavMenu navMenu)
     {
-        if (NavMenu != null)
+        if (Menu != null)
         {
             throw new NotSupportedException("InlineNavMenuInteractionHandler is already attached.");
         }
-        NavMenu                 =  navMenu;
-        NavMenu.PointerPressed  += PointerPressed;
-        NavMenu.PointerReleased += PointerReleased;
+        Menu                 =  navMenu;
+        Menu.PointerPressed  += PointerPressed;
+        Menu.PointerReleased += PointerReleased;
     }
 
     internal void DetachCore(INavMenu navMenu)
     {
-        if (NavMenu != navMenu)
+        if (Menu != navMenu)
         {
             throw new NotSupportedException("InlineNavMenuInteractionHandler is not attached to the navMenu.");
         }
-        NavMenu.PointerPressed  -= PointerPressed;
-        NavMenu.PointerReleased -= PointerReleased;
-        NavMenu                 =  null;
+        Menu.PointerPressed  -= PointerPressed;
+        Menu.PointerReleased -= PointerReleased;
+        Menu                 =  null;
     }
     
     protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -75,15 +75,13 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
             // 判断当前选中的是不是自己
             if (!ReferenceEquals(LatestSelectedItem, navMenuItem))
             {
+                var navMenu = Menu as NavMenu;
                 if (LatestSelectedItem != null)
                 {
                     var ancestorInfo = HasCommonAncestor(LatestSelectedItem, navMenuItem);
                     if (!ancestorInfo.Item1)
                     {
-                        if (NavMenu is NavMenu navMenu)
-                        {
-                            navMenu.ClearSelection();
-                        }
+                        navMenu?.ClearSelection();
                     }
                     else
                     {
@@ -96,6 +94,7 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
                 
                 navMenuItem.SelectItemRecursively();
                 LatestSelectedItem = navMenuItem;
+                navMenu?.RaiseNavMenuItemSelected(navMenuItem);
             }
         }
     }
@@ -156,7 +155,7 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
 
         _currentPressedIsValid = false;
 
-        if (e.InitialPressMouseButton == MouseButton.Left && !item.HasSubMenu)
+        if (e.InitialPressMouseButton == MouseButton.Left)
         {
             Click(item);
             e.Handled = true;
@@ -166,8 +165,10 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
     internal void Click(INavMenuItem item)
     {
         item.RaiseClick();
-        var navMenu = FindNavMenu(item);
-        navMenu?.RaiseNavMenuItemClick(item);
+        if (Menu is NavMenu navMenu)
+        {
+            navMenu.RaiseNavMenuItemClick(item);
+        }
     }
     
     internal void Open(INavMenuItem item)
@@ -191,22 +192,5 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
                
             item = item.Parent;
         }
-    }
-    
-    private static NavMenu? FindNavMenu(INavMenuItem item)
-    {
-        var      current = (INavMenuElement?)item;
-        NavMenu? result  = null;
-
-        while (current != null && !(current is NavMenu))
-        {
-            current = (current as INavMenuItem)?.Parent;
-        }
-
-        if (current is NavMenu navMenu)
-        {
-            result = navMenu;
-        }
-        return result;
     }
 }
