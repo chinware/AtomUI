@@ -64,6 +64,7 @@
         </Setter>
         
         <Style Selector="^:is(atom|InlineNavMenuItemHeader)">
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemHeight}}" />
             <Setter Property="InlineItemIndentUnit"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.InlineItemIndentUnit}}" />
             <Setter Property="MenuIndicatorRenderTransform" Value="rotate(90deg)" />

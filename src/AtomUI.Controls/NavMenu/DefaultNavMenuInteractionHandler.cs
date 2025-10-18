@@ -260,18 +260,18 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                 }
             }
         }
+        else
+        {
+            if (e.Source is ILogical control && !Menu.IsLogicalAncestorOf(control))
+            {
+                Menu?.Close();
+            }
+        }
     }
 
     protected virtual void WindowDeactivated(object? sender, EventArgs e)
     {
-        if (LatestSelectedItem is INavMenuItem latestSelectedItem)
-        {
-            var topLevelItem = FindTopLevelMenuItem(latestSelectedItem);
-            if (topLevelItem != null && topLevelItem.IsSubMenuOpen)
-            {
-                topLevelItem.IsSubMenuOpen = false;
-            }
-        }
+        Menu?.Close();
     }
 
     internal static NavMenuItem? GetMenuItem(StyledElement? item) => (NavMenuItem?)GetMenuItemCore(item);

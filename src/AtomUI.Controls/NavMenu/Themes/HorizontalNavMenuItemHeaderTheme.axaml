@@ -63,61 +63,67 @@
             </ControlTemplate>
         </Setter>
 
-        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+        <Style Selector="^:is(atom|HorizontalNavMenuItemHeader)">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
 
-        <Style Selector="^[IsTopLevel=True]">
+            <Style Selector="^[IsTopLevel=False]">
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemHeight}}" />
+            </Style>
+            <Style Selector="^[IsTopLevel=True]">
 
-            <Setter Property="ActiveBarScaleX"
-                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ActiveBarScaleX}}" />
-            <Setter Property="ActiveBarHeight"
-                    Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ActiveBarHeight}}" />
-            <Setter Property="Background" Value="Transparent" />
+                <Setter Property="ActiveBarScaleX"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ActiveBarScaleX}}" />
+                <Setter Property="ActiveBarHeight"
+                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ActiveBarHeight}}" />
+                <Setter Property="Background" Value="Transparent" />
 
-            <Style Selector="^[IsDarkStyle=False]">
-                <Setter Property="Padding" Value="0" />
-                <Style Selector="^[IsSelected=True]">
-                    <Setter Property="Background" Value="Transparent" />
+                <Style Selector="^[IsDarkStyle=False]">
+                    <Setter Property="Padding" Value="0" />
+                    <Style Selector="^[IsSelected=True]">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                    <Style Selector="^ /template/ Rectangle#PART_ActiveIndicator">
+                        <Setter Property="IsVisible" Value="True" />
+                    </Style>
+                    <Style Selector="^:pointerover">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
                 </Style>
-                <Style Selector="^ /template/ Rectangle#PART_ActiveIndicator">
-                    <Setter Property="IsVisible" Value="True" />
+
+                <Style Selector="^[IsDarkStyle=True]">
+                    <Setter Property="CornerRadius" Value="0" />
+                    <Style Selector="^[IsSelected=True]">
+                        <Setter Property="Background"
+                                Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemSelectedBg}}" />
+                    </Style>
                 </Style>
-                <Style Selector="^:pointerover">
-                    <Setter Property="Background" Value="Transparent" />
+
+                <Style Selector="^ /template/ Border#Frame">
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:NavMenuTokenKey.HorizontalItemMargin}}" />
                 </Style>
-            </Style>
 
-            <Style Selector="^[IsDarkStyle=True]">
-                <Setter Property="CornerRadius" Value="0" />
-                <Style Selector="^[IsSelected=True]">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkItemSelectedBg}}" />
+                <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                    <Setter Property="LineHeight"
+                            Value="{DynamicResource {x:Static atom:NavMenuTokenKey.HorizontalLineHeight}}" />
                 </Style>
+
+                <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+                    <Setter Property="Margin" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.IconMargin}}" />
+                </Style>
+
+                <Setter Property="ActiveBarColor" Value="Transparent" />
+
+                <Style Selector="^:pointerover, ^[IsSubMenuOpen=True], ^[IsSelected=True]">
+                    <Setter Property="ActiveBarColor"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">
+                    <Setter Property="Margin" Value="0" />
+                </Style>
+
             </Style>
-
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Margin"
-                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.HorizontalItemMargin}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-                <Setter Property="LineHeight"
-                        Value="{DynamicResource {x:Static atom:NavMenuTokenKey.HorizontalLineHeight}}" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.IconMargin}}" />
-            </Style>
-
-            <Setter Property="ActiveBarColor" Value="Transparent" />
-
-            <Style Selector="^:pointerover, ^[IsSubMenuOpen=True], ^[IsSelected=True]">
-                <Setter Property="ActiveBarColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">
-                <Setter Property="Margin" Value="0" />
-            </Style>
-
         </Style>
     </ControlTheme>
 </ResourceDictionary>

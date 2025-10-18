@@ -51,5 +51,9 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+        
+        <Style Selector="^:is(atom|VerticalNavMenuItemHeader)">
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemHeight}}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
