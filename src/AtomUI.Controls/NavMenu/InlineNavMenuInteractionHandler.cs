@@ -11,8 +11,8 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
 {
     internal INavMenu? NavMenu { get; private set; }
     
-    public void Attach(NavMenuBase navMenu) => AttachCore(navMenu);
-    public void Detach(NavMenuBase navMenu) => DetachCore(navMenu);
+    public void Attach(NavMenu navMenu) => AttachCore(navMenu);
+    public void Detach(NavMenu navMenu) => DetachCore(navMenu);
 
     private bool _currentPressedIsValid = false;
     internal StyledElement? LatestSelectedItem = null;

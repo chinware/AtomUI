@@ -205,7 +205,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     IEnumerable<INavMenuItem> INavMenuElement.SubItems => LogicalChildren.OfType<INavMenuItem>();
 
     private INavMenuInteractionHandler? MenuInteractionHandler =>
-        this.FindLogicalAncestorOfType<NavMenuBase>()?.InteractionHandler;
+        this.FindLogicalAncestorOfType<NavMenu>()?.InteractionHandler;
 
     #endregion
 

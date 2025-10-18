@@ -5,13 +5,10 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Platform;
 using Avalonia.Rendering;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls;
-
-using NavMenuControl = NavMenu;
 
 internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 {
@@ -27,8 +24,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     {
     }
 
-    public DefaultNavMenuInteractionHandler(IInputManager? inputManager,
-                                            Func<Action, TimeSpan, IDisposable> delayRun)
+    public DefaultNavMenuInteractionHandler(IInputManager? inputManager, Func<Action, TimeSpan, IDisposable> delayRun)
     {
         delayRun = delayRun ?? throw new ArgumentNullException(nameof(delayRun));
         
@@ -36,14 +32,14 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         DelayRun       = delayRun;
     }
 
-    public void Attach(NavMenuBase navMenu) => AttachCore(navMenu);
-    public void Detach(NavMenuBase navMenu) => DetachCore(navMenu);
+    public void Attach(NavMenu navMenu) => AttachCore(navMenu);
+    public void Detach(NavMenu navMenu) => DetachCore(navMenu);
 
     protected Func<Action, TimeSpan, IDisposable> DelayRun { get; }
 
     protected IInputManager? InputManager { get; }
 
-    internal INavMenu? NavMenu { get; private set; }
+    internal INavMenu? Menu { get; private set; }
 
     public static TimeSpan MenuShowDelay { get; set; } = TimeSpan.FromMilliseconds(400);
 
@@ -149,7 +145,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                     var ancestorInfo = HasCommonAncestor(LatestSelectedItem, navMenuItem);
                     if (!ancestorInfo.Item1)
                     {
-                        if (NavMenu is NavMenu navMenu)
+                        if (Menu is NavMenu navMenu)
                         {
                             navMenu.ClearSelection();
                         }
@@ -158,7 +154,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                     {
                         if (ancestorInfo.Item2 is NavMenuItem neededClearAncestor)
                         {
-                            NavMenuControl.ClearSelectionRecursively(neededClearAncestor, true);
+                            NavMenu.ClearSelectionRecursively(neededClearAncestor, true);
                         }
                     }
                 }
@@ -282,21 +278,21 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
     internal void AttachCore(INavMenu navMenu)
     {
-        if (NavMenu != null)
+        if (Menu != null)
         {
             throw new NotSupportedException("DefaultMenuInteractionHandler is already attached.");
         }
 
-        NavMenu              =  navMenu;
-        NavMenu.GotFocus        += GotFocus;
-        NavMenu.LostFocus       += LostFocus;
-        NavMenu.PointerPressed  += PointerPressed;
-        NavMenu.PointerReleased += PointerReleased;
-        NavMenu.AddHandler(NavMenuBase.OpenedEvent, MenuOpened);
-        NavMenu.AddHandler(NavMenuItem.PointerEnteredItemEvent, PointerEntered);
-        NavMenu.AddHandler(NavMenuItem.PointerExitedItemEvent, PointerExited);
+        Menu                 =  navMenu;
+        Menu.GotFocus        += GotFocus;
+        Menu.LostFocus       += LostFocus;
+        Menu.PointerPressed  += PointerPressed;
+        Menu.PointerReleased += PointerReleased;
+        Menu.AddHandler(NavMenu.OpenedEvent, MenuOpened);
+        Menu.AddHandler(NavMenuItem.PointerEnteredItemEvent, PointerEntered);
+        Menu.AddHandler(NavMenuItem.PointerExitedItemEvent, PointerExited);
 
-        _root = NavMenu.VisualRoot;
+        _root = Menu.VisualRoot;
 
         if (_root is InputElement inputRoot)
         {
@@ -308,9 +304,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             window.Deactivated += WindowDeactivated;
         }
 
-        if (_root is TopLevel tl && tl.PlatformImpl is ITopLevelImpl pimpl)
+        if (_root is TopLevel tl && tl.PlatformImpl != null)
         {
-            pimpl.LostFocus += TopLevelLostPlatformFocus;
+            tl.PlatformImpl.LostFocus += TopLevelLostPlatformFocus;
         }
 
         _inputManagerSubscription = InputManager?.Process.Subscribe(RawInput);
@@ -318,18 +314,18 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
     internal void DetachCore(INavMenu navMenu)
     {
-        if (NavMenu != navMenu)
+        if (Menu != navMenu)
         {
             throw new NotSupportedException("DefaultMenuInteractionHandler is not attached to the navMenu.");
         }
 
-        NavMenu.GotFocus        -= GotFocus;
-        NavMenu.LostFocus       -= LostFocus;
-        NavMenu.PointerPressed  -= PointerPressed;
-        NavMenu.PointerReleased -= PointerReleased;
-        NavMenu.RemoveHandler(NavMenuBase.OpenedEvent, MenuOpened);
-        NavMenu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, PointerEntered);
-        NavMenu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, PointerExited);
+        Menu.GotFocus        -= GotFocus;
+        Menu.LostFocus       -= LostFocus;
+        Menu.PointerPressed  -= PointerPressed;
+        Menu.PointerReleased -= PointerReleased;
+        Menu.RemoveHandler(NavMenu.OpenedEvent, MenuOpened);
+        Menu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, PointerEntered);
+        Menu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, PointerExited);
 
         if (_root is InputElement inputRoot)
         {
@@ -348,7 +344,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         _inputManagerSubscription?.Dispose();
 
-        NavMenu            = null;
+        Menu               = null;
         LatestSelectedItem = null;
         _root              = null;
     }
@@ -431,7 +427,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
     private void TopLevelLostPlatformFocus()
     {
-        NavMenu?.Close();
+        Menu?.Close();
     }
 
     private static IDisposable DefaultDelayRun(Action action, TimeSpan timeSpan)
