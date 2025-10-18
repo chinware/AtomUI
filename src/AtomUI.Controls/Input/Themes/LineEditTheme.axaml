@@ -12,6 +12,7 @@
         <ControlTemplate TargetType="atom:LineEdit">
             <atom:AddOnDecoratedBox
                 Name="{x:Static atom:TextBoxThemeConstants.DecoratedBoxPart}"
+                VerticalAlignment="{TemplateBinding VerticalAlignment}"
                 Focusable="False"
                 StyleVariant="{TemplateBinding StyleVariant}"
                 SizeType="{TemplateBinding SizeType}"
