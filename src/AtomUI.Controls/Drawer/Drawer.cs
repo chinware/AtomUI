@@ -5,7 +5,6 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -359,31 +358,28 @@ public class Drawer : Control,
 
     private void CreateDrawerContainer()
     {
-        if (_container == null)
+        _container = new DrawerContainer()
         {
-            _container = new DrawerContainer()
-            {
-                Drawer = new WeakReference<Drawer>(this)
-            };
-            _containerDisposables?.Dispose();
-            _containerDisposables = new CompositeDisposable();
-            _containerDisposables.Add(BindUtils.RelayBind(this, ContentProperty, _container, DrawerContainer.ContentProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, _container, DrawerContainer.ContentTemplateProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, FooterProperty, _container, DrawerContainer.FooterProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, FooterTemplateProperty, _container, DrawerContainer.FooterTemplateProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, ExtraProperty, _container, DrawerContainer.ExtraProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, ExtraTemplateProperty, _container, DrawerContainer.ExtraTemplateProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, DialogSizeProperty, _container, DrawerContainer.DialogSizeProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, _container, DrawerContainer.PlacementProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, TitleProperty, _container, DrawerContainer.TitleProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, IsShowMaskProperty, _container, DrawerContainer.IsShowMaskProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, IsShowCloseButtonProperty, _container, DrawerContainer.IsShowCloseButtonProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _container, DrawerContainer.IsMotionEnabledProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, CloseWhenClickOnMaskProperty, _container,
-                DrawerContainer.CloseWhenClickOnMaskProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, PushOffsetPercentProperty, _container,
-                DrawerContainer.PushOffsetPercentProperty));
-        }
+            Drawer = new WeakReference<Drawer>(this)
+        };
+        _containerDisposables?.Dispose();
+        _containerDisposables = new CompositeDisposable();
+        _containerDisposables.Add(BindUtils.RelayBind(this, ContentProperty, _container, DrawerContainer.ContentProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, ContentTemplateProperty, _container, DrawerContainer.ContentTemplateProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, FooterProperty, _container, DrawerContainer.FooterProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, FooterTemplateProperty, _container, DrawerContainer.FooterTemplateProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, ExtraProperty, _container, DrawerContainer.ExtraProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, ExtraTemplateProperty, _container, DrawerContainer.ExtraTemplateProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, DialogSizeProperty, _container, DrawerContainer.DialogSizeProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, _container, DrawerContainer.PlacementProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, TitleProperty, _container, DrawerContainer.TitleProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, IsShowMaskProperty, _container, DrawerContainer.IsShowMaskProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, IsShowCloseButtonProperty, _container, DrawerContainer.IsShowCloseButtonProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _container, DrawerContainer.IsMotionEnabledProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, CloseWhenClickOnMaskProperty, _container,
+            DrawerContainer.CloseWhenClickOnMaskProperty));
+        _containerDisposables.Add(BindUtils.RelayBind(this, PushOffsetPercentProperty, _container,
+            DrawerContainer.PushOffsetPercentProperty));
     }
 
     protected internal virtual void NotifyBeforeOpen(ScopeAwareAdornerLayer layer)
@@ -413,7 +409,7 @@ public class Drawer : Control,
         _container?.NotifyChildDrawerAboutToClose(childDrawer);
     }
 
-    protected internal virtual void NotifyBeforeClose(ScopeAwareAdornerLayer layer)
+    protected virtual void NotifyBeforeClose(ScopeAwareAdornerLayer layer)
     {
         var current = Parent;
         while (current != null && current.GetType() != typeof(ScopeAwareAdornerLayer))
