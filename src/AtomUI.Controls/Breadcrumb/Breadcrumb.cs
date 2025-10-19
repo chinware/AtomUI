@@ -66,20 +66,20 @@ public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotio
 
     public Breadcrumb()
     {
-        Items.CollectionChanged += HandleItemsCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleItemsCollectionChanged;
         this.RegisterResources();
     }
 
     private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (Items.Count > 0)
+        if (LogicalChildren.Count > 0)
         {
-            for (int i = 0; i < ItemCount; i++)
+            for (int i = 0; i < LogicalChildren.Count; i++)
             {
-                var item = Items[i];
+                var item = LogicalChildren[i];
                 if (item is BreadcrumbItem breadcrumbItem)
                 {
-                    breadcrumbItem.IsLast = (i == ItemCount - 1);
+                    breadcrumbItem.IsLast = (i == LogicalChildren.Count - 1);
                 }
             }
         }
@@ -119,7 +119,49 @@ public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotio
         if (container is BreadcrumbItem breadcrumbItem)
         {
             var disposables = new CompositeDisposable(1);
+            
+            if (item is IBreadcrumbItemData breadcrumbItemData)
+            {
+                if (!breadcrumbItem.IsSet(BreadcrumbItem.IconProperty))
+                {
+                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.IconProperty, breadcrumbItemData.Icon);
+                }
+                
+                if (!breadcrumbItem.IsSet(BreadcrumbItem.ContentProperty))
+                {
+                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.ContentProperty, breadcrumbItemData);
+                }
+                
+                if (!breadcrumbItem.IsSet(BreadcrumbItem.SeparatorProperty) && breadcrumbItemData.Separator != null)
+                {
+                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.SeparatorProperty, breadcrumbItemData.Separator);
+                }
+                
+                if (!breadcrumbItem.IsSet(BreadcrumbItem.SeparatorTemplateProperty) && breadcrumbItemData.SeparatorTemplate != null)
+                {
+                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.SeparatorTemplateProperty, breadcrumbItemData.SeparatorTemplate);
+                }
+                
+                if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateContextProperty) && breadcrumbItemData.NavigateContext != null)
+                {
+                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateContextProperty, breadcrumbItemData.NavigateContext);
+                }
+                           
+                if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateUriProperty) && breadcrumbItemData.NavigateUri != null)
+                {
+                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateUriProperty, breadcrumbItemData.NavigateUri);
+                }
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, breadcrumbItem, BreadcrumbItem.ContentTemplateProperty));
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, breadcrumbItem, BreadcrumbItem.IsMotionEnabledProperty));
+            
+            PrepareBreadcrumbItem(breadcrumbItem, item, index, disposables);
+            
             if (_itemBindingDisposables.TryGetValue(breadcrumbItem, out var disposable))
             {
                 disposable.Dispose();
@@ -128,16 +170,24 @@ public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotio
             _itemBindingDisposables.Add(breadcrumbItem, disposables);
             ConfigureItemSeparator(breadcrumbItem);
         }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type BreadcrumbItem.");
+        }
+    }
+    
+    protected virtual void PrepareBreadcrumbItem(BreadcrumbItem breadcrumbItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     private void ConfigureItemSeparator(BreadcrumbItem breadcrumbItem)
     {
-        if (breadcrumbItem.Separator == null)
+        if (!breadcrumbItem.IsSet(SeparatorProperty))
         {
             breadcrumbItem.SetCurrentValue(SeparatorProperty, Separator);
         }
 
-        if (breadcrumbItem.SeparatorTemplate == null)
+        if (!breadcrumbItem.IsSet(SeparatorTemplateProperty))
         {
             breadcrumbItem.SetCurrentValue(SeparatorTemplateProperty, SeparatorTemplate);
         }

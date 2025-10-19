@@ -55,7 +55,7 @@ public class BreadcrumbItem : AvaloniaButton
         set => SetValue(NavigateUriProperty, value);
     }
     
-    [DependsOn("ContentTemplate")]
+    [DependsOn(nameof(SeparatorTemplate))]
     public object? Separator
     {
         get => GetValue(SeparatorProperty);
