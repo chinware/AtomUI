@@ -1,7 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -10,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -17,7 +17,8 @@ namespace AtomUI.Controls;
 public class MenuFlyoutPresenter : MenuBase,
                                    IArrowAwareShadowMaskInfoProvider,
                                    IMotionAwareControl,
-                                   IControlSharedTokenResourcesHost
+                                   IControlSharedTokenResourcesHost,
+                                   ISizeTypeAware
 {
     #region 公共属性定义
 
@@ -35,8 +36,11 @@ public class MenuFlyoutPresenter : MenuBase,
             nameof(MenuItemClicked),
             RoutingStrategies.Bubble);
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuFlyoutPresenter>();
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<MenuFlyoutPresenter>();
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuFlyoutPresenter>();
 
     /// <summary>
     /// 是否显示指示箭头
@@ -60,6 +64,12 @@ public class MenuFlyoutPresenter : MenuBase,
     {
         get => GetValue(DisplayPageSizeProperty);
         set => SetValue(DisplayPageSizeProperty, value);
+    }
+    
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
     }
     
     public bool IsMotionEnabled
@@ -106,6 +116,11 @@ public class MenuFlyoutPresenter : MenuBase,
     
     private ArrowDecoratedBox? _arrowDecoratedBox;
     private readonly Dictionary<MenuItem, CompositeDisposable> _itemsBindingDisposables = new();
+
+    static MenuFlyoutPresenter()
+    {
+        MenuItem.ClickEvent.AddClassHandler<MenuFlyoutPresenter>((presenter, args) => presenter.HandleMenuItemClicked(args));
+    }
 
     public MenuFlyoutPresenter()
         : base(new DefaultMenuInteractionHandler(true))
@@ -162,55 +177,100 @@ public class MenuFlyoutPresenter : MenuBase,
         }
     }
     
-    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        base.ContainerForItemPreparedOverride(container, item, index);
+        if (item is MenuSeparatorData)
+        {
+            return new MenuSeparator();
+        }
+        return new MenuItem();
+    }
+    
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        if (item is MenuItem or MenuSeparator)
+        {
+            recycleKey = null;
+            return false;
+        }
+
+        recycleKey = DefaultRecycleKey;
+        return true;
+    }
+    
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
         if (container is MenuItem menuItem)
         {
-            BindMenuItemClickedRecursive(menuItem);
-        }
-    }
-
-    private void BindMenuItemClickedRecursive(MenuItem menuItem)
-    {
-        foreach (var childItem in menuItem.Items)
-        {
-            if (childItem is MenuItem childMenuItem)
+            var disposables = new CompositeDisposable(5);
+            
+            if (item != null && item is not Visual)
             {
-                BindMenuItemClickedRecursive(childMenuItem);
+                if (!menuItem.IsSet(MenuItem.HeaderProperty))
+                {
+                    menuItem.SetCurrentValue(MenuItem.HeaderProperty, item);
+                }
+
+                if (item is IMenuItemData menuItemData)
+                {
+                    if (!menuItem.IsSet(MenuItem.IconProperty))
+                    {
+                        menuItem.SetCurrentValue(MenuItem.IconProperty, menuItemData.Icon);
+                    }
+
+                    if (menuItem.ItemKey == null)
+                    {
+                        menuItem.ItemKey = menuItemData.ItemKey;
+                    }
+                    if (!menuItem.IsSet(MenuItem.IsEnabledProperty))
+                    {
+                        menuItem.SetCurrentValue(IsEnabledProperty, menuItemData.IsEnabled);
+                    }
+                    if (!menuItem.IsSet(MenuItem.InputGestureProperty))
+                    {
+                        menuItem.SetCurrentValue(MenuItem.InputGestureProperty, menuItemData.InputGesture);
+                    }
+                }
             }
-        }
-
-        // 绑定自己
-        menuItem.Click += HandleMenuItemClicked;
-    }
-
-    private void ClearMenuItemClickedRecursive(MenuItem menuItem)
-    {
-        foreach (var childItem in menuItem.Items)
-        {
-            if (childItem is MenuItem childMenuItem)
+             
+            if (ItemTemplate != null)
             {
-                ClearMenuItemClickedRecursive(childMenuItem);
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.HeaderTemplateProperty));
             }
+            
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.ItemTemplateProperty));
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, DisplayPageSizeProperty, menuItem, MenuItem.DisplayPageSizeProperty));
+            
+            PrepareMenuItem(menuItem, item, index, disposables);
+            
+            if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(menuItem);
+            }
+            _itemsBindingDisposables.Add(menuItem, disposables);
         }
-
-        // 绑定自己
-        menuItem.Click -= HandleMenuItemClicked;
-    }
-
-    protected override void ClearContainerForItemOverride(Control container)
-    {
-        base.ClearContainerForItemOverride(container);
-        if (container is MenuItem menuItem)
+        else if (container is MenuSeparator menuSeparator)
         {
-            ClearMenuItemClickedRecursive(menuItem);
+            menuSeparator.Orientation = Orientation.Horizontal;
         }
-    }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type MenuItem or MenuSeparator.");
+        }
 
-    private void HandleMenuItemClicked(object? sender, RoutedEventArgs args)
+        base.PrepareContainerForItemOverride(container, item, index);
+    }
+    
+    protected virtual void PrepareMenuItem(MenuItem menuItem, object? item, int index, CompositeDisposable compositeDisposable)
     {
-        if (sender is MenuItem menuItem)
+    }
+    
+    private void HandleMenuItemClicked(RoutedEventArgs args)
+    {
+        if (args.Source is MenuItem menuItem)
         {
             var ev = new FlyoutMenuItemClickedEventArgs(MenuItemClickedEvent, menuItem);
             RaiseEvent(ev);
@@ -225,7 +285,7 @@ public class MenuFlyoutPresenter : MenuBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(MenuFlyoutThemeConstants.ArrowDecoratorPart);
+        _arrowDecoratedBox = e.NameScope.Find<ArrowDecoratedBox>(ArrowDecoratedBox.ArrowDecoratorPart);
         ConfigureMaxPopupHeight();
     }
 
@@ -302,23 +362,6 @@ public class MenuFlyoutPresenter : MenuBase,
     {
         Debug.Assert(_arrowDecoratedBox != null);
         return _arrowDecoratedBox;
-    }
-    
-    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
-    {
-        if (container is MenuItem menuItem)
-        {
-            var disposables = new CompositeDisposable(1);
-            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
-            if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))
-            {
-                oldDisposables.Dispose();
-                _itemsBindingDisposables.Remove(menuItem);
-            }
-            _itemsBindingDisposables.Add(menuItem, disposables);
-        }
-
-        base.PrepareContainerForItemOverride(container, item, index);
     }
     
     private void ConfigureMaxPopupHeight()

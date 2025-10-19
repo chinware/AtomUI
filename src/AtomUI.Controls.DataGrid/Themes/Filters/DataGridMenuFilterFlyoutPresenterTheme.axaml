@@ -12,7 +12,7 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:ArrowDecoratedBox Name="{x:Static atom:MenuFlyoutThemeConstants.ArrowDecoratorPart}"
+                <atom:ArrowDecoratedBox Name="{x:Static atom:ArrowDecoratedBox.ArrowDecoratorPart}"
                                         IsShowArrow="{TemplateBinding IsShowArrow}"
                                         ArrowPosition="{TemplateBinding ArrowPosition}"
                                         Background="{TemplateBinding Background}"

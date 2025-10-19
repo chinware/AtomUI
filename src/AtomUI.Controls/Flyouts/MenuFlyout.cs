@@ -35,6 +35,7 @@ public class MenuFlyout : Flyout
         set => SetValue(ItemsSourceProperty, value);
     }
     
+    [InheritDataTypeFromItems(nameof(ItemsSource))]
     public IDataTemplate? ItemTemplate
     {
         get => GetValue(ItemTemplateProperty);

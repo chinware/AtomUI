@@ -6,7 +6,7 @@
               x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:MenuFlyoutPresenter">
-            <atom:ArrowDecoratedBox Name="{x:Static atom:MenuFlyoutThemeConstants.ArrowDecoratorPart}"
+            <atom:ArrowDecoratedBox Name="{x:Static atom:ArrowDecoratedBox.ArrowDecoratorPart}"
                                     IsShowArrow="{TemplateBinding IsShowArrow}"
                                     ArrowPosition="{TemplateBinding ArrowPosition}"
                                     Padding="{TemplateBinding Padding}"
