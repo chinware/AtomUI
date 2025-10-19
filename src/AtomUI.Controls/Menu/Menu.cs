@@ -64,7 +64,7 @@ public class Menu : AvaloniaMenu,
 
     public Menu()
     {
-        Items.CollectionChanged += HandleItemsCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleItemsCollectionChanged;
         this.RegisterResources();
     }
 

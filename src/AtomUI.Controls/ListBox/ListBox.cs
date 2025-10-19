@@ -62,7 +62,7 @@ public class ListBox : AvaloniaListBox,
     public ListBox()
     {
         this.RegisterResources();
-        Items.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

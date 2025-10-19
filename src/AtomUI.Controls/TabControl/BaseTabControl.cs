@@ -286,7 +286,7 @@ public class BaseTabControl : SelectingItemsControl,
     public BaseTabControl()
     {
         this.RegisterResources();
-        Items.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
     }
     
     public bool CloseTab(TabItem tabItem)

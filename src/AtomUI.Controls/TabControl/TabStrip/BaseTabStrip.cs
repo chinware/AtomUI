@@ -197,7 +197,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     public BaseTabStrip()
     {
         this.RegisterResources();
-        Items.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
     }
     
     public bool CloseTab(TabStripItem tabStripItem)

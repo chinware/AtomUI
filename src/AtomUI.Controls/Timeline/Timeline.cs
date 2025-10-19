@@ -83,13 +83,13 @@ public class Timeline : ItemsControl,
     public Timeline()
     {
         this.RegisterResources();
-        Items.CollectionChanged += HandleItemsChanged;
+        LogicalChildren.CollectionChanged += HandleItemsChanged;
     }
 
     private void HandleItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         var isLabelLayout = false;
-        foreach (var item in Items)
+        foreach (var item in LogicalChildren)
         {
             if (item is TimelineItem timelineItem)
             {
@@ -100,7 +100,7 @@ public class Timeline : ItemsControl,
             }
         }
 
-        foreach (var item in Items)
+        foreach (var item in LogicalChildren)
         {
             if (item is TimelineItem timelineItem)
             {

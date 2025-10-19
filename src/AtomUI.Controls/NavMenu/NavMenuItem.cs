@@ -381,7 +381,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     public NavMenuItem()
     {
-        Items.CollectionChanged  += HandleItemsCollectionChanged;
+        LogicalChildren.CollectionChanged  += HandleItemsCollectionChanged;
     }
     
     private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

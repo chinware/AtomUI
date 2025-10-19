@@ -63,8 +63,8 @@ internal class CarouselPagination : SelectingItemsControl
     
     public CarouselPagination()
     {
-        Items.CollectionChanged += HandleCollectionChanged;
-        SelectionMode           =  SelectionMode.Single;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
+        SelectionMode                     =  SelectionMode.Single;
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

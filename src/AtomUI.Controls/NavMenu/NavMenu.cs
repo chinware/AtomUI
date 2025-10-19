@@ -221,7 +221,7 @@ public class NavMenu : ItemsControl,
     {
         this.RegisterResources();
         UpdatePseudoClasses();
-        Items.CollectionChanged  += HandleItemsCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleItemsCollectionChanged;
     }
     
     public virtual void Close()

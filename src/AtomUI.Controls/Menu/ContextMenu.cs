@@ -83,7 +83,7 @@ public class ContextMenu : AvaloniaContextMenu,
     public ContextMenu()
     {
         this.RegisterResources();
-        Items.CollectionChanged  += HandleItemsCollectionChanged;
+        LogicalChildren.CollectionChanged  += HandleItemsCollectionChanged;
         // 我们在这里有一次初始化的机会
         _popup = new Popup
         {

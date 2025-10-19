@@ -204,7 +204,7 @@ public class ComboBox : AvaloniaComboBox,
     public ComboBox()
     {
         this.RegisterResources();
-        Items.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

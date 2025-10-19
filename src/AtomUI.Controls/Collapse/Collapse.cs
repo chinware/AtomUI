@@ -164,7 +164,7 @@ public class Collapse : SelectingItemsControl,
     public Collapse()
     {
         SelectionChanged        += HandleSelectionChanged;
-        Items.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
         this.RegisterResources();
     }
 

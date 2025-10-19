@@ -226,8 +226,8 @@ public class Steps : SelectingItemsControl,
     public Steps()
     {
         this.RegisterResources();
-        Items.CollectionChanged += HandleCollectionChanged;
-        SelectionMode           =  SelectionMode.Single;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
+        SelectionMode                     =  SelectionMode.Single;
     }
     
     private static double CoerceProgressValue(AvaloniaObject sender, double value)

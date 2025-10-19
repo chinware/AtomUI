@@ -125,7 +125,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     public MenuItem()
     {
-        Items.CollectionChanged  += HandleItemsCollectionChanged;
+        LogicalChildren.CollectionChanged  += HandleItemsCollectionChanged;
     }
         
     private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

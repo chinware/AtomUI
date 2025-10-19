@@ -143,7 +143,7 @@ public class OptionButtonGroup : SelectingItemsControl,
     public OptionButtonGroup()
     {
         this.RegisterResources();
-        Items.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
         if (this is IChildIndexProvider childIndexProvider)
         {
             childIndexProvider.ChildIndexChanged += (sender, args) => { UpdateOptionButtonsPosition(); };

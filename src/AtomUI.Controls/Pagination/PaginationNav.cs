@@ -56,13 +56,13 @@ internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
 
     public PaginationNav()
     {
-        Items.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
         for (var i = 0; i < Pagination.MaxNavItemCount; i++)
         {
             Items.Add(new PaginationNavItem());
         }
 
-        SelectionMode           =  SelectionMode.Single;
+        SelectionMode = SelectionMode.Single;
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

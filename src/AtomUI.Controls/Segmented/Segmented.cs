@@ -126,9 +126,9 @@ public class Segmented : SelectingItemsControl,
     public Segmented()
     {
         this.RegisterResources();
-        SelectionChanged        += HandleSelectionChanged;
-        Items.CollectionChanged += HandleCollectionChanged;
-        SelectionMode           =  SelectionMode.Single;
+        SelectionChanged                  += HandleSelectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
+        SelectionMode                     =  SelectionMode.Single;
     }
 
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
