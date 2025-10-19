@@ -4,10 +4,8 @@
                             x:Class="AtomUI.Controls.AtomUIOSSControlThemesProvider"
                             Id="AtomUI.Controls">
     <atom:ControlThemesProvider.ControlThemes>
-        <ResourceInclude Source="AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="AdornerLayer/Themes/AdornerLayer.axaml" />
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
-        <ResourceInclude Source="ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" />
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />

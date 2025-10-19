@@ -35,6 +35,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Primitives\AddOnDecoratedBox\Themes\AddOnDecoratedBoxTheme.axaml" />
+      <AdditionalFiles Include="Primitives\AddOnDecoratedBox\Themes\AddOnDecoratedBoxThemes.axaml" />
+      <AdditionalFiles Include="Primitives\AddOnDecoratedBox\Themes\AddOnDecoratedInnerBoxTheme.axaml" />
+      <AdditionalFiles Include="Primitives\ArrowDecoratedBox\Themes\ArrowDecoratedBoxTheme.axaml" />
+      <AdditionalFiles Include="Primitives\ArrowDecoratedBox\Themes\ArrowDecoratedBoxThemes.axaml" />
       <AdditionalFiles Include="Primitives\UpDownScrollerViewer\UpDownScrollerViewerTheme.axaml" />
     </ItemGroup>
     

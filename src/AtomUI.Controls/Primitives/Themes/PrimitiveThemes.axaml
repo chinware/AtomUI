@@ -6,5 +6,7 @@
         <ResourceInclude Source="../UpDownScrollerViewer/Themes/UpDownScrollerViewerTheme.axaml"/>
         <ResourceInclude Source="../InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
         <ResourceInclude Source="../SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />
+        <ResourceInclude Source="../AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
+        <ResourceInclude Source="../ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -2,26 +2,6 @@
 
 namespace AtomUI.Controls.DesignTokens
 {
-    public static class AddOnDecoratedBoxTokenKey
-    {
-        public static readonly TokenResourceKey ActiveBg = new TokenResourceKey("AddOnDecoratedBox.ActiveBg");
-        public static readonly TokenResourceKey ActiveBorderColor = new TokenResourceKey("AddOnDecoratedBox.ActiveBorderColor");
-        public static readonly TokenResourceKey ActiveShadow = new TokenResourceKey("AddOnDecoratedBox.ActiveShadow");
-        public static readonly TokenResourceKey AddonBg = new TokenResourceKey("AddOnDecoratedBox.AddonBg");
-        public static readonly TokenResourceKey AddOnPadding = new TokenResourceKey("AddOnDecoratedBox.AddOnPadding");
-        public static readonly TokenResourceKey AddOnPaddingLG = new TokenResourceKey("AddOnDecoratedBox.AddOnPaddingLG");
-        public static readonly TokenResourceKey AddOnPaddingSM = new TokenResourceKey("AddOnDecoratedBox.AddOnPaddingSM");
-        public static readonly TokenResourceKey ErrorActiveShadow = new TokenResourceKey("AddOnDecoratedBox.ErrorActiveShadow");
-        public static readonly TokenResourceKey HoverBg = new TokenResourceKey("AddOnDecoratedBox.HoverBg");
-        public static readonly TokenResourceKey HoverBorderColor = new TokenResourceKey("AddOnDecoratedBox.HoverBorderColor");
-        public static readonly TokenResourceKey LeftInnerAddOnMargin = new TokenResourceKey("AddOnDecoratedBox.LeftInnerAddOnMargin");
-        public static readonly TokenResourceKey Padding = new TokenResourceKey("AddOnDecoratedBox.Padding");
-        public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("AddOnDecoratedBox.PaddingLG");
-        public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("AddOnDecoratedBox.PaddingSM");
-        public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("AddOnDecoratedBox.RightInnerAddOnMargin");
-        public static readonly TokenResourceKey WarningActiveShadow = new TokenResourceKey("AddOnDecoratedBox.WarningActiveShadow");
-    }
-
     public static class AdornerLayerTokenKey
     {
         public static readonly TokenResourceKey FocusVisualMargin = new TokenResourceKey("AdornerLayer.FocusVisualMargin");
@@ -39,12 +19,6 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey MessageWithDescriptionMargin = new TokenResourceKey("Alert.MessageWithDescriptionMargin");
         public static readonly TokenResourceKey WithDescriptionIconSize = new TokenResourceKey("Alert.WithDescriptionIconSize");
         public static readonly TokenResourceKey WithDescriptionPadding = new TokenResourceKey("Alert.WithDescriptionPadding");
-    }
-
-    public static class ArrowDecoratedBoxTokenKey
-    {
-        public static readonly TokenResourceKey ArrowSize = new TokenResourceKey("ArrowDecoratedBox.ArrowSize");
-        public static readonly TokenResourceKey Padding = new TokenResourceKey("ArrowDecoratedBox.Padding");
     }
 
     public static class AvatarTokenKey
@@ -655,6 +629,32 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey PopupMinHeight = new TokenResourceKey("PopupConfirm.PopupMinHeight");
         public static readonly TokenResourceKey PopupMinWidth = new TokenResourceKey("PopupConfirm.PopupMinWidth");
         public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("PopupConfirm.TitleMargin");
+    }
+
+    public static class AddOnDecoratedBoxTokenKey
+    {
+        public static readonly TokenResourceKey ActiveBg = new TokenResourceKey("AddOnDecoratedBox.ActiveBg");
+        public static readonly TokenResourceKey ActiveBorderColor = new TokenResourceKey("AddOnDecoratedBox.ActiveBorderColor");
+        public static readonly TokenResourceKey ActiveShadow = new TokenResourceKey("AddOnDecoratedBox.ActiveShadow");
+        public static readonly TokenResourceKey AddonBg = new TokenResourceKey("AddOnDecoratedBox.AddonBg");
+        public static readonly TokenResourceKey AddOnPadding = new TokenResourceKey("AddOnDecoratedBox.AddOnPadding");
+        public static readonly TokenResourceKey AddOnPaddingLG = new TokenResourceKey("AddOnDecoratedBox.AddOnPaddingLG");
+        public static readonly TokenResourceKey AddOnPaddingSM = new TokenResourceKey("AddOnDecoratedBox.AddOnPaddingSM");
+        public static readonly TokenResourceKey ErrorActiveShadow = new TokenResourceKey("AddOnDecoratedBox.ErrorActiveShadow");
+        public static readonly TokenResourceKey HoverBg = new TokenResourceKey("AddOnDecoratedBox.HoverBg");
+        public static readonly TokenResourceKey HoverBorderColor = new TokenResourceKey("AddOnDecoratedBox.HoverBorderColor");
+        public static readonly TokenResourceKey LeftInnerAddOnMargin = new TokenResourceKey("AddOnDecoratedBox.LeftInnerAddOnMargin");
+        public static readonly TokenResourceKey Padding = new TokenResourceKey("AddOnDecoratedBox.Padding");
+        public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("AddOnDecoratedBox.PaddingLG");
+        public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("AddOnDecoratedBox.PaddingSM");
+        public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("AddOnDecoratedBox.RightInnerAddOnMargin");
+        public static readonly TokenResourceKey WarningActiveShadow = new TokenResourceKey("AddOnDecoratedBox.WarningActiveShadow");
+    }
+
+    public static class ArrowDecoratedBoxTokenKey
+    {
+        public static readonly TokenResourceKey ArrowSize = new TokenResourceKey("ArrowDecoratedBox.ArrowSize");
+        public static readonly TokenResourceKey Padding = new TokenResourceKey("ArrowDecoratedBox.Padding");
     }
 
     public static class ProgressBarTokenKey
