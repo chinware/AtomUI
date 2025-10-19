@@ -1,0 +1,28 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:primitives="using:AtomUI.Controls.Primitives"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type primitives:IndicatorScrollBarThumb}"
+                  TargetType="primitives:IndicatorScrollBarThumb">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Border.Transitions>
+                        <Transitions>
+                            <atom:SolidColorBrushTransition Property="Background" Easing="LinearEasing" Duration="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}"/>
+                        </Transitions>
+                    </Border.Transitions>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+                
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:IndicatorScrollViewerTokenKey.ThumbBg}}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:IndicatorScrollViewerTokenKey.ThumbCornerRadius}}"/>
+        <Setter Property="MinHeight"
+                Value="{DynamicResource {x:Static atom:IndicatorScrollViewerTokenKey.ScrollBarThickness}}" />
+        <Setter Property="Width" Value="{DynamicResource {x:Static atom:IndicatorScrollViewerTokenKey.ThumbThickness}}" />
+    </ControlTheme>
+</ResourceDictionary>

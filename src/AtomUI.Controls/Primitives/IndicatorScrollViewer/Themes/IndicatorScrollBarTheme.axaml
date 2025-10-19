@@ -1,0 +1,33 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:primitives="using:AtomUI.Controls.Primitives"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type primitives:IndicatorScrollBar}"
+                  TargetType="primitives:IndicatorScrollBar">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame" UseLayoutRounding="False">
+                    <Grid Name="RootLayout"
+                          RowDefinitions="*">
+                        <Track Name="Track"
+                               IsDirectionReversed="True"
+                               Minimum="{TemplateBinding Minimum}"
+                               Maximum="{TemplateBinding Maximum}"
+                               Value="{TemplateBinding Value, Mode=TwoWay}"
+                               DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                               ViewportSize="{TemplateBinding ViewportSize}"
+                               Orientation="{TemplateBinding Orientation}">
+                            <Track.Thumb>
+                                <primitives:IndicatorScrollBarThumb/>
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Width" Value="{DynamicResource {x:Static atom:IndicatorScrollViewerTokenKey.ScrollBarThickness}}" />
+       
+    </ControlTheme>
+</ResourceDictionary>

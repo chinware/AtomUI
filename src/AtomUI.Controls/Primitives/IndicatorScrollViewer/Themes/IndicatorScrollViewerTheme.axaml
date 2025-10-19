@@ -1,15 +1,14 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type ScrollViewer}" TargetType="ScrollViewer">
+    xmlns:primitives="using:AtomUI.Controls.Primitives"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:IndicatorScrollViewer}"
+                  TargetType="atom:IndicatorScrollViewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+                <DockPanel Name="RootLayout">
                     <ScrollContentPresenter Name="PART_ContentPresenter"
-                                            Grid.Row="0"
-                                            Grid.Column="0"
                                             Background="{TemplateBinding Background}"
                                             HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
                                             VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
@@ -24,39 +23,17 @@
                                 IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
                         </ScrollContentPresenter.GestureRecognizers>
                     </ScrollContentPresenter>
-                    <ScrollBar Name="PART_HorizontalScrollBar"
-                               Orientation="Horizontal"
-                               Grid.Row="1"
-                               Grid.Column="0" />
-                    <ScrollBar Name="PART_VerticalScrollBar"
-                               Orientation="Vertical"
-                               Grid.Row="0"
-                               Grid.Column="1" />
-                    <Panel Name="ScrollBarsSeparator"
-                           Grid.Row="1"
-                           Grid.Column="1"
-                           Background="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"
-                           Opacity="0">
-                        <Panel.Transitions>
-                            <Transitions>
-                                <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
-                            </Transitions>
-                        </Panel.Transitions>
-                    </Panel>
-                </Grid>
+                    <atom:IndicatorScrollBar Name="VerticalScrollBar" 
+                                             Orientation="Vertical"
+                                             Opacity="{TemplateBinding ScrollBarOpacity}"/>
+                </DockPanel>
             </ControlTemplate>
         </Setter>
-        
         <Setter Property="Background" Value="Transparent" />
-        
-        <Style Selector="^[IsExpanded=true] /template/ Panel#ScrollBarsSeparator">
-            <Setter Property="Opacity" Value="1" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="ScrollBarOpacity" Value="0.0" />
+        <Style Selector="^:pointerover">
+            <Setter Property="ScrollBarOpacity" Value="1" />
         </Style>
-        
-        <Style Selector="^[AllowAutoHide=True] /template/ ScrollContentPresenter#ContentPresenter">
-            <Setter Property="Grid.ColumnSpan" Value="2" />
-            <Setter Property="Grid.RowSpan" Value="2" />
-        </Style>
-        
     </ControlTheme>
 </ResourceDictionary>

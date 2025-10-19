@@ -44,13 +44,12 @@
                                    HorizontalAlignment="Stretch" 
                                    DockPanel.Dock="Bottom"/>
                         
-                        <atom:UpDownScrollerViewer HorizontalAlignment="Stretch"
-                                                   VerticalAlignment="Stretch">
+                        <atom:IndicatorScrollViewer>
                             <ItemsPresenter Name="{x:Static atom:MenuFlyoutThemeConstants.ItemsPresenterPart}"
                                             ItemsPanel="{TemplateBinding ItemsPanel}"
                                             KeyboardNavigation.TabNavigation="Continue"
                                             Grid.IsSharedSizeScope="True" />
-                        </atom:UpDownScrollerViewer>
+                        </atom:IndicatorScrollViewer>
                     </DockPanel>
                 </atom:ArrowDecoratedBox>
             </ControlTemplate>

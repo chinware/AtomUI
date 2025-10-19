@@ -11,14 +11,14 @@
                                     ArrowPosition="{TemplateBinding ArrowPosition}"
                                     Padding="{TemplateBinding Padding}"
                                     MaxHeight="{TemplateBinding MaxPopupHeight}">
-                <atom:UpDownScrollerViewer HorizontalAlignment="Stretch"
-                                           VerticalAlignment="Stretch"
-                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                <atom:IndicatorScrollViewer HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                     <ItemsPresenter Name="{x:Static atom:MenuFlyoutThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     KeyboardNavigation.TabNavigation="Continue"
                                     Grid.IsSharedSizeScope="True" />
-                </atom:UpDownScrollerViewer>
+                </atom:IndicatorScrollViewer>
             </atom:ArrowDecoratedBox>
         </ControlTemplate>
     </Setter>

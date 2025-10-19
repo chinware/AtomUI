@@ -7,10 +7,9 @@
         <Style Selector="^:vertical">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border Name="{x:Static atom:ScrollBarThemeConstants.FramePart}"
+                    <Border Name="Frame"
                             UseLayoutRounding="False">
-                        <Grid Name="{x:Static atom:ScrollBarThemeConstants.LayoutRootPart}"
-                              RowDefinitions="*">
+                        <Grid Name="RootLayout" RowDefinitions="*">
                             <Track Name="{x:Static atom:ScrollBarThemeConstants.TrackPart}"
                                    IsDirectionReversed="True"
                                    Minimum="{TemplateBinding Minimum}"
@@ -49,9 +48,9 @@
         <Style Selector="^:horizontal">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border Name="{x:Static atom:ScrollBarThemeConstants.FramePart}"
+                    <Border Name="Frame"
                             UseLayoutRounding="False">
-                        <Grid Name="{x:Static atom:ScrollBarThemeConstants.LayoutRootPart}"
+                        <Grid Name="RootLayout"
                               ColumnDefinitions="*">
                             <Track Name="{x:Static atom:ScrollBarThemeConstants.TrackPart}"
                                    Minimum="{TemplateBinding Minimum}"
@@ -89,7 +88,7 @@
         
         <Style Selector="^:vertical">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:ScrollBarTokenKey.ScrollBarThickness}}" />
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ScrollBarTokenKey.ContentVPadding}}" />
             </Style>
             <Style Selector="^ /template/ atom|ScrollBarThumb#PART_Thumb">
@@ -100,7 +99,7 @@
         </Style>
         <Style Selector="^:horizontal">
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:ScrollBarTokenKey.ScrollBarThickness}}" />
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ScrollBarTokenKey.ContentHPadding}}" />
             </Style>
             <Style Selector="^ /template/ atom|ScrollBarThumb#PART_Thumb">

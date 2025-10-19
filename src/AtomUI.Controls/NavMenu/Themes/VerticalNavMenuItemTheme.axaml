@@ -35,11 +35,11 @@
                         </atom:Popup.IsMotionAwareOpen>
                         
                         <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}">
-                            <atom:UpDownScrollerViewer>
+                            <atom:IndicatorScrollViewer>
                                 <ItemsPresenter Name="{x:Static atom:NavMenuItemThemeConstants.ItemsPresenterPart}"
                                                 ItemsPanel="{TemplateBinding ItemsPanel}"
                                                 Grid.IsSharedSizeScope="True" />
-                            </atom:UpDownScrollerViewer>
+                            </atom:IndicatorScrollViewer>
                         </Border>
                     </atom:Popup>
                 </Panel>

@@ -54,7 +54,8 @@
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
-
+                <Setter Property="Background" Value="Transparent" />
+                
                 <Style Selector="^:pointerover">
                     <Setter Property="Foreground"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryHover}}" />

@@ -83,12 +83,12 @@
                     <Border Name="PopupFrame"
                             MaxHeight="{TemplateBinding MaxPopupHeight}"
                             Padding="{TemplateBinding PopupPadding}">
-                        <atom:UpDownScrollerViewer IsScrollChainingEnabled="False"
+                        <atom:IndicatorScrollViewer IsScrollChainingEnabled="False"
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                             <ItemsPresenter Name="{x:Static atom:MenuItemThemeConstants.ItemsPresenterPart}"
                                             ItemsPanel="{TemplateBinding ItemsPanel}"
                                             Grid.IsSharedSizeScope="True" />
-                        </atom:UpDownScrollerViewer>
+                        </atom:IndicatorScrollViewer>
                     </Border>
                 </atom:Popup>
             </Panel>

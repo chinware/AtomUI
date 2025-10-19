@@ -6,7 +6,7 @@
     <ControlTheme x:Key="{x:Type atom:ScrollBarThumb}" TargetType="atom:ScrollBarThumb">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:ScrollBarThumbThemeConstants.FramePart}"
+                <Border Name="Frame"
                         UseLayoutRounding="False"
                         Background="{TemplateBinding Background}"
                         Margin="{TemplateBinding Margin}">
@@ -20,7 +20,7 @@
         </Setter>
         
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:ScrollBarTokenKey.ThumbBg}}"/>
-        <Style Selector="^ /template/ Border#PART_Frame">
+        <Style Selector="^ /template/ Border#Frame">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:ScrollBarTokenKey.ThumbCornerRadius}}"/>
         </Style>
         

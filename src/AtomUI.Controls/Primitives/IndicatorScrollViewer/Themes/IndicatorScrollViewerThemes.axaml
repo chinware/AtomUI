@@ -1,0 +1,9 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="IndicatorScrollBarTheme.axaml"/>
+        <ResourceInclude Source="IndicatorScrollViewerTheme.axaml"/>
+        <ResourceInclude Source="IndicatorScrollBarThumbTheme.axaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

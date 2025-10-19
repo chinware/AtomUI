@@ -13,12 +13,6 @@ internal static class MenuItemThemeConstants
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
 }
 
-internal static class MenuScrollViewerThemeConstants
-{
-    public const string ScrollUpButtonPart = "PART_ScrollUpButton";
-    public const string ScrollDownButtonPart = "PART_ScrollDownButton";
-}
-
 internal static class TopLevelMenuItemThemeConstants
 {
     public const string PopupPart = "PART_Popup";

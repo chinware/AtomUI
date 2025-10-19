@@ -63,13 +63,13 @@
                             HorizontalAlignment="Stretch"
                             MinWidth="{TemplateBinding EffectivePopupWidth}"
                             Padding="{TemplateBinding PopupContentPadding}">
-                            <atom:UpDownScrollerViewer
+                            <atom:IndicatorScrollViewer
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                 <ItemsPresenter
                                     Name="{x:Static atom:ComboBoxThemeConstants.ItemsPresenterPart}"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     Grid.IsSharedSizeScope="True" />
-                            </atom:UpDownScrollerViewer>
+                            </atom:IndicatorScrollViewer>
                         </Border>
                     </atom:Popup>
                 </Panel>

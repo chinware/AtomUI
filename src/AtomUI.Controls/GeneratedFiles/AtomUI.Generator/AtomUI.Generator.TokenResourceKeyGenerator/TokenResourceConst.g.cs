@@ -985,16 +985,17 @@ namespace AtomUI.Controls.DesignTokens
 
 namespace AtomUI.Controls.Primitives.DesignTokens
 {
+    public static class IndicatorScrollViewerTokenKey
+    {
+        public static readonly TokenResourceKey ScrollBarThickness = new TokenResourceKey("IndicatorScrollViewer.ScrollBarThickness");
+        public static readonly TokenResourceKey ThumbBg = new TokenResourceKey("IndicatorScrollViewer.ThumbBg");
+        public static readonly TokenResourceKey ThumbCornerRadius = new TokenResourceKey("IndicatorScrollViewer.ThumbCornerRadius");
+        public static readonly TokenResourceKey ThumbThickness = new TokenResourceKey("IndicatorScrollViewer.ThumbThickness");
+    }
+
     public static class InfoPickerInputTokenKey
     {
         public static readonly TokenResourceKey RangePickerArrowMargin = new TokenResourceKey("InfoPickerInput.RangePickerArrowMargin");
         public static readonly TokenResourceKey RangePickerIndicatorThickness = new TokenResourceKey("InfoPickerInput.RangePickerIndicatorThickness");
-    }
-
-    public static class UpDownScrollerViewerTokenKey
-    {
-        public static readonly TokenResourceKey ScrollButtonIconSize = new TokenResourceKey("UpDownScrollerViewer.ScrollButtonIconSize");
-        public static readonly TokenResourceKey ScrollButtonMargin = new TokenResourceKey("UpDownScrollerViewer.ScrollButtonMargin");
-        public static readonly TokenResourceKey ScrollButtonPadding = new TokenResourceKey("UpDownScrollerViewer.ScrollButtonPadding");
     }
 }

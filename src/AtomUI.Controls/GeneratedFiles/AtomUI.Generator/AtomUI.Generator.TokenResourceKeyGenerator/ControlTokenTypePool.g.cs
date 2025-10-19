@@ -43,8 +43,8 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.OptionButtonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.PaginationToken));
             tokenTypes.Add(typeof(AtomUI.Controls.PopupConfirmToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.Primitives.IndicatorScrollViewerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.Primitives.InfoPickerInputToken));
-            tokenTypes.Add(typeof(AtomUI.Controls.Primitives.UpDownScrollerViewerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ProgressBarToken));
             tokenTypes.Add(typeof(AtomUI.Controls.RadioButtonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ScrollBarToken));
