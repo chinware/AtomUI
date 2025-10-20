@@ -47,8 +47,7 @@
                                    HorizontalAlignment="Stretch"
                                    DockPanel.Dock="Bottom" />
 
-                        <ItemsPresenter Name="{x:Static atom:TreeViewThemeConstants.ItemsPresenterPart}"
-                                        ItemsPanel="{TemplateBinding ItemsPanel}" />
+                        <ItemsPresenter Name="ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </DockPanel>
                 </atom:ArrowDecoratedBox>
             </ControlTemplate>

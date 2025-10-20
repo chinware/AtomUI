@@ -10,7 +10,7 @@ public interface INavMenuItem : INavMenuElement
     /// <summary>
     /// Gets or sets a value that item key.
     /// </summary>
-    string? ItemKey { get; }
+    TreeNodeKey? ItemKey { get; }
     
     /// <summary>
     /// Gets or sets a value that indicates whether the item has a submenu.

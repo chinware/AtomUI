@@ -720,7 +720,7 @@ public class NavMenu : ItemsControl,
             for (var i = 0; i < items.Count; i++)
             {
                 var item = items[i];
-                if (item.ItemKey == segment)
+                if (item.ItemKey != null && item.ItemKey.Value == segment)
                 {
                     items      = item.Children;
                     childFound = true;

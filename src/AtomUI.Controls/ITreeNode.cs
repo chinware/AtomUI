@@ -5,7 +5,7 @@ namespace AtomUI.Controls;
 public interface ITreeNode<TChild>
     where TChild : class, ITreeNode<TChild>
 {
-    string? ItemKey { get; }
+    TreeNodeKey? ItemKey { get; }
     object? Header { get; }
     Icon? Icon { get; }
     bool IsEnabled { get; }

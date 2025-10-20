@@ -10,7 +10,7 @@
                 <Border Name="{x:Static atom:TreeViewItemThemeConstants.FramePart}"
                         Focusable="True"
                         BorderThickness="{TemplateBinding DragFrameBorderThickness}">
-                    <Grid Name="{x:Static atom:TreeViewItemThemeConstants.ItemsLayoutPart}"
+                    <Grid Name="ItemsLayout"
                           ColumnDefinitions="Auto, Auto, Auto, *"
                           Margin="{TemplateBinding Level, Mode=OneWay, Converter={x:Static atom:TreeViewItemTheme.MarginMultiplierConverter}}">
                         <atom:NodeSwitcherButton
@@ -26,14 +26,14 @@
                             IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
                             IsLoading="{TemplateBinding IsLoading}" />
                         
-                        <atom:CheckBox Name="{x:Static atom:TreeViewItemThemeConstants.ToggleCheckboxPart}"
+                        <atom:CheckBox Name="ToggleCheckbox"
                                        HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
                                        Grid.Column="1"
                                        IsChecked="{TemplateBinding IsChecked, Mode=TwoWay}"
                                        IsEnabled="{TemplateBinding IsEnabled}"
                                        IsVisible="False" />
-                        <atom:RadioButton Name="{x:Static atom:TreeViewItemThemeConstants.ToggleRadioPart}"
+                        <atom:RadioButton Name="ToggleRadio"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
                                           Grid.Column="1"
@@ -68,7 +68,7 @@
                     Name="{x:Static atom:TreeViewItemThemeConstants.ItemsPresenterMotionActorPart}"
                     ClipToBounds="True"
                     IsVisible="False">
-                    <ItemsPresenter Name="{x:Static atom:TreeViewItemThemeConstants.ItemsPresenterPart}"
+                    <ItemsPresenter Name="ItemsPresenter"
                                     Focusable="False"
                                     ItemsPanel="{TemplateBinding ItemsPanel}" />
                 </atom:LayoutAwareMotionActor>
@@ -121,13 +121,10 @@
         </Style>
         
         <Style Selector="^[ToggleType=CheckBox]">
-            <Style Selector="^ /template/ atom|CheckBox#PART_ToggleCheckbox">
+            <Style Selector="^ /template/ atom|CheckBox#ToggleCheckbox">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>
-        
-        <!-- BuildCommonStyle 结束 -->
-        <!-- BuildSwitcherButtonStyle 开始 -->
 
         <Style Selector="^ /template/ atom|NodeSwitcherButton#PART_NodeSwitcherButton">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:TreeViewTokenKey.TitleHeight}}" />
@@ -153,16 +150,13 @@
                         Value="{DynamicResource {x:Static atom:TreeViewTokenKey.TreeNodeSwitcherMargin}}" />
             </Style>
         </Style>
-
-        <!-- BuildSwitcherButtonStyle 结束 -->
-
-        <!-- BuildDraggingStyle 开始 -->
+        
         <Style Selector="^[IsDragging=True]">
             <Style Selector="^ /template/ Border#PART_Frame">
                 <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             </Style>
         </Style>
-        <!-- BuildDraggingStyle 结束 -->
+
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">

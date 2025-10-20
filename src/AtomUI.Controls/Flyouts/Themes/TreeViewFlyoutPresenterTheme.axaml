@@ -13,7 +13,7 @@
                                     Background="{TemplateBinding Background}"
                                     CornerRadius="{TemplateBinding CornerRadius}"
                                     Padding="{TemplateBinding Padding}">
-                <ItemsPresenter Name="{x:Static atom:TreeViewThemeConstants.ItemsPresenterPart}"
+                <ItemsPresenter Name="ItemsPresenter"
                                 ItemsPanel="{TemplateBinding ItemsPanel}" />
             </atom:ArrowDecoratedBox>
         </ControlTemplate>

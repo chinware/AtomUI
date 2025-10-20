@@ -6,14 +6,14 @@
               x:Class="AtomUI.Controls.Themes.TreeViewTheme">
     <Setter Property="Template">
         <ControlTemplate>
-            <Border Name="{x:Static atom:TreeViewThemeConstants.FramePart}">
+            <Border Name="Frame">
                 <ScrollViewer
                     AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                     HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                     VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                     IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
                     IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
-                    <ItemsPresenter Name="{x:Static atom:TreeViewThemeConstants.ItemsPresenterPart}"
+                    <ItemsPresenter Name="ItemsPresenter"
                                     ItemsPanel="{TemplateBinding ItemsPanel}" />
                 </ScrollViewer>
             </Border>

@@ -1,13 +1,12 @@
 using AtomUI.Animations;
-using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -25,23 +24,23 @@ internal class NodeSwitcherButton : ToggleButton
 {
     #region 公共属性定义
     
-    public static readonly StyledProperty<Icon?> ExpandIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(ExpandIcon));
+    public static readonly StyledProperty<Icon?> ExpandIconProperty = 
+        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(ExpandIcon));
 
-    public static readonly StyledProperty<Icon?> CollapseIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(CollapseIcon));
+    public static readonly StyledProperty<Icon?> CollapseIconProperty = 
+        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(CollapseIcon));
 
-    public static readonly StyledProperty<Icon?> LoadingIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LoadingIcon));
+    public static readonly StyledProperty<Icon?> LoadingIconProperty = 
+        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LoadingIcon));
 
-    public static readonly StyledProperty<Icon?> LeafIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LeafIcon));
+    public static readonly StyledProperty<Icon?> LeafIconProperty =
+        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LeafIcon));
     
-    public static readonly StyledProperty<bool> IsLoadingProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLoading), false);
+    public static readonly StyledProperty<bool> IsLoadingProperty =
+        AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLoading), false);
     
-    public static readonly StyledProperty<Icon?> RotationIconProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(RotationIcon));
+    public static readonly StyledProperty<Icon?> RotationIconProperty =
+        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(RotationIcon));
 
     public Icon? LoadingIcon
     {
@@ -83,8 +82,11 @@ internal class NodeSwitcherButton : ToggleButton
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<bool> IsLeafIconVisibleProperty
-        = AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeafIconVisible), true);
+    internal static readonly StyledProperty<bool> IsLeafIconVisibleProperty =
+        AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLeafIconVisible), true);
+    
+    internal static readonly StyledProperty<ITransform?> RotationIconRenderTransformProperty =
+        AvaloniaProperty.Register<NodeSwitcherButton, ITransform?>(nameof(RotationIconRenderTransform));
     
     internal static readonly DirectProperty<NodeSwitcherButton, NodeSwitcherButtonIconMode> IconModeProperty =
         AvaloniaProperty.RegisterDirect<NodeSwitcherButton, NodeSwitcherButtonIconMode>(
@@ -92,13 +94,19 @@ internal class NodeSwitcherButton : ToggleButton
             o => o.IconMode,
             (o, v) => o.IconMode = v);
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NodeSwitcherButton>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NodeSwitcherButton>();
 
     internal bool IsLeafIconVisible
     {
         get => GetValue(IsLeafIconVisibleProperty);
         set => SetValue(IsLeafIconVisibleProperty, value);
+    }
+    
+    internal ITransform? RotationIconRenderTransform
+    {
+        get => GetValue(RotationIconRenderTransformProperty);
+        set => SetValue(RotationIconRenderTransformProperty, value);
     }
     
     private NodeSwitcherButtonIconMode _iconMode;
@@ -114,13 +122,12 @@ internal class NodeSwitcherButton : ToggleButton
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
-    internal bool IsNodeAnimating { get; set; } = false;
+    
+    internal bool IsNodeAnimating { get; set; }
     
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper;
-    private IconPresenter? _rotationIconPresenter;
 
     static NodeSwitcherButton()
     {
@@ -144,40 +151,21 @@ internal class NodeSwitcherButton : ToggleButton
     {
         if (IsMotionEnabled)
         {
-            Transitions =
-            [
-                TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty)
-            ];
+            if (force || Transitions == null)
+            {
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(BackgroundProperty),
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(RotationIconRenderTransformProperty)
+                ];
+            }
         }
         else
         {
             Transitions = null;
         }
     }
-
-    private void ConfigureRotationIconPresenterTransitions(bool force)
-    {
-        if (IsMotionEnabled)
-        {
-            if (_rotationIconPresenter != null)
-            {
-                if (force || _rotationIconPresenter.Transitions == null)
-                {
-                    _rotationIconPresenter.Transitions =
-                    [
-                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-                    ];
-                }
-            }
-        }
-        else
-        {
-            if (_rotationIconPresenter != null)
-            {
-                _rotationIconPresenter.Transitions = null;
-            }
-        }
-    }
+    
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -198,7 +186,6 @@ internal class NodeSwitcherButton : ToggleButton
             if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
-                ConfigureRotationIconPresenterTransitions(true);
             }
         }
     }
@@ -217,24 +204,7 @@ internal class NodeSwitcherButton : ToggleButton
                 default);
         }
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _rotationIconPresenter = e.NameScope.Find<IconPresenter>(NodeSwitcherButtonThemeConstants.RotationIconPresenterPart);
-        if (_rotationIconPresenter != null)
-        {
-            _rotationIconPresenter.Loaded += (sender, args) =>
-            {
-                ConfigureRotationIconPresenterTransitions(false);
-            };
-            _rotationIconPresenter.Unloaded += (sender, args) =>
-            {
-                _rotationIconPresenter.Transitions = null;
-            };
-        }
-    }
-
+    
     private void SetupDefaultIcons()
     {
         if (ExpandIcon == null)
@@ -270,4 +240,17 @@ internal class NodeSwitcherButton : ToggleButton
         }
         base.Toggle();
     }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
 }

@@ -216,7 +216,7 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
     public TreeView()
         : this(new DefaultTreeViewInteractionHandler(false))
     {
-        Items.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleCollectionChanged;
     }
     
     protected TreeView(ITreeViewInteractionHandler interactionHandler)
@@ -347,7 +347,54 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
         if (container is TreeViewItem treeViewItem)
         {
             treeViewItem.OwnerTreeView = this;
-            var disposables = new CompositeDisposable(7);
+            var disposables = new CompositeDisposable(8);
+            
+            if (item != null && item is not Visual)
+            {
+                if (!treeViewItem.IsSet(TreeViewItem.HeaderProperty))
+                {
+                    treeViewItem.SetCurrentValue(TreeViewItem.HeaderProperty, item);
+                }
+
+                if (item is ITreeViewItemData treeViewItemData)
+                {
+                    if (!treeViewItem.IsSet(TreeViewItem.IconProperty))
+                    {
+                        treeViewItem.SetCurrentValue(TreeViewItem.IconProperty, treeViewItemData.Icon);
+                    }
+                    
+                    if (treeViewItem.ItemKey == null)
+                    {
+                        treeViewItem.ItemKey = treeViewItemData.ItemKey;
+                    }
+                    
+                    if (!treeViewItem.IsSet(TreeViewItem.IsCheckedProperty))
+                    {
+                        treeViewItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, treeViewItemData.IsChecked);
+                    }
+                    
+                    if (!treeViewItem.IsSet(TreeViewItem.IsSelectedProperty))
+                    {
+                        treeViewItem.SetCurrentValue(TreeViewItem.IsSelectedProperty, treeViewItemData.IsSelected);
+                    }
+                    
+                    if (!treeViewItem.IsSet(TreeViewItem.IsEnabledProperty))
+                    {
+                        treeViewItem.SetCurrentValue(TreeViewItem.IsEnabledProperty, treeViewItemData.IsEnabled);
+                    }
+                    
+                    if (!treeViewItem.IsSet(TreeViewItem.IsExpandedProperty))
+                    {
+                        treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, treeViewItemData.IsExpanded);
+                    }
+                }
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, treeViewItem, TreeViewItem.HeaderTemplateProperty));
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, treeViewItem, TreeViewItem.IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, NodeHoverModeProperty, treeViewItem, TreeViewItem.NodeHoverModeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsShowLineProperty, treeViewItem, TreeViewItem.IsShowLineProperty));
@@ -356,6 +403,9 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
                 TreeViewItem.IsShowLeafIconProperty));
             disposables.Add(BindUtils.RelayBind(this, IsSwitcherRotationProperty, treeViewItem, TreeViewItem.IsSwitcherRotationProperty));
             disposables.Add(BindUtils.RelayBind(this, ToggleTypeProperty, treeViewItem, TreeViewItem.ToggleTypeProperty));
+            
+            PrepareTreeViewItem(treeViewItem, item, index, disposables);
+            
             if (_itemsBindingDisposables.TryGetValue(treeViewItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();
@@ -363,6 +413,14 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
             }
             _itemsBindingDisposables.Add(treeViewItem, disposables);
         }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type TreeViewItem.");
+        }
+    }
+    
+    protected virtual void PrepareTreeViewItem(TreeViewItem treeViewItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

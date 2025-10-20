@@ -24,7 +24,7 @@ namespace AtomUI.Controls;
 using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
 [PseudoClasses(TreeViewPseudoClass.NodeToggleTypeCheckBox, TreeViewPseudoClass.NodeToggleTypeRadio, TreeViewPseudoClass.TreeNodeHover)]
-public class TreeViewItem : AvaloniaTreeItem, IRadioButton
+public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 {
     #region 公共属性定义
     public static readonly StyledProperty<Icon?> IconProperty =
@@ -50,11 +50,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton
 
     public static readonly DirectProperty<TreeViewItem, bool> IsLeafProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsLeaf),
-            o => o.IsLeaf,
-            (o, v) => o.IsLeaf = v);
-
-    public static readonly StyledProperty<bool> IsShowLeafIconProperty =
-        AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsShowLeafIcon));
+            o => o.IsLeaf);
 
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsLoading), false);
@@ -98,12 +94,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton
         set => SetValue(SwitcherLeafIconProperty, value);
     }
 
-    internal bool IsShowLeafIcon
-    {
-        get => GetValue(IsShowLeafIconProperty);
-        set => SetValue(IsShowLeafIconProperty, value);
-    }
-
     public bool? IsChecked
     {
         get => GetValue(IsCheckedProperty);
@@ -130,7 +120,8 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton
         set => SetValue(GroupNameProperty, value);
     }
     
-    public TreeNodeKey? Key { get; set; }
+    IList<ITreeViewItemData> ITreeNode<ITreeViewItemData>.Children => Items.OfType<ITreeViewItemData>().ToList();
+    public TreeNodeKey? ItemKey { get; set; }
 
     #endregion
 
@@ -213,6 +204,9 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton
     
     internal static readonly StyledProperty<ItemToggleType> ToggleTypeProperty =
         TreeView.ToggleTypeProperty.AddOwner<TreeViewItem>();
+    
+    internal static readonly StyledProperty<bool> IsShowLeafIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsShowLeafIcon));
 
     private double _titleHeight;
 
@@ -318,13 +312,19 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton
         set => SetValue(ToggleTypeProperty, value);
     }
 
+    internal bool IsShowLeafIcon
+    {
+        get => GetValue(IsShowLeafIconProperty);
+        set => SetValue(IsShowLeafIconProperty, value);
+    }
+    
     internal TreeView? OwnerTreeView { get; set; }
 
     private ITreeViewInteractionHandler? TreeViewInteractionHandler => this.FindLogicalAncestorOfType<TreeView>()?.InteractionHandler;
     
     #endregion
     
-    private bool _tempAnimationDisabled = false;
+    private bool _tempAnimationDisabled;
     private bool _animating;
     private ContentPresenter? _headerPresenter;
     private BaseMotionActor? _itemsPresenterMotionActor;
@@ -349,7 +349,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton
 
     public TreeViewItem()
     {
-        _borderRenderHelper         = new BorderRenderHelper();
+        _borderRenderHelper = new BorderRenderHelper();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

@@ -5,7 +5,7 @@ namespace AtomUI.Controls;
 
 public class MenuItemData : IMenuItemData
 {
-    public string? ItemKey { get; set; }
+    public TreeNodeKey? ItemKey { get; set; }
     public object? Header { get; set; }
     public Icon? Icon { get; set; }
     public bool IsEnabled { get; set; } = true;

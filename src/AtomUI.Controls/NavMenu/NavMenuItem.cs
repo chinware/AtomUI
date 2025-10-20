@@ -183,7 +183,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// <summary>
     /// 获取或者设置菜单项的 Key
     /// </summary>
-    public string? ItemKey { get; set; }
+    public TreeNodeKey? ItemKey { get; set; }
     
     INavMenuElement? INavMenuItem.Parent => Parent as INavMenuElement;
     

@@ -1,4 +1,7 @@
-﻿namespace AtomUI.Controls;
+﻿using System.Globalization;
+using AtomUI.Utils;
+
+namespace AtomUI.Controls;
 
 public readonly struct TreeNodeKey : IEquatable<TreeNodeKey>
 {
@@ -54,8 +57,23 @@ public readonly struct TreeNodeKey : IEquatable<TreeNodeKey>
         return !left.Equals(new TreeNodeKey(right));
     }
 
+    public static implicit operator TreeNodeKey(string value)
+    {
+        return new TreeNodeKey(value);
+    }
+    
     public override string ToString()
     {
         return Value;
+    }
+    
+    public static TreeNodeKey Parse(string s)
+    {
+        using (var tokenizer = new SpanStringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid TreeNodeKey."))
+        {
+            return new TreeNodeKey(
+                tokenizer.ReadString()
+            );
+        }
     }
 }

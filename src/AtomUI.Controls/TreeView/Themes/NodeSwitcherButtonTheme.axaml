@@ -15,35 +15,36 @@
     <ControlTheme x:Key="{x:Type atom:NodeSwitcherButton}" TargetType="atom:NodeSwitcherButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel Name="{x:Static atom:NodeSwitcherButtonThemeConstants.RootPart}"
+                <Panel Name="RootLayout"
                        IsHitTestVisible="False">
-                    <atom:IconPresenter Name="{x:Static atom:NodeSwitcherButtonThemeConstants.ExpandIconPresenterPart}"
+                    <atom:IconPresenter Name="ExpandIconPresenter"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Icon="{TemplateBinding ExpandIcon}" 
                                         IsVisible="False"/>
                     <atom:IconPresenter
-                        Name="{x:Static atom:NodeSwitcherButtonThemeConstants.CollapseIconPresenterPart}"
+                        Name="CollapseIconPresenter"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Icon="{TemplateBinding CollapseIcon}" 
                         IsVisible="False"/>
                     <atom:IconPresenter
-                        Name="{x:Static atom:NodeSwitcherButtonThemeConstants.RotationIconPresenterPart}"
+                        Name="RotationIconPresenter"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
+                        RenderTransform="{TemplateBinding RotationIconRenderTransform}"
                         Icon="{TemplateBinding RotationIcon}"
                         IsVisible="{TemplateBinding IconMode, Converter={StaticResource NodeSwitcherIconModeConverter},
                                                     ConverterParameter={x:Static atom:NodeSwitcherButtonIconMode.Rotation}}" />
                     <atom:IconPresenter
-                        Name="{x:Static atom:NodeSwitcherButtonThemeConstants.LoadingIconPresenterPart}"
+                        Name="LoadingIconPresenter"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Icon="{TemplateBinding LoadingIcon}"
                         IsVisible="{TemplateBinding IconMode, Converter={StaticResource NodeSwitcherIconModeConverter},
                                                     ConverterParameter={x:Static atom:NodeSwitcherButtonIconMode.Loading}}" />
                     <atom:IconPresenter
-                        Name="{x:Static atom:NodeSwitcherButtonThemeConstants.LeafIconPresenterPart}"
+                        Name="LeafIconPresenter"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Icon="{TemplateBinding LeafIcon}"
@@ -75,47 +76,40 @@
             </Style>
         </Style>
         
-        <!-- BuildIconsStyle 开始 -->
         <Style Selector="^ /template/ atom|IconPresenter">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>
             <Setter Property="IconMode" Value="Normal"/>
         </Style>
-        <Style Selector="^ /template/ atom|IconPresenter#PART_RotationIconPresenter">
+        <Style Selector="^ /template/ atom|IconPresenter#RotationIconPresenter">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}"/>
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}"/>
         </Style>
         
         <Style Selector="^:checked[IconMode=Rotation]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_RotationIconPresenter">
-                <Setter Property="RenderTransform" Value="rotate(90deg)"/>
-            </Style>
+            <Setter Property="RotationIconRenderTransform" Value="rotate(90deg)"/>
         </Style>
         
-        <!-- BuildIconsStyle 结束 -->
-        
-        <!-- BuildModeStyle 开始 -->
         <Style Selector="^[IconMode=Default]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ExpandIconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#ExpandIconPresenter">
                 <Setter Property="IsVisible" Value="True"/>
             </Style>
-            <Style Selector="^ /template/ atom|IconPresenter#PART_CollapseIconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#CollapseIconPresenter">
                 <Setter Property="IsVisible" Value="False"/>
             </Style>
             <Style Selector="^[IsChecked=True]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ExpandIconPresenter">
+                <Style Selector="^ /template/ atom|IconPresenter#ExpandIconPresenter">
                     <Setter Property="IsVisible" Value="False"/>
                 </Style>
-                <Style Selector="^ /template/ atom|IconPresenter#PART_CollapseIconPresenter">
+                <Style Selector="^ /template/ atom|IconPresenter#CollapseIconPresenter">
                     <Setter Property="IsVisible" Value="True"/>
                 </Style>
             </Style>
         </Style>
         <Style Selector="^[IconMode=Leaf][IsLeafIconVisible=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_LeafIconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#LeafIconPresenter">
                 <Setter Property="IsVisible" Value="True"/>
             </Style>
         </Style>
-        <!-- BuildModeStyle 结束 -->
     </ControlTheme>
 </ResourceDictionary>
