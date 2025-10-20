@@ -14,12 +14,10 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
 {
     protected IInputManager? InputManager { get; }
     internal TreeView? TreeView { get; private set; }
-
     private readonly bool _isFloatingTreeView;
     private IDisposable? _inputManagerSubscription;
     private IRenderRoot? _root;
     private RadioButtonGroupManager? _groupManager;
-
 
     public DefaultTreeViewInteractionHandler(bool isFloatingTreeView)
     {
@@ -127,24 +125,6 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
 
     internal void Click(TreeViewItem item)
     {
-        if (item.ToggleType == ItemToggleType.CheckBox)
-        {
-            if (item.IsChecked == true)
-            {
-                item.IsChecked = false;
-            }
-            else
-            {
-                item.IsChecked = true;
-            }
-        }
-        else if (item.ToggleType == ItemToggleType.Radio)
-        {
-            if (item.ItemCount == 0)
-            {
-                item.IsChecked = true;
-            }
-        }
         item.RaiseClick();
     }
 
@@ -194,10 +174,6 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
                     TreeView.UnCheckedSubTree(item);
                 }
             }
-        }
-        if (item.IsChecked != true)
-        {
-            TreeView?.DefaultCheckedItems.Remove(item);
         }
     }
 

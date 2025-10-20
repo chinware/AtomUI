@@ -324,7 +324,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     
     #endregion
     
-    private bool _tempAnimationDisabled;
     private bool _animating;
     private ContentPresenter? _headerPresenter;
     private BaseMotionActor? _itemsPresenterMotionActor;
@@ -360,11 +359,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
         OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault<TreeView>();
-        if (IsChecked.HasValue && IsChecked.Value)
-        {
-            // 注册到 TreeView
-            OwnerTreeView?.DefaultCheckedItems.Add(this);
-        }
         SetupSwitcherButtonIconMode();
     }
     
@@ -496,7 +490,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             return;
         }
 
-        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || _tempAnimationDisabled)
+        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess)
         {
             _itemsPresenterMotionActor.Opacity   = 1.0;
             _itemsPresenterMotionActor.IsVisible = true;
@@ -532,7 +526,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             return;
         }
 
-        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || _tempAnimationDisabled)
+        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess)
         {
             _itemsPresenterMotionActor.Opacity   = 0.0;
             _itemsPresenterMotionActor.IsVisible = false;
@@ -593,10 +587,18 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             _iconPresenter.PointerExited  += HandleHeaderPresenterExited;
         }
 
-        IsLeaf                 = ItemCount == 0;
-        _tempAnimationDisabled = true;
-        HandleExpandedChanged();
-        _tempAnimationDisabled = false;
+        IsLeaf = ItemCount == 0;
+        var originIsMotionEnabled = IsMotionEnabled;
+        try
+        {
+            SetCurrentValue(IsMotionEnabledProperty, false);
+            HandleExpandedChanged();
+        }
+        finally
+        {
+            SetCurrentValue(IsMotionEnabledProperty, originIsMotionEnabled);
+        }
+        
     }
 
     private void ConfigureTransitions(bool force)
@@ -621,6 +623,39 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     {
         base.OnLoaded(e);
         ConfigureTransitions(false);
+        if (OwnerTreeView is not null)
+        {
+            if (IsChecked != false)
+            {
+                if (IsEnabled)
+                {
+                    SetCurrentValue(IsCheckedProperty, true);
+                }
+                else
+                {
+                    OwnerTreeView.CheckedSubTree(this);
+                }
+            }
+            else
+            {
+                var allChecked = false;
+                var hasAnyChecked = false;
+             
+                if (Items.Count > 0)
+                {
+                    allChecked = Items.All(item => OwnerTreeView.CheckedItems.Contains(item));
+                    hasAnyChecked = Items.Any(item => OwnerTreeView.CheckedItems.Contains(item));
+                }
+                if (allChecked)
+                {
+                    SetCurrentValue(IsCheckedProperty, true);
+                }
+                else if (hasAnyChecked)
+                {
+                    SetCurrentValue(IsCheckedProperty, null);
+                }
+            }
+        }
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
