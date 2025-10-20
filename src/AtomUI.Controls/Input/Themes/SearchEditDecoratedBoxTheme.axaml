@@ -41,6 +41,7 @@
                         IsEnabled="{TemplateBinding IsEnabled}"
                         Icon="{atom:IconProvider SearchOutlined}"
                         BackgroundSizing="OuterBorderEdge"
+                        IsLoading="{TemplateBinding SearchButtonLoading}"
                         Content="{TemplateBinding SearchButtonText}"
                         SizeType="{TemplateBinding SizeType}"/>
                 </Grid>

@@ -23,7 +23,8 @@
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
                     RightAddOnBorderThickness="{TemplateBinding BorderThickness}"
                     SearchButtonStyle="{TemplateBinding SearchButtonStyle}"
-                    SearchButtonText="{TemplateBinding SearchButtonText}">
+                    SearchButtonText="{TemplateBinding SearchButtonText}"
+                    SearchButtonLoading="{TemplateBinding SearchButtonLoading}">
                     <atom:TextBoxInnerBox
                         Name="{x:Static atom:TextBoxThemeConstants.TextBoxInnerBoxPart}"
                         Cursor="Ibeam"
