@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
@@ -61,6 +62,24 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
     
     public static readonly StyledProperty<ItemToggleType> ToggleTypeProperty =
         AvaloniaProperty.Register<TreeView, ItemToggleType>(nameof(ToggleType), ItemToggleType.None);
+    
+    public static readonly DirectProperty<TreeView, IList<TreeNodePath>?> DefaultCheckedPathsProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, IList<TreeNodePath>?>(
+            nameof(DefaultCheckedPaths),
+            o => o.DefaultCheckedPaths,
+            (o, v) => o.DefaultCheckedPaths = v);
+    
+    public static readonly DirectProperty<TreeView, IList<TreeNodePath>?> DefaultSelectedPathsProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, IList<TreeNodePath>?>(
+            nameof(DefaultSelectedPaths),
+            o => o.DefaultSelectedPaths,
+            (o, v) => o.DefaultSelectedPaths = v);
+    
+    public static readonly DirectProperty<TreeView, IList<TreeNodePath>?> DefaultExpandedPathsProperty =
+        AvaloniaProperty.RegisterDirect<TreeView, IList<TreeNodePath>?>(
+            nameof(DefaultExpandedPaths),
+            o => o.DefaultExpandedPaths,
+            (o, v) => o.DefaultExpandedPaths = v);
 
     public bool IsDraggable
     {
@@ -120,6 +139,30 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
     {
         get => GetValue(ToggleTypeProperty);
         set => SetValue(ToggleTypeProperty, value);
+    }
+    
+    private IList<TreeNodePath>? _defaultCheckedPaths;
+    
+    public IList<TreeNodePath>? DefaultCheckedPaths
+    {
+        get => _defaultCheckedPaths;
+        set => SetAndRaise(DefaultCheckedPathsProperty, ref _defaultCheckedPaths, value);
+    }
+    
+    private IList<TreeNodePath>? _defaultSelectedPaths;
+    
+    public IList<TreeNodePath>? DefaultSelectedPaths
+    {
+        get => _defaultSelectedPaths;
+        set => SetAndRaise(DefaultSelectedPathsProperty, ref _defaultSelectedPaths, value);
+    }
+    
+    private IList<TreeNodePath>? _defaultExpandedPaths;
+    
+    public IList<TreeNodePath>? DefaultExpandedPaths
+    {
+        get => _defaultExpandedPaths;
+        set => SetAndRaise(DefaultExpandedPathsProperty, ref _defaultExpandedPaths, value);
     }
     
     public bool IsDefaultExpandAll { get; set; } = false;
@@ -250,15 +293,21 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
     
     public void ExpandAll()
     {
-        IsExpandAllProcess = true;
-        foreach (var item in Items)
+        try
         {
-            if (item is TreeViewItem treeItem)
+            IsExpandAllProcess = true;
+            foreach (var item in Items)
             {
-                ExpandSubTree(treeItem);
+                if (item is TreeViewItem treeItem)
+                {
+                    ExpandSubTree(treeItem);
+                }
             }
         }
-        IsExpandAllProcess = false;
+        finally
+        {
+            IsExpandAllProcess = false;
+        }
     }
 
     public void CheckedSubTree(TreeViewItem item)
@@ -283,10 +332,7 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
             }
         }
 
-        if (item.Parent is TreeViewItem itemParent)
-        {
-            SetupParentNodeCheckedStatus(itemParent);
-        }
+        SetupParentNodeCheckedStatus(item);
     }
 
     public void UnCheckedSubTree(TreeViewItem item)
@@ -311,10 +357,7 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
             }
         }
 
-        if (item.Parent is TreeViewItem itemParent)
-        {
-            SetupParentNodeCheckedStatus(itemParent);
-        }
+        SetupParentNodeCheckedStatus(item);
     }
 
     private void UpdatePseudoClasses()
@@ -452,39 +495,44 @@ public class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlSharedTok
         DefaultCheckedItems.Clear();
     }
 
-    private void SetupParentNodeCheckedStatus(TreeViewItem parent)
+    private void SetupParentNodeCheckedStatus(TreeViewItem item)
     {
-        var isAllChecked = parent.Items.All(item =>
+        var parent = item.Parent;
+        while (parent is TreeViewItem parentTreeItem)
         {
-            if (item is TreeViewItem treeViewItem)
+            var isAllChecked = parentTreeItem.Items.All(childItem =>
             {
-                return treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
-            }
+                if (childItem is TreeViewItem treeViewItem)
+                {
+                    return treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
+                }
 
-            return false;
-        });
+                return false;
+            });
 
-        var isAnyChecked = parent.Items.Any(item =>
-        {
-            if (item is TreeViewItem treeViewItem)
+            var isAnyChecked = parentTreeItem.Items.Any(childItem =>
             {
-                return treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
+                if (childItem is TreeViewItem treeViewItem)
+                {
+                    return !treeViewItem.IsChecked.HasValue || treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
+                }
+
+                return false;
+            });
+
+            if (isAllChecked)
+            {
+                parentTreeItem.IsChecked = true;
             }
-
-            return false;
-        });
-
-        if (isAllChecked)
-        {
-            parent.IsChecked = true;
-        }
-        else if (isAnyChecked)
-        {
-            parent.IsChecked = null;
-        }
-        else
-        {
-            parent.IsChecked = false;
+            else if (isAnyChecked)
+            {
+                parentTreeItem.IsChecked = null;
+            }
+            else
+            {
+                parentTreeItem.IsChecked = false;
+            }
+            parent = parent.Parent;
         }
     }
 
