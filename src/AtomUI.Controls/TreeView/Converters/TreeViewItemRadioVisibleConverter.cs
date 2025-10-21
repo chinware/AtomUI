@@ -12,7 +12,7 @@ internal class TreeViewItemRadioVisibleConverter : IMultiValueConverter
             return false;
         }
         var itemToggleType = values[0] as ItemToggleType?;
-        var itemCount = values[1] as int?;
-        return itemToggleType == ItemToggleType.Radio && itemCount == 0;
+        var isLeaf = values[1] as bool?;
+        return itemToggleType == ItemToggleType.Radio && isLeaf == true;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AtomUI.Controls.DesignTokens;
 using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -13,7 +12,7 @@ internal class DragPreviewAdorner : Decorator
     private readonly TranslateTransform _translation;
     private readonly DragPreview _dragPreview;
 
-    public DragPreviewAdorner(Border previewControl)
+    public DragPreviewAdorner(TreeViewItemHeader previewControl)
     {
         _translation                 = new TranslateTransform();
         _dragPreview                 = new DragPreview(previewControl);
@@ -59,7 +58,7 @@ internal class DragPreview : Decorator
     private readonly VisualBrush _visualBrush;
     private IDisposable? _backgroundBindingDisposable;
     
-    public DragPreview(Border previewControl)
+    public DragPreview(TreeViewItemHeader previewControl)
     {
         Width               = previewControl.Bounds.Width;
         Height              = previewControl.Bounds.Height;

@@ -1,5 +1,4 @@
-﻿using AtomUI.Animations;
-using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.MotionScene;
@@ -10,7 +9,6 @@ using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -23,7 +21,7 @@ namespace AtomUI.Controls;
 
 using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 
-[PseudoClasses(TreeViewPseudoClass.NodeToggleTypeCheckBox, TreeViewPseudoClass.NodeToggleTypeRadio, TreeViewPseudoClass.TreeNodeHover)]
+[PseudoClasses(TreeViewPseudoClass.NodeToggleTypeCheckBox, TreeViewPseudoClass.NodeToggleTypeRadio)]
 public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 {
     #region 公共属性定义
@@ -141,11 +139,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<TreeViewItem, double> TitleHeightProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, double>(nameof(TitleHeight),
-            o => o.TitleHeight,
-            (o, v) => o.TitleHeight = v);
-
     internal static readonly DirectProperty<TreeViewItem, TreeItemHoverMode> NodeHoverModeProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, TreeItemHoverMode>(nameof(NodeHoverMode),
             o => o.NodeHoverMode,
@@ -161,11 +154,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             o => o.IsShowIcon,
             (o, v) => o.IsShowIcon = v);
 
-    internal static readonly DirectProperty<TreeViewItem, bool> IconEffectiveVisibleProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IconEffectiveVisible),
-            o => o.IconEffectiveVisible,
-            (o, v) => o.IconEffectiveVisible = v);
-
     internal static readonly DirectProperty<TreeViewItem, bool> IsDraggingProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsDragging),
             o => o.IsDragging,
@@ -176,25 +164,8 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             o => o.IsDragOver,
             (o, v) => o.IsDragOver = v);
 
-    internal static readonly DirectProperty<TreeViewItem, Thickness> DragFrameBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, Thickness>(nameof(DragFrameBorderThickness),
-            o => o.DragFrameBorderThickness,
-            (o, v) => o.DragFrameBorderThickness = v);
-
-    internal static readonly StyledProperty<IBrush?> EffectiveNodeBgProperty =
-        AvaloniaProperty.Register<TreeViewItem, IBrush?>(nameof(EffectiveNodeBg));
-
-    internal static readonly StyledProperty<CornerRadius> EffectiveNodeCornerRadiusProperty =
-        AvaloniaProperty.Register<TreeViewItem, CornerRadius>(nameof(EffectiveNodeCornerRadius));
-
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TreeViewItem>();
-
-    internal static readonly DirectProperty<TreeViewItem, NodeSwitcherButtonIconMode> SwitcherModeProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, NodeSwitcherButtonIconMode>(
-            nameof(SwitcherMode),
-            o => o.SwitcherMode,
-            (o, v) => o.SwitcherMode = v);
 
     internal static readonly DirectProperty<TreeViewItem, bool> IsSwitcherRotationProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(
@@ -207,15 +178,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     
     internal static readonly StyledProperty<bool> IsShowLeafIconProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsShowLeafIcon));
-
-    private double _titleHeight;
-
-    internal double TitleHeight
-    {
-        get => _titleHeight;
-        set => SetAndRaise(TitleHeightProperty, ref _titleHeight, value);
-    }
-
+    
     private TreeItemHoverMode _nodeHoverMode;
 
     internal TreeItemHoverMode NodeHoverMode
@@ -240,14 +203,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         set => SetAndRaise(IsShowIconProperty, ref _isShowIcon, value);
     }
 
-    private bool _iconEffectiveVisible = true;
-
-    internal bool IconEffectiveVisible
-    {
-        get => _iconEffectiveVisible;
-        set => SetAndRaise(IconEffectiveVisibleProperty, ref _iconEffectiveVisible, value);
-    }
-
     private bool _isDragging;
 
     internal bool IsDragging
@@ -264,38 +219,10 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         set => SetAndRaise(IsDragOverProperty, ref _isDragOver, value);
     }
 
-    private Thickness _dragFrameBorderThickness;
-
-    internal Thickness DragFrameBorderThickness
-    {
-        get => _dragFrameBorderThickness;
-        set => SetAndRaise(DragFrameBorderThicknessProperty, ref _dragFrameBorderThickness, value);
-    }
-
-    internal IBrush? EffectiveNodeBg
-    {
-        get => GetValue(EffectiveNodeBgProperty);
-        set => SetValue(EffectiveNodeBgProperty, value);
-    }
-
-    internal CornerRadius EffectiveNodeCornerRadius
-    {
-        get => GetValue(EffectiveNodeCornerRadiusProperty);
-        set => SetValue(EffectiveNodeCornerRadiusProperty, value);
-    }
-
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
-    }
-
-    private NodeSwitcherButtonIconMode _switcherMode;
-
-    internal NodeSwitcherButtonIconMode SwitcherMode
-    {
-        get => _switcherMode;
-        set => SetAndRaise(SwitcherModeProperty, ref _switcherMode, value);
     }
 
     private bool _isSwitcherRotation;
@@ -325,25 +252,22 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     #endregion
     
     private bool _animating;
-    private ContentPresenter? _headerPresenter;
     private BaseMotionActor? _itemsPresenterMotionActor;
-    private Border? _frame;
-    private IconPresenter? _iconPresenter;
-    private NodeSwitcherButton? _switcherButton;
-    private Rect _effectiveBgRect;
     private readonly BorderRenderHelper _borderRenderHelper;
+    private TreeViewItemHeader? _header;
     private IDisposable? _borderThicknessDisposable;
 
     static TreeViewItem()
     {
-        AffectsRender<TreeViewItem>(EffectiveNodeCornerRadiusProperty,
-            EffectiveNodeBgProperty,
+        AffectsRender<TreeViewItem>(
             IsShowLineProperty,
             IsShowLeafIconProperty,
             IsDraggingProperty,
             IsDragOverProperty,
             BorderBrushProperty,
-            BorderThicknessProperty);
+            BorderThicknessProperty,
+            NodeHoverModeProperty,
+            BackgroundProperty);
     }
 
     public TreeViewItem()
@@ -354,12 +278,11 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, DragFrameBorderThicknessProperty,
+        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
             SharedTokenKey.BorderThickness,
             BindingPriority.Template,
             new RenderScaleAwareThicknessConfigure(this));
-        OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault<TreeView>();
-        SetupSwitcherButtonIconMode();
+        OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault();
     }
     
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -371,22 +294,12 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-
-        if (change.Property == IsShowIconProperty || change.Property == IconProperty)
-        {
-            IconEffectiveVisible = IsShowIcon && Icon is not null;
-        }
-
+        
         if (change.Property == ItemCountProperty)
         {
             IsLeaf = ItemCount == 0;
         }
-        else if (change.Property == IsLoadingProperty ||
-                 change.Property == IsLeafProperty ||
-                 change.Property == IsSwitcherRotationProperty)
-        {
-            SetupSwitcherButtonIconMode();
-        }
+ 
         else if (change.Property == GroupNameProperty)
         {
             HandleGroupNameChanged(change);
@@ -402,48 +315,10 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == NodeHoverModeProperty)
-            {
-                CalculateEffectiveBgRect();
-            }
-            else if (change.Property == IsExpandedProperty)
+            if (change.Property == IsExpandedProperty)
             {
                 HandleExpandedChanged();
             }
-        }
-
-        if (IsLoaded)
-        {
-            if (change.Property == IsMotionEnabledProperty)
-            {
-                ConfigureTransitions(true);
-            }
-        }
-    }
-
-    private void SetupSwitcherButtonIconMode()
-    {
-        if (!IsLeaf)
-        {
-            if (IsLoading)
-            {
-                SwitcherMode = NodeSwitcherButtonIconMode.Loading;
-            }
-            else
-            {
-                if (IsSwitcherRotation)
-                {
-                    SwitcherMode = NodeSwitcherButtonIconMode.Rotation;
-                }
-                else
-                {
-                    SwitcherMode = NodeSwitcherButtonIconMode.Default;
-                }
-            }
-        }
-        else
-        {
-            SwitcherMode = NodeSwitcherButtonIconMode.Leaf;
         }
     }
 
@@ -498,10 +373,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         }
 
         _animating = true;
-        if (_switcherButton != null)
-        {
-            _switcherButton.IsNodeAnimating = true;
-        }
+        _header?.NotifyAnimating(true);
 
         var motion = OwnerTreeView.OpenMotion ?? new ExpandMotion(Direction.Top, null, new CubicEaseOut());
         motion.Duration = OwnerTreeView.MotionDuration;
@@ -510,10 +382,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             () =>
             {
                 _animating = false;
-                if (_switcherButton != null)
-                {
-                    _switcherButton.IsNodeAnimating = false;
-                }
+                _header?.NotifyAnimating(false);
             });
     }
 
@@ -534,10 +403,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         }
 
         _animating = true;
-        if (_switcherButton != null)
-        {
-            _switcherButton.IsNodeAnimating = true;
-        }
+        _header?.NotifyAnimating(true);
 
         var motion = OwnerTreeView.CloseMotion ?? new CollapseMotion(Direction.Top, null, new CubicEaseIn());
         motion.Duration = OwnerTreeView.MotionDuration;
@@ -546,48 +412,19 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         {
             _itemsPresenterMotionActor.IsVisible = false;
             _animating                           = false;
-            if (_switcherButton != null)
-            {
-                _switcherButton.IsNodeAnimating = false;
-            }
+            _header?.NotifyAnimating(false);
         });
-    }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        var size = base.ArrangeOverride(finalSize);
-        CalculateEffectiveBgRect();
-        return size;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _headerPresenter = e.NameScope.Find<ContentPresenter>(TreeViewItemThemeConstants.HeaderPresenterPart);
-        _iconPresenter   = e.NameScope.Find<IconPresenter>(TreeViewItemThemeConstants.IconPresenterPart);
-        _frame           = e.NameScope.Find<Border>(TreeViewItemThemeConstants.FramePart);
-        _switcherButton  = e.NameScope.Find<NodeSwitcherButton>(TreeViewItemThemeConstants.NodeSwitcherButtonPart);
+        _header             = e.NameScope.Find<TreeViewItemHeader>(TreeViewItemThemeConstants.HeaderPart);
         _itemsPresenterMotionActor =
             e.NameScope.Find<BaseMotionActor>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
-        if (_frame is not null)
-        {
-            _frame.PointerEntered += HandleFrameEntered;
-            _frame.PointerExited  += HandleFrameExited;
-        }
-
-        if (_headerPresenter is not null)
-        {
-            _headerPresenter.PointerEntered += HandleHeaderPresenterEntered;
-            _headerPresenter.PointerExited  += HandleHeaderPresenterExited;
-        }
-
-        if (_iconPresenter is not null)
-        {
-            _iconPresenter.PointerEntered += HandleHeaderPresenterEntered;
-            _iconPresenter.PointerExited  += HandleHeaderPresenterExited;
-        }
 
         IsLeaf = ItemCount == 0;
+        
         var originIsMotionEnabled = IsMotionEnabled;
         try
         {
@@ -600,29 +437,10 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         }
         
     }
-
-    private void ConfigureTransitions(bool force)
-    {
-        if (IsMotionEnabled)
-        {
-            if (force || Transitions == null)
-            {
-                Transitions =
-                [
-                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(EffectiveNodeBgProperty)
-                ];
-            }
-        }
-        else
-        {
-            Transitions = null;
-        }
-    }
-
+    
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        ConfigureTransitions(false);
         if (OwnerTreeView is not null)
         {
             if (IsChecked != false)
@@ -658,54 +476,20 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         }
     }
 
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-        base.OnUnloaded(e);
-        Transitions = null;
-    }
-
-    private void CalculateEffectiveBgRect()
-    {
-        if (_frame is null)
-        {
-            return;
-        }
-
-        Point offset       = default;
-        var   targetWidth  = 0d;
-        var   targetHeight = 0d;
-        if (NodeHoverMode == TreeItemHoverMode.Default || NodeHoverMode == TreeItemHoverMode.Block)
-        {
-            if (_iconPresenter is not null && _iconPresenter.IsVisible)
-            {
-                offset       = _iconPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-                targetWidth  = _iconPresenter.DesiredSize.Width + _headerPresenter?.DesiredSize.Width ?? 0d;
-                targetHeight = _frame.Bounds.Height;
-            }
-            else if (_headerPresenter is not null)
-            {
-                offset       = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-                targetWidth  = _headerPresenter.DesiredSize.Width;
-                targetHeight = _frame.Bounds.Height;
-            }
-        }
-
-        _effectiveBgRect = new Rect(offset, new Size(targetWidth, targetHeight));
-    }
-
     public override void Render(DrawingContext context)
     {
+        if (NodeHoverMode == TreeItemHoverMode.WholeLine && _header != null)
         {
-            using var state = context.PushTransform(Matrix.CreateTranslation(_effectiveBgRect.X, 0));
+            using var state = context.PushTransform(Matrix.CreateTranslation(_header.Bounds.X, 0));
             _borderRenderHelper.Render(context,
-                _effectiveBgRect.Size,
+                _header.Bounds.Size,
                 new Thickness(),
-                EffectiveNodeCornerRadius,
+                CornerRadius,
                 BackgroundSizing.InnerBorderEdge,
-                EffectiveNodeBg,
-                null,
-                default);
+                Background,
+                null);
         }
+   
         if (IsShowLine)
         {
             RenderTreeNodeLine(context);
@@ -714,7 +498,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 
     private void RenderTreeNodeLine(DrawingContext context)
     {
-        if (_switcherButton is null)
+        if (_header is null)
         {
             return;
         }
@@ -725,7 +509,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         {
             EdgeMode = EdgeMode.Aliased
         });
-
+        
         var isLastChild = false;
         if (Parent is ItemsControl parentTreeItem)
         {
@@ -735,13 +519,12 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             }
         }
 
+        var switcherButtonRect = _header.SwitcherButtonRect(this);
+        
         if (!IsLeaf && !isLastChild && _itemsPresenterMotionActor?.IsVisible == true)
         {
-            var switcherMiddleBottom =
-                _switcherButton.TranslatePoint(
-                    new Point(_switcherButton.DesiredSize.Width / 2, _switcherButton.DesiredSize.Height), this) ??
-                default;
-            var blockStartPoint = new Point(switcherMiddleBottom.X, switcherMiddleBottom.Y);
+            var switcherMiddleBottom = new Point(switcherButtonRect.X + switcherButtonRect.Width / 2, switcherButtonRect.Bottom);
+                                   var blockStartPoint = new Point(switcherMiddleBottom.X, switcherMiddleBottom.Y);
             var blockEndPoint   = new Point(blockStartPoint.X, DesiredSize.Height);
             context.DrawLine(new Pen(BorderBrush, penWidth), blockStartPoint, blockEndPoint);
         }
@@ -751,121 +534,38 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         {
             {
                 // 纵向
-                var childStartPoint =
-                    _switcherButton.TranslatePoint(new Point(_switcherButton.DesiredSize.Width / 2, 0), this) ??
-                    default;
-                var childEndPoint =
-                    _switcherButton.TranslatePoint(
-                        new Point(_switcherButton.DesiredSize.Width / 2,
-                            isLastChild ? _switcherButton.DesiredSize.Height : DesiredSize.Height), this) ?? default;
-
+                var childStartPoint = new Point(switcherButtonRect.X + switcherButtonRect.Width / 2, switcherButtonRect.Top);
+                var childEndPoint = new Point(switcherButtonRect.X + switcherButtonRect.Width / 2, isLastChild ? switcherButtonRect.Bottom : switcherButtonRect.Top + DesiredSize.Height);
                 if (isLastChild)
                 {
                     childEndPoint = childEndPoint.WithY(childEndPoint.Y / 2);
                 }
 
-                context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint, childEndPoint);
+                context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint.WithY(0), childEndPoint);
             }
 
             {
                 // 横向
-                var childStartPoint =
-                    _switcherButton.TranslatePoint(
-                        new Point(_switcherButton.DesiredSize.Width / 2, _switcherButton.DesiredSize.Height / 2),
-                        this) ??
-                    default;
-                var childEndPoint =
-                    _switcherButton.TranslatePoint(
-                        new Point(_switcherButton.DesiredSize.Width, _switcherButton.DesiredSize.Height / 2),
-                        this) ?? default;
+                var childStartPoint =  new Point(switcherButtonRect.X + switcherButtonRect.Width / 2 - penWidth / 2, switcherButtonRect.Top +  switcherButtonRect.Height / 2 - penWidth / 2);
+                var childEndPoint = new Point(switcherButtonRect.Right, switcherButtonRect.Top +  switcherButtonRect.Height / 2 - penWidth / 2);
 
                 context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint, childEndPoint);
             }
         }
     }
-    
-    private void HandleFrameEntered(object? sender, PointerEventArgs? args)
-    {
-        if (NodeHoverMode != TreeItemHoverMode.WholeLine)
-        {
-            return;
-        }
-
-        PseudoClasses.Set(TreeViewPseudoClass.TreeNodeHover, true);
-    }
-
-    private void HandleFrameExited(object? sender, PointerEventArgs args)
-    {
-        if (NodeHoverMode != TreeItemHoverMode.WholeLine)
-        {
-            return;
-        }
-
-        PseudoClasses.Set(TreeViewPseudoClass.TreeNodeHover, false);
-    }
-
-    private void HandleHeaderPresenterEntered(object? sender, PointerEventArgs? args)
-    {
-        if (NodeHoverMode == TreeItemHoverMode.WholeLine)
-        {
-            return;
-        }
-
-        PseudoClasses.Set(TreeViewPseudoClass.TreeNodeHover, true);
-    }
-
-    private void HandleHeaderPresenterExited(object? sender, PointerEventArgs args)
-    {
-        if (NodeHoverMode == TreeItemHoverMode.WholeLine)
-        {
-            return;
-        }
-
-        PseudoClasses.Set(TreeViewPseudoClass.TreeNodeHover, false);
-    }
 
     internal Rect GetDragBounds(bool includeChildren = false)
     {
-        var offsetX = 0d;
-        var offsetY = 0d;
-        if (Level != 0)
-        {
-            if (_iconPresenter is not null && _iconPresenter.IsVisible)
-            {
-                var offset = _iconPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-                offsetX = offset.X;
-                offsetY = offset.Y;
-            }
-            else if (_headerPresenter is not null)
-            {
-                var offset = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-                offsetX = offset.X;
-                offsetY = offset.Y;
-            }
-        }
-        else
-        {
-            if (_headerPresenter is not null)
-            {
-                var offset = _headerPresenter.TranslatePoint(new Point(0, 0), this) ?? default;
-                offsetX = offset.X;
-                offsetY = offset.Y;
-            }
-        }
-
-        if (_switcherButton is not null && _switcherButton.IsLeafIconVisible)
-        {
-            offsetX -= _switcherButton.Bounds.Width;
-        }
-
-        return new Rect(new Point(offsetX, offsetY),
+        var dragOffset = _header?.GetDragIndicatorOffset(this) ?? default;
+        var offsetX    = dragOffset.X;
+        return new Rect(new Point(offsetX, 0),
             new Size(Bounds.Width - offsetX,
-                includeChildren ? Bounds.Height : _headerPresenter?.Bounds.Height ?? default));
+                includeChildren ? Bounds.Height : _header?.Bounds.Height ?? default));
     }
 
     internal Thickness FrameMargin()
     {
-        return _frame?.Margin ?? default;
+        return _header?.Margin ?? default;
     }
 
     internal bool IsInDragBounds(Point point)
@@ -890,7 +590,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 
     internal DragPreviewAdorner BuildPreviewAdorner()
     {
-        return new DragPreviewAdorner(_frame!);
+        return new DragPreviewAdorner(_header!);
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -901,14 +601,14 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             NotifyHeaderClick();
         }
     }
-
+    
     internal bool PointInHeaderBounds(PointerReleasedEventArgs e)
     {
-        var bounds = new Rect(new Point(0, 0), _headerPresenter?.DesiredSize ?? default);
-        var point  = e.GetPosition(_headerPresenter);
+        var bounds = new Rect(new Point(0, 0), _header?.DesiredSize ?? default);
+        var point  = e.GetPosition(_header);
         return bounds.Contains(point);
     }
-
+    
     protected virtual void NotifyHeaderClick()
     {
     }

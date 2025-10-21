@@ -115,11 +115,11 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
 
         if (e.InitialPressMouseButton == MouseButton.Left && item != null)
         {
-            if (item.PointInHeaderBounds(e))
-            {
-                Click(item);
-                e.Handled = true;
-            }
+            // if (item.PointInHeaderBounds(e))
+            // {
+            //     Click(item);
+            //     e.Handled = true;
+            // }
         }
     }
 

@@ -5,6 +5,7 @@
                     xmlns:atom="https://atomui.net">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="NodeSwitcherButtonTheme.axaml" />
+        <ResourceInclude Source="TreeViewItemHeaderTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
     <themes:TreeViewTheme x:Key="{x:Type atom:TreeView}" TargetType="atom:TreeView"/>
     <themes:TreeViewItemTheme x:Key="{x:Type atom:TreeViewItem}" TargetType="atom:TreeViewItem"/>
