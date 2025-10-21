@@ -180,6 +180,8 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
 
     static Icon()
     {
+        HeightProperty.OverrideDefaultValue<Icon>(14);
+        WidthProperty.OverrideDefaultValue<Icon>(14);
         AffectsMeasure<Icon>(HeightProperty, WidthProperty, IconInfoProperty);
         AffectsRender<Icon>(IconModeProperty,
             FilledBrushProperty,
@@ -497,6 +499,7 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
 
     protected override Size MeasureOverride(Size availableSize)
     {
+        base.MeasureOverride(availableSize);
         if (_sourceGeometriesData.Count == 0)
         {
             return default;

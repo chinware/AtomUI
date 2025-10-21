@@ -71,7 +71,7 @@
         <Style Selector="^[SearchButtonStyle=Primary]">
             <Style Selector="^ /template/ atom|Button#PART_RightAddOn">
                 <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
-                <Setter Property="IsIconVisible" Value="False" />
+                <Setter Property="IsIconVisible" Value="True" />
                 <Setter Property="ButtonType" Value="Primary" />
             </Style>
         </Style>

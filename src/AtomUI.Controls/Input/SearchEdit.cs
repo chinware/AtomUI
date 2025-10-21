@@ -25,8 +25,8 @@ public class SearchEdit : LineEdit
     public static readonly StyledProperty<string> SearchButtonTextProperty =
         AvaloniaProperty.Register<SearchEdit, string>(nameof(SearchButtonText));
 
-    public static readonly StyledProperty<bool> IsOperatingProperty 
-        = AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsOperating));
+    public static readonly StyledProperty<bool> IsOperatingProperty =
+        AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsOperating));
 
     public SearchEditButtonStyle SearchButtonStyle
     {
@@ -90,7 +90,10 @@ public class SearchEdit : LineEdit
 
     internal void NotifySearchButtonClicked()
     {
-        if (IsOperating) return;
+        if (IsOperating)
+        {
+            return;
+        }
         var eventArgs = new RoutedEventArgs(SearchButtonClickEvent, this);
         RaiseEvent(eventArgs);
     }
