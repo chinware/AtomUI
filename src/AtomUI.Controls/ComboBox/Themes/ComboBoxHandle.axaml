@@ -9,7 +9,7 @@
                 <Border BackgroundSizing="InnerBorderEdge"
                         ClipToBounds="True">
                     <atom:IconButton
-                        Name="OpenIndicatorButton"
+                        Name="{x:Static atom:ComboBoxHandleThemeConstants.OpenIndicatorButtonPart}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         Icon="{atom:IconProvider DownOutlined}"
                         VerticalAlignment="Stretch"
