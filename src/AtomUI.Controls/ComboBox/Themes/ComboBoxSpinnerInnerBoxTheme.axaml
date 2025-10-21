@@ -17,7 +17,7 @@
                     CornerRadius="{TemplateBinding CornerRadius}"
                     Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}">
-                    <DockPanel LastChildFill="True">
+                    <DockPanel LastChildFill="True" HorizontalSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}">
                         <ContentPresenter
                             ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
                             HorizontalAlignment="Right"

@@ -15,8 +15,6 @@ public interface IThemeManagerBuilder
     IList<EventHandler> InitializedHandlers { get; }
     LanguageVariant LanguageVariant { get; }
     string ThemeId { get; }
-    AppBuilder AppBuilder { get; }
-    
     void AddControlToken(Type tokenType);
     void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider);
     void AddControlThemesProvider(IControlThemesProvider controlThemesProvider);

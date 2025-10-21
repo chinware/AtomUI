@@ -7,7 +7,11 @@
                   TargetType="atom:IndicatorScrollViewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel Name="RootLayout">
+                <DockPanel Name="RootLayout" LastChildFill="True">
+                    <atom:IndicatorScrollBar Name="VerticalScrollBar" 
+                                             Orientation="Vertical"
+                                             Opacity="{TemplateBinding ScrollBarOpacity}"
+                                             DockPanel.Dock="Right"/>
                     <ScrollContentPresenter Name="PART_ContentPresenter"
                                             Background="{TemplateBinding Background}"
                                             HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
@@ -23,9 +27,6 @@
                                 IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
                         </ScrollContentPresenter.GestureRecognizers>
                     </ScrollContentPresenter>
-                    <atom:IndicatorScrollBar Name="VerticalScrollBar" 
-                                             Orientation="Vertical"
-                                             Opacity="{TemplateBinding ScrollBarOpacity}"/>
                 </DockPanel>
             </ControlTemplate>
         </Setter>

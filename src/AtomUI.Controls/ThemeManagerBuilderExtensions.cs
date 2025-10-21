@@ -16,21 +16,18 @@ namespace AtomUI.Controls
         public static IThemeManagerBuilder UseOSSControls(this IThemeManagerBuilder themeManagerBuilder)
         {
             // ControlTheme 必须在 UI 线程创建好了才能实例化，不然会炸，切记切记
-            themeManagerBuilder.AppBuilder.AfterSetup(_ =>
+            var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
+            foreach (var controlType in controlTokenTypes)
             {
-                var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
-                foreach (var controlType in controlTokenTypes)
-                {
-                    themeManagerBuilder.AddControlToken(controlType);
-                }
-                themeManagerBuilder.AddControlThemesProvider(new AtomUIOSSControlThemesProvider());
+                themeManagerBuilder.AddControlToken(controlType);
+            }
+            themeManagerBuilder.AddControlThemesProvider(new AtomUIOSSControlThemesProvider());
 
-                var languageProviders = LanguageProviderPool.GetLanguageProviders();
-                foreach (var languageProvider in languageProviders)
-                {
-                    themeManagerBuilder.AddLanguageProviders(languageProvider);
-                }
-            });
+            var languageProviders = LanguageProviderPool.GetLanguageProviders();
+            foreach (var languageProvider in languageProviders)
+            {
+                themeManagerBuilder.AddLanguageProviders(languageProvider);
+            }
 
             themeManagerBuilder.InitializedHandlers.Add(HandleThemeManagerInitialized);
 

@@ -7,21 +7,18 @@ public static class ColorPickerThemeManagerBuilderExtensions
 {
     public static IThemeManagerBuilder UseColorPicker(this IThemeManagerBuilder themeManagerBuilder)
     {
-        themeManagerBuilder.AppBuilder.AfterSetup(_ =>
+        var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
+        foreach (var controlType in controlTokenTypes)
         {
-            var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
-            foreach (var controlType in controlTokenTypes)
-            {
-                themeManagerBuilder.AddControlToken(controlType);
-            }
-            themeManagerBuilder.AddControlThemesProvider(new AtomUIColorPickerThemesProvider());
+            themeManagerBuilder.AddControlToken(controlType);
+        }
+        themeManagerBuilder.AddControlThemesProvider(new AtomUIColorPickerThemesProvider());
 
-            var languageProviders = LanguageProviderPool.GetLanguageProviders();
-            foreach (var languageProvider in languageProviders)
-            {
-                themeManagerBuilder.AddLanguageProviders(languageProvider);
-            }
-        });
+        var languageProviders = LanguageProviderPool.GetLanguageProviders();
+        foreach (var languageProvider in languageProviders)
+        {
+            themeManagerBuilder.AddLanguageProviders(languageProvider);
+        }
         return themeManagerBuilder;
     }
 }

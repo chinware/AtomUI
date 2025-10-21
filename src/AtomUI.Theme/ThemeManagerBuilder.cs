@@ -1,7 +1,6 @@
 using System.Globalization;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
-using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Theme;
@@ -20,13 +19,12 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     public LanguageVariant LanguageVariant { get; private set; }
     public string ThemeId { get; private set; }
     public FontFamily? FontFamily { get; private set; }
-    public AppBuilder AppBuilder { get; }
 
     private HashSet<string> _registeredTokenTypes;
     private HashSet<string> _registeredControlThemesProviders;
     private HashSet<string> _registeredLanguageProviders;
 
-    internal ThemeManagerBuilder(AppBuilder builder)
+    internal ThemeManagerBuilder()
     {
         ControlDesignTokens               = new List<Type>();
         ControlThemes                     = new List<BaseControlTheme>();
@@ -39,7 +37,6 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         _registeredTokenTypes             = new HashSet<string>();
         _registeredLanguageProviders      = new HashSet<string>();
         _registeredControlThemesProviders = new HashSet<string>();
-        AppBuilder                        = builder;
     }
 
     public void AddControlToken(Type tokenType)
