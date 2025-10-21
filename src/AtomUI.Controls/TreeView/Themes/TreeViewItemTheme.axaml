@@ -33,7 +33,8 @@
                                          IsDragOver="{TemplateBinding IsDragOver}"
                                          ToggleType="{TemplateBinding ToggleType}"
                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                         BorderThickness="{TemplateBinding BorderThickness}"/>
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         IsIndicatorEnabled="{TemplateBinding IsIndicatorEnabled}"/>
                 <atom:LayoutAwareMotionActor
                     Name="{x:Static atom:TreeViewItemThemeConstants.ItemsPresenterMotionActorPart}"
                     ClipToBounds="True"

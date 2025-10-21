@@ -3,7 +3,7 @@ using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Converters;
 
-internal class TreeViewItemRadioVisibleConverter : IMultiValueConverter
+internal class TreeViewItemIndicatorEnabledConverter : IMultiValueConverter
 {
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
@@ -11,8 +11,8 @@ internal class TreeViewItemRadioVisibleConverter : IMultiValueConverter
         {
             return false;
         }
-        var itemToggleType = values[0] as ItemToggleType?;
-        var isLeaf = values[1] as bool?;
-        return itemToggleType == ItemToggleType.Radio && isLeaf == true;
+        var isHeaderEnabled = values[0] as bool?;
+        var isIndicatorEnabled = values[1] as bool?;
+        return isHeaderEnabled == true && isIndicatorEnabled == true;
     }
 }

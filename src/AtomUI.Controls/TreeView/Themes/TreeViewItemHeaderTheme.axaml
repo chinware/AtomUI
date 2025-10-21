@@ -31,21 +31,29 @@
                                        VerticalAlignment="Center"
                                        Grid.Column="1"
                                        IsChecked="{TemplateBinding IsChecked, Mode=TwoWay}"
-                                       IsEnabled="{TemplateBinding IsEnabled}"
-                                       IsVisible="False" />
+                                       IsVisible="False" >
+                            <atom:RadioButton.IsEnabled>
+                                <MultiBinding
+                                    Converter="{x:Static atom:TreeViewItemTheme.TreeViewItemIndicatorEnabledConverter}">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsEnabled" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsIndicatorEnabled" />
+                                </MultiBinding>
+                            </atom:RadioButton.IsEnabled>
+                        </atom:CheckBox>
                         <atom:RadioButton Name="ToggleRadio"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
                                           Grid.Column="1"
                                           IsChecked="{TemplateBinding IsChecked}"
-                                          GroupName="{TemplateBinding GroupName}">
-                            <atom:RadioButton.IsVisible>
+                                          GroupName="{TemplateBinding GroupName}"
+                                          IsVisible="False">
+                            <atom:RadioButton.IsEnabled>
                                 <MultiBinding
-                                    Converter="{x:Static atom:TreeViewItemTheme.TreeViewItemRadioVisibleConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ToggleType" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLeaf" />
+                                    Converter="{x:Static atom:TreeViewItemTheme.TreeViewItemIndicatorEnabledConverter}">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsEnabled" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsIndicatorEnabled" />
                                 </MultiBinding>
-                            </atom:RadioButton.IsVisible>
+                            </atom:RadioButton.IsEnabled>
                         </atom:RadioButton>
 
                         <atom:IconPresenter Name="{x:Static atom:TreeViewItemHeaderThemeConstants.IconPresenterPart}"
@@ -123,6 +131,12 @@
 
         <Style Selector="^[ToggleType=CheckBox]">
             <Style Selector="^ /template/ atom|CheckBox#ToggleCheckbox">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[ToggleType=Radio][IsLeaf=True]">
+            <Style Selector="^ /template/ atom|RadioButton#ToggleRadio">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>

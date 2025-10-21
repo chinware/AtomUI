@@ -317,7 +317,7 @@ public partial class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlS
 
     public void CheckedSubTree(TreeViewItem item)
     {
-        if (!item.IsEnabled || item.ToggleType == ItemToggleType.None)
+        if (!item.IsEffectiveCheckable())
         {
             return;
         }
@@ -334,7 +334,7 @@ public partial class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlS
             if (childItem != null)
             {
                 var control = TreeContainerFromItem(childItem);
-                if (control is TreeViewItem treeViewItem)
+                if (control is TreeViewItem treeViewItem && treeViewItem.IsEffectiveCheckable())
                 {
                     CheckedSubTree(treeViewItem);
                 }
@@ -346,7 +346,7 @@ public partial class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlS
 
     public void UnCheckedSubTree(TreeViewItem item)
     {
-        if (!item.IsEnabled || item.ToggleType == ItemToggleType.None)
+        if (!item.IsEffectiveCheckable())
         {
             return;
         }
@@ -363,7 +363,7 @@ public partial class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlS
             if (childItem != null)
             {
                 var control = TreeContainerFromItem(childItem);
-                if (control is TreeViewItem treeViewItem)
+                if (control is TreeViewItem treeViewItem && treeViewItem.IsEffectiveCheckable())
                 {
                     UnCheckedSubTree(treeViewItem);
                 }

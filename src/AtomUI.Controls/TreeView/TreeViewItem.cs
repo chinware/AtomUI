@@ -55,6 +55,9 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     
     public static readonly StyledProperty<string?> GroupNameProperty =
         RadioButton.GroupNameProperty.AddOwner<TreeViewItem>();
+    
+    public static readonly StyledProperty<bool> IsIndicatorEnabledProperty =
+        AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsIndicatorEnabled), true);
 
     public Icon? Icon
     {
@@ -116,6 +119,12 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     {
         get => GetValue(GroupNameProperty);
         set => SetValue(GroupNameProperty, value);
+    }
+    
+    public bool IsIndicatorEnabled
+    {
+        get => GetValue(IsIndicatorEnabledProperty);
+        set => SetValue(IsIndicatorEnabledProperty, value);
     }
     
     IList<ITreeViewItemData> ITreeNode<ITreeViewItemData>.Children => Items.OfType<ITreeViewItemData>().ToList();
@@ -436,6 +445,16 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             SetCurrentValue(IsMotionEnabledProperty, originIsMotionEnabled);
         }
         
+    }
+    
+    internal bool IsEffectiveCheckable()
+    {
+        if (!IsEnabled || !IsIndicatorEnabled || ToggleType == ItemToggleType.None)
+        {
+            return false;
+        }
+
+        return true;
     }
     
     protected override void OnLoaded(RoutedEventArgs e)

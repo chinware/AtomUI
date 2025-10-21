@@ -54,6 +54,9 @@ internal class TreeViewItemHeader : ContentControl
     public static readonly StyledProperty<bool> IsLoadingProperty =
         TreeViewItem.IsLoadingProperty.AddOwner<TreeViewItemHeader>();
     
+    public static readonly StyledProperty<bool> IsIndicatorEnabledProperty =
+        TreeViewItem.IsIndicatorEnabledProperty.AddOwner<TreeViewItemHeader>();
+    
     public static readonly StyledProperty<string?> GroupNameProperty =
         TreeViewItem.GroupNameProperty.AddOwner<TreeViewItemHeader>();
     
@@ -129,6 +132,12 @@ internal class TreeViewItemHeader : ContentControl
     {
         get => GetValue(GroupNameProperty);
         set => SetValue(GroupNameProperty, value);
+    }
+    
+    public bool IsIndicatorEnabled
+    {
+        get => GetValue(IsIndicatorEnabledProperty);
+        set => SetValue(IsIndicatorEnabledProperty, value);
     }
     
     #region 内部属性定义
