@@ -122,8 +122,8 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey ControlItemBgActiveHover = new TokenResourceKey("ControlItemBgActiveHover");
         public static readonly TokenResourceKey ControlItemBgHover = new TokenResourceKey("ControlItemBgHover");
         public static readonly TokenResourceKey ControlOutlineWidth = new TokenResourceKey("ControlOutlineWidth");
-        public static readonly TokenResourceKey ControlPadding = new TokenResourceKey("ControlPadding");
-        public static readonly TokenResourceKey ControlPaddingSM = new TokenResourceKey("ControlPaddingSM");
+        public static readonly TokenResourceKey ControlPaddingHorizontal = new TokenResourceKey("ControlPaddingHorizontal");
+        public static readonly TokenResourceKey ControlPaddingHorizontalSM = new TokenResourceKey("ControlPaddingHorizontalSM");
         public static readonly TokenResourceKey EnableMotion = new TokenResourceKey("EnableMotion");
         public static readonly TokenResourceKey EnableWaveSpirit = new TokenResourceKey("EnableWaveSpirit");
         public static readonly TokenResourceKey FocusVisualBorderThickness = new TokenResourceKey("FocusVisualBorderThickness");
@@ -247,7 +247,6 @@ namespace AtomUI.Theme.Styling
         public static readonly TokenResourceKey UniformlyPaddingXXS = new TokenResourceKey("UniformlyPaddingXXS");
         public static readonly TokenResourceKey WaveAnimationRange = new TokenResourceKey("WaveAnimationRange");
         public static readonly TokenResourceKey WaveStartOpacity = new TokenResourceKey("WaveStartOpacity");
-        public static readonly TokenResourceKey Wireframe = new TokenResourceKey("Wireframe");
         public static readonly TokenResourceKey ZIndexBase = new TokenResourceKey("ZIndexBase");
         public static readonly TokenResourceKey ZIndexPopupBase = new TokenResourceKey("ZIndexPopupBase");
     }

@@ -131,8 +131,8 @@ public partial class DesignToken : AbstractDesignToken
         LinkHoverDecoration = null;
         LinkFocusDecoration = null;
 
-        ControlPadding   = 12;
-        ControlPaddingSM = 8;
+        ControlPaddingHorizontal   = 12;
+        ControlPaddingHorizontalSM = 8;
 
         UniformlyPaddingXXS = SizeXXS;
         UniformlyPaddingXS  = SizeXS;

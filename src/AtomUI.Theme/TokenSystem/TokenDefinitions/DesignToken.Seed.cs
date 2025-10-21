@@ -171,13 +171,6 @@ public partial class DesignToken
     public int MotionBase { get; set; } = 0;
 
     //  ----------   Style   ---------- //
-    /// <summary>
-    /// 线框风格
-    /// 
-    /// 用于将组件的视觉效果变为线框化，如果需要使用 V4 的效果，需要开启配置项
-    /// </summary>
-    [DesignTokenKind(DesignTokenKind.Seed)]
-    public bool Wireframe { get; set; } = false;
 
     /// <summary>
     /// 动画风格

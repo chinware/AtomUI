@@ -124,14 +124,14 @@ internal class LineEditToken : AbstractControlDesignToken
         var lineWidth    = SharedToken.LineWidth;
         Padding = new Thickness(SharedToken.UniformlyPaddingSM - lineWidth,
             Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
-        PaddingSM = new Thickness(SharedToken.ControlPaddingSM - lineWidth,
+        PaddingSM = new Thickness(SharedToken.ControlPaddingHorizontalSM - lineWidth,
             Math.Round((SharedToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
-        PaddingLG = new Thickness(SharedToken.ControlPadding - lineWidth,
+        PaddingLG = new Thickness(SharedToken.ControlPaddingHorizontal - lineWidth,
             Math.Ceiling((SharedToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
             lineWidth);
         AddOnPadding   = new Thickness(SharedToken.UniformlyPaddingSM, 0);
-        AddOnPaddingSM = new Thickness(SharedToken.ControlPaddingSM, 0);
-        AddOnPaddingLG = new Thickness(SharedToken.ControlPadding, 0);
+        AddOnPaddingSM = new Thickness(SharedToken.ControlPaddingHorizontalSM, 0);
+        AddOnPaddingLG = new Thickness(SharedToken.ControlPaddingHorizontal, 0);
 
         AddonBg           = SharedToken.ColorFillAlter;
         ActiveBorderColor = SharedToken.ColorPrimary;

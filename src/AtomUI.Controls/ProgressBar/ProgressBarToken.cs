@@ -66,7 +66,7 @@ internal class ProgressBarToken : AbstractControlDesignToken
         CircleMinimumTextFontSize = SharedToken.FontSizeSM - 2;
         LineInfoIconSize          = SharedToken.IconSize;
         LineInfoIconSizeSM        = SharedToken.IconSizeSM;
-        LineExtraInfoMargin       = SharedToken.ControlPaddingSM;
+        LineExtraInfoMargin       = SharedToken.ControlPaddingHorizontalSM;
         LineProgressPadding       = SharedToken.UniformlyPaddingXXS / 2;
     }
 }

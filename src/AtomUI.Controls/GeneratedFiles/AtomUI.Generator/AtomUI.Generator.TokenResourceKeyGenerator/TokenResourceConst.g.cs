@@ -714,6 +714,34 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey TrackPadding = new TokenResourceKey("Segmented.TrackPadding");
     }
 
+    public static class SelectTokenKey
+    {
+        public static readonly TokenResourceKey ActiveBorderColor = new TokenResourceKey("Select.ActiveBorderColor");
+        public static readonly TokenResourceKey ActiveOutlineColor = new TokenResourceKey("Select.ActiveOutlineColor");
+        public static readonly TokenResourceKey ClearBg = new TokenResourceKey("Select.ClearBg");
+        public static readonly TokenResourceKey FixedItemMargin = new TokenResourceKey("Select.FixedItemMargin");
+        public static readonly TokenResourceKey HoverBorderColor = new TokenResourceKey("Select.HoverBorderColor");
+        public static readonly TokenResourceKey MultipleItemBg = new TokenResourceKey("Select.MultipleItemBg");
+        public static readonly TokenResourceKey MultipleItemBorderColor = new TokenResourceKey("Select.MultipleItemBorderColor");
+        public static readonly TokenResourceKey MultipleItemBorderColorDisabled = new TokenResourceKey("Select.MultipleItemBorderColorDisabled");
+        public static readonly TokenResourceKey MultipleItemColorDisabled = new TokenResourceKey("Select.MultipleItemColorDisabled");
+        public static readonly TokenResourceKey MultipleItemHeight = new TokenResourceKey("Select.MultipleItemHeight");
+        public static readonly TokenResourceKey MultipleItemHeightLG = new TokenResourceKey("Select.MultipleItemHeightLG");
+        public static readonly TokenResourceKey MultipleItemHeightSM = new TokenResourceKey("Select.MultipleItemHeightSM");
+        public static readonly TokenResourceKey MultipleSelectorBgDisabled = new TokenResourceKey("Select.MultipleSelectorBgDisabled");
+        public static readonly TokenResourceKey OptionActiveBg = new TokenResourceKey("Select.OptionActiveBg");
+        public static readonly TokenResourceKey OptionFontSize = new TokenResourceKey("Select.OptionFontSize");
+        public static readonly TokenResourceKey OptionHeight = new TokenResourceKey("Select.OptionHeight");
+        public static readonly TokenResourceKey OptionPadding = new TokenResourceKey("Select.OptionPadding");
+        public static readonly TokenResourceKey OptionSelectedBg = new TokenResourceKey("Select.OptionSelectedBg");
+        public static readonly TokenResourceKey OptionSelectedColor = new TokenResourceKey("Select.OptionSelectedColor");
+        public static readonly TokenResourceKey OptionSelectedFontWeight = new TokenResourceKey("Select.OptionSelectedFontWeight");
+        public static readonly TokenResourceKey SelectAffixPadding = new TokenResourceKey("Select.SelectAffixPadding");
+        public static readonly TokenResourceKey SelectorBg = new TokenResourceKey("Select.SelectorBg");
+        public static readonly TokenResourceKey ShowArrowPaddingInlineEnd = new TokenResourceKey("Select.ShowArrowPaddingInlineEnd");
+        public static readonly TokenResourceKey SingleItemHeightLG = new TokenResourceKey("Select.SingleItemHeightLG");
+    }
+
     public static class SeparatorTokenKey
     {
         public static readonly TokenResourceKey HorizontalMarginBlock = new TokenResourceKey("Separator.HorizontalMarginBlock");

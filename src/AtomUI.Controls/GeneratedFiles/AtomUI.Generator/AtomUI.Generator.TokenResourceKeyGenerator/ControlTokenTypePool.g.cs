@@ -49,6 +49,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.RadioButtonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ScrollBarToken));
             tokenTypes.Add(typeof(AtomUI.Controls.SegmentedToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.SelectToken));
             tokenTypes.Add(typeof(AtomUI.Controls.SeparatorToken));
             tokenTypes.Add(typeof(AtomUI.Controls.SkeletonToken));
             tokenTypes.Add(typeof(AtomUI.Controls.SliderToken));

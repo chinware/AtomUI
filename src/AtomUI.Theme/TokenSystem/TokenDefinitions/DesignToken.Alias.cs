@@ -618,14 +618,14 @@ public partial class DesignToken
     /// 控制元素水平内间距。
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Alias)]
-    public double ControlPadding { get; set; }
+    public double ControlPaddingHorizontal { get; set; }
 
     /// <summary>
     /// 控制中小尺寸水平内间距
     /// 控制元素中小尺寸水平内间距。
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Alias)]
-    public double ControlPaddingSM { get; set; }
+    public double ControlPaddingHorizontalSM { get; set; }
 
     // Media queries breakpoints
     /// <summary>

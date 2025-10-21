@@ -551,6 +551,10 @@ public partial class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlS
     
     private void HandleCheckedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (_syncingCheckedItems)
+        {
+            return;
+        }
         IList<ITreeViewItemData>? added   = null;
         IList<ITreeViewItemData>? removed = null;
 

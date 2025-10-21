@@ -87,14 +87,14 @@ internal class SegmentedToken : AbstractControlDesignToken
         ItemSelectedColor = SharedToken.ColorText;
         var lineWidth = SharedToken.LineWidth;
         SegmentedItemPadding = new Thickness(
-            Math.Max(SharedToken.ControlPadding - lineWidth, 0),
+            Math.Max(SharedToken.ControlPaddingHorizontal - lineWidth, 0),
             0,
-            Math.Max(SharedToken.ControlPadding - lineWidth, 0),
+            Math.Max(SharedToken.ControlPaddingHorizontal - lineWidth, 0),
             0);
         SegmentedItemPaddingSM = new Thickness(
-            Math.Max(SharedToken.ControlPaddingSM - lineWidth, 0),
+            Math.Max(SharedToken.ControlPaddingHorizontalSM - lineWidth, 0),
             0,
-            Math.Max(SharedToken.ControlPaddingSM - lineWidth, 0),
+            Math.Max(SharedToken.ControlPaddingHorizontalSM - lineWidth, 0),
             0);
         SegmentedItemContentMargin = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
 
