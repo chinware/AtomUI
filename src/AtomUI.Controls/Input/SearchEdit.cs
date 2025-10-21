@@ -25,6 +25,9 @@ public class SearchEdit : LineEdit
     public static readonly StyledProperty<string> SearchButtonTextProperty =
         AvaloniaProperty.Register<SearchEdit, string>(nameof(SearchButtonText));
 
+    public static readonly StyledProperty<bool> IsOperatingProperty 
+        = AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsOperating));
+
     public SearchEditButtonStyle SearchButtonStyle
     {
         get => GetValue(SearchButtonStyleProperty);
@@ -37,8 +40,14 @@ public class SearchEdit : LineEdit
         set => SetValue(SearchButtonTextProperty, value);
     }
 
+    public bool IsOperating
+    {
+        get => GetValue(IsOperatingProperty);
+        set => SetValue(IsOperatingProperty, value);
+    }
+
     #endregion
-    
+
     #region 公共事件定义
 
     public static readonly RoutedEvent<RoutedEventArgs> SearchButtonClickEvent =
@@ -51,7 +60,7 @@ public class SearchEdit : LineEdit
     }
 
     #endregion
-    
+
     private IDisposable? _borderThicknessDisposable;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -81,6 +90,7 @@ public class SearchEdit : LineEdit
 
     internal void NotifySearchButtonClicked()
     {
+        if (IsOperating) return;
         var eventArgs = new RoutedEventArgs(SearchButtonClickEvent, this);
         RaiseEvent(eventArgs);
     }
