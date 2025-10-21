@@ -1,5 +1,8 @@
-﻿using AtomUI.Controls.Themes;
+﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Data;
@@ -265,6 +268,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     private readonly BorderRenderHelper _borderRenderHelper;
     private TreeViewItemHeader? _header;
     private IDisposable? _borderThicknessDisposable;
+    private readonly Dictionary<TreeViewItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     static TreeViewItem()
     {
@@ -281,7 +285,29 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 
     public TreeViewItem()
     {
-        _borderRenderHelper = new BorderRenderHelper();
+        _borderRenderHelper               =  new BorderRenderHelper();
+        LogicalChildren.CollectionChanged += HandleItemsCollectionChanged;
+    }
+    
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    if (item is TreeViewItem treeViewItem)
+                    {
+                        if (_itemsBindingDisposables.TryGetValue(treeViewItem, out var disposable))
+                        {
+                            disposable.Dispose();
+                        }
+                        _itemsBindingDisposables.Remove(treeViewItem);
+                    }
+                }
+            }
+        }
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -456,44 +482,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 
         return true;
     }
-    
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        if (OwnerTreeView is not null)
-        {
-            if (IsChecked != false)
-            {
-                if (IsEnabled)
-                {
-                    SetCurrentValue(IsCheckedProperty, true);
-                }
-                else
-                {
-                    OwnerTreeView.CheckedSubTree(this);
-                }
-            }
-            else
-            {
-                var allChecked = false;
-                var hasAnyChecked = false;
-             
-                if (Items.Count > 0)
-                {
-                    allChecked = Items.All(item => OwnerTreeView.CheckedItems.Contains(item));
-                    hasAnyChecked = Items.Any(item => OwnerTreeView.CheckedItems.Contains(item));
-                }
-                if (allChecked)
-                {
-                    SetCurrentValue(IsCheckedProperty, true);
-                }
-                else if (hasAnyChecked)
-                {
-                    SetCurrentValue(IsCheckedProperty, null);
-                }
-            }
-        }
-    }
 
     public override void Render(DrawingContext context)
     {
@@ -543,7 +531,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         if (!IsLeaf && !isLastChild && _itemsPresenterMotionActor?.IsVisible == true)
         {
             var switcherMiddleBottom = new Point(switcherButtonRect.X + switcherButtonRect.Width / 2, switcherButtonRect.Bottom);
-                                   var blockStartPoint = new Point(switcherMiddleBottom.X, switcherMiddleBottom.Y);
+            var blockStartPoint = new Point(switcherMiddleBottom.X, switcherMiddleBottom.Y);
             var blockEndPoint   = new Point(blockStartPoint.X, DesiredSize.Height);
             context.DrawLine(new Pen(BorderBrush, penWidth), blockStartPoint, blockEndPoint);
         }
@@ -580,11 +568,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         return new Rect(new Point(offsetX, 0),
             new Size(Bounds.Width - offsetX,
                 includeChildren ? Bounds.Height : _header?.Bounds.Height ?? default));
-    }
-
-    internal Thickness FrameMargin()
-    {
-        return _header?.Margin ?? default;
     }
 
     internal bool IsInDragBounds(Point point)
@@ -633,4 +616,111 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     }
     
     internal void RaiseClick() => RaiseEvent(new RoutedEventArgs(ClickEvent));
+    
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        return new TreeViewItem();
+    }
+    
+    protected override bool NeedsContainerOverride(
+        object? item,
+        int index,
+        out object? recycleKey)
+    {
+        return NeedsContainer<TreeViewItem>(item, out recycleKey);
+    }
+
+    protected override void ContainerForItemPreparedOverride(
+        Control container,
+        object? item,
+        int index)
+    {
+        base.ContainerForItemPreparedOverride(container, item, index);
+        if (container is TreeViewItem treeViewItem)
+        {
+            treeViewItem.OwnerTreeView = OwnerTreeView;
+            var disposables = new CompositeDisposable(8);
+            
+            if (item != null && item is not Visual && item is ITreeViewItemData treeViewItemData)
+            {
+                ApplyNodeData(treeViewItem, treeViewItemData);
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, treeViewItem, TreeViewItem.HeaderTemplateProperty));
+            }
+            
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, treeViewItem, TreeViewItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, NodeHoverModeProperty, treeViewItem, TreeViewItem.NodeHoverModeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsShowLineProperty, treeViewItem, TreeViewItem.IsShowLineProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsShowIconProperty, treeViewItem, TreeViewItem.IsShowIconProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsShowLeafIconProperty, treeViewItem,
+                TreeViewItem.IsShowLeafIconProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsSwitcherRotationProperty, treeViewItem, TreeViewItem.IsSwitcherRotationProperty));
+            disposables.Add(BindUtils.RelayBind(this, ToggleTypeProperty, treeViewItem, TreeViewItem.ToggleTypeProperty));
+            
+            PrepareTreeViewItem(treeViewItem, item, index, disposables);
+            
+            if (_itemsBindingDisposables.TryGetValue(treeViewItem, out var oldDisposables))
+            {
+                oldDisposables.Dispose();
+                _itemsBindingDisposables.Remove(treeViewItem);
+            }
+            _itemsBindingDisposables.Add(treeViewItem, disposables);
+        }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type TreeViewItem.");
+        }
+    }
+    
+    protected virtual void PrepareTreeViewItem(TreeViewItem treeViewItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
+    }
+
+    internal static void ApplyNodeData(TreeViewItem treeViewItem, ITreeViewItemData treeViewItemData)
+    {
+        if (treeViewItemData is not Visual)
+        {
+            if (!treeViewItem.IsSet(TreeViewItem.HeaderProperty))
+            {
+                treeViewItem.SetCurrentValue(TreeViewItem.HeaderProperty, treeViewItem);
+            }
+                    
+            if (!treeViewItem.IsSet(TreeViewItem.IconProperty))
+            {
+                treeViewItem.SetCurrentValue(TreeViewItem.IconProperty, treeViewItemData.Icon);
+            }
+                    
+            if (treeViewItem.ItemKey == null)
+            {
+                treeViewItem.ItemKey = treeViewItemData.ItemKey;
+            }
+                    
+            if (!treeViewItem.IsSet(TreeViewItem.IsCheckedProperty))
+            {
+                treeViewItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, treeViewItemData.IsChecked);
+            }
+                    
+            if (!treeViewItem.IsSet(TreeViewItem.IsSelectedProperty))
+            {
+                treeViewItem.SetCurrentValue(TreeViewItem.IsSelectedProperty, treeViewItemData.IsSelected);
+            }
+                    
+            if (!treeViewItem.IsSet(TreeViewItem.IsEnabledProperty))
+            {
+                treeViewItem.SetCurrentValue(TreeViewItem.IsEnabledProperty, treeViewItemData.IsEnabled);
+            }
+                    
+            if (!treeViewItem.IsSet(TreeViewItem.IsExpandedProperty))
+            {
+                treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, treeViewItemData.IsExpanded);
+            }
+            if (!treeViewItem.IsSet(TreeViewItem.IsIndicatorEnabledProperty))
+            {
+                treeViewItem.SetCurrentValue(TreeViewItem.IsIndicatorEnabledProperty, treeViewItemData.IsIndicatorEnabled);
+            }
+        }
+    }
 }

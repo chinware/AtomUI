@@ -290,11 +290,7 @@ public partial class TreeView
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == DefaultCheckedPathsProperty)
-        {
-            ConfigureDefaultCheckedPaths();
-        }
-        else if (change.Property == DefaultSelectedPathsProperty)
+        if (change.Property == DefaultSelectedPathsProperty)
         {
             ConfigureDefaultSelectedPaths();
         }
