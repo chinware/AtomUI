@@ -119,37 +119,40 @@ public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotio
         if (container is BreadcrumbItem breadcrumbItem)
         {
             var disposables = new CompositeDisposable(1);
-            
-            if (item is IBreadcrumbItemData breadcrumbItemData)
+
+            if (item != null && item is not Visual)
             {
-                if (!breadcrumbItem.IsSet(BreadcrumbItem.IconProperty))
-                {
-                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.IconProperty, breadcrumbItemData.Icon);
-                }
-                
                 if (!breadcrumbItem.IsSet(BreadcrumbItem.ContentProperty))
                 {
-                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.ContentProperty, breadcrumbItemData);
+                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.ContentProperty, item);
                 }
                 
-                if (!breadcrumbItem.IsSet(BreadcrumbItem.SeparatorProperty) && breadcrumbItemData.Separator != null)
+                if (item is IBreadcrumbItemData breadcrumbItemData)
                 {
-                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.SeparatorProperty, breadcrumbItemData.Separator);
-                }
+                    if (!breadcrumbItem.IsSet(BreadcrumbItem.IconProperty))
+                    {
+                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.IconProperty, breadcrumbItemData.Icon);
+                    }
                 
-                if (!breadcrumbItem.IsSet(BreadcrumbItem.SeparatorTemplateProperty) && breadcrumbItemData.SeparatorTemplate != null)
-                {
-                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.SeparatorTemplateProperty, breadcrumbItemData.SeparatorTemplate);
-                }
+                    if (!breadcrumbItem.IsSet(BreadcrumbItem.SeparatorProperty) && breadcrumbItemData.Separator != null)
+                    {
+                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.SeparatorProperty, breadcrumbItemData.Separator);
+                    }
                 
-                if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateContextProperty) && breadcrumbItemData.NavigateContext != null)
-                {
-                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateContextProperty, breadcrumbItemData.NavigateContext);
-                }
+                    if (!breadcrumbItem.IsSet(BreadcrumbItem.SeparatorTemplateProperty) && breadcrumbItemData.SeparatorTemplate != null)
+                    {
+                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.SeparatorTemplateProperty, breadcrumbItemData.SeparatorTemplate);
+                    }
+                
+                    if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateContextProperty) && breadcrumbItemData.NavigateContext != null)
+                    {
+                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateContextProperty, breadcrumbItemData.NavigateContext);
+                    }
                            
-                if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateUriProperty) && breadcrumbItemData.NavigateUri != null)
-                {
-                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateUriProperty, breadcrumbItemData.NavigateUri);
+                    if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateUriProperty) && breadcrumbItemData.NavigateUri != null)
+                    {
+                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateUriProperty, breadcrumbItemData.NavigateUri);
+                    }
                 }
             }
             

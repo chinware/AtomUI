@@ -6,19 +6,19 @@
     <ControlTheme x:Key="{x:Type atom:ListBox}" TargetType="atom:ListBox">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:ListBoxThemeConstants.FramePart}"
+                <Border Name="Frame"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <ScrollViewer Name="{x:Static atom:ListBoxThemeConstants.ScrollViewerPart}"
+                    <ScrollViewer Name="ScrollViewer"
                                   AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                                   HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                                   VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                                   IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
                                   IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
                                   IsScrollInertiaEnabled="{TemplateBinding ScrollViewer.IsScrollInertiaEnabled}">
-                        <ItemsPresenter Name="{x:Static atom:ListBoxThemeConstants.ItemsPresenterPart}"
+                        <ItemsPresenter Name="ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </ScrollViewer>
                 </Border>
@@ -31,7 +31,7 @@
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
-        <Style Selector="^ /template/ Border#PART_Frame">
+        <Style Selector="^ /template/ Border#Frame">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ContentPadding}}" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
         </Style>

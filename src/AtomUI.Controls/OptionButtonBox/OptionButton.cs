@@ -43,33 +43,16 @@ public class OptionButtonPointerEventArgs : EventArgs
     }
 }
 
-public class OptionButton : AvaloniaRadioButton,
-                            ISizeTypeAware
+public class OptionButton : AvaloniaRadioButton
 {
-    #region 公共属性定义
-
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<OptionButton>();
-
-    public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
-        AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle));
-
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public OptionButtonStyle ButtonStyle
-    {
-        get => GetValue(ButtonStyleProperty);
-        set => SetValue(ButtonStyleProperty, value);
-    }
-
-    #endregion
-
     #region 内部属性定义
 
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<OptionButton>();
+
+    internal static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
+        AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle));
+    
     internal static readonly DirectProperty<OptionButton, OptionButtonPositionTrait> GroupPositionTraitProperty =
         AvaloniaProperty.RegisterDirect<OptionButton, OptionButtonPositionTrait>(
             nameof(GroupPositionTrait),
@@ -77,12 +60,24 @@ public class OptionButton : AvaloniaRadioButton,
             (o, v) => o.GroupPositionTrait = v,
             OptionButtonPositionTrait.OnlyOne);
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButton>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OptionButton>();
 
-    internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty
-        = WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButton>();
+    internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
+        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButton>();
 
+    internal SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    internal OptionButtonStyle ButtonStyle
+    {
+        get => GetValue(ButtonStyleProperty);
+        set => SetValue(ButtonStyleProperty, value);
+    }
+    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);

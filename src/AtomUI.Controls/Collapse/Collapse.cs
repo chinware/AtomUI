@@ -230,6 +230,22 @@ public class Collapse : SelectingItemsControl,
                 {
                     collapseItem.SetCurrentValue(CollapseItem.ContentProperty, item);
                 }
+
+                if (item is ICollapseItemData itemData)
+                {
+                    if (!collapseItem.IsSet(CollapseItem.HeaderProperty))
+                    {
+                        collapseItem.SetCurrentValue(CollapseItem.HeaderProperty, itemData.Header);
+                    }
+                    if (!collapseItem.IsSet(CollapseItem.IsSelectedProperty))
+                    {
+                        collapseItem.SetCurrentValue(CollapseItem.IsSelectedProperty, itemData.IsSelected);
+                    }
+                    if (!collapseItem.IsSet(CollapseItem.IsShowExpandIconProperty))
+                    {
+                        collapseItem.SetCurrentValue(CollapseItem.IsShowExpandIconProperty, itemData.IsShowExpandIcon);
+                    }
+                }
             }
 
             if (ItemTemplate != null)
@@ -244,7 +260,6 @@ public class Collapse : SelectingItemsControl,
             disposables.Add(BindUtils.RelayBind(this, TriggerTypeProperty, collapseItem, CollapseItem.TriggerTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, ExpandIconPositionProperty, collapseItem,
                 CollapseItem.ExpandIconPositionProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsEnabledProperty, collapseItem, IsEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, collapseItem, CollapseItem.IsMotionEnabledProperty));
 
             PrepareCollapseItem(collapseItem, item, index, disposables);

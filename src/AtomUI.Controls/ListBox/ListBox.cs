@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Data;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -25,8 +26,17 @@ public class ListBox : AvaloniaListBox,
     public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
+    public static readonly StyledProperty<bool> IsBorderlessProperty =
+        AvaloniaProperty.Register<ListBox, bool>(nameof(IsBorderless), false);
+    
+    public static readonly StyledProperty<bool> IsShowSelectedIndicatorProperty =
+        AvaloniaProperty.Register<ListBox, bool>(nameof(IsShowSelectedIndicator), false);
+    
+    public static readonly StyledProperty<Icon?> SelectedIndicatorProperty =
+        AvaloniaProperty.Register<ListBox, Icon?>(nameof(SelectedIndicator));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
 
     public SizeType SizeType
     {
@@ -40,6 +50,24 @@ public class ListBox : AvaloniaListBox,
         set => SetValue(DisabledItemHoverEffectProperty, value);
     }
     
+    public bool IsShowSelectedIndicator
+    {
+        get => GetValue(IsShowSelectedIndicatorProperty);
+        set => SetValue(IsShowSelectedIndicatorProperty, value);
+    }
+    
+    public bool IsBorderless
+    {
+        get => GetValue(IsBorderlessProperty);
+        set => SetValue(IsBorderlessProperty, value);
+    }
+    
+    public Icon? SelectedIndicator
+    {
+        get => GetValue(SelectedIndicatorProperty);
+        set => SetValue(SelectedIndicatorProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -49,7 +77,22 @@ public class ListBox : AvaloniaListBox,
     #endregion
     
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<ListBox, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<ListBox, Thickness>(nameof(EffectiveBorderThickness),
+            o => o.EffectiveBorderThickness,
+            (o, v) => o.EffectiveBorderThickness = v);
+    
+    private Thickness _effectiveBorderThickness;
 
+    internal Thickness EffectiveBorderThickness
+    {
+        get => _effectiveBorderThickness;
+        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
+    }
+
+    protected override Type StyleKeyOverride { get; } = typeof(ListBox);
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ListBoxToken.ID;
@@ -90,21 +133,39 @@ public class ListBox : AvaloniaListBox,
     {
         return new ListBoxItem();
     }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        return base.ArrangeOverride(finalSize.Deflate(new Thickness(BorderThickness.Left,
-            BorderThickness.Top,
-            BorderThickness.Right,
-            BorderThickness.Bottom)));
-    }
-
+    
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is ListBoxItem listBoxItem)
         {
-            var disposables = new CompositeDisposable(3);
+            var disposables = new CompositeDisposable(4);
+            
+            if (item != null && item is not Visual)
+            {
+                if (!listBoxItem.IsSet(ListBoxItem.ContentProperty))
+                {
+                    listBoxItem.SetCurrentValue(ListBoxItem.ContentProperty, item);
+                }
+
+                if (item is IListBoxItemData listBoxItemData)
+                {
+                    if (!listBoxItem.IsSet(ListBoxItem.IsSelectedProperty))
+                    {
+                        listBoxItem.SetCurrentValue(ListBoxItem.IsSelectedProperty, listBoxItemData.IsSelected);
+                    }
+                    if (!listBoxItem.IsSet(ListBoxItem.IsEnabledProperty))
+                    {
+                        listBoxItem.SetCurrentValue(IsEnabledProperty, listBoxItemData.IsEnabled);
+                    }
+                }
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, listBoxItem, ListBoxItem.ContentTemplateProperty));
+            }
+            
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, listBoxItem, ListBoxItem.IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, listBoxItem, ListBoxItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listBoxItem,
@@ -115,6 +176,10 @@ public class ListBox : AvaloniaListBox,
                 _itemsBindingDisposables.Remove(listBoxItem);
             }
             _itemsBindingDisposables.Add(listBoxItem, disposables);
+        }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type ListBoxItem.");
         }
     }
 
@@ -131,5 +196,27 @@ public class ListBox : AvaloniaListBox,
     {
         base.OnDetachedFromVisualTree(e);
         _borderThicknessDisposable?.Dispose();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == BorderThicknessProperty ||
+            change.Property == IsBorderlessProperty)
+        {
+            ConfigureEffectiveBorderThickness();
+        }
+    }
+
+    private void ConfigureEffectiveBorderThickness()
+    {
+        if (IsBorderless)
+        {
+            SetCurrentValue(EffectiveBorderThicknessProperty, new Thickness(0));
+        }
+        else
+        {
+            SetCurrentValue(EffectiveBorderThicknessProperty, BorderThickness);
+        }
     }
 }

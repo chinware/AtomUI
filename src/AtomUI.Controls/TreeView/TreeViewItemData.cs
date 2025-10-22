@@ -2,16 +2,16 @@ using AtomUI.IconPkg;
 
 namespace AtomUI.Controls;
 
-public class TreeViewItemData : ITreeViewItemData
+public record TreeViewItemData : ITreeViewItemData
 {
-    public TreeNodeKey? ItemKey { get; set; }
-    public object? Header { get; set; }
-    public Icon? Icon { get; set; }
-    public bool IsEnabled { get; set; } = true;
-    public bool? IsChecked { get; set; } = false;
-    public bool IsSelected { get; set; }
-    public bool IsExpanded { get; set; }
-    public bool IsIndicatorEnabled { get; set; } = true;
-    public string? GroupName { get; set; }
-    public IList<ITreeViewItemData> Children { get; set; } =  new List<ITreeViewItemData>();
+    public TreeNodeKey? ItemKey { get; init; }
+    public object? Header { get; init; }
+    public Icon? Icon { get; init; }
+    public bool IsEnabled { get; init; } = true;
+    public bool? IsChecked { get; init; } = false;
+    public bool IsSelected { get; init; }
+    public bool IsExpanded { get; init; }
+    public bool IsIndicatorEnabled { get; init; } = true;
+    public string? GroupName { get; init; }
+    public IList<ITreeViewItemData> Children { get; init; } =  new List<ITreeViewItemData>();
 }
