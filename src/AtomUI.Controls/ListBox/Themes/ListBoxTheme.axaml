@@ -11,7 +11,7 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <ScrollViewer Name="ScrollViewer"
+                    <ScrollViewer Name="{x:Static atom:ListBoxThemeConstants.ScrollViewerPart}"
                                   AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                                   HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                                   VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"

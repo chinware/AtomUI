@@ -1,26 +1,53 @@
-﻿using System.Collections.Specialized;
+﻿// Modified based on https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Controls/ListBox.cs
+ 
+using System.Collections;
+using System.Collections.Specialized;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Selection;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 
 namespace AtomUI.Controls;
 
-using AvaloniaListBox = Avalonia.Controls.ListBox;
 
-public class ListBox : AvaloniaListBox,
+public class ListBox : SelectingItemsControl,
                        IMotionAwareControl,
                        IControlSharedTokenResourcesHost
 {
+    private static readonly FuncTemplate<Panel?> DefaultPanel =
+        new(() => new VirtualizingStackPanel());
+    
     #region 公共属性定义
+    
+    public static readonly DirectProperty<ListBox, IScrollable?> ScrollProperty =
+        AvaloniaProperty.RegisterDirect<ListBox, IScrollable?>(nameof(Scroll), o => o.Scroll);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
+        Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
+    public new static readonly DirectProperty<SelectingItemsControl, IList?> SelectedItemsProperty =
+        SelectingItemsControl.SelectedItemsProperty;
+    
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
+        Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
+    public new static readonly DirectProperty<SelectingItemsControl, ISelectionModel> SelectionProperty =
+        SelectingItemsControl.SelectionProperty;
+    
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
+        Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
+    public new static readonly StyledProperty<SelectionMode> SelectionModeProperty =
+        SelectingItemsControl.SelectionModeProperty;
+    
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBox>();
 
@@ -35,7 +62,34 @@ public class ListBox : AvaloniaListBox,
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
-
+    
+    private IScrollable? _scroll;
+    public IScrollable? Scroll
+    {
+        get => _scroll;
+        private set => SetAndRaise(ScrollProperty, ref _scroll, value);
+    }
+    
+    public new IList? SelectedItems
+    {
+        get => base.SelectedItems;
+        set => base.SelectedItems = value;
+    }
+    
+    public new ISelectionModel Selection
+    {
+        get => base.Selection;
+        set => base.Selection = value;
+    }
+    
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1012",
+        Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
+    public new SelectionMode SelectionMode
+    {
+        get => base.SelectionMode;
+        set => base.SelectionMode = value;
+    }
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -94,11 +148,21 @@ public class ListBox : AvaloniaListBox,
     private readonly Dictionary<ListBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
     private IDisposable? _borderThicknessDisposable;
 
+    static ListBox()
+    {
+        ItemsPanelProperty.OverrideDefaultValue<ListBox>(DefaultPanel);
+        KeyboardNavigation.TabNavigationProperty.OverrideDefaultValue(
+            typeof(ListBox),
+            KeyboardNavigationMode.Once);
+    }
+    
     public ListBox()
     {
         this.RegisterResources();
         LogicalChildren.CollectionChanged += HandleCollectionChanged;
     }
+    
+    public void SelectAll() => Selection.SelectAll();
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -192,22 +256,6 @@ public class ListBox : AvaloniaListBox,
         _borderThicknessDisposable?.Dispose();
     }
 
-    // protected override void OnPointerPressed(PointerPressedEventArgs e)
-    // {
-    //     base.OnPointerPressed(e);
-    //     Console.WriteLine("xxxxxxx");
-    //     if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
-    //     {
-    //         KeyboardHelper.GetMetaKeyState(this, e.KeyModifiers, out bool ctrl, out bool shift);
-    //         e.Handled = UpdateSelectionFromEventSource(e.Source, true, shift, ctrl);
-    //     }
-    // }
-
-    internal bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
-    {
-        return true;
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -228,5 +276,55 @@ public class ListBox : AvaloniaListBox,
         {
             SetCurrentValue(EffectiveBorderThicknessProperty, BorderThickness);
         }
+    }
+    
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
+        var ctrl    = hotkeys is not null && e.KeyModifiers.HasAllFlags(hotkeys.CommandModifiers);
+
+        if (!ctrl &&
+            e.Key.ToNavigationDirection() is { } direction && 
+            direction.IsDirectional())
+        {
+            e.Handled |= MoveSelection(
+                direction,
+                WrapSelection,
+                e.KeyModifiers.HasAllFlags(KeyModifiers.Shift));
+        }
+        else if (SelectionMode.HasAllFlags(SelectionMode.Multiple) &&
+                 hotkeys is not null && hotkeys.SelectAll.Any(x => x.Matches(e)))
+        {
+            Selection.SelectAll();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Space || e.Key == Key.Enter)
+        {
+            UpdateSelectionFromEventSource(
+                e.Source,
+                true,
+                e.KeyModifiers.HasFlag(KeyModifiers.Shift),
+                ctrl);
+        }
+
+        base.OnKeyDown(e);
+    }
+    
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        Scroll = e.NameScope.Find<IScrollable>(ListBoxThemeConstants.ScrollViewerPart);
+    }
+
+    protected internal bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
+    {
+        var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
+        var toggle  = hotkeys is not null && e.KeyModifiers.HasAllFlags(hotkeys.CommandModifiers);
+        return UpdateSelectionFromEventSource(
+            source,
+            true,
+            e.KeyModifiers.HasAllFlags(KeyModifiers.Shift),
+            toggle,
+            e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
     }
 }
