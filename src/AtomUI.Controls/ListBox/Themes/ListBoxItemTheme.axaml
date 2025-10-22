@@ -8,16 +8,24 @@
     <ControlTheme x:Key="{x:Type atom:ListBoxItem}" TargetType="atom:ListBoxItem">
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="ContentPresenter"
-                                  Foreground="{TemplateBinding Foreground}"
-                                  Background="{TemplateBinding Background}"
-                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                  Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  MinHeight="{TemplateBinding MinHeight}"
-                                  Padding="{TemplateBinding Padding}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        MinHeight="{TemplateBinding MinHeight}"
+                        Padding="{TemplateBinding Padding}">
+                    <Panel>
+                        <ContentPresenter Name="ContentPresenter"
+                                          Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <atom:IconPresenter
+                            Name="SelectedIndicator"
+                            Icon ="{TemplateBinding SelectedIndicator}"
+                            IsVisible="{TemplateBinding IsSelectedIndicatorVisible}"
+                            HorizontalAlignment="Right"/>
+                    </Panel>
+                </Border>
             </ControlTemplate>
         </Setter>
         
@@ -33,6 +41,12 @@
         <Style Selector="^:selected">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedColor}}" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedBgColor}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconPresenter#SelectedIndicator">
+            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
         </Style>
         
         <Style Selector="^[SizeType=Large]">

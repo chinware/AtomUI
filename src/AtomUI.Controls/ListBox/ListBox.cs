@@ -1,7 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -9,6 +9,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Input;
 
 namespace AtomUI.Controls;
 
@@ -31,9 +32,6 @@ public class ListBox : AvaloniaListBox,
     
     public static readonly StyledProperty<bool> IsShowSelectedIndicatorProperty =
         AvaloniaProperty.Register<ListBox, bool>(nameof(IsShowSelectedIndicator), false);
-    
-    public static readonly StyledProperty<Icon?> SelectedIndicatorProperty =
-        AvaloniaProperty.Register<ListBox, Icon?>(nameof(SelectedIndicator));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
@@ -60,12 +58,6 @@ public class ListBox : AvaloniaListBox,
     {
         get => GetValue(IsBorderlessProperty);
         set => SetValue(IsBorderlessProperty, value);
-    }
-    
-    public Icon? SelectedIndicator
-    {
-        get => GetValue(SelectedIndicatorProperty);
-        set => SetValue(SelectedIndicatorProperty, value);
     }
     
     public bool IsMotionEnabled
@@ -168,8 +160,10 @@ public class ListBox : AvaloniaListBox,
             
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, listBoxItem, ListBoxItem.IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, listBoxItem, ListBoxItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsShowSelectedIndicatorProperty, listBoxItem, ListBoxItem.IsShowSelectedIndicatorProperty));
             disposables.Add(BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listBoxItem,
                 ListBoxItem.DisabledItemHoverEffectProperty));
+            
             if (_itemsBindingDisposables.TryGetValue(listBoxItem, out var oldDisposables))
             {
                 oldDisposables.Dispose();
@@ -196,6 +190,22 @@ public class ListBox : AvaloniaListBox,
     {
         base.OnDetachedFromVisualTree(e);
         _borderThicknessDisposable?.Dispose();
+    }
+
+    // protected override void OnPointerPressed(PointerPressedEventArgs e)
+    // {
+    //     base.OnPointerPressed(e);
+    //     Console.WriteLine("xxxxxxx");
+    //     if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
+    //     {
+    //         KeyboardHelper.GetMetaKeyState(this, e.KeyModifiers, out bool ctrl, out bool shift);
+    //         e.Handled = UpdateSelectionFromEventSource(e.Source, true, shift, ctrl);
+    //     }
+    // }
+
+    internal bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
+    {
+        return true;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
