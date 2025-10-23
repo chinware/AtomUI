@@ -51,7 +51,6 @@ public class Select : SelectingItemsControl
     
     private Popup? _popup;
     
-    
     static Select()
     {
         ItemsPanelProperty.OverrideDefaultValue<ComboBox>(DefaultPanel);
