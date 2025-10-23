@@ -32,7 +32,7 @@ public class Empty : TemplatedControl,
         AvaloniaProperty.Register<Empty, string?>(nameof(ImageSource));
 
     public static readonly StyledProperty<string?> DescriptionProperty =
-        AvaloniaProperty.Register<Empty, string?>(nameof(Description), "No data");
+        AvaloniaProperty.Register<Empty, string?>(nameof(Description));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Empty>();
