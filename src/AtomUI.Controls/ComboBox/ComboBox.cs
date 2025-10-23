@@ -17,7 +17,8 @@ using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
 public class ComboBox : AvaloniaComboBox,
                         IMotionAwareControl,
-                        IControlSharedTokenResourcesHost
+                        IControlSharedTokenResourcesHost,
+                        ISizeTypeAware
 {
     #region 公共属性定义
 

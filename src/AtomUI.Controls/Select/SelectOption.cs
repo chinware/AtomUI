@@ -8,7 +8,7 @@ public interface ISelectOption
 public record SelectOption : ISelectOption
 {
     public string Header { get; set; } = string.Empty;
-    public bool IsEnabled { get; set; }
+    public bool IsEnabled { get; set; } = true;
     public object? Value { get; set; }
 }
 

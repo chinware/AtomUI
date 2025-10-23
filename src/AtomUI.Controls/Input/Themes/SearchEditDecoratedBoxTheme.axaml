@@ -12,9 +12,8 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid
-                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.MainLayoutPart}"
+                    Name="RootLayout"
                     ColumnDefinitions="Auto, *, Auto">
-
                     <ContentPresenter
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
                         Grid.Column="0"

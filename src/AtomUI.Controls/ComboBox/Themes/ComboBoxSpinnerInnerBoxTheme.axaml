@@ -11,7 +11,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border
-                    Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
+                    Name="InnerBoxDecorator"
                     Padding="{TemplateBinding EffectiveInnerBoxPadding}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{TemplateBinding CornerRadius}"
@@ -24,7 +24,7 @@
                             Content="{TemplateBinding SpinnerContent}"
                             DockPanel.Dock="Right"/>
                         <Grid
-                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.MainLayoutPart}"
+                            Name="ContentLayout"
                             ColumnDefinitions="Auto, *, Auto">
                             <StackPanel
                                 Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart}"

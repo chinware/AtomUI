@@ -228,22 +228,7 @@ public class ListBox : SelectingItemsControl,
             
             if (item != null && item is not Visual)
             {
-                if (!listBoxItem.IsSet(ListBoxItem.ContentProperty))
-                {
-                    listBoxItem.SetCurrentValue(ListBoxItem.ContentProperty, item);
-                }
-
-                if (item is IListBoxItemData listBoxItemData)
-                {
-                    if (!listBoxItem.IsSet(ListBoxItem.IsSelectedProperty))
-                    {
-                        listBoxItem.SetCurrentValue(ListBoxItem.IsSelectedProperty, listBoxItemData.IsSelected);
-                    }
-                    if (!listBoxItem.IsSet(ListBoxItem.IsEnabledProperty))
-                    {
-                        listBoxItem.SetCurrentValue(IsEnabledProperty, listBoxItemData.IsEnabled);
-                    }
-                }
+                ApplyListItemData(listBoxItem, item);
             }
             
             if (ItemTemplate != null)
@@ -267,6 +252,26 @@ public class ListBox : SelectingItemsControl,
         else
         {
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type ListBoxItem.");
+        }
+    }
+
+    protected virtual void ApplyListItemData(ListBoxItem listBoxItem, object item)
+    {
+        if (!listBoxItem.IsSet(ListBoxItem.ContentProperty))
+        {
+            listBoxItem.SetCurrentValue(ListBoxItem.ContentProperty, item);
+        }
+
+        if (item is IListBoxItemData listBoxItemData)
+        {
+            if (!listBoxItem.IsSet(ListBoxItem.IsSelectedProperty))
+            {
+                listBoxItem.SetCurrentValue(ListBoxItem.IsSelectedProperty, listBoxItemData.IsSelected);
+            }
+            if (!listBoxItem.IsSet(ListBoxItem.IsEnabledProperty))
+            {
+                listBoxItem.SetCurrentValue(IsEnabledProperty, listBoxItemData.IsEnabled);
+            }
         }
     }
 

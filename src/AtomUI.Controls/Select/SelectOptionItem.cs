@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Controls;
 
-public class SelectOptionItem : ListBoxItem
+internal class SelectOptionItem : ListBoxItem
 {
     public SelectOptionItem()
     {

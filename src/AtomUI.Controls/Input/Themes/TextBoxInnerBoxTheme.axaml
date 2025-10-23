@@ -12,14 +12,14 @@
             <ControlTemplate>
                 <Panel>
                     <Border
-                        Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
+                        Name="InnerBoxDecorator"
                         Padding="{TemplateBinding EffectiveInnerBoxPadding}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         Background="{TemplateBinding Background}">
                         <Grid
-                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.MainLayoutPart}"
+                            Name="ContentLayout"
                             ColumnDefinitions="Auto, *, Auto">
                             <StackPanel
                                 Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart}"
@@ -80,14 +80,6 @@
             <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
             <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         </Style>
-        
-        <Style Selector="^[EmbedMode=False]:disabled">
-            <Style Selector="^ /template/ atom|ToggleIconButton#PART_RevealButton">
-                <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
-                </Style>
-            </Style>
-        </Style>
+
     </ControlTheme>
 </ResourceDictionary>

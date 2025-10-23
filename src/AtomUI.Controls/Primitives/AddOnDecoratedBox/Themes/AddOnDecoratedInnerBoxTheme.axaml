@@ -8,7 +8,7 @@
         <ControlTemplate TargetType="atom:AddOnDecoratedInnerBox">
             <Panel>
                 <Border
-                    Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.InnerBoxDecoratorPart}"
+                    Name="InnerBoxDecorator"
                     Padding="{TemplateBinding EffectiveInnerBoxPadding}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{TemplateBinding CornerRadius}"
@@ -16,7 +16,7 @@
                     Background="{TemplateBinding Background}"
                     >
                     <Grid
-                        Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.MainLayoutPart}"
+                        Name="ContentLayout"
                         ColumnDefinitions="Auto, *, Auto">
                         <StackPanel
                             Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart}"
@@ -65,7 +65,7 @@
     <Style Selector="^:is(atom|AddOnDecoratedInnerBox)">
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="ContentPresenterMargin" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}" />
-        <Style Selector="^ /template/ Border#PART_InnerBoxDecorator">
+        <Style Selector="^ /template/ Border#InnerBoxDecorator">
             <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
         </Style>
 

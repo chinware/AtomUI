@@ -383,25 +383,9 @@ namespace AtomUI.Controls.DesignTokens
 
     public static class LineEditTokenKey
     {
-        public static readonly TokenResourceKey ActiveBg = new TokenResourceKey("LineEdit.ActiveBg");
-        public static readonly TokenResourceKey ActiveBorderColor = new TokenResourceKey("LineEdit.ActiveBorderColor");
-        public static readonly TokenResourceKey ActiveShadow = new TokenResourceKey("LineEdit.ActiveShadow");
-        public static readonly TokenResourceKey AddonBg = new TokenResourceKey("LineEdit.AddonBg");
-        public static readonly TokenResourceKey AddOnPadding = new TokenResourceKey("LineEdit.AddOnPadding");
-        public static readonly TokenResourceKey AddOnPaddingLG = new TokenResourceKey("LineEdit.AddOnPaddingLG");
-        public static readonly TokenResourceKey AddOnPaddingSM = new TokenResourceKey("LineEdit.AddOnPaddingSM");
-        public static readonly TokenResourceKey ErrorActiveShadow = new TokenResourceKey("LineEdit.ErrorActiveShadow");
-        public static readonly TokenResourceKey HoverBg = new TokenResourceKey("LineEdit.HoverBg");
-        public static readonly TokenResourceKey HoverBorderColor = new TokenResourceKey("LineEdit.HoverBorderColor");
         public static readonly TokenResourceKey InputFontSize = new TokenResourceKey("LineEdit.InputFontSize");
         public static readonly TokenResourceKey InputFontSizeLG = new TokenResourceKey("LineEdit.InputFontSizeLG");
         public static readonly TokenResourceKey InputFontSizeSM = new TokenResourceKey("LineEdit.InputFontSizeSM");
-        public static readonly TokenResourceKey LeftInnerAddOnMargin = new TokenResourceKey("LineEdit.LeftInnerAddOnMargin");
-        public static readonly TokenResourceKey Padding = new TokenResourceKey("LineEdit.Padding");
-        public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("LineEdit.PaddingLG");
-        public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("LineEdit.PaddingSM");
-        public static readonly TokenResourceKey RightInnerAddOnMargin = new TokenResourceKey("LineEdit.RightInnerAddOnMargin");
-        public static readonly TokenResourceKey WarningActiveShadow = new TokenResourceKey("LineEdit.WarningActiveShadow");
     }
 
     public static class ListBoxTokenKey

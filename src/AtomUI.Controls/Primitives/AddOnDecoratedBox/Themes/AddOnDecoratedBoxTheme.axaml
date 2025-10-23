@@ -7,7 +7,7 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:AddOnDecoratedBox">
             <Grid
-                Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.MainLayoutPart}"
+                Name="RootLayout"
                 ColumnDefinitions="Auto, *, Auto">
 
                 <ContentPresenter

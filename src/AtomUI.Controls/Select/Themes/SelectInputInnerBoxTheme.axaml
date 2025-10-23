@@ -2,23 +2,21 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:themes="using:AtomUI.Controls.Themes"
     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:ButtonSpinnerInnerBox}" TargetType="atom:ButtonSpinnerInnerBox">
+ <ControlTheme x:Key="{x:Type atom:TextBoxInnerBox}" TargetType="atom:TextBoxInnerBox">
         <ControlTheme.BasedOn>
-            <themes:AddOnDecoratedInnerBoxTheme TargetType="atom:ButtonSpinnerInnerBox" />
+            <atom:AddOnDecoratedInnerBoxTheme TargetType="atom:TextBoxInnerBox" />
         </ControlTheme.BasedOn>
-
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
                     <Border
                         Name="InnerBoxDecorator"
                         Padding="{TemplateBinding EffectiveInnerBoxPadding}"
-                        BorderThickness="{TemplateBinding SpinnerBorderThickness}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}">
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
                         <Grid
                             Name="ContentLayout"
                             ColumnDefinitions="Auto, *, Auto">
@@ -30,7 +28,6 @@
                                     Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnPart}"
                                     VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center"
-                                    HorizontalContentAlignment="Center"
                                     HorizontalAlignment="Left"
                                     Focusable="False"
                                     Content="{TemplateBinding LeftAddOnContent}"
@@ -52,11 +49,17 @@
                                     Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart}"
                                     Icon="{atom:IconProvider CloseCircleFilled}"
                                     IsVisible="{TemplateBinding IsClearButtonVisible}" />
+                                <!-- 新增显示密码按钮 -->
+                                <atom:ToggleIconButton
+                                    Name="{x:Static atom:TextBoxInnerBoxThemeConstants.RevealButtonPart}"
+                                    CheckedIcon="{atom:IconProvider EyeOutlined}"
+                                    UnCheckedIcon="{atom:IconProvider EyeInvisibleOutlined}"
+                                    IsChecked="{TemplateBinding IsRevealButtonChecked, Mode=TwoWay}"
+                                    IsVisible="{TemplateBinding IsRevealButtonVisible}" />
                                 <ContentPresenter
                                     Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnPart}"
                                     VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center"
-                                    HorizontalContentAlignment="Center"
                                     HorizontalAlignment="Right"
                                     Focusable="False"
                                     Content="{TemplateBinding RightAddOnContent}"
@@ -64,29 +67,18 @@
                             </StackPanel>
                         </Grid>
                     </Border>
-                    <ContentPresenter
-                        Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandlePart}"
-                        ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
-                        Content="{TemplateBinding SpinnerContent}"
-                        Opacity="{TemplateBinding HandleOpacity}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>
-        
-        <Style Selector="^:is(atom|ButtonSpinnerInnerBox)">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="SpinnerHandleWidth" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}"/>
-            <Style Selector="^[ButtonSpinnerLocation=Left]">
-                <Style Selector="^ /template/ ContentPresenter#PART_SpinnerHandle">
-                    <Setter Property="HorizontalAlignment" Value="Left"/>
-                </Style>
-            </Style>
-            <Style Selector="^[ButtonSpinnerLocation=Right]">
-                <Style Selector="^ /template/ ContentPresenter#PART_SpinnerHandle">
-                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                </Style>
-            </Style>
+
+        <Style Selector="^ /template/ atom|ToggleIconButton#PART_RevealButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>
