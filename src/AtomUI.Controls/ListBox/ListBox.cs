@@ -158,25 +158,12 @@ public class ListBox : SelectingItemsControl,
             o => o.EffectiveBorderThickness,
             (o, v) => o.EffectiveBorderThickness = v);
     
-    internal static readonly DirectProperty<ListBox, bool> EffectiveIsShowEmptyIndicatorProperty =
-        AvaloniaProperty.RegisterDirect<ListBox, bool>(nameof(EffectiveIsShowEmptyIndicator),
-            o => o.EffectiveIsShowEmptyIndicator,
-            (o, v) => o.EffectiveIsShowEmptyIndicator = v);
-    
     private Thickness _effectiveBorderThickness;
 
     internal Thickness EffectiveBorderThickness
     {
         get => _effectiveBorderThickness;
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
-    }
-    
-    private bool _effectiveIsShowEmptyIndicator;
-
-    internal bool EffectiveIsShowEmptyIndicator
-    {
-        get => _effectiveIsShowEmptyIndicator;
-        set => SetAndRaise(EffectiveIsShowEmptyIndicatorProperty, ref _effectiveIsShowEmptyIndicator, value);
     }
 
     protected override Type StyleKeyOverride { get; } = typeof(ListBox);
@@ -202,7 +189,6 @@ public class ListBox : SelectingItemsControl,
     {
         this.RegisterResources();
         LogicalChildren.CollectionChanged += HandleChildrenChanged;
-        Items.CollectionChanged           += HandleCollectionChanged;
     }
     
     public void SelectAll() => Selection.SelectAll();
@@ -226,11 +212,6 @@ public class ListBox : SelectingItemsControl,
                 }
             }
         }
-    }
-    
-    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        ConfigureEmptyIndicatorVisible();
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -312,10 +293,6 @@ public class ListBox : SelectingItemsControl,
         {
             ConfigureEffectiveBorderThickness();
         }
-        else if (change.Property == IsShowEmptyIndicatorProperty)
-        {
-            ConfigureEmptyIndicatorVisible();
-        }
     }
 
     private void ConfigureEffectiveBorderThickness()
@@ -374,7 +351,6 @@ public class ListBox : SelectingItemsControl,
                 PresetImage = PresetEmptyImage.Simple
             }, BindingPriority.Template);
         }
-        ConfigureEmptyIndicatorVisible();
     }
 
     protected internal bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
@@ -388,9 +364,5 @@ public class ListBox : SelectingItemsControl,
             toggle,
             e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
     }
-
-    private void ConfigureEmptyIndicatorVisible()
-    {
-        SetCurrentValue(EffectiveIsShowEmptyIndicatorProperty, IsShowEmptyIndicator && Items.Count == 0);
-    }
+    
 }

@@ -26,7 +26,7 @@
                             Name="EmptyIndicator"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
-                            IsVisible="{TemplateBinding EffectiveIsShowEmptyIndicator}"
+                            IsVisible="False"
                             Content="{TemplateBinding EmptyIndicator}"
                             ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}"/>
                     </Panel>
@@ -60,6 +60,12 @@
         <Style Selector="^ /template/ ContentPresenter#EmptyIndicator">
             <Setter Property="Padding"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXL}}" />
+        </Style>
+        
+        <Style Selector="^[IsShowEmptyIndicator=True]:empty">
+            <Style Selector="^ /template/ ContentPresenter#EmptyIndicator">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
         </Style>
         
     </ControlTheme>
