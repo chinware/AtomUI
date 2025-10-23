@@ -4,9 +4,9 @@ using Avalonia;
 namespace AtomUI.Controls;
 
 [ControlDesignToken]
-public class EmptyIndicatorToken : AbstractControlDesignToken
+public class EmptyToken : AbstractControlDesignToken
 {
-    public const string ID = "EmptyIndicator";
+    public const string ID = "Empty";
 
     /// <summary>
     /// 空图片的高度
@@ -19,7 +19,7 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
     public Thickness DescriptionMargin { get; set; }
     public Thickness DescriptionMarginSM { get; set; }
 
-    public EmptyIndicatorToken()
+    public EmptyToken()
         : base(ID)
     {
     }
@@ -29,7 +29,7 @@ public class EmptyIndicatorToken : AbstractControlDesignToken
         base.CalculateFromAlias();
         var controlHeightLG = SharedToken.ControlHeightLG;
         EmptyImgHeight      = controlHeightLG * 2.5;
-        EmptyImgHeightMD    = controlHeightLG;
+        EmptyImgHeightMD    = controlHeightLG * 1.85;
         EmptyImgHeightSM    = controlHeightLG * 0.875;
         DescriptionMargin   = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
         DescriptionMarginSM = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);

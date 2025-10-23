@@ -27,7 +27,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.DatePickerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.DialogToken));
             tokenTypes.Add(typeof(AtomUI.Controls.DrawerToken));
-            tokenTypes.Add(typeof(AtomUI.Controls.EmptyIndicatorToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.EmptyToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ExpanderToken));
             tokenTypes.Add(typeof(AtomUI.Controls.FlyoutPresenterToken));
             tokenTypes.Add(typeof(AtomUI.Controls.GroupBoxToken));

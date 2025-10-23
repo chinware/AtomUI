@@ -3,12 +3,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:EmptyIndicator}" TargetType="atom:EmptyIndicator">
+    <ControlTheme x:Key="{x:Type atom:Empty}" TargetType="atom:Empty">
         <Setter Property="Template">
             <ControlTemplate>
                 <StackPanel Orientation="Vertical">
-                    <Svg Name="{x:Static atom:EmptyIndicatorThemeConstants.SvgImagePart}"/>
-                    <atom:TextBlock Name="{x:Static atom:EmptyIndicatorThemeConstants.DescriptionPart}"
+                    <Svg Name="{x:Static atom:EmptyThemeConstants.SvgImagePart}"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Height="30"/>
+                    <atom:TextBlock Name="{x:Static atom:EmptyThemeConstants.DescriptionPart}"
                                     HorizontalAlignment="Center"
                                     TextWrapping="Wrap"
                                     Text="{TemplateBinding Description}"/>
@@ -18,19 +21,19 @@
         
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ Svg#PART_SvgImage">
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:EmptyIndicatorTokenKey.EmptyImgHeight}}"/>
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:EmptyTokenKey.EmptyImgHeight}}"/>
             </Style>
         </Style>
         
         <Style Selector="^[SizeType=Middle]">
             <Style Selector="^ /template/ Svg#PART_SvgImage">
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:EmptyIndicatorTokenKey.EmptyImgHeightMD}}"/>
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:EmptyTokenKey.EmptyImgHeightMD}}"/>
             </Style>
         </Style>
         
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ Svg#PART_SvgImage">
-                <Setter Property="Height" Value="{DynamicResource {x:Static atom:EmptyIndicatorTokenKey.EmptyImgHeightSM}}"/>
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:EmptyTokenKey.EmptyImgHeightSM}}"/>
             </Style>
         </Style>
         
@@ -42,19 +45,19 @@
         
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|TextBlock#PART_Description">
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyIndicatorTokenKey.DescriptionMargin}}"/>
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyTokenKey.DescriptionMargin}}"/>
             </Style>
         </Style>
         
         <Style Selector="^[SizeType=Middle]">
             <Style Selector="^ /template/ atom|TextBlock#PART_Description">
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyIndicatorTokenKey.DescriptionMarginSM}}"/>
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyTokenKey.DescriptionMarginSM}}"/>
             </Style>
         </Style>
         
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ atom|TextBlock#PART_Description">
-                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyIndicatorTokenKey.DescriptionMarginSM}}"/>
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyTokenKey.DescriptionMarginSM}}"/>
             </Style>
         </Style>
         

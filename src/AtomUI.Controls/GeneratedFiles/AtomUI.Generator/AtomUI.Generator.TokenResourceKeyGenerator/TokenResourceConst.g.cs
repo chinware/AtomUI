@@ -332,13 +332,13 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey SmallSize = new TokenResourceKey("Drawer.SmallSize");
     }
 
-    public static class EmptyIndicatorTokenKey
+    public static class EmptyTokenKey
     {
-        public static readonly TokenResourceKey DescriptionMargin = new TokenResourceKey("EmptyIndicator.DescriptionMargin");
-        public static readonly TokenResourceKey DescriptionMarginSM = new TokenResourceKey("EmptyIndicator.DescriptionMarginSM");
-        public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("EmptyIndicator.EmptyImgHeight");
-        public static readonly TokenResourceKey EmptyImgHeightMD = new TokenResourceKey("EmptyIndicator.EmptyImgHeightMD");
-        public static readonly TokenResourceKey EmptyImgHeightSM = new TokenResourceKey("EmptyIndicator.EmptyImgHeightSM");
+        public static readonly TokenResourceKey DescriptionMargin = new TokenResourceKey("Empty.DescriptionMargin");
+        public static readonly TokenResourceKey DescriptionMarginSM = new TokenResourceKey("Empty.DescriptionMarginSM");
+        public static readonly TokenResourceKey EmptyImgHeight = new TokenResourceKey("Empty.EmptyImgHeight");
+        public static readonly TokenResourceKey EmptyImgHeightMD = new TokenResourceKey("Empty.EmptyImgHeightMD");
+        public static readonly TokenResourceKey EmptyImgHeightSM = new TokenResourceKey("Empty.EmptyImgHeightSM");
     }
 
     public static class ExpanderTokenKey

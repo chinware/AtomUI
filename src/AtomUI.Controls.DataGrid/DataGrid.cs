@@ -209,6 +209,9 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<object?> EmptyIndicatorProperty =
         AvaloniaProperty.Register<DataGrid, object?>(nameof(EmptyIndicator));
     
+    public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
+        AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
+    
     public static readonly StyledProperty<DataGridGridPaginationVisibility> PaginationVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, DataGridGridPaginationVisibility>(nameof(PaginationVisibility), DataGridGridPaginationVisibility.Bottom);
     
@@ -223,9 +226,6 @@ public partial class DataGrid : TemplatedControl,
     
     public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
         AbstractPagination.IsHideOnSinglePageProperty.AddOwner<DataGrid>();
-
-    public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
-        AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
@@ -1605,7 +1605,7 @@ public partial class DataGrid : TemplatedControl,
         }
 
         ConfigureHeaderCornerRadius();
-        SetValue(EmptyIndicatorProperty, new EmptyIndicator()
+        SetValue(EmptyIndicatorProperty, new Empty()
         {
             SizeType    = SizeType.Middle,
             PresetImage = PresetEmptyImage.Simple

@@ -17,28 +17,28 @@ public enum PresetEmptyImage
     Default
 }
 
-public class EmptyIndicator : TemplatedControl,
-                              IControlSharedTokenResourcesHost
+public class Empty : TemplatedControl,
+                     IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<PresetEmptyImage?> PresetEmptyImageProperty =
-        AvaloniaProperty.Register<EmptyIndicator, PresetEmptyImage?>(nameof(PresetImage));
+        AvaloniaProperty.Register<Empty, PresetEmptyImage?>(nameof(PresetImage));
 
     public static readonly StyledProperty<string?> ImagePathProperty =
-        AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(ImagePath));
+        AvaloniaProperty.Register<Empty, string?>(nameof(ImagePath));
 
     public static readonly StyledProperty<string?> ImageSourceProperty =
-        AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(ImageSource));
+        AvaloniaProperty.Register<Empty, string?>(nameof(ImageSource));
 
     public static readonly StyledProperty<string?> DescriptionProperty =
-        AvaloniaProperty.Register<EmptyIndicator, string?>(nameof(Description), "No data");
+        AvaloniaProperty.Register<Empty, string?>(nameof(Description), "No data");
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<EmptyIndicator>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Empty>();
 
     public static readonly StyledProperty<bool> IsShowDescriptionProperty =
-        AvaloniaProperty.Register<EmptyIndicator, bool>(nameof(IsShowDescription), true);
+        AvaloniaProperty.Register<Empty, bool>(nameof(IsShowDescription), true);
 
     public PresetEmptyImage? PresetImage
     {
@@ -125,16 +125,16 @@ public class EmptyIndicator : TemplatedControl,
         set => SetValue(BgColorProperty, value);
     }
 
-    string IControlSharedTokenResourcesHost.TokenId => EmptyIndicatorToken.ID;
+    string IControlSharedTokenResourcesHost.TokenId => EmptyToken.ID;
     Control IControlSharedTokenResourcesHost.HostControl => this;
 
     #endregion
     
     private Avalonia.Svg.Svg? _svg;
 
-    static EmptyIndicator()
+    static Empty()
     {
-        AffectsMeasure<EmptyIndicator>(PresetEmptyImageProperty,
+        AffectsMeasure<Empty>(PresetEmptyImageProperty,
             ImagePathProperty,
             ImageSourceProperty,
             DescriptionProperty,
@@ -146,7 +146,7 @@ public class EmptyIndicator : TemplatedControl,
             BgColorProperty);
     }
 
-    public EmptyIndicator()
+    public Empty()
     {
         this.RegisterResources();
     }
@@ -232,9 +232,7 @@ public class EmptyIndicator : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyIndicatorThemeConstants.SvgImagePart);
-        HorizontalAlignment = HorizontalAlignment.Center;
-        VerticalAlignment   = VerticalAlignment.Center;
+        _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyThemeConstants.SvgImagePart);
         CheckImageSource();
         SetupImage();
     }

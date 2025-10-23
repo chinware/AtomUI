@@ -17,6 +17,7 @@ using Avalonia.Controls.Selection;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -32,6 +33,15 @@ public class ListBox : SelectingItemsControl,
     
     public static readonly DirectProperty<ListBox, IScrollable?> ScrollProperty =
         AvaloniaProperty.RegisterDirect<ListBox, IScrollable?>(nameof(Scroll), o => o.Scroll);
+    
+    public static readonly StyledProperty<object?> EmptyIndicatorProperty =
+        AvaloniaProperty.Register<ListBox, object?>(nameof(EmptyIndicator));
+    
+    public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
+        AvaloniaProperty.Register<ListBox, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
+    
+    public static readonly StyledProperty<bool> IsShowEmptyIndicatorProperty =
+        AvaloniaProperty.Register<ListBox, bool>(nameof(IsShowEmptyIndicator), false);
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
         Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
@@ -62,6 +72,25 @@ public class ListBox : SelectingItemsControl,
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
+    
+    [DependsOn(nameof(EmptyIndicatorTemplate))]
+    public object? EmptyIndicator
+    {
+        get => GetValue(EmptyIndicatorProperty);
+        set => SetValue(EmptyIndicatorProperty, value);
+    }
+
+    public IDataTemplate? EmptyIndicatorTemplate
+    {
+        get => GetValue(EmptyIndicatorTemplateProperty);
+        set => SetValue(EmptyIndicatorTemplateProperty, value);
+    }
+    
+    public bool IsShowEmptyIndicator
+    {
+        get => GetValue(IsShowEmptyIndicatorProperty);
+        set => SetValue(IsShowEmptyIndicatorProperty, value);
+    }
     
     private IScrollable? _scroll;
     public IScrollable? Scroll
@@ -129,12 +158,25 @@ public class ListBox : SelectingItemsControl,
             o => o.EffectiveBorderThickness,
             (o, v) => o.EffectiveBorderThickness = v);
     
+    internal static readonly DirectProperty<ListBox, bool> EffectiveIsShowEmptyIndicatorProperty =
+        AvaloniaProperty.RegisterDirect<ListBox, bool>(nameof(EffectiveIsShowEmptyIndicator),
+            o => o.EffectiveIsShowEmptyIndicator,
+            (o, v) => o.EffectiveIsShowEmptyIndicator = v);
+    
     private Thickness _effectiveBorderThickness;
 
     internal Thickness EffectiveBorderThickness
     {
         get => _effectiveBorderThickness;
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
+    }
+    
+    private bool _effectiveIsShowEmptyIndicator;
+
+    internal bool EffectiveIsShowEmptyIndicator
+    {
+        get => _effectiveIsShowEmptyIndicator;
+        set => SetAndRaise(EffectiveIsShowEmptyIndicatorProperty, ref _effectiveIsShowEmptyIndicator, value);
     }
 
     protected override Type StyleKeyOverride { get; } = typeof(ListBox);
@@ -159,12 +201,13 @@ public class ListBox : SelectingItemsControl,
     public ListBox()
     {
         this.RegisterResources();
-        LogicalChildren.CollectionChanged += HandleCollectionChanged;
+        LogicalChildren.CollectionChanged += HandleChildrenChanged;
+        Items.CollectionChanged           += HandleCollectionChanged;
     }
     
     public void SelectAll() => Selection.SelectAll();
     
-    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.OldItems != null)
         {
@@ -183,6 +226,11 @@ public class ListBox : SelectingItemsControl,
                 }
             }
         }
+    }
+    
+    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        ConfigureEmptyIndicatorVisible();
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -264,6 +312,10 @@ public class ListBox : SelectingItemsControl,
         {
             ConfigureEffectiveBorderThickness();
         }
+        else if (change.Property == IsShowEmptyIndicatorProperty)
+        {
+            ConfigureEmptyIndicatorVisible();
+        }
     }
 
     private void ConfigureEffectiveBorderThickness()
@@ -314,6 +366,15 @@ public class ListBox : SelectingItemsControl,
     {
         base.OnApplyTemplate(e);
         Scroll = e.NameScope.Find<IScrollable>(ListBoxThemeConstants.ScrollViewerPart);
+        if (!IsSet(EmptyIndicatorProperty))
+        {
+            SetValue(EmptyIndicatorProperty, new Empty()
+            {
+                SizeType    = SizeType.Small,
+                PresetImage = PresetEmptyImage.Simple
+            }, BindingPriority.Template);
+        }
+        ConfigureEmptyIndicatorVisible();
     }
 
     protected internal bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
@@ -326,5 +387,10 @@ public class ListBox : SelectingItemsControl,
             e.KeyModifiers.HasAllFlags(KeyModifiers.Shift),
             toggle,
             e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
+    }
+
+    private void ConfigureEmptyIndicatorVisible()
+    {
+        SetCurrentValue(EffectiveIsShowEmptyIndicatorProperty, IsShowEmptyIndicator && Items.Count == 0);
     }
 }

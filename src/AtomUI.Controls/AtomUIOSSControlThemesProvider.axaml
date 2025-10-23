@@ -22,7 +22,7 @@
         <ResourceInclude Source="Dialog/Themes/DialogThemes.axaml" />
         <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" />
         <ResourceInclude Source="Embedding/Themes/EmbeddableControlRootTheme.axaml" />
-        <ResourceInclude Source="EmptyIndicator/Themes/EmptyIndicatorTheme.axaml" />
+        <ResourceInclude Source="Empty/Themes/EmptyTheme.axaml" />
         <ResourceInclude Source="Expander/Themes/ExpanderTheme.axaml" />
         <ResourceInclude Source="Flyouts/Themes/FlyoutThemes.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
