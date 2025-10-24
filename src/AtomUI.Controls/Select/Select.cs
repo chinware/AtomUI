@@ -1,12 +1,17 @@
+using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -42,6 +47,9 @@ public class Select : TemplatedControl,
     
     public static readonly StyledProperty<bool> IsFilterOptionProperty =
         AvaloniaProperty.Register<Select, bool>(nameof(IsFilterOption));
+    
+    public static readonly StyledProperty<bool> IsSearchEnabledProperty =
+        AvaloniaProperty.Register<Select, bool>(nameof(IsSearchEnabled));
     
     public static readonly StyledProperty<int> DisplayPageSizeProperty = 
         AvaloniaProperty.Register<Select, int>(nameof (DisplayPageSize), 10);
@@ -100,10 +108,11 @@ public class Select : TemplatedControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Select>();
     
-    protected static readonly DirectProperty<Select, IList<SelectOption>?> SelectedOptionsProperty =
+    public static readonly DirectProperty<Select, IList<SelectOption>?> SelectedOptionsProperty =
         AvaloniaProperty.RegisterDirect<Select, IList<SelectOption>?>(
             nameof(SelectedOptions),
-            o => o.SelectedOptions);
+            o => o.SelectedOptions,
+            (o, v) => o.SelectedOptions = v);
     
     public static readonly StyledProperty<double> OptionFontSizeProperty =
         AvaloniaProperty.Register<Select, double>(nameof(OptionFontSize));
@@ -165,6 +174,12 @@ public class Select : TemplatedControl,
     {
         get => GetValue(IsFilterOptionProperty);
         set => SetValue(IsFilterOptionProperty, value);
+    }
+    
+    public bool IsSearchEnabled
+    {
+        get => GetValue(IsSearchEnabledProperty);
+        set => SetValue(IsSearchEnabledProperty, value);
     }
     
     public int DisplayPageSize
@@ -368,6 +383,7 @@ public class Select : TemplatedControl,
         new(() => new VirtualizingStackPanel());
     
     private Popup? _popup;
+    private readonly CompositeDisposable _subscriptionsOnOpen = new ();
     
     static Select()
     {
@@ -379,6 +395,68 @@ public class Select : TemplatedControl,
         this.RegisterResources();
     }
     
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        // UpdateSelectionBoxItem(SelectedItem);
+    }
+    
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        if (e.Handled)
+        {
+            return;
+        }
+
+        if ((e.Key == Key.F4 && e.KeyModifiers.HasAllFlags(KeyModifiers.Alt) == false) ||
+            ((e.Key == Key.Down || e.Key == Key.Up) && e.KeyModifiers.HasAllFlags(KeyModifiers.Alt)))
+        {
+            SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+            e.Handled = true;
+        }
+        else if (IsDropDownOpen && e.Key == Key.Escape)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
+        }
+        else if (!IsDropDownOpen && (e.Key == Key.Enter || e.Key == Key.Space))
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+            e.Handled = true;
+        }
+        else if (IsDropDownOpen && (e.Key == Key.Enter || e.Key == Key.Space))
+        {
+            // SelectFocusedItem();
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
+        }
+        // // Ignore key buttons, if they are used for XY focus.
+        // else if (!IsDropDownOpen
+        //          && !XYFocusHelpers.IsAllowedXYNavigationMode(this, e.KeyDeviceType))
+        // {
+        //     if (e.Key == Key.Down)
+        //     {
+        //         e.Handled = SelectNext();
+        //     }
+        //     else if (e.Key == Key.Up)
+        //     {
+        //         e.Handled = SelectPrevious();
+        //     }
+        // }
+        // This part of code is needed just to acquire initial focus, subsequent focus navigation will be done by ItemsControl.
+        // else if (IsDropDownOpen && SelectedIndex < 0 && ItemCount > 0 &&
+        //          (e.Key == Key.Up || e.Key == Key.Down) && IsFocused == true)
+        // {
+        //     var firstChild = Presenter?.Panel?.Children.FirstOrDefault(c => CanFocus(c));
+        //     if (firstChild != null)
+        //     {
+        //         e.Handled = firstChild.Focus(NavigationMethod.Directional);
+        //     }
+        // }
+    }
+    
     internal void ItemFocused(SelectOptionItem selectOptionItem)
     {
         if (IsDropDownOpen && selectOptionItem.IsFocused && selectOptionItem.IsArrangeValid)
@@ -387,7 +465,253 @@ public class Select : TemplatedControl,
         }
     }
     
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        // if(!e.Handled && e.Source is Visual source)
+        // {
+        //     if (_popup?.IsInsidePopup(source) == true)
+        //     {
+        //         e.Handled = true;
+        //         return;
+        //     }
+        // }
+
+        if (IsDropDownOpen)
+        {
+            // When a drop-down is open with OverlayDismissEventPassThrough enabled and the control
+            // is pressed, close the drop-down
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
+        }
+        else
+        {
+            PseudoClasses.Set(StdPseudoClass.Pressed, true);
+        }
+    }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (!e.Handled && e.Source is Visual source)
+        {
+            // if (_popup?.IsInsidePopup(source) == true)
+            // {
+            //     if (UpdateSelectionFromEventSource(e.Source))
+            //     {
+            //         _popup?.Close();
+            //         e.Handled = true;
+            //     }
+            // }
+            // else 
+            if (PseudoClasses.Contains(StdPseudoClass.Pressed))
+            {
+                SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+                e.Handled = true;
+            }
+        }
+
+        PseudoClasses.Set(StdPseudoClass.Pressed, false);
+        base.OnPointerReleased(e);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        if (_popup != null)
+        {
+            _popup.Opened -= PopupOpened;
+            _popup.Closed -= PopupClosed;
+        }
+
+        _popup        =  e.NameScope.Get<Popup>(SelectThemeConstants.PopupPart);
+        _popup.Opened += PopupOpened;
+        _popup.Closed += PopupClosed;
+        ConfigureMaxDropdownHeight();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.Property == SelectedOptionsProperty)
+        {
+            UpdateSelectionBoxItem(change.NewValue);
+            TryFocusSelectedOptions();
+        }
+        else if (change.Property == IsDropDownOpenProperty)
+        {
+            PseudoClasses.Set(SelectPseudoClass.DropdownOpen, change.GetNewValue<bool>());
+        }
+        else if (change.Property == DisplayPageSizeProperty ||
+                 change.Property == ItemHeightProperty)
+        {
+            ConfigureMaxDropdownHeight();
+        }
+
+        base.OnPropertyChanged(change);
+    }
+    
+    private void PopupClosed(object? sender, EventArgs e)
+    {
+        _subscriptionsOnOpen.Clear();
+        DropDownClosed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void PopupOpened(object? sender, EventArgs e)
+    {
+        TryFocusSelectedOptions();
+        
+        _subscriptionsOnOpen.Clear();
+        
+        this.GetObservable(IsVisibleProperty).Subscribe(IsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
+        
+        foreach (var parent in this.GetVisualAncestors().OfType<Control>())
+        {
+            parent.GetObservable(IsVisibleProperty).Subscribe(IsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
+        }
+        
+        DropDownOpened?.Invoke(this, EventArgs.Empty);
+    }
+    
+    private void IsVisibleChanged(bool isVisible)
+    {
+        if (!isVisible && IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, false);
+        }
+    }
+    
+    private void TryFocusSelectedOptions()
+    {
+        
+        // var selectedIndex = SelectedIndex;
+        // if (IsDropDownOpen && selectedIndex != -1)
+        // {
+        //     var container = ContainerFromIndex(selectedIndex);
+        //
+        //     if (container == null && SelectedIndex != -1)
+        //     {
+        //         ScrollIntoView(Selection.SelectedIndex);
+        //         container = ContainerFromIndex(selectedIndex);
+        //     }
+        //
+        //     if (container != null && CanFocus(container))
+        //     {
+        //         container.Focus();
+        //     }
+        // }
+    }
+    
+    private bool CanFocus(Control control) => control.Focusable && control.IsEffectivelyEnabled && control.IsVisible;
+    
+    private void UpdateSelectionBoxItem(object? item)
+    {
+        // var contentControl = item as IContentControl;
+        //
+        // if (contentControl != null)
+        // {
+        //     item = contentControl.Content;
+        // }
+        //
+        // var control = item as Control;
+        //
+        // if (control != null)
+        // {
+        //     if (VisualRoot is object)
+        //     {
+        //         control.Measure(Size.Infinity);
+        //
+        //         SelectionBoxItem = new Rectangle
+        //         {
+        //             Width  = control.DesiredSize.Width,
+        //             Height = control.DesiredSize.Height,
+        //             Fill = new VisualBrush
+        //             {
+        //                 Visual     = control,
+        //                 Stretch    = Stretch.None,
+        //                 AlignmentX = AlignmentX.Left,
+        //             }
+        //         };
+        //     }
+        //
+        //     UpdateFlowDirection();
+        // }
+        // else
+        // {
+        //     if (item is not null && ItemTemplate is null && SelectionBoxItemTemplate is null && DisplayMemberBinding is { } binding)
+        //     {
+        //         var template = new FuncDataTemplate<object?>((_, _) =>
+        //             new TextBlock
+        //             {
+        //                 [TextBlock.DataContextProperty] = item,
+        //                 [!TextBlock.TextProperty]       = binding,
+        //             });
+        //         var text = template.Build(item);
+        //         SelectionBoxItem = text;
+        //     }
+        //     else
+        //     {
+        //         SelectionBoxItem = item;
+        //     }
+        //         
+        // }
+    }
+    
+    private void SelectFocusedItem()
+    {
+        // foreach (var dropdownItem in GetRealizedContainers())
+        // {
+        //     if (dropdownItem.IsFocused)
+        //     {
+        //         SelectedIndex = IndexFromContainer(dropdownItem);
+        //         break;
+        //     }
+        // }
+    }
+    //
+    // private bool SelectNext() => MoveSelection(SelectedIndex, 1, WrapSelection);
+    // private bool SelectPrevious() => MoveSelection(SelectedIndex, -1, WrapSelection);
+    
+    private bool MoveSelection(int startIndex, int step, bool wrap)
+    {
+        // static bool IsSelectable(object? o) => (o as AvaloniaObject)?.GetValue(IsEnabledProperty) ?? true;
+        //
+        // var count = ItemCount;
+        //
+        // for (int i = startIndex + step; i != startIndex; i += step)
+        // {
+        //     if (i < 0 || i >= count)
+        //     {
+        //         if (wrap)
+        //         {
+        //             if (i < 0)
+        //                 i += count;
+        //             else if (i >= count)
+        //                 i %= count;
+        //         }
+        //         else
+        //         {
+        //             return false;
+        //         }
+        //     }
+        //
+        //     var item      = ItemsView[i];
+        //     var container = ContainerFromIndex(i);
+        //         
+        //     if (IsSelectable(item) && IsSelectable(container))
+        //     {
+        //         SelectedIndex = i;
+        //         return true;
+        //     }
+        // }
+
+        return false;
+    }
+    
+    public void Clear()
+    {
+        SelectedOptions = null;
+    }
+    
     private void ConfigureMaxDropdownHeight()
     {
+        SetCurrentValue(MaxPopupHeightProperty, ItemHeight * DisplayPageSize + PopupContentPadding.Top + PopupContentPadding.Bottom);
     }
 }

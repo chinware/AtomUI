@@ -50,11 +50,11 @@ internal class TextBoxInnerBox : AddOnDecoratedInnerBox
         OwningTextBox?.Clear();
     }
 
-    protected override void BuildEffectiveInnerBoxPadding()
+    protected override void ConfigureEffectiveInnerBoxPadding()
     {
         if (!_embedMode)
         {
-            base.BuildEffectiveInnerBoxPadding();
+            base.ConfigureEffectiveInnerBoxPadding();
         }
     }
 }

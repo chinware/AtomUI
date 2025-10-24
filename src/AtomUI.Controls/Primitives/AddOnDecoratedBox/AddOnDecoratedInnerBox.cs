@@ -1,7 +1,6 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -10,7 +9,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Controls;
 
@@ -155,16 +153,14 @@ internal class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
     private StackPanel? _leftAddOnLayout;
     private StackPanel? _rightAddOnLayout;
     private IconButton? _clearButton;
-    private IDisposable? _effectiveInnerBoxBindingDisposable;
     
     protected virtual void NotifyClearButtonClicked()
     {
     }
 
-    protected virtual void BuildEffectiveInnerBoxPadding()
+    protected virtual void ConfigureEffectiveInnerBoxPadding()
     {
-        _effectiveInnerBoxBindingDisposable?.Dispose();
-        _effectiveInnerBoxBindingDisposable = BindUtils.RelayBind(this, InnerBoxPaddingProperty, this, EffectiveInnerBoxPaddingProperty);
+        SetCurrentValue(EffectiveInnerBoxPaddingProperty, InnerBoxPadding);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -174,6 +170,10 @@ internal class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         if (change.Property == StyleVariantProperty)
         {
             UpdatePseudoClasses();
+        }
+        else if (change.Property == InnerBoxPaddingProperty)
+        {
+            ConfigureEffectiveInnerBoxPadding();
         }
 
         if (IsLoaded)
@@ -207,6 +207,7 @@ internal class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
             _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
         }
 
+        ConfigureEffectiveInnerBoxPadding();
         SetupEffectiveContentPresenterMargin();
         UpdatePseudoClasses();
     }
@@ -237,18 +238,6 @@ internal class AddOnDecoratedInnerBox : ContentControl, IMotionAwareControl
         }
 
         EffectiveContentPresenterMargin = new Thickness(marginLeft, 0, marginRight, 0);
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
-        BuildEffectiveInnerBoxPadding();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _effectiveInnerBoxBindingDisposable?.Dispose();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)

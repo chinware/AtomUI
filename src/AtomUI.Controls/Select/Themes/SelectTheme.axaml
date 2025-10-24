@@ -7,8 +7,10 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:SelectInput />
-                    <atom:Popup Name="PART_Popup"
+                    <atom:SelectInput Name="{x:Static atom:SelectThemeConstants.InputPart}"
+                                      IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
+                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    <atom:Popup Name="{x:Static atom:SelectThemeConstants.PopupPart}"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="False"
                                 IsDetectMouseClickEnabled="True"

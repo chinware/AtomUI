@@ -20,7 +20,6 @@
                 EmbedMode="{TemplateBinding EmbedMode}">
                 <ScrollViewer
                     Name="ScrollViewer"
-                    Focusable="True"
                     AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                     HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                     VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"

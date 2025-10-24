@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 
 namespace AtomUI.Controls;
 
@@ -11,6 +12,8 @@ using AvaloniaTextBox = Avalonia.Controls.TextBox;
 internal class SelectInput : AvaloniaTextBox
 {
     #region 公共属性定义
+    public static readonly StyledProperty<SelectMode> ModeProperty =
+        AvaloniaProperty.Register<SelectInput, SelectMode>(nameof(Mode));
     
     public static readonly StyledProperty<object?> LeftAddOnProperty =
         AddOnDecoratedBox.LeftAddOnProperty.AddOwner<SelectInput>();
@@ -35,6 +38,20 @@ internal class SelectInput : AvaloniaTextBox
 
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         AvaloniaProperty.Register<SelectInput, bool>(nameof(IsEnableClearButton));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SelectInput>();
+    
+    public static readonly DirectProperty<SelectInput, IList<SelectOption>?> SelectedOptionsProperty =
+        AvaloniaProperty.RegisterDirect<SelectInput, IList<SelectOption>?>(
+            nameof(SelectedOptions),
+            o => o.SelectedOptions);
+    
+    public SelectMode Mode
+    {
+        get => GetValue(ModeProperty);
+        set => SetValue(ModeProperty, value);
+    }
     
     public object? LeftAddOn
     {
@@ -83,17 +100,34 @@ internal class SelectInput : AvaloniaTextBox
         get => GetValue(IsEnableClearButtonProperty);
         set => SetValue(IsEnableClearButtonProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
 
+    private IList<SelectOption>? _selectedOptions;
+
+    public IList<SelectOption>? SelectedOptions
+    {
+        get => _selectedOptions;
+        set => SetAndRaise(SelectedOptionsProperty, ref _selectedOptions, value);
+    }
+    
     #endregion
 
     #region 内部属性定义
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SelectInput>();
 
     internal static readonly DirectProperty<SelectInput, bool> IsEffectiveShowClearButtonProperty =
         AvaloniaProperty.RegisterDirect<SelectInput, bool>(nameof(IsEffectiveShowClearButton),
             o => o.IsEffectiveShowClearButton,
             (o, v) => o.IsEffectiveShowClearButton = v);
+    
+    internal static readonly DirectProperty<SelectInput, bool> IsSearchEnabledProperty =
+        AvaloniaProperty.RegisterDirect<SelectInput, bool>(nameof(IsSearchEnabled),
+            o => o.IsSearchEnabled,
+            (o, v) => o.IsSearchEnabled = v);
 
     private bool _isEffectiveShowClearButton;
 
@@ -103,10 +137,12 @@ internal class SelectInput : AvaloniaTextBox
         set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
     }
     
-    public bool IsMotionEnabled
+    private bool _isSearchEnabled;
+
+    internal bool IsSearchEnabled
     {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
+        get => _isSearchEnabled;
+        set => SetAndRaise(IsSearchEnabledProperty, ref _isSearchEnabled, value);
     }
     
     #endregion
@@ -161,9 +197,15 @@ internal class SelectInput : AvaloniaTextBox
         _inputInnerBox = e.NameScope.Find<SelectInputInnerBox>(SelectInputThemeConstants.InnerBoxPart);
         if (_inputInnerBox != null)
         {
-            _inputInnerBox.OwningTextBox = this;
+            _inputInnerBox.OwnerInput = this;
         }
 
         SetupEffectiveShowClearButton();
+    }
+    
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        Console.WriteLine("OnPointerPressed");
     }
 }

@@ -17,10 +17,10 @@
                     CornerRadius="{TemplateBinding CornerRadius}"
                     Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}">
-                    <DockPanel LastChildFill="True" HorizontalSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}">
+                    <DockPanel LastChildFill="True"
+                               HorizontalSpacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}">
                         <ContentPresenter
                             ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
-                            HorizontalAlignment="Right"
                             Content="{TemplateBinding SpinnerContent}"
                             DockPanel.Dock="Right"/>
                         <Grid
@@ -75,7 +75,6 @@
 
         <Style Selector="^:is(atom|ComboBoxSpinnerInnerBox)">
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="SpinnerBorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
 
             <Style Selector="^[IsEnabled=True]">
                 <Style Selector="^:not(:filled)">

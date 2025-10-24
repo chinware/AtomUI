@@ -100,9 +100,8 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox
     private IDisposable? _mouseMoveDisposable;
     private IDisposable? _borderThicknessDisposable;
 
-    protected override void BuildEffectiveInnerBoxPadding()
+    protected override void ConfigureEffectiveInnerBoxPadding()
     {
-        EffectiveInnerBoxPadding = InnerBoxPadding;
         if (IsShowHandle && !IsHandleFloatable)
         {
             var padding = SpinnerHandleWidth;
@@ -138,12 +137,6 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox
         base.OnDetachedFromVisualTree(e);
         _mouseMoveDisposable?.Dispose();
         _borderThicknessDisposable?.Dispose();
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        BuildEffectiveInnerBoxPadding();
     }
 
     private void ConfigureMoveProcessor()
@@ -223,7 +216,7 @@ internal class ButtonSpinnerInnerBox : AddOnDecoratedInnerBox
             change.Property == IsShowHandleProperty ||
             change.Property == SpinnerHandleWidthProperty)
         {
-            BuildEffectiveInnerBoxPadding();
+            ConfigureEffectiveInnerBoxPadding();
         }
     }
     

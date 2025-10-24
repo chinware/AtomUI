@@ -13,8 +13,7 @@
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{TemplateBinding CornerRadius}"
                     BorderBrush="{TemplateBinding BorderBrush}"
-                    Background="{TemplateBinding Background}"
-                    >
+                    Background="{TemplateBinding Background}">
                     <Grid
                         Name="ContentLayout"
                         ColumnDefinitions="Auto, *, Auto">
@@ -112,6 +111,11 @@
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
             </Style>
+            
+            <Style Selector="^:pressed">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
+            </Style>
 
             <Style Selector="^[Status=Error]">
                 <Setter Property="BorderBrush"
@@ -123,6 +127,11 @@
                 </Style>
 
                 <Style Selector="^:focus-within">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                </Style>
+                
+                <Style Selector="^:pressed">
                     <Setter Property="BorderBrush"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
                 </Style>
@@ -138,6 +147,11 @@
                 </Style>
 
                 <Style Selector="^:focus-within">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                </Style>
+                
+                <Style Selector="^:pressed">
                     <Setter Property="BorderBrush"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
                 </Style>
@@ -159,6 +173,11 @@
                         Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
                 <Setter Property="Background" Value="Transparent" />
             </Style>
+            
+            <Style Selector="^:pressed">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
+            </Style>
 
             <Style Selector="^[Status=Error]">
                 <Setter Property="BorderBrush"
@@ -177,6 +196,11 @@
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
                 </Style>
+                
+                <Style Selector="^:pressed">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                </Style>
             </Style>
 
             <Style Selector="^[Status=Warning]">
@@ -194,6 +218,11 @@
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
+                </Style>
+                
+                <Style Selector="^:pressed">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
                 </Style>
             </Style>
         </Style>
@@ -216,6 +245,10 @@
         <Style Selector="^[IsEnabled=False]">
             <Setter Property="Background"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
     </Style>
 </ControlTheme>
