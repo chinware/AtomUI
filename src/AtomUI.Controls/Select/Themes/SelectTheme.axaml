@@ -4,7 +4,61 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Select}" TargetType="atom:Select">
-       
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <atom:SelectInput />
+                    <atom:Popup Name="PART_Popup"
+                                WindowManagerAddShadowHint="False"
+                                IsLightDismissEnabled="False"
+                                IsDetectMouseClickEnabled="True"
+                                Placement="BottomEdgeAlignedLeft"
+                                IsMotionAwareOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
+                        <Border
+                            Name="PopupFrame"
+                            MaxHeight="{TemplateBinding MaxPopupHeight}"
+                            HorizontalAlignment="Stretch"
+                            Padding="{TemplateBinding PopupContentPadding}">
+                            <atom:IndicatorScrollViewer
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                            </atom:IndicatorScrollViewer>
+                        </Border>
+                    </atom:Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="PopupContentPadding"
+                Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}" />
+        <Setter Property="OptionFontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+        <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|Popup#PART_Popup">
+            <Setter Property="MarginToAnchor"
+                    Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupMarginToAnchor}}" />
+            <Setter Property="MaskShadows" Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBoxShadows}}" />
+        </Style>
+        <Style Selector="^ /template/ Border#PopupFrame">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
+            <Setter Property="CornerRadius"
+                    Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBorderRadius}}" />
+        </Style>
 
     </ControlTheme>
 </ResourceDictionary>

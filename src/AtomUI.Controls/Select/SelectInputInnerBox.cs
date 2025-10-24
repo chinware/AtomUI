@@ -8,8 +8,4 @@ internal class SelectInputInnerBox : AddOnDecoratedInnerBox
     {
         OwningTextBox?.Clear();
     }
-
-    protected override void BuildEffectiveInnerBoxPadding()
-    {
-    }
 }

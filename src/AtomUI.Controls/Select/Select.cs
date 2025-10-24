@@ -1,4 +1,5 @@
 using AtomUI.Theme;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -103,6 +104,9 @@ public class Select : TemplatedControl,
         AvaloniaProperty.RegisterDirect<Select, IList<SelectOption>?>(
             nameof(SelectedOptions),
             o => o.SelectedOptions);
+    
+    public static readonly StyledProperty<double> OptionFontSizeProperty =
+        AvaloniaProperty.Register<Select, double>(nameof(OptionFontSize));
     
     public static readonly StyledProperty<bool> AutoScrollToSelectedOptionsProperty =
         AvaloniaProperty.Register<Select, bool>(
@@ -282,12 +286,18 @@ public class Select : TemplatedControl,
     
     private IList<SelectOption>? _selectedOptions;
 
-    internal IList<SelectOption>? SelectedOptions
+    public IList<SelectOption>? SelectedOptions
     {
         get => _selectedOptions;
         set => SetAndRaise(SelectedOptionsProperty, ref _selectedOptions, value);
     }
 
+    public double OptionFontSize
+    {
+        get => GetValue(OptionFontSizeProperty);
+        set => SetValue(OptionFontSizeProperty, value);
+    }
+    
     public bool AutoScrollToSelectedOptions
     {
         get => GetValue(AutoScrollToSelectedOptionsProperty);
@@ -307,6 +317,47 @@ public class Select : TemplatedControl,
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<double> ItemHeightProperty =
+        AvaloniaProperty.Register<Select, double>(nameof(ItemHeight));
+    
+    internal static readonly StyledProperty<double> MaxPopupHeightProperty =
+        AvaloniaProperty.Register<Select, double>(nameof(MaxPopupHeight));
+    
+    internal static readonly StyledProperty<Thickness> PopupContentPaddingProperty =
+        AvaloniaProperty.Register<Select, Thickness>(nameof(PopupContentPadding));
+    
+    internal static readonly DirectProperty<Select, bool> IsEffectiveShowClearButtonProperty =
+        AvaloniaProperty.RegisterDirect<Select, bool>(nameof(IsEffectiveShowClearButton),
+            o => o.IsEffectiveShowClearButton,
+            (o, v) => o.IsEffectiveShowClearButton = v);
+    
+    internal double ItemHeight
+    {
+        get => GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
+    }
+    
+    internal double MaxPopupHeight
+    {
+        get => GetValue(MaxPopupHeightProperty);
+        set => SetValue(MaxPopupHeightProperty, value);
+    }
+    
+    internal Thickness PopupContentPadding
+    {
+        get => GetValue(PopupContentPaddingProperty);
+        set => SetValue(PopupContentPaddingProperty, value);
+    }
+    
+    private bool _isEffectiveShowClearButton;
+
+    internal bool IsEffectiveShowClearButton
+    {
+        get => _isEffectiveShowClearButton;
+        set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SelectToken.ID;
@@ -323,11 +374,20 @@ public class Select : TemplatedControl,
         FocusableProperty.OverrideDefaultValue<Select>(true);
     }
     
+    public Select()
+    {
+        this.RegisterResources();
+    }
+    
     internal void ItemFocused(SelectOptionItem selectOptionItem)
     {
         if (IsDropDownOpen && selectOptionItem.IsFocused && selectOptionItem.IsArrangeValid)
         {
             selectOptionItem.BringIntoView();
         }
+    }
+    
+    private void ConfigureMaxDropdownHeight()
+    {
     }
 }

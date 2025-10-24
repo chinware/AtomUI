@@ -1,8 +1,11 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:atom="https://atomui.net"
-                    xmlns:themes="using:AtomUI.Controls.Themes"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="SelectGroupHeaderTheme.axaml"/>
+        <ResourceInclude Source="SelectHandleTheme.axaml"/>
+        <ResourceInclude Source="SelectInputInnerBoxTheme.axaml"/>
+        <ResourceInclude Source="SelectInputTheme.axaml"/>
+        <ResourceInclude Source="SelectTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

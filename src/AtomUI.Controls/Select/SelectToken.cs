@@ -145,6 +145,21 @@ internal class SelectToken : AbstractControlDesignToken
     
     public Thickness FixedItemMargin { get; set; }
     
+    /// <summary>
+    /// 菜单的圆角
+    /// </summary>
+    public CornerRadius PopupBorderRadius { get; set; }
+    
+    /// <summary>
+    /// 菜单 Popup 阴影
+    /// </summary>
+    public BoxShadows PopupBoxShadows { get; set; }
+    
+    /// <summary>
+    /// 菜单内容边距
+    /// </summary>
+    public Thickness PopupContentPadding { get; set; }
+    
     public SelectToken()
         : base(ID)
     {

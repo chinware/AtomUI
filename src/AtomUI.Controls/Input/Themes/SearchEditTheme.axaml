@@ -39,7 +39,7 @@
                         IsEnabled="{TemplateBinding IsEnabled}"
                         EmbedMode="{TemplateBinding EmbedMode}">
                         <ScrollViewer
-                            Name="{x:Static atom:TextBoxThemeConstants.ScrollViewerPart}"
+                            Name="ScrollViewer"
                             Focusable="True"
                             AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
@@ -47,7 +47,7 @@
                             IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
                             <Panel>
                                 <atom:TextBlock
-                                    Name="{x:Static atom:TextBoxThemeConstants.WatermarkPart}"
+                                    Name="Watermark"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                     Text="{TemplateBinding Watermark}"
