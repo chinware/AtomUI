@@ -24,8 +24,8 @@
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Left"
                             Focusable="False"
-                            Content="{TemplateBinding LeftAddOn}"
-                            ContentTemplate="{TemplateBinding LeftAddOnTemplate}" />
+                            Content="{TemplateBinding ContentLeftAddOn}"
+                            ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}" />
                     </StackPanel>
             
                     <StackPanel
@@ -49,8 +49,8 @@
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Right"
                             Focusable="False"
-                            Content="{TemplateBinding RightAddOn}"
-                            ContentTemplate="{TemplateBinding RightAddOnTemplate}" />
+                            Content="{TemplateBinding ContentRightAddOn}"
+                            ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}" />
                     </StackPanel>
             
                     <ScrollViewer

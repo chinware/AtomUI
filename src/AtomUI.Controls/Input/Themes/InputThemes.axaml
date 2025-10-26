@@ -10,4 +10,5 @@
     </ResourceDictionary.MergedDictionaries>
     <themes:TextBoxTheme x:Key="{x:Type atom:TextBox}" TargetType="atom:TextBox"/>
     <themes:LineEditTheme x:Key="{x:Type atom:LineEdit}" TargetType="atom:LineEdit"/>
+    <themes:SimpleLineEditTheme x:Key="{x:Type atom:SimpleLineEdit}" TargetType="atom:SimpleLineEdit"/>
 </ResourceDictionary>

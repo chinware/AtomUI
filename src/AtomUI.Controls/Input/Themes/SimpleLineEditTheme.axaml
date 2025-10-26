@@ -1,0 +1,90 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="using:AtomUI.Controls.Themes"
+              TargetType="atom:SimpleLineEdit"
+              x:Class="AtomUI.Controls.Themes.SimpleLineEditTheme"
+              x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <themes:SimpleTextBoxTheme TargetType="{x:Type atom:SimpleLineEdit}" />
+    </ControlTheme.BasedOn>
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:SimpleLineEdit">
+            <atom:SimpleAddOnDecoratedBox
+                LeftAddOn="{TemplateBinding LeftAddOn}"
+                LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
+                RightAddOn="{TemplateBinding RightAddOn}"
+                RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
+                ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                StyleVariant="{TemplateBinding StyleVariant}"
+                Status="{TemplateBinding Status}"
+                Focusable="True">
+                <atom:SimpleAddOnDecoratedBox.ContentRightAddOn>
+                    <StackPanel Orientation="Horizontal">
+                        <atom:IconButton
+                            Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
+                            Icon="{atom:IconProvider CloseCircleFilled}"
+                            IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:SimpleLineEdit}}" />
+                        <!-- 新增显示密码按钮 -->
+                        <atom:ToggleIconButton
+                            Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
+                            CheckedIcon="{atom:IconProvider EyeOutlined}"
+                            UnCheckedIcon="{atom:IconProvider EyeInvisibleOutlined}"
+                            IsChecked="{Binding RevealPassword, RelativeSource={RelativeSource AncestorType=atom:SimpleLineEdit}, Mode=TwoWay}"
+                            IsVisible="{Binding IsEnableRevealButton, RelativeSource={RelativeSource AncestorType=atom:SimpleLineEdit}}" />
+                        <ContentPresenter
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Focusable="False"
+                            Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:SimpleLineEdit}}"
+                            ContentTemplate="{Binding ContentRightAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:SimpleLineEdit}}" />
+                    </StackPanel>
+                </atom:SimpleAddOnDecoratedBox.ContentRightAddOn>
+                
+                <ScrollViewer
+                    Name="ScrollViewer"
+                    Cursor="Ibeam"
+                    AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                    IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                    <Panel>
+                        <atom:TextBlock
+                            Name="Watermark"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Text="{TemplateBinding Watermark}"
+                            LineHeight="{TemplateBinding LineHeight}"
+                            TextAlignment="{TemplateBinding TextAlignment}"
+                            TextWrapping="{TemplateBinding TextWrapping}"
+                            IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                        <TextPresenter
+                            Name="PART_TextPresenter"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                            CaretBrush="{TemplateBinding CaretBrush}"
+                            CaretIndex="{TemplateBinding CaretIndex}"
+                            LineHeight="{TemplateBinding LineHeight}"
+                            PasswordChar="{TemplateBinding PasswordChar}"
+                            RevealPassword="{TemplateBinding RevealPassword}"
+                            SelectionBrush="{TemplateBinding SelectionBrush}"
+                            SelectionStart="{TemplateBinding SelectionStart}"
+                            SelectionEnd="{TemplateBinding SelectionEnd}"
+                            SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                            Text="{TemplateBinding Text, Mode=TwoWay}"
+                            TextAlignment="{TemplateBinding TextAlignment}"
+                            TextWrapping="{TemplateBinding TextWrapping}" />
+                    </Panel>
+                </ScrollViewer>
+            </atom:SimpleAddOnDecoratedBox>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|SimpleLineEdit)">
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+    </Style>
+
+</ControlTheme>

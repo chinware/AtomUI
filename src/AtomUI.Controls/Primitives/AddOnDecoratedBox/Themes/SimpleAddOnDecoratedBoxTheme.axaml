@@ -1,72 +1,130 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              x:Class="AtomUI.Controls.Themes.AddOnDecoratedInnerBoxTheme"
-              TargetType="atom:AddOnDecoratedInnerBox"
+              x:Class="AtomUI.Controls.Themes.SimpleAddOnDecoratedBoxTheme"
+              TargetType="atom:SimpleAddOnDecoratedBox"
               x:ClassModifier="internal">
     <Setter Property="Template">
-        <ControlTemplate TargetType="atom:AddOnDecoratedInnerBox">
-            <Border
-                Name="InnerBoxDecorator"
-                Padding="{TemplateBinding EffectiveInnerBoxPadding}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="{TemplateBinding CornerRadius}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                Background="{TemplateBinding Background}">
-                <DockPanel Name="ContentLayout" LastChildFill="True">
-                    <StackPanel
-                        Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart}"
-                        Orientation="Horizontal"
-                        DockPanel.Dock="Left">
+        <ControlTemplate TargetType="atom:SimpleAddOnDecoratedBox">
+            <DockPanel Name="RootLayout" LastChildFill="True">
+                <ContentPresenter
+                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Focusable="False"
+                    DockPanel.Dock="Left"
+                    Content="{TemplateBinding LeftAddOn}"
+                    ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                    BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
+                    CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
+                    IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                <ContentPresenter
+                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    DockPanel.Dock="Right"
+                    Focusable="False"
+                    Content="{TemplateBinding RightAddOn}"
+                    ContentTemplate="{TemplateBinding RightAddOnTemplate}"
+                    BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
+                    CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
+                    IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
+                    <DockPanel Name="ContentLayout" LastChildFill="True">
                         <ContentPresenter
-                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnPart}"
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
+                            DockPanel.Dock="Left"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Left"
                             Focusable="False"
-                            Content="{TemplateBinding LeftAddOnContent}"
-                            ContentTemplate="{TemplateBinding LeftAddOnContentTemplate}" />
-                    </StackPanel>
+                            Content="{TemplateBinding ContentLeftAddOn}"
+                            ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}" />
 
-                    <StackPanel
-                        Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnLayoutPart}"
-                        Orientation="Horizontal"
-                        DockPanel.Dock="Right">
-                        <atom:IconButton
-                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart}"
-                            Icon="{atom:IconProvider CloseCircleFilled}"
-                            IsVisible="{TemplateBinding IsClearButtonVisible}" />
                         <ContentPresenter
-                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnPart}"
+                            DockPanel.Dock="Right"
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Right"
                             Focusable="False"
-                            Content="{TemplateBinding RightAddOnContent}"
-                            ContentTemplate="{TemplateBinding RightAddOnContentTemplate}" />
-                    </StackPanel>
+                            Content="{TemplateBinding ContentRightAddOn}"
+                            ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}" />
 
-                    <ContentPresenter
-                        Name="PART_ContentPresenter"
-                        Margin="{TemplateBinding EffectiveContentPresenterMargin}"
-                        Content="{TemplateBinding Content}"
-                        ContentTemplate="{TemplateBinding ContentTemplate}" />
-                </DockPanel>
-            </Border>
+                        <ContentPresenter
+                            Name="PART_ContentPresenter"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
+            </DockPanel>
         </ControlTemplate>
     </Setter>
 
-    <Style Selector="^:is(atom|AddOnDecoratedInnerBox)">
+    <Style Selector="^:is(atom|SimpleAddOnDecoratedBox)">
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-        <Setter Property="ContentPresenterMargin"
-                Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXS}}" />
-        <Style Selector="^ /template/ Border#InnerBoxDecorator">
-            <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+
+        <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.AddonBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.AddonBg}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="InnerBoxPadding"
-                    Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />
+            </Style>
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.Padding}}" />
+            </Style>
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.Padding}}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
+            </Style>
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />
+            </Style>
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
                 <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
@@ -74,8 +132,10 @@
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="InnerBoxPadding"
-                    Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.Padding}}" />
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.Padding}}" />
+            </Style>
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
                 <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
@@ -83,8 +143,10 @@
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="InnerBoxPadding"
-                    Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
+            </Style>
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightSM}}" />
                 <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightSM}}" />
@@ -93,12 +155,12 @@
         </Style>
 
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Style Selector="^:outline">
+        <Style Selector="^[StyleVariant=Outline]">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
             <Setter Property="Background"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
 
-            <Style Selector="^:pointerover">
+            <Style Selector="^[IsInnerBoxHover=True]">
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.HoverBorderColor}}" />
             </Style>
@@ -117,7 +179,7 @@
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
 
-                <Style Selector="^:pointerover">
+                <Style Selector="^[IsInnerBoxHover=True]">
                     <Setter Property="BorderBrush"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorderHover}}" />
                 </Style>
@@ -137,7 +199,7 @@
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
 
-                <Style Selector="^:pointerover">
+                <Style Selector="^[IsInnerBoxHover=True]">
                     <Setter Property="BorderBrush"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBorderHover}}" />
                 </Style>
@@ -154,12 +216,12 @@
             </Style>
         </Style>
 
-        <Style Selector="^:filled">
+        <Style Selector="^[StyleVariant=Filled]">
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Background"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
 
-            <Style Selector="^:pointerover">
+            <Style Selector="^[IsInnerBoxHover=True]">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
             </Style>
@@ -181,7 +243,7 @@
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
 
-                <Style Selector="^:pointerover">
+                <Style Selector="^[IsInnerBoxHover=True]">
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgHover}}" />
                 </Style>
@@ -204,7 +266,7 @@
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
 
-                <Style Selector="^:pointerover">
+                <Style Selector="^[IsInnerBoxHover=True]">
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBgHover}}" />
                 </Style>
@@ -223,28 +285,13 @@
             </Style>
         </Style>
 
-        <Style Selector="^ /template/ StackPanel#PART_LeftAddOnLayout, ^ /template/ StackPanel#PART_RightAddOnLayout">
-            <Setter Property="Spacing"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}" />
-        </Style>
-
-        <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="NormalIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
-            <Setter Property="ActiveIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
-            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-        </Style>
-
         <Style Selector="^[IsEnabled=False]">
             <Setter Property="Background"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
-        </Style>
-        <Style Selector="^:disabled">
-            <Setter Property="Foreground"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Style Selector="^ /template/ ContentPresenter">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
         </Style>
     </Style>
 </ControlTheme>

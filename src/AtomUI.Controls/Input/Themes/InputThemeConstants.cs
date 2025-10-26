@@ -9,4 +9,6 @@ internal static class TextBoxThemeConstants
 {
     public const string DecoratedBoxPart = "PART_DecoratedBox";
     public const string TextBoxInnerBoxPart = "PART_TextBoxInnerBox";
+    public const string ClearButtonPart = "PART_ClearButton";
+    public const string RevealButtonPart = "PART_RevealButton";
 }

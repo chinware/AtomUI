@@ -1,4 +1,3 @@
-using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -18,23 +17,20 @@ public class SimpleTextBox : AvaloniaTextBox,
 {
     #region 公共属性定义
     
-    public static readonly StyledProperty<object?> LeftAddOnProperty =
-        AddOnDecoratedBox.LeftAddOnProperty.AddOwner<SimpleTextBox>();
+    public static readonly StyledProperty<object?> ContentLeftAddOnProperty =
+        SimpleAddOnDecoratedBox.ContentLeftAddOnProperty.AddOwner<SimpleTextBox>();
     
-    public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<SimpleTextBox>();
+    public static readonly StyledProperty<IDataTemplate?> ContentLeftAddOnTemplateProperty =
+        SimpleAddOnDecoratedBox.ContentLeftAddOnTemplateProperty.AddOwner<SimpleTextBox>();
 
-    public static readonly StyledProperty<object?> RightAddOnProperty =
-        AddOnDecoratedBox.RightAddOnProperty.AddOwner<SimpleTextBox>();
+    public static readonly StyledProperty<object?> ContentRightAddOnProperty =
+        SimpleAddOnDecoratedBox.ContentRightAddOnProperty.AddOwner<SimpleTextBox>();
     
-    public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
-        AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<SimpleTextBox>();
+    public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
+        SimpleAddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<SimpleTextBox>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SimpleTextBox>();
-    
-    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-        AddOnDecoratedBox.StatusProperty.AddOwner<SimpleTextBox>();
 
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         AvaloniaProperty.Register<SimpleTextBox, bool>(nameof(IsEnableClearButton));
@@ -48,28 +44,28 @@ public class SimpleTextBox : AvaloniaTextBox,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SimpleTextBox>();
     
-    public object? LeftAddOn
+    public object? ContentLeftAddOn
     {
-        get => GetValue(LeftAddOnProperty);
-        set => SetValue(LeftAddOnProperty, value);
+        get => GetValue(ContentLeftAddOnProperty);
+        set => SetValue(ContentLeftAddOnProperty, value);
     }
     
-    public IDataTemplate? LeftAddOnTemplate
+    public IDataTemplate? ContentLeftAddOnTemplate
     {
-        get => GetValue(LeftAddOnTemplateProperty);
-        set => SetValue(LeftAddOnTemplateProperty, value);
+        get => GetValue(ContentLeftAddOnTemplateProperty);
+        set => SetValue(ContentLeftAddOnTemplateProperty, value);
     }
 
-    public object? RightAddOn
+    public object? ContentRightAddOn
     {
-        get => GetValue(RightAddOnProperty);
-        set => SetValue(RightAddOnProperty, value);
+        get => GetValue(ContentRightAddOnProperty);
+        set => SetValue(ContentRightAddOnProperty, value);
     }
     
-    public IDataTemplate? RightAddOnTemplate
+    public IDataTemplate? ContentRightAddOnTemplate
     {
-        get => GetValue(RightAddOnTemplateProperty);
-        set => SetValue(RightAddOnTemplateProperty, value);
+        get => GetValue(ContentRightAddOnTemplateProperty);
+        set => SetValue(ContentRightAddOnTemplateProperty, value);
     }
 
     public SizeType SizeType
@@ -78,12 +74,6 @@ public class SimpleTextBox : AvaloniaTextBox,
         set => SetValue(SizeTypeProperty, value);
     }
     
-    public AddOnDecoratedStatus Status
-    {
-        get => GetValue(StatusProperty);
-        set => SetValue(StatusProperty, value);
-    }
-
     public bool IsEnableClearButton
     {
         get => GetValue(IsEnableClearButtonProperty);
@@ -150,10 +140,6 @@ public class SimpleTextBox : AvaloniaTextBox,
         {
             SetupEffectiveShowClearButton();
         }
-        else if (change.Property == StatusProperty)
-        {
-            UpdatePseudoClasses();
-        }
     }
 
     private void SetupEffectiveShowClearButton()
@@ -165,12 +151,6 @@ public class SimpleTextBox : AvaloniaTextBox,
         }
 
         IsEffectiveShowClearButton = !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text);
-    }
-
-    private void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
-        PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
