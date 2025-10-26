@@ -8,7 +8,6 @@
         <ControlTemplate TargetType="atom:TextBox">
             <atom:TextBoxInnerBox
                 Name="{x:Static atom:TextBoxThemeConstants.TextBoxInnerBoxPart}"
-                Cursor="Ibeam"
                 LeftAddOnContent="{TemplateBinding InnerLeftContent}"
                 RightAddOnContent="{TemplateBinding InnerRightContent}"
                 SizeType="{TemplateBinding SizeType}"
@@ -20,6 +19,7 @@
                 EmbedMode="{TemplateBinding EmbedMode}">
                 <ScrollViewer
                     Name="ScrollViewer"
+                    Cursor="Ibeam"
                     AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                     HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                     VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
@@ -78,7 +78,7 @@
                 <Setter Property="Margin" Value="0, 1, 0, 1" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[IsCustomFontSize=False]">
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:LineEditTokenKey.InputFontSizeLG}}" />
@@ -90,7 +90,7 @@
                 <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:LineEditTokenKey.InputFontSizeSM}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^ /template/ atom|TextBlock#Watermark">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
         </Style>
@@ -122,6 +122,11 @@
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
                 </Style>
             </Style>
+        </Style>
+
+        <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+            <Setter Property="Margin"
+                    Value="2 0 2 0" />
         </Style>
     </Style>
 

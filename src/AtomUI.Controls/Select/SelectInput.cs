@@ -206,6 +206,12 @@ internal class SelectInput : AvaloniaTextBox
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        Console.WriteLine("OnPointerPressed");
+        e.Handled = false;
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        e.Handled = false;
     }
 }

@@ -8,7 +8,7 @@
             <ControlTemplate TargetType="atom:SelectInput">
                 <atom:AddOnDecoratedBox
                     Name="{x:Static atom:TextBoxThemeConstants.DecoratedBoxPart}"
-                    Focusable="False"
+                    Focusable="True"
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
@@ -24,19 +24,14 @@
                         SizeType="{TemplateBinding SizeType}"
                         StyleVariant="{TemplateBinding StyleVariant}"
                         IsClearButtonVisible="{TemplateBinding IsEffectiveShowClearButton}"
+                        IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
                         Status="{TemplateBinding Status}">
-                        <WrapPanel>
-                            <atom:SelectResultOptionsBox Name="SelectResultBox" 
-                                                         Mode="{TemplateBinding Mode}"
-                                                         ItemsSource="{TemplateBinding SelectedOptions}"/>
+                        <Panel>
+                            <atom:SelectResultOptionsBox Name="ResultOptionsBox" Focusable="True"/>
                             <ScrollViewer
                                 Name="ScrollViewer"
                                 Cursor="Ibeam"
-                                HorizontalAlignment="Stretch"
-                                AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
-                                HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                                IsVisible="False">
                                 <Panel>
                                     <atom:TextBlock
                                         Name="Watermark"
@@ -66,12 +61,11 @@
                                         TextWrapping="{TemplateBinding TextWrapping}" />
                                 </Panel>
                             </ScrollViewer>
-                        </WrapPanel>
+                        </Panel>
                     </atom:SelectInputInnerBox>
                 </atom:AddOnDecoratedBox>
             </ControlTemplate>
         </Setter>
-
         <Setter Property="SelectionBrush"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionBackground}}" />
         <Setter Property="CaretBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
@@ -141,14 +135,18 @@
             </Style>
         </Style>
 
-        <Style Selector="^[Mode=Single]">
-            <Style Selector="^[IsSearchEnabled=False]">
-                <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
-                    <Setter Property="IsVisible" Value="False" />
-                </Style>
-                <Setter Property="Cursor" Value="Hand" />
-            </Style>
+        <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+            <Setter Property="Margin" Value="2 0 2 0" />
         </Style>
+
+        <!-- <Style Selector="^[Mode=Single]"> -->
+        <!--     <Style Selector="^[IsSearchEnabled=False]"> -->
+        <!--         <Style Selector="^ /template/ ScrollViewer#ScrollViewer"> -->
+        <!--             <Setter Property="IsVisible" Value="False" /> -->
+        <!--         </Style> -->
+        <!--         <Setter Property="Cursor" Value="Hand" /> -->
+        <!--     </Style> -->
+        <!-- </Style> -->
 
     </ControlTheme>
 </ResourceDictionary>

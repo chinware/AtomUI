@@ -14,13 +14,11 @@
                     CornerRadius="{TemplateBinding CornerRadius}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     Background="{TemplateBinding Background}">
-                    <Grid
-                        Name="ContentLayout"
-                        ColumnDefinitions="Auto, *, Auto">
+                    <DockPanel Name="ContentLayout" LastChildFill="True">
                         <StackPanel
                             Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart}"
-                            Grid.Column="0"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Left">
                             <ContentPresenter
                                 Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnPart}"
                                 VerticalAlignment="Stretch"
@@ -30,18 +28,11 @@
                                 Content="{TemplateBinding LeftAddOnContent}"
                                 ContentTemplate="{TemplateBinding LeftAddOnContentTemplate}" />
                         </StackPanel>
-
-                        <ContentPresenter
-                            Name="PART_ContentPresenter"
-                            Grid.Column="1"
-                            Margin="{TemplateBinding EffectiveContentPresenterMargin}"
-                            Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}" />
-
+                        
                         <StackPanel
                             Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnLayoutPart}"
-                            Grid.Column="2"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right">
                             <atom:IconButton
                                 Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart}"
                                 Icon="{atom:IconProvider CloseCircleFilled}"
@@ -55,7 +46,13 @@
                                 Content="{TemplateBinding RightAddOnContent}"
                                 ContentTemplate="{TemplateBinding RightAddOnContentTemplate}" />
                         </StackPanel>
-                    </Grid>
+
+                        <ContentPresenter
+                            Name="PART_ContentPresenter"
+                            Margin="{TemplateBinding EffectiveContentPresenterMargin}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
                 </Border>
             </Panel>
         </ControlTemplate>

@@ -5,6 +5,7 @@
         <ResourceInclude Source="SelectGroupHeaderTheme.axaml"/>
         <ResourceInclude Source="SelectHandleTheme.axaml"/>
         <ResourceInclude Source="SelectInputInnerBoxTheme.axaml"/>
+        <ResourceInclude Source="SelectResultOptionsBoxTheme.axaml"/>
         <ResourceInclude Source="SelectInputTheme.axaml"/>
         <ResourceInclude Source="SelectTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>

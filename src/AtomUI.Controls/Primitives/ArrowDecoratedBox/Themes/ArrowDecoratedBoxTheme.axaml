@@ -5,9 +5,7 @@
               TargetType="atom:ArrowDecoratedBox">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:ArrowDecoratedBox">
-            <DockPanel
-                Name="ContentLayout"
-                LastChildFill="True">
+            <DockPanel Name="ContentLayout" LastChildFill="True">
                 <Panel Name="ArrowPositionLayout">
                     <LayoutTransformControl
                         Name="{x:Static atom:ArrowDecoratedBoxThemeConstants.ArrowIndicatorLayoutPart}"

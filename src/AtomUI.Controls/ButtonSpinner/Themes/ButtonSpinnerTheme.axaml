@@ -8,7 +8,6 @@
             <ControlTemplate>
                 <atom:ButtonSpinnerDecoratedBox
                     Name="{x:Static atom:ButtonSpinnerThemeConstants.DecoratedBoxPart}"
-                    Focusable="True"
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"

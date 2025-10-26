@@ -11,8 +11,8 @@ internal class SelectHandle : TemplatedControl
     public static readonly StyledProperty<bool> IsSearchEnabledProperty =
         AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsSearchEnabled));
         
-    public static readonly StyledProperty<bool> IsClosableProperty =
-        AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsClosable));
+    public static readonly StyledProperty<bool> IsClearableProperty =
+        AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsClearable));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SelectHandle>();
@@ -29,10 +29,10 @@ internal class SelectHandle : TemplatedControl
         set => SetValue(IsSearchEnabledProperty, value);
     }
     
-    public bool IsClosable
+    public bool IsClearable
     {
-        get => GetValue(IsClosableProperty);
-        set => SetValue(IsClosableProperty, value);
+        get => GetValue(IsClearableProperty);
+        set => SetValue(IsClearableProperty, value);
     }
     
     public bool IsMotionEnabled

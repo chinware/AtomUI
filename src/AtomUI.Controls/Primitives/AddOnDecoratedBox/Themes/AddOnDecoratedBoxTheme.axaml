@@ -6,42 +6,36 @@
               x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:AddOnDecoratedBox">
-            <Grid
-                Name="RootLayout"
-                ColumnDefinitions="Auto, *, Auto">
+            <DockPanel Name="RootLayout" LastChildFill="True">
 
                 <ContentPresenter
                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
-                    Grid.Column="0"
                     VerticalAlignment="Stretch"
                     VerticalContentAlignment="Center"
-                    HorizontalAlignment="Left"
                     Focusable="False"
+                    DockPanel.Dock="Left"
                     Content="{TemplateBinding LeftAddOn}"
                     ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                     BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
                     CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
                     IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-
-                <ContentPresenter
-                    Name="PART_InnerBoxContent"
-                    Grid.Column="1"
-                    Content="{TemplateBinding Content}"
-                    ContentTemplate="{TemplateBinding ContentTemplate}" />
-
                 <ContentPresenter
                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
-                    Grid.Column="2"
                     VerticalAlignment="Stretch"
                     VerticalContentAlignment="Center"
-                    HorizontalAlignment="Right"
+                    DockPanel.Dock="Right"
                     Focusable="False"
                     Content="{TemplateBinding RightAddOn}"
                     ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                     BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
                     CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
                     IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-            </Grid>
+                
+                <ContentPresenter
+                    Name="PART_InnerBoxContent"
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+            </DockPanel>
         </ControlTemplate>
     </Setter>
 

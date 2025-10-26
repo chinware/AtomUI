@@ -9,20 +9,24 @@
                 <Panel>
                     <atom:SelectInput Name="{x:Static atom:SelectThemeConstants.InputPart}"
                                       IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
-                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                                      IsEnableClearButton="{TemplateBinding IsAllowClear}"
+                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                      />
                     <atom:Popup Name="{x:Static atom:SelectThemeConstants.PopupPart}"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="False"
                                 IsDetectMouseClickEnabled="True"
                                 Placement="BottomEdgeAlignedLeft"
                                 IsMotionAwareOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
-                        <Border
-                            Name="PopupFrame"
-                            MaxHeight="{TemplateBinding MaxPopupHeight}"
-                            HorizontalAlignment="Stretch"
-                            Padding="{TemplateBinding PopupContentPadding}">
+                        <Border Name="PopupFrame"
+                                MaxHeight="{TemplateBinding MaxPopupHeight}"
+                                Padding="{TemplateBinding PopupContentPadding}">
                             <atom:IndicatorScrollViewer
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                                <atom:SelectOptionsBox
+                                    IsBorderless="True"
+                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                    ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}" />
                             </atom:IndicatorScrollViewer>
                         </Border>
                     </atom:Popup>

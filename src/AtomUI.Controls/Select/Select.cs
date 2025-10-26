@@ -468,14 +468,14 @@ public class Select : TemplatedControl,
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        // if(!e.Handled && e.Source is Visual source)
-        // {
-        //     if (_popup?.IsInsidePopup(source) == true)
-        //     {
-        //         e.Handled = true;
-        //         return;
-        //     }
-        // }
+        if(!e.Handled && e.Source is Visual source)
+        {
+            if (_popup?.IsInsidePopup(source) == true)
+            {
+                e.Handled = true;
+                return;
+            }
+        }
 
         if (IsDropDownOpen)
         {

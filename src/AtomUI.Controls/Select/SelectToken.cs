@@ -202,5 +202,9 @@ internal class SelectToken : AbstractControlDesignToken
         ActiveBorderColor = SharedToken.ColorPrimary;
         ActiveOutlineColor = SharedToken.ColorControlOutline;
         SelectAffixPadding = SharedToken.PaddingXXS;
+        
+        PopupBorderRadius   = SharedToken.BorderRadiusLG;
+        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, PopupBorderRadius.TopLeft / 2);
+        PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
     }
 }

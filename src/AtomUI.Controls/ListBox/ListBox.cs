@@ -174,7 +174,7 @@ public class ListBox : SelectingItemsControl,
 
     #endregion
     
-    private readonly Dictionary<ListBoxItem, CompositeDisposable> _itemsBindingDisposables = new();
+    private protected readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
     private IDisposable? _borderThicknessDisposable;
 
     static ListBox()
@@ -201,16 +201,18 @@ public class ListBox : SelectingItemsControl,
             {
                 foreach (var item in e.OldItems)
                 {
-                    if (item is ListBoxItem listBoxItem)
-                    {
-                        if (_itemsBindingDisposables.TryGetValue(listBoxItem, out var disposable))
-                        {
-                            disposable.Dispose();
-                            _itemsBindingDisposables.Remove(listBoxItem);
-                        }
-                    }
+                    DisposableListItem(item);
                 }
             }
+        }
+    }
+
+    private protected void DisposableListItem(object item)
+    {
+        if (_itemsBindingDisposables.TryGetValue(item, out var disposable))
+        {
+            disposable.Dispose();
+            _itemsBindingDisposables.Remove(item);
         }
     }
     
@@ -221,11 +223,9 @@ public class ListBox : SelectingItemsControl,
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
-        base.PrepareContainerForItemOverride(container, item, index);
+        var disposables = new CompositeDisposable(4);
         if (container is ListBoxItem listBoxItem)
         {
-            var disposables = new CompositeDisposable(4);
-            
             if (item != null && item is not Visual)
             {
                 ApplyListItemData(listBoxItem, item);
@@ -242,17 +242,14 @@ public class ListBox : SelectingItemsControl,
             disposables.Add(BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listBoxItem,
                 ListBoxItem.DisabledItemHoverEffectProperty));
             
-            if (_itemsBindingDisposables.TryGetValue(listBoxItem, out var oldDisposables))
-            {
-                oldDisposables.Dispose();
-                _itemsBindingDisposables.Remove(listBoxItem);
-            }
+            PrepareListBoxItem(listBoxItem, item, index, disposables);
+            DisposableListItem(listBoxItem);
             _itemsBindingDisposables.Add(listBoxItem, disposables);
         }
-        else
-        {
-            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type ListBoxItem.");
-        }
+    }
+    
+    protected virtual void PrepareListBoxItem(ListBoxItem listBoxItem, object? item, int index, CompositeDisposable compositeDisposable)
+    {
     }
 
     protected virtual void ApplyListItemData(ListBoxItem listBoxItem, object item)

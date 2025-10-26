@@ -10,65 +10,61 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
-                    <Border
-                        Name="InnerBoxDecorator"
-                        Padding="{TemplateBinding EffectiveInnerBoxPadding}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Background="{TemplateBinding Background}">
-                        <Grid
-                            Name="ContentLayout"
-                            ColumnDefinitions="Auto, *, Auto">
-                            <StackPanel
-                                Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart}"
-                                Grid.Column="0"
-                                Orientation="Horizontal">
-                                <ContentPresenter
-                                    Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnPart}"
-                                    VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Center"
-                                    HorizontalAlignment="Left"
-                                    Focusable="False"
-                                    Content="{TemplateBinding LeftAddOnContent}"
-                                    ContentTemplate="{TemplateBinding LeftAddOnContentTemplate}" />
-                            </StackPanel>
-
+                <Border
+                    Name="InnerBoxDecorator"
+                    Padding="{TemplateBinding EffectiveInnerBoxPadding}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    Background="{TemplateBinding Background}">
+                    <DockPanel Name="ContentLayout" LastChildFill="True">
+                        <StackPanel
+                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart}"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Left">
                             <ContentPresenter
-                                Name="PART_ContentPresenter"
-                                Grid.Column="1"
-                                Margin="{TemplateBinding EffectiveContentPresenterMargin}"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnPart}"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Focusable="False"
+                                Content="{TemplateBinding LeftAddOnContent}"
+                                ContentTemplate="{TemplateBinding LeftAddOnContentTemplate}" />
+                        </StackPanel>
 
-                            <StackPanel
-                                Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnLayoutPart}"
-                                Grid.Column="2"
-                                Orientation="Horizontal">
-                                <atom:IconButton
-                                    Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart}"
-                                    Icon="{atom:IconProvider CloseCircleFilled}"
-                                    IsVisible="{TemplateBinding IsClearButtonVisible}" />
-                                <!-- 新增显示密码按钮 -->
-                                <atom:ToggleIconButton
-                                    Name="{x:Static atom:TextBoxInnerBoxThemeConstants.RevealButtonPart}"
-                                    CheckedIcon="{atom:IconProvider EyeOutlined}"
-                                    UnCheckedIcon="{atom:IconProvider EyeInvisibleOutlined}"
-                                    IsChecked="{TemplateBinding IsRevealButtonChecked, Mode=TwoWay}"
-                                    IsVisible="{TemplateBinding IsRevealButtonVisible}" />
-                                <ContentPresenter
-                                    Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnPart}"
-                                    VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Center"
-                                    HorizontalAlignment="Right"
-                                    Focusable="False"
-                                    Content="{TemplateBinding RightAddOnContent}"
-                                    ContentTemplate="{TemplateBinding RightAddOnContentTemplate}" />
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </Panel>
+                        <StackPanel
+                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnLayoutPart}"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right">
+                            <atom:IconButton
+                                Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart}"
+                                Icon="{atom:IconProvider CloseCircleFilled}"
+                                IsVisible="{TemplateBinding IsClearButtonVisible}" />
+                            <!-- 新增显示密码按钮 -->
+                            <atom:ToggleIconButton
+                                Name="{x:Static atom:TextBoxInnerBoxThemeConstants.RevealButtonPart}"
+                                CheckedIcon="{atom:IconProvider EyeOutlined}"
+                                UnCheckedIcon="{atom:IconProvider EyeInvisibleOutlined}"
+                                IsChecked="{TemplateBinding IsRevealButtonChecked, Mode=TwoWay}"
+                                IsVisible="{TemplateBinding IsRevealButtonVisible}" />
+                            <ContentPresenter
+                                Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnPart}"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Focusable="False"
+                                Content="{TemplateBinding RightAddOnContent}"
+                                ContentTemplate="{TemplateBinding RightAddOnContentTemplate}" />
+                        </StackPanel>
+
+                        <ContentPresenter
+                            Name="PART_ContentPresenter"
+                            Focusable="True"
+                            Margin="{TemplateBinding EffectiveContentPresenterMargin}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
             </ControlTemplate>
         </Setter>
 
