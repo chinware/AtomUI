@@ -23,10 +23,12 @@
                     <atom:AddOnDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                             <atom:PickerClearUpButton
-                                Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
-                                Icon="{Binding (atom:InfoPickerInput.InfoIcon), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}" />
-                            <ContentPresenter Content="{Binding (atom:InfoPickerInput.ContentLeftAddOn), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
-                                              ContentTemplate="{Binding (atom:InfoPickerInput.ContentLeftAddOnTemplate), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"/>
+                                IsInClearMode="{Binding IsClearButtonVisible, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
+                                Icon="{Binding InfoIcon, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
+                                IsVisible="{Binding InfoIcon, RelativeSource={RelativeSource AncestorType=atom:RangeInfoPickerInput}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            <ContentPresenter Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
+                                              ContentTemplate="{Binding ContentRightAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
+                                              IsVisible="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
                     <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"

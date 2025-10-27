@@ -77,7 +77,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     
     private protected Rectangle? RangePickerIndicator;
     private protected Icon? RangePickerArrow;
-    private protected Avalonia.Controls.TextBox? SecondaryInfoInputBox;
+    private protected TextBox? SecondaryInfoInputBox;
     private TopLevel? _topLevel;
 
     public override void Clear()
@@ -89,7 +89,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SecondaryInfoInputBox = e.NameScope.Get<Avalonia.Controls.TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
+        SecondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
         RangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
         RangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
         if (RangePickerIndicator != null)
@@ -179,12 +179,12 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             return true;
         }
         
-        if (IsPointerInSecondaryTextBox(position))
+        if (IsPointerInSecondaryTextBox(position) || ClickInClearUpButtonWithNormalMode(position))
         {
             RangeActivatedPart = RangeActivatedPart.End;
             return true;
         }
-        
+
         return false;
     }
     
@@ -279,7 +279,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
                 RangeActivatedPart = RangeActivatedPart.End;
             }
 
-            if (!inRangeStart && !inRangeEnd)
+            if ((!inRangeStart && !inRangeEnd) || ClickInClearUpButtonWithClearMode(args.Position))
             {
                 return true;
             }
@@ -385,6 +385,18 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             RangePickerIndicator.Width   = SecondaryInfoInputBox.Bounds.Width;
             var offset = SecondaryInfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
             PickerIndicatorOffsetX = offset.X;
+        }
+    }
+    
+    protected override void ConfigureIsClearButtonVisible()
+    {
+        if (DecoratedBox is not null)
+        {
+            SetCurrentValue(IsClearButtonVisibleProperty, DecoratedBox.IsInnerBoxHover && 
+                                                          InfoInputBox?.IsReadOnly == false && 
+                                                          InfoInputBox.Text?.Length > 0 &&
+                                                          SecondaryInfoInputBox?.IsReadOnly == false &&
+                                                          SecondaryInfoInputBox?.Text?.Length > 0);
         }
     }
 }

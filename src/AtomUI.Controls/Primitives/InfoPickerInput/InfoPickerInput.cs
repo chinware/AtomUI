@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reactive.Disposables;
+﻿using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives.Themes;
 using AtomUI.Data;
 using AtomUI.IconPkg;
@@ -11,10 +10,10 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Primitives;
 
@@ -235,6 +234,11 @@ public abstract class InfoPickerInput : TemplatedControl,
             o => o.PreferredInputWidth,
             (o, v) => o.PreferredInputWidth = v);
     
+    internal static readonly DirectProperty<InfoPickerInput, bool> IsClearButtonVisibleProperty =
+        AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsClearButtonVisible),
+            o => o.IsClearButtonVisible,
+            (o, v) => o.IsClearButtonVisible = v);
+    
     protected string? Text
     {
         get => GetValue(TextProperty);
@@ -249,6 +253,14 @@ public abstract class InfoPickerInput : TemplatedControl,
         set => SetAndRaise(PreferredInputWidthProperty, ref _preferredInputWidth, value);
     }
 
+    private bool _isClearButtonVisible;
+
+    internal bool IsClearButtonVisible
+    {
+        get => _isClearButtonVisible;
+        set => SetAndRaise(IsClearButtonVisibleProperty, ref _isClearButtonVisible, value);
+    }
+
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => InfoPickerInputToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -260,9 +272,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     private protected readonly FlyoutStateHelper FlyoutStateHelper;
     private protected Flyout? PickerFlyout;
     protected bool CurrentValidSelected;
-    private IDisposable? _clearUpButtonDetectDisposable;
-    private protected Border? PickerInnerBox;
-    protected Avalonia.Controls.TextBox? InfoInputBox;
+    protected TextBox? InfoInputBox;
+    protected Border? PickerInnerBox;
 
     private protected bool IsFlyoutOpen;
     private protected bool IsChoosing;
@@ -340,7 +351,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         if (hostProvider.PopupHost != args.Root)
         {
-            if (!IsPointerInInfoInputBox(args.Position))
+            if (!IsPointerInInfoInputBox(args.Position) || ClickInClearUpButtonWithClearMode(args.Position))
             {
                 return true;
             }
@@ -355,8 +366,42 @@ public abstract class InfoPickerInput : TemplatedControl,
         {
             return false;
         }
+        
+        return IsPointerInInfoInputBox(position) && !ClickInClearUpButtonWithClearMode(position);
+    }
 
-        return IsPointerInInfoInputBox(position);
+    protected bool ClickInClearUpButtonWithNormalMode(Point position)
+    {
+        if (PickerClearUpButton != null)
+        {
+            var pos = PickerClearUpButton.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+            if (pos.HasValue)
+            {
+                var clearUpButtonBounds = new Rect(pos.Value, PickerClearUpButton.Bounds.Size);
+                if (clearUpButtonBounds.Contains(position) && !PickerClearUpButton.IsInClearMode)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    protected bool ClickInClearUpButtonWithClearMode(Point position)
+    {
+        if (PickerClearUpButton != null)
+        {
+            var pos = PickerClearUpButton.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+            if (pos.HasValue)
+            {
+                var clearUpButtonBounds = new Rect(pos.Value, PickerClearUpButton.Bounds.Size);
+                if (clearUpButtonBounds.Contains(position) && PickerClearUpButton.IsInClearMode)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private bool IsPointerInInfoInputBox(Point position)
@@ -368,7 +413,7 @@ public abstract class InfoPickerInput : TemplatedControl,
             {
                 return false;
             }
-
+        
             var targetWidth  = PickerInnerBox.Bounds.Width;
             var targetHeight = PickerInnerBox.Bounds.Height;
             var startOffsetX = pos.Value.X;
@@ -382,16 +427,7 @@ public abstract class InfoPickerInput : TemplatedControl,
                     startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
                 }
             }
-
-            if (PickerClearUpButton is Control rightContent)
-            {
-                var rightContentPos = rightContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-                if (rightContentPos.HasValue)
-                {
-                    endOffsetX = rightContentPos.Value.X;
-                }
-            }
-
+            
             targetWidth = endOffsetX - startOffsetX;
             var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
             if (bounds.Contains(position))
@@ -399,7 +435,7 @@ public abstract class InfoPickerInput : TemplatedControl,
                 return true;
             }
         }
-
+    
         return false;
     }
 
@@ -423,23 +459,50 @@ public abstract class InfoPickerInput : TemplatedControl,
             FlyoutStateHelper.Flyout      =  PickerFlyout;
         }
 
-        DecoratedBox        = e.NameScope.Get<AddOnDecoratedBox>(InfoPickerInputThemeConstants.DecoratedBoxPart);
-        PickerInnerBox      = e.NameScope.Get<Border>(InfoPickerInputThemeConstants.PickerInnerPart);
-        InfoInputBox        = e.NameScope.Get<Avalonia.Controls.TextBox>(InfoPickerInputThemeConstants.InfoInputBoxPart);
-        PickerClearUpButton = e.NameScope.Get<PickerClearUpButton>(InfoPickerInputThemeConstants.ClearUpButtonPart);
+        DecoratedBox = e.NameScope.Get<AddOnDecoratedBox>(InfoPickerInputThemeConstants.DecoratedBoxPart);
+        InfoInputBox = e.NameScope.Get<TextBox>(InfoPickerInputThemeConstants.InfoInputBoxPart);
+        
+        if (DecoratedBox != null)
+        {
+            if (DecoratedBox.ContentRightAddOn is Control rightContent)
+            {
+                PickerClearUpButton = rightContent.FindDescendantOfType<PickerClearUpButton>();
+            }
+
+            DecoratedBox.TemplateApplied += (sender, args) =>
+            {
+                PickerInnerBox                 = DecoratedBox.ContentFrame;
+                FlyoutStateHelper.AnchorTarget = PickerInnerBox;
+            };
+            DecoratedBox.PropertyChanged += (sender, args) =>
+            {
+                if (args.Property == AddOnDecoratedBox.IsInnerBoxHoverProperty)
+                {
+                    ConfigureIsClearButtonVisible();
+                }
+            };
+        }
 
         if (PickerClearUpButton is not null)
         {
             PickerClearUpButton.ClearRequest += (sender, args) => { NotifyClearButtonClicked(); };
         }
-
-        FlyoutStateHelper.AnchorTarget = DecoratedBox;
+        
         SetupFlyoutProperties();
+    }
+
+    protected virtual void ConfigureIsClearButtonVisible()
+    {
+        if (DecoratedBox is not null)
+        {
+            SetCurrentValue(IsClearButtonVisibleProperty, DecoratedBox.IsInnerBoxHover && InfoInputBox?.IsReadOnly == false && InfoInputBox.Text?.Length > 0);
+        }
     }
 
     protected virtual void NotifyClearButtonClicked()
     {
         Clear();
+        SetCurrentValue(IsClearButtonVisibleProperty, false);
     }
 
     protected virtual void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
@@ -489,55 +552,12 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         base.OnAttachedToVisualTree(e);
         FlyoutStateHelper.NotifyAttachedToVisualTree();
-        if (_clearUpButtonDetectDisposable is null)
-        {
-            var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-            _clearUpButtonDetectDisposable = inputManager.Process.Subscribe(DetectClearUpButtonState);
-        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         FlyoutStateHelper.NotifyDetachedFromVisualTree();
-        _clearUpButtonDetectDisposable?.Dispose();
-        _clearUpButtonDetectDisposable = null;
-    }
-
-    private void DetectClearUpButtonState(RawInputEventArgs args)
-    {
-        if (IsEnabled)
-        {
-            if (args is RawPointerEventArgs pointerEventArgs)
-            {
-                if (PickerInnerBox is not null && PickerClearUpButton != null)
-                {
-                    var topLevel = TopLevel.GetTopLevel(this);
-                    Debug.Assert(topLevel is not null);
-                    if (topLevel != pointerEventArgs.Root)
-                    {
-                        PickerClearUpButton!.IsInClearMode = false;
-                    }
-                    else
-                    {
-                        var pos      = PickerInnerBox.TranslatePoint(new Point(0, 0), topLevel);
-                        if (!pos.HasValue)
-                        {
-                            return;
-                        }
-                        var bounds = new Rect(pos.Value, PickerInnerBox.Bounds.Size);
-                        if (bounds.Contains(pointerEventArgs.Position))
-                        {
-                            PickerClearUpButton.IsInClearMode = ShowClearButtonPredicate();
-                        }
-                        else
-                        {
-                            PickerClearUpButton.IsInClearMode = false;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     protected virtual bool ShowClearButtonPredicate()

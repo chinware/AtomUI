@@ -461,12 +461,12 @@ public class RangeTimePicker : RangeInfoPickerInput,
         if (PickerInnerBox is not null)
         {
             var preferredWidth = 0d;
-            // if (PickerInnerBox.RightAddOnContent is Control rightAddOnContent)
-            // {
-            //     preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
-            //                      PickerInnerBox.EffectiveInnerBoxPadding.Left +
-            //                      PickerInnerBox.EffectiveInnerBoxPadding.Right;
-            // }
+            if (DecoratedBox?.ContentRightAddOn is Control rightAddOnContent)
+            {
+                preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
+                                 PickerInnerBox.Padding.Left +
+                                 PickerInnerBox.Padding.Right;
+            }
 
             if (RangePickerArrow is not null)
             {

@@ -234,12 +234,12 @@ internal class AddOnDecoratedBox : ContentControl,
     Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
-
-    private Border? _contentFrame;
-    private IDisposable? _borderThicknessDisposable;
     
+    private IDisposable? _borderThicknessDisposable;
     private protected Control? _leftAddOn;
     private protected Control? _rightAddOn;
+
+    internal Border? ContentFrame;
     
     static AddOnDecoratedBox()
     {
@@ -362,16 +362,16 @@ internal class AddOnDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _contentFrame = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
+        ContentFrame = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
         _leftAddOn    = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
         _rightAddOn   = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
-        if (_contentFrame != null)
+        if (ContentFrame != null)
         {
-            _contentFrame.PointerEntered += (sender, args) =>
+            ContentFrame.PointerEntered += (sender, args) =>
             {
                 IsInnerBoxHover = true;
             };
-            _contentFrame.PointerExited += (sender, args) =>
+            ContentFrame.PointerExited += (sender, args) =>
             {
                 IsInnerBoxHover = false;
             };
@@ -424,4 +424,5 @@ internal class AddOnDecoratedBox : ContentControl,
             bottomLeft: bottomLeftRadius,
             bottomRight: bottomRightRadius);
     }
+    
 }

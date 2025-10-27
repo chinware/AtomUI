@@ -3,7 +3,6 @@ namespace AtomUI.Controls.Primitives.Themes;
 internal static class InfoPickerInputThemeConstants
 {
     public const string DecoratedBoxPart = "PART_DecoratedBox";
-    public const string PickerInnerPart = "PART_PickerInner";
     public const string InfoInputBoxPart = "PART_InfoInputBox";
     public const string ClearUpButtonPart = "PART_ClearUpButton";
 }
