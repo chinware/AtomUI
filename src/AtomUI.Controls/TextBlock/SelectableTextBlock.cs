@@ -17,10 +17,10 @@ public class SelectableTextBlock : TextBlock
     #region 公共属性定义
 
     public static readonly StyledProperty<int> SelectionStartProperty =
-        TextBox.SelectionStartProperty.AddOwner<SelectableTextBlock>();
+        Avalonia.Controls.TextBox.SelectionStartProperty.AddOwner<SelectableTextBlock>();
 
     public static readonly StyledProperty<int> SelectionEndProperty =
-        TextBox.SelectionEndProperty.AddOwner<SelectableTextBlock>();
+        Avalonia.Controls.TextBox.SelectionEndProperty.AddOwner<SelectableTextBlock>();
 
     public static readonly DirectProperty<SelectableTextBlock, string> SelectedTextProperty =
         AvaloniaProperty.RegisterDirect<SelectableTextBlock, string>(
@@ -28,13 +28,13 @@ public class SelectableTextBlock : TextBlock
             o => o.SelectedText);
 
     public static readonly StyledProperty<IBrush?> SelectionBrushProperty =
-        TextBox.SelectionBrushProperty.AddOwner<SelectableTextBlock>();
+        Avalonia.Controls.TextBox.SelectionBrushProperty.AddOwner<SelectableTextBlock>();
 
     public static readonly StyledProperty<IBrush?> SelectionForegroundBrushProperty =
-        TextBox.SelectionForegroundBrushProperty.AddOwner<SelectableTextBlock>();
+        Avalonia.Controls.TextBox.SelectionForegroundBrushProperty.AddOwner<SelectableTextBlock>();
 
     public static readonly DirectProperty<SelectableTextBlock, bool> CanCopyProperty =
-        TextBox.CanCopyProperty.AddOwner<SelectableTextBlock>(o => o.CanCopy);
+        Avalonia.Controls.TextBox.CanCopyProperty.AddOwner<SelectableTextBlock>(o => o.CanCopy);
 
     public static readonly RoutedEvent<RoutedEventArgs> CopyingToClipboardEvent =
         RoutedEvent.Register<SelectableTextBlock, RoutedEventArgs>(

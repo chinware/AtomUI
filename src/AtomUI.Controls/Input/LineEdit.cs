@@ -6,7 +6,7 @@ using Avalonia.Controls.Templates;
 
 namespace AtomUI.Controls;
 
-public class LineEdit : SimpleTextBox
+public class LineEdit : TextBox
 {
     #region 公共属性定义
 

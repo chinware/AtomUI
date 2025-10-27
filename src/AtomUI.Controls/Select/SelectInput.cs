@@ -151,7 +151,7 @@ internal class SelectInput : AvaloniaTextBox
 
     static SelectInput()
     {
-        AffectsRender<TextBox>(BorderBrushProperty, BackgroundProperty);
+        AffectsRender<AvaloniaTextBox>(BorderBrushProperty, BackgroundProperty);
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

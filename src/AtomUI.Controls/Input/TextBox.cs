@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Themes;
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -10,18 +10,14 @@ namespace AtomUI.Controls;
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
 public class TextBox : AvaloniaTextBox,
-                       IControlSharedTokenResourcesHost
+                       IControlSharedTokenResourcesHost,
+                       IMotionAwareControl,
+                       ISizeTypeAware
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TextBox>();
-
-    public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
-        AddOnDecoratedBox.StyleVariantProperty.AddOwner<TextBox>();
-
-    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-        AddOnDecoratedBox.StatusProperty.AddOwner<TextBox>();
 
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         AvaloniaProperty.Register<TextBox, bool>(nameof(IsEnableClearButton));
@@ -31,25 +27,16 @@ public class TextBox : AvaloniaTextBox,
     
     public static readonly StyledProperty<bool> IsCustomFontSizeProperty =
         AvaloniaProperty.Register<TextBox, bool>(nameof(IsCustomFontSize));
-
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TextBox>();
+    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-
-    public AddOnDecoratedVariant StyleVariant
-    {
-        get => GetValue(StyleVariantProperty);
-        set => SetValue(StyleVariantProperty, value);
-    }
-
-    public AddOnDecoratedStatus Status
-    {
-        get => GetValue(StatusProperty);
-        set => SetValue(StatusProperty, value);
-    }
-
+    
     public bool IsEnableClearButton
     {
         get => GetValue(IsEnableClearButtonProperty);
@@ -68,6 +55,11 @@ public class TextBox : AvaloniaTextBox,
         set => SetValue(IsCustomFontSizeProperty, value);
     }
 
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
     #endregion
 
     #region 内部属性定义
@@ -85,25 +77,12 @@ public class TextBox : AvaloniaTextBox,
         set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
     }
 
-    internal static readonly DirectProperty<TextBox, bool> EmbedModeProperty =
-        AvaloniaProperty.RegisterDirect<TextBox, bool>(nameof(EmbedMode),
-            o => o.EmbedMode,
-            (o, v) => o.EmbedMode = v);
-
-    private bool _embedMode;
-
-    internal bool EmbedMode
-    {
-        get => _embedMode;
-        set => SetAndRaise(EmbedModeProperty, ref _embedMode, value);
-    }
-
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
-
+    Control IMotionAwareControl.PropertyBindTarget => this;
     #endregion
     
-    private TextBoxInnerBox? _textBoxInnerBox;
+    private IconButton? _clearButton;
 
     static TextBox()
     {
@@ -126,10 +105,6 @@ public class TextBox : AvaloniaTextBox,
         {
             SetupEffectiveShowClearButton();
         }
-        else if (change.Property == StatusProperty || change.Property == StyleVariantProperty)
-        {
-            UpdatePseudoClasses();
-        }
     }
 
     private void SetupEffectiveShowClearButton()
@@ -143,24 +118,19 @@ public class TextBox : AvaloniaTextBox,
         IsEffectiveShowClearButton = !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text);
     }
 
-    private void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
-        PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == AddOnDecoratedVariant.Outline);
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _textBoxInnerBox = e.NameScope.Find<TextBoxInnerBox>(TextBoxThemeConstants.TextBoxInnerBoxPart);
-        if (_textBoxInnerBox != null)
+        _clearButton      = e.NameScope.Find<IconButton>(TextBoxThemeConstants.ClearButtonPart);
+        if (_clearButton is not null)
         {
-            _textBoxInnerBox.OwningTextBox = this;
+            _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
         }
-
         SetupEffectiveShowClearButton();
+    }
+    
+    protected virtual void NotifyClearButtonClicked()
+    {
+        Clear();
     }
 }

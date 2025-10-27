@@ -36,7 +36,6 @@
                                       BorderThickness="0"
                                       TextWrapping="NoWrap"
                                       AcceptsReturn="False"
-                                      EmbedMode="True"
                                       Width="{TemplateBinding PreferredInputWidth}"
                                       IsEnableClearButton="False"
                                       IsEnableRevealButton="False"

@@ -6,7 +6,7 @@
               x:Class="AtomUI.Controls.Themes.LineEditTheme"
               x:ClassModifier="internal">
     <ControlTheme.BasedOn>
-        <themes:SimpleTextBoxTheme TargetType="{x:Type atom:LineEdit}" />
+        <themes:TextBoxTheme TargetType="{x:Type atom:LineEdit}" />
     </ControlTheme.BasedOn>
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:LineEdit">

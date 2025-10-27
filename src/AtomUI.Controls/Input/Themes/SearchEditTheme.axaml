@@ -11,69 +11,88 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:SearchEditDecoratedBox
-                    Name="{x:Static atom:TextBoxThemeConstants.DecoratedBoxPart}"
-                    Focusable="True"
+                    LeftAddOn="{TemplateBinding LeftAddOn}"
+                    LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
+                    RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                    ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
-                    IsEnabled="{TemplateBinding IsEnabled}"
-                    LeftAddOn="{TemplateBinding LeftAddOn}"
-                    LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
-                    RightAddOn="{TemplateBinding RightAddOn}"
-                    RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
-                    RightAddOnBorderThickness="{TemplateBinding BorderThickness}"
                     SearchButtonStyle="{TemplateBinding SearchButtonStyle}"
                     SearchButtonText="{TemplateBinding SearchButtonText}"
-                    SearchButtonLoading="{TemplateBinding IsOperating}">
-                    <atom:TextBoxInnerBox
-                        Name="{x:Static atom:TextBoxThemeConstants.TextBoxInnerBoxPart}"
+                    SearchButtonLoading="{TemplateBinding IsOperating}"
+                    IsEnabled="{TemplateBinding IsEnabled}"
+                    Focusable="True">
+                    <atom:SearchEditDecoratedBox.ContentRightAddOn>
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
+                            <atom:IconButton
+                                Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
+                                Icon="{atom:IconProvider CloseCircleFilled}"
+                                IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
+                                IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
+                                NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"
+                                ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
+                                SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
+                                IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}"
+                                IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}" />
+                            <!-- 新增显示密码按钮 -->
+                            <atom:ToggleIconButton
+                                Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
+                                CheckedIcon="{atom:IconProvider EyeOutlined}"
+                                UnCheckedIcon="{atom:IconProvider EyeInvisibleOutlined}"
+                                IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
+                                IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
+                                NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
+                                ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
+                                SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
+                                IsChecked="{Binding RevealPassword, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}, Mode=TwoWay}"
+                                IsVisible="{Binding IsEnableRevealButton, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}" />
+                            <ContentPresenter
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Focusable="False"
+                                Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}" />
+                        </StackPanel>
+                    </atom:SearchEditDecoratedBox.ContentRightAddOn>
+                    
+                    <ScrollViewer
+                        Name="ScrollViewer"
                         Cursor="Ibeam"
-                        LeftAddOnContent="{TemplateBinding InnerLeftContent}"
-                        RightAddOnContent="{TemplateBinding InnerRightContent}"
-                        SizeType="{TemplateBinding SizeType}"
-                        StyleVariant="{TemplateBinding StyleVariant}"
-                        IsClearButtonVisible="{TemplateBinding IsEffectiveShowClearButton}"
-                        IsRevealButtonVisible="{TemplateBinding IsEnableRevealButton}"
-                        IsRevealButtonChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
-                        Status="{TemplateBinding Status}"
-                        IsEnabled="{TemplateBinding IsEnabled}"
-                        >
-                        <ScrollViewer
-                            Name="ScrollViewer"
-                            Focusable="True"
-                            AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
-                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                            IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
-                            <Panel>
-                                <atom:TextBlock
-                                    Name="Watermark"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    Text="{TemplateBinding Watermark}"
-                                    TextAlignment="{TemplateBinding TextAlignment}"
-                                    TextWrapping="{TemplateBinding TextWrapping}"
-                                    IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
-                                <TextPresenter
-                                    Name="PART_TextPresenter"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
-                                    CaretBrush="{TemplateBinding CaretBrush}"
-                                    CaretIndex="{TemplateBinding CaretIndex}"
-                                    LineHeight="{TemplateBinding LineHeight}"
-                                    PasswordChar="{TemplateBinding PasswordChar}"
-                                    RevealPassword="{TemplateBinding RevealPassword}"
-                                    SelectionBrush="{TemplateBinding SelectionBrush}"
-                                    SelectionStart="{TemplateBinding SelectionStart}"
-                                    SelectionEnd="{TemplateBinding SelectionEnd}"
-                                    SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
-                                    Text="{TemplateBinding Text, Mode=TwoWay}"
-                                    TextAlignment="{TemplateBinding TextAlignment}"
-                                    TextWrapping="{TemplateBinding TextWrapping}" />
-                            </Panel>
-                        </ScrollViewer>
-                    </atom:TextBoxInnerBox>
+                        AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                        HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                        VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                        IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                        <Panel>
+                            <atom:TextBlock
+                                Name="Watermark"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Text="{TemplateBinding Watermark}"
+                                LineHeight="{TemplateBinding LineHeight}"
+                                TextAlignment="{TemplateBinding TextAlignment}"
+                                TextWrapping="{TemplateBinding TextWrapping}"
+                                IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                            <TextPresenter
+                                Name="PART_TextPresenter"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                CaretBrush="{TemplateBinding CaretBrush}"
+                                CaretIndex="{TemplateBinding CaretIndex}"
+                                LineHeight="{TemplateBinding LineHeight}"
+                                PasswordChar="{TemplateBinding PasswordChar}"
+                                RevealPassword="{TemplateBinding RevealPassword}"
+                                SelectionBrush="{TemplateBinding SelectionBrush}"
+                                SelectionStart="{TemplateBinding SelectionStart}"
+                                SelectionEnd="{TemplateBinding SelectionEnd}"
+                                SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                Text="{TemplateBinding Text, Mode=TwoWay}"
+                                TextAlignment="{TemplateBinding TextAlignment}"
+                                TextWrapping="{TemplateBinding TextWrapping}" />
+                        </Panel>
+                    </ScrollViewer>
                 </atom:SearchEditDecoratedBox>
             </ControlTemplate>
         </Setter>

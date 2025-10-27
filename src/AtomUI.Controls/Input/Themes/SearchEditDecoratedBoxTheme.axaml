@@ -6,7 +6,7 @@
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SearchEditDecoratedBox}" TargetType="atom:SearchEditDecoratedBox">
         <ControlTheme.BasedOn>
-            <themes:AddOnDecoratedBoxTheme TargetType="atom:SearchEditDecoratedBox" />
+            <themes:SimpleAddOnDecoratedBoxTheme TargetType="atom:SearchEditDecoratedBox" />
         </ControlTheme.BasedOn>
 
         <Setter Property="Template">
@@ -23,7 +23,7 @@
                         BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
                         CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
                         IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-
+                    
                     <atom:Button
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
                         DockPanel.Dock="Right"
@@ -34,22 +34,56 @@
                         IsLoading="{TemplateBinding SearchButtonLoading}"
                         Content="{TemplateBinding SearchButtonText}"
                         SizeType="{TemplateBinding SizeType}"/>
-                    
-                    <ContentPresenter
-                        Name="PART_InnerBoxContent"
-                        Content="{TemplateBinding Content}"
-                        ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+                    <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}">
+                        <DockPanel Name="ContentLayout" LastChildFill="True">
+                            <ContentPresenter
+                                Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
+                                DockPanel.Dock="Left"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Focusable="False"
+                                Content="{TemplateBinding ContentLeftAddOn}"
+                                ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                                IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                            <ContentPresenter
+                                DockPanel.Dock="Right"
+                                Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Focusable="False"
+                                Content="{TemplateBinding ContentRightAddOn}"
+                                ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
+                                IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                            <ContentPresenter
+                                Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </DockPanel>
+                    </Border>
                 </DockPanel>
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ ContentPresenter#PART_InnerBoxContent">
+        <Style Selector="^ /template/ Border#PART_ContentFrame">
             <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
         </Style>
 
         <Style Selector="^[SearchButtonStyle=Default]">
             <Style
-                Selector="^ /template/ ContentPresenter#PART_InnerBoxContent:focus-within, ^ /template/ ContentPresenter#PART_InnerBoxContent:pointerover">
+                Selector="^ /template/ Border#PART_ContentFrame:focus-within">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+            </Style>
+            <Style
+                Selector="^ /template/ Border#PART_ContentFrame:pointerover">
                 <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
             </Style>
             <Style Selector="^ /template/ atom|Button#PART_RightAddOn">
@@ -58,7 +92,12 @@
                 <Setter Property="ButtonType" Value="Default" />
             </Style>
             <Style
-                Selector="^ /template/ atom|Button#PART_RightAddOn:pressed, ^ /template/ atom|Button#PART_RightAddOn:pointerover">
+                Selector="^ /template/ atom|Button#PART_RightAddOn:pressed">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+            </Style>
+            
+            <Style
+                Selector="^ /template/ atom|Button#PART_RightAddOn:pointerover">
                 <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
             </Style>
 

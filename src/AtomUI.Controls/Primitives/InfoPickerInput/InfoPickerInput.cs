@@ -68,7 +68,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<bool> IsReadOnlyProperty =
-        TextBox.IsReadOnlyProperty.AddOwner<InfoPickerInput>();
+        Avalonia.Controls.TextBox.IsReadOnlyProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<IBrush?> InputTextBrushProperty =
         AvaloniaProperty.Register<InfoPickerInput, IBrush?>(nameof(InputTextBrush));
@@ -217,7 +217,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     protected bool CurrentValidSelected;
     private IDisposable? _clearUpButtonDetectDisposable;
     private protected AddOnDecoratedInnerBox? PickerInnerBox;
-    protected TextBox? InfoInputBox;
+    protected Avalonia.Controls.TextBox? InfoInputBox;
 
     private protected bool IsFlyoutOpen;
     private protected bool IsChoosing;
@@ -380,7 +380,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
         DecoratedBox        = e.NameScope.Get<AddOnDecoratedBox>(InfoPickerInputThemeConstants.DecoratedBoxPart);
         PickerInnerBox      = e.NameScope.Get<AddOnDecoratedInnerBox>(InfoPickerInputThemeConstants.PickerInnerPart);
-        InfoInputBox        = e.NameScope.Get<TextBox>(InfoPickerInputThemeConstants.InfoInputBoxPart);
+        InfoInputBox        = e.NameScope.Get<Avalonia.Controls.TextBox>(InfoPickerInputThemeConstants.InfoInputBoxPart);
         PickerClearUpButton = e.NameScope.Get<PickerClearUpButton>(InfoPickerInputThemeConstants.ClearUpButtonPart);
 
         if (PickerClearUpButton is not null)

@@ -77,7 +77,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     
     private protected Rectangle? RangePickerIndicator;
     private protected Icon? RangePickerArrow;
-    private protected TextBox? SecondaryInfoInputBox;
+    private protected Avalonia.Controls.TextBox? SecondaryInfoInputBox;
     private TopLevel? _topLevel;
 
     public override void Clear()
@@ -89,7 +89,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SecondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
+        SecondaryInfoInputBox = e.NameScope.Get<Avalonia.Controls.TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
         RangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
         RangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
         if (RangePickerIndicator != null)

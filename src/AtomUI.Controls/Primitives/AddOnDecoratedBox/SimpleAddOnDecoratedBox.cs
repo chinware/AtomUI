@@ -225,8 +225,8 @@ internal class SimpleAddOnDecoratedBox : ContentControl,
     private Border? _contentFrame;
     private IDisposable? _borderThicknessDisposable;
     
-    private protected ContentPresenter? LeftAddOnPresenter;
-    private protected ContentPresenter? RightAddOnPresenter;
+    private protected Control? _leftAddOn;
+    private protected Control? _rightAddOn;
     
     static SimpleAddOnDecoratedBox()
     {
@@ -349,9 +349,9 @@ internal class SimpleAddOnDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _contentFrame       = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
-        LeftAddOnPresenter  = e.NameScope.Find<ContentPresenter>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
-        RightAddOnPresenter = e.NameScope.Find<ContentPresenter>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
+        _contentFrame = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
+        _leftAddOn    = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
+        _rightAddOn   = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
         if (_contentFrame != null)
         {
             _contentFrame.PointerEntered += (sender, args) =>
@@ -365,6 +365,7 @@ internal class SimpleAddOnDecoratedBox : ContentControl,
         }
 
         ConfigureInnerBoxCornerRadius();
+        ConfigureAddOnBorderInfo();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -393,13 +394,13 @@ internal class SimpleAddOnDecoratedBox : ContentControl,
         var bottomLeftRadius  = CornerRadius.BottomLeft;
         var bottomRightRadius = CornerRadius.BottomRight;
 
-        if (LeftAddOnPresenter is not null && LeftAddOnPresenter.IsVisible)
+        if (_leftAddOn is not null && _leftAddOn.IsVisible)
         {
             topLeftRadius    = 0;
             bottomLeftRadius = 0;
         }
 
-        if (RightAddOnPresenter is not null && RightAddOnPresenter.IsVisible)
+        if (_rightAddOn is not null && _rightAddOn.IsVisible)
         {
             topRightRadius    = 0;
             bottomRightRadius = 0;

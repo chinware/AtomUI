@@ -8,7 +8,7 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-internal class SearchEditDecoratedBox : AddOnDecoratedBox
+internal class SearchEditDecoratedBox : SimpleAddOnDecoratedBox
 {
     #region 公共属性定义
 
@@ -56,12 +56,12 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
         var size = base.ArrangeOverride(finalSize);
         if (_originRect is null)
         {
-            _originRect = RightAddOnPresenter?.Bounds;
+            _originRect = _rightAddOn?.Bounds;
         }
 
-        if (RightAddOnPresenter is not null && _originRect.HasValue)
+        if (_rightAddOn is not null && _originRect.HasValue)
         {
-            RightAddOnPresenter.Arrange(_originRect.Value.Inflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
+            _rightAddOn.Arrange(_originRect.Value.Inflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
         }
 
         return size;

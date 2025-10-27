@@ -3207,7 +3207,7 @@ public partial class DataGrid
         if (!ctrl)
         {
             // If Enter was used by a TextBox, we shouldn't handle the key
-            if (FocusUtils.GetFocusManager(this)?.GetFocusedElement() is TextBox focusedTextBox
+            if (FocusUtils.GetFocusManager(this)?.GetFocusedElement() is Avalonia.Controls.TextBox focusedTextBox
                 && focusedTextBox.AcceptsReturn)
             {
                 return false;
