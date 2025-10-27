@@ -1,4 +1,3 @@
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
@@ -224,7 +223,6 @@ internal class SimpleAddOnDecoratedBox : ContentControl,
     #endregion
 
     private Border? _contentFrame;
-    private CompositeDisposable? _contentRelayBindingDisposables;
     private IDisposable? _borderThicknessDisposable;
     
     private protected ContentPresenter? LeftAddOnPresenter;

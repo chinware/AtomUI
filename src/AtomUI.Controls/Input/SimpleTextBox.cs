@@ -1,3 +1,4 @@
+using AtomUI.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -13,21 +14,8 @@ public class SimpleTextBox : AvaloniaTextBox,
                              IControlSharedTokenResourcesHost,
                              IMotionAwareControl,
                              ISizeTypeAware
-                             
 {
     #region 公共属性定义
-    
-    public static readonly StyledProperty<object?> ContentLeftAddOnProperty =
-        SimpleAddOnDecoratedBox.ContentLeftAddOnProperty.AddOwner<SimpleTextBox>();
-    
-    public static readonly StyledProperty<IDataTemplate?> ContentLeftAddOnTemplateProperty =
-        SimpleAddOnDecoratedBox.ContentLeftAddOnTemplateProperty.AddOwner<SimpleTextBox>();
-
-    public static readonly StyledProperty<object?> ContentRightAddOnProperty =
-        SimpleAddOnDecoratedBox.ContentRightAddOnProperty.AddOwner<SimpleTextBox>();
-    
-    public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
-        SimpleAddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<SimpleTextBox>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SimpleTextBox>();
@@ -44,30 +32,6 @@ public class SimpleTextBox : AvaloniaTextBox,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SimpleTextBox>();
     
-    public object? ContentLeftAddOn
-    {
-        get => GetValue(ContentLeftAddOnProperty);
-        set => SetValue(ContentLeftAddOnProperty, value);
-    }
-    
-    public IDataTemplate? ContentLeftAddOnTemplate
-    {
-        get => GetValue(ContentLeftAddOnTemplateProperty);
-        set => SetValue(ContentLeftAddOnTemplateProperty, value);
-    }
-
-    public object? ContentRightAddOn
-    {
-        get => GetValue(ContentRightAddOnProperty);
-        set => SetValue(ContentRightAddOnProperty, value);
-    }
-    
-    public IDataTemplate? ContentRightAddOnTemplate
-    {
-        get => GetValue(ContentRightAddOnTemplateProperty);
-        set => SetValue(ContentRightAddOnTemplateProperty, value);
-    }
-
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -118,6 +82,8 @@ public class SimpleTextBox : AvaloniaTextBox,
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;
     #endregion
+    
+    private IconButton? _clearButton;
 
     static SimpleTextBox()
     {
@@ -156,6 +122,16 @@ public class SimpleTextBox : AvaloniaTextBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _clearButton      = e.NameScope.Find<IconButton>(TextBoxThemeConstants.ClearButtonPart);
+        if (_clearButton is not null)
+        {
+            _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
+        }
         SetupEffectiveShowClearButton();
+    }
+    
+    protected virtual void NotifyClearButtonClicked()
+    {
+        Clear();
     }
 }

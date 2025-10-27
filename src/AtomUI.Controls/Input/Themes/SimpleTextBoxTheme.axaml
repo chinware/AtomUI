@@ -15,42 +15,40 @@
                 Background="{TemplateBinding Background}">
                 <DockPanel Name="ContentLayout" LastChildFill="True">
                     <StackPanel
-                        Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnLayoutPart}"
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnLayoutPart}"
                         Orientation="Horizontal"
                         DockPanel.Dock="Left">
                         <ContentPresenter
-                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.LeftAddOnPart}"
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Left"
                             Focusable="False"
-                            Content="{TemplateBinding ContentLeftAddOn}"
-                            ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}" />
+                            Content="{TemplateBinding InnerLeftContent}"/>
                     </StackPanel>
             
                     <StackPanel
-                        Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnLayoutPart}"
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnLayoutPart}"
                         Orientation="Horizontal"
                         DockPanel.Dock="Right">
                         <atom:IconButton
-                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.ClearButtonPart}"
+                            Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
                             Icon="{atom:IconProvider CloseCircleFilled}"
                             IsVisible="{TemplateBinding IsEffectiveShowClearButton}" />
                         <!-- 新增显示密码按钮 -->
                         <atom:ToggleIconButton
-                            Name="{x:Static atom:TextBoxInnerBoxThemeConstants.RevealButtonPart}"
+                            Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
                             CheckedIcon="{atom:IconProvider EyeOutlined}"
                             UnCheckedIcon="{atom:IconProvider EyeInvisibleOutlined}"
                             IsChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
                             IsVisible="{TemplateBinding IsEnableRevealButton}" />
                         <ContentPresenter
-                            Name="{x:Static atom:AddOnDecoratedInnerBoxThemeConstants.RightAddOnPart}"
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Right"
                             Focusable="False"
-                            Content="{TemplateBinding ContentRightAddOn}"
-                            ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}" />
+                            Content="{TemplateBinding InnerRightContent}"/>
                     </StackPanel>
             
                     <ScrollViewer
@@ -159,15 +157,6 @@
             <Setter Property="ActiveIconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
             <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-        </Style>
-    
-        <Style Selector="^[IsEnabled=False]">
-            <Setter Property="Background"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
-        </Style>
-        <Style Selector="^:disabled">
-            <Setter Property="Foreground"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
     </Style>
 </ControlTheme>

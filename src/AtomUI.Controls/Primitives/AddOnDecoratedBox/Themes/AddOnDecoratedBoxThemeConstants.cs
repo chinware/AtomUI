@@ -8,6 +8,8 @@ internal static class AddOnDecoratedBoxThemeConstants
     public const string ContentRightAddOnPart = "PART_ContentRightAddOn";
     public const string InnerBoxContentPart = "PART_InnerBoxContent";
     public const string ContentFramePart = "PART_ContentFrame";
+    public const string LeftAddOnLayoutPart = "PART_LeftAddOnLayout";
+    public const string RightAddOnLayoutPart = "PART_RightAddOnLayout";
     public const int NormalZIndex = 1000;
     public const int ActivatedZIndex = 2000;
 }

@@ -37,7 +37,7 @@
                         IsRevealButtonChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
                         Status="{TemplateBinding Status}"
                         IsEnabled="{TemplateBinding IsEnabled}"
-                        EmbedMode="{TemplateBinding EmbedMode}">
+                        >
                         <ScrollViewer
                             Name="ScrollViewer"
                             Focusable="True"

@@ -1,28 +1,45 @@
-﻿using Avalonia;
+using AtomUI.Theme.Utils;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 
 namespace AtomUI.Controls;
 
-public class LineEdit : TextBox, IMotionAwareControl
+public class LineEdit : SimpleTextBox
 {
     #region 公共属性定义
 
+    public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
+        SimpleAddOnDecoratedBox.StyleVariantProperty.AddOwner<LineEdit>();
+
+    public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
+        SimpleAddOnDecoratedBox.StatusProperty.AddOwner<LineEdit>();
+    
     public static readonly StyledProperty<object?> LeftAddOnProperty =
-        AddOnDecoratedBox.LeftAddOnProperty.AddOwner<LineEdit>();
+        SimpleAddOnDecoratedBox.LeftAddOnProperty.AddOwner<LineEdit>();
     
     public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<LineEdit>();
+        SimpleAddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<LineEdit>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
-        AddOnDecoratedBox.RightAddOnProperty.AddOwner<LineEdit>();
+        SimpleAddOnDecoratedBox.RightAddOnProperty.AddOwner<LineEdit>();
     
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
-        AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<LineEdit>();
+        SimpleAddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<LineEdit>();
+    
+    public AddOnDecoratedVariant StyleVariant
+    {
+        get => GetValue(StyleVariantProperty);
+        set => SetValue(StyleVariantProperty, value);
+    }
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<LineEdit>();
-
+    public AddOnDecoratedStatus Status
+    {
+        get => GetValue(StatusProperty);
+        set => SetValue(StatusProperty, value);
+    }
+    
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -47,17 +64,35 @@ public class LineEdit : TextBox, IMotionAwareControl
         set => SetValue(RightAddOnTemplateProperty, value);
     }
 
-    public bool IsMotionEnabled
+    #endregion
+    
+    public LineEdit()
     {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
+        this.RegisterResources();
+    }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
+        PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == AddOnDecoratedVariant.Outline);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
+    }
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == StatusProperty ||
+            change.Property == LeftAddOnProperty)
+        {
+            UpdatePseudoClasses();
+        }
     }
 
-    #endregion
-
-    #region 内部属性定义
-
-    Control IMotionAwareControl.PropertyBindTarget => this;
-
-    #endregion
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        UpdatePseudoClasses();
+    }
 }

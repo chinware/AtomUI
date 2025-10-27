@@ -32,7 +32,7 @@
 
                 <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
+                        CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         Background="{TemplateBinding Background}">
                     <DockPanel Name="ContentLayout" LastChildFill="True">
@@ -44,7 +44,8 @@
                             HorizontalAlignment="Left"
                             Focusable="False"
                             Content="{TemplateBinding ContentLeftAddOn}"
-                            ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}" />
+                            ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                            IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
                         <ContentPresenter
                             DockPanel.Dock="Right"
@@ -54,7 +55,8 @@
                             HorizontalAlignment="Right"
                             Focusable="False"
                             Content="{TemplateBinding ContentRightAddOn}"
-                            ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}" />
+                            ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}" 
+                            IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
                         <ContentPresenter
                             Name="PART_ContentPresenter"
@@ -80,6 +82,12 @@
         <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.AddonBg}}" />
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        </Style>
+        
+        <Style
+            Selector="^ /template/ DockPanel#ContentLayout">
+            <Setter Property="HorizontalSpacing"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">
@@ -285,13 +293,21 @@
             </Style>
         </Style>
 
-        <Style Selector="^[IsEnabled=False]">
-            <Setter Property="Background"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
-            <Style Selector="^ /template/ ContentPresenter">
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        <Style Selector="^:disabled">
+            <Style Selector="^[StyleVariant=Outline]">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
             </Style>
+            
+            <Style Selector="^[StyleVariant=Filled]">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+            </Style>
+            
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
     </Style>
 </ControlTheme>
