@@ -264,7 +264,6 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("ComboBox.ItemPadding");
         public static readonly TokenResourceKey ItemSelectedBgColor = new TokenResourceKey("ComboBox.ItemSelectedBgColor");
         public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("ComboBox.ItemSelectedColor");
-        public static readonly TokenResourceKey OpenIndicatorPadding = new TokenResourceKey("ComboBox.OpenIndicatorPadding");
         public static readonly TokenResourceKey PopupBorderRadius = new TokenResourceKey("ComboBox.PopupBorderRadius");
         public static readonly TokenResourceKey PopupBoxShadows = new TokenResourceKey("ComboBox.PopupBoxShadows");
         public static readonly TokenResourceKey PopupContentPadding = new TokenResourceKey("ComboBox.PopupContentPadding");

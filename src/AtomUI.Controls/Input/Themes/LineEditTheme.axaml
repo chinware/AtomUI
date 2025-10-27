@@ -49,7 +49,8 @@
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Right"
                             Focusable="False"
-                            Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"/>
+                            Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
+                            IsVisible="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                     </StackPanel>
                 </atom:AddOnDecoratedBox.ContentRightAddOn>
                 

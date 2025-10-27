@@ -17,8 +17,8 @@
                         <atom:ComboBoxItem Tag="{x:Static atom:ColorFormat.Hsva}">HSV</atom:ComboBoxItem>
                         <atom:ComboBoxItem Tag="{x:Static atom:ColorFormat.Rgba}">RGB</atom:ComboBoxItem>
                     </atom:ComboBox>
-                    <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.AlphaInputPart}" 
-                                        DockPanel.Dock="Right" 
+                    <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.AlphaInputPart}"
+                                        DockPanel.Dock="Right"
                                         Margin="5, 0, 0, 0"
                                         Minimum="0"
                                         Maximum="100"
@@ -27,7 +27,7 @@
                                         IsVisible="{TemplateBinding IsAlphaVisible}"/>
                     <Panel>
                         <atom:LineEdit Name="{x:Static atom:ColorPickerInputThemeConstants.HexValueInputPart}"
-                                       SizeType="Small" 
+                                       SizeType="Small"
                                        IsVisible="False"/>
                         <StackPanel Name="HsvValuePanel" Spacing="5" Orientation="Horizontal" IsVisible="False">
                             <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.HValueInputPart}"

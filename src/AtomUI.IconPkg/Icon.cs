@@ -255,7 +255,6 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
             {
                 SetupFilledBrush();
             }
-            
         }
 
         if (IsLoaded)
@@ -534,7 +533,7 @@ public class Icon : Control, ICustomHitTest, IMotionAwareControl
 
     public override void Render(DrawingContext context)
     {
-        if (IsVisible && _sourceGeometriesData.Count > 0 && DesiredSize != default)
+        if (IsVisible && _transforms.Count == _sourceGeometriesData.Count && _sourceGeometriesData.Count > 0 && DesiredSize != default)
         {
             for (var i = 0; i < _sourceGeometriesData.Count; i++)
             {

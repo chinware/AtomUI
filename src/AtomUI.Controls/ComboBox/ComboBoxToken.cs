@@ -13,11 +13,6 @@ internal class ComboBoxToken : ButtonSpinnerToken
         : base(ID)
     {
     }
-    
-    /// <summary>
-    /// 打开按钮宽度内间距
-    /// </summary>
-    public Thickness OpenIndicatorPadding { get; set; }
 
     /// <summary>
     /// 菜单的圆角
@@ -87,7 +82,6 @@ internal class ComboBoxToken : ButtonSpinnerToken
     public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
-        OpenIndicatorPadding = new Thickness(SharedToken.UniformlyPaddingXXS, 0, 0, 0);
         PopupBorderRadius    = SharedToken.BorderRadiusLG;
         PopupContentPadding  = new Thickness(SharedToken.UniformlyPaddingXXS, PopupBorderRadius.TopLeft / 2);
         PopupBoxShadows      = SharedToken.BoxShadowsSecondary;

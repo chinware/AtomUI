@@ -23,10 +23,12 @@
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                              <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                                  <ContentPresenter Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"
-                                                   ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"/>
+                                                   ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"
+                                                   IsVisible="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:ComboBox}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                                  <atom:ComboBoxHandle
                                      IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"
-                                     IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}" />
+                                     IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"
+                                     />
                              </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
