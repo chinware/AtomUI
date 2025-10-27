@@ -216,7 +216,7 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
         SetupRightButtonRange(currentPage, pageCount);
         _paginationNav.SelectedIndex = _selectedNavItemIndex;
         SetupTotalInfoText();
-        EmitCurrentPageChanged(CurrentPage, pageCount, pageSize);
+        EmitCurrentPageChanged(currentPage, pageCount, pageSize);
     }
 
     private void HandlePageNavRequest(object? sender, PageNavRequestArgs args)
