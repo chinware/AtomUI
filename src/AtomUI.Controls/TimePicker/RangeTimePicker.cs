@@ -364,6 +364,8 @@ public class RangeTimePicker : RangeInfoPickerInput,
             {
                 preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(SecondaryWatermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
             }
+
+            preferredInputWidth *= 1.1;
             if (!double.IsNaN(MinWidth))
             {
                 preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);

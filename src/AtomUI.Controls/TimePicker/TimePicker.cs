@@ -270,6 +270,8 @@ public class TimePicker : InfoPickerInput, IControlSharedTokenResourcesHost
             {
                 preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(Watermark, FontSize, FontFamily, FontStyle, FontWeight).Width);
             }
+
+            preferredInputWidth *= 1.1;
             if (!double.IsNaN(MinWidth))
             {
                 preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);

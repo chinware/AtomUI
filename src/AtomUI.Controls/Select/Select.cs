@@ -71,7 +71,7 @@ public class Select : TemplatedControl,
     
     public static readonly StyledProperty<SelectMode> ModeProperty =
         AvaloniaProperty.Register<Select, SelectMode>(nameof(Mode));
-    
+   
     public static readonly StyledProperty<object?> LeftAddOnProperty =
         AddOnDecoratedBox.LeftAddOnProperty.AddOwner<Select>();
     
@@ -84,17 +84,17 @@ public class Select : TemplatedControl,
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
         AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<Select>();
     
-    public static readonly StyledProperty<object?> InnerLeftContentProperty = 
-        AvaloniaProperty.Register<Select, object?>(nameof(InnerLeftContent));
+    public static readonly StyledProperty<object?> ContentLeftAddOnProperty =
+        AddOnDecoratedBox.ContentLeftAddOnProperty.AddOwner<Select>();
     
-    public static readonly StyledProperty<IDataTemplate?> InnerLeftContentTemplateProperty =
-        AvaloniaProperty.Register<Select, IDataTemplate?>(nameof(InnerLeftContentTemplate));
+    public static readonly StyledProperty<IDataTemplate?> ContentLeftAddOnTemplateProperty =
+        AddOnDecoratedBox.ContentLeftAddOnTemplateProperty.AddOwner<Select>();
 
-    public static readonly StyledProperty<object?> InnerRightContentProperty =
-        AvaloniaProperty.Register<Select, object?>(nameof(InnerRightContent));
+    public static readonly StyledProperty<object?> ContentRightAddOnProperty =
+        AddOnDecoratedBox.ContentRightAddOnProperty.AddOwner<Select>();
     
-    public static readonly StyledProperty<IDataTemplate?> InnerRightContentTemplateProperty =
-        AvaloniaProperty.Register<Select, IDataTemplate?>(nameof(InnerRightContentTemplate));
+    public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
+        AddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<Select>();
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Select>();
@@ -248,28 +248,28 @@ public class Select : TemplatedControl,
         set => SetValue(RightAddOnTemplateProperty, value);
     }
     
-    public object? InnerLeftContent
+    public object? ContentLeftAddOn
     {
-        get => GetValue(InnerLeftContentProperty);
-        set => SetValue(InnerLeftContentProperty, value);
+        get => GetValue(ContentLeftAddOnProperty);
+        set => SetValue(ContentLeftAddOnProperty, value);
     }
     
-    public IDataTemplate? InnerLeftContentTemplate
+    public IDataTemplate? ContentLeftAddOnTemplate
     {
-        get => GetValue(InnerLeftContentTemplateProperty);
-        set => SetValue(InnerLeftContentTemplateProperty, value);
+        get => GetValue(ContentLeftAddOnTemplateProperty);
+        set => SetValue(ContentLeftAddOnTemplateProperty, value);
     }
 
-    public object? InnerRightContent
+    public object? ContentRightAddOn
     {
-        get => GetValue(InnerRightContentProperty);
-        set => SetValue(InnerRightContentProperty, value);
+        get => GetValue(ContentRightAddOnProperty);
+        set => SetValue(ContentRightAddOnProperty, value);
     }
     
-    public IDataTemplate? InnerRightContentTemplate
+    public IDataTemplate? ContentRightAddOnTemplate
     {
-        get => GetValue(InnerRightContentTemplateProperty);
-        set => SetValue(InnerRightContentTemplateProperty, value);
+        get => GetValue(ContentRightAddOnTemplateProperty);
+        set => SetValue(ContentRightAddOnTemplateProperty, value);
     }
     
     public SizeType SizeType

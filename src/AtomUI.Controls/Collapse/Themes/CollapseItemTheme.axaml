@@ -22,7 +22,7 @@
                                 VerticalAlignment="Center"
                                 Icon="{TemplateBinding ExpandIcon}"
                                 IsVisible="{TemplateBinding IsShowExpandIcon}"
-                                IsEnabled="{TemplateBinding IsEnabled}" />
+                                IsEnabled="{TemplateBinding IsEnabled}"/>
                             <ContentPresenter Name="{x:Static atom:CollapseItemThemeConstants.HeaderPresenterPart}"
                                               HorizontalAlignment="Stretch"
                                               VerticalAlignment="Center"
@@ -77,7 +77,7 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
 
-        <Style Selector="^:selected">
+        <Style Selector="^[IsSelected=True]">
             <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
                 <Setter Property="RenderTransform" Value="rotate(90deg)" />
             </Style>

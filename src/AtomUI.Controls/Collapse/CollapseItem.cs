@@ -14,6 +14,7 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -112,23 +113,19 @@ public class CollapseItem : HeaderedContentControl,
         AvaloniaProperty.RegisterDirect<CollapseItem, CollapseExpandIconPosition>(nameof(ExpandIconPosition),
             o => o.ExpandIconPosition,
             (o, v) => o.ExpandIconPosition = v);
+    
+    internal static readonly StyledProperty<Thickness> HeaderBorderThicknessProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(HeaderBorderThickness));
 
-    internal static readonly DirectProperty<CollapseItem, Thickness> HeaderBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<CollapseItem, Thickness>(nameof(HeaderBorderThickness),
-            o => o.HeaderBorderThickness,
-            (o, v) => o.HeaderBorderThickness = v);
-
-    internal static readonly DirectProperty<CollapseItem, Thickness> ContentBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<CollapseItem, Thickness>(nameof(ContentBorderThickness),
-            o => o.ContentBorderThickness,
-            (o, v) => o.ContentBorderThickness = v);
+    internal static readonly StyledProperty<Thickness> ContentBorderThicknessProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(ContentBorderThickness));
 
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<CollapseItem>();
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CollapseItem>();
-
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CollapseItem>();
+    
     internal SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -166,21 +163,17 @@ public class CollapseItem : HeaderedContentControl,
         get => _expandIconPosition;
         set => SetAndRaise(ExpandIconPositionProperty, ref _expandIconPosition, value);
     }
-
-    private Thickness _headerBorderThickness;
-
+    
     internal Thickness HeaderBorderThickness
     {
-        get => _headerBorderThickness;
-        set => SetAndRaise(HeaderBorderThicknessProperty, ref _headerBorderThickness, value);
+        get => GetValue(HeaderBorderThicknessProperty);
+        set => SetValue(HeaderBorderThicknessProperty, value);
     }
-
-    private Thickness _contentBorderThickness;
 
     internal Thickness ContentBorderThickness
     {
-        get => _contentBorderThickness;
-        set => SetAndRaise(ContentBorderThicknessProperty, ref _contentBorderThickness, value);
+        get => GetValue(ContentBorderThicknessProperty);
+        set => SetValue(ContentBorderThicknessProperty, value);
     }
 
     internal TimeSpan MotionDuration
@@ -194,7 +187,7 @@ public class CollapseItem : HeaderedContentControl,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-
+    
     #endregion
 
     static CollapseItem()
@@ -203,6 +196,7 @@ public class CollapseItem : HeaderedContentControl,
         PressedMixin.Attach<CollapseItem>();
         FocusableProperty.OverrideDefaultValue(typeof(CollapseItem), true);
         DataContextProperty.Changed.AddClassHandler<CollapseItem>((x, e) => x.UpdateHeader(e));
+        AffectsRender<CollapseItem>(HeaderBorderThicknessProperty, ContentBorderThicknessProperty);
     }
 
     private bool _tempAnimationDisabled;
@@ -268,30 +262,6 @@ public class CollapseItem : HeaderedContentControl,
             _expandButton.Click += (sender, args) => { IsSelected = !IsSelected; };
         }
 
-        if (_headerDecorator != null)
-        {
-            _headerDecorator.Loaded += (sender, args) =>
-            {
-                ConfigureHeaderDecoratorTransitions(false);
-            };
-            _headerDecorator.Unloaded += (sender, args) =>
-            {
-                _headerDecorator.Transitions = null;
-            };
-        }
-        
-        if (_expandButton != null)
-        {
-            _expandButton.Loaded += (sender, args) =>
-            {
-                ConfigureExpandButtonTransitions(false);
-            };
-            _expandButton.Unloaded += (sender, args) =>
-            {
-                _expandButton.Transitions = null;
-            };
-        }
-
         UpdatePseudoClasses();
     }
 
@@ -333,8 +303,7 @@ public class CollapseItem : HeaderedContentControl,
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureHeaderDecoratorTransitions(true);
-                ConfigureExpandButtonTransitions(true);
+                ConfigureTransitions(true);
             }
         }
     }
@@ -404,54 +373,37 @@ public class CollapseItem : HeaderedContentControl,
 
         return false;
     }
-
-    private void ConfigureHeaderDecoratorTransitions(bool force)
+    
+    private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
         {
-            if (_headerDecorator != null)
+            if (force || Transitions == null)
             {
-                if (force || _headerDecorator.Transitions == null)
-                {
-                    _headerDecorator.Transitions =
-                    [
-                        TransitionUtils.CreateTransition<ThicknessTransition>(Border.BorderThicknessProperty)
-                    ];
-                }
+                Transitions = [
+                    TransitionUtils.CreateTransition<ThicknessTransition>(HeaderBorderThicknessProperty),
+                    TransitionUtils.CreateTransition<ThicknessTransition>(ContentBorderThicknessProperty),
+                ];
             }
         }
         else
         {
-            if (_headerDecorator != null)
-            {
-                _headerDecorator.Transitions = null;
-            }
+            Transitions = null;
         }
     }
     
-    private void ConfigureExpandButtonTransitions(bool force)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        if (IsMotionEnabled)
-        {
-            if (_expandButton != null)
-            {
-                if (force || _expandButton.Transitions == null)
-                {
-                    _expandButton.Transitions =
-                    [
-                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-                    ];
-                }
-            }
-        }
-        else
-        {
-            if (_expandButton != null)
-            {
-                _expandButton.Transitions = null;
-            }
-        }
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
     }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
     
     private void UpdatePseudoClasses()
     {

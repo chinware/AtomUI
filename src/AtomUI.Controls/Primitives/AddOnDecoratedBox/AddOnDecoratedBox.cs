@@ -424,5 +424,4 @@ internal class AddOnDecoratedBox : ContentControl,
             bottomLeft: bottomLeftRadius,
             bottomRight: bottomRightRadius);
     }
-    
 }
