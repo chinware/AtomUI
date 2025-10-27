@@ -8,7 +8,7 @@
             <ControlTemplate>
                 <Panel>
                     <atom:AddOnDecoratedBox
-                        Name="{x:Static atom:ComboBoxThemeConstants.AddOnDecoratedBoxPart}"
+                        Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
                         Focusable="True"
                         StyleVariant="{TemplateBinding StyleVariant}"
                         SizeType="{TemplateBinding SizeType}"
@@ -83,15 +83,12 @@
         
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
             <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter">
                 <Setter Property="Margin" Value="0, 1, 0, 1" />
             </Style>

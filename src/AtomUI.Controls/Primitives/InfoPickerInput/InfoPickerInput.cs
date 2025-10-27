@@ -459,7 +459,7 @@ public abstract class InfoPickerInput : TemplatedControl,
             FlyoutStateHelper.Flyout      =  PickerFlyout;
         }
 
-        DecoratedBox = e.NameScope.Get<AddOnDecoratedBox>(InfoPickerInputThemeConstants.DecoratedBoxPart);
+        DecoratedBox = e.NameScope.Get<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         InfoInputBox = e.NameScope.Get<TextBox>(InfoPickerInputThemeConstants.InfoInputBoxPart);
         
         if (DecoratedBox != null)

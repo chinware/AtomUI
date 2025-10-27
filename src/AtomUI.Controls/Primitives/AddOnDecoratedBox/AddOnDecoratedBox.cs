@@ -35,6 +35,7 @@ internal class AddOnDecoratedBox : ContentControl,
                                    ISizeTypeAware,
                                    IMotionAwareControl
 {
+    public const string AddOnDecoratedBoxPart = "PART_AddOnDecoratedBox";
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -363,8 +364,8 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         base.OnApplyTemplate(e);
         ContentFrame = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
-        _leftAddOn    = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
-        _rightAddOn   = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
+        _leftAddOn   = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
+        _rightAddOn  = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
         if (ContentFrame != null)
         {
             ContentFrame.PointerEntered += (sender, args) =>

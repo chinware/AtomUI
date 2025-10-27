@@ -12,7 +12,7 @@
         <ControlTemplate TargetType="atom:RangeInfoPickerInput">
             <Panel>
                 <atom:AddOnDecoratedBox
-                    Name="{x:Static atom:InfoPickerInputThemeConstants.DecoratedBoxPart}"
+                    Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
                     Focusable="True"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     MinWidth="{TemplateBinding MinWidth}"

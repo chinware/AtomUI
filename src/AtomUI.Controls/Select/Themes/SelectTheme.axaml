@@ -7,11 +7,47 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:SelectInput Name="{x:Static atom:SelectThemeConstants.InputPart}"
-                                      IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
-                                      IsEnableClearButton="{TemplateBinding IsAllowClear}"
-                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                      />
+                     <atom:AddOnDecoratedBox
+                        Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
+                        Focusable="True"
+                        StyleVariant="{TemplateBinding StyleVariant}"
+                        SizeType="{TemplateBinding SizeType}"
+                        Status="{TemplateBinding Status}"
+                        LeftAddOn="{TemplateBinding LeftAddOn}"
+                        LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
+                        RightAddOn="{TemplateBinding RightAddOn}"
+                        RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                        IsEnabled="{TemplateBinding IsEnabled}"
+                        ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
+                        ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
+                        <atom:AddOnDecoratedBox.ContentRightAddOn>
+                             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
+                                 <ContentPresenter Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:Select}}"
+                                                   ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:Select}}"
+                                                   IsVisible="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:Select}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                 <atom:SelectHandle
+                                     IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}"
+                                     IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}"
+                                     />
+                             </StackPanel>
+                        </atom:AddOnDecoratedBox.ContentRightAddOn>
+                        <Panel>
+                            <!-- <atom:TextBlock -->
+                            <!--     Name="PlaceholderText" -->
+                            <!--     HorizontalAlignment="Left" -->
+                            <!--     VerticalAlignment="Center" -->
+                            <!--     TextTrimming="CharacterEllipsis" -->
+                            <!--     Opacity="0.3" -->
+                            <!--     IsVisible="{TemplateBinding SelectingItemsControl.SelectedItem, Converter={x:Static ObjectConverters.IsNull}}" -->
+                            <!--     Text="{TemplateBinding PlaceholderText}" /> -->
+                            <!-- <ContentPresenter -->
+                            <!--     Name="SelectedContentPresenter" -->
+                            <!--     HorizontalAlignment="Left" -->
+                            <!--     VerticalAlignment="Center" -->
+                            <!--     Content="{TemplateBinding SelectionBoxItem}" -->
+                            <!--     ContentTemplate="{TemplateBinding ItemTemplate}" /> -->
+                        </Panel>
+                    </atom:AddOnDecoratedBox>
                     <atom:Popup Name="{x:Static atom:SelectThemeConstants.PopupPart}"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="False"
@@ -41,18 +77,18 @@
                 Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}" />
         <Setter Property="OptionFontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
-
+        
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+            <!-- <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter"> -->
+            <!--     <Setter Property="Margin" Value="0, 1, 0, 1" /> -->
+            <!-- </Style> -->
         </Style>
 
         <Style Selector="^ /template/ atom|Popup#PART_Popup">

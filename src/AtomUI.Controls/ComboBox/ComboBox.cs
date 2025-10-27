@@ -235,7 +235,7 @@ public class ComboBox : AvaloniaComboBox,
         base.OnApplyTemplate(e);
         this.SetPopup(null); // 情况父类，方式鼠标点击的错误处理
         _popup = e.NameScope.Find<Popup>(ComboBoxThemeConstants.PopupPart);
-        var addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(ComboBoxThemeConstants.AddOnDecoratedBoxPart);
+        var addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         if (addOnDecoratedBox != null)
         {
             if (addOnDecoratedBox.ContentRightAddOn is Control rightAddOn)

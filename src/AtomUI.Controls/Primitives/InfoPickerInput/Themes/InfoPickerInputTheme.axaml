@@ -7,7 +7,7 @@
         <ControlTemplate TargetType="atom:InfoPickerInput">
             <Panel>
                 <atom:AddOnDecoratedBox
-                    Name="{x:Static atom:InfoPickerInputThemeConstants.DecoratedBoxPart}"
+                    Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
                     Focusable="True"
                     MinWidth="{TemplateBinding MinWidth}"
                     StyleVariant="{TemplateBinding StyleVariant}"

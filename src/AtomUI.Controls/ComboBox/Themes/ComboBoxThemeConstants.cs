@@ -2,7 +2,6 @@ namespace AtomUI.Controls.Themes;
 
 internal static class ComboBoxThemeConstants
 {
-    public const string AddOnDecoratedBoxPart = "PART_AddOnDecoratedBox";
     public const string PopupPart = "PART_Popup";
     public const string SpinnerInnerBoxPart = "PART_SpinnerInnerBox";
     public const string ItemsPresenterPart = "PART_ItemsPresenter";
