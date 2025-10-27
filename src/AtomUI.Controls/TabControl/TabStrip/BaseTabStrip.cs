@@ -202,7 +202,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     
     public bool CloseTab(TabStripItem tabStripItem)
     {
-        if (tabStripItem.IsClosable)
+        if (!tabStripItem.IsClosable)
         {
             return false;
         }

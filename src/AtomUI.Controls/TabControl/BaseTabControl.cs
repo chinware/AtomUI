@@ -291,7 +291,7 @@ public class BaseTabControl : SelectingItemsControl,
     
     public bool CloseTab(TabItem tabItem)
     {
-        if (tabItem.IsClosable)
+        if (!tabItem.IsClosable)
         {
             return false;
         }
