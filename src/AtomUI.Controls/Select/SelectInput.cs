@@ -146,8 +146,6 @@ internal class SelectInput : AvaloniaTextBox
     }
     
     #endregion
-    
-    private SelectInputInnerBox? _inputInnerBox;
 
     static SelectInput()
     {
@@ -194,11 +192,11 @@ internal class SelectInput : AvaloniaTextBox
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _inputInnerBox = e.NameScope.Find<SelectInputInnerBox>(SelectInputThemeConstants.InnerBoxPart);
-        if (_inputInnerBox != null)
-        {
-            _inputInnerBox.OwnerInput = this;
-        }
+        // _inputInnerBox = e.NameScope.Find<SelectInputInnerBox>(SelectInputThemeConstants.InnerBoxPart);
+        // if (_inputInnerBox != null)
+        // {
+        //     _inputInnerBox.OwnerInput = this;
+        // }
 
         SetupEffectiveShowClearButton();
     }

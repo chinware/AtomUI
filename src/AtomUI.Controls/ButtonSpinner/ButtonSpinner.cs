@@ -39,16 +39,16 @@ public class ButtonSpinner : Spinner,
         AvaloniaProperty.Register<ButtonSpinner, ButtonSpinnerLocation>(nameof(ButtonSpinnerLocation), ButtonSpinnerLocation.Right);
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
-        SimpleAddOnDecoratedBox.LeftAddOnProperty.AddOwner<ButtonSpinner>();
+        AddOnDecoratedBox.LeftAddOnProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-        SimpleAddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ButtonSpinner>();
+        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
-        SimpleAddOnDecoratedBox.RightAddOnProperty.AddOwner<ButtonSpinner>();
+        AddOnDecoratedBox.RightAddOnProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
-        SimpleAddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<ButtonSpinner>();
+        AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<object?> InnerLeftContentProperty
         = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerLeftContent));
@@ -66,10 +66,10 @@ public class ButtonSpinner : Spinner,
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
-        SimpleAddOnDecoratedBox.StyleVariantProperty.AddOwner<ButtonSpinner>();
+        AddOnDecoratedBox.StyleVariantProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-        SimpleAddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
+        AddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<bool> IsButtonSpinnerFloatableProperty =
         AvaloniaProperty.Register<ButtonSpinner, bool>(nameof (IsButtonSpinnerFloatable), false);

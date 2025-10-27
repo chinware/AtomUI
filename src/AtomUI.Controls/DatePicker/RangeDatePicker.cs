@@ -458,12 +458,12 @@ public class RangeDatePicker : RangeInfoPickerInput,
         if (PickerInnerBox is not null)
         {
             var preferredWidth = 0d;
-            if (PickerInnerBox.RightAddOnContent is Control rightAddOnContent)
-            {
-                preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
-                                  PickerInnerBox.EffectiveInnerBoxPadding.Left +
-                                  PickerInnerBox.EffectiveInnerBoxPadding.Right;
-            }
+            // if (PickerInnerBox.RightAddOnContent is Control rightAddOnContent)
+            // {
+            //     preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
+            //                       PickerInnerBox.EffectiveInnerBoxPadding.Left +
+            //                       PickerInnerBox.EffectiveInnerBoxPadding.Right;
+            // }
 
             if (RangePickerArrow is not null)
             {

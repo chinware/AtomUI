@@ -1,17 +1,17 @@
-﻿using System.Reactive.Disposables;
+using AtomUI.Animations;
 using AtomUI.Controls.Themes;
-using AtomUI.Data;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -30,10 +30,10 @@ public enum AddOnDecoratedStatus
     Error
 }
 
-[TemplatePart(AddOnDecoratedBoxThemeConstants.LeftAddOnPart, typeof(ContentPresenter))]
-[TemplatePart(AddOnDecoratedBoxThemeConstants.RightAddOnPart, typeof(ContentPresenter))]
-[TemplatePart(AddOnDecoratedBoxThemeConstants.InnerBoxContentPart, typeof(ContentPresenter), IsRequired = true)]
-internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesHost
+internal class AddOnDecoratedBox : ContentControl, 
+                                   IControlSharedTokenResourcesHost,
+                                   ISizeTypeAware,
+                                   IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -48,6 +48,18 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
     
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, IDataTemplate?>(nameof(RightAddOnTemplate));
+    
+    public static readonly StyledProperty<object?> ContentLeftAddOnProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(ContentLeftAddOn));
+    
+    public static readonly StyledProperty<IDataTemplate?> ContentLeftAddOnTemplateProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IDataTemplate?>(nameof(ContentLeftAddOnTemplate));
+
+    public static readonly StyledProperty<object?> ContentRightAddOnProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, object?>(nameof(ContentRightAddOn));
+    
+    public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IDataTemplate?>(nameof(ContentRightAddOnTemplate));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();
@@ -58,6 +70,9 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
 
     public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, AddOnDecoratedStatus>(nameof(Status));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedBox>();
 
     public object? LeftAddOn
     {
@@ -82,6 +97,30 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
         get => GetValue(RightAddOnTemplateProperty);
         set => SetValue(RightAddOnTemplateProperty, value);
     }
+    
+    public object? ContentLeftAddOn
+    {
+        get => GetValue(ContentLeftAddOnProperty);
+        set => SetValue(ContentLeftAddOnProperty, value);
+    }
+    
+    public IDataTemplate? ContentLeftAddOnTemplate
+    {
+        get => GetValue(ContentLeftAddOnTemplateProperty);
+        set => SetValue(ContentLeftAddOnTemplateProperty, value);
+    }
+
+    public object? ContentRightAddOn
+    {
+        get => GetValue(ContentRightAddOnProperty);
+        set => SetValue(ContentRightAddOnProperty, value);
+    }
+    
+    public IDataTemplate? ContentRightAddOnTemplate
+    {
+        get => GetValue(ContentRightAddOnTemplateProperty);
+        set => SetValue(ContentRightAddOnTemplateProperty, value);
+    }
 
     public SizeType SizeType
     {
@@ -100,9 +139,15 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
         get => GetValue(StatusProperty);
         set => SetValue(StatusProperty, value);
     }
+    
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
 
     #endregion
-
+    
     #region 内部属性定义
 
     internal static readonly DirectProperty<AddOnDecoratedBox, CornerRadius> InnerBoxCornerRadiusProperty =
@@ -129,6 +174,11 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
         AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(RightAddOnBorderThickness),
             o => o.RightAddOnBorderThickness,
             (o, v) => o.RightAddOnBorderThickness = v);
+    
+    internal static readonly DirectProperty<AddOnDecoratedBox, bool> IsInnerBoxHoverProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, bool>(nameof(IsInnerBoxHover),
+            o => o.IsInnerBoxHover,
+            (o, v) => o.IsInnerBoxHover = v);
 
     private CornerRadius _innerBoxCornerRadius;
 
@@ -169,72 +219,118 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
         get => _rightAddOnBorderThickness;
         set => SetAndRaise(RightAddOnBorderThicknessProperty, ref _rightAddOnBorderThickness, value);
     }
+    
+    private bool _isInnerBoxHover;
+
+    internal bool IsInnerBoxHover
+    {
+        get => _isInnerBoxHover;
+        set => SetAndRaise(IsInnerBoxHoverProperty, ref _isInnerBoxHover, value);
+    }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => AddOnDecoratedBoxToken.ID;
+    
+    Control IMotionAwareControl.PropertyBindTarget => this;
 
     #endregion
 
-    private protected Control? LeftAddOnPresenter;
-    private protected Control? RightAddOnPresenter;
-    private CompositeDisposable? _contentRelayBindingDisposables;
+    private Border? _contentFrame;
     private IDisposable? _borderThicknessDisposable;
-
+    
+    private protected Control? _leftAddOn;
+    private protected Control? _rightAddOn;
+    
     static AddOnDecoratedBox()
     {
         AffectsRender<AddOnDecoratedBox>(BorderBrushProperty, BackgroundProperty);
-        AffectsMeasure<AddOnDecoratedBox>(LeftAddOnProperty, RightAddOnProperty);
+        AffectsMeasure<AddOnDecoratedBox>(LeftAddOnProperty,
+            LeftAddOnTemplateProperty,
+            RightAddOnProperty,
+            RightAddOnTemplateProperty,
+            ContentLeftAddOnProperty,
+            ContentLeftAddOnTemplateProperty,
+            ContentRightAddOnProperty,
+            ContentRightAddOnTemplateProperty);
     }
 
     public AddOnDecoratedBox()
     {
         this.RegisterResources();
     }
+    
+    protected virtual void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == AddOnDecoratedVariant.Outline);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
 
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
+    }
+
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                Transitions = [
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BorderBrushProperty),
+                    TransitionUtils.CreateTransition<SolidColorBrushTransition>(Border.BackgroundProperty)
+                ];
+                NotifyCreateTransitions(Transitions);
+            }
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+
+    protected virtual void NotifyCreateTransitions(Transitions transitions)
+    {
+    }
+    
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+        
+        if (change.Property == StyleVariantProperty)
+        {
+            UpdatePseudoClasses();
+        }
 
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
             {
-                SetupInnerBoxCornerRadius();
+                ConfigureInnerBoxCornerRadius();
             }
         }
-        
         if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
         {
-            SetupAddOnBorderInfo();
+            ConfigureAddOnBorderInfo();
         }
-        else if (change.Property == StatusProperty)
+        if (IsLoaded)
         {
-            UpdatePseudoClasses();
-        } 
-        else if (change.Property == ContentProperty)
-        {
-            if (change.OldValue != null)
+            if (change.Property == IsMotionEnabledProperty)
             {
-                _contentRelayBindingDisposables?.Dispose();
-            }
-            if (Content is AddOnDecoratedInnerBox innerBox)
-            {
-                _contentRelayBindingDisposables = new CompositeDisposable();
-                _contentRelayBindingDisposables.Add(BindUtils.RelayBind(this, InnerBoxCornerRadiusProperty, innerBox, CornerRadiusProperty));
-                _contentRelayBindingDisposables.Add(BindUtils.RelayBind(this, BorderThicknessProperty, innerBox, BorderThicknessProperty));
+                ConfigureTransitions(true);
             }
         }
     }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        LeftAddOnPresenter  = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
-        RightAddOnPresenter = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
-        SetupInnerBoxCornerRadius();
-    }
-
-    private void SetupAddOnBorderInfo()
+    
+    private void ConfigureAddOnBorderInfo()
     {
         var topLeftRadius     = CornerRadius.TopLeft;
         var topRightRadius    = CornerRadius.TopRight;
@@ -263,6 +359,28 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
         NotifyAddOnBorderInfoCalculated();
     }
 
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _contentFrame = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
+        _leftAddOn    = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
+        _rightAddOn   = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
+        if (_contentFrame != null)
+        {
+            _contentFrame.PointerEntered += (sender, args) =>
+            {
+                IsInnerBoxHover = true;
+            };
+            _contentFrame.PointerExited += (sender, args) =>
+            {
+                IsInnerBoxHover = false;
+            };
+        }
+
+        ConfigureInnerBoxCornerRadius();
+        ConfigureAddOnBorderInfo();
+    }
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -281,21 +399,21 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
     protected virtual void NotifyAddOnBorderInfoCalculated()
     {
     }
-
-    private void SetupInnerBoxCornerRadius()
+    
+    private void ConfigureInnerBoxCornerRadius()
     {
         var topLeftRadius     = CornerRadius.TopLeft;
         var topRightRadius    = CornerRadius.TopRight;
         var bottomLeftRadius  = CornerRadius.BottomLeft;
         var bottomRightRadius = CornerRadius.BottomRight;
 
-        if (LeftAddOnPresenter is not null && LeftAddOnPresenter.IsVisible)
+        if (_leftAddOn is not null && _leftAddOn.IsVisible)
         {
             topLeftRadius    = 0;
             bottomLeftRadius = 0;
         }
 
-        if (RightAddOnPresenter is not null && RightAddOnPresenter.IsVisible)
+        if (_rightAddOn is not null && _rightAddOn.IsVisible)
         {
             topRightRadius    = 0;
             bottomRightRadius = 0;
@@ -305,11 +423,5 @@ internal class AddOnDecoratedBox : ContentControl, IControlSharedTokenResourcesH
             topRightRadius,
             bottomLeft: bottomLeftRadius,
             bottomRight: bottomRightRadius);
-    }
-
-    protected virtual void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(StdPseudoClass.Error, Status == AddOnDecoratedStatus.Error);
-        PseudoClasses.Set(StdPseudoClass.Warning, Status == AddOnDecoratedStatus.Warning);
     }
 }

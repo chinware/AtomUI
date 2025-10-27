@@ -11,22 +11,22 @@ public class LineEdit : TextBox
     #region 公共属性定义
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
-        SimpleAddOnDecoratedBox.StyleVariantProperty.AddOwner<LineEdit>();
+        AddOnDecoratedBox.StyleVariantProperty.AddOwner<LineEdit>();
 
     public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-        SimpleAddOnDecoratedBox.StatusProperty.AddOwner<LineEdit>();
+        AddOnDecoratedBox.StatusProperty.AddOwner<LineEdit>();
     
     public static readonly StyledProperty<object?> LeftAddOnProperty =
-        SimpleAddOnDecoratedBox.LeftAddOnProperty.AddOwner<LineEdit>();
+        AddOnDecoratedBox.LeftAddOnProperty.AddOwner<LineEdit>();
     
     public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-        SimpleAddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<LineEdit>();
+        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<LineEdit>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
-        SimpleAddOnDecoratedBox.RightAddOnProperty.AddOwner<LineEdit>();
+        AddOnDecoratedBox.RightAddOnProperty.AddOwner<LineEdit>();
     
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
-        SimpleAddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<LineEdit>();
+        AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<LineEdit>();
     
     public AddOnDecoratedVariant StyleVariant
     {

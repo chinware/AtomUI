@@ -7,7 +7,7 @@
     <ControlTheme x:Key="{x:Type atom:ButtonSpinnerDecoratedBox}"
                   TargetType="atom:ButtonSpinnerDecoratedBox">
         <ControlTheme.BasedOn>
-            <themes:SimpleAddOnDecoratedBoxTheme TargetType="atom:ButtonSpinnerDecoratedBox" />
+            <themes:AddOnDecoratedBoxTheme TargetType="atom:ButtonSpinnerDecoratedBox" />
         </ControlTheme.BasedOn>
 
         <Setter Property="Template">

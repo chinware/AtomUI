@@ -15,57 +15,59 @@
                     Status="{TemplateBinding Status}"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
-                    RightAddOn="{TemplateBinding RightAddOn}">
-                    <atom:AddOnDecoratedInnerBox Name="{x:Static atom:InfoPickerInputThemeConstants.PickerInnerPart}"
-                                                 HorizontalAlignment="Stretch"
-                                                 VerticalAlignment="Stretch"
-                                                 IsEnabled="{TemplateBinding IsEnabled}"
-                                                 LeftAddOnContent="{TemplateBinding InnerLeftContent}"
-                                                 StyleVariant="{TemplateBinding StyleVariant}"
-                                                 Status="{TemplateBinding Status}"
-                                                 SizeType="{TemplateBinding SizeType}">
-                        <atom:AddOnDecoratedInnerBox.RightAddOnContent>
-                            <atom:PickerClearUpButton Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
-                                                      Icon="{Binding (atom:InfoPickerInput.InfoIcon), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"/>
-                        </atom:AddOnDecoratedInnerBox.RightAddOnContent>
-                        <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
-                                      HorizontalContentAlignment="Stretch"
-                                      VerticalContentAlignment="Center"
-                                      VerticalAlignment="Stretch"
-                                      HorizontalAlignment="Stretch"
-                                      BorderThickness="0"
-                                      TextWrapping="NoWrap"
-                                      AcceptsReturn="False"
-                                      Width="{TemplateBinding PreferredInputWidth}"
-                                      IsEnableClearButton="False"
-                                      IsEnableRevealButton="False"
-                                      Text="{TemplateBinding Text}"
-                                      Watermark="{TemplateBinding Watermark}"
-                                      DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                      Foreground="{TemplateBinding InputTextBrush}"
-                                      SizeType="{TemplateBinding SizeType}"
-                                      IsReadOnly="{TemplateBinding IsReadOnly}"/>
-                    </atom:AddOnDecoratedInnerBox>
+                    LeftAddOnTemplate="{TemplateBinding LeftAddOn}"
+                    RightAddOn="{TemplateBinding RightAddOn}"
+                    RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                    ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
+                    ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
+                    <atom:AddOnDecoratedBox.ContentRightAddOn>
+                        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
+                            <atom:PickerClearUpButton
+                                Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
+                                Icon="{Binding (atom:InfoPickerInput.InfoIcon), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}" />
+                            <ContentPresenter Content="{Binding (atom:InfoPickerInput.ContentLeftAddOn), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
+                                              ContentTemplate="{Binding (atom:InfoPickerInput.ContentLeftAddOnTemplate), RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"/>
+                        </StackPanel>
+                    </atom:AddOnDecoratedBox.ContentRightAddOn>
+                    <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
+                                  HorizontalContentAlignment="Stretch"
+                                  VerticalContentAlignment="Center"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch"
+                                  BorderThickness="0"
+                                  TextWrapping="NoWrap"
+                                  AcceptsReturn="False"
+                                  Width="{TemplateBinding PreferredInputWidth}"
+                                  IsEnableClearButton="False"
+                                  IsEnableRevealButton="False"
+                                  Text="{TemplateBinding Text}"
+                                  Watermark="{TemplateBinding Watermark}"
+                                  DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                                  Foreground="{TemplateBinding InputTextBrush}"
+                                  SizeType="{TemplateBinding SizeType}"
+                                  IsReadOnly="{TemplateBinding IsReadOnly}" />
                 </atom:AddOnDecoratedBox>
             </Panel>
         </ControlTemplate>
     </Setter>
-    
+
     <Style Selector="^:is(atom|InfoPickerInput)">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="MarginToAnchor" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXXS}}" />
         <Setter Property="InputTextBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-        
+
         <Style Selector="^:flyout-open">
-            <Setter Property="InputTextBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+            <Setter Property="InputTextBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
         </Style>
-        
+
         <Style Selector="^:disabled">
-            <Setter Property="InputTextBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Setter Property="InputTextBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
-        
+
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
         </Style>
@@ -75,7 +77,7 @@
         <Style Selector="^[SizeType=Small]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
         </Style>
-        
+
     </Style>
-    
+
 </ControlTheme>

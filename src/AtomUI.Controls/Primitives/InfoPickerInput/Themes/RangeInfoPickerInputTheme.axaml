@@ -20,64 +20,64 @@
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
-                    RightAddOn="{TemplateBinding RightAddOn}">
-                    <atom:AddOnDecoratedInnerBox Name="{x:Static atom:InfoPickerInputThemeConstants.PickerInnerPart}"
-                                                 HorizontalAlignment="Stretch"
-                                                 VerticalAlignment="Stretch"
-                                                 LeftAddOnContent="{TemplateBinding InnerLeftContent}"
-                                                 StyleVariant="{TemplateBinding StyleVariant}"
-                                                 Status="{TemplateBinding Status}"
-                                                 SizeType="{TemplateBinding SizeType}"
-                                                 IsEnabled="{TemplateBinding IsEnabled}">
-                        <atom:AddOnDecoratedInnerBox.RightAddOnContent>
+                    LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
+                    RightAddOn="{TemplateBinding RightAddOn}"
+                    RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                    ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
+                    ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
+                    <atom:AddOnDecoratedBox.ContentRightAddOn>
+                        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                             <atom:PickerClearUpButton
                                 Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}"
-                                Icon="{Binding (atom:RangeInfoPickerInput.InfoIcon), RelativeSource={RelativeSource AncestorType=atom:RangeInfoPickerInput}}" />
-                        </atom:AddOnDecoratedInnerBox.RightAddOnContent>
-                        <Grid ColumnDefinitions="*, Auto, *">
-                            <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
-                                          Grid.Column="0"
-                                          HorizontalContentAlignment="Stretch"
-                                          VerticalContentAlignment="Center"
-                                          VerticalAlignment="Stretch"
-                                          HorizontalAlignment="Stretch"
-                                          BorderThickness="0"
-                                          TextWrapping="NoWrap"
-                                          AcceptsReturn="False"
-                                          IsEnableClearButton="False"
-                                          IsEnableRevealButton="False"
-                                          Width="{TemplateBinding PreferredInputWidth}"
-                                          DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                          Foreground="{TemplateBinding InputTextBrush}"
-                                          SizeType="{TemplateBinding SizeType}"
-                                          IsReadOnly="{TemplateBinding IsReadOnly}"
-                                          Text="{TemplateBinding Text}"
-                                          Watermark="{TemplateBinding Watermark}" />
-                            <atom:Icon Name="{x:Static atom:RangeInfoPickerInputThemeConstants.RangePickerArrowPart}"
-                                       IconInfo="{atom:IconInfoProvider SwapRightOutlined}"
-                                       Grid.Column="1" />
-                            <atom:TextBox
-                                Name="{x:Static atom:RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart}"
-                                Grid.Column="2"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                VerticalAlignment="Stretch"
-                                HorizontalAlignment="Stretch"
-                                BorderThickness="0"
-                                TextWrapping="NoWrap"
-                                AcceptsReturn="False"
-                                IsEnableClearButton="False"
-                                IsEnableRevealButton="False"
-                                Width="{TemplateBinding PreferredInputWidth}"
-                                DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                Foreground="{TemplateBinding InputTextBrush}"
-                                SizeType="{TemplateBinding SizeType}"
-                                IsReadOnly="{TemplateBinding IsReadOnly}"
-                                Text="{TemplateBinding SecondaryText}"
-                                Watermark="{TemplateBinding SecondaryWatermark}" />
+                                Icon="{Binding InfoIcon, RelativeSource={RelativeSource AncestorType=atom:RangeInfoPickerInput}}" />
+                            <ContentPresenter
+                                Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:RangeInfoPickerInput}}"
+                                ContentTemplate="{Binding ContentRightAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:RangeInfoPickerInput}}"/>
+                        </StackPanel>
+                    </atom:AddOnDecoratedBox.ContentRightAddOn>
+                    <Grid ColumnDefinitions="*, Auto, *">
+                        <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
+                                      Grid.Column="0"
+                                      HorizontalContentAlignment="Stretch"
+                                      VerticalContentAlignment="Center"
+                                      VerticalAlignment="Stretch"
+                                      HorizontalAlignment="Stretch"
+                                      BorderThickness="0"
+                                      TextWrapping="NoWrap"
+                                      AcceptsReturn="False"
+                                      IsEnableClearButton="False"
+                                      IsEnableRevealButton="False"
+                                      Width="{TemplateBinding PreferredInputWidth}"
+                                      DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                                      Foreground="{TemplateBinding InputTextBrush}"
+                                      SizeType="{TemplateBinding SizeType}"
+                                      IsReadOnly="{TemplateBinding IsReadOnly}"
+                                      Text="{TemplateBinding Text}"
+                                      Watermark="{TemplateBinding Watermark}" />
+                        <atom:Icon Name="{x:Static atom:RangeInfoPickerInputThemeConstants.RangePickerArrowPart}"
+                                   IconInfo="{atom:IconInfoProvider SwapRightOutlined}"
+                                   Grid.Column="1" />
+                        <atom:TextBox
+                            Name="{x:Static atom:RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart}"
+                            Grid.Column="2"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            BorderThickness="0"
+                            TextWrapping="NoWrap"
+                            AcceptsReturn="False"
+                            IsEnableClearButton="False"
+                            IsEnableRevealButton="False"
+                            Width="{TemplateBinding PreferredInputWidth}"
+                            DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                            Foreground="{TemplateBinding InputTextBrush}"
+                            SizeType="{TemplateBinding SizeType}"
+                            IsReadOnly="{TemplateBinding IsReadOnly}"
+                            Text="{TemplateBinding SecondaryText}"
+                            Watermark="{TemplateBinding SecondaryWatermark}" />
 
-                        </Grid>
-                    </atom:AddOnDecoratedInnerBox>
+                    </Grid>
                 </atom:AddOnDecoratedBox>
 
                 <Canvas>

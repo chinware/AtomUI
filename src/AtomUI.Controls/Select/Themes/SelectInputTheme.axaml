@@ -17,52 +17,23 @@
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}">
-                    <atom:SelectInputInnerBox
-                        Name="{x:Static atom:SelectInputThemeConstants.InnerBoxPart}"
-                        LeftAddOnContent="{TemplateBinding InnerLeftContent}"
-                        RightAddOnContent="{TemplateBinding InnerRightContent}"
-                        SizeType="{TemplateBinding SizeType}"
-                        StyleVariant="{TemplateBinding StyleVariant}"
-                        IsClearButtonVisible="{TemplateBinding IsEffectiveShowClearButton}"
-                        IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
-                        Status="{TemplateBinding Status}">
-                        <Panel>
-                            <atom:SelectResultOptionsBox Name="ResultOptionsBox" Focusable="True"/>
-                            <ScrollViewer
-                                Name="ScrollViewer"
-                                Cursor="Ibeam"
-                                IsVisible="False">
-                                <Panel>
-                                    <atom:TextBlock
-                                        Name="Watermark"
-                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                        Text="{TemplateBinding Watermark}"
-                                        LineHeight="{TemplateBinding LineHeight}"
-                                        TextAlignment="{TemplateBinding TextAlignment}"
-                                        TextWrapping="{TemplateBinding TextWrapping}"
-                                        IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
-                                    <TextPresenter
-                                        Name="PART_TextPresenter"
-                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                        CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
-                                        CaretBrush="{TemplateBinding CaretBrush}"
-                                        CaretIndex="{TemplateBinding CaretIndex}"
-                                        LineHeight="{TemplateBinding LineHeight}"
-                                        PasswordChar="{TemplateBinding PasswordChar}"
-                                        RevealPassword="{TemplateBinding RevealPassword}"
-                                        SelectionBrush="{TemplateBinding SelectionBrush}"
-                                        SelectionStart="{TemplateBinding SelectionStart}"
-                                        SelectionEnd="{TemplateBinding SelectionEnd}"
-                                        SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
-                                        Text="{TemplateBinding Text, Mode=TwoWay}"
-                                        TextAlignment="{TemplateBinding TextAlignment}"
-                                        TextWrapping="{TemplateBinding TextWrapping}" />
-                                </Panel>
-                            </ScrollViewer>
-                        </Panel>
-                    </atom:SelectInputInnerBox>
+                    <TextPresenter
+                        Name="PART_TextPresenter"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                        CaretBrush="{TemplateBinding CaretBrush}"
+                        CaretIndex="{TemplateBinding CaretIndex}"
+                        LineHeight="{TemplateBinding LineHeight}"
+                        PasswordChar="{TemplateBinding PasswordChar}"
+                        RevealPassword="{TemplateBinding RevealPassword}"
+                        SelectionBrush="{TemplateBinding SelectionBrush}"
+                        SelectionStart="{TemplateBinding SelectionStart}"
+                        SelectionEnd="{TemplateBinding SelectionEnd}"
+                        SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                        Text="{TemplateBinding Text, Mode=TwoWay}"
+                        TextAlignment="{TemplateBinding TextAlignment}"
+                        TextWrapping="{TemplateBinding TextWrapping}" />
                 </atom:AddOnDecoratedBox>
             </ControlTemplate>
         </Setter>

@@ -206,7 +206,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         var startOffsetX = pos.Value.X;
         var endOffsetX   = startOffsetX + targetWidth;
         var offsetY      = pos.Value.Y;
-        if (InnerLeftContent is Control leftContent)
+        if (ContentLeftAddOn is Control leftContent)
         {
             var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), _topLevel);
             if (leftContentPos.HasValue)
@@ -243,7 +243,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         var startOffsetX = pos.Value.X;
         var endOffsetX   = startOffsetX + targetWidth;
         var offsetY      = pos.Value.Y;
-        if (InnerLeftContent is Control leftContent)
+        if (ContentLeftAddOn is Control leftContent)
         {
             var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), _topLevel);
             if (leftContentPos.HasValue)

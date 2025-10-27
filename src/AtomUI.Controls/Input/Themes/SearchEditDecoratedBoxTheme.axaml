@@ -6,7 +6,7 @@
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SearchEditDecoratedBox}" TargetType="atom:SearchEditDecoratedBox">
         <ControlTheme.BasedOn>
-            <themes:SimpleAddOnDecoratedBoxTheme TargetType="atom:SearchEditDecoratedBox" />
+            <themes:AddOnDecoratedBoxTheme TargetType="atom:SearchEditDecoratedBox" />
         </ControlTheme.BasedOn>
 
         <Setter Property="Template">

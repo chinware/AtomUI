@@ -91,6 +91,12 @@ public class IconButton : AvaloniaButton,
         get => GetValue(IconHeightProperty);
         set => SetValue(IconHeightProperty, value);
     }
+    
+    public IconMode IconMode
+    {
+        get => GetValue(IconModeProperty);
+        set => SetValue(IconModeProperty, value);
+    }
 
     public bool IsEnableHoverEffect
     {

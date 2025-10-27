@@ -5,6 +5,4 @@
     xmlns:themes="using:AtomUI.Controls.Themes"
     x:ClassModifier="internal">
     <themes:AddOnDecoratedBoxTheme x:Key="{x:Type atom:AddOnDecoratedBox}" TargetType="atom:AddOnDecoratedBox"/>
-    <themes:SimpleAddOnDecoratedBoxTheme x:Key="{x:Type atom:SimpleAddOnDecoratedBox}" TargetType="atom:SimpleAddOnDecoratedBox"/>
-    <themes:AddOnDecoratedInnerBoxTheme x:Key="{x:Type atom:AddOnDecoratedInnerBox}" TargetType="atom:AddOnDecoratedInnerBox"/>
 </ResourceDictionary>

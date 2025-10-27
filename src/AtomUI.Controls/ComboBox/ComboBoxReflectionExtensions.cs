@@ -19,5 +19,4 @@ internal static class ComboBoxReflectionExtensions
     {
         PopupFieldInfo.Value.SetValue(comboBox, popup);
     }
-
 }

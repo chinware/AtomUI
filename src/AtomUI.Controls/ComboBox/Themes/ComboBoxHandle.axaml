@@ -9,11 +9,12 @@
                 <atom:IconButton
                     Name="{x:Static atom:ComboBoxHandleThemeConstants.OpenIndicatorButtonPart}"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                    IsEnabled="{TemplateBinding IsEnabled}"
                     Icon="{atom:IconProvider DownOutlined}"/>
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ atom|IconButton#OpenIndicatorButton">
+        <Style Selector="^ /template/ atom|IconButton#PART_OpenIndicatorButton">
             <Setter Property="ActiveIconBrush"
                     Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleHoverColor}}" />
             <Setter Property="SelectedIconBrush"

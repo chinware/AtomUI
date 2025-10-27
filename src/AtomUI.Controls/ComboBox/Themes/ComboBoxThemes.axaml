@@ -3,7 +3,6 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="ComboBoxItemTheme.axaml"/>
-        <ResourceInclude Source="ComboBoxSpinnerInnerBoxTheme.axaml"/>
         <ResourceInclude Source="ComboBoxTheme.axaml"/>
         <ResourceInclude Source="ComboBoxHandle.axaml"/>
     </ResourceDictionary.MergedDictionaries>

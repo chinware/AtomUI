@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
@@ -23,15 +24,29 @@ public abstract class InfoPickerInput : TemplatedControl,
                                         IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
-
     public static readonly StyledProperty<object?> LeftAddOnProperty =
-        AvaloniaProperty.Register<InfoPickerInput, object?>(nameof(LeftAddOn));
+        AddOnDecoratedBox.LeftAddOnProperty.AddOwner<InfoPickerInput>();
+    
+    public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
+        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
-        AvaloniaProperty.Register<InfoPickerInput, object?>(nameof(RightAddOn));
+        AddOnDecoratedBox.RightAddOnProperty.AddOwner<InfoPickerInput>();
+    
+    public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
+        AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<InfoPickerInput>();
+    
+    public static readonly StyledProperty<object?> ContentLeftAddOnProperty =
+        AddOnDecoratedBox.ContentLeftAddOnProperty.AddOwner<InfoPickerInput>();
+    
+    public static readonly StyledProperty<IDataTemplate?> ContentLeftAddOnTemplateProperty =
+        AddOnDecoratedBox.ContentLeftAddOnTemplateProperty.AddOwner<InfoPickerInput>();
 
-    public static readonly StyledProperty<object?> InnerLeftContentProperty
-        = AvaloniaProperty.Register<InfoPickerInput, object?>(nameof(InnerLeftContent));
+    public static readonly StyledProperty<object?> ContentRightAddOnProperty =
+        AddOnDecoratedBox.ContentRightAddOnProperty.AddOwner<InfoPickerInput>();
+    
+    public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
+        AddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<InfoPickerInput>();
@@ -81,17 +96,47 @@ public abstract class InfoPickerInput : TemplatedControl,
         get => GetValue(LeftAddOnProperty);
         set => SetValue(LeftAddOnProperty, value);
     }
+    
+    public IDataTemplate? LeftAddOnTemplate
+    {
+        get => GetValue(LeftAddOnTemplateProperty);
+        set => SetValue(LeftAddOnTemplateProperty, value);
+    }
 
     public object? RightAddOn
     {
         get => GetValue(RightAddOnProperty);
         set => SetValue(RightAddOnProperty, value);
     }
-
-    public object? InnerLeftContent
+    
+    public IDataTemplate? RightAddOnTemplate
     {
-        get => GetValue(InnerLeftContentProperty);
-        set => SetValue(InnerLeftContentProperty, value);
+        get => GetValue(RightAddOnTemplateProperty);
+        set => SetValue(RightAddOnTemplateProperty, value);
+    }
+    
+    public object? ContentLeftAddOn
+    {
+        get => GetValue(ContentLeftAddOnProperty);
+        set => SetValue(ContentLeftAddOnProperty, value);
+    }
+    
+    public IDataTemplate? ContentLeftAddOnTemplate
+    {
+        get => GetValue(ContentLeftAddOnTemplateProperty);
+        set => SetValue(ContentLeftAddOnTemplateProperty, value);
+    }
+
+    public object? ContentRightAddOn
+    {
+        get => GetValue(ContentRightAddOnProperty);
+        set => SetValue(ContentRightAddOnProperty, value);
+    }
+    
+    public IDataTemplate? ContentRightAddOnTemplate
+    {
+        get => GetValue(ContentRightAddOnTemplateProperty);
+        set => SetValue(ContentRightAddOnTemplateProperty, value);
     }
 
     public SizeType SizeType
@@ -216,7 +261,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     private protected Flyout? PickerFlyout;
     protected bool CurrentValidSelected;
     private IDisposable? _clearUpButtonDetectDisposable;
-    private protected AddOnDecoratedInnerBox? PickerInnerBox;
+    private protected Border? PickerInnerBox;
     protected Avalonia.Controls.TextBox? InfoInputBox;
 
     private protected bool IsFlyoutOpen;
@@ -329,7 +374,7 @@ public abstract class InfoPickerInput : TemplatedControl,
             var startOffsetX = pos.Value.X;
             var endOffsetX   = startOffsetX + targetWidth;
             var offsetY      = pos.Value.Y;
-            if (InnerLeftContent is Control leftContent)
+            if (ContentLeftAddOn is Control leftContent)
             {
                 var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
                 if (leftContentPos.HasValue)
@@ -379,7 +424,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
 
         DecoratedBox        = e.NameScope.Get<AddOnDecoratedBox>(InfoPickerInputThemeConstants.DecoratedBoxPart);
-        PickerInnerBox      = e.NameScope.Get<AddOnDecoratedInnerBox>(InfoPickerInputThemeConstants.PickerInnerPart);
+        PickerInnerBox      = e.NameScope.Get<Border>(InfoPickerInputThemeConstants.PickerInnerPart);
         InfoInputBox        = e.NameScope.Get<Avalonia.Controls.TextBox>(InfoPickerInputThemeConstants.InfoInputBoxPart);
         PickerClearUpButton = e.NameScope.Get<PickerClearUpButton>(InfoPickerInputThemeConstants.ClearUpButtonPart);
 
@@ -388,7 +433,7 @@ public abstract class InfoPickerInput : TemplatedControl,
             PickerClearUpButton.ClearRequest += (sender, args) => { NotifyClearButtonClicked(); };
         }
 
-        FlyoutStateHelper.AnchorTarget = PickerInnerBox;
+        FlyoutStateHelper.AnchorTarget = DecoratedBox;
         SetupFlyoutProperties();
     }
 

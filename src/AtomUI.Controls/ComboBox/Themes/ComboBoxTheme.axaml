@@ -8,6 +8,7 @@
             <ControlTemplate>
                 <Panel>
                     <atom:AddOnDecoratedBox
+                        Name="{x:Static atom:ComboBoxThemeConstants.AddOnDecoratedBoxPart}"
                         Focusable="True"
                         StyleVariant="{TemplateBinding StyleVariant}"
                         SizeType="{TemplateBinding SizeType}"
@@ -15,40 +16,35 @@
                         LeftAddOn="{TemplateBinding LeftAddOn}"
                         LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                         RightAddOn="{TemplateBinding RightAddOn}"
-                        RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}">
-                        <atom:ComboBoxSpinnerInnerBox
-                            Name="{x:Static atom:ComboBoxThemeConstants.SpinnerInnerBoxPart}"
-                            Focusable="False"
-                            IsEnabled="{TemplateBinding IsEnabled}"
-                            LeftAddOnContent="{TemplateBinding InnerLeftContent}"
-                            LeftAddOnContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
-                            RightAddOnContent="{TemplateBinding InnerRightContent}"
-                            RightAddOnContentTemplate="{TemplateBinding InnerRightContentTemplate}"
-                            StyleVariant="{TemplateBinding StyleVariant}"
-                            SizeType="{TemplateBinding SizeType}"
-                            Status="{TemplateBinding Status}">
-                            <atom:ComboBoxSpinnerInnerBox.SpinnerContent>
-                                <atom:ComboBoxHandle
-                                    IsMotionEnabled="{Binding (atom:ComboBox.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ComboBox}}" />
-                            </atom:ComboBoxSpinnerInnerBox.SpinnerContent>
-
-                            <Panel>
-                                <atom:TextBlock
-                                    Name="PlaceholderText"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    TextTrimming="CharacterEllipsis"
-                                    Opacity="0.3"
-                                    IsVisible="{TemplateBinding SelectingItemsControl.SelectedItem, Converter={x:Static ObjectConverters.IsNull}}"
-                                    Text="{TemplateBinding PlaceholderText}" />
-                                <ContentPresenter
-                                    Name="SelectedContentPresenter"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Content="{TemplateBinding SelectionBoxItem}"
-                                    ContentTemplate="{TemplateBinding ItemTemplate}" />
-                            </Panel>
-                        </atom:ComboBoxSpinnerInnerBox>
+                        RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                        IsEnabled="{TemplateBinding IsEnabled}"
+                        ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
+                        ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
+                        <atom:AddOnDecoratedBox.ContentRightAddOn>
+                             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
+                                 <ContentPresenter Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"
+                                                   ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"/>
+                                 <atom:ComboBoxHandle
+                                     IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}"
+                                     IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:ComboBox}}" />
+                             </StackPanel>
+                        </atom:AddOnDecoratedBox.ContentRightAddOn>
+                        <Panel>
+                            <atom:TextBlock
+                                Name="PlaceholderText"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                TextTrimming="CharacterEllipsis"
+                                Opacity="0.3"
+                                IsVisible="{TemplateBinding SelectingItemsControl.SelectedItem, Converter={x:Static ObjectConverters.IsNull}}"
+                                Text="{TemplateBinding PlaceholderText}" />
+                            <ContentPresenter
+                                Name="SelectedContentPresenter"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding SelectionBoxItem}"
+                                ContentTemplate="{TemplateBinding ItemTemplate}" />
+                        </Panel>
                     </atom:AddOnDecoratedBox>
 
                     <atom:Popup Name="PART_Popup"

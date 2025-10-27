@@ -8,7 +8,7 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-internal class SearchEditDecoratedBox : SimpleAddOnDecoratedBox
+internal class SearchEditDecoratedBox : AddOnDecoratedBox
 {
     #region 公共属性定义
 

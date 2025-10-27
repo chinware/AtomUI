@@ -13,7 +13,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-internal class ButtonSpinnerDecoratedBox : SimpleAddOnDecoratedBox
+internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
 {
     #region 公共属性定义
 

@@ -24,7 +24,7 @@
                     LoadingAnimationDuration="{TemplateBinding LoadingAnimationDuration}"
                     IconWidth="{TemplateBinding IconWidth}"
                     IconHeight="{TemplateBinding IconHeight}"
-                    IconMode="{TemplateBinding atom:IconButton.IconMode}"
+                    IconMode="{TemplateBinding IconMode}"
                     NormalFilledBrush="{TemplateBinding NormalIconBrush}"
                     ActiveFilledBrush="{TemplateBinding ActiveIconBrush}"
                     SelectedFilledBrush="{TemplateBinding SelectedIconBrush}"

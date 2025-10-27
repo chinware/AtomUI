@@ -10,7 +10,7 @@
     </ControlTheme.BasedOn>
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:LineEdit">
-            <atom:SimpleAddOnDecoratedBox
+            <atom:AddOnDecoratedBox
                 LeftAddOn="{TemplateBinding LeftAddOn}"
                 LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                 RightAddOn="{TemplateBinding RightAddOn}"
@@ -20,7 +20,7 @@
                 SizeType="{TemplateBinding SizeType}"
                 Status="{TemplateBinding Status}"
                 Focusable="True">
-                <atom:SimpleAddOnDecoratedBox.ContentRightAddOn>
+                <atom:AddOnDecoratedBox.ContentRightAddOn>
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
                         <atom:IconButton
                             Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
@@ -51,7 +51,7 @@
                             Focusable="False"
                             Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"/>
                     </StackPanel>
-                </atom:SimpleAddOnDecoratedBox.ContentRightAddOn>
+                </atom:AddOnDecoratedBox.ContentRightAddOn>
                 
                 <ScrollViewer
                     Name="ScrollViewer"
@@ -89,7 +89,7 @@
                             TextWrapping="{TemplateBinding TextWrapping}" />
                     </Panel>
                 </ScrollViewer>
-            </atom:SimpleAddOnDecoratedBox>
+            </atom:AddOnDecoratedBox>
         </ControlTemplate>
     </Setter>
 

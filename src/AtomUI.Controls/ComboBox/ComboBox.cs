@@ -10,6 +10,7 @@ using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -26,7 +27,7 @@ public class ComboBox : AvaloniaComboBox,
         AddOnDecoratedBox.LeftAddOnProperty.AddOwner<ComboBox>();
     
     public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ComboBox>();
+       AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
         AddOnDecoratedBox.RightAddOnProperty.AddOwner<ComboBox>();
@@ -34,17 +35,17 @@ public class ComboBox : AvaloniaComboBox,
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
         AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<ComboBox>();
     
-    public static readonly StyledProperty<object?> InnerLeftContentProperty = 
-        AvaloniaProperty.Register<ComboBox, object?>(nameof(InnerLeftContent));
+    public static readonly StyledProperty<object?> ContentLeftAddOnProperty =
+        AddOnDecoratedBox.ContentLeftAddOnProperty.AddOwner<ComboBox>();
     
-    public static readonly StyledProperty<IDataTemplate?> InnerLeftContentTemplateProperty =
-        AvaloniaProperty.Register<ComboBox, IDataTemplate?>(nameof(InnerLeftContentTemplate));
+    public static readonly StyledProperty<IDataTemplate?> ContentLeftAddOnTemplateProperty =
+        AddOnDecoratedBox.ContentLeftAddOnTemplateProperty.AddOwner<ComboBox>();
 
-    public static readonly StyledProperty<object?> InnerRightContentProperty =
-        AvaloniaProperty.Register<ComboBox, object?>(nameof(InnerRightContent));
+    public static readonly StyledProperty<object?> ContentRightAddOnProperty =
+        AddOnDecoratedBox.ContentRightAddOnProperty.AddOwner<ComboBox>();
     
-    public static readonly StyledProperty<IDataTemplate?> InnerRightContentTemplateProperty =
-        AvaloniaProperty.Register<ComboBox, IDataTemplate?>(nameof(InnerRightContentTemplate));
+    public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
+        AddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ComboBox>();
@@ -91,28 +92,28 @@ public class ComboBox : AvaloniaComboBox,
         set => SetValue(RightAddOnTemplateProperty, value);
     }
     
-    public object? InnerLeftContent
+    public object? ContentLeftAddOn
     {
-        get => GetValue(InnerLeftContentProperty);
-        set => SetValue(InnerLeftContentProperty, value);
+        get => GetValue(ContentLeftAddOnProperty);
+        set => SetValue(ContentLeftAddOnProperty, value);
     }
     
-    public IDataTemplate? InnerLeftContentTemplate
+    public IDataTemplate? ContentLeftAddOnTemplate
     {
-        get => GetValue(InnerLeftContentTemplateProperty);
-        set => SetValue(InnerLeftContentTemplateProperty, value);
+        get => GetValue(ContentLeftAddOnTemplateProperty);
+        set => SetValue(ContentLeftAddOnTemplateProperty, value);
     }
 
-    public object? InnerRightContent
+    public object? ContentRightAddOn
     {
-        get => GetValue(InnerRightContentProperty);
-        set => SetValue(InnerRightContentProperty, value);
+        get => GetValue(ContentRightAddOnProperty);
+        set => SetValue(ContentRightAddOnProperty, value);
     }
     
-    public IDataTemplate? InnerRightContentTemplate
+    public IDataTemplate? ContentRightAddOnTemplate
     {
-        get => GetValue(InnerRightContentTemplateProperty);
-        set => SetValue(InnerRightContentTemplateProperty, value);
+        get => GetValue(ContentRightAddOnTemplateProperty);
+        set => SetValue(ContentRightAddOnTemplateProperty, value);
     }
 
     public SizeType SizeType
@@ -234,11 +235,19 @@ public class ComboBox : AvaloniaComboBox,
         base.OnApplyTemplate(e);
         this.SetPopup(null); // 情况父类，方式鼠标点击的错误处理
         _popup = e.NameScope.Find<Popup>(ComboBoxThemeConstants.PopupPart);
-        var spinnerHandle = e.NameScope.Find<ComboBoxSpinnerInnerBox>(ComboBoxThemeConstants.SpinnerInnerBoxPart);
-        if (spinnerHandle?.SpinnerContent is ComboBoxHandle handle)
+        var addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(ComboBoxThemeConstants.AddOnDecoratedBoxPart);
+        if (addOnDecoratedBox != null)
         {
-            handle.HandleClick += HandleOpenPopupClicked;
+            if (addOnDecoratedBox.ContentRightAddOn is Control rightAddOn)
+            {
+                var handle = rightAddOn.FindDescendantOfType<ComboBoxHandle>();
+                if (handle != null)
+                {
+                    handle.HandleClick += HandleOpenPopupClicked;
+                }
+            }
         }
+       
         if (_popup is IPopupHostProvider popupHostProvider)
         {
             popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
