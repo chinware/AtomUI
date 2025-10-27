@@ -4,9 +4,111 @@
     xmlns:atom="https://atomui.net"
     xmlns:themes="using:AtomUI.Controls.Themes"
     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:ButtonSpinnerDecoratedBox}" TargetType="atom:ButtonSpinnerDecoratedBox">
+    <ControlTheme x:Key="{x:Type atom:ButtonSpinnerDecoratedBox}"
+                  TargetType="atom:ButtonSpinnerDecoratedBox">
         <ControlTheme.BasedOn>
-            <themes:AddOnDecoratedBoxTheme TargetType="atom:ButtonSpinnerDecoratedBox" />
+            <themes:SimpleAddOnDecoratedBoxTheme TargetType="atom:ButtonSpinnerDecoratedBox" />
         </ControlTheme.BasedOn>
+
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:ButtonSpinnerDecoratedBox">
+                <DockPanel Name="RootLayout" LastChildFill="True">
+                    <ContentPresenter
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Focusable="False"
+                        DockPanel.Dock="Left"
+                        Content="{TemplateBinding LeftAddOn}"
+                        ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                        BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
+                        CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
+                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <ContentPresenter
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        DockPanel.Dock="Right"
+                        Focusable="False"
+                        Content="{TemplateBinding RightAddOn}"
+                        ContentTemplate="{TemplateBinding RightAddOnTemplate}"
+                        BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
+                        CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
+                        IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                    <Panel>
+                        <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}">
+                            <DockPanel Name="ContentLayout" LastChildFill="True">
+                                <ContentPresenter
+                                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
+                                    DockPanel.Dock="Left"
+                                    VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    Focusable="False"
+                                    Content="{TemplateBinding ContentLeftAddOn}"
+                                    ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                                    IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                                <ContentPresenter
+                                    DockPanel.Dock="Right"
+                                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
+                                    VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Focusable="False"
+                                    Content="{TemplateBinding ContentRightAddOn}"
+                                    ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
+                                    IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                                <ContentPresenter
+                                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            </DockPanel>
+                        </Border>
+
+                        <ContentPresenter
+                            Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandlePart}"
+                            ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
+                            Content="{TemplateBinding SpinnerContent}"
+                            Opacity="{TemplateBinding HandleOpacity}" />
+                    </Panel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:is(atom|ButtonSpinnerDecoratedBox)">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="SpinnerHandleWidth"
+                    Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}" />
+            <Style Selector="^[ButtonSpinnerLocation=Left]">
+                <Style Selector="^ /template/ ContentPresenter#PART_SpinnerHandle">
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                </Style>
+            </Style>
+            <Style Selector="^[ButtonSpinnerLocation=Right]">
+                <Style Selector="^ /template/ ContentPresenter#PART_SpinnerHandle">
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="ContentPadding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="ContentPadding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.Padding}}" />
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="ContentPadding"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
+            </Style>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

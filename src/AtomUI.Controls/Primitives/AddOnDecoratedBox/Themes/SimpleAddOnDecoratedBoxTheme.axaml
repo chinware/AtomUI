@@ -59,7 +59,7 @@
                             IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
                         <ContentPresenter
-                            Name="PART_ContentPresenter"
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </DockPanel>

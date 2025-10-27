@@ -8,44 +8,33 @@
             <ControlTemplate>
                 <atom:ButtonSpinnerDecoratedBox
                     Name="{x:Static atom:ButtonSpinnerThemeConstants.DecoratedBoxPart}"
-                    StyleVariant="{TemplateBinding StyleVariant}"
-                    SizeType="{TemplateBinding SizeType}"
-                    Status="{TemplateBinding Status}"
-                    IsEnabled="{TemplateBinding IsEnabled}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
-                    ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
-                    ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}">
-                    <atom:ButtonSpinnerInnerBox
-                        Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerInnerBoxPart}"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                        IsEnabled="{TemplateBinding IsEnabled}"
-                        LeftAddOnContent="{TemplateBinding InnerLeftContent}"
-                        LeftAddOnContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
-                        RightAddOnContent="{TemplateBinding InnerRightContent}"
-                        RightAddOnContentTemplate="{TemplateBinding InnerRightContentTemplate}"
-                        StyleVariant="{TemplateBinding StyleVariant}"
-                        SizeType="{TemplateBinding SizeType}"
-                        Status="{TemplateBinding Status}"
-                        IsShowHandle="{TemplateBinding ShowButtonSpinner}"
-                        IsHandleFloatable="{TemplateBinding IsButtonSpinnerFloatable}"
-                        ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"
-                        Content="{TemplateBinding Content}"
-                        ContentTemplate="{TemplateBinding ContentTemplate}">
-                        <atom:ButtonSpinnerInnerBox.SpinnerContent>
-                            <atom:ButtonSpinnerHandle
-                                ButtonSpinnerLocation="{Binding (atom:ButtonSpinner.ButtonSpinnerLocation), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
-                                IsMotionEnabled="{Binding (atom:ButtonSpinner.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
-                                CornerRadius="{Binding (atom:ButtonSpinner.CornerRadius), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
-                                Width="{Binding (atom:ButtonSpinner.SpinnerHandleWidth), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
-                                />
-                        </atom:ButtonSpinnerInnerBox.SpinnerContent>
-                    </atom:ButtonSpinnerInnerBox>
+                    ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
+                    ContentRightAddOn="{TemplateBinding InnerRightContent}"
+                    StyleVariant="{TemplateBinding StyleVariant}"
+                    SizeType="{TemplateBinding SizeType}"
+                    Status="{TemplateBinding Status}"
+                    IsShowHandle="{TemplateBinding ShowButtonSpinner}"
+                    IsHandleFloatable="{TemplateBinding IsButtonSpinnerFloatable}"
+                    ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"
+                    Focusable="True"
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}">
+                    <atom:ButtonSpinnerDecoratedBox.SpinnerContent>
+                        <atom:ButtonSpinnerHandle
+                            ButtonSpinnerLocation="{Binding (atom:ButtonSpinner.ButtonSpinnerLocation), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
+                            IsMotionEnabled="{Binding (atom:ButtonSpinner.IsMotionEnabled), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
+                            CornerRadius="{Binding (atom:ButtonSpinner.CornerRadius), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
+                            Width="{Binding (atom:ButtonSpinner.SpinnerHandleWidth), RelativeSource={RelativeSource AncestorType=atom:ButtonSpinner}}"
+                        />
+                    </atom:ButtonSpinnerDecoratedBox.SpinnerContent>
                 </atom:ButtonSpinnerDecoratedBox>
             </ControlTemplate>
         </Setter>
+        
         <Setter Property="SpinnerHandleWidth"
                 Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
@@ -58,6 +47,6 @@
         <Style Selector="^[SizeType=Small]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>

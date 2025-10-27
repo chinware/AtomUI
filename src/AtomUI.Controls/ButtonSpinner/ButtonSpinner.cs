@@ -1,37 +1,54 @@
-﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.IconPkg;
+using AtomUI.Input;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-using AvaloniaButtonSpinner = Avalonia.Controls.ButtonSpinner;
+public enum ButtonSpinnerLocation
+{
+    Left,
+    Right
+}
 
-public class ButtonSpinner : AvaloniaButtonSpinner,
-                             IMotionAwareControl,
-                             IControlSharedTokenResourcesHost
+[PseudoClasses(ButtonSpinnerPseudoClass.Left, ButtonSpinnerPseudoClass.Right)]
+public class ButtonSpinner : Spinner,
+                                   IMotionAwareControl,
+                                   IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
+    public static readonly StyledProperty<bool> AllowSpinProperty =
+        AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(AllowSpin), true);
+    
+    public static readonly StyledProperty<bool> ShowButtonSpinnerProperty =
+        AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(ShowButtonSpinner), true);
+    
+    public static readonly StyledProperty<ButtonSpinnerLocation> ButtonSpinnerLocationProperty =
+        AvaloniaProperty.Register<ButtonSpinner, ButtonSpinnerLocation>(nameof(ButtonSpinnerLocation), ButtonSpinnerLocation.Right);
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
-        AddOnDecoratedBox.LeftAddOnProperty.AddOwner<ButtonSpinner>();
+        SimpleAddOnDecoratedBox.LeftAddOnProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ButtonSpinner>();
+        SimpleAddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
-        AddOnDecoratedBox.RightAddOnProperty.AddOwner<ButtonSpinner>();
+        SimpleAddOnDecoratedBox.RightAddOnProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
-        AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<ButtonSpinner>();
+        SimpleAddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<object?> InnerLeftContentProperty
         = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerLeftContent));
@@ -49,10 +66,10 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
-        AddOnDecoratedBox.StyleVariantProperty.AddOwner<ButtonSpinner>();
+        SimpleAddOnDecoratedBox.StyleVariantProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<AddOnDecoratedStatus> StatusProperty =
-        AddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
+        SimpleAddOnDecoratedBox.StatusProperty.AddOwner<ButtonSpinner>();
     
     public static readonly StyledProperty<bool> IsButtonSpinnerFloatableProperty =
         AvaloniaProperty.Register<ButtonSpinner, bool>(nameof (IsButtonSpinnerFloatable), false);
@@ -60,6 +77,24 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ButtonSpinner>();
 
+    public bool AllowSpin
+    {
+        get => GetValue(AllowSpinProperty);
+        set => SetValue(AllowSpinProperty, value);
+    }
+
+    public bool ShowButtonSpinner
+    {
+        get => GetValue(ShowButtonSpinnerProperty);
+        set => SetValue(ShowButtonSpinnerProperty, value);
+    }
+
+    public ButtonSpinnerLocation ButtonSpinnerLocation
+    {
+        get => GetValue(ButtonSpinnerLocationProperty);
+        set => SetValue(ButtonSpinnerLocationProperty, value);
+    }
+    
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -158,12 +193,52 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
     #endregion
     
     private ButtonSpinnerDecoratedBox? _decoratedBox;
-    private ButtonSpinnerInnerBox? _buttonSpinnerInnerBox;
     private CompositeDisposable? _addOnBindingDisposables;
 
+    static ButtonSpinner()
+    {
+        AllowSpinProperty.Changed.Subscribe(AllowSpinChanged);
+    }
+    
     public ButtonSpinner()
     {
         this.RegisterResources();
+    }
+    
+    private IconButton? _decreaseButton;
+    private IconButton? DecreaseButton
+    {
+        get => _decreaseButton;
+        set
+        {
+            if (_decreaseButton != null)
+            {
+                _decreaseButton.Click -= HandleButtonClick;
+            }
+            _decreaseButton = value;
+            if (_decreaseButton != null)
+            {
+                _decreaseButton.Click += HandleButtonClick;
+            }
+        }
+    }
+    
+    private IconButton? _increaseButton;
+    private IconButton? IncreaseButton
+    {
+        get => _increaseButton;
+        set
+        {
+            if (_increaseButton != null)
+            {
+                _increaseButton.Click -= HandleButtonClick;
+            }
+            _increaseButton = value;
+            if (_increaseButton != null)
+            {
+                _increaseButton.Click += HandleButtonClick;
+            }
+        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -185,22 +260,26 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
                 ConfigureAddOns();
             }
         }
+        
+        if (change.Property == ButtonSpinnerLocationProperty)
+        {
+            UpdatePseudoClasses();
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         _decoratedBox          = e.NameScope.Find<ButtonSpinnerDecoratedBox>(ButtonSpinnerThemeConstants.DecoratedBoxPart);
-        _buttonSpinnerInnerBox = e.NameScope.Find<ButtonSpinnerInnerBox>(ButtonSpinnerThemeConstants.SpinnerInnerBoxPart);
         base.OnApplyTemplate(e);
-        if (_buttonSpinnerInnerBox?.SpinnerContent is ButtonSpinnerHandle spinnerHandle)
+        if (_decoratedBox?.SpinnerContent is ButtonSpinnerHandle spinnerHandle)
         {
             spinnerHandle.ButtonsCreated += (sender, args) =>
             {
-                this.SetIncreaseButton(spinnerHandle.IncreaseButton);
-                this.SetDecreaseButton(spinnerHandle.DecreaseButton);
+                IncreaseButton = spinnerHandle.IncreaseButton;
+                DecreaseButton = spinnerHandle.DecreaseButton;
             };
         }
-
+        SetButtonUsage();
         ConfigureAddOns();
     }
 
@@ -245,4 +324,134 @@ public class ButtonSpinner : AvaloniaButtonSpinner,
             InnerRightContent = iconPresenter;
         }
     }
+    
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(ButtonSpinnerPseudoClass.Left, ButtonSpinnerLocation == ButtonSpinnerLocation.Left);
+        PseudoClasses.Set(ButtonSpinnerPseudoClass.Right, ButtonSpinnerLocation == ButtonSpinnerLocation.Right);
+    }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        Point mousePosition;
+        if (IncreaseButton != null && IncreaseButton.IsEnabled == false)
+        {
+            mousePosition = e.GetPosition(IncreaseButton);
+            if (mousePosition.X > 0 && mousePosition.X < IncreaseButton.Width &&
+                mousePosition.Y > 0 && mousePosition.Y < IncreaseButton.Height)
+            {
+                e.Handled = true;
+            }
+        }
+
+        if (DecreaseButton != null && DecreaseButton.IsEnabled == false)
+        {
+            mousePosition = e.GetPosition(DecreaseButton);
+            if (mousePosition.X > 0 && mousePosition.X < DecreaseButton.Width &&
+                mousePosition.Y > 0 && mousePosition.Y < DecreaseButton.Height)
+            {
+                e.Handled = true;
+            }
+        }
+    }
+    
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        // If XY navigation is enabled - do not spin with arrow keys, instead use spinner buttons.
+        if (this.IsAllowedXYNavigationMode(e.KeyDeviceType))
+        {
+            return;
+        }
+
+        switch (e.Key)
+        {
+            case Key.Up:
+            {
+                if (AllowSpin)
+                {
+                    OnSpin(new SpinEventArgs(SpinEvent, SpinDirection.Increase));
+                    e.Handled = true;
+                }
+                break;
+            }
+            case Key.Down:
+            {
+                if (AllowSpin)
+                {
+                    OnSpin(new SpinEventArgs(SpinEvent, SpinDirection.Decrease));
+                    e.Handled = true;
+                }
+                break;
+            }
+            case Key.Enter:
+            {
+                //Do not Spin on enter Key when spinners have focus
+                if (((IncreaseButton != null) && (IncreaseButton.IsFocused))
+                    || ((DecreaseButton != null) && DecreaseButton.IsFocused))
+                {
+                    e.Handled = true;
+                }
+                break;
+            }
+        }
+    }
+    
+    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+    {
+        base.OnPointerWheelChanged(e);
+
+        if (AllowSpin && IsKeyboardFocusWithin)
+        {
+            if (e.Delta.Y != 0)
+            {
+                var spinnerEventArgs = new SpinEventArgs(SpinEvent, (e.Delta.Y < 0) ? SpinDirection.Decrease : SpinDirection.Increase, true);
+                OnSpin(spinnerEventArgs);
+                e.Handled = true;
+            }
+        }
+    }
+    
+    protected override void OnValidSpinDirectionChanged(ValidSpinDirections oldValue, ValidSpinDirections newValue)
+    {
+        SetButtonUsage();
+    }
+    
+    protected virtual void OnAllowSpinChanged(bool oldValue, bool newValue)
+    {
+        SetButtonUsage();
+    }
+    
+    private static void AllowSpinChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Sender is ButtonSpinner spinner)
+        {
+            var oldValue = (bool)e.OldValue!;
+            var newValue = (bool)e.NewValue!;
+            spinner.OnAllowSpinChanged(oldValue, newValue);
+        }
+    }
+    
+    private void SetButtonUsage()
+    {
+        if (IncreaseButton != null)
+        {
+            IncreaseButton.IsEnabled = AllowSpin && ((ValidSpinDirection & ValidSpinDirections.Increase) == ValidSpinDirections.Increase);
+        }
+
+        if (DecreaseButton != null)
+        {
+            DecreaseButton.IsEnabled = AllowSpin && ((ValidSpinDirection & ValidSpinDirections.Decrease) == ValidSpinDirections.Decrease);
+        }
+    }
+    
+    private void HandleButtonClick(object? sender, RoutedEventArgs e)
+    {
+        if (AllowSpin)
+        {
+            var direction = sender == IncreaseButton ? SpinDirection.Increase : SpinDirection.Decrease;
+            OnSpin(new SpinEventArgs(SpinEvent, direction));
+        }
+    }
+
 }

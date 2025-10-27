@@ -2,9 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="ButtonSpinnerDecoratedBoxTheme.axaml"/>
-        <ResourceInclude Source="ButtonSpinnerInnerBoxTheme.axaml"/>
         <ResourceInclude Source="ButtonSpinnerTheme.axaml"/>
         <ResourceInclude Source="ButtonSpinnerHandle.axaml"/>
+        <ResourceInclude Source="ButtonSpinnerTheme.axaml"/>
+        <ResourceInclude Source="ButtonSpinnerDecoratedBoxTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
