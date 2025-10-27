@@ -37,6 +37,9 @@ internal class PaletteColorItem : AvaloniaRadioButton
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PaletteColorItem>();
     
+    internal static readonly StyledProperty<ITransform?> CheckedMarkRenderTransformProperty = 
+        AvaloniaProperty.Register<PaletteColorItem, ITransform?>(nameof (CheckedMarkRenderTransform));
+    
     internal static readonly DirectProperty<PaletteColorItem, bool> IsLightColorProperty =
         AvaloniaProperty.RegisterDirect<PaletteColorItem, bool>(
             nameof(IsLightColor),
@@ -48,6 +51,12 @@ internal class PaletteColorItem : AvaloniaRadioButton
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    internal ITransform? CheckedMarkRenderTransform
+    {
+        get => GetValue(CheckedMarkRenderTransformProperty);
+        set => SetValue(CheckedMarkRenderTransformProperty, value);
+    }
         
     private bool _isLightColor;
 
@@ -58,7 +67,6 @@ internal class PaletteColorItem : AvaloniaRadioButton
     }
     #endregion
     
-    private Icon? _checkedMark;
     private IDisposable? _borderThicknessDisposable;
     
     static PaletteColorItem()
@@ -84,7 +92,6 @@ internal class PaletteColorItem : AvaloniaRadioButton
             if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
-                ConfigureCheckedMarkTransitions(true);
             }
         }
     }
@@ -104,30 +111,6 @@ internal class PaletteColorItem : AvaloniaRadioButton
         _borderThicknessDisposable?.Dispose();
     }
     
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _checkedMark = e.NameScope.Find<Icon>(PaletteColorItemThemeConstants.CheckedMarkPart);
-        if (_checkedMark != null)
-        {
-            _checkedMark.Loaded   += HandleCheckedMarkLoaded;
-            _checkedMark.Unloaded += HandleCheckedMarkUnLoaded;
-        }
-    }
-    
-    private void HandleCheckedMarkLoaded(object? sender, RoutedEventArgs e)
-    {
-        ConfigureCheckedMarkTransitions(false);
-    }
-
-    private void HandleCheckedMarkUnLoaded(object? sender, RoutedEventArgs e)
-    {
-        if (_checkedMark != null)
-        {
-            _checkedMark.Transitions = null;
-        }
-    }
-    
     private void ConfigureTransitions(bool force)
     {
         if (IsMotionEnabled)
@@ -136,36 +119,14 @@ internal class PaletteColorItem : AvaloniaRadioButton
             {
                 Transitions = [
                     TransitionUtils.CreateTransition<SolidColorBrushTransition>(BorderBrushProperty),
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(CheckedMarkRenderTransformProperty, SharedTokenKey.MotionDurationMid,
+                        new BackEaseOut())
                 ];
             }
         }
         else
         {
             Transitions = null;
-        }
-    }
-    
-    private void ConfigureCheckedMarkTransitions(bool force)
-    {
-        if (IsMotionEnabled)
-        {
-            if (_checkedMark != null)
-            {
-                if (force || _checkedMark.Transitions == null)
-                {
-                    _checkedMark.Transitions = [
-                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty, SharedTokenKey.MotionDurationMid,
-                            new BackEaseOut()),
-                    ];
-                }
-            }
-        }
-        else
-        {
-            if (_checkedMark != null)
-            {
-                _checkedMark.Transitions = null;
-            }
         }
     }
     

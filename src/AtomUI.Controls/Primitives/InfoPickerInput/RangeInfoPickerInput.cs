@@ -32,7 +32,25 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     internal static readonly DirectProperty<RangeInfoPickerInput, RangeActivatedPart> RangeActivatedPartProperty =
         AvaloniaProperty.RegisterDirect<RangeInfoPickerInput, RangeActivatedPart>(nameof(RangeActivatedPart),
             o => o.RangeActivatedPart);
+    
+    internal static readonly StyledProperty<double> RangePickerIndicatorOpacityProperty =
+        AvaloniaProperty.Register<InfoPickerInput, double>(nameof(RangePickerIndicatorOpacity), 0d);
+    
+    internal double RangePickerIndicatorOpacity
+    {
+        get => GetValue(RangePickerIndicatorOpacityProperty);
+        set => SetValue(RangePickerIndicatorOpacityProperty, value);
+    }
 
+    internal static readonly StyledProperty<double> PickerIndicatorOffsetXProperty =
+        AvaloniaProperty.Register<RangeInfoPickerInput, double>(nameof(PickerIndicatorOffsetX), double.NaN);
+    
+    internal static readonly StyledProperty<double> PickerIndicatorOffsetYProperty =
+        AvaloniaProperty.Register<RangeInfoPickerInput, double>(nameof(PickerIndicatorOffsetY));
+    
+    internal static readonly StyledProperty<string?> SecondaryTextProperty =
+        AvaloniaProperty.Register<TextBlock, string?>(nameof(SecondaryText));
+    
     private RangeActivatedPart _rangeActivatedPart;
 
     internal RangeActivatedPart RangeActivatedPart
@@ -40,28 +58,20 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         get => _rangeActivatedPart;
         set => SetAndRaise(RangeActivatedPartProperty, ref _rangeActivatedPart, value);
     }
-
-    internal static readonly StyledProperty<double> PickerIndicatorOffsetXProperty =
-        AvaloniaProperty.Register<RangeInfoPickerInput, double>(nameof(PickerIndicatorOffsetX), double.NaN);
-
+    
     internal double PickerIndicatorOffsetX
     {
         get => GetValue(PickerIndicatorOffsetXProperty);
         set => SetValue(PickerIndicatorOffsetXProperty, value);
     }
-
-    internal static readonly StyledProperty<double> PickerIndicatorOffsetYProperty =
-        AvaloniaProperty.Register<RangeInfoPickerInput, double>(nameof(PickerIndicatorOffsetY));
-
+    
     internal double PickerIndicatorOffsetY
     {
         get => GetValue(PickerIndicatorOffsetYProperty);
         set => SetValue(PickerIndicatorOffsetYProperty, value);
     }
     
-    internal static readonly StyledProperty<string?> SecondaryTextProperty =
-        AvaloniaProperty.Register<TextBlock, string?>(nameof(SecondaryText));
-    
+
     internal string? SecondaryText
     {
         get => GetValue(SecondaryTextProperty);
@@ -92,48 +102,12 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         SecondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
         RangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
         RangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
-        if (RangePickerIndicator != null)
-        {
-            RangePickerIndicator.Loaded += (sender, args) =>
-            {
-                ConfigureRangePickerIndicatorTransitions(false);
-            };
-            RangePickerIndicator.Unloaded += (sender, args) =>
-            {
-                RangePickerIndicator.Transitions = null;
-            };
-        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         _topLevel = TopLevel.GetTopLevel(this);
-    }
-
-    private void ConfigureRangePickerIndicatorTransitions(bool force)
-    {
-        if (IsMotionEnabled)
-        {
-            if (RangePickerIndicator != null)
-            {
-                if (force || RangePickerIndicator.Transitions == null)
-                {
-                    RangePickerIndicator.Transitions =
-                    [
-                        TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty),
-                        TransitionUtils.CreateTransition<DoubleTransition>(OpacityProperty)
-                    ];
-                }
-            }
-        }
-        else
-        {
-            if (RangePickerIndicator != null)
-            {
-                RangePickerIndicator.Transitions = null;
-            }
-        }
     }
 
     private void ConfigureTransitions(bool force)
@@ -144,7 +118,8 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             {
                 Transitions =
                 [
-                    TransitionUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty)
+                    TransitionUtils.CreateTransition<DoubleTransition>(PickerIndicatorOffsetXProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(RangePickerIndicatorOpacityProperty)
                 ];
             }
         }
@@ -301,7 +276,6 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
-                ConfigureRangePickerIndicatorTransitions(true);
             }
         }
     }
@@ -370,19 +344,19 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         
         if (_rangeActivatedPart == RangeActivatedPart.None)
         {
-            RangePickerIndicator.Opacity = 0;
+            RangePickerIndicatorOpacity = 0;
         }
         else if (_rangeActivatedPart == RangeActivatedPart.Start)
         {
-            RangePickerIndicator.Opacity = 1;
-            RangePickerIndicator.Width   = InfoInputBox.Bounds.Width;
+            RangePickerIndicatorOpacity = 1;
+            RangePickerIndicator.Width  = InfoInputBox.Bounds.Width;
             var offset = InfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
             PickerIndicatorOffsetX = offset.X;
         }
         else if (_rangeActivatedPart == RangeActivatedPart.End)
         {
-            RangePickerIndicator.Opacity = 1;
-            RangePickerIndicator.Width   = SecondaryInfoInputBox.Bounds.Width;
+            RangePickerIndicatorOpacity = 1;
+            RangePickerIndicator.Width  = SecondaryInfoInputBox.Bounds.Width;
             var offset = SecondaryInfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
             PickerIndicatorOffsetX = offset.X;
         }

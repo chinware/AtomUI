@@ -84,7 +84,7 @@
 
                 <Canvas>
                     <Rectangle Name="{x:Static atom:RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart}"
-                               Opacity="0" />
+                               Opacity="{TemplateBinding RangePickerIndicatorOpacity}" />
                 </Canvas>
             </Panel>
         </ControlTemplate>

@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -9,7 +8,6 @@ using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -250,15 +248,6 @@ public class Expander : AvaloniaExpander,
 
                 IsExpanded = !IsExpanded;
             };
-
-            _expandButton.Loaded += (sender, args) =>
-            {
-                ConfigureExpandButtonTransitions(false);
-            };
-            _expandButton.Unloaded += (sender, args) =>
-            {
-                _expandButton.Transitions = null;
-            };
         }
         SetupDefaultIcon();
         UpdatePseudoClasses();
@@ -272,14 +261,6 @@ public class Expander : AvaloniaExpander,
             if (change.Property == ExpandIconProperty)
             {
                 SetupDefaultIcon();
-            }
-        }
-
-        if (IsLoaded)
-        {
-            if (change.Property == IsMotionEnabledProperty)
-            {
-                ConfigureExpandButtonTransitions(true);
             }
         }
         
@@ -435,30 +416,6 @@ public class Expander : AvaloniaExpander,
         else
         {
             EffectiveBorderThickness = BorderThickness;
-        }
-    }
-    
-    private void ConfigureExpandButtonTransitions(bool force)
-    {
-        if (IsMotionEnabled)
-        {
-            if (_expandButton != null)
-            {
-                if (force || _expandButton.Transitions == null)
-                {
-                    _expandButton.Transitions =
-                    [
-                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty)
-                    ];
-                }
-            }
-        }
-        else
-        {
-            if (_expandButton != null)
-            {
-                _expandButton.Transitions = null;
-            }
         }
     }
     

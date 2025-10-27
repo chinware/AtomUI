@@ -20,6 +20,7 @@
                                 Grid.Column="0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 Icon="{TemplateBinding ExpandIcon}"
                                 IsVisible="{TemplateBinding IsShowExpandIcon}"
                                 IsEnabled="{TemplateBinding IsEnabled}"/>

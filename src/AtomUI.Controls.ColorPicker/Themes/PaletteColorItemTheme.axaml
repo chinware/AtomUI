@@ -19,7 +19,9 @@
                                    IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   IsVisible="False" />
+                                   IsVisible="False" 
+                                   RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
+                                   RenderTransformOrigin="{x:Static RelativePoint.Center}"/>
                     </Border>
                 </Border>
             </ControlTemplate>
@@ -43,14 +45,15 @@
         <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.CheckedMarkSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.CheckedMarkSize}}" />
-            <Setter Property="RenderTransform" Value="scale(0.1)"/>
         </Style>
+        
+        <Setter Property="CheckedMarkRenderTransform" Value="scale(0.1)"/>
         
         <Style Selector="^[IsChecked=True]">
             <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
                 <Setter Property="IsVisible" Value="True" />
-                <Setter Property="RenderTransform" Value="scale(1.0)"/>
             </Style>
+            <Setter Property="CheckedMarkRenderTransform" Value="scale(1.0)"/>
         </Style>
         
         <Style Selector="^[IsLightColor=True]">

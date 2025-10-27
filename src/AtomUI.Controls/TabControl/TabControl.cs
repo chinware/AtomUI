@@ -7,6 +7,8 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 
@@ -21,10 +23,19 @@ public class TabControl : BaseTabControl
     internal static readonly StyledProperty<double> SelectedIndicatorThicknessProperty =
         AvaloniaProperty.Register<TabControl, double>(nameof(SelectedIndicatorThickness));
     
+    internal static readonly StyledProperty<ITransform?> SelectedIndicatorRenderTransformProperty = 
+        AvaloniaProperty.Register<TabControl, ITransform?>(nameof (SelectedIndicatorRenderTransform));
+    
     internal double SelectedIndicatorThickness
     {
         get => GetValue(SelectedIndicatorThicknessProperty);
         set => SetValue(SelectedIndicatorThicknessProperty, value);
+    }
+    
+    internal ITransform? SelectedIndicatorRenderTransform
+    {
+        get => GetValue(SelectedIndicatorRenderTransformProperty);
+        set => SetValue(SelectedIndicatorRenderTransformProperty, value);
     }
 
     #endregion
@@ -43,28 +54,6 @@ public class TabControl : BaseTabControl
         if (this.IsAttachedToVisualTree())
         {
             SetupSelectedIndicator();
-        }
-    }
-
-    private void ConfigureSelectedIndicatorTransitions(bool force)
-    {
-        if (_selectedIndicator is not null)
-        {
-            if (IsMotionEnabled)
-            {
-                if (force || _selectedIndicator.Transitions == null)
-                {
-                    _selectedIndicator.Transitions =
-                    [
-                        TransitionUtils.CreateTransition<TransformOperationsTransition>(RenderTransformProperty,
-                            SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
-                    ];
-                }
-            }
-            else
-            {
-                _selectedIndicator.Transitions = null;
-            }
         }
     }
     
@@ -101,7 +90,7 @@ public class TabControl : BaseTabControl
                 builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
             }
 
-            _selectedIndicator.RenderTransform = builder.Build();
+            SelectedIndicatorRenderTransform = builder.Build();
         }
     }
 
@@ -144,18 +133,6 @@ public class TabControl : BaseTabControl
         {
             _scrollViewer.TabControl = this;
         }
-
-        if (_selectedIndicator != null)
-        {
-            _selectedIndicator.Loaded += (sender, args) =>
-            {
-                ConfigureSelectedIndicatorTransitions(false);
-            };
-            _selectedIndicator.Unloaded += (sender, args) =>
-            {
-                _selectedIndicator.Transitions = null;
-            };
-        }
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -165,8 +142,39 @@ public class TabControl : BaseTabControl
         {
             if (change.Property == IsMotionEnabledProperty)
             {
-                ConfigureSelectedIndicatorTransitions(true);
+                ConfigureTransitions(true);
             }
         }
+    }
+    
+    private void ConfigureTransitions(bool force)
+    {
+        if (IsMotionEnabled)
+        {
+            if (force || Transitions == null)
+            {
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<TransformOperationsTransition>(SelectedIndicatorRenderTransformProperty,
+                        SharedTokenKey.MotionDurationSlow, new ExponentialEaseOut())
+                ];
+            }
+        }
+        else
+        {
+            Transitions = null;
+        }
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureTransitions(false);
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        Transitions = null;
     }
 }

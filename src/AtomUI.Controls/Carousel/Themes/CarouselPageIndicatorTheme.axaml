@@ -11,14 +11,15 @@
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Height="{TemplateBinding Height}"
                             Width="{TemplateBinding Width}"
-                            Background="{TemplateBinding Background}" />
+                            Background="{TemplateBinding Background}"
+                            Opacity="{TemplateBinding FrameOpacity}"/>
                     <Border Name="Progress"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Height="{TemplateBinding Height}"
                             Width="{TemplateBinding EffectiveProgressWidth}"
                             Background="{TemplateBinding Background}"
-                            IsVisible="False" 
-                            HorizontalAlignment="Left"/>
+                            IsVisible="False"
+                            HorizontalAlignment="Left" />
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -28,14 +29,10 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
         <Setter Property="Cursor" Value="Hand" />
 
-        <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="Opacity" Value="0.2" />
-        </Style>
+        <Setter Property="FrameOpacity" Value="0.2" />
 
         <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ Border#PART_Frame">
-                <Setter Property="Opacity" Value="0.75" />
-            </Style>
+            <Setter Property="FrameOpacity" Value="0.75" />
         </Style>
 
         <Style Selector="^[IsSelected=True]">
@@ -44,9 +41,7 @@
 
         <Style Selector="^[IsShowTransitionProgress=False]">
             <Style Selector="^[IsSelected=True]">
-                <Style Selector="^ /template/ Border#PART_Frame">
-                    <Setter Property="Opacity" Value="1" />
-                </Style>
+                <Setter Property="FrameOpacity" Value="1" />
             </Style>
         </Style>
 
@@ -59,8 +54,8 @@
                     <Style Selector="^ /template/ Border#Progress">
                         <Setter Property="IsVisible" Value="False" />
                     </Style>
-                    </Style>
                 </Style>
             </Style>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

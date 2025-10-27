@@ -53,6 +53,9 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
 
     #endregion
     
+    internal static readonly StyledProperty<double> FrameOpacityProperty =
+        AvaloniaProperty.Register<CarouselPageIndicator, double>(nameof(FrameOpacity));
+    
     internal static readonly DirectProperty<CarouselPageIndicator, double> ProgressValueProperty =
         AvaloniaProperty.RegisterDirect<CarouselPageIndicator, double>(
             nameof(ProgressValue),
@@ -64,6 +67,12 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
             nameof(EffectiveProgressWidth),
             o => o.EffectiveProgressWidth,
             (o, v) => o.EffectiveProgressWidth = v);
+    
+    internal double FrameOpacity
+    {
+        get => GetValue(FrameOpacityProperty);
+        set => SetValue(FrameOpacityProperty, value);
+    }
 
     private double _progressValue;
 
@@ -106,7 +115,6 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
             if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
-                ConfigureFrameTransitions(true);
             }
         }
 
@@ -134,10 +142,11 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
         {
             if (force || Transitions == null)
             {
-                Transitions = new Transitions()
-                {
-                    TransitionUtils.CreateTransition<DoubleTransition>(WidthProperty)
-                };
+                Transitions =
+                [
+                    TransitionUtils.CreateTransition<DoubleTransition>(WidthProperty),
+                    TransitionUtils.CreateTransition<DoubleTransition>(FrameOpacityProperty)
+                ];
             }
         }
         else
@@ -162,17 +171,6 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
     {
         base.OnApplyTemplate(e);
         _frame = e.NameScope.Find<Border>(CarouselPageIndicatorThemeConstants.FramePart);
-        if (_frame != null)
-        {
-            _frame.Loaded += (sender, args) =>
-            {
-                ConfigureFrameTransitions(false);
-            };
-            _frame.Unloaded += (sender, args) =>
-            {
-                _frame.Transitions = null;
-            };
-        }
         if (IsShowTransitionProgress)
         {
             BuildProgressAnimation(false);
@@ -204,30 +202,6 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
             };
             ConfigureProgressAnimation();
             _cancellationTokenSource = null;
-        }
-    }
-    
-    private void ConfigureFrameTransitions(bool force)
-    {
-        if (IsMotionEnabled)
-        {
-            if (_frame != null)
-            {
-                if (force || _frame.Transitions == null)
-                {
-                    _frame.Transitions =
-                    [
-                        TransitionUtils.CreateTransition<DoubleTransition>(Border.OpacityProperty)
-                    ];
-                }
-            }
-        }
-        else
-        {
-            if (_frame != null)
-            {
-                _frame.Transitions = null;
-            }
         }
     }
 

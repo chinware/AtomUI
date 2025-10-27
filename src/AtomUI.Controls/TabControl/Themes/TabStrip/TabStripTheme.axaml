@@ -29,7 +29,8 @@
                                         <ItemsPresenter
                                             Name="{x:Static atom:TabStripThemeConstants.ItemsPresenterPart}"
                                             ItemsPanel="{TemplateBinding ItemsPanel}" />
-                                        <Border Name="{x:Static atom:TabStripThemeConstants.SelectedItemIndicatorPart}" />
+                                        <Border Name="{x:Static atom:TabStripThemeConstants.SelectedItemIndicatorPart}"
+                                                RenderTransform="{TemplateBinding SelectedIndicatorRenderTransform}"/>
                                     </Panel>
                                 </atom:TabStripScrollViewer>
                             </DockPanel>
