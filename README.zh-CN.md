@@ -98,7 +98,7 @@ AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 
 | AtomUI.IconPkg.Generator    | 如果您需要自定义 Icon 包，需要引入此包                                |
 
 ```bash
-dotnet add package AtomUI --version 1.0.0
+dotnet add package AtomUI --version 5.0.1-build.3
 ```
 
 ##### 启用 AtomUI 库
@@ -116,7 +116,7 @@ dotnet add package AtomUI --version 1.0.0
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="1.0.0"/>
+        <PackageReference Include="AtomUI" Version="5.0.1-build.3"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
@@ -144,21 +144,31 @@ class Program
             .UsePlatformDetect()
             .WithAlibabaSansFont()
             .With(new Win32PlatformOptions())
-            .UseAtomUI(builder =>
-            { 
-                builder.WithDefaultLanguageVariant(LanguageVariant.zh_CN);
-                builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
-                builder.UseOSSControls();
-                builder.UseGalleryControls();
-                builder.UseOSSDataGrid();
-                builder.UseColorPicker();
-            })
             .LogToTrace();
     }
 }
 ```
 
-###### 开始用 AtomUI 创造无限可能
+###### 在 `Application` 类中启用 `AtomUI`
+
+```csharp
+public partial class App : Application
+{
+    public override void Initialize()
+    {
+        base.Initialize();
+        AvaloniaXamlLoader.Load(this);
+        this.UseAtomUI(builder =>
+        {
+            builder.WithDefaultLanguageVariant(LanguageVariant.zh_CN);
+            builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
+            builder.UseOSSControls();
+        });
+    }
+}
+```
+
+###### 开始用 `AtomUI` 创造无限可能
 
 您可以开始在自己的项目中开始使用 `AtomUI`
 

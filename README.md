@@ -88,7 +88,7 @@ The packages we have released are as follows:
 | AtomUI.IconPkg.Generator    | Required if you need to create custom icon packages.                                                                                       |
 
 ```bash
-dotnet add package AtomUI --version 1.0.0
+dotnet add package AtomUI --version 5.0.1-build.3
 ```
 
 ##### Enable AtomUI library
@@ -106,7 +106,7 @@ dotnet add package AtomUI --version 1.0.0
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="1.0.0"/>
+        <PackageReference Include="AtomUI" Version="5.0.1-build.3"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
@@ -134,16 +134,26 @@ class Program
             .UsePlatformDetect()
             .WithAlibabaSansFont()
             .With(new Win32PlatformOptions())
-            .UseAtomUI(builder =>
-            { 
-                builder.WithDefaultLanguageVariant(LanguageVariant.zh_CN);
-                builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
-                builder.UseOSSControls();
-                builder.UseGalleryControls();
-                builder.UseOSSDataGrid();
-                builder.UseColorPicker();
-            })
             .LogToTrace();
+    }
+}
+```
+
+###### Enable `AtomUI` in the `Application` Class
+
+```csharp
+public partial class App : Application
+{
+    public override void Initialize()
+    {
+        base.Initialize();
+        AvaloniaXamlLoader.Load(this);
+        this.UseAtomUI(builder =>
+        {
+            builder.WithDefaultLanguageVariant(LanguageVariant.zh_CN);
+            builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
+            builder.UseOSSControls();
+        });
     }
 }
 ```
