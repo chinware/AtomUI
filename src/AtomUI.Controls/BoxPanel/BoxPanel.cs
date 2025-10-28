@@ -118,6 +118,9 @@ using System;
           AffectsParentArrange<BoxPanel>(AlignSelfProperty);
       }
 
+      // Layout calculation constants
+      private const int SPACE_EVENLY_EXTRA_GAPS = 2; // SpaceEvenly needs gaps before and after items
+
       private List<Section> _sections = new();
       private Control[] _visibleChildren = Array.Empty<Control>();
 
@@ -156,12 +159,103 @@ using System;
           return double.IsNaN(RowSpacing) ? Spacing : RowSpacing;
       }
 
+      /// <summary>
+      /// Calculate cross-axis spacing based on AlignContent
+      /// </summary>
+      private double CalculateCrossAxisSpacing(
+          AlignContent alignContent,
+          int sectionCount,
+          double containerCrossAxis,
+          double totalSectionCrossAxis,
+          double baseCrossAxisSpacing)
+      {
+          return alignContent switch
+          {
+              AlignContent.FlexStart => baseCrossAxisSpacing,
+              AlignContent.FlexEnd => baseCrossAxisSpacing,
+              AlignContent.Center => baseCrossAxisSpacing,
+              AlignContent.Stretch => baseCrossAxisSpacing,
+              AlignContent.SpaceBetween => sectionCount > 1
+                  ? baseCrossAxisSpacing + (containerCrossAxis - (totalSectionCrossAxis + (sectionCount - 1) * baseCrossAxisSpacing)) / (sectionCount - 1)
+                  : baseCrossAxisSpacing,
+              AlignContent.SpaceAround => (containerCrossAxis - totalSectionCrossAxis) / sectionCount,
+              AlignContent.SpaceEvenly => (containerCrossAxis - totalSectionCrossAxis) / (sectionCount + 1),
+              _ => baseCrossAxisSpacing
+          };
+      }
+
+      /// <summary>
+      /// Calculate initial cross-axis position based on AlignContent
+      /// </summary>
+      private double CalculateCrossAxisStartPosition(
+          AlignContent alignContent,
+          double containerCrossAxis,
+          double totalCrossAxis,
+          double crossAxisSpacing)
+      {
+          return alignContent switch
+          {
+              AlignContent.FlexStart => 0.0,
+              AlignContent.FlexEnd => containerCrossAxis - totalCrossAxis,
+              AlignContent.Center => (containerCrossAxis - totalCrossAxis) / 2,
+              AlignContent.Stretch => 0.0,
+              AlignContent.SpaceBetween => 0.0,
+              AlignContent.SpaceAround => crossAxisSpacing / 2,
+              AlignContent.SpaceEvenly => crossAxisSpacing,
+              _ => 0.0
+          };
+      }
+
+      /// <summary>
+      /// Calculate main-axis spacing and offset based on JustifyContent
+      /// </summary>
+      private (double spacing, double offset) CalculateJustifyContentLayout(
+          JustifyContent justifyContent,
+          double containerMainAxis,
+          double sectionTotalMainAxis,
+          int gapCount,
+          double baseMainAxisSpacing)
+      {
+          return justifyContent switch
+          {
+              JustifyContent.FlexStart => (baseMainAxisSpacing, 0.0),
+              JustifyContent.FlexEnd => (baseMainAxisSpacing, containerMainAxis - sectionTotalMainAxis - gapCount * baseMainAxisSpacing),
+              JustifyContent.Center => (baseMainAxisSpacing, (containerMainAxis - sectionTotalMainAxis - gapCount * baseMainAxisSpacing) / 2),
+              JustifyContent.SpaceBetween => gapCount > 0
+                  ? ((containerMainAxis - sectionTotalMainAxis) / gapCount, 0.0)
+                  : (baseMainAxisSpacing, 0.0),
+              JustifyContent.SpaceAround => (baseMainAxisSpacing, (containerMainAxis - sectionTotalMainAxis - gapCount * baseMainAxisSpacing) / 2),
+              JustifyContent.SpaceEvenly => ((containerMainAxis - sectionTotalMainAxis) / (gapCount + SPACE_EVENLY_EXTRA_GAPS),
+                                            (containerMainAxis - sectionTotalMainAxis) / (gapCount + SPACE_EVENLY_EXTRA_GAPS)),
+              _ => (baseMainAxisSpacing, 0.0)
+          };
+      }
+
+      /// <summary>
+      /// Calculate cross-axis position based on AlignItems
+      /// </summary>
+      private double CalculateItemCrossAxisPosition(
+          AlignItems alignment,
+          double sectionCrossAxisPosition,
+          double sectionCrossAxisSize,
+          double elementCrossAxisSize)
+      {
+          return alignment switch
+          {
+              AlignItems.FlexStart => sectionCrossAxisPosition,
+              AlignItems.FlexEnd => sectionCrossAxisPosition + sectionCrossAxisSize - elementCrossAxisSize,
+              AlignItems.Center => sectionCrossAxisPosition + (sectionCrossAxisSize - elementCrossAxisSize) / 2,
+              AlignItems.Stretch => sectionCrossAxisPosition,
+              _ => sectionCrossAxisPosition
+          };
+      }
+
       #endregion
 
       protected override Size MeasureOverride(Size availableSize)
       {
           var isColumn = Orientation == Orientation.Vertical;
-          var even     = JustifyContent == JustifyContent.SpaceEvenly ? 2 : 0;
+          var extraGapsForSpaceEvenly = JustifyContent == JustifyContent.SpaceEvenly ? SPACE_EVENLY_EXTRA_GAPS : 0;
 
           var maxAxisCoord     = AxisCoordinate.FromSize(availableSize, isColumn);
           var spacingAxisCoord = AxisCoordinate.FromSize(GetEffectiveColumnSpacing(), GetEffectiveRowSpacing(), isColumn);
@@ -190,7 +284,7 @@ using System;
               var elementAxisCoord = AxisCoordinate.FromSize(element.DesiredSize, isColumn);
 
               // Check if we need to wrap
-              if (Wrap != FlexWrap.NoWrap && itemCount > 0 && mainAxisPosition + elementAxisCoord.MainAxis + (itemCount + even) * spacingAxisCoord.MainAxis > maxAxisCoord.MainAxis)
+              if (Wrap != FlexWrap.NoWrap && itemCount > 0 && mainAxisPosition + elementAxisCoord.MainAxis + (itemCount + extraGapsForSpaceEvenly) * spacingAxisCoord.MainAxis > maxAxisCoord.MainAxis)
               {
                   _sections.Add(new Section(first, i - 1, mainAxisPosition, maxCrossAxis));
 
@@ -232,7 +326,7 @@ using System;
           }
 
           // Calculate final size
-          var maxMainAxis   = _sections.Max(s => s.TotalMainAxisSize + (s.Last - s.First + even) * spacingAxisCoord.MainAxis);
+          var maxMainAxis   = _sections.Max(s => s.TotalMainAxisSize + (s.Last - s.First + extraGapsForSpaceEvenly) * spacingAxisCoord.MainAxis);
           var totalCrossAxis = crossAxisPosition + maxCrossAxis + (_sections.Count - 1) * spacingAxisCoord.CrossAxis;
 
           return AxisCoordinate.ToSize(new AxisCoordinate(
@@ -265,34 +359,24 @@ using System;
           double totalSpacingCrossAxis = (sectionCount - 1) * spacingAxisCoord.CrossAxis;
           double totalCrossAxis        = totalSectionCrossAxis + totalSpacingCrossAxis;
 
-          // Calculate cross-axis spacing (AlignContent)
-          var crossAxisSpacing = AlignContent switch
-          {
-              AlignContent.FlexStart => spacingAxisCoord.CrossAxis,
-              AlignContent.FlexEnd => spacingAxisCoord.CrossAxis,
-              AlignContent.Center => spacingAxisCoord.CrossAxis,
-              AlignContent.Stretch => spacingAxisCoord.CrossAxis,
-              AlignContent.SpaceBetween => sectionCount > 1 ? spacingAxisCoord.CrossAxis + (containerAxisCoord.CrossAxis - totalCrossAxis) / (sectionCount - 1) : spacingAxisCoord.CrossAxis,
-              AlignContent.SpaceAround => (containerAxisCoord.CrossAxis - totalSectionCrossAxis) / sectionCount,
-              AlignContent.SpaceEvenly => (containerAxisCoord.CrossAxis - totalSectionCrossAxis) / (sectionCount + 1),
-              _ => spacingAxisCoord.CrossAxis
-          };
+          // Calculate cross-axis spacing using extracted method
+          var crossAxisSpacing = CalculateCrossAxisSpacing(
+              AlignContent,
+              sectionCount,
+              containerAxisCoord.CrossAxis,
+              totalSectionCrossAxis,
+              spacingAxisCoord.CrossAxis);
 
           var crossAxisScale = AlignContent == AlignContent.Stretch && totalSectionCrossAxis > 0
               ? ((containerAxisCoord.CrossAxis - totalSpacingCrossAxis) / totalSectionCrossAxis)
               : 1.0;
 
-          var crossAxisPosition = AlignContent switch
-          {
-              AlignContent.FlexStart => 0.0,
-              AlignContent.FlexEnd => containerAxisCoord.CrossAxis - totalCrossAxis,
-              AlignContent.Center => (containerAxisCoord.CrossAxis - totalCrossAxis) / 2,
-              AlignContent.Stretch => 0.0,
-              AlignContent.SpaceBetween => 0.0,
-              AlignContent.SpaceAround => crossAxisSpacing / 2,
-              AlignContent.SpaceEvenly => crossAxisSpacing,
-              _ => 0.0
-          };
+          // Calculate initial cross-axis position using extracted method
+          var crossAxisPosition = CalculateCrossAxisStartPosition(
+              AlignContent,
+              containerAxisCoord.CrossAxis,
+              totalCrossAxis,
+              crossAxisSpacing);
 
           foreach (var section in _sections)
           {
@@ -310,19 +394,36 @@ using System;
               // Calculate gap count (number of gaps = items - 1)
               var gapCount = section.Last - section.First;
 
-              // First pass: calculate total flex and check if any flex items exist
-              double totalFlex    = 0;
-              var    hasFlexItems = false;
+              // Single pass: calculate layout info for all elements in this section
+              // This replaces two separate loops and caches element information
+              int elementCount = section.Last - section.First + 1;
+              var elementCaches = new ElementLayoutCache[elementCount];
+
+              double totalFlex = 0;
+              double fixedSize = 0;
 
               for (int i = section.First; i <= section.Last; i++)
               {
-                  int flex = GetFlex(_visibleChildren[i]);
+                  var element = _visibleChildren[i];
+                  var elementAxisCoord = AxisCoordinate.FromSize(element.DesiredSize, isColumn);
+                  int flex = GetFlex(element);
+
+                  // Cache element layout information
+                  int cacheIndex = i - section.First;
+                  elementCaches[cacheIndex] = new ElementLayoutCache(elementAxisCoord, flex);
+
+                  // Accumulate totals
                   if (flex > 0)
                   {
-                      totalFlex    += flex;
-                      hasFlexItems =  true;
+                      totalFlex += flex;
+                  }
+                  else
+                  {
+                      fixedSize += elementAxisCoord.MainAxis;
                   }
               }
+
+              bool hasFlexItems = totalFlex > 0;
 
               // Calculate spacing and offset based on JustifyContent
               double mainAxisSpacing;
@@ -336,73 +437,49 @@ using System;
               }
               else
               {
-                  // No flex items: apply JustifyContent normally
-                  (mainAxisSpacing, mainAxisOffset) = JustifyContent switch
-                  {
-                      JustifyContent.FlexStart => (spacingAxisCoord.MainAxis, 0.0),
-                      JustifyContent.FlexEnd => (spacingAxisCoord.MainAxis, containerAxisCoord.MainAxis - section.TotalMainAxisSize - gapCount * spacingAxisCoord.MainAxis),
-                      JustifyContent.Center => (spacingAxisCoord.MainAxis, (containerAxisCoord.MainAxis - section.TotalMainAxisSize - gapCount * spacingAxisCoord.MainAxis) / 2),
-                      JustifyContent.SpaceBetween => gapCount > 0
-                          ? ((containerAxisCoord.MainAxis - section.TotalMainAxisSize) / gapCount, 0.0)
-                          : (spacingAxisCoord.MainAxis, 0.0),
-                      JustifyContent.SpaceAround => (spacingAxisCoord.MainAxis, (containerAxisCoord.MainAxis - section.TotalMainAxisSize - gapCount * spacingAxisCoord.MainAxis) /
-                                                                2),
-                      JustifyContent.SpaceEvenly => ((containerAxisCoord.MainAxis - section.TotalMainAxisSize) / (gapCount + 2), (containerAxisCoord.MainAxis -
-                          section.TotalMainAxisSize) / (gapCount + 2)),
-                      _ => (spacingAxisCoord.MainAxis, 0.0)
-                  };
+                  // No flex items: apply JustifyContent using extracted method
+                  (mainAxisSpacing, mainAxisOffset) = CalculateJustifyContentLayout(
+                      JustifyContent,
+                      containerAxisCoord.MainAxis,
+                      section.TotalMainAxisSize,
+                      gapCount,
+                      spacingAxisCoord.MainAxis);
               }
 
               // Calculate available space for flex items
               double totalMainAxisSpacing = gapCount * mainAxisSpacing;
-              double fixedSize     = 0;
-
-              // Calculate total size of non-flex items
-              for (int i = section.First; i <= section.Last; i++)
-              {
-                  int flex = GetFlex(_visibleChildren[i]);
-                  if (flex == 0)
-                  {
-                      var elementAxisCoord = AxisCoordinate.FromSize(_visibleChildren[i].DesiredSize, isColumn);
-                      fixedSize += elementAxisCoord.MainAxis;
-                  }
-              }
-
               double flexSpace = totalFlex > 0 ? Math.Max(0, containerAxisCoord.MainAxis - fixedSize - totalMainAxisSpacing) : 0;
 
               var mainAxisPosition = mainAxisOffset;
 
               for (int i = section.First; i <= section.Last; i++)
               {
-                  var element     = _visibleChildren[i];
-                  var elementAxisCoord = AxisCoordinate.FromSize(element.DesiredSize, isColumn);
+                  var element = _visibleChildren[i];
+                  int cacheIndex = i - section.First;
+                  var cache = elementCaches[cacheIndex];
 
-                  // Calculate main-axis size
-                  int    flex = GetFlex(element);
+                  // Calculate main-axis size using cached information
                   double finalMainAxis;
 
-                  if (flex > 0 && totalFlex > 0)
+                  if (cache.IsFlexItem && totalFlex > 0)
                   {
                       // Flex item: allocate proportional space
-                      finalMainAxis = flexSpace * (flex / totalFlex);
+                      finalMainAxis = flexSpace * (cache.FlexValue / totalFlex);
                   }
                   else
                   {
-                      // Fixed item: use desired size
-                      finalMainAxis = elementAxisCoord.MainAxis;
+                      // Fixed item: use cached desired size
+                      finalMainAxis = cache.DesiredAxisCoord.MainAxis;
                   }
 
-                  // Calculate cross-axis alignment
+                  // Calculate cross-axis alignment using extracted method
                   var align = GetAlignSelf(element) ?? AlignItems;
 
-                  double finalCrossAxis = align switch
-                  {
-                      AlignItems.FlexStart => crossAxisPosition,
-                      AlignItems.FlexEnd => crossAxisPosition + sectionCrossAxis - elementAxisCoord.CrossAxis,
-                      AlignItems.Center => crossAxisPosition + (sectionCrossAxis - elementAxisCoord.CrossAxis) / 2,
-                      AlignItems.Stretch => crossAxisPosition,
-                      _ => crossAxisPosition
-                  };
+                  double finalCrossAxis = CalculateItemCrossAxisPosition(
+                      align,
+                      crossAxisPosition,
+                      sectionCrossAxis,
+                      cache.DesiredAxisCoord.CrossAxis);
 
                   // 🔑 CSS-compliant Stretch logic: only stretch if element doesn't have explicit cross-axis size
                   double actualCrossAxis;
@@ -416,7 +493,7 @@ using System;
                       if (hasExplicitSize)
                       {
                           // Element has explicit size, don't stretch
-                          actualCrossAxis = elementAxisCoord.CrossAxis;
+                          actualCrossAxis = cache.DesiredAxisCoord.CrossAxis;
                       }
                       else
                       {
@@ -426,7 +503,7 @@ using System;
                   }
                   else
                   {
-                      actualCrossAxis = elementAxisCoord.CrossAxis;
+                      actualCrossAxis = cache.DesiredAxisCoord.CrossAxis;
                   }
 
                   var positionAxisCoord    = new AxisCoordinate(isReverse ? (containerAxisCoord.MainAxis - finalMainAxis - mainAxisPosition) : mainAxisPosition, finalCrossAxis);
