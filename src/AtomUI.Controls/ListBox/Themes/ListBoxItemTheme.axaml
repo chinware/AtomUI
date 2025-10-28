@@ -11,7 +11,6 @@
                 <Border Name="Frame"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        MinHeight="{TemplateBinding MinHeight}"
                         Padding="{TemplateBinding Padding}">
                     <Panel>
                         <ContentPresenter Name="ContentPresenter"
@@ -32,6 +31,8 @@
         <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemMargin}}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemColor}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemBgColor}}" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         
         <Style Selector="^[DisabledItemHoverEffect=False]:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemHoverColor}}" />
@@ -51,19 +52,19 @@
         
         <Style Selector="^[SizeType=Large]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemPaddingLG}}" />
         </Style>
         
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemPadding}}" />
         </Style>
         
         <Style Selector="^[SizeType=Small]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusXS}}" />
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemPaddingSM}}" />
         </Style>
         

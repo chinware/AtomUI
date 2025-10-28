@@ -96,9 +96,9 @@ internal class ListBoxToken : AbstractControlDesignToken
 
         ItemDisabledColor = colorTextDisabled;
 
-        ItemPaddingLG = SharedToken.Padding;
-        ItemPaddingSM = new Thickness(SharedToken.UniformlyPaddingXS, SharedToken.UniformlyPaddingXS);
-        ItemPadding   = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingXS);
+        ItemPaddingLG = new Thickness(SharedToken.UniformlyPadding, 0);
+        ItemPaddingSM = new Thickness(SharedToken.UniformlyPaddingXS, 0);
+        ItemPadding   = new Thickness(SharedToken.UniformlyPaddingSM, 0);
 
         ContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
         ItemMargin     = new Thickness(0, 0.5);

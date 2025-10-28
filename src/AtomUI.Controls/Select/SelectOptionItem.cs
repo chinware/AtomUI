@@ -4,6 +4,7 @@ namespace AtomUI.Controls;
 
 internal class SelectOptionItem : ListBoxItem
 {
+    
     public SelectOptionItem()
     {
         this.GetObservable(ComboBoxItem.IsFocusedProperty)

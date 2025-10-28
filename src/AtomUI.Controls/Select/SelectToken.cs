@@ -160,6 +160,11 @@ internal class SelectToken : AbstractControlDesignToken
     /// </summary>
     public Thickness PopupContentPadding { get; set; }
     
+    /// <summary>
+    /// 顶层弹出菜单，距离顶层菜单项的边距
+    /// </summary>
+    public double PopupMarginToAnchor { get; set; }
+    
     public SelectToken()
         : base(ID)
     {
@@ -206,5 +211,6 @@ internal class SelectToken : AbstractControlDesignToken
         PopupBorderRadius   = SharedToken.BorderRadiusLG;
         PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, PopupBorderRadius.TopLeft / 2);
         PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
+        PopupMarginToAnchor = SharedToken.UniformlyMarginXXS;
     }
 }

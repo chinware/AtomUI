@@ -32,20 +32,17 @@
                              </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
-                            <!-- <atom:TextBlock -->
-                            <!--     Name="PlaceholderText" -->
+                            <atom:TextBlock
+                                Name="PlaceholderText"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                TextTrimming="CharacterEllipsis"
+                                Opacity="0.3"
+                                Text="{TemplateBinding PlaceholderText}" />
+                            <!-- <atom:SelectResultOptionsBox -->
+                            <!--     Name="SelectedOptionsBox" -->
                             <!--     HorizontalAlignment="Left" -->
-                            <!--     VerticalAlignment="Center" -->
-                            <!--     TextTrimming="CharacterEllipsis" -->
-                            <!--     Opacity="0.3" -->
-                            <!--     IsVisible="{TemplateBinding SelectingItemsControl.SelectedItem, Converter={x:Static ObjectConverters.IsNull}}" -->
-                            <!--     Text="{TemplateBinding PlaceholderText}" /> -->
-                            <!-- <ContentPresenter -->
-                            <!--     Name="SelectedContentPresenter" -->
-                            <!--     HorizontalAlignment="Left" -->
-                            <!--     VerticalAlignment="Center" -->
-                            <!--     Content="{TemplateBinding SelectionBoxItem}" -->
-                            <!--     ContentTemplate="{TemplateBinding ItemTemplate}" /> -->
+                            <!--     VerticalAlignment="Center" /> -->
                         </Panel>
                     </atom:AddOnDecoratedBox>
                     <atom:Popup Name="{x:Static atom:SelectThemeConstants.PopupPart}"
@@ -74,7 +71,7 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="PopupContentPadding"
-                Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupContentPadding}}" />
+                Value="{DynamicResource {x:Static atom:SelectTokenKey.PopupContentPadding}}" />
         <Setter Property="OptionFontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
         
@@ -86,9 +83,6 @@
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
-            <!-- <Style Selector="^ /template/ ContentPresenter#SelectedContentPresenter"> -->
-            <!--     <Setter Property="Margin" Value="0, 1, 0, 1" /> -->
-            <!-- </Style> -->
         </Style>
 
         <Style Selector="^ /template/ atom|Popup#PART_Popup">

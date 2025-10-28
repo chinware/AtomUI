@@ -15,6 +15,12 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
+public enum SelectMode
+{
+    Single,
+    Multiple
+}
+
 public class Select : TemplatedControl,
                       IMotionAwareControl,
                       IControlSharedTokenResourcesHost,
