@@ -5,16 +5,16 @@ namespace AtomUI.Controls;
 /// </summary>
 internal struct Section
 {
-    public int First { get; }     // First child index in this section
-    public int Last { get; }      // Last child index in this section
-    public double U { get; }      // Sum of item sizes on main axis (excluding spacing)
-    public double V { get; }      // Maximum item size on cross axis
+    public int First { get; }                   // First child index in this section
+    public int Last { get; }                    // Last child index in this section
+    public double TotalMainAxisSize { get; }    // Sum of item sizes on main axis (excluding spacing)
+    public double MaxCrossAxisSize { get; }     // Maximum item size on cross axis
 
-    public Section(int first, int last, double u, double v)
+    public Section(int first, int last, double totalMainAxisSize, double maxCrossAxisSize)
     {
-        First = first;
-        Last  = last;
-        U     = u;
-        V     = v;
+        First             = first;
+        Last              = last;
+        TotalMainAxisSize = totalMainAxisSize;
+        MaxCrossAxisSize  = maxCrossAxisSize;
     }
 }

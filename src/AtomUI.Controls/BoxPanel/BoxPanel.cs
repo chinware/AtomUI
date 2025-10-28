@@ -232,7 +232,7 @@ using System;
           }
 
           // Calculate final size
-          var maxMainAxis   = _sections.Max(s => s.U + (s.Last - s.First + even) * spacingAxisCoord.MainAxis);
+          var maxMainAxis   = _sections.Max(s => s.TotalMainAxisSize + (s.Last - s.First + even) * spacingAxisCoord.MainAxis);
           var totalCrossAxis = crossAxisPosition + maxCrossAxis + (_sections.Count - 1) * spacingAxisCoord.CrossAxis;
 
           return AxisCoordinate.ToSize(new AxisCoordinate(
@@ -259,7 +259,7 @@ using System;
           double totalSectionCrossAxis = 0.0;
           foreach (var section in _sections)
           {
-              totalSectionCrossAxis += section.V;
+              totalSectionCrossAxis += section.MaxCrossAxisSize;
           }
 
           double totalSpacingCrossAxis = (sectionCount - 1) * spacingAxisCoord.CrossAxis;
@@ -304,7 +304,7 @@ using System;
               }
               else
               {
-                  sectionCrossAxis = crossAxisScale * section.V;
+                  sectionCrossAxis = crossAxisScale * section.MaxCrossAxisSize;
               }
 
               // Calculate gap count (number of gaps = items - 1)
@@ -340,15 +340,15 @@ using System;
                   (mainAxisSpacing, mainAxisOffset) = JustifyContent switch
                   {
                       JustifyContent.FlexStart => (spacingAxisCoord.MainAxis, 0.0),
-                      JustifyContent.FlexEnd => (spacingAxisCoord.MainAxis, containerAxisCoord.MainAxis - section.U - gapCount * spacingAxisCoord.MainAxis),
-                      JustifyContent.Center => (spacingAxisCoord.MainAxis, (containerAxisCoord.MainAxis - section.U - gapCount * spacingAxisCoord.MainAxis) / 2),
+                      JustifyContent.FlexEnd => (spacingAxisCoord.MainAxis, containerAxisCoord.MainAxis - section.TotalMainAxisSize - gapCount * spacingAxisCoord.MainAxis),
+                      JustifyContent.Center => (spacingAxisCoord.MainAxis, (containerAxisCoord.MainAxis - section.TotalMainAxisSize - gapCount * spacingAxisCoord.MainAxis) / 2),
                       JustifyContent.SpaceBetween => gapCount > 0
-                          ? ((containerAxisCoord.MainAxis - section.U) / gapCount, 0.0)
+                          ? ((containerAxisCoord.MainAxis - section.TotalMainAxisSize) / gapCount, 0.0)
                           : (spacingAxisCoord.MainAxis, 0.0),
-                      JustifyContent.SpaceAround => (spacingAxisCoord.MainAxis, (containerAxisCoord.MainAxis - section.U - gapCount * spacingAxisCoord.MainAxis) /
+                      JustifyContent.SpaceAround => (spacingAxisCoord.MainAxis, (containerAxisCoord.MainAxis - section.TotalMainAxisSize - gapCount * spacingAxisCoord.MainAxis) /
                                                                 2),
-                      JustifyContent.SpaceEvenly => ((containerAxisCoord.MainAxis - section.U) / (gapCount + 2), (containerAxisCoord.MainAxis -
-                          section.U) / (gapCount + 2)),
+                      JustifyContent.SpaceEvenly => ((containerAxisCoord.MainAxis - section.TotalMainAxisSize) / (gapCount + 2), (containerAxisCoord.MainAxis -
+                          section.TotalMainAxisSize) / (gapCount + 2)),
                       _ => (spacingAxisCoord.MainAxis, 0.0)
                   };
               }
