@@ -1,8 +1,10 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    x:ClassModifier="internal">
+                    x:ClassModifier="internal"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:themes="using:AtomUI.Controls.Themes">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="ListBoxItemTheme.axaml" />
         <ResourceInclude Source="ListBoxTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
+    <themes:ListBoxItemTheme x:Key="{x:Type atom:ListBoxItem}" TargetType="atom:ListBoxItem" />
 </ResourceDictionary>

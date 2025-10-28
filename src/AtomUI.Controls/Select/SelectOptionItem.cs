@@ -4,6 +4,7 @@ namespace AtomUI.Controls;
 
 internal class SelectOptionItem : ListBoxItem
 {
+    protected override Type StyleKeyOverride { get; } = typeof(SelectOptionItem);
     
     public SelectOptionItem()
     {

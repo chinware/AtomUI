@@ -13,6 +13,6 @@ internal static class SelectHandleThemeConstants
 
 internal static class SelectThemeConstants
 {
-    public const string InputPart = "PART_Input";
+    public const string OptionsBoxPart = "PART_OptionsBox";
     public const string PopupPart = "PART_Popup";
 }

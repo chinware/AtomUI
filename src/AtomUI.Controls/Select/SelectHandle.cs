@@ -1,5 +1,8 @@
+using AtomUI.Controls.Themes;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
@@ -16,6 +19,12 @@ internal class SelectHandle : TemplatedControl
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SelectHandle>();
+    
+    public static readonly StyledProperty<bool> IsLoadingProperty =
+        AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsLoading));
+    
+    public static readonly StyledProperty<bool> IsSelectionEmptyProperty =
+        AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsSelectionEmpty), true);
     
     public bool IsInputHover
     {
@@ -39,5 +48,43 @@ internal class SelectHandle : TemplatedControl
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public bool IsLoading
+    {
+        get => GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
+
+    public bool IsSelectionEmpty
+    {
+        get => GetValue(IsSelectionEmptyProperty);
+        set => SetValue(IsSelectionEmptyProperty, value);
+    }
+    
+    public static readonly RoutedEvent<RoutedEventArgs> ClearRequestedEvent = 
+        RoutedEvent.Register<Button, RoutedEventArgs>(nameof(ClearRequested), RoutingStrategies.Bubble);
+    
+    public event EventHandler<RoutedEventArgs>? ClearRequested
+    {
+        add => AddHandler(ClearRequestedEvent, value);
+        remove => RemoveHandler(ClearRequestedEvent, value);
+    }
+
+    private IconButton? _clearButton;
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _clearButton = e.NameScope.Find<IconButton>(SelectHandleThemeConstants.ClearButtonPart);
+        if (_clearButton != null)
+        {
+            _clearButton.Click += HandleClearButtonClicked;
+        }
+    }
+
+    private void HandleClearButtonClicked(object? sender, RoutedEventArgs e)
+    {
+        RaiseEvent(new RoutedEventArgs(ClearRequestedEvent, this));
     }
 }

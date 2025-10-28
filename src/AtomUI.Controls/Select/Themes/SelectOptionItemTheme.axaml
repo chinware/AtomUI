@@ -1,0 +1,21 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SelectOptionItem}" TargetType="atom:SelectOptionItem">
+        <ControlTheme.BasedOn>
+            <themes:ListBoxItemTheme TargetType="atom:SelectOptionItem" />
+        </ControlTheme.BasedOn>
+        
+        <Style Selector="^:is(atom|SelectOptionItem)">
+            <Style Selector="^[IsSelected=True]">
+                <Setter Property="FontWeight" Value="DemiBold"/>
+            </Style>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

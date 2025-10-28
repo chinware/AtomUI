@@ -355,7 +355,7 @@ public class ListBox : SelectingItemsControl,
         }
     }
 
-    protected internal bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
+    protected internal virtual bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
     {
         var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
         var toggle  = hotkeys is not null && e.KeyModifiers.HasAllFlags(hotkeys.CommandModifiers);

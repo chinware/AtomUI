@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Theme;
@@ -18,7 +19,8 @@ namespace AtomUI.Controls;
 public enum SelectMode
 {
     Single,
-    Multiple
+    Multiple,
+    Tags
 }
 
 public class Select : TemplatedControl,
@@ -49,7 +51,7 @@ public class Select : TemplatedControl,
         AvaloniaProperty.Register<Select, IBrush?>(nameof(PlaceholderForeground));
     
     public static readonly StyledProperty<bool> IsPopupMatchSelectWidthProperty =
-        AvaloniaProperty.Register<Select, bool>(nameof(IsPopupMatchSelectWidth));
+        AvaloniaProperty.Register<Select, bool>(nameof(IsPopupMatchSelectWidth), true);
     
     public static readonly StyledProperty<bool> IsFilterOptionProperty =
         AvaloniaProperty.Register<Select, bool>(nameof(IsFilterOption));
@@ -327,8 +329,9 @@ public class Select : TemplatedControl,
     #endregion
     
     public IComparer<SelectOption>? FilterSortFn { get; set; }
-    public Func<object?, SelectOption, bool>? FilterFn { get; set; }
-    public IList<object>? DefaultSelectedOptions { get; set; }
+    public Func<object, SelectOption, bool>? FilterFn { get; set; }
+    public Func<object, SelectOption, bool>? DefaultValueCompareFn { get; set; }
+    public IList<object>? DefaultValues { get; set; }
     
     #region 公共事件定义
     
@@ -352,6 +355,30 @@ public class Select : TemplatedControl,
         AvaloniaProperty.RegisterDirect<Select, bool>(nameof(IsEffectiveShowClearButton),
             o => o.IsEffectiveShowClearButton,
             (o, v) => o.IsEffectiveShowClearButton = v);
+    
+    internal static readonly DirectProperty<Select, double> EffectivePopupWidthProperty =
+        AvaloniaProperty.RegisterDirect<Select, double>(
+            nameof(EffectivePopupWidth),
+            o => o.EffectivePopupWidth,
+            (o, v) => o.EffectivePopupWidth = v);
+    
+    internal static readonly DirectProperty<Select, bool> IsPlaceholderTextVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Select, bool>(
+            nameof(IsPlaceholderTextVisible),
+            o => o.IsPlaceholderTextVisible,
+            (o, v) => o.IsPlaceholderTextVisible = v);
+    
+    internal static readonly DirectProperty<Select, SelectOption?> SelectedOptionProperty =
+        AvaloniaProperty.RegisterDirect<Select, SelectOption?>(
+            nameof(SelectedOption),
+            o => o.SelectedOption,
+            (o, v) => o.SelectedOption = v);
+    
+    internal static readonly DirectProperty<Select, bool> IsSelectionEmptyProperty =
+        AvaloniaProperty.RegisterDirect<Select, bool>(
+            nameof(IsSelectionEmpty),
+            o => o.IsSelectionEmpty,
+            (o, v) => o.IsSelectionEmpty = v);
     
     internal double ItemHeight
     {
@@ -379,6 +406,38 @@ public class Select : TemplatedControl,
         set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
     }
     
+    private double _effectivePopupWidth;
+
+    internal double EffectivePopupWidth
+    {
+        get => _effectivePopupWidth;
+        set => SetAndRaise(EffectivePopupWidthProperty, ref _effectivePopupWidth, value);
+    }
+    
+    private bool _isPlaceholderTextVisible;
+
+    internal bool IsPlaceholderTextVisible
+    {
+        get => _isPlaceholderTextVisible;
+        set => SetAndRaise(IsPlaceholderTextVisibleProperty, ref _isPlaceholderTextVisible, value);
+    }
+    
+    private SelectOption? _selectedOption;
+
+    internal SelectOption? SelectedOption
+    {
+        get => _selectedOption;
+        set => SetAndRaise(SelectedOptionProperty, ref _selectedOption, value);
+    }
+    
+    private bool _isSelectionEmpty = true;
+
+    internal bool IsSelectionEmpty
+    {
+        get => _isSelectionEmpty;
+        set => SetAndRaise(IsSelectionEmptyProperty, ref _isSelectionEmpty, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SelectToken.ID;
@@ -389,22 +448,77 @@ public class Select : TemplatedControl,
         new(() => new VirtualizingStackPanel());
     
     private Popup? _popup;
+    private SelectOptionsBox? _optionsBox;
+    private SelectHandle? _selectHandle;
     private readonly CompositeDisposable _subscriptionsOnOpen = new ();
     
     static Select()
     {
         FocusableProperty.OverrideDefaultValue<Select>(true);
+        SelectHandle.ClearRequestedEvent.AddClassHandler<Select>((target, args) =>
+        {
+            target.HandleClearRequest();
+        });
     }
     
     public Select()
     {
         this.RegisterResources();
     }
+
+    private void HandleClearRequest()
+    {
+        Clear();
+    }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        // UpdateSelectionBoxItem(SelectedItem);
+        if (Mode == SelectMode.Single && SelectedOption == null)
+        {
+            if (DefaultValues?.Count > 0)
+            {
+                var defaultValue = DefaultValues.First();
+                foreach (var option in Options)
+                {
+                    if (OptionEqualByValue(defaultValue, option))
+                    {
+                        SelectedOption  = option;
+                        break;
+                    }
+                }
+            }
+        }
+        else if (Mode == SelectMode.Multiple && (SelectedOptions == null || SelectedOptions.Count == 0))
+        {
+            if (DefaultValues?.Count > 0)
+            {
+                var selectedOptions = new List<SelectOption>();
+                foreach (var defaultValue in DefaultValues)
+                {
+                    foreach (var option in Options)
+                    {
+                        if (OptionEqualByValue(defaultValue, option))
+                        {
+                            selectedOptions.Add(option);
+                        }
+                    }
+                }
+
+                SelectedOptions = selectedOptions;
+            }
+        }
+    }
+
+    private bool OptionEqualByValue(object value, SelectOption selectOption)
+    {
+        if (DefaultValueCompareFn != null)
+        {
+            return DefaultValueCompareFn(value, selectOption);
+        }
+        var strValue = value.ToString();
+        var optValue = selectOption.Value?.ToString();
+        return strValue == optValue;
     }
     
     protected override void OnKeyDown(KeyEventArgs e)
@@ -434,33 +548,9 @@ public class Select : TemplatedControl,
         }
         else if (IsDropDownOpen && (e.Key == Key.Enter || e.Key == Key.Space))
         {
-            // SelectFocusedItem();
             SetCurrentValue(IsDropDownOpenProperty, false);
             e.Handled = true;
         }
-        // // Ignore key buttons, if they are used for XY focus.
-        // else if (!IsDropDownOpen
-        //          && !XYFocusHelpers.IsAllowedXYNavigationMode(this, e.KeyDeviceType))
-        // {
-        //     if (e.Key == Key.Down)
-        //     {
-        //         e.Handled = SelectNext();
-        //     }
-        //     else if (e.Key == Key.Up)
-        //     {
-        //         e.Handled = SelectPrevious();
-        //     }
-        // }
-        // This part of code is needed just to acquire initial focus, subsequent focus navigation will be done by ItemsControl.
-        // else if (IsDropDownOpen && SelectedIndex < 0 && ItemCount > 0 &&
-        //          (e.Key == Key.Up || e.Key == Key.Down) && IsFocused == true)
-        // {
-        //     var firstChild = Presenter?.Panel?.Children.FirstOrDefault(c => CanFocus(c));
-        //     if (firstChild != null)
-        //     {
-        //         e.Handled = firstChild.Focus(NavigationMethod.Directional);
-        //     }
-        // }
     }
     
     internal void ItemFocused(SelectOptionItem selectOptionItem)
@@ -500,16 +590,12 @@ public class Select : TemplatedControl,
     {
         if (!e.Handled && e.Source is Visual source)
         {
-            // if (_popup?.IsInsidePopup(source) == true)
-            // {
-            //     if (UpdateSelectionFromEventSource(e.Source))
-            //     {
-            //         _popup?.Close();
-            //         e.Handled = true;
-            //     }
-            // }
-            // else 
-            if (PseudoClasses.Contains(StdPseudoClass.Pressed))
+            if (_popup?.IsInsidePopup(source) == true)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, false);
+                e.Handled = true;
+            }
+            else  if (PseudoClasses.Contains(StdPseudoClass.Pressed))
             {
                 SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
                 e.Handled = true;
@@ -519,7 +605,7 @@ public class Select : TemplatedControl,
         PseudoClasses.Set(StdPseudoClass.Pressed, false);
         base.OnPointerReleased(e);
     }
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         if (_popup != null)
@@ -527,19 +613,58 @@ public class Select : TemplatedControl,
             _popup.Opened -= PopupOpened;
             _popup.Closed -= PopupClosed;
         }
-
+        _optionsBox   =  e.NameScope.Get<SelectOptionsBox>(SelectThemeConstants.OptionsBoxPart);
+        if (_optionsBox != null)
+        {
+            _optionsBox.SelectionChanged += HandleOptionsBoxSelectionChanged;
+        }
         _popup        =  e.NameScope.Get<Popup>(SelectThemeConstants.PopupPart);
         _popup.Opened += PopupOpened;
         _popup.Closed += PopupClosed;
         ConfigureMaxDropdownHeight();
+        ConfigurePlaceholderVisible();
+        ConfigureSelectionIsEmpty();
+        UpdatePseudoClasses();
+    }
+
+    protected void HandleOptionsBoxSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        Debug.Assert(_optionsBox != null);
+        if (Mode == SelectMode.Single)
+        {
+            if (_optionsBox.SelectedItems?.Count > 0)
+            {
+                var selectedOptions = new List<SelectOption>();
+                if (_optionsBox.SelectedItems[0] is SelectOption selectOption)
+                {
+                    selectedOptions.Add(selectOption);
+                    SetCurrentValue(SelectedOptionProperty, selectOption);
+                }
+                SetCurrentValue(SelectedOptionsProperty, selectedOptions);
+            }
+        }
+        else
+        {
+            if (_optionsBox.SelectedItems != null)
+            {
+                var selectedOptions = new List<SelectOption>();
+                foreach (var item in _optionsBox.SelectedItems)
+                {
+                    if (item is SelectOption selectOption)
+                    {
+                        selectedOptions.Add(selectOption);
+                    }
+                }
+                SetCurrentValue(SelectedOptionsProperty, selectedOptions);
+            }
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (change.Property == SelectedOptionsProperty)
         {
-            UpdateSelectionBoxItem(change.NewValue);
-            TryFocusSelectedOptions();
+            ConfigurePlaceholderVisible();
         }
         else if (change.Property == IsDropDownOpenProperty)
         {
@@ -550,7 +675,21 @@ public class Select : TemplatedControl,
         {
             ConfigureMaxDropdownHeight();
         }
-
+        else if (change.Property == IsPopupMatchSelectWidthProperty)
+        {
+            ConfigurePopupMinWith(DesiredSize.Width);
+        }
+        else if (change.Property == StyleVariantProperty ||
+                 change.Property == StatusProperty)
+        {
+            UpdatePseudoClasses();
+        }
+        if (change.Property == SelectedOptionsProperty ||
+            change.Property == SelectedOptionProperty)
+        {
+            ConfigureSelectionIsEmpty();
+            ConfigurePlaceholderVisible();
+        }
         base.OnPropertyChanged(change);
     }
     
@@ -562,17 +701,12 @@ public class Select : TemplatedControl,
 
     private void PopupOpened(object? sender, EventArgs e)
     {
-        TryFocusSelectedOptions();
-        
         _subscriptionsOnOpen.Clear();
-        
         this.GetObservable(IsVisibleProperty).Subscribe(IsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
-        
         foreach (var parent in this.GetVisualAncestors().OfType<Control>())
         {
             parent.GetObservable(IsVisibleProperty).Subscribe(IsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
         }
-        
         DropDownOpened?.Invoke(this, EventArgs.Empty);
     }
     
@@ -584,141 +718,33 @@ public class Select : TemplatedControl,
         }
     }
     
-    private void TryFocusSelectedOptions()
-    {
-        
-        // var selectedIndex = SelectedIndex;
-        // if (IsDropDownOpen && selectedIndex != -1)
-        // {
-        //     var container = ContainerFromIndex(selectedIndex);
-        //
-        //     if (container == null && SelectedIndex != -1)
-        //     {
-        //         ScrollIntoView(Selection.SelectedIndex);
-        //         container = ContainerFromIndex(selectedIndex);
-        //     }
-        //
-        //     if (container != null && CanFocus(container))
-        //     {
-        //         container.Focus();
-        //     }
-        // }
-    }
-    
-    private bool CanFocus(Control control) => control.Focusable && control.IsEffectivelyEnabled && control.IsVisible;
-    
-    private void UpdateSelectionBoxItem(object? item)
-    {
-        // var contentControl = item as IContentControl;
-        //
-        // if (contentControl != null)
-        // {
-        //     item = contentControl.Content;
-        // }
-        //
-        // var control = item as Control;
-        //
-        // if (control != null)
-        // {
-        //     if (VisualRoot is object)
-        //     {
-        //         control.Measure(Size.Infinity);
-        //
-        //         SelectionBoxItem = new Rectangle
-        //         {
-        //             Width  = control.DesiredSize.Width,
-        //             Height = control.DesiredSize.Height,
-        //             Fill = new VisualBrush
-        //             {
-        //                 Visual     = control,
-        //                 Stretch    = Stretch.None,
-        //                 AlignmentX = AlignmentX.Left,
-        //             }
-        //         };
-        //     }
-        //
-        //     UpdateFlowDirection();
-        // }
-        // else
-        // {
-        //     if (item is not null && ItemTemplate is null && SelectionBoxItemTemplate is null && DisplayMemberBinding is { } binding)
-        //     {
-        //         var template = new FuncDataTemplate<object?>((_, _) =>
-        //             new TextBlock
-        //             {
-        //                 [TextBlock.DataContextProperty] = item,
-        //                 [!TextBlock.TextProperty]       = binding,
-        //             });
-        //         var text = template.Build(item);
-        //         SelectionBoxItem = text;
-        //     }
-        //     else
-        //     {
-        //         SelectionBoxItem = item;
-        //     }
-        //         
-        // }
-    }
-    
-    private void SelectFocusedItem()
-    {
-        // foreach (var dropdownItem in GetRealizedContainers())
-        // {
-        //     if (dropdownItem.IsFocused)
-        //     {
-        //         SelectedIndex = IndexFromContainer(dropdownItem);
-        //         break;
-        //     }
-        // }
-    }
-    //
-    // private bool SelectNext() => MoveSelection(SelectedIndex, 1, WrapSelection);
-    // private bool SelectPrevious() => MoveSelection(SelectedIndex, -1, WrapSelection);
-    
-    private bool MoveSelection(int startIndex, int step, bool wrap)
-    {
-        // static bool IsSelectable(object? o) => (o as AvaloniaObject)?.GetValue(IsEnabledProperty) ?? true;
-        //
-        // var count = ItemCount;
-        //
-        // for (int i = startIndex + step; i != startIndex; i += step)
-        // {
-        //     if (i < 0 || i >= count)
-        //     {
-        //         if (wrap)
-        //         {
-        //             if (i < 0)
-        //                 i += count;
-        //             else if (i >= count)
-        //                 i %= count;
-        //         }
-        //         else
-        //         {
-        //             return false;
-        //         }
-        //     }
-        //
-        //     var item      = ItemsView[i];
-        //     var container = ContainerFromIndex(i);
-        //         
-        //     if (IsSelectable(item) && IsSelectable(container))
-        //     {
-        //         SelectedIndex = i;
-        //         return true;
-        //     }
-        // }
-
-        return false;
-    }
-    
     public void Clear()
     {
         SelectedOptions = null;
+        SelectedOption  = null;
     }
     
     private void ConfigureMaxDropdownHeight()
     {
         SetCurrentValue(MaxPopupHeightProperty, ItemHeight * DisplayPageSize + PopupContentPadding.Top + PopupContentPadding.Bottom);
+    }
+    
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        ConfigurePopupMinWith(e.NewSize.Width);
+    }
+
+    private void ConfigurePopupMinWith(double selectWidth)
+    {
+        if (IsPopupMatchSelectWidth)
+        {
+            SetCurrentValue(EffectivePopupWidthProperty, selectWidth);
+        }
+        else
+        {
+            SetCurrentValue(EffectivePopupWidthProperty, double.NaN);
+        }
     }
     
     private void UpdatePseudoClasses()
@@ -728,5 +754,16 @@ public class Select : TemplatedControl,
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == AddOnDecoratedVariant.Outline);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == AddOnDecoratedVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == AddOnDecoratedVariant.Borderless);
+    }
+
+    private void ConfigurePlaceholderVisible()
+    {
+        SetCurrentValue(IsPlaceholderTextVisibleProperty, (Mode == SelectMode.Single && SelectedOption == null) || 
+                                                          (Mode != SelectMode.Single && SelectedOptions == null || SelectedOptions?.Count == 0));
+    }
+
+    private void ConfigureSelectionIsEmpty()
+    {
+        SetCurrentValue(IsSelectionEmptyProperty, SelectedOption == null && (SelectedOptions == null || SelectedOptions?.Count == 0));
     }
 }

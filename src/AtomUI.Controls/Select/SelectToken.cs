@@ -209,7 +209,7 @@ internal class SelectToken : AbstractControlDesignToken
         SelectAffixPadding = SharedToken.PaddingXXS;
         
         PopupBorderRadius   = SharedToken.BorderRadiusLG;
-        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS, PopupBorderRadius.TopLeft / 2);
+        PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
         PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
         PopupMarginToAnchor = SharedToken.UniformlyMarginXXS;
     }
