@@ -192,6 +192,24 @@ class Program
 
 <div style="height:50px"></div>
 
+#### 致谢
+
+<div>
+    <div align="center">
+      <h1>Ant Design</h1>
+      <img height="180" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
+    </div>
+Ant Design 是由蚂蚁集团推出的企业级 UI 设计语言和 React 组件库。它提供了一套高质量、统一的 React 组件，包含丰富的预设主题与国际化支持，致力于提升企业级应用的设计和开发效率。其优雅的设计和出色的开发体验，使其成为中后台项目中最流行的前端解决方案之一。
+</div>
+
+<div style="margin-top: 50px">
+    <div align="center">
+        <h1>Avalonia OSS</h1>
+        <img src="./resources/images/readme/avalonia-oss.png"/>
+    </div>
+Avalonia 是一个跨平台的 .NET UI 框架，使用 XAML 语言设计界面。它支持 Windows、macOS、Linux、iOS 和 Android 等多个平台，提供与 WPF 相似的开发体验。凭借其高性能的渲染引擎和丰富的控件库，Avalonia 能够帮助企业快速构建现代化的桌面和移动应用程序。
+</div>
+
 #### 许可证说明
 使用 AtomUI 的项目需要遵循 LGPL v3 协议，<strong>商业应用(包括且不限于公司内部项目、个人使用 AtomUI OSS 开发的商业项目和承接的外包项目)在使用二进制连接的情况下免费</strong>，如果基于源码定制 AtomUI 需要修改的代码开源或者购买商业授权，需要商业授权，欢迎联系：北京秦派软件科技有限公司。
 
@@ -208,7 +226,6 @@ class Program
 [pr-welcome-link]: https://github.com/chinware/AtomUI/pulls
 [github-contrib-shield]: https://contrib.rocks/image?repo=chinware%2FAtomUI
 [github-contrib-link]: https://github.com/chinware/AtomUI/graphs/contributors
-
 
 #### 关于秦派软件
 

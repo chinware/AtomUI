@@ -182,6 +182,25 @@ You can start using it in your own projects
 
 <div style="height:50px"></div>
 
+#### Acknowledgements
+
+<div>
+    <div align="center">
+      <h1>Ant Design</h1>
+      <img height="180" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
+    </div>
+Ant Design is an enterprise-level UI design language and React component library launched by Ant Group. It provides a set of high-quality, unified React components with rich preset themes and internationalization support, dedicated to improving the design and development efficiency of enterprise applications. Its elegant design and excellent development experience make it one of the most popular front-end solutions for middle and back-end projects.
+</div>
+
+<div style="margin-top: 50px">
+    <div align="center">
+        <h1>Avalonia OSS</h1>
+        <img src="./resources/images/readme/avalonia-oss.png"/>
+    </div>
+Avalonia is a cross-platform .NET UI framework that uses XAML language for interface design. It supports multiple platforms including Windows, macOS, Linux, iOS, and Android, providing a development experience similar to WPF. With its high-performance rendering engine and rich control library, Avalonia helps enterprises quickly build modern desktop and mobile applications.
+
+</div>
+
 #### License Description
 
 Projects using AtomUI OSS need to comply with the LGPL v3 agreement. <strong>Commercial applications (including but not
