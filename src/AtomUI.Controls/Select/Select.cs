@@ -617,7 +617,7 @@ public class Select : TemplatedControl,
         _searchInput = e.NameScope.Get<SelectSearchTextBox>(SelectThemeConstants.SearchInputPart);
         if (_optionsBox != null)
         {
-            _optionsBox.SelectionChanged += HandleOptionsBoxSelectionChanged;
+            // _optionsBox.SelectionChanged += HandleOptionsBoxSelectionChanged;
         }
         _popup        =  e.NameScope.Get<Popup>(SelectThemeConstants.PopupPart);
         _popup.Opened += PopupOpened;

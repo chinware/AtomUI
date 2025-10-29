@@ -1,12 +1,12 @@
 namespace AtomUI.Controls.Data;
 
-internal class ListBoxDefaultFilter
+internal class ListDefaultFilter
 {
-    private readonly WeakReference<IListBoxCollectionView> CollectionViewRef;
+    private readonly WeakReference<IListCollectionView> CollectionViewRef;
     
-    public ListBoxDefaultFilter(IListBoxCollectionView collectionView)
+    public ListDefaultFilter(IListCollectionView collectionView)
     {
-        CollectionViewRef = new WeakReference<IListBoxCollectionView>(collectionView);
+        CollectionViewRef = new WeakReference<IListCollectionView>(collectionView);
     }
     
     public bool Filter(object value)
@@ -31,7 +31,7 @@ internal class ListBoxDefaultFilter
         return false;
     }
     
-    public static implicit operator Func<object, bool>(ListBoxDefaultFilter filter)
+    public static implicit operator Func<object, bool>(ListDefaultFilter filter)
     {
         return filter.Filter;
     }

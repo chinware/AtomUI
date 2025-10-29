@@ -212,8 +212,8 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
     
-    public static readonly StyledProperty<DataGridGridPaginationVisibility> PaginationVisibilityProperty =
-        AvaloniaProperty.Register<DataGrid, DataGridGridPaginationVisibility>(nameof(PaginationVisibility), DataGridGridPaginationVisibility.Bottom);
+    public static readonly StyledProperty<DataGridPaginationVisibility> PaginationVisibilityProperty =
+        AvaloniaProperty.Register<DataGrid, DataGridPaginationVisibility>(nameof(PaginationVisibility), DataGridPaginationVisibility.Bottom);
     
     public static readonly StyledProperty<PaginationAlign> TopPaginationAlignProperty =
         AvaloniaProperty.Register<DataGrid, PaginationAlign>(nameof(TopPaginationAlign), PaginationAlign.End);
@@ -632,7 +632,7 @@ public partial class DataGrid : TemplatedControl,
         set => SetValue(EmptyIndicatorTemplateProperty, value);
     }
 
-    public DataGridGridPaginationVisibility PaginationVisibility
+    public DataGridPaginationVisibility PaginationVisibility
     {
         get => GetValue(PaginationVisibilityProperty);
         set => SetValue(PaginationVisibilityProperty, value);

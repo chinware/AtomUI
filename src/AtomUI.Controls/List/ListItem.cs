@@ -180,7 +180,7 @@ public class ListItem : ContentControl, ISelectable
             return;
         }
 
-        if (!e.Handled && ItemsControl.ItemsControlFromItemContainer(this) is List owner)
+        if (!e.Handled && ItemsControl.ItemsControlFromItemContainer(this) is ListDefaultView owner)
         {
             var p = e.GetCurrentPoint(this);
 
@@ -224,7 +224,7 @@ public class ListItem : ContentControl, ISelectable
 
             if (new Rect(Bounds.Size).ContainsExclusive(point.Position) &&
                 tapRect.ContainsExclusive(point.Position) &&
-                ItemsControl.ItemsControlFromItemContainer(this) is List owner)
+                ItemsControl.ItemsControlFromItemContainer(this) is ListDefaultView owner)
             {
                 if (owner.UpdateSelectionFromPointerEvent(this, e))
                 {

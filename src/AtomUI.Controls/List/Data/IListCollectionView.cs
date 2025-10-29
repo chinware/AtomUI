@@ -5,7 +5,7 @@ using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
-internal interface IListBoxCollectionView: IEnumerable, INotifyCollectionChanged
+public interface IListCollectionView: IEnumerable, INotifyCollectionChanged
 {
     CultureInfo Culture { get; set; }
     bool Contains(object item);
@@ -18,12 +18,13 @@ internal interface IListBoxCollectionView: IEnumerable, INotifyCollectionChanged
     int GroupingDepth { get; }
     string GetGroupingPropertyNameAtDepth(int level);
     IAvaloniaReadOnlyList<object>? Groups { get; }
-    ListBoxSortDescriptionCollection? SortDescriptions { get; }
-    ListBoxFilterDescriptionCollection? FilterDescriptions { get; }
+    ListSortDescriptionList? SortDescriptions { get; }
+    ListFilterDescriptionList? FilterDescriptions { get; }
     bool IsEmpty { get; }
     void Refresh();
     IDisposable DeferRefresh();
     object AddNew();
     void Remove(object? item);
     void RemoveAt(int index);
+    int ItemCount { get; }
 }

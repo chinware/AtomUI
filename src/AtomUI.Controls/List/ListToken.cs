@@ -79,6 +79,11 @@ internal class ListToken : AbstractControlDesignToken
     /// </summary>
     public Thickness ItemMargin { get; set; }
 
+    /// <summary>
+    /// 分页器的外边距
+    /// </summary>
+    public Thickness PaginationMargin { get; set; }
+    
     public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
@@ -100,7 +105,8 @@ internal class ListToken : AbstractControlDesignToken
         ItemPaddingSM = new Thickness(SharedToken.UniformlyPaddingXS, 0);
         ItemPadding   = new Thickness(SharedToken.UniformlyPaddingSM, 0);
 
-        ContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
-        ItemMargin     = new Thickness(0, 0.5);
+        ContentPadding   = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
+        ItemMargin       = new Thickness(0, 0.5);
+        PaginationMargin = new Thickness(0, SharedToken.UniformlyMargin);
     }
 }

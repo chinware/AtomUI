@@ -1,94 +1,59 @@
-﻿// Modified based on https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Controls/List.cs
- 
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Selection;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-public class List : SelectingItemsControl,
-                    IMotionAwareControl,
-                    IControlSharedTokenResourcesHost
+internal class ListDefaultView : SelectingItemsControl
 {
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new VirtualizingStackPanel());
-    
-    #region 公共属性定义
-    
-    public static readonly DirectProperty<List, IScrollable?> ScrollProperty =
-        AvaloniaProperty.RegisterDirect<List, IScrollable?>(nameof(Scroll), o => o.Scroll);
-    
-    public static readonly StyledProperty<object?> EmptyIndicatorProperty =
-        AvaloniaProperty.Register<List, object?>(nameof(EmptyIndicator));
-    
-    public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
-        AvaloniaProperty.Register<List, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
-    
-    public static readonly StyledProperty<bool> IsShowEmptyIndicatorProperty =
-        AvaloniaProperty.Register<List, bool>(nameof(IsShowEmptyIndicator), false);
 
+    #region 公共属性定义
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListDefaultView>();
+    
+    public static readonly DirectProperty<ListDefaultView, IScrollable?> ScrollProperty =
+        AvaloniaProperty.RegisterDirect<ListDefaultView, IScrollable?>(nameof(ListDefaultView), o => o.Scroll);
+    
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
-        Justification = "This property is owned by SelectingItemsControl, but protected there. List changes its visibility.")]
+        Justification = "This property is owned by SelectingItemsControl, but protected there. ListDefaultView changes its visibility.")]
     public new static readonly DirectProperty<SelectingItemsControl, IList?> SelectedItemsProperty =
         SelectingItemsControl.SelectedItemsProperty;
     
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
-        Justification = "This property is owned by SelectingItemsControl, but protected there. List changes its visibility.")]
+        Justification = "This property is owned by SelectingItemsControl, but protected there. ListDefaultView changes its visibility.")]
     public new static readonly DirectProperty<SelectingItemsControl, ISelectionModel> SelectionProperty =
         SelectingItemsControl.SelectionProperty;
     
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
-        Justification = "This property is owned by SelectingItemsControl, but protected there. List changes its visibility.")]
+        Justification = "This property is owned by SelectingItemsControl, but protected there. ListDefaultView changes its visibility.")]
     public new static readonly StyledProperty<SelectionMode> SelectionModeProperty =
         SelectingItemsControl.SelectionModeProperty;
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<List>();
-
-    public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
-        AvaloniaProperty.Register<List, bool>(nameof(DisabledItemHoverEffect));
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListDefaultView>();
     
-    public static readonly StyledProperty<bool> IsBorderlessProperty =
-        AvaloniaProperty.Register<List, bool>(nameof(IsBorderless), false);
+    public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
+        List.DisabledItemHoverEffectProperty.AddOwner<ListDefaultView>();
     
     public static readonly StyledProperty<bool> IsShowSelectedIndicatorProperty =
-        AvaloniaProperty.Register<List, bool>(nameof(IsShowSelectedIndicator), false);
+        List.IsShowSelectedIndicatorProperty.AddOwner<ListDefaultView>();
     
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<List>();
-    
-    [DependsOn(nameof(EmptyIndicatorTemplate))]
-    public object? EmptyIndicator
+    public bool IsMotionEnabled
     {
-        get => GetValue(EmptyIndicatorProperty);
-        set => SetValue(EmptyIndicatorProperty, value);
-    }
-
-    public IDataTemplate? EmptyIndicatorTemplate
-    {
-        get => GetValue(EmptyIndicatorTemplateProperty);
-        set => SetValue(EmptyIndicatorTemplateProperty, value);
-    }
-    
-    public bool IsShowEmptyIndicator
-    {
-        get => GetValue(IsShowEmptyIndicatorProperty);
-        set => SetValue(IsShowEmptyIndicatorProperty, value);
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
     }
     
     private IScrollable? _scroll;
@@ -97,7 +62,7 @@ public class List : SelectingItemsControl,
         get => _scroll;
         private set => SetAndRaise(ScrollProperty, ref _scroll, value);
     }
-    
+
     public new IList? SelectedItems
     {
         get => base.SelectedItems;
@@ -135,62 +100,22 @@ public class List : SelectingItemsControl,
         get => GetValue(IsShowSelectedIndicatorProperty);
         set => SetValue(IsShowSelectedIndicatorProperty, value);
     }
-    
-    public bool IsBorderless
-    {
-        get => GetValue(IsBorderlessProperty);
-        set => SetValue(IsBorderlessProperty, value);
-    }
-    
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-    
-    #endregion
-    
-    #region 内部属性定义
-    
-    internal static readonly DirectProperty<List, Thickness> EffectiveBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<List, Thickness>(nameof(EffectiveBorderThickness),
-            o => o.EffectiveBorderThickness,
-            (o, v) => o.EffectiveBorderThickness = v);
-    
-    private Thickness _effectiveBorderThickness;
-
-    internal Thickness EffectiveBorderThickness
-    {
-        get => _effectiveBorderThickness;
-        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
-    }
-
-    protected override Type StyleKeyOverride { get; } = typeof(List);
-    
-    Control IMotionAwareControl.PropertyBindTarget => this;
-    Control IControlSharedTokenResourcesHost.HostControl => this;
-    string IControlSharedTokenResourcesHost.TokenId => ListToken.ID;
-
     #endregion
     
     private protected readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
-    private IDisposable? _borderThicknessDisposable;
 
-    static List()
+    static ListDefaultView()
     {
         ItemsPanelProperty.OverrideDefaultValue<List>(DefaultPanel);
         KeyboardNavigation.TabNavigationProperty.OverrideDefaultValue(
             typeof(List),
             KeyboardNavigationMode.Once);
     }
-    
-    public List()
+   
+    public ListDefaultView()
     {
-        this.RegisterResources();
         LogicalChildren.CollectionChanged += HandleChildrenChanged;
     }
-    
-    public void SelectAll() => Selection.SelectAll();
     
     private void HandleChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -270,43 +195,6 @@ public class List : SelectingItemsControl,
             }
         }
     }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == BorderThicknessProperty ||
-            change.Property == IsBorderlessProperty)
-        {
-            ConfigureEffectiveBorderThickness();
-        }
-    }
-
-    private void ConfigureEffectiveBorderThickness()
-    {
-        if (IsBorderless)
-        {
-            SetCurrentValue(EffectiveBorderThicknessProperty, new Thickness(0));
-        }
-        else
-        {
-            SetCurrentValue(EffectiveBorderThicknessProperty, BorderThickness);
-        }
-    }
     
     protected override void OnKeyDown(KeyEventArgs e)
     {
@@ -344,16 +232,8 @@ public class List : SelectingItemsControl,
     {
         base.OnApplyTemplate(e);
         Scroll = e.NameScope.Find<IScrollable>(ListThemeConstants.ScrollViewerPart);
-        if (!IsSet(EmptyIndicatorProperty))
-        {
-            SetValue(EmptyIndicatorProperty, new Empty()
-            {
-                SizeType    = SizeType.Small,
-                PresetImage = PresetEmptyImage.Simple
-            }, BindingPriority.Template);
-        }
     }
-
+    
     protected internal virtual bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
     {
         var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
@@ -365,5 +245,4 @@ public class List : SelectingItemsControl,
             toggle,
             e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
     }
-    
 }

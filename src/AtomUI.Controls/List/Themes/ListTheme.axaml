@@ -1,0 +1,96 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:converters="using:AtomUI.Controls.Converters"
+    x:ClassModifier="internal">
+    <converters:ListPaginationVisibilityConvertor x:Key="TopPaginationVisibilityConvertor" IsTop="True" />
+    <converters:ListPaginationVisibilityConvertor x:Key="BottomPaginationVisibilityConvertor" IsTop="False" />
+    <ControlTheme x:Key="{x:Type atom:List}" TargetType="atom:List">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <atom:Spin IsSpinning="{TemplateBinding IsOperating}"
+                               IsShowTip="True"
+                               Tip="{TemplateBinding OperatingMsg}"
+                               CustomIndicator="{TemplateBinding CustomOperatingIndicator}"
+                               CustomIndicatorTemplate="{TemplateBinding CustomOperatingIndicatorTemplate}">
+                        <DockPanel LastChildFill="True">
+                            <atom:Pagination DockPanel.Dock="Top"
+                                             Name="{x:Static atom:ListThemeConstants.TopPaginationPart}"
+                                             Margin="{DynamicResource {x:Static atom:ListTokenKey.PaginationMargin}}"
+                                             Align="{TemplateBinding TopPaginationAlign}"
+                                             IsHideOnSinglePage="{TemplateBinding IsHideOnSinglePage}"
+                                             IsEnabled="{TemplateBinding IsEnabled}"
+                                             SizeType="{TemplateBinding SizeType}"
+                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                             IsVisible="{TemplateBinding PaginationVisibility, Converter={StaticResource TopPaginationVisibilityConvertor}}" />
+                            <atom:Pagination DockPanel.Dock="Bottom"
+                                             Name="{x:Static atom:ListThemeConstants.BottomPaginationPart}"
+                                             Margin="{DynamicResource {x:Static atom:ListTokenKey.PaginationMargin}}"
+                                             Align="{TemplateBinding BottomPaginationAlign}"
+                                             IsHideOnSinglePage="{TemplateBinding IsHideOnSinglePage}"
+                                             IsEnabled="{TemplateBinding IsEnabled}"
+                                             SizeType="{TemplateBinding SizeType}"
+                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                             IsVisible="{TemplateBinding PaginationVisibility, Converter={StaticResource BottomPaginationVisibilityConvertor}}" />
+                            <Panel>
+                                <atom:ListDefaultView Name="{x:Static atom:ListThemeConstants.ListViewPart}"
+                                                      SizeType="{TemplateBinding SizeType}"
+                                                      DisabledItemHoverEffect="{TemplateBinding DisabledItemHoverEffect}"
+                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                      ItemTemplate="{TemplateBinding ItemTemplate}"
+                                                      SelectedItems="{TemplateBinding SelectedItems, Mode=TwoWay}"
+                                                      IsShowSelectedIndicator="{TemplateBinding IsShowSelectedIndicator}"
+                                                      ItemsSource="{TemplateBinding CollectionView}"/>
+                                <ContentPresenter
+                                    Name="EmptyIndicator"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    IsVisible="False"
+                                    Content="{TemplateBinding EmptyIndicator}"
+                                    ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}" />
+                            </Panel>
+                        </DockPanel>
+                    </atom:Spin>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Style Selector="^ /template/ Border#Frame">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListTokenKey.ContentPadding}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#EmptyIndicator">
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXL}}" />
+        </Style>
+
+        <Style Selector="^[IsShowEmptyIndicator=True]:empty">
+            <Style Selector="^ /template/ ContentPresenter#EmptyIndicator">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

@@ -4,7 +4,7 @@ using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
-public class ListBoxFilterDescription
+public class ListFilterDescription
 {
     public string? PropertyPath { get; set; }
     public bool HasPropertyPath => !string.IsNullOrEmpty(PropertyPath);
@@ -79,4 +79,4 @@ public class ListBoxFilterDescription
     }
 }
 
-public class ListBoxFilterDescriptionCollection : AvaloniaList<ListBoxFilterDescription> {}
+public class ListFilterDescriptionList : AvaloniaList<ListFilterDescription> {}

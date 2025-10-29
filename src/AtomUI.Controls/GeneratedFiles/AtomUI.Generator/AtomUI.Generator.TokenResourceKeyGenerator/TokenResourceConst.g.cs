@@ -401,6 +401,7 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey ItemPaddingSM = new TokenResourceKey("List.ItemPaddingSM");
         public static readonly TokenResourceKey ItemSelectedBgColor = new TokenResourceKey("List.ItemSelectedBgColor");
         public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("List.ItemSelectedColor");
+        public static readonly TokenResourceKey PaginationMargin = new TokenResourceKey("List.PaginationMargin");
     }
 
     public static class MarqueeLabelTokenKey

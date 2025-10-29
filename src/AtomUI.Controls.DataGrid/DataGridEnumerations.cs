@@ -45,7 +45,7 @@ public enum DataGridGridLinesVisibility
 /// Determines whether the inner cells' vertical/horizontal gridlines are shown or not.
 /// </summary>
 [Flags]
-public enum DataGridGridPaginationVisibility
+public enum DataGridPaginationVisibility
 {
     None = 0x00,
     Top = 0x01,

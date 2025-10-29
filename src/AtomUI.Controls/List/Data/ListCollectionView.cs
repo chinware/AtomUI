@@ -10,7 +10,7 @@ using Avalonia.Collections;
 
 namespace AtomUI.Controls;
 
-internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPropertyChanged
+internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyChanged
 {
     #region 公共属性定义
 
@@ -158,11 +158,11 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// <summary>
     /// Gets the description of grouping, indexed by level.
     /// </summary>
-    public AvaloniaList<ListBoxGroupDescription> GroupDescriptions => _group.GroupDescriptions;
+    public AvaloniaList<ListGroupDescription> GroupDescriptions => _group.GroupDescriptions;
 
-    int IListBoxCollectionView.GroupingDepth => GroupDescriptions.Count;
+    int IListCollectionView.GroupingDepth => GroupDescriptions.Count;
 
-    string IListBoxCollectionView.GetGroupingPropertyNameAtDepth(int level)
+    string IListCollectionView.GetGroupingPropertyNameAtDepth(int level)
     {
         var groups = GroupDescriptions;
         if (level >= 0 && level < groups.Count)
@@ -335,7 +335,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// <remarks>
     /// <p>
     /// Clear a sort criteria by assigning SortDescription.Empty to this property.
-    /// One or more sort criteria in form of <seealso cref="ListBoxSortDescription"/>
+    /// One or more sort criteria in form of <seealso cref="Data.ListSortDescription"/>
     /// can be used, each specifying a property and direction to sort by.
     /// </p>
     /// </remarks>
@@ -344,26 +344,26 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// Use <seealso cref="CanSort"/> property to test if sorting is supported before adding
     /// to SortDescriptions.
     /// </exception>
-    public ListBoxSortDescriptionCollection SortDescriptions
+    public ListSortDescriptionList SortDescriptions
     {
         get
         {
             if (_sortDescriptions == null)
             {
-                SetSortDescriptions(new ListBoxSortDescriptionCollection());
+                SetSortDescriptions(new ListSortDescriptionList());
             }
             Debug.Assert(_sortDescriptions != null);
             return _sortDescriptions;
         }
     }
 
-    public ListBoxFilterDescriptionCollection FilterDescriptions
+    public ListFilterDescriptionList FilterDescriptions
     {
         get
         {
             if (_filterDescriptions == null)
             {
-                SetFilterDescriptions(new ListBoxFilterDescriptionCollection());
+                SetFilterDescriptions(new ListFilterDescriptionList());
             }
             Debug.Assert(_filterDescriptions != null);
             return _filterDescriptions;
@@ -408,7 +408,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// Raised when a page index change is requested
     /// </summary>
     //TODO Paging
-    public event EventHandler<ListBoxPageChangingEventArgs>? PageChanging;
+    public event EventHandler<PageChangingEventArgs>? PageChanging;
 
     /// <summary>
     /// PropertyChanged event.
@@ -475,7 +475,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// </summary>
     private bool IsGrouping => _isGrouping;
 
-    bool IListBoxCollectionView.IsGrouping => IsGrouping;
+    bool IListCollectionView.IsGrouping => IsGrouping;
 
     /// <summary>
     /// Gets a value indicating whether there
@@ -527,7 +527,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// <summary>
     /// Gets the root of the Group that we expose to the user
     /// </summary>
-    private ListBoxCollectionViewGroupRoot RootGroup => _isUsingTemporaryGroup ? _temporaryGroup : _group;
+    private ListCollectionViewGroupRoot RootGroup => _isUsingTemporaryGroup ? _temporaryGroup : _group;
 
     /// <summary>
     /// Gets the SourceCollection as an IList
@@ -567,7 +567,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     private int _cachedPageSize;
     
     /// <summary>
-    /// CultureInfo used in this ListBoxCollectionView
+    /// CultureInfo used in this ListCollectionView
     /// </summary>
     private CultureInfo _culture;
     
@@ -594,7 +594,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// <summary>
     /// Private accessor for the Grouping data
     /// </summary>
-    private ListBoxCollectionViewGroupRoot _group;
+    private ListCollectionViewGroupRoot _group;
     
     /// <summary>
     /// Private accessor for the InternalList
@@ -648,12 +648,12 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// <summary>
     /// Private accessor for the SortDescriptions
     /// </summary>
-    private ListBoxSortDescriptionCollection? _sortDescriptions;
+    private ListSortDescriptionList? _sortDescriptions;
     
     /// <summary>
     /// Private accessor for the FilterDescriptions
     /// </summary>
-    private ListBoxFilterDescriptionCollection? _filterDescriptions;
+    private ListFilterDescriptionList? _filterDescriptions;
     
     /// <summary>
     /// Private accessor for the SourceCollection
@@ -663,7 +663,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// <summary>
     /// Private accessor for the Grouping data on the entire collection
     /// </summary>
-    private ListBoxCollectionViewGroupRoot _temporaryGroup;
+    private ListCollectionViewGroupRoot _temporaryGroup;
 
     /// <summary>
     /// Timestamp used to see if there was a collection change while 
@@ -680,26 +680,26 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// Helper constructor that sets default values for isDataSorted and isDataInGroupOrder.
     /// </summary>
     /// <param name="source">The source for the collection</param>
-    public ListBoxCollectionView(IEnumerable source)
+    public ListCollectionView(IEnumerable source)
         : this(source, false /*isDataSorted*/, false /*isDataInGroupOrder*/)
     {
     }
     
     /// <summary>
-    /// Initializes a new instance of the ListBoxCollectionView class.
+    /// Initializes a new instance of the ListCollectionView class.
     /// </summary>
     /// <param name="source">The source for the collection</param>
     /// <param name="isDataSorted">Determines whether the source is already sorted</param>
     /// <param name="isDataInGroupOrder">Whether the source is already in the correct order for grouping</param>
-    public ListBoxCollectionView(IEnumerable source, bool isDataSorted, bool isDataInGroupOrder)
+    public ListCollectionView(IEnumerable source, bool isDataSorted, bool isDataInGroupOrder)
     {
         _sourceCollection = source ?? throw new ArgumentNullException(nameof(source));
 
         SetFlag(CollectionViewFlags.IsDataSorted, isDataSorted);
         SetFlag(CollectionViewFlags.IsDataInGroupOrder, isDataInGroupOrder);
 
-        _temporaryGroup                            =  new ListBoxCollectionViewGroupRoot(this, isDataInGroupOrder);
-        _group                                     =  new ListBoxCollectionViewGroupRoot(this, false);
+        _temporaryGroup                            =  new ListCollectionViewGroupRoot(this, isDataInGroupOrder);
+        _group                                     =  new ListCollectionViewGroupRoot(this, false);
         _group.GroupDescriptionChanged             += HandleGroupDescriptionChanged;
         _group.GroupDescriptions.CollectionChanged += HandleGroupByChanged;
 
@@ -1256,7 +1256,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     }
 
     /// <summary>
-    /// Retrieve item at the given zero-based index in this ListBoxCollectionView, after the source collection
+    /// Retrieve item at the given zero-based index in this ListCollectionView, after the source collection
     /// is filtered, sorted, and paged.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -1972,27 +1972,27 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     }
 
     /// <summary>
-    /// Sets up the ActiveComparer for the ListBoxCollectionViewGroupRoot specified
+    /// Sets up the ActiveComparer for the ListCollectionViewGroupRoot specified
     /// </summary>
-    /// <param name="groupRoot">The ListBoxCollectionViewGroupRoot</param>
-    private void PrepareGroupingComparer(ListBoxCollectionViewGroupRoot groupRoot)
+    /// <param name="groupRoot">The ListCollectionViewGroupRoot</param>
+    private void PrepareGroupingComparer(ListCollectionViewGroupRoot groupRoot)
     {
         if (groupRoot == _temporaryGroup || PageSize == 0)
         {
-            if (groupRoot.ActiveComparer is ListBoxCollectionViewGroupInternal.ListComparer listComparer)
+            if (groupRoot.ActiveComparer is ListCollectionViewGroupInternal.ListComparer listComparer)
             {
                 listComparer.ResetList(InternalList);
             }
             else
             {
-                groupRoot.ActiveComparer = new ListBoxCollectionViewGroupInternal.ListComparer(InternalList);
+                groupRoot.ActiveComparer = new ListCollectionViewGroupInternal.ListComparer(InternalList);
             }
         }
         else if (groupRoot == _group)
         {
             // create the new comparer based on the current _temporaryGroup
             groupRoot.ActiveComparer =
-                new ListBoxCollectionViewGroupInternal.CollectionViewGroupComparer(_temporaryGroup);
+                new ListCollectionViewGroupInternal.CollectionViewGroupComparer(_temporaryGroup);
         }
     }
 
@@ -2054,7 +2054,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     private void PrepareTemporaryGroups()
     {
         Debug.Assert(_group != null);
-        _temporaryGroup = new ListBoxCollectionViewGroupRoot(this, CheckFlag(CollectionViewFlags.IsDataInGroupOrder));
+        _temporaryGroup = new ListCollectionViewGroupRoot(this, CheckFlag(CollectionViewFlags.IsDataInGroupOrder));
 
         foreach (var gd in _group.GroupDescriptions)
         {
@@ -2508,10 +2508,10 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// <returns>True if the event is cancelled (e.Cancel was set to True), False otherwise</returns>
     private bool RaisePageChanging(int newPageIndex)
     {
-        EventHandler<ListBoxPageChangingEventArgs>? handler = PageChanging;
+        EventHandler<PageChangingEventArgs>? handler = PageChanging;
         if (handler != null)
         {
-            ListBoxPageChangingEventArgs pageChangingEventArgs = new ListBoxPageChangingEventArgs(newPageIndex);
+            PageChangingEventArgs pageChangingEventArgs = new PageChangingEventArgs(newPageIndex);
             handler(this, pageChangingEventArgs);
             return pageChangingEventArgs.Cancel;
         }
@@ -2622,7 +2622,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// Set new SortDescription collection; re-hook collection change notification handler
     /// </summary>
     /// <param name="descriptions">SortDescriptionCollection to set the property value to</param>
-    private void SetSortDescriptions(ListBoxSortDescriptionCollection descriptions)
+    private void SetSortDescriptions(ListSortDescriptionList descriptions)
     {
         if (_sortDescriptions != null)
         {
@@ -2642,7 +2642,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     /// Set new FilterDescription collection; re-hook collection change notification handler
     /// </summary>
     /// <param name="descriptions"></param>
-    private void SetFilterDescriptions(ListBoxFilterDescriptionCollection descriptions)
+    private void SetFilterDescriptions(ListFilterDescriptionList descriptions)
     {
         if (_filterDescriptions != null)
         {
@@ -2659,7 +2659,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     }
 
     /// <summary>
-    /// SortDescription was added/removed, refresh ListBoxCollectionView
+    /// SortDescription was added/removed, refresh ListCollectionView
     /// </summary>
     /// <param name="sender">Sender that triggered this handler</param>
     /// <param name="e">NotifyCollectionChangedEventArgs for this change</param>
@@ -2692,7 +2692,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     }
     
     /// <summary>
-    /// SortDescription was added/removed, refresh ListBoxCollectionView
+    /// SortDescription was added/removed, refresh ListCollectionView
     /// </summary>
     /// <param name="sender">Sender that triggered this handler</param>
     /// <param name="e">NotifyCollectionChangedEventArgs for this change</param>
@@ -2761,7 +2761,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     private void VerifyRefreshNotDeferred()
     {
         // If the Refresh is being deferred to change filtering or sorting of the
-        // data by this ListBoxCollectionView, then ListBoxCollectionView will not reflect the correct
+        // data by this ListCollectionView, then ListCollectionView will not reflect the correct
         // state of the underlying data.
         if (IsRefreshDeferred)
         {
@@ -2920,10 +2920,10 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
         /// <summary>
         /// Initializes a new instance of the NewItemAwareEnumerator class.
         /// </summary>
-        /// <param name="collectionView">The ListBoxCollectionView we are creating the enumerator for</param>
+        /// <param name="collectionView">The ListCollectionView we are creating the enumerator for</param>
         /// <param name="baseEnumerator">The baseEnumerator that we pass in</param>
         /// <param name="newItem">The new item we are adding to the collection</param>
-        public NewItemAwareEnumerator(ListBoxCollectionView collectionView, IEnumerator baseEnumerator, object? newItem)
+        public NewItemAwareEnumerator(ListCollectionView collectionView, IEnumerator baseEnumerator, object? newItem)
         {
             _collectionView = collectionView;
             _timestamp      = collectionView.Timestamp;
@@ -2988,7 +2988,7 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
         /// <summary>
         /// CollectionView that we are creating the enumerator for
         /// </summary>
-        private ListBoxCollectionView _collectionView;
+        private ListCollectionView _collectionView;
 
         /// <summary>
         /// The Base Enumerator that we are passing in
@@ -3015,17 +3015,17 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
     {
         private readonly IComparer<object>[] _comparers;
 
-        public MergedComparer(ListBoxSortDescriptionCollection coll)
+        public MergedComparer(ListSortDescriptionList coll)
         {
             _comparers = MakeComparerArray(coll);
         }
 
-        public MergedComparer(ListBoxCollectionView collectionView)
+        public MergedComparer(ListCollectionView collectionView)
             : this(collectionView.SortDescriptions)
         {
         }
 
-        private static IComparer<object>[] MakeComparerArray(ListBoxSortDescriptionCollection coll)
+        private static IComparer<object>[] MakeComparerArray(ListSortDescriptionList coll)
         {
             return
                 coll.Select(c => c.Comparer)
@@ -3103,13 +3103,13 @@ internal class ListBoxCollectionView : IListBoxCollectionView, IList, INotifyPro
         /// <summary>
         /// Private reference to the CollectionView that created this DeferHelper
         /// </summary>
-        private ListBoxCollectionView? _collectionView;
+        private ListCollectionView? _collectionView;
 
         /// <summary>
         /// Initializes a new instance of the DeferHelper class
         /// </summary>
         /// <param name="collectionView">CollectionView that created this DeferHelper</param>
-        public DeferHelper(ListBoxCollectionView? collectionView)
+        public DeferHelper(ListCollectionView? collectionView)
         {
             _collectionView = collectionView;
         }

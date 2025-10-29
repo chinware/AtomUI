@@ -1,14 +1,14 @@
 using System.ComponentModel;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Controls;
 
-public sealed class ListBoxPageChangingEventArgs : CancelEventArgs
+public sealed class PageChangingEventArgs : CancelEventArgs
 {
     /// <summary>
     /// Constructor that takes the target page index
     /// </summary>
     /// <param name="newPageIndex">Index of the requested page</param>
-    public ListBoxPageChangingEventArgs(int newPageIndex)
+    public PageChangingEventArgs(int newPageIndex)
     {
         NewPageIndex = newPageIndex;
     }

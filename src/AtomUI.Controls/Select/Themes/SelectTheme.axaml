@@ -86,8 +86,10 @@
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                     SizeType="Middle"
                                     SelectedItems="{TemplateBinding SelectedOptions}"
-                                    SelectedItem="{TemplateBinding SelectedOption}"
-                                    ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}" />
+                             
+                                    />
+                                <!-- SelectedItem="{TemplateBinding SelectedOption}" -->
+                                <!-- ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"  -->
                             </atom:IndicatorScrollViewer>
                         </Border>
                     </atom:Popup>
