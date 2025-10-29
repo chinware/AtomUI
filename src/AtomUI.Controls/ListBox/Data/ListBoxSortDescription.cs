@@ -342,4 +342,4 @@ public class ListBoxComparerSortDescription : ListBoxSortDescription
     }
 }
 
-public class SelectSortDescriptionCollection : AvaloniaList<ListBoxSortDescription> {}
+public class ListBoxSortDescriptionCollection : AvaloniaList<ListBoxSortDescription> {}

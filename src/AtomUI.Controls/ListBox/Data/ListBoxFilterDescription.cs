@@ -79,4 +79,4 @@ public class ListBoxFilterDescription
     }
 }
 
-public class SelectFilterDescriptionCollection : AvaloniaList<ListBoxFilterDescription> {}
+public class ListBoxFilterDescriptionCollection : AvaloniaList<ListBoxFilterDescription> {}

@@ -18,8 +18,8 @@ internal interface IListBoxCollectionView: IEnumerable, INotifyCollectionChanged
     int GroupingDepth { get; }
     string GetGroupingPropertyNameAtDepth(int level);
     IAvaloniaReadOnlyList<object>? Groups { get; }
-    SelectSortDescriptionCollection? SortDescriptions { get; }
-    SelectFilterDescriptionCollection? FilterDescriptions { get; }
+    ListBoxSortDescriptionCollection? SortDescriptions { get; }
+    ListBoxFilterDescriptionCollection? FilterDescriptions { get; }
     bool IsEmpty { get; }
     void Refresh();
     IDisposable DeferRefresh();
