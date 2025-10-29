@@ -6,7 +6,7 @@ using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
-public abstract class SelectSortDescription
+public abstract class ListBoxSortDescription
 {
     public virtual string? PropertyPath => null;
     
@@ -26,7 +26,7 @@ public abstract class SelectSortDescription
         return seq.ThenBy(o => o, Comparer);
     }
 
-    public virtual SelectSortDescription SwitchSortDirection()
+    public virtual ListBoxSortDescription SwitchSortDirection()
     {
         return this;
     }
@@ -47,19 +47,19 @@ public abstract class SelectSortDescription
         return propertyValue;
     }
     
-    public static SelectSortDescription FromPath(string propertyPath, ListSortDirection direction = ListSortDirection.Ascending, CultureInfo? culture = null)
+    public static ListBoxSortDescription FromPath(string propertyPath, ListSortDirection direction = ListSortDirection.Ascending, CultureInfo? culture = null)
     {
-        return new SelectPathSortDescription(propertyPath, direction, null, culture);
+        return new ListBoxPathSortDescription(propertyPath, direction, null, culture);
     }
 
-    public static SelectSortDescription FromPath(string propertyPath, ListSortDirection direction, IComparer comparer)
+    public static ListBoxSortDescription FromPath(string propertyPath, ListSortDirection direction, IComparer comparer)
     {
-        return new SelectPathSortDescription(propertyPath, direction, comparer, null);
+        return new ListBoxPathSortDescription(propertyPath, direction, comparer, null);
     }
 
-    public static SelectSortDescription FromComparer(IComparer comparer, ListSortDirection direction = ListSortDirection.Ascending)
+    public static ListBoxSortDescription FromComparer(IComparer comparer, ListSortDirection direction = ListSortDirection.Ascending)
     {
-        return new SelectComparerSortDescription(comparer, direction);
+        return new ListBoxComparerSortDescription(comparer, direction);
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ public abstract class SelectSortDescription
         }
     }
 
-    private class SelectPathSortDescription : SelectSortDescription
+    private class ListBoxPathSortDescription : ListBoxSortDescription
     {
         private readonly ListSortDirection _direction;
         private readonly string _propertyPath;
@@ -153,7 +153,7 @@ public abstract class SelectSortDescription
         public override IComparer<object> Comparer => _comparer.Value;
         public override ListSortDirection Direction => _direction;
 
-        public SelectPathSortDescription(string propertyPath, ListSortDirection direction, IComparer? internalComparer,
+        public ListBoxPathSortDescription(string propertyPath, ListSortDirection direction, IComparer? internalComparer,
                                            CultureInfo? culture)
         {
             _propertyPath = propertyPath;
@@ -164,7 +164,7 @@ public abstract class SelectSortDescription
             _comparer         = new Lazy<IComparer<object>>(() => Comparer<object>.Create(Compare));
         }
 
-        private SelectPathSortDescription(SelectPathSortDescription inner, ListSortDirection direction)
+        private ListBoxPathSortDescription(ListBoxPathSortDescription inner, ListSortDirection direction)
         {
             _propertyPath             = inner._propertyPath;
             _direction                = direction;
@@ -297,17 +297,17 @@ public abstract class SelectSortDescription
             return seq.ThenBy(GetValue, InternalComparer);
         }
 
-        public override SelectSortDescription SwitchSortDirection()
+        public override ListBoxSortDescription SwitchSortDirection()
         {
             var newDirection = _direction == ListSortDirection.Ascending
                 ? ListSortDirection.Descending
                 : ListSortDirection.Ascending;
-            return new SelectPathSortDescription(this, newDirection);
+            return new ListBoxPathSortDescription(this, newDirection);
         }
     }
 }
 
-public class SelectComparerSortDescription : SelectSortDescription
+public class ListBoxComparerSortDescription : ListBoxSortDescription
 {
     private readonly IComparer _innerComparer;
     private readonly ListSortDirection _direction;
@@ -316,7 +316,7 @@ public class SelectComparerSortDescription : SelectSortDescription
     public IComparer SourceComparer => _innerComparer;
     public override IComparer<object> Comparer => _comparer;
     public override ListSortDirection Direction => _direction;
-    public SelectComparerSortDescription(IComparer comparer, ListSortDirection direction)
+    public ListBoxComparerSortDescription(IComparer comparer, ListSortDirection direction)
     {
         _innerComparer = comparer;
         _direction     = direction;
@@ -335,11 +335,11 @@ public class SelectComparerSortDescription : SelectSortDescription
         return result;
     }
     
-    public override SelectSortDescription SwitchSortDirection()
+    public override ListBoxSortDescription SwitchSortDirection()
     {
         var newDirection = _direction == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;
-        return new SelectComparerSortDescription(_innerComparer, newDirection);
+        return new ListBoxComparerSortDescription(_innerComparer, newDirection);
     }
 }
 
-public class SelectSortDescriptionCollection : AvaloniaList<SelectSortDescription> {}
+public class SelectSortDescriptionCollection : AvaloniaList<ListBoxSortDescription> {}

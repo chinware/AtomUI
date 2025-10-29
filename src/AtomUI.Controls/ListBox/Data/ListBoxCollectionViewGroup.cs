@@ -3,7 +3,7 @@ using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
-public abstract class SelectCollectionViewGroup : INotifyPropertyChanged
+public abstract class ListBoxCollectionViewGroup : INotifyPropertyChanged
 {
     private int _itemCount;
     public object Key { get; }
@@ -21,10 +21,10 @@ public abstract class SelectCollectionViewGroup : INotifyPropertyChanged
         }
     }
     
-    internal abstract SelectCollectionViewGroupInternal? Parent { get; }
-    internal abstract SelectGroupDescription? GroupBy { get; set; }
+    internal abstract ListBoxCollectionViewGroupInternal? Parent { get; }
+    internal abstract ListBoxGroupDescription? GroupBy { get; set; }
 
-    protected SelectCollectionViewGroup(object key)
+    protected ListBoxCollectionViewGroup(object key)
     {
         Key            = key;
         ProtectedItems = new AvaloniaList<object>();

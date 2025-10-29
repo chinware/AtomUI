@@ -1,12 +1,12 @@
 namespace AtomUI.Controls.Data;
 
-internal class SelectDefaultFilter
+internal class ListBoxDefaultFilter
 {
-    private readonly WeakReference<ISelectOptionCollectionView> CollectionViewRef;
+    private readonly WeakReference<IListBoxCollectionView> CollectionViewRef;
     
-    public SelectDefaultFilter(ISelectOptionCollectionView collectionView)
+    public ListBoxDefaultFilter(IListBoxCollectionView collectionView)
     {
-        CollectionViewRef = new WeakReference<ISelectOptionCollectionView>(collectionView);
+        CollectionViewRef = new WeakReference<IListBoxCollectionView>(collectionView);
     }
     
     public bool Filter(object value)
@@ -31,7 +31,7 @@ internal class SelectDefaultFilter
         return false;
     }
     
-    public static implicit operator Func<object, bool>(SelectDefaultFilter filter)
+    public static implicit operator Func<object, bool>(ListBoxDefaultFilter filter)
     {
         return filter.Filter;
     }

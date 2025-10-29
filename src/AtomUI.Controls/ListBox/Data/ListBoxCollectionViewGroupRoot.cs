@@ -6,7 +6,7 @@ using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
-internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal, INotifyCollectionChanged
+internal class ListBoxCollectionViewGroupRoot : ListBoxCollectionViewGroupInternal, INotifyCollectionChanged
 {
     /// <summary>
     /// String constant used for the Root Name
@@ -21,12 +21,12 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <summary>
     /// Private accessor for the top level GroupDescription
     /// </summary>
-    private static SelectGroupDescription? _topLevelGroupDescription;
+    private static ListBoxGroupDescription? _topLevelGroupDescription;
 
     /// <summary>
     /// Private accessor for an ObservableCollection containing group descriptions
     /// </summary>
-    private readonly AvaloniaList<SelectGroupDescription> _groupBy = new ();
+    private readonly AvaloniaList<ListBoxGroupDescription> _groupBy = new ();
 
     /// <summary>
     /// Indicates whether the list of items (after applying the sort and filters, if any) 
@@ -37,7 +37,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <summary>
     /// Private accessor for the owning ICollectionView
     /// </summary>
-    private readonly ISelectOptionCollectionView _view;
+    private readonly IListBoxCollectionView _view;
 
     /// <summary>
     /// Raise this event when the (grouped) view changes
@@ -50,11 +50,11 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     internal event EventHandler? GroupDescriptionChanged;
 
     /// <summary>
-    /// Initializes a new instance of the SelectCollectionViewGroupRoot class.
+    /// Initializes a new instance of the ListBoxCollectionViewGroupRoot class.
     /// </summary>
     /// <param name="view">CollectionView that contains this grouping</param>
     /// <param name="isDataInGroupOrder">True if items are already in correct order for grouping</param>
-    internal SelectCollectionViewGroupRoot(ISelectOptionCollectionView view, bool isDataInGroupOrder)
+    internal ListBoxCollectionViewGroupRoot(IListBoxCollectionView view, bool isDataInGroupOrder)
         : base(RootName, null)
     {
         _view               = view;
@@ -64,7 +64,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <summary>
     /// Gets the description of grouping, indexed by level.
     /// </summary>
-    public virtual AvaloniaList<SelectGroupDescription> GroupDescriptions => _groupBy;
+    public virtual AvaloniaList<ListBoxGroupDescription> GroupDescriptions => _groupBy;
 
     /// <summary>
     /// Gets or sets the current IComparer being used
@@ -229,16 +229,16 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <param name="level">The level of grouping.</param>
     /// <param name="key">Name of subgroup to add to</param>
     /// <param name="loading">Whether we are currently loading</param>
-    private void AddToSubgroup(object item, SelectCollectionViewGroupInternal group, int level, object key,
+    private void AddToSubgroup(object item, ListBoxCollectionViewGroupInternal group, int level, object key,
                                bool loading)
     {
-        SelectCollectionViewGroupInternal? subgroup;
+        ListBoxCollectionViewGroupInternal? subgroup;
         int                                 index = (_isDataInGroupOrder) ? group.LastIndex : 0;
 
         // find the desired subgroup
         for (int n = group.Items.Count; index < n; ++index)
         {
-            subgroup = group.Items[index] as SelectCollectionViewGroupInternal;
+            subgroup = group.Items[index] as ListBoxCollectionViewGroupInternal;
             if (subgroup == null)
             {
                 continue; // skip children that are not groups
@@ -253,7 +253,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
         }
 
         // the item didn't match any subgroups.  Create a new subgroup and add the item.
-        subgroup = new SelectCollectionViewGroupInternal(key, group);
+        subgroup = new ListBoxCollectionViewGroupInternal(key, group);
         InitializeGroup(subgroup, level + 1, item);
 
         if (loading)
@@ -282,7 +282,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <param name="group">Group to add item to</param>
     /// <param name="level">The level of grouping</param>
     /// <param name="loading">Whether we are currently loading</param>
-    private void AddToSubgroups(object item, SelectCollectionViewGroupInternal group, int level, bool loading)
+    private void AddToSubgroups(object item, ListBoxCollectionViewGroupInternal group, int level, bool loading)
     {
         object? key = GetGroupKey(item, group.GroupBy, level);
 
@@ -322,7 +322,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
         }
     }
 
-    public virtual Func<SelectCollectionViewGroup, int, SelectGroupDescription>? GroupBySelector { get; set; }
+    public virtual Func<ListBoxCollectionViewGroup, int, ListBoxGroupDescription>? GroupBySelector { get; set; }
 
     /// <summary>
     /// Returns the description of how to divide the given group into subgroups
@@ -330,10 +330,10 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <param name="group">CollectionViewGroup to get group description from</param>
     /// <param name="level">The level of grouping</param>
     /// <returns>GroupDescription of how to divide the given group</returns>
-    private SelectGroupDescription? GetGroupDescription(SelectCollectionViewGroup group, int level)
+    private ListBoxGroupDescription? GetGroupDescription(ListBoxCollectionViewGroup group, int level)
     {
-        SelectGroupDescription?   result      = null;
-        SelectCollectionViewGroup? targetGroup = group;
+        ListBoxGroupDescription?   result      = null;
+        ListBoxCollectionViewGroup? targetGroup = group;
         if (targetGroup == this)
         {
             targetGroup = null;
@@ -359,7 +359,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <param name="groupDescription">GroupDescription for the group</param>
     /// <param name="level">The level of grouping</param>
     /// <returns>Group names for the specified item</returns>
-    private object? GetGroupKey(object item, SelectGroupDescription? groupDescription, int level)
+    private object? GetGroupKey(object item, ListBoxGroupDescription? groupDescription, int level)
     {
         if (groupDescription != null)
         {
@@ -374,10 +374,10 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <param name="group">Group to initialize</param>
     /// <param name="level">The level of grouping</param>
     /// <param name="seedItem">The seed item to compare with to see where to insert</param>
-    private void InitializeGroup(SelectCollectionViewGroupInternal group, int level, object? seedItem)
+    private void InitializeGroup(ListBoxCollectionViewGroupInternal group, int level, object? seedItem)
     {
         // set the group description for dividing the group into subgroups
-        SelectGroupDescription? groupDescription = GetGroupDescription(group, level);
+        ListBoxGroupDescription? groupDescription = GetGroupDescription(group, level);
         group.GroupBy = groupDescription;
 
         // create subgroups for each of the explicit names
@@ -386,7 +386,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
         {
             for (int k = 0, n = keys.Count; k < n; ++k)
             {
-                SelectCollectionViewGroupInternal subgroup = new SelectCollectionViewGroupInternal(keys[k], group);
+                ListBoxCollectionViewGroupInternal subgroup = new ListBoxCollectionViewGroupInternal(keys[k], group);
                 InitializeGroup(subgroup, level + 1, seedItem);
                 group.Add(subgroup);
             }
@@ -401,7 +401,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <param name="group">Group to remove item from</param>
     /// <param name="item">Item to remove</param>
     /// <returns>True if item could not be removed</returns>
-    private bool RemoveFromGroupDirectly(SelectCollectionViewGroupInternal group, object item)
+    private bool RemoveFromGroupDirectly(ListBoxCollectionViewGroupInternal group, object item)
     {
         int leafIndex = group.Remove(item, true);
         if (leafIndex >= 0)
@@ -421,15 +421,15 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <param name="level">The level of grouping</param>
     /// <param name="key">Name of item to remove</param>
     /// <returns>Return true if the item was not in one of the subgroups it was supposed to be.</returns>
-    private bool RemoveFromSubgroup(object item, SelectCollectionViewGroupInternal group, int level, object key)
+    private bool RemoveFromSubgroup(object item, ListBoxCollectionViewGroupInternal group, int level, object key)
     {
         bool                                itemIsMissing = false;
-        SelectCollectionViewGroupInternal? subGroup;
+        ListBoxCollectionViewGroupInternal? subGroup;
 
         // find the desired subgroup
         for (int index = 0, n = group.Items.Count; index < n; ++index)
         {
-            subGroup = group.Items[index] as SelectCollectionViewGroupInternal;
+            subGroup = group.Items[index] as ListBoxCollectionViewGroupInternal;
             if (subGroup == null)
             {
                 continue; // skip children that are not groups
@@ -457,7 +457,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <param name="group">Group to remove item from</param>
     /// <param name="level">The level of grouping</param>
     /// <returns>Return true if the item was not in one of the subgroups it was supposed to be.</returns>
-    private bool RemoveFromSubgroups(object item, SelectCollectionViewGroupInternal group, int level)
+    private bool RemoveFromSubgroups(object item, ListBoxCollectionViewGroupInternal group, int level)
     {
         bool   itemIsMissing = false;
         object? key           = GetGroupKey(item, group.GroupBy, level);
@@ -502,7 +502,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// </summary>
     /// <param name="group">Group to remove item from</param>
     /// <param name="item">Item to remove</param>
-    private void RemoveItemFromSubgroupsByExhaustiveSearch(SelectCollectionViewGroupInternal group, object item)
+    private void RemoveItemFromSubgroupsByExhaustiveSearch(ListBoxCollectionViewGroupInternal group, object item)
     {
         // try to remove the item from the direct children 
         // this function only returns true if it failed to remove from group directly
@@ -513,7 +513,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
             // (loop runs backwards in case an entire group is deleted)
             for (int k = group.Items.Count - 1; k >= 0; --k)
             {
-                if (group.Items[k] is SelectCollectionViewGroupInternal subgroup)
+                if (group.Items[k] is ListBoxCollectionViewGroupInternal subgroup)
                 {
                     RemoveItemFromSubgroupsByExhaustiveSearch(subgroup, item);
                 }
@@ -524,7 +524,7 @@ internal class SelectCollectionViewGroupRoot : SelectCollectionViewGroupInternal
     /// <summary>
     /// TopLevelGroupDescription class
     /// </summary>
-    private class TopLevelGroupDescription : SelectGroupDescription
+    private class TopLevelGroupDescription : ListBoxGroupDescription
     {
         /// <summary>
         /// Initializes a new instance of the TopLevelGroupDescription class.

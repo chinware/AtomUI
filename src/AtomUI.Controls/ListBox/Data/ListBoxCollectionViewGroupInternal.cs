@@ -5,24 +5,24 @@ using Avalonia;
 
 namespace AtomUI.Controls.Data;
 
-internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
+internal class ListBoxCollectionViewGroupInternal : ListBoxCollectionViewGroup
 {
     /// <summary>
     /// GroupDescription used to define how to group the items
     /// </summary>
-    private SelectGroupDescription? _groupBy;
+    private ListBoxGroupDescription? _groupBy;
 
     /// <summary>
-    /// Parent group of this SelectCollectionViewGroupInternal
+    /// Parent group of this ListBoxCollectionViewGroupInternal
     /// </summary>
-    private readonly SelectCollectionViewGroupInternal? _parentGroup;
+    private readonly ListBoxCollectionViewGroupInternal? _parentGroup;
 
     /// <summary>
     /// Used for detecting stale enumerators
     /// </summary>
     private int _version;
 
-    public SelectCollectionViewGroupInternal(object key, SelectCollectionViewGroupInternal? parent)
+    public ListBoxCollectionViewGroupInternal(object key, ListBoxCollectionViewGroupInternal? parent)
         : base(key)
     {
         _parentGroup = parent;
@@ -32,7 +32,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
 
     internal int FullCount { get; set; }
 
-    internal override SelectGroupDescription? GroupBy
+    internal override ListBoxGroupDescription? GroupBy
     {
         get => _groupBy;
         set
@@ -86,7 +86,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
                 // look for first item, child by child
                 for (int k = 0, n = Items.Count; k < n; ++k)
                 {
-                    if (!(Items[k] is SelectCollectionViewGroupInternal subgroup))
+                    if (!(Items[k] is ListBoxCollectionViewGroupInternal subgroup))
                     {
                         // child is an item - return it
                         return Items[k];
@@ -111,7 +111,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
         }
     }
 
-    internal override SelectCollectionViewGroupInternal? Parent => _parentGroup;
+    internal override ListBoxCollectionViewGroupInternal? Parent => _parentGroup;
 
     /// <summary>
     /// Adds the specified item to the collection
@@ -166,7 +166,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
 
             for (index = low; index < high; ++index)
             {
-                object seed1 = (ProtectedItems[index] is SelectCollectionViewGroupInternal subgroup)
+                object seed1 = (ProtectedItems[index] is ListBoxCollectionViewGroupInternal subgroup)
                     ? subgroup.SeedItem
                     : ProtectedItems[index];
                 if (seed1 == AvaloniaProperty.UnsetValue)
@@ -230,7 +230,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
     {
         for (int k = 0, n = Items.Count; k < n; ++k)
         {
-            if (Items[k] is SelectCollectionViewGroupInternal subgroup)
+            if (Items[k] is ListBoxCollectionViewGroupInternal subgroup)
             {
                 // current item is a group - either drill in, or skip over
                 if (index < subgroup.ItemCount)
@@ -267,7 +267,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
         int result = 0;
 
         // accumulate the number of predecessors at each level
-        for (SelectCollectionViewGroupInternal? group = this;
+        for (ListBoxCollectionViewGroupInternal? group = this;
              group != null;
              item = group, group = group.Parent, index = -1)
         {
@@ -282,7 +282,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
                 }
 
                 // accumulate leaf count
-                SelectCollectionViewGroupInternal? subgroup = group.Items[k] as SelectCollectionViewGroupInternal;
+                ListBoxCollectionViewGroupInternal? subgroup = group.Items[k] as ListBoxCollectionViewGroupInternal;
                 result += subgroup?.ItemCount ?? 1;
             }
         }
@@ -301,7 +301,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
         int leaves = 0; // number of leaves we've passed over so far
         for (int k = 0, n = Items.Count; k < n; ++k)
         {
-            if (Items[k] is SelectCollectionViewGroupInternal subgroup)
+            if (Items[k] is ListBoxCollectionViewGroupInternal subgroup)
             {
                 int subgroupIndex = subgroup.LeafIndexOf(item);
                 if (subgroupIndex < 0)
@@ -357,13 +357,13 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
     /// Removes an empty group from the PagedCollectionView grouping
     /// </summary>
     /// <param name="group">Empty subgroup to remove</param>
-    private static void RemoveEmptyGroup(SelectCollectionViewGroupInternal group)
+    private static void RemoveEmptyGroup(ListBoxCollectionViewGroupInternal group)
     {
-        SelectCollectionViewGroupInternal? parent = group.Parent;
+        ListBoxCollectionViewGroupInternal? parent = group.Parent;
 
         if (parent != null)
         {
-            SelectGroupDescription? groupBy = parent.GroupBy;
+            ListBoxGroupDescription? groupBy = parent.GroupBy;
             int                      index   = parent.ProtectedItems.IndexOf(group);
 
             // remove the subgroup unless it is one of the explicit groups
@@ -381,9 +381,9 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
     /// <param name="delta">Delta to change count by</param>
     protected void ChangeCounts(object item, int delta)
     {
-        bool changeLeafCount = !(item is SelectCollectionViewGroup);
+        bool changeLeafCount = !(item is ListBoxCollectionViewGroup);
 
-        for (SelectCollectionViewGroupInternal? group = this;
+        for (ListBoxCollectionViewGroupInternal? group = this;
              group != null;
              group = group._parentGroup)
         {
@@ -412,7 +412,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
     private class LeafEnumerator : IEnumerator
     {
         private object? _current; // current item
-        private SelectCollectionViewGroupInternal? _group; // parent group
+        private ListBoxCollectionViewGroupInternal? _group; // parent group
         private int _index; // current index into Items
         private IEnumerator? _subEnum; // enumerator over current subgroup
         private int _version; // parent group's version at ctor
@@ -421,7 +421,7 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
         /// Initializes a new instance of the LeafEnumerator class.
         /// </summary>
         /// <param name="group">CollectionViewGroupInternal that uses the enumerator</param>
-        public LeafEnumerator(SelectCollectionViewGroupInternal group)
+        public LeafEnumerator(ListBoxCollectionViewGroupInternal group)
         {
             _group = group;
             DoReset(); // don't call virtual Reset in ctor
@@ -470,8 +470,8 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
                     return false;
                 }
 
-                SelectCollectionViewGroupInternal? subgroup =
-                    _group.Items[_index] as SelectCollectionViewGroupInternal;
+                ListBoxCollectionViewGroupInternal? subgroup =
+                    _group.Items[_index] as ListBoxCollectionViewGroupInternal;
                 if (subgroup == null)
                 {
                     // current item is a leaf - it's the new Current
@@ -595,8 +595,8 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
 
     // / <summary>
     // / This comparer is used to insert an item into a group in a position consistent
-    // / with a given SelectCollectionViewGroupRoot. We will only use this when dealing with
-    // / a temporary SelectCollectionViewGroupRoot that points to the correct grouping of the
+    // / with a given ListBoxCollectionViewGroupRoot. We will only use this when dealing with
+    // / a temporary ListBoxCollectionViewGroupRoot that points to the correct grouping of the
     // / entire collection, and we have paging that requires us to keep the paged group
     // / consistent with the order of items in the temporary group.
     // / </summary>
@@ -604,10 +604,10 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
     {
         /// <summary>
         /// Constructor for the CollectionViewGroupComparer that takes
-        /// in an SelectCollectionViewGroupRoot.
+        /// in an ListBoxCollectionViewGroupRoot.
         /// </summary>
-        /// <param name="group">SelectCollectionViewGroupRoot used to compare on</param>
-        internal CollectionViewGroupComparer(SelectCollectionViewGroupRoot group)
+        /// <param name="group">ListBoxCollectionViewGroupRoot used to compare on</param>
+        internal CollectionViewGroupComparer(ListBoxCollectionViewGroupRoot group)
         {
             _group = group;
             _index = 0;
@@ -624,11 +624,11 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
 
         /// <summary>
         /// Sets our group to a new instance of a
-        /// SelectCollectionViewGroupRoot being passed in
+        /// ListBoxCollectionViewGroupRoot being passed in
         /// and resets the index.
         /// </summary>
-        /// <param name="group">SelectCollectionViewGroupRoot used to compare on</param>
-        internal void ResetGroup(SelectCollectionViewGroupRoot group)
+        /// <param name="group">ListBoxCollectionViewGroupRoot used to compare on</param>
+        internal void ResetGroup(ListBoxCollectionViewGroupRoot group)
         {
             _group = group;
             _index = 0;
@@ -669,6 +669,6 @@ internal class SelectCollectionViewGroupInternal : SelectCollectionViewGroup
         }
 
         private int _index;
-        private SelectCollectionViewGroupRoot _group;
+        private ListBoxCollectionViewGroupRoot _group;
     }
 }

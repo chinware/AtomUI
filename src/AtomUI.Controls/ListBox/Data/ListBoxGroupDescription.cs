@@ -4,11 +4,11 @@ using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
-public abstract class SelectGroupDescription : INotifyPropertyChanged
+public abstract class ListBoxGroupDescription : INotifyPropertyChanged
 {
     public AvaloniaList<object> GroupKeys { get; }
 
-    public SelectGroupDescription()
+    public ListBoxGroupDescription()
     {
         GroupKeys = new AvaloniaList<object>();
         GroupKeys.CollectionChanged += (sender, e) => OnPropertyChanged(new PropertyChangedEventArgs(nameof(GroupKeys)));

@@ -1,15 +1,24 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
+using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
-internal interface ISelectOptionCollectionView: IEnumerable, INotifyCollectionChanged
+internal interface IListBoxCollectionView: IEnumerable, INotifyCollectionChanged
 {
     CultureInfo Culture { get; set; }
     bool Contains(object item);
     IEnumerable SourceCollection { get; }
     Func<object, bool>? Filter { get; set; }
+    bool CanFilter { get; }
+    bool CanSort { get; }
+    bool CanGroup { get; }
+    bool IsGrouping { get; }
+    int GroupingDepth { get; }
+    string GetGroupingPropertyNameAtDepth(int level);
+    IAvaloniaReadOnlyList<object>? Groups { get; }
+    SelectSortDescriptionCollection? SortDescriptions { get; }
     SelectFilterDescriptionCollection? FilterDescriptions { get; }
     bool IsEmpty { get; }
     void Refresh();

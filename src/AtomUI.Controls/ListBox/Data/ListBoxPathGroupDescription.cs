@@ -5,14 +5,14 @@ using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Data;
 
-public class SelectPathGroupDescription : SelectGroupDescription
+public class ListBoxPathGroupDescription : ListBoxGroupDescription
 {
     private string _propertyPath;
     private Type? _propertyType;
     private IValueConverter? _valueConverter;
     private StringComparison _stringComparison = StringComparison.Ordinal;
 
-    public SelectPathGroupDescription(string propertyPath)
+    public ListBoxPathGroupDescription(string propertyPath)
     {
         _propertyPath = propertyPath;
     }
