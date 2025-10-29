@@ -7,7 +7,7 @@ public interface IListBoxItemData
     object? Content { get; }
 }
 
-public record ListBoxItemData : IListBoxItemData
+public record ListItemData : IListBoxItemData
 {
     public bool IsEnabled { get; init; } = true;
     public bool IsSelected { get; init; }

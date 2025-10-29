@@ -32,7 +32,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.FlyoutPresenterToken));
             tokenTypes.Add(typeof(AtomUI.Controls.GroupBoxToken));
             tokenTypes.Add(typeof(AtomUI.Controls.LineEditToken));
-            tokenTypes.Add(typeof(AtomUI.Controls.ListBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.ListToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MenuToken));
             tokenTypes.Add(typeof(AtomUI.Controls.MessageBoxToken));

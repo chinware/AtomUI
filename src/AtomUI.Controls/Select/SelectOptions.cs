@@ -5,7 +5,7 @@ using Avalonia.Input;
 
 namespace AtomUI.Controls;
 
-internal class SelectOptionsBox : ListBox
+internal class SelectOptions : List
 {
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -16,9 +16,9 @@ internal class SelectOptionsBox : ListBox
         return new SelectOptionItem();
     }
 
-    protected override void ApplyListItemData(ListBoxItem listBoxItem, object item)
+    protected override void ApplyListItemData(ListItem listItem, object item)
     {
-        if (listBoxItem is SelectOptionItem optionItem)
+        if (listItem is SelectOptionItem optionItem)
         {
             if (item is SelectOption selectOption)
             {

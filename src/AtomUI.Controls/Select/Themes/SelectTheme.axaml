@@ -80,7 +80,7 @@
                                 Padding="{TemplateBinding PopupContentPadding}">
                             <atom:IndicatorScrollViewer
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                                <atom:SelectOptionsBox
+                                <atom:SelectOptions
                                     Name="{x:Static atom:SelectThemeConstants.OptionsBoxPart}"
                                     IsBorderless="True"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
@@ -125,7 +125,7 @@
         </Style>
 
         <Style Selector="^[Mode=Single]">
-            <Style Selector="^ /template/ atom|SelectOptionsBox#PART_OptionsBox">
+            <Style Selector="^ /template/ atom|SelectOptions#PART_OptionsBox">
                 <Setter Property="IsShowSelectedIndicator" Value="False" />
             </Style>
             <Style Selector="^[IsSearchEnabled=False]">

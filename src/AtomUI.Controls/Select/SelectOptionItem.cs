@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Controls;
 
-internal class SelectOptionItem : ListBoxItem
+internal class SelectOptionItem : ListItem
 {
     protected override Type StyleKeyOverride { get; } = typeof(SelectOptionItem);
     

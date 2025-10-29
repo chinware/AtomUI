@@ -1,4 +1,4 @@
-﻿// Modified based on https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Controls/ListBoxItem.cs
+﻿// Modified based on https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Controls/ListItem.cs
 
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
@@ -14,15 +14,15 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-public class ListBoxItem : ContentControl, ISelectable
+public class ListItem : ContentControl, ISelectable
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsSelectedProperty =
-        SelectingItemsControl.IsSelectedProperty.AddOwner<ListBoxItem>();
+        SelectingItemsControl.IsSelectedProperty.AddOwner<ListItem>();
     
     public static readonly StyledProperty<Icon?> SelectedIndicatorProperty =
-        AvaloniaProperty.Register<ListBox, Icon?>(nameof(SelectedIndicator));
+        AvaloniaProperty.Register<List, Icon?>(nameof(SelectedIndicator));
     
     public bool IsSelected
     {
@@ -40,23 +40,23 @@ public class ListBoxItem : ContentControl, ISelectable
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBoxItem>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListItem>();
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBoxItem>();
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListItem>();
 
-    internal static readonly DirectProperty<ListBoxItem, bool> DisabledItemHoverEffectProperty =
-        AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(DisabledItemHoverEffect),
+    internal static readonly DirectProperty<ListItem, bool> DisabledItemHoverEffectProperty =
+        AvaloniaProperty.RegisterDirect<ListItem, bool>(nameof(DisabledItemHoverEffect),
             o => o.DisabledItemHoverEffect,
             (o, v) => o.DisabledItemHoverEffect = v);
     
-    internal static readonly DirectProperty<ListBoxItem, bool> IsShowSelectedIndicatorProperty =
-        AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(IsShowSelectedIndicator),
+    internal static readonly DirectProperty<ListItem, bool> IsShowSelectedIndicatorProperty =
+        AvaloniaProperty.RegisterDirect<ListItem, bool>(nameof(IsShowSelectedIndicator),
             o => o.IsShowSelectedIndicator,
             (o, v) => o.IsShowSelectedIndicator = v);
     
-    internal static readonly DirectProperty<ListBoxItem, bool> IsSelectedIndicatorVisibleProperty =
-        AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(IsSelectedIndicatorVisible),
+    internal static readonly DirectProperty<ListItem, bool> IsSelectedIndicatorVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ListItem, bool>(nameof(IsSelectedIndicatorVisible),
             o => o.IsSelectedIndicatorVisible,
             (o, v) => o.IsSelectedIndicatorVisible = v);
 
@@ -99,14 +99,14 @@ public class ListBoxItem : ContentControl, ISelectable
 
     private static readonly Point InvalidPoint = new Point(double.NaN, double.NaN);
     private Point _pointerDownPoint = InvalidPoint;
-    protected override Type StyleKeyOverride { get; } = typeof(ListBoxItem);
+    protected override Type StyleKeyOverride { get; } = typeof(ListItem);
     
-    static ListBoxItem()
+    static ListItem()
     {
-        SelectableMixin.Attach<ListBoxItem>(IsSelectedProperty);
-        PressedMixin.Attach<ListBoxItem>();
-        FocusableProperty.OverrideDefaultValue<ListBoxItem>(true);
-        AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<ListBoxItem>(IsOffscreenBehavior.FromClip);
+        SelectableMixin.Attach<ListItem>(IsSelectedProperty);
+        PressedMixin.Attach<ListItem>();
+        FocusableProperty.OverrideDefaultValue<ListItem>(true);
+        AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<ListItem>(IsOffscreenBehavior.FromClip);
     }
     
     private void ConfigureTransitions(bool force)
@@ -180,7 +180,7 @@ public class ListBoxItem : ContentControl, ISelectable
             return;
         }
 
-        if (!e.Handled && ItemsControl.ItemsControlFromItemContainer(this) is ListBox owner)
+        if (!e.Handled && ItemsControl.ItemsControlFromItemContainer(this) is List owner)
         {
             var p = e.GetCurrentPoint(this);
 
@@ -224,7 +224,7 @@ public class ListBoxItem : ContentControl, ISelectable
 
             if (new Rect(Bounds.Size).ContainsExclusive(point.Position) &&
                 tapRect.ContainsExclusive(point.Position) &&
-                ItemsControl.ItemsControlFromItemContainer(this) is ListBox owner)
+                ItemsControl.ItemsControlFromItemContainer(this) is List owner)
             {
                 if (owner.UpdateSelectionFromPointerEvent(this, e))
                 {

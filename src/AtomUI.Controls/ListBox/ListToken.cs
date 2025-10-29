@@ -5,22 +5,22 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlDesignToken]
-internal class ListBoxToken : AbstractControlDesignToken
+internal class ListToken : AbstractControlDesignToken
 {
-    public const string ID = "ListBox";
+    public const string ID = "List";
 
-    public ListBoxToken()
+    public ListToken()
         : this(ID)
     {
     }
 
-    protected ListBoxToken(string id)
+    protected ListToken(string id)
         : base(id)
     {
     }
 
     /// <summary>
-    /// ListBox 内边距
+    /// List 内边距
     /// </summary>
     public Thickness ContentPadding { get; set; }
 

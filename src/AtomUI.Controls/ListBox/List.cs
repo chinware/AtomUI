@@ -1,4 +1,4 @@
-﻿// Modified based on https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Controls/ListBox.cs
+﻿// Modified based on https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Controls/List.cs
  
 using System.Collections;
 using System.Collections.Specialized;
@@ -21,57 +21,56 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-
-public class ListBox : SelectingItemsControl,
-                       IMotionAwareControl,
-                       IControlSharedTokenResourcesHost
+public class List : SelectingItemsControl,
+                    IMotionAwareControl,
+                    IControlSharedTokenResourcesHost
 {
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new VirtualizingStackPanel());
     
     #region 公共属性定义
     
-    public static readonly DirectProperty<ListBox, IScrollable?> ScrollProperty =
-        AvaloniaProperty.RegisterDirect<ListBox, IScrollable?>(nameof(Scroll), o => o.Scroll);
+    public static readonly DirectProperty<List, IScrollable?> ScrollProperty =
+        AvaloniaProperty.RegisterDirect<List, IScrollable?>(nameof(Scroll), o => o.Scroll);
     
     public static readonly StyledProperty<object?> EmptyIndicatorProperty =
-        AvaloniaProperty.Register<ListBox, object?>(nameof(EmptyIndicator));
+        AvaloniaProperty.Register<List, object?>(nameof(EmptyIndicator));
     
     public static readonly StyledProperty<IDataTemplate?> EmptyIndicatorTemplateProperty =
-        AvaloniaProperty.Register<ListBox, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
+        AvaloniaProperty.Register<List, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
     
     public static readonly StyledProperty<bool> IsShowEmptyIndicatorProperty =
-        AvaloniaProperty.Register<ListBox, bool>(nameof(IsShowEmptyIndicator), false);
+        AvaloniaProperty.Register<List, bool>(nameof(IsShowEmptyIndicator), false);
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
-        Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
+        Justification = "This property is owned by SelectingItemsControl, but protected there. List changes its visibility.")]
     public new static readonly DirectProperty<SelectingItemsControl, IList?> SelectedItemsProperty =
         SelectingItemsControl.SelectedItemsProperty;
     
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
-        Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
+        Justification = "This property is owned by SelectingItemsControl, but protected there. List changes its visibility.")]
     public new static readonly DirectProperty<SelectingItemsControl, ISelectionModel> SelectionProperty =
         SelectingItemsControl.SelectionProperty;
     
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1010",
-        Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
+        Justification = "This property is owned by SelectingItemsControl, but protected there. List changes its visibility.")]
     public new static readonly StyledProperty<SelectionMode> SelectionModeProperty =
         SelectingItemsControl.SelectionModeProperty;
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListBox>();
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<List>();
 
     public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
-        AvaloniaProperty.Register<ListBox, bool>(nameof(DisabledItemHoverEffect));
+        AvaloniaProperty.Register<List, bool>(nameof(DisabledItemHoverEffect));
     
     public static readonly StyledProperty<bool> IsBorderlessProperty =
-        AvaloniaProperty.Register<ListBox, bool>(nameof(IsBorderless), false);
+        AvaloniaProperty.Register<List, bool>(nameof(IsBorderless), false);
     
     public static readonly StyledProperty<bool> IsShowSelectedIndicatorProperty =
-        AvaloniaProperty.Register<ListBox, bool>(nameof(IsShowSelectedIndicator), false);
+        AvaloniaProperty.Register<List, bool>(nameof(IsShowSelectedIndicator), false);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListBox>();
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<List>();
     
     [DependsOn(nameof(EmptyIndicatorTemplate))]
     public object? EmptyIndicator
@@ -112,7 +111,7 @@ public class ListBox : SelectingItemsControl,
     }
     
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1012",
-        Justification = "This property is owned by SelectingItemsControl, but protected there. ListBox changes its visibility.")]
+        Justification = "This property is owned by SelectingItemsControl, but protected there. List changes its visibility.")]
     public new SelectionMode SelectionMode
     {
         get => base.SelectionMode;
@@ -153,8 +152,8 @@ public class ListBox : SelectingItemsControl,
     
     #region 内部属性定义
     
-    internal static readonly DirectProperty<ListBox, Thickness> EffectiveBorderThicknessProperty =
-        AvaloniaProperty.RegisterDirect<ListBox, Thickness>(nameof(EffectiveBorderThickness),
+    internal static readonly DirectProperty<List, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<List, Thickness>(nameof(EffectiveBorderThickness),
             o => o.EffectiveBorderThickness,
             (o, v) => o.EffectiveBorderThickness = v);
     
@@ -166,26 +165,26 @@ public class ListBox : SelectingItemsControl,
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
 
-    protected override Type StyleKeyOverride { get; } = typeof(ListBox);
+    protected override Type StyleKeyOverride { get; } = typeof(List);
     
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
-    string IControlSharedTokenResourcesHost.TokenId => ListBoxToken.ID;
+    string IControlSharedTokenResourcesHost.TokenId => ListToken.ID;
 
     #endregion
     
     private protected readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
     private IDisposable? _borderThicknessDisposable;
 
-    static ListBox()
+    static List()
     {
-        ItemsPanelProperty.OverrideDefaultValue<ListBox>(DefaultPanel);
+        ItemsPanelProperty.OverrideDefaultValue<List>(DefaultPanel);
         KeyboardNavigation.TabNavigationProperty.OverrideDefaultValue(
-            typeof(ListBox),
+            typeof(List),
             KeyboardNavigationMode.Once);
     }
     
-    public ListBox()
+    public List()
     {
         this.RegisterResources();
         LogicalChildren.CollectionChanged += HandleChildrenChanged;
@@ -218,13 +217,13 @@ public class ListBox : SelectingItemsControl,
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new ListBoxItem();
+        return new ListItem();
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
         var disposables = new CompositeDisposable(4);
-        if (container is ListBoxItem listBoxItem)
+        if (container is ListItem listBoxItem)
         {
             if (item != null && item is not Visual)
             {
@@ -233,14 +232,14 @@ public class ListBox : SelectingItemsControl,
             
             if (ItemTemplate != null)
             {
-                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, listBoxItem, ListBoxItem.ContentTemplateProperty));
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, listBoxItem, ListItem.ContentTemplateProperty));
             }
             
-            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, listBoxItem, ListBoxItem.IsMotionEnabledProperty));
-            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, listBoxItem, ListBoxItem.SizeTypeProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsShowSelectedIndicatorProperty, listBoxItem, ListBoxItem.IsShowSelectedIndicatorProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, listBoxItem, ListItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, listBoxItem, ListItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsShowSelectedIndicatorProperty, listBoxItem, ListItem.IsShowSelectedIndicatorProperty));
             disposables.Add(BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listBoxItem,
-                ListBoxItem.DisabledItemHoverEffectProperty));
+                ListItem.DisabledItemHoverEffectProperty));
             
             PrepareListBoxItem(listBoxItem, item, index, disposables);
             DisposableListItem(listBoxItem);
@@ -248,26 +247,26 @@ public class ListBox : SelectingItemsControl,
         }
     }
     
-    protected virtual void PrepareListBoxItem(ListBoxItem listBoxItem, object? item, int index, CompositeDisposable compositeDisposable)
+    protected virtual void PrepareListBoxItem(ListItem listItem, object? item, int index, CompositeDisposable compositeDisposable)
     {
     }
 
-    protected virtual void ApplyListItemData(ListBoxItem listBoxItem, object item)
+    protected virtual void ApplyListItemData(ListItem listItem, object item)
     {
-        if (!listBoxItem.IsSet(ListBoxItem.ContentProperty))
+        if (!listItem.IsSet(ListItem.ContentProperty))
         {
-            listBoxItem.SetCurrentValue(ListBoxItem.ContentProperty, item);
+            listItem.SetCurrentValue(ListItem.ContentProperty, item);
         }
 
         if (item is IListBoxItemData listBoxItemData)
         {
-            if (!listBoxItem.IsSet(ListBoxItem.IsSelectedProperty))
+            if (!listItem.IsSet(ListItem.IsSelectedProperty))
             {
-                listBoxItem.SetCurrentValue(ListBoxItem.IsSelectedProperty, listBoxItemData.IsSelected);
+                listItem.SetCurrentValue(ListItem.IsSelectedProperty, listBoxItemData.IsSelected);
             }
-            if (!listBoxItem.IsSet(ListBoxItem.IsEnabledProperty))
+            if (!listItem.IsSet(ListItem.IsEnabledProperty))
             {
-                listBoxItem.SetCurrentValue(IsEnabledProperty, listBoxItemData.IsEnabled);
+                listItem.SetCurrentValue(IsEnabledProperty, listBoxItemData.IsEnabled);
             }
         }
     }
@@ -344,7 +343,7 @@ public class ListBox : SelectingItemsControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        Scroll = e.NameScope.Find<IScrollable>(ListBoxThemeConstants.ScrollViewerPart);
+        Scroll = e.NameScope.Find<IScrollable>(ListThemeConstants.ScrollViewerPart);
         if (!IsSet(EmptyIndicatorProperty))
         {
             SetValue(EmptyIndicatorProperty, new Empty()

@@ -3,7 +3,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Controls.Themes;
 
-internal class ListBoxItemTheme : ControlTheme
+internal class ListItemTheme : ControlTheme
 {
     public static readonly StringToTextBlockConverter StringToTextBlockConverter = new ();
 }

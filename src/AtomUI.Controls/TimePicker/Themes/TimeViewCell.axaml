@@ -21,19 +21,19 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemColor}}" />
-        <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemBgColor}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemColor}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemBgColor}}" />
         <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemHeight}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TimePickerTokenKey.ItemPadding}}" />
         
         <Style Selector="^:pointerover">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemHoverColor}}" />
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemHoverBgColor}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemHoverColor}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemHoverBgColor}}" />
         </Style>
         
         <Style Selector="^:selected">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedColor}}" />
-            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListBoxTokenKey.ItemSelectedBgColor}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemSelectedColor}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemSelectedBgColor}}" />
         </Style>
         
         <Style Selector="^:disabled">

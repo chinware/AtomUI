@@ -4,7 +4,7 @@
                     xmlns:atom="https://atomui.net"
                     xmlns:themes="using:AtomUI.Controls.Themes">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="ListBoxTheme.axaml" />
+        <ResourceInclude Source="ListTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
-    <themes:ListBoxItemTheme x:Key="{x:Type atom:ListBoxItem}" TargetType="atom:ListBoxItem" />
+    <themes:ListItemTheme x:Key="{x:Type atom:ListItem}" TargetType="atom:ListItem" />
 </ResourceDictionary>

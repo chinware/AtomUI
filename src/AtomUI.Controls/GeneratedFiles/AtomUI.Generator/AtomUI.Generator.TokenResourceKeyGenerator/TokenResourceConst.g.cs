@@ -387,20 +387,20 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey InputFontSizeSM = new TokenResourceKey("LineEdit.InputFontSizeSM");
     }
 
-    public static class ListBoxTokenKey
+    public static class ListTokenKey
     {
-        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("ListBox.ContentPadding");
-        public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("ListBox.ItemBgColor");
-        public static readonly TokenResourceKey ItemColor = new TokenResourceKey("ListBox.ItemColor");
-        public static readonly TokenResourceKey ItemDisabledColor = new TokenResourceKey("ListBox.ItemDisabledColor");
-        public static readonly TokenResourceKey ItemHoverBgColor = new TokenResourceKey("ListBox.ItemHoverBgColor");
-        public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("ListBox.ItemHoverColor");
-        public static readonly TokenResourceKey ItemMargin = new TokenResourceKey("ListBox.ItemMargin");
-        public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("ListBox.ItemPadding");
-        public static readonly TokenResourceKey ItemPaddingLG = new TokenResourceKey("ListBox.ItemPaddingLG");
-        public static readonly TokenResourceKey ItemPaddingSM = new TokenResourceKey("ListBox.ItemPaddingSM");
-        public static readonly TokenResourceKey ItemSelectedBgColor = new TokenResourceKey("ListBox.ItemSelectedBgColor");
-        public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("ListBox.ItemSelectedColor");
+        public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("List.ContentPadding");
+        public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("List.ItemBgColor");
+        public static readonly TokenResourceKey ItemColor = new TokenResourceKey("List.ItemColor");
+        public static readonly TokenResourceKey ItemDisabledColor = new TokenResourceKey("List.ItemDisabledColor");
+        public static readonly TokenResourceKey ItemHoverBgColor = new TokenResourceKey("List.ItemHoverBgColor");
+        public static readonly TokenResourceKey ItemHoverColor = new TokenResourceKey("List.ItemHoverColor");
+        public static readonly TokenResourceKey ItemMargin = new TokenResourceKey("List.ItemMargin");
+        public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("List.ItemPadding");
+        public static readonly TokenResourceKey ItemPaddingLG = new TokenResourceKey("List.ItemPaddingLG");
+        public static readonly TokenResourceKey ItemPaddingSM = new TokenResourceKey("List.ItemPaddingSM");
+        public static readonly TokenResourceKey ItemSelectedBgColor = new TokenResourceKey("List.ItemSelectedBgColor");
+        public static readonly TokenResourceKey ItemSelectedColor = new TokenResourceKey("List.ItemSelectedColor");
     }
 
     public static class MarqueeLabelTokenKey

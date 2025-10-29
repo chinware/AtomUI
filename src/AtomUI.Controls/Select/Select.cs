@@ -448,7 +448,7 @@ public class Select : TemplatedControl,
         new(() => new VirtualizingStackPanel());
     
     private Popup? _popup;
-    private SelectOptionsBox? _optionsBox;
+    private SelectOptions? _optionsBox;
     private SelectSearchTextBox? _searchInput;
     private readonly CompositeDisposable _subscriptionsOnOpen = new ();
     
@@ -613,7 +613,7 @@ public class Select : TemplatedControl,
             _popup.Opened -= PopupOpened;
             _popup.Closed -= PopupClosed;
         }
-        _optionsBox  = e.NameScope.Get<SelectOptionsBox>(SelectThemeConstants.OptionsBoxPart);
+        _optionsBox  = e.NameScope.Get<SelectOptions>(SelectThemeConstants.OptionsBoxPart);
         _searchInput = e.NameScope.Get<SelectSearchTextBox>(SelectThemeConstants.SearchInputPart);
         if (_optionsBox != null)
         {
