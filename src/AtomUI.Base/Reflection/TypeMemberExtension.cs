@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace AtomUI.Reflection;
 
-public static class TypeExtension
+public static class TypeMemberExtension
 {
     public static bool TryGetPropertyInfo(
         this Type type,

@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Utils;
 
 internal static class TypeHelper
 {
@@ -165,7 +165,7 @@ internal static class TypeHelper
                                                    out Exception? exception, ref object? item)
     {
         exception = null;
-        if (parentType == null || String.IsNullOrEmpty(propertyPath))
+        if (parentType == null || string.IsNullOrEmpty(propertyPath))
         {
             item = null;
             return null;
@@ -248,7 +248,7 @@ internal static class TypeHelper
 
     internal static Type? GetNestedPropertyType(this Type? parentType, string? propertyPath)
     {
-        if (parentType == null || String.IsNullOrEmpty(propertyPath))
+        if (parentType == null || string.IsNullOrEmpty(propertyPath))
         {
             return parentType;
         }
@@ -284,7 +284,7 @@ internal static class TypeHelper
         }
 
         // if the propertyPath is null or empty, return the item
-        if (String.IsNullOrEmpty(propertyPath))
+        if (string.IsNullOrEmpty(propertyPath))
         {
             return item;
         }
@@ -311,7 +311,7 @@ internal static class TypeHelper
         if (item != null)
         {
             Type parentType = item.GetType();
-            if (String.IsNullOrEmpty(propertyPath))
+            if (string.IsNullOrEmpty(propertyPath))
             {
                 return item;
             }
