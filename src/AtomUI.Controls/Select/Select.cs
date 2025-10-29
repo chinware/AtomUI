@@ -449,7 +449,7 @@ public class Select : TemplatedControl,
     
     private Popup? _popup;
     private SelectOptionsBox? _optionsBox;
-    private SelectHandle? _selectHandle;
+    private SelectSearchTextBox? _searchInput;
     private readonly CompositeDisposable _subscriptionsOnOpen = new ();
     
     static Select()
@@ -613,7 +613,8 @@ public class Select : TemplatedControl,
             _popup.Opened -= PopupOpened;
             _popup.Closed -= PopupClosed;
         }
-        _optionsBox   =  e.NameScope.Get<SelectOptionsBox>(SelectThemeConstants.OptionsBoxPart);
+        _optionsBox  = e.NameScope.Get<SelectOptionsBox>(SelectThemeConstants.OptionsBoxPart);
+        _searchInput = e.NameScope.Get<SelectSearchTextBox>(SelectThemeConstants.SearchInputPart);
         if (_optionsBox != null)
         {
             _optionsBox.SelectionChanged += HandleOptionsBoxSelectionChanged;
@@ -625,6 +626,7 @@ public class Select : TemplatedControl,
         ConfigurePlaceholderVisible();
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
+        ConfigureSearchTextBox();
     }
 
     protected void HandleOptionsBoxSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -669,6 +671,7 @@ public class Select : TemplatedControl,
         else if (change.Property == IsDropDownOpenProperty)
         {
             PseudoClasses.Set(SelectPseudoClass.DropdownOpen, change.GetNewValue<bool>());
+            ConfigureSearchTextBox();
         }
         else if (change.Property == DisplayPageSizeProperty ||
                  change.Property == ItemHeightProperty)
@@ -765,5 +768,21 @@ public class Select : TemplatedControl,
     private void ConfigureSelectionIsEmpty()
     {
         SetCurrentValue(IsSelectionEmptyProperty, SelectedOption == null && (SelectedOptions == null || SelectedOptions?.Count == 0));
+    }
+
+    private void ConfigureSearchTextBox()
+    {
+        if (_searchInput != null)
+        {
+            if (IsDropDownOpen)
+            {
+                _searchInput.Width = _searchInput.Bounds.Width;
+            }
+            else
+            {
+                _searchInput.Clear();
+                _searchInput.Width = double.NaN;
+            }
+        }
     }
 }

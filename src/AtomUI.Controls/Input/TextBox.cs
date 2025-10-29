@@ -4,6 +4,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -27,6 +28,9 @@ public class TextBox : AvaloniaTextBox,
     
     public static readonly StyledProperty<bool> IsCustomFontSizeProperty =
         AvaloniaProperty.Register<TextBox, bool>(nameof(IsCustomFontSize));
+    
+    public static readonly StyledProperty<IBrush?> WatermarkForegroundProperty =
+        AvaloniaProperty.Register<TextBox, IBrush?>(nameof(WatermarkForeground));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TextBox>();
@@ -55,6 +59,12 @@ public class TextBox : AvaloniaTextBox,
         set => SetValue(IsCustomFontSizeProperty, value);
     }
 
+    public IBrush? WatermarkForeground
+    {
+        get => GetValue(WatermarkForegroundProperty);
+        set => SetValue(WatermarkForegroundProperty, value);
+    }
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -76,6 +86,8 @@ public class TextBox : AvaloniaTextBox,
         get => _isEffectiveShowClearButton;
         set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
     }
+    
+    protected override Type StyleKeyOverride { get; } = typeof(TextBox);
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
@@ -133,4 +145,5 @@ public class TextBox : AvaloniaTextBox,
     {
         Clear();
     }
+    
 }

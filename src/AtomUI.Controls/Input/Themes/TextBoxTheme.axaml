@@ -64,6 +64,7 @@
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Text="{TemplateBinding Watermark}"
+                                Foreground="{TemplateBinding WatermarkForeground}"
                                 LineHeight="{TemplateBinding LineHeight}"
                                 TextAlignment="{TemplateBinding TextAlignment}"
                                 TextWrapping="{TemplateBinding TextWrapping}"
@@ -135,10 +136,8 @@
             </Style>
         </Style>
     
-        <Style Selector="^ /template/ atom|TextBlock#Watermark">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
-        </Style>
-    
+        <Setter Property="WatermarkForeground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
+
         <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
             <Setter Property="Margin"
                     Value="2 0 2 0" />

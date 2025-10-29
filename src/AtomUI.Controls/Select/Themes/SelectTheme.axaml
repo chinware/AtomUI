@@ -2,7 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
     x:ClassModifier="internal">
+    <converters:OptionHeaderConverter x:Key="OptionHeaderConverter"/>
     <ControlTheme x:Key="{x:Type atom:Select}" TargetType="atom:Select">
         <Setter Property="Template">
             <ControlTemplate>
@@ -33,6 +35,7 @@
                                     IsLoading="{Binding IsLoading, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsClearable="{Binding IsAllowClear, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsSelectionEmpty="{Binding IsSelectionEmpty, RelativeSource={RelativeSource AncestorType=atom:Select}}"
+                                    IsDropDownOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsInputHover="{Binding IsInnerBoxHover, RelativeSource={RelativeSource AncestorType=atom:AddOnDecoratedBox}}"/>
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
@@ -46,13 +49,18 @@
                                 Text="{TemplateBinding PlaceholderText}" 
                                 IsVisible="{TemplateBinding IsPlaceholderTextVisible}"/>
                             <ContentPresenter Name="SingleSelectResultPresenter"
-                                              Content="{TemplateBinding SelectedOption}">
+                                              Content="{TemplateBinding SelectedOption}"
+                                              IsVisible="False">
                                 <ContentPresenter.ContentTemplate>
                                     <DataTemplate x:DataType="atom:SelectOption">
                                         <TextBlock Text="{Binding Header}"/>
                                     </DataTemplate>
                                 </ContentPresenter.ContentTemplate>
                             </ContentPresenter>
+                            <atom:SelectSearchTextBox Name="{x:Static atom:SelectThemeConstants.SearchInputPart}" 
+                                                      IsVisible="False"
+                                                      IsReadOnly="True"
+                                                      Watermark="{TemplateBinding SelectedOption, Converter={StaticResource OptionHeaderConverter}}"/>
                             <atom:SelectResultOptionsBox
                                 Name="SelectedOptionsBox"
                                 HorizontalAlignment="Left"
@@ -122,9 +130,24 @@
             </Style>
             <Style Selector="^[IsSearchEnabled=False]">
                 <Setter Property="Cursor" Value="Hand"/>
+                <Style Selector="^ /template/ ContentPresenter#SingleSelectResultPresenter">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
             </Style>
-            <Style Selector="^ /template/ ContentPresenter#SingleSelectResultPresenter">
-                <Setter Property="IsVisible" Value="True" />
+            <Style Selector="^[IsSearchEnabled=True]">
+                
+                <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SearchInput">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="WatermarkForeground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+                </Style>
+                <Style Selector="^[IsDropDownOpen=True]">
+                    <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SearchInput">
+                        <Setter Property="IsReadOnly" Value="False" />
+                    </Style>
+                    <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SearchInput">
+                        <Setter Property="WatermarkForeground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
+                    </Style>
+                </Style>
             </Style>
         </Style>
         
