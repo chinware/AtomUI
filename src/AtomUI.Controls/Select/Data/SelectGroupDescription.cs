@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Globalization;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Data;
 
 public abstract class SelectGroupDescription : INotifyPropertyChanged
 {

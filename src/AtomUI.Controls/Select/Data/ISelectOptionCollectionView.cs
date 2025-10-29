@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Data;
 
 internal interface ISelectOptionCollectionView: IEnumerable, INotifyCollectionChanged
 {

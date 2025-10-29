@@ -2,7 +2,7 @@ using System.Diagnostics;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Data;
 
 public class SelectFilterDescription
 {
