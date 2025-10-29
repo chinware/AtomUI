@@ -44,7 +44,6 @@ public abstract class DataGridCollectionViewGroup : INotifyPropertyChanged
     event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
     {
         add =>  PropertyChanged += value;
-
         remove => PropertyChanged -= value;
     }
 

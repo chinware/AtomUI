@@ -6,6 +6,7 @@
 using System.Diagnostics;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;

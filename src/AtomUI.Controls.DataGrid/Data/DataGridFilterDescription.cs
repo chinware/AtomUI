@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using AtomUI.Controls.Utils;
+using AtomUI.Utils;
+using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
 
@@ -77,3 +78,5 @@ public class DataGridFilterDescription
         return null;
     }
 }
+
+public class DataGridFilterDescriptionCollection : AvaloniaList<DataGridFilterDescription> {}

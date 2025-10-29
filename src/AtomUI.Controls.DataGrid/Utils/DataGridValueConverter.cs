@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using System.Globalization;
+using AtomUI.Utils;
 using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Utils;

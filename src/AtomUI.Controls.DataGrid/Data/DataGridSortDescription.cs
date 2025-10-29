@@ -6,7 +6,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
-using AtomUI.Controls.Utils;
+using AtomUI.Utils;
 using Avalonia.Collections;
 
 namespace AtomUI.Controls.Data;
@@ -348,4 +348,3 @@ public class DataGridComparerSortDescription : DataGridSortDescription
 }
 
 public class DataGridSortDescriptionCollection : AvaloniaList<DataGridSortDescription> {}
-public class DataGridFilterDescriptionCollection : AvaloniaList<DataGridFilterDescription> {}

@@ -26,6 +26,9 @@ internal class SelectHandle : TemplatedControl
     public static readonly StyledProperty<bool> IsSelectionEmptyProperty =
         AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsSelectionEmpty), true);
     
+    public static readonly StyledProperty<bool> IsDropDownOpenProperty =
+        AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsDropDownOpen), false);
+    
     public bool IsInputHover
     {
         get => GetValue(IsInputHoverProperty);
@@ -60,6 +63,12 @@ internal class SelectHandle : TemplatedControl
     {
         get => GetValue(IsSelectionEmptyProperty);
         set => SetValue(IsSelectionEmptyProperty, value);
+    }
+    
+    public bool IsDropDownOpen
+    {
+        get => GetValue(IsDropDownOpenProperty);
+        set => SetValue(IsDropDownOpenProperty, value);
     }
     
     public static readonly RoutedEvent<RoutedEventArgs> ClearRequestedEvent = 

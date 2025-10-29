@@ -5,7 +5,7 @@
 
 using System.Diagnostics;
 using System.Globalization;
-using AtomUI.Controls.Utils;
+using AtomUI.Utils;
 using Avalonia.Data.Converters;
 
 namespace AtomUI.Controls.Data;
