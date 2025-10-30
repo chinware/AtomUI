@@ -119,7 +119,7 @@ internal class ListCollectionViewGroupInternal : ListCollectionViewGroup
     /// <param name="item">Item to add</param>
     internal void Add(object item)
     {
-        ChangeCounts(item, +1);
+        ChangeCounts(item, 1);
         ProtectedItems.Add(item);
     }
 
@@ -364,7 +364,7 @@ internal class ListCollectionViewGroupInternal : ListCollectionViewGroup
         if (parent != null)
         {
             ListGroupDescription? groupBy = parent.GroupBy;
-            int                      index   = parent.ProtectedItems.IndexOf(group);
+            int                   index   = parent.ProtectedItems.IndexOf(group);
 
             // remove the subgroup unless it is one of the explicit groups
             if (index >= groupBy?.GroupKeys.Count)
@@ -453,7 +453,8 @@ internal class ListCollectionViewGroupInternal : ListCollectionViewGroup
         bool IEnumerator.MoveNext()
         {
             Debug.Assert(_group != null, "_group should have been initialized in constructor");
-
+            Debug.Assert(_group.Key != null);
+            
             // check for invalidated enumerator
             if (_group._version != _version)
             {
@@ -470,19 +471,17 @@ internal class ListCollectionViewGroupInternal : ListCollectionViewGroup
                     return false;
                 }
 
-                ListCollectionViewGroupInternal? subgroup =
-                    _group.Items[_index] as ListCollectionViewGroupInternal;
-                if (subgroup == null)
-                {
-                    // current item is a leaf - it's the new Current
-                    _current = _group.Items[_index];
-                    _subEnum = null;
-                    return true;
-                }
-                else
+                if (_group.Items[_index] is ListCollectionViewGroupInternal subgroup)
                 {
                     // current item is a subgroup - get its enumerator
                     _subEnum = subgroup.GetLeafEnumerator();
+                }
+                else
+                {
+                    // current item is a leaf - it's the new Current
+                    _current       = _group.Items[_index];
+                    _subEnum       = null;
+                    return true;
                 }
             }
 
@@ -500,7 +499,6 @@ internal class ListCollectionViewGroupInternal : ListCollectionViewGroup
             get
             {
                 Debug.Assert(_group != null, "_group should have been initialized in constructor");
-
                 if (_index < 0 || _index >= _group.Items.Count)
                 {
                     throw new InvalidOperationException();

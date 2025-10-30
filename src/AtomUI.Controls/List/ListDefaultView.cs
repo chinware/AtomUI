@@ -50,6 +50,9 @@ internal class ListDefaultView : SelectingItemsControl
     public static readonly StyledProperty<bool> IsShowSelectedIndicatorProperty =
         List.IsShowSelectedIndicatorProperty.AddOwner<ListDefaultView>();
     
+    public static readonly StyledProperty<IDataTemplate?> GroupItemTemplateProperty =
+        List.GroupItemTemplateProperty.AddOwner<ListDefaultView>();
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -100,6 +103,12 @@ internal class ListDefaultView : SelectingItemsControl
         get => GetValue(IsShowSelectedIndicatorProperty);
         set => SetValue(IsShowSelectedIndicatorProperty, value);
     }
+    
+    public IDataTemplate? GroupItemTemplate
+    {
+        get => GetValue(GroupItemTemplateProperty);
+        set => SetValue(GroupItemTemplateProperty, value);
+    }
     #endregion
     
     private protected readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
@@ -142,6 +151,10 @@ internal class ListDefaultView : SelectingItemsControl
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
+        if (item is ListGroupData)
+        {
+            return new ListGroupItem();
+        }
         return new ListItem();
     }
     
@@ -152,6 +165,11 @@ internal class ListDefaultView : SelectingItemsControl
         {
             if (item != null && item is not Visual)
             {
+                if (!listBoxItem.IsSet(ListItem.ContentProperty))
+                {
+                    listBoxItem.SetCurrentValue(ListItem.ContentProperty, item);
+                }
+                
                 ApplyListItemData(listBoxItem, item);
             }
             
@@ -165,11 +183,35 @@ internal class ListDefaultView : SelectingItemsControl
             disposables.Add(BindUtils.RelayBind(this, IsShowSelectedIndicatorProperty, listBoxItem, ListItem.IsShowSelectedIndicatorProperty));
             disposables.Add(BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listBoxItem,
                 ListItem.DisabledItemHoverEffectProperty));
-            
             PrepareListBoxItem(listBoxItem, item, index, disposables);
-            DisposableListItem(listBoxItem);
-            _itemsBindingDisposables.Add(listBoxItem, disposables);
         }
+        else if (container is ListGroupItem groupItem)
+        {
+            if (item != null && item is not Visual)
+            {
+                if (!groupItem.IsSet(ListGroupItem.ContentProperty))
+                {
+                    if (GroupItemTemplate != null)
+                    {
+                        groupItem.SetCurrentValue(ListGroupItem.ContentProperty, item);
+                    }
+                    else if (item is ListGroupData groupData)
+                    {
+                        groupItem.SetCurrentValue(ListGroupItem.ContentProperty, groupData.Header);
+                    }
+                }
+                disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, groupItem, ListGroupItem.IsMotionEnabledProperty));
+                disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, groupItem, ListGroupItem.SizeTypeProperty));
+            }
+            
+            if (GroupItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, GroupItemTemplateProperty, groupItem, ListGroupItem.ContentTemplateProperty));
+            }
+        }
+        
+        DisposableListItem(container);
+        _itemsBindingDisposables.Add(container, disposables);
     }
     
     protected virtual void PrepareListBoxItem(ListItem listItem, object? item, int index, CompositeDisposable compositeDisposable)
@@ -178,11 +220,6 @@ internal class ListDefaultView : SelectingItemsControl
 
     protected virtual void ApplyListItemData(ListItem listItem, object item)
     {
-        if (!listItem.IsSet(ListItem.ContentProperty))
-        {
-            listItem.SetCurrentValue(ListItem.ContentProperty, item);
-        }
-
         if (item is IListBoxItemData listBoxItemData)
         {
             if (!listItem.IsSet(ListItem.IsSelectedProperty))

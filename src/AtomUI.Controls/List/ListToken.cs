@@ -84,6 +84,11 @@ internal class ListToken : AbstractControlDesignToken
     /// </summary>
     public Thickness PaginationMargin { get; set; }
     
+    /// <summary>
+    /// 分组标题的颜色
+    /// </summary>
+    public Color GroupHeaderColor { get; set; }
+    
     public override void CalculateFromAlias()
     {
         base.CalculateFromAlias();
@@ -108,5 +113,6 @@ internal class ListToken : AbstractControlDesignToken
         ContentPadding   = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
         ItemMargin       = new Thickness(0, 0.5);
         PaginationMargin = new Thickness(0, SharedToken.UniformlyMargin);
+        GroupHeaderColor = SharedToken.ColorTextDescription;
     }
 }

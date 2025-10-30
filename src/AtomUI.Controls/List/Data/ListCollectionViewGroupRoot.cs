@@ -93,26 +93,6 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
     }
 
     /// <summary>
-    /// Finds the index of the specified item
-    /// </summary>
-    /// <param name="item">Item we are looking for</param>
-    /// <param name="seed">Seed of the item we are looking for</param>
-    /// <param name="comparer">Comparer used to find the item</param>
-    /// <param name="low">Low range of item index</param>
-    /// <param name="high">High range of item index</param>
-    /// <returns>Index of the specified item</returns>
-    protected override int FindIndex(object item, object seed, IComparer? comparer, int low, int high)
-    {
-        // root group needs to adjust the bounds of the search to exclude the new item (if any)
-        // if (_view is IDataGridEditableCollectionView iecv && iecv.IsAddingNew)
-        // {
-        //     --high;
-        // }
-
-        return base.FindIndex(item, seed, comparer, low, high);
-    }
-
-    /// <summary>
     /// Initializes the group descriptions
     /// </summary>
     internal void Initialize()
@@ -222,61 +202,64 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
     }
 
     /// <summary>
-    /// Add an item to the subgroup with the given name
+    /// Add an item to the subGroup with the given name
     /// </summary>
     /// <param name="item">Item to add</param>
     /// <param name="group">Group to add item to</param>
     /// <param name="level">The level of grouping.</param>
-    /// <param name="key">Name of subgroup to add to</param>
+    /// <param name="key">Name of subGroup to add to</param>
     /// <param name="loading">Whether we are currently loading</param>
     private void AddToSubgroup(object item, ListCollectionViewGroupInternal group, int level, object key,
                                bool loading)
     {
-        ListCollectionViewGroupInternal? subgroup;
+        ListCollectionViewGroupInternal? subGroup;
         int                                 index = (_isDataInGroupOrder) ? group.LastIndex : 0;
 
-        // find the desired subgroup
+        // find the desired subGroup
         for (int n = group.Items.Count; index < n; ++index)
         {
-            subgroup = group.Items[index] as ListCollectionViewGroupInternal;
-            if (subgroup == null)
+            subGroup = group.Items[index] as ListCollectionViewGroupInternal;
+            if (subGroup == null)
             {
                 continue; // skip children that are not groups
             }
 
-            if (group.GroupBy != null)
+            if (group.GroupBy != null && group.GroupBy.KeysMatch(subGroup.Key, key))
             {
                 group.LastIndex = index;
-                AddToSubgroups(item, subgroup, level + 1, loading);
+                AddToSubgroups(item, subGroup, level + 1, loading);
                 return;
             }
         }
 
-        // the item didn't match any subgroups.  Create a new subgroup and add the item.
-        subgroup = new ListCollectionViewGroupInternal(key, group);
-        InitializeGroup(subgroup, level + 1, item);
+        // the item didn't match any subgroups.  Create a new subGroup and add the item.
+        subGroup = new ListCollectionViewGroupInternal(key, group);
+        InitializeGroup(subGroup, level + 1, item);
 
         if (loading)
         {
-            group.Add(subgroup);
+            group.Add(subGroup);
             group.LastIndex = index;
         }
         else
         {
             // using insert will find the correct sort index to
-            // place the subgroup, and will default to the last
+            // place the subGroup, and will default to the last
             // position if no ActiveComparer is specified
             if (ActiveComparer != null)
             {
-                group.Insert(subgroup, item, ActiveComparer);
+                group.Insert(subGroup, item, ActiveComparer);
             }
         }
-
-        AddToSubgroups(item, subgroup, level + 1, loading);
+        AddToSubgroups(new ListGroupData()
+        {
+            Header = key.ToString()!,
+        }, subGroup, level + 1, loading);
+        AddToSubgroups(item, subGroup, level + 1, loading);
     }
 
     /// <summary>
-    /// Add an item to the desired subgroup(s) of the given group
+    /// Add an item to the desired subGroup(s) of the given group
     /// </summary>
     /// <param name="item">Item to add</param>
     /// <param name="group">Group to add item to</param>
@@ -316,7 +299,7 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
         {
             if (key != null)
             {
-                // the item belongs to one subgroup
+                // the item belongs to one subGroup
                 AddToSubgroup(item, group, level, key, loading);
             }
         }
@@ -386,9 +369,9 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
         {
             for (int k = 0, n = keys.Count; k < n; ++k)
             {
-                ListCollectionViewGroupInternal subgroup = new ListCollectionViewGroupInternal(keys[k], group);
-                InitializeGroup(subgroup, level + 1, seedItem);
-                group.Add(subgroup);
+                var subGroup = new ListCollectionViewGroupInternal(keys[k], group);
+                InitializeGroup(subGroup, level + 1, seedItem);
+                group.Add(subGroup);
             }
         }
 
@@ -414,7 +397,7 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
     }
 
     /// <summary>
-    /// Remove an item from the subgroup with the given name.
+    /// Remove an item from the subGroup with the given name.
     /// </summary>
     /// <param name="item">Item to remove</param>
     /// <param name="group">Group to remove item from</param>
@@ -426,7 +409,7 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
         bool                                itemIsMissing = false;
         ListCollectionViewGroupInternal? subGroup;
 
-        // find the desired subgroup
+        // find the desired subGroup
         for (int index = 0, n = group.Items.Count; index < n; ++index)
         {
             subGroup = group.Items[index] as ListCollectionViewGroupInternal;
@@ -451,7 +434,7 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
     }
 
     /// <summary>
-    /// Remove an item from the desired subgroup(s) of the given group.
+    /// Remove an item from the desired subGroup(s) of the given group.
     /// </summary>
     /// <param name="item">Item to remove</param>
     /// <param name="group">Group to remove item from</param>
@@ -482,7 +465,7 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
         {
             if (key != null)
             {
-                // the item belongs to one subgroup
+                // the item belongs to one subGroup
                 if (RemoveFromSubgroup(item, group, level, key))
                 {
                     itemIsMissing = true;
@@ -509,13 +492,13 @@ internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, IN
         // in which case we will step through and search exhaustively
         if (RemoveFromGroupDirectly(group, item))
         {
-            // if that didn't work, recurse into each subgroup
+            // if that didn't work, recurse into each subGroup
             // (loop runs backwards in case an entire group is deleted)
             for (int k = group.Items.Count - 1; k >= 0; --k)
             {
-                if (group.Items[k] is ListCollectionViewGroupInternal subgroup)
+                if (group.Items[k] is ListCollectionViewGroupInternal subGroup)
                 {
-                    RemoveItemFromSubgroupsByExhaustiveSearch(subgroup, item);
+                    RemoveItemFromSubgroupsByExhaustiveSearch(subGroup, item);
                 }
             }
         }

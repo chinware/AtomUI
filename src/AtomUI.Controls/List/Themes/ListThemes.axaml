@@ -6,6 +6,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="ListTheme.axaml" />
         <ResourceInclude Source="ListDefaultViewTheme.axaml" />
+        <ResourceInclude Source="ListGroupItemTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
     <themes:ListItemTheme x:Key="{x:Type atom:ListItem}" TargetType="atom:ListItem" />
 </ResourceDictionary>

@@ -15,3 +15,8 @@ public record ListItemData : IListBoxItemData
     public object? Content { get; init; }
     public string? Group { get; init; }
 }
+
+public record ListGroupData
+{
+    public string Header { get; init; } = string.Empty;
+}

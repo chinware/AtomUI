@@ -390,6 +390,7 @@ namespace AtomUI.Controls.DesignTokens
     public static class ListTokenKey
     {
         public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("List.ContentPadding");
+        public static readonly TokenResourceKey GroupHeaderColor = new TokenResourceKey("List.GroupHeaderColor");
         public static readonly TokenResourceKey ItemBgColor = new TokenResourceKey("List.ItemBgColor");
         public static readonly TokenResourceKey ItemColor = new TokenResourceKey("List.ItemColor");
         public static readonly TokenResourceKey ItemDisabledColor = new TokenResourceKey("List.ItemDisabledColor");

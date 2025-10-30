@@ -707,16 +707,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         _trackingEnumerator = source.GetEnumerator();
 
         Debug.Assert(_internalList != null);
-        // set currency
-        // if (_internalList.Count > 0)
-        // {
-        //     SetCurrent(_internalList[0], 0, 1);
-        // }
-        // else
-        // {
-        //     SetCurrent(null, -1, 0);
-        // }
-
+        
         // Set flag for whether the collection is empty
         SetFlag(CollectionViewFlags.CachedIsEmpty, Count == 0);
 
@@ -1218,7 +1209,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         EnsureCollectionInSync();
         VerifyRefreshNotDeferred();
 
-        if (IsGrouping && RootGroup != null)
+        if (IsGrouping)
         {
             return RootGroup.GetLeafEnumerator();
         }

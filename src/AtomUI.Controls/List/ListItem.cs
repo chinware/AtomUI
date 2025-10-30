@@ -14,7 +14,7 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
 
-public class ListItem : ContentControl, ISelectable
+internal class ListItem : ContentControl, ISelectable
 {
     #region 公共属性定义
 

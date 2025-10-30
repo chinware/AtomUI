@@ -26,5 +26,5 @@ public interface IListCollectionView: IEnumerable, INotifyCollectionChanged
     object AddNew();
     void Remove(object? item);
     void RemoveAt(int index);
-    int ItemCount { get; }
+    int Count { get; }
 }

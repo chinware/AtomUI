@@ -20,8 +20,6 @@ public class List : TemplatedControl,
                     IMotionAwareControl,
                     IControlSharedTokenResourcesHost
 {
-    public const int DEFAULT_PAGE_SIZE = 10;
-    
     #region 公共属性定义
     
     public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
@@ -29,6 +27,9 @@ public class List : TemplatedControl,
     
     public static readonly StyledProperty<IDataTemplate?> ItemTemplateProperty =
         ItemsControl.ItemTemplateProperty.AddOwner<List>();
+    
+    public static readonly StyledProperty<IDataTemplate?> GroupItemTemplateProperty =
+        AvaloniaProperty.Register<List, IDataTemplate?>(nameof(GroupItemTemplate));
     
     public static readonly DirectProperty<List, int> ItemCountProperty =
         AvaloniaProperty.RegisterDirect<List, int>(nameof(ItemCount), o => o.ItemCount);
@@ -58,6 +59,9 @@ public class List : TemplatedControl,
     public static readonly StyledProperty<bool> IsShowEmptyIndicatorProperty =
         AvaloniaProperty.Register<List, bool>(nameof(IsShowEmptyIndicator), false);
     
+    public static readonly StyledProperty<bool> IsGroupEnabledProperty =
+        AvaloniaProperty.Register<List, bool>(nameof(IsGroupEnabled), false);
+    
     public static readonly DirectProperty<List, IList?> SelectedItemsProperty =
         AvaloniaProperty.RegisterDirect<List, IList?>(nameof(SelectedItems), 
             o => o.SelectedItems, 
@@ -82,7 +86,7 @@ public class List : TemplatedControl,
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<List>();
     
     public static readonly StyledProperty<int> PageSizeProperty =
-        AvaloniaProperty.Register<List, int>(nameof(PageSize), DEFAULT_PAGE_SIZE);
+        AvaloniaProperty.Register<List, int>(nameof(PageSize), 0);
     
     public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
         AbstractPagination.IsHideOnSinglePageProperty.AddOwner<List>();
@@ -109,6 +113,12 @@ public class List : TemplatedControl,
         set => SetValue(ItemTemplateProperty, value);
     }
     
+    public IDataTemplate? GroupItemTemplate
+    {
+        get => GetValue(GroupItemTemplateProperty);
+        set => SetValue(GroupItemTemplateProperty, value);
+    }
+    
     [DependsOn(nameof(EmptyIndicatorTemplate))]
     public object? EmptyIndicator
     {
@@ -126,6 +136,12 @@ public class List : TemplatedControl,
     {
         get => GetValue(IsShowEmptyIndicatorProperty);
         set => SetValue(IsShowEmptyIndicatorProperty, value);
+    }
+    
+    public bool IsGroupEnabled
+    {
+        get => GetValue(IsGroupEnabledProperty);
+        set => SetValue(IsGroupEnabledProperty, value);
     }
     
     private IList? _selectedItems;
@@ -172,7 +188,7 @@ public class List : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public int ItemCount => CollectionView?.ItemCount ?? 0;
+    public int ItemCount => CollectionView?.Count ?? 0;
     
     public int PageSize
     {
@@ -351,6 +367,16 @@ public class List : TemplatedControl,
                 _listDefaultView.SelectionMode = SelectionMode;
             }
         }
+        else if (change.Property == IsGroupEnabledProperty)
+        {
+            if (_listCollectionView != null)
+            {
+                using (_listCollectionView.DeferRefresh())
+                {
+                    ConfigureGroupInfo();
+                }
+            }
+        }
     }
 
     private void ConfigureEffectiveBorderThickness()
@@ -445,7 +471,7 @@ public class List : TemplatedControl,
             {
                 RaisePropertyChanged(CollectionViewProperty, oldCollectionView, newCollectionView);
             }
-            
+            ConfigureGroupInfo();
             SelectedItems = null;
             _measured     = false;
             ReConfigurePagination();
@@ -557,5 +583,20 @@ public class List : TemplatedControl,
             _ => (false, 0)
         };
         return result;
+    }
+
+    private void ConfigureGroupInfo()
+    {
+        if (_listCollectionView is ListCollectionView collectionView)
+        {
+            if (IsGroupEnabled)
+            {
+                collectionView.GroupDescriptions.Add(new ListPathGroupDescription("Group"));
+            }
+            else
+            {
+                collectionView.GroupDescriptions.Clear();
+            }
+        }    
     }
 }

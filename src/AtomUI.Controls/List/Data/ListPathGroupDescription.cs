@@ -7,7 +7,7 @@ namespace AtomUI.Controls.Data;
 
 public class ListPathGroupDescription : ListGroupDescription
 {
-    private string _propertyPath;
+    private readonly string _propertyPath;
     private Type? _propertyType;
     private IValueConverter? _valueConverter;
     private StringComparison _stringComparison = StringComparison.Ordinal;
