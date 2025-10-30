@@ -52,19 +52,19 @@
 
         <Style Selector="^[SizeType=Large]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
-            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemPaddingLG}}" />
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
-            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemPadding}}" />
         </Style>
 
         <Style Selector="^[SizeType=Small]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusXS}}" />
-            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
+            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListTokenKey.ItemPaddingSM}}" />
         </Style>
 

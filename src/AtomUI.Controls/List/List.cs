@@ -70,6 +70,9 @@ public class List : TemplatedControl,
     public static readonly StyledProperty<SelectionMode> SelectionModeProperty =
         AvaloniaProperty.Register<List, SelectionMode>(nameof(SelectionMode));
     
+    public static readonly StyledProperty<bool> IsItemSelectableProperty =
+        AvaloniaProperty.Register<List, bool>(nameof(IsItemSelectable), true);
+    
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<List>();
 
@@ -156,6 +159,12 @@ public class List : TemplatedControl,
     {
         get => GetValue(SelectionModeProperty);
         set => SetValue(SelectionModeProperty, value);
+    }
+    
+    public bool IsItemSelectable
+    {
+        get => GetValue(IsItemSelectableProperty);
+        set => SetValue(IsItemSelectableProperty, value);
     }
     
     public SizeType SizeType

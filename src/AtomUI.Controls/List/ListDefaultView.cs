@@ -41,6 +41,9 @@ internal class ListDefaultView : SelectingItemsControl
     public new static readonly StyledProperty<SelectionMode> SelectionModeProperty =
         SelectingItemsControl.SelectionModeProperty;
     
+    public static readonly StyledProperty<bool> IsItemSelectableProperty =
+       List.IsItemSelectableProperty.AddOwner<ListDefaultView>();
+    
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListDefaultView>();
     
@@ -84,6 +87,12 @@ internal class ListDefaultView : SelectingItemsControl
     {
         get => base.SelectionMode;
         set => base.SelectionMode = value;
+    }
+    
+    public bool IsItemSelectable
+    {
+        get => GetValue(IsItemSelectableProperty);
+        set => SetValue(IsItemSelectableProperty, value);
     }
     
     public SizeType SizeType
@@ -235,33 +244,37 @@ internal class ListDefaultView : SelectingItemsControl
     
     protected override void OnKeyDown(KeyEventArgs e)
     {
-        var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
-        var ctrl    = hotkeys is not null && e.KeyModifiers.HasAllFlags(hotkeys.CommandModifiers);
+        if (IsItemSelectable)
+        {
+            var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
+            var ctrl    = hotkeys is not null && e.KeyModifiers.HasAllFlags(hotkeys.CommandModifiers);
 
-        if (!ctrl &&
-            e.Key.ToNavigationDirection() is { } direction && 
-            direction.IsDirectional())
-        {
-            e.Handled |= MoveSelection(
-                direction,
-                WrapSelection,
-                e.KeyModifiers.HasAllFlags(KeyModifiers.Shift));
-        }
-        else if (SelectionMode.HasAllFlags(SelectionMode.Multiple) &&
-                 hotkeys is not null && hotkeys.SelectAll.Any(x => x.Matches(e)))
-        {
-            Selection.SelectAll();
-            e.Handled = true;
-        }
-        else if (e.Key == Key.Space || e.Key == Key.Enter)
-        {
-            UpdateSelectionFromEventSource(
-                e.Source,
-                true,
-                e.KeyModifiers.HasFlag(KeyModifiers.Shift),
-                ctrl);
-        }
+            if (!ctrl &&
+                e.Key.ToNavigationDirection() is { } direction && 
+                direction.IsDirectional())
+            {
+                e.Handled |= MoveSelection(
+                    direction,
+                    WrapSelection,
+                    e.KeyModifiers.HasAllFlags(KeyModifiers.Shift));
+            }
+            else if (SelectionMode.HasAllFlags(SelectionMode.Multiple) &&
+                     hotkeys is not null && hotkeys.SelectAll.Any(x => x.Matches(e)))
+            {
+                Selection.SelectAll();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Space || e.Key == Key.Enter)
+            {
+                UpdateSelectionFromEventSource(
+                    e.Source,
+                    true,
+                    e.KeyModifiers.HasFlag(KeyModifiers.Shift),
+                    ctrl);
+            }
 
+        }
+        
         base.OnKeyDown(e);
     }
     
@@ -273,13 +286,29 @@ internal class ListDefaultView : SelectingItemsControl
     
     protected internal virtual bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
     {
-        var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
-        var toggle  = hotkeys is not null && e.KeyModifiers.HasAllFlags(hotkeys.CommandModifiers);
-        return UpdateSelectionFromEventSource(
-            source,
-            true,
-            e.KeyModifiers.HasAllFlags(KeyModifiers.Shift),
-            toggle,
-            e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
+        if (IsItemSelectable)
+        {
+            var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
+            var toggle  = hotkeys is not null && e.KeyModifiers.HasAllFlags(hotkeys.CommandModifiers);
+            return UpdateSelectionFromEventSource(
+                source,
+                true,
+                e.KeyModifiers.HasAllFlags(KeyModifiers.Shift),
+                toggle,
+                e.GetCurrentPoint(source).Properties.IsRightButtonPressed);
+        }
+        return false;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsItemSelectableProperty)
+        {
+            if (!IsItemSelectable)
+            {
+                Selection.Clear();
+            }
+        }
     }
 }

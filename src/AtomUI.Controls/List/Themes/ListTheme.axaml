@@ -46,6 +46,7 @@
                                                       ItemTemplate="{TemplateBinding ItemTemplate}"
                                                       SelectedItems="{TemplateBinding SelectedItems, Mode=TwoWay}"
                                                       IsShowSelectedIndicator="{TemplateBinding IsShowSelectedIndicator}"
+                                                      IsItemSelectable="{TemplateBinding IsItemSelectable}"
                                                       ItemsSource="{TemplateBinding CollectionView}"/>
                                 <ContentPresenter
                                     Name="EmptyIndicator"
