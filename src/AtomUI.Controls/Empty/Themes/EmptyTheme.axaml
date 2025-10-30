@@ -12,7 +12,7 @@
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Height="30"/>
-                    <atom:TextBlock Name="{x:Static atom:EmptyThemeConstants.DescriptionPart}"
+                    <atom:TextBlock Name="Description"
                                     HorizontalAlignment="Center"
                                     TextWrapping="Wrap"
                                     Text="{TemplateBinding Description}"/>
@@ -47,21 +47,25 @@
         <Setter Property="BgColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}"/>
         
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ atom|TextBlock#PART_Description">
+            <Style Selector="^ /template/ atom|TextBlock#Description">
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyTokenKey.DescriptionMargin}}"/>
             </Style>
         </Style>
         
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ atom|TextBlock#PART_Description">
+            <Style Selector="^ /template/ atom|TextBlock#Description">
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyTokenKey.DescriptionMarginSM}}"/>
             </Style>
         </Style>
         
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ atom|TextBlock#PART_Description">
+            <Style Selector="^ /template/ atom|TextBlock#Description">
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:EmptyTokenKey.DescriptionMarginSM}}"/>
             </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|TextBlock#Description">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}"/>
         </Style>
         
     </ControlTheme>

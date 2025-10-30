@@ -57,7 +57,7 @@
                                     </DataTemplate>
                                 </ContentPresenter.ContentTemplate>
                             </ContentPresenter>
-                            <atom:SelectSearchTextBox Name="{x:Static atom:SelectThemeConstants.SearchInputPart}" 
+                            <atom:SelectSearchTextBox Name="{x:Static atom:SelectThemeConstants.SingleSearchInputPart}" 
                                                       IsVisible="False"
                                                       IsReadOnly="True"
                                                       Watermark="{TemplateBinding SelectedOption, Converter={StaticResource OptionHeaderConverter}}"/>
@@ -84,12 +84,13 @@
                                     Name="{x:Static atom:SelectThemeConstants.OptionsBoxPart}"
                                     IsBorderless="True"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                    SizeType="Middle"
+                                    IsShowEmptyIndicator="True"
+                                    EmptyIndicatorPadding="40"
+                                    SelectedItem="{TemplateBinding SelectedOption}"
                                     SelectedItems="{TemplateBinding SelectedOptions}"
-                             
+                                    ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"
                                     />
-                                <!-- SelectedItem="{TemplateBinding SelectedOption}" -->
-                                <!-- ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"  -->
+                             
                             </atom:IndicatorScrollViewer>
                         </Border>
                     </atom:Popup>
@@ -126,6 +127,10 @@
                     Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBorderRadius}}" />
         </Style>
 
+        <!-- <Style Selector="^ /template/ atom|SelectOptions#PART_OptionsBox"> -->
+        <!--     <Setter Property="EmptyIndicatorPadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingLG}}" /> -->
+        <!-- </Style> -->
+        
         <Style Selector="^[Mode=Single]">
             <Style Selector="^ /template/ atom|SelectOptions#PART_OptionsBox">
                 <Setter Property="IsShowSelectedIndicator" Value="False" />
@@ -138,15 +143,15 @@
             </Style>
             <Style Selector="^[IsSearchEnabled=True]">
                 
-                <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SearchInput">
+                <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SingleSearchInput">
                     <Setter Property="IsVisible" Value="True" />
                     <Setter Property="WatermarkForeground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
                 </Style>
                 <Style Selector="^[IsDropDownOpen=True]">
-                    <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SearchInput">
+                    <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SingleSearchInput">
                         <Setter Property="IsReadOnly" Value="False" />
                     </Style>
-                    <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SearchInput">
+                    <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SingleSearchInput">
                         <Setter Property="WatermarkForeground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
                     </Style>
                 </Style>

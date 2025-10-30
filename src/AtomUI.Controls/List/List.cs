@@ -15,6 +15,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -71,6 +72,13 @@ public class List : TemplatedControl,
             o => o.SelectedItems, 
             (o, v) => o.SelectedItems = v);
     
+    public static readonly DirectProperty<List, object?> SelectedItemProperty =
+        AvaloniaProperty.RegisterDirect<List, object?>(
+            nameof(SelectedItem),
+            o => o.SelectedItem,
+            (o, v) => o.SelectedItem = v,
+            defaultBindingMode: BindingMode.TwoWay);
+    
     public static readonly StyledProperty<SelectionMode> SelectionModeProperty =
         AvaloniaProperty.Register<List, SelectionMode>(nameof(SelectionMode));
     
@@ -106,6 +114,9 @@ public class List : TemplatedControl,
     
     public static readonly StyledProperty<PaginationAlign> BottomPaginationAlignProperty =
         AvaloniaProperty.Register<List, PaginationAlign>(nameof(BottomPaginationAlign), PaginationAlign.End);
+    
+    public static readonly StyledProperty<Thickness> EmptyIndicatorPaddingProperty =
+        AvaloniaProperty.Register<List, Thickness>(nameof(EmptyIndicatorPadding));
     
     public IEnumerable? ItemsSource
     {
@@ -157,6 +168,14 @@ public class List : TemplatedControl,
     {
         get => _selectedItems;
         set => SetAndRaise(SelectedItemsProperty, ref _selectedItems, value);
+    }
+    
+    private object? _selectedItem;
+
+    internal object? SelectedItem
+    {
+        get => _selectedItem;
+        set => SetAndRaise(SelectedItemProperty, ref _selectedItem, value);
     }
     
     public SelectionMode SelectionMode
@@ -264,6 +283,12 @@ public class List : TemplatedControl,
         set => SetValue(BottomPaginationAlignProperty, value);
     }
     
+    public Thickness EmptyIndicatorPadding
+    {
+        get => GetValue(EmptyIndicatorPaddingProperty);
+        set => SetValue(EmptyIndicatorPaddingProperty, value);
+    }
+    
     public ListSortDescriptionList? SortDescriptions
     {
         get
@@ -293,7 +318,18 @@ public class List : TemplatedControl,
     #region 公共事件定义
 
     public event EventHandler<ListCollectionViewChangedEventArgs>? CollectionViewChanged;
+    
+    public static readonly RoutedEvent<SelectionChangedEventArgs> SelectionChangedEvent =
+        RoutedEvent.Register<List, SelectionChangedEventArgs>(
+            nameof(SelectionChanged),
+            RoutingStrategies.Bubble);
 
+    public event EventHandler<SelectionChangedEventArgs>? SelectionChanged
+    {
+        add => AddHandler(SelectionChangedEvent, value);
+        remove => RemoveHandler(SelectionChangedEvent, value);
+    }
+    
     #endregion
     
     #region 内部属性定义
@@ -309,6 +345,12 @@ public class List : TemplatedControl,
             o => o.IsEmptyDataSource,
             (o, v) => o.IsEmptyDataSource = v);
     
+    internal static readonly DirectProperty<List, bool> IsEffectiveEmptyVisibleProperty =
+        AvaloniaProperty.RegisterDirect<List, bool>(
+            nameof(IsEffectiveEmptyVisible),
+            o => o.IsEffectiveEmptyVisible,
+            (o, v) => o.IsEffectiveEmptyVisible = v);
+    
     private Thickness _effectiveBorderThickness;
 
     internal Thickness EffectiveBorderThickness
@@ -317,11 +359,18 @@ public class List : TemplatedControl,
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
     
-    private bool _isEmptyDataSource = false;
+    private bool _isEmptyDataSource = true;
     internal bool IsEmptyDataSource
     {
         get => _isEmptyDataSource;
         set => SetAndRaise(IsEmptyDataSourceProperty, ref _isEmptyDataSource, value);
+    }
+    
+    private bool _isEffectiveEmptyVisible = false;
+    internal bool IsEffectiveEmptyVisible
+    {
+        get => _isEffectiveEmptyVisible;
+        set => SetAndRaise(IsEffectiveEmptyVisibleProperty, ref _isEffectiveEmptyVisible, value);
     }
 
     internal bool EventsWired
@@ -330,13 +379,12 @@ public class List : TemplatedControl,
         private set;
     }
     
-    protected override Type StyleKeyOverride { get; } = typeof(List);
-    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ListToken.ID;
 
     #endregion
+    
     private IDisposable? _borderThicknessDisposable;
     private IListCollectionView? _listCollectionView;
     private bool _areHandlersSuspended;
@@ -344,6 +392,7 @@ public class List : TemplatedControl,
     private Pagination? _topPagination;
     private Pagination? _bottomPagination;
     internal ListDefaultView? ListDefaultView;
+    private CompositeDisposable? _relayBindingDisposables;
     
     static List()
     {
@@ -381,10 +430,7 @@ public class List : TemplatedControl,
         }
         else if (change.Property == SelectionModeProperty)
         {
-            if (ListDefaultView != null)
-            {
-                ListDefaultView.SelectionMode = SelectionMode;
-            }
+            SyncSelectionState();
         }
         else if (change.Property == IsGroupEnabledProperty)
         {
@@ -395,6 +441,11 @@ public class List : TemplatedControl,
                     ConfigureGroupInfo();
                 }
             }
+        }
+        else if (change.Property == IsShowEmptyIndicatorProperty ||
+                 change.Property == IsEmptyDataSourceProperty)
+        {
+            ConfigureEmptyIndicator();
         }
     }
 
@@ -427,9 +478,14 @@ public class List : TemplatedControl,
         if (ListDefaultView != null)
         {
             ListDefaultView.OwnerList    = this;
-            ListDefaultView.SelectionMode = SelectionMode;
+            ListDefaultView.SelectionChanged += (sender, args) =>
+            {
+                RaiseEvent(new SelectionChangedEventArgs(SelectionChangedEvent, args.RemovedItems, args.AddedItems));
+            };
+            SyncSelectionState();
         }
         UpdatePseudoClasses();
+        ConfigureEmptyIndicator();
     }
     
     private void UpdatePseudoClasses()
@@ -638,7 +694,7 @@ public class List : TemplatedControl,
             {
                 if (ItemTemplate != null)
                 {
-                    listItem.SetCurrentValue(ListGroupItem.ContentProperty, item);
+                    listItem.SetCurrentValue(ListItem.ContentProperty, item);
                 }
                 else if (item is ListItemData listItemData)
                 {
@@ -704,7 +760,7 @@ public class List : TemplatedControl,
         {
             for (var current = eventSource as Visual; current != null; current = current.GetVisualParent())
             {
-                if (current is Control control && control.Parent == this &&
+                if (current is Control control && control.Parent == ListDefaultView &&
                     ListDefaultView.IndexFromContainer(control) != -1)
                 {
                     return control;
@@ -712,5 +768,22 @@ public class List : TemplatedControl,
             }
         }
         return null;
+    }
+    
+    private void SyncSelectionState()
+    {
+        if (ListDefaultView != null)
+        {
+            _relayBindingDisposables?.Dispose();
+            _relayBindingDisposables = new CompositeDisposable(4);
+            _relayBindingDisposables.Add(BindUtils.RelayBind(this, SelectionModeProperty, ListDefaultView, ListDefaultView.SelectionModeProperty, BindingMode.TwoWay));
+            _relayBindingDisposables.Add(BindUtils.RelayBind(this, SelectedItemsProperty, ListDefaultView, ListDefaultView.SelectedItemsProperty, BindingMode.TwoWay));
+            _relayBindingDisposables.Add(BindUtils.RelayBind(this, SelectedItemProperty, ListDefaultView, ListDefaultView.SelectedItemProperty, BindingMode.TwoWay));
+        }
+    }
+
+    private void ConfigureEmptyIndicator()
+    {
+        SetCurrentValue(IsEffectiveEmptyVisibleProperty, IsShowEmptyIndicator && IsEmptyDataSource);
     }
 }

@@ -15,5 +15,5 @@ internal static class SelectThemeConstants
 {
     public const string OptionsBoxPart = "PART_OptionsBox";
     public const string PopupPart = "PART_Popup";
-    public const string SearchInputPart = "PART_SearchInput";
+    public const string SingleSearchInputPart = "PART_SingleSearchInput";
 }

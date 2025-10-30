@@ -69,7 +69,7 @@ internal class ListDefaultView : SelectingItemsControl
         get => _scroll;
         private set => SetAndRaise(ScrollProperty, ref _scroll, value);
     }
-
+    
     public new IList? SelectedItems
     {
         get => base.SelectedItems;
@@ -253,4 +253,5 @@ internal class ListDefaultView : SelectingItemsControl
             }
         }
     }
+    
 }

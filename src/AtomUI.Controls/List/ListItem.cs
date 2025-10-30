@@ -99,7 +99,6 @@ internal class ListItem : ContentControl, ISelectable
 
     private static readonly Point InvalidPoint = new Point(double.NaN, double.NaN);
     private Point _pointerDownPoint = InvalidPoint;
-    protected override Type StyleKeyOverride { get; } = typeof(ListItem);
     
     static ListItem()
     {

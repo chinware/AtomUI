@@ -44,7 +44,6 @@
                                                       DisabledItemHoverEffect="{TemplateBinding DisabledItemHoverEffect}"
                                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                       ItemTemplate="{TemplateBinding ItemTemplate}"
-                                                      SelectedItems="{TemplateBinding SelectedItems, Mode=TwoWay}"
                                                       IsShowSelectedIndicator="{TemplateBinding IsShowSelectedIndicator}"
                                                       IsItemSelectable="{TemplateBinding IsItemSelectable}"
                                                       ItemsSource="{TemplateBinding CollectionView}"/>
@@ -52,7 +51,8 @@
                                     Name="EmptyIndicator"
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
-                                    IsVisible="False"
+                                    Padding="{TemplateBinding EmptyIndicatorPadding}"
+                                    IsVisible="{TemplateBinding IsEffectiveEmptyVisible}"
                                     Content="{TemplateBinding EmptyIndicator}"
                                     ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}" />
                             </Panel>
@@ -63,7 +63,6 @@
         </Setter>
 
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         <Style Selector="^ /template/ Border#Frame">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListTokenKey.ContentPadding}}" />
@@ -72,25 +71,17 @@
 
         <Style Selector="^[SizeType=Large]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+            <Setter Property="EmptyIndicatorPadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXL}}" />
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+            <Setter Property="EmptyIndicatorPadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.Padding}}" />
         </Style>
 
         <Style Selector="^[SizeType=Small]">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
-        </Style>
-
-        <Style Selector="^ /template/ ContentPresenter#EmptyIndicator">
-            <Setter Property="Padding"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXL}}" />
-        </Style>
-
-        <Style Selector="^[IsShowEmptyIndicator=True]:empty">
-            <Style Selector="^ /template/ ContentPresenter#EmptyIndicator">
-                <Setter Property="IsVisible" Value="True" />
-            </Style>
+            <Setter Property="EmptyIndicatorPadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.Padding}}" />
         </Style>
 
     </ControlTheme>
