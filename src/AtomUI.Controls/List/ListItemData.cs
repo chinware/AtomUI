@@ -1,6 +1,6 @@
 namespace AtomUI.Controls;
 
-public interface IListBoxItemData
+public interface IListItemData
 {
     bool IsEnabled { get; }
     bool IsSelected { get; }
@@ -8,7 +8,7 @@ public interface IListBoxItemData
     string? Group { get; }
 }
 
-public record ListItemData : IListBoxItemData
+public record ListItemData : IListItemData
 {
     public bool IsEnabled { get; init; } = true;
     public bool IsSelected { get; init; }

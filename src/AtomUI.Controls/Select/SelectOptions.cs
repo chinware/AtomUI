@@ -1,5 +1,4 @@
 using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 
@@ -7,16 +6,16 @@ namespace AtomUI.Controls;
 
 internal class SelectOptions : List
 {
-    // protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
-    // {
-    //     if (item is SelectOptionGroup)
-    //     {
-    //         return new SelectGroupHeader();
-    //     }
-    //     return new SelectOptionItem();
-    // }
-    //
-    // protected override void ApplyListItemData(ListItem listItem, object item)
+    internal override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        if (item is ListGroupData)
+        {
+            return new SelectGroupHeader();
+        }
+        return new SelectOptionItem();
+    }
+    
+    // internal override void ApplyListItemData(ListItem listItem, object item)
     // {
     //     if (listItem is SelectOptionItem optionItem)
     //     {
@@ -34,7 +33,7 @@ internal class SelectOptions : List
     //         }
     //     }
     // }
-    //
+    
     // protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     // {
     //     base.PrepareContainerForItemOverride(container, item, index);
@@ -52,46 +51,49 @@ internal class SelectOptions : List
     //         }
     //     }
     // }
-    //
-    // protected internal override bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
-    // {
-    //     var container = GetContainerFromEventSource(source);
-    //     
-    //     if (container != null)
-    //     {
-    //         DoSelectOption(container);
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    //
-    // private void DoSelectOption(Control container)
-    // {
-    //     var index = IndexFromContainer(container);
-    //     if (index != -1)
-    //     {
-    //         if (index < 0 || index >= ItemCount)
-    //         {
-    //             return;
-    //         }
-    //         
-    //         var mode   = SelectionMode;
-    //         var single  = mode.HasAllFlags(SelectionMode.Single);
-    //         if (single)
-    //         {
-    //             Selection.Select(index);
-    //         }
-    //         else
-    //         {
-    //             if (Selection.IsSelected(index))
-    //             {
-    //                 Selection.Deselect(index);
-    //             }
-    //             else
-    //             {
-    //                 Selection.Select(index);
-    //             }
-    //         }
-    //     }
-    // }
+    
+    
+    private void DoSelectOption(Control container)
+    {
+        if (ListDefaultView != null)
+        {
+            var index = ListDefaultView.IndexFromContainer(container);
+            if (index != -1)
+            {
+                if (index < 0 || index >= ItemCount)
+                {
+                    return;
+                }
+            
+                var mode   = SelectionMode;
+                var single = mode.HasAllFlags(SelectionMode.Single);
+                if (single)
+                {
+                    ListDefaultView.Selection.Select(index);
+                }
+                else
+                {
+                    if (ListDefaultView.Selection.IsSelected(index))
+                    {
+                        ListDefaultView.Selection.Deselect(index);
+                    }
+                    else
+                    {
+                        ListDefaultView.Selection.Select(index);
+                    }
+                }
+            }
+        }
+    }
+    
+    internal override bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
+    {
+        var container = GetContainerFromEventSource(source);
+        if (container != null)
+        {
+            DoSelectOption(container);
+            return true;
+        }
+        return false;
+    }
 }

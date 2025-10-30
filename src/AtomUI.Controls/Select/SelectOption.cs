@@ -11,8 +11,3 @@ public record SelectOption : ISelectOption
     public bool IsEnabled { get; set; } = true;
     public object? Value { get; set; }
 }
-
-public record SelectOptionGroup : ISelectOption
-{
-    public string Header { get; set; } = string.Empty;
-}

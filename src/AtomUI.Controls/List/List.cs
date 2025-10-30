@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Themes;
+using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -12,7 +14,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -339,7 +343,7 @@ public class List : TemplatedControl,
     private bool _measured;
     private Pagination? _topPagination;
     private Pagination? _bottomPagination;
-    private ListDefaultView? _listDefaultView;
+    internal ListDefaultView? ListDefaultView;
     
     static List()
     {
@@ -377,9 +381,9 @@ public class List : TemplatedControl,
         }
         else if (change.Property == SelectionModeProperty)
         {
-            if (_listDefaultView != null)
+            if (ListDefaultView != null)
             {
-                _listDefaultView.SelectionMode = SelectionMode;
+                ListDefaultView.SelectionMode = SelectionMode;
             }
         }
         else if (change.Property == IsGroupEnabledProperty)
@@ -419,10 +423,11 @@ public class List : TemplatedControl,
         }
         _topPagination    = e.NameScope.Find<Pagination>(ListThemeConstants.TopPaginationPart);
         _bottomPagination = e.NameScope.Find<Pagination>(ListThemeConstants.BottomPaginationPart);
-        _listDefaultView  = e.NameScope.Find<ListDefaultView>(ListThemeConstants.ListViewPart);
-        if (_listDefaultView != null)
+        ListDefaultView   = e.NameScope.Find<ListDefaultView>(ListThemeConstants.ListViewPart);
+        if (ListDefaultView != null)
         {
-            _listDefaultView.SelectionMode = SelectionMode;
+            ListDefaultView.OwnerList    = this;
+            ListDefaultView.SelectionMode = SelectionMode;
         }
         UpdatePseudoClasses();
     }
@@ -614,5 +619,98 @@ public class List : TemplatedControl,
                 collectionView.GroupDescriptions.Clear();
             }
         }    
+    }
+
+    internal virtual Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        if (item is ListGroupData)
+        {
+            return new ListGroupItem();
+        }
+        return new ListItem();
+    }
+
+    internal virtual void PrepareContainerForItemOverride(CompositeDisposable disposables, Control container, object? item, int index)
+    {
+        if (container is ListItem listItem)
+        {
+            if (item != null && item is not Visual)
+            {
+                if (ItemTemplate != null)
+                {
+                    listItem.SetCurrentValue(ListGroupItem.ContentProperty, item);
+                }
+                else if (item is ListItemData listItemData)
+                {
+                    listItem.SetCurrentValue(ListItem.ContentProperty, listItemData.Content);
+                }
+                if (item is IListItemData listBoxItemData)
+                {
+                    if (!listItem.IsSet(ListItem.IsSelectedProperty))
+                    {
+                        listItem.SetCurrentValue(ListItem.IsSelectedProperty, listBoxItemData.IsSelected);
+                    }
+                    if (!listItem.IsSet(ListItem.IsEnabledProperty))
+                    {
+                        listItem.SetCurrentValue(IsEnabledProperty, listBoxItemData.IsEnabled);
+                    }
+                }
+            }
+            
+            if (ItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, listItem, ListItem.ContentTemplateProperty));
+            }
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, listItem, ListItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, listItem, ListItem.SizeTypeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsShowSelectedIndicatorProperty, listItem, ListItem.IsShowSelectedIndicatorProperty));
+            disposables.Add(BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listItem,
+                ListItem.DisabledItemHoverEffectProperty));
+        }
+        else if (container is ListGroupItem groupItem)
+        {
+            if (item != null && item is not Visual)
+            {
+                if (!groupItem.IsSet(ListGroupItem.ContentProperty))
+                {
+                    if (GroupItemTemplate != null)
+                    {
+                        groupItem.SetCurrentValue(ListGroupItem.ContentProperty, item);
+                    }
+                    else if (item is ListGroupData groupData)
+                    {
+                        groupItem.SetCurrentValue(ListGroupItem.ContentProperty, groupData.Header);
+                    }
+                }
+            }
+            
+            if (GroupItemTemplate != null)
+            {
+                disposables.Add(BindUtils.RelayBind(this, GroupItemTemplateProperty, groupItem, ListGroupItem.ContentTemplateProperty));
+            }
+            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, groupItem, ListGroupItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, groupItem, ListGroupItem.SizeTypeProperty));
+        }
+    }
+
+    internal virtual bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
+    {
+        return false;
+    }
+    
+    protected Control? GetContainerFromEventSource(object? eventSource)
+    {
+        if (ListDefaultView != null)
+        {
+            for (var current = eventSource as Visual; current != null; current = current.GetVisualParent())
+            {
+                if (current is Control control && control.Parent == this &&
+                    ListDefaultView.IndexFromContainer(control) != -1)
+                {
+                    return control;
+                }
+            }
+        }
+        return null;
     }
 }

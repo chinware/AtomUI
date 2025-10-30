@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
@@ -120,6 +121,8 @@ internal class ListDefaultView : SelectingItemsControl
     }
     #endregion
     
+    internal List? OwnerList { get; set; }
+    
     private protected readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
 
     static ListDefaultView()
@@ -160,87 +163,22 @@ internal class ListDefaultView : SelectingItemsControl
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        if (item is ListGroupData)
-        {
-            return new ListGroupItem();
-        }
-        return new ListItem();
+        Debug.Assert(OwnerList != null);
+        return OwnerList.CreateContainerForItemOverride(item, index, recycleKey);
     }
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
+        Debug.Assert(OwnerList != null);
+        
         var disposables = new CompositeDisposable(4);
-        if (container is ListItem listBoxItem)
-        {
-            if (item != null && item is not Visual)
-            {
-                if (!listBoxItem.IsSet(ListItem.ContentProperty))
-                {
-                    listBoxItem.SetCurrentValue(ListItem.ContentProperty, item);
-                }
-                
-                ApplyListItemData(listBoxItem, item);
-            }
-            
-            if (ItemTemplate != null)
-            {
-                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, listBoxItem, ListItem.ContentTemplateProperty));
-            }
-            
-            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, listBoxItem, ListItem.IsMotionEnabledProperty));
-            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, listBoxItem, ListItem.SizeTypeProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsShowSelectedIndicatorProperty, listBoxItem, ListItem.IsShowSelectedIndicatorProperty));
-            disposables.Add(BindUtils.RelayBind(this, DisabledItemHoverEffectProperty, listBoxItem,
-                ListItem.DisabledItemHoverEffectProperty));
-            PrepareListBoxItem(listBoxItem, item, index, disposables);
-        }
-        else if (container is ListGroupItem groupItem)
-        {
-            if (item != null && item is not Visual)
-            {
-                if (!groupItem.IsSet(ListGroupItem.ContentProperty))
-                {
-                    if (GroupItemTemplate != null)
-                    {
-                        groupItem.SetCurrentValue(ListGroupItem.ContentProperty, item);
-                    }
-                    else if (item is ListGroupData groupData)
-                    {
-                        groupItem.SetCurrentValue(ListGroupItem.ContentProperty, groupData.Header);
-                    }
-                }
-                disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, groupItem, ListGroupItem.IsMotionEnabledProperty));
-                disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, groupItem, ListGroupItem.SizeTypeProperty));
-            }
-            
-            if (GroupItemTemplate != null)
-            {
-                disposables.Add(BindUtils.RelayBind(this, GroupItemTemplateProperty, groupItem, ListGroupItem.ContentTemplateProperty));
-            }
-        }
+        
+        OwnerList.PrepareContainerForItemOverride(disposables, container, item, index);
         
         DisposableListItem(container);
         _itemsBindingDisposables.Add(container, disposables);
     }
     
-    protected virtual void PrepareListBoxItem(ListItem listItem, object? item, int index, CompositeDisposable compositeDisposable)
-    {
-    }
-
-    protected virtual void ApplyListItemData(ListItem listItem, object item)
-    {
-        if (item is IListBoxItemData listBoxItemData)
-        {
-            if (!listItem.IsSet(ListItem.IsSelectedProperty))
-            {
-                listItem.SetCurrentValue(ListItem.IsSelectedProperty, listBoxItemData.IsSelected);
-            }
-            if (!listItem.IsSet(ListItem.IsEnabledProperty))
-            {
-                listItem.SetCurrentValue(IsEnabledProperty, listBoxItemData.IsEnabled);
-            }
-        }
-    }
     
     protected override void OnKeyDown(KeyEventArgs e)
     {
@@ -286,6 +224,10 @@ internal class ListDefaultView : SelectingItemsControl
     
     protected internal virtual bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
     {
+        if (OwnerList != null && OwnerList.UpdateSelectionFromPointerEvent(source, e))
+        {
+            return true;
+        }
         if (IsItemSelectable)
         {
             var hotkeys = Application.Current!.PlatformSettings?.HotkeyConfiguration;
