@@ -18,8 +18,8 @@ public interface IListCollectionView: IEnumerable, INotifyCollectionChanged
     int GroupingDepth { get; }
     string GetGroupingPropertyNameAtDepth(int level);
     IAvaloniaReadOnlyList<object>? Groups { get; }
-    ListSortDescriptionList? SortDescriptions { get; }
-    ListFilterDescriptionList? FilterDescriptions { get; }
+    ListSortDescriptionList SortDescriptions { get; }
+    ListFilterDescriptionList FilterDescriptions { get; }
     bool IsEmpty { get; }
     void Refresh();
     IDisposable DeferRefresh();

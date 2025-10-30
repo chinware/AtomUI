@@ -285,6 +285,12 @@ public class List : TemplatedControl,
     }
     
     #endregion
+
+    #region 公共事件定义
+
+    public event EventHandler<ListCollectionViewChangedEventArgs>? CollectionViewChanged;
+
+    #endregion
     
     #region 内部属性定义
     
@@ -479,6 +485,7 @@ public class List : TemplatedControl,
             if (oldCollectionView != newCollectionView)
             {
                 RaisePropertyChanged(CollectionViewProperty, oldCollectionView, newCollectionView);
+                CollectionViewChanged?.Invoke(this, new ListCollectionViewChangedEventArgs(oldCollectionView, newCollectionView));
             }
             ConfigureGroupInfo();
             SelectedItems = null;

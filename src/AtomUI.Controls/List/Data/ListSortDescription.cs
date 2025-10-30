@@ -154,7 +154,7 @@ public abstract class ListSortDescription
         public override ListSortDirection Direction => _direction;
 
         public ListPathSortDescription(string propertyPath, ListSortDirection direction, IComparer? internalComparer,
-                                           CultureInfo? culture)
+                                       CultureInfo? culture)
         {
             _propertyPath = propertyPath;
             _direction    = direction;
