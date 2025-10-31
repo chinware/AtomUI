@@ -118,6 +118,9 @@ public class List : TemplatedControl,
     public static readonly StyledProperty<Thickness> EmptyIndicatorPaddingProperty =
         AvaloniaProperty.Register<List, Thickness>(nameof(EmptyIndicatorPadding));
     
+    public static readonly StyledProperty<bool> AutoScrollToSelectedItemProperty =
+        SelectingItemsControl.AutoScrollToSelectedItemProperty.AddOwner<List>();
+    
     public IEnumerable? ItemsSource
     {
         get => GetValue(ItemsSourceProperty);
@@ -287,6 +290,12 @@ public class List : TemplatedControl,
     {
         get => GetValue(EmptyIndicatorPaddingProperty);
         set => SetValue(EmptyIndicatorPaddingProperty, value);
+    }
+    
+    public bool AutoScrollToSelectedItem
+    {
+        get => GetValue(AutoScrollToSelectedItemProperty);
+        set => SetValue(AutoScrollToSelectedItemProperty, value);
     }
     
     public ListSortDescriptionList? SortDescriptions

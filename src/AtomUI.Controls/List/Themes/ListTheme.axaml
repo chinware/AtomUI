@@ -46,7 +46,8 @@
                                                       ItemTemplate="{TemplateBinding ItemTemplate}"
                                                       IsShowSelectedIndicator="{TemplateBinding IsShowSelectedIndicator}"
                                                       IsItemSelectable="{TemplateBinding IsItemSelectable}"
-                                                      ItemsSource="{TemplateBinding CollectionView}"/>
+                                                      ItemsSource="{TemplateBinding CollectionView}"
+                                                      AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedItem}"/>
                                 <ContentPresenter
                                     Name="EmptyIndicator"
                                     HorizontalContentAlignment="Center"

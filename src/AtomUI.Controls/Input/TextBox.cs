@@ -86,8 +86,6 @@ public class TextBox : AvaloniaTextBox,
         get => _isEffectiveShowClearButton;
         set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
     }
-    
-    protected override Type StyleKeyOverride { get; } = typeof(TextBox);
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;

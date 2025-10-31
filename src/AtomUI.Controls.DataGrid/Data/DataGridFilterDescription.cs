@@ -21,9 +21,9 @@ public class DataGridFilterDescription
             // 为空就不比较
             if (value != null)
             {
-                if (Filter != null && Filter(value, filterValue))
+                if (Filter != null)
                 {
-                    return true;
+                    return Filter(value, filterValue);
                 }
                 // 默认按照字符串来比较
                 var stringValue = value.ToString();

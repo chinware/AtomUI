@@ -132,6 +132,10 @@ public class Select : TemplatedControl,
             nameof(AutoScrollToSelectedOptions),
             defaultValue: false);
     
+    public static readonly StyledProperty<string> OptionFilterPropProperty =
+        AvaloniaProperty.Register<Select, string>(
+            nameof(OptionFilterProp), nameof(SelectedOption.Value));
+    
     public bool IsAllowClear
     {
         get => GetValue(IsAllowClearProperty);
@@ -306,6 +310,12 @@ public class Select : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
+    public string OptionFilterProp
+    {
+        get => GetValue(OptionFilterPropProperty);
+        set => SetValue(OptionFilterPropProperty, value);
+    }
+    
     [Content]
     public AvaloniaList<SelectOption> Options { get; set; } = new();
     
@@ -454,6 +464,7 @@ public class Select : TemplatedControl,
     private SelectOptions? _optionsBox;
     private SelectSearchTextBox? _singleSearchInput;
     private readonly CompositeDisposable _subscriptionsOnOpen = new ();
+    private ListFilterDescription? _filterDescription;
     
     static Select()
     {
@@ -635,6 +646,11 @@ public class Select : TemplatedControl,
                 selectedOptions.Add(selectOption);
                 SetCurrentValue(SelectedOptionProperty, selectOption);
                 SetCurrentValue(SelectedOptionsProperty, selectedOptions);
+                if (_singleSearchInput != null)
+                {
+                    _singleSearchInput.Clear();
+                    _singleSearchInput.Width = double.NaN;
+                }
             }
         }
         else
@@ -685,6 +701,10 @@ public class Select : TemplatedControl,
             ConfigureSelectionIsEmpty();
             ConfigurePlaceholderVisible();
         }
+        else if (change.Property == OptionFilterPropProperty)
+        {
+            HandleOptionFilterPropChanged();
+        }
         base.OnPropertyChanged(change);
     }
     
@@ -697,6 +717,7 @@ public class Select : TemplatedControl,
             if (_singleSearchInput != null)
             {
                 _singleSearchInput.Clear();
+                _singleSearchInput.Width = double.NaN;
             }
         }
     }
@@ -790,10 +811,6 @@ public class Select : TemplatedControl,
             {
                 _singleSearchInput.Width = _singleSearchInput.Bounds.Width;
             }
-            else
-            {
-                _singleSearchInput.Width = double.NaN;
-            }
             _singleSearchInput.TextChanged += HandleSearchInputTextChanged;
         }
     }
@@ -809,36 +826,50 @@ public class Select : TemplatedControl,
             }
             else
             {
-                if (_optionsBox.FilterDescriptions.Count > 0)
+                if (_filterDescription != null)
                 {
-                    Debug.Assert(_optionsBox.FilterDescriptions.Count == 1);
-                    var filter = _optionsBox.FilterDescriptions.First();
-                    Debug.Assert(filter.FilterConditions.Count == 1);
-                    var oldFilterValue = filter.FilterConditions.First().ToString();
+                    var oldFilter = _filterDescription;
+                    Debug.Assert(oldFilter.FilterConditions.Count == 1);
+                    var oldFilterValue = oldFilter.FilterConditions.First().ToString();
                     if (oldFilterValue != filterValue)
                     {
-                        var newFilter = new ListFilterDescription()
+                        _filterDescription = new ListFilterDescription()
                         {
-                            PropertyPath     = filter.PropertyPath,
-                            Filter           =  filter.Filter,
+                            PropertyPath     = _filterDescription.PropertyPath,
+                            Filter           =  _filterDescription.Filter,
                             FilterConditions = [filterValue]
                         };
-                        _optionsBox.FilterDescriptions.Remove(filter);
-                        _optionsBox.FilterDescriptions.Add(newFilter);
+                        _optionsBox.FilterDescriptions.Remove(oldFilter);
+                        _optionsBox.FilterDescriptions.Add(_filterDescription);
                     }
                 }
                 else
                 {
-                    var propertyName = nameof(SelectedOption.Value);
-                    var newFilter = new ListFilterDescription()
+                    _filterDescription = new ListFilterDescription()
                     {
-                        PropertyPath     = propertyName,
+                        PropertyPath     = OptionFilterProp,
                         Filter           = FilterFn,
                         FilterConditions = [filterValue],
                     };
-                    _optionsBox.FilterDescriptions.Add(newFilter);
+                    _optionsBox.FilterDescriptions.Add(_filterDescription);
                 }
             }
+        }
+    }
+
+    private void HandleOptionFilterPropChanged()
+    {
+        if (_filterDescription != null && _optionsBox!= null && _optionsBox.FilterDescriptions != null)
+        {
+            var oldFilter = _filterDescription;
+            _filterDescription = new ListFilterDescription()
+            {
+                PropertyPath     = OptionFilterProp,
+                Filter           =  oldFilter.Filter,
+                FilterConditions = oldFilter.FilterConditions
+            };
+            _optionsBox.FilterDescriptions.Remove(oldFilter);
+            _optionsBox.FilterDescriptions.Add(_filterDescription);
         }
     }
 }

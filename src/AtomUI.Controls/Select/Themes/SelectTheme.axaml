@@ -30,8 +30,9 @@
                                     ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsVisible="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:Select}, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                 <atom:SelectHandle
+                                    IsSearchEnabled="{Binding IsSearchEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}" 
                                     IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}"
-                                    IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}" 
+                                    IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsLoading="{Binding IsLoading, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsClearable="{Binding IsAllowClear, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsSelectionEmpty="{Binding IsSelectionEmpty, RelativeSource={RelativeSource AncestorType=atom:Select}}"
@@ -78,20 +79,17 @@
                                 MaxHeight="{TemplateBinding MaxPopupHeight}"
                                 MinWidth="{TemplateBinding EffectivePopupWidth}"
                                 Padding="{TemplateBinding PopupContentPadding}">
-                            <atom:IndicatorScrollViewer
-                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                                <atom:SelectOptions
-                                    Name="{x:Static atom:SelectThemeConstants.OptionsBoxPart}"
-                                    IsBorderless="True"
-                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                    IsShowEmptyIndicator="True"
-                                    EmptyIndicatorPadding="40"
-                                    SelectedItem="{TemplateBinding SelectedOption}"
-                                    SelectedItems="{TemplateBinding SelectedOptions}"
-                                    ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"
-                                    />
-                             
-                            </atom:IndicatorScrollViewer>
+                            <atom:SelectOptions
+                                Name="{x:Static atom:SelectThemeConstants.OptionsBoxPart}"
+                                IsBorderless="True"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                IsShowEmptyIndicator="True"
+                                EmptyIndicatorPadding="40"
+                                SelectedItem="{TemplateBinding SelectedOption}"
+                                SelectedItems="{TemplateBinding SelectedOptions}"
+                                AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedOptions}"
+                                ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"
+                            />
                         </Border>
                     </atom:Popup>
                 </Panel>
@@ -126,10 +124,6 @@
             <Setter Property="CornerRadius"
                     Value="{DynamicResource {x:Static atom:ComboBoxTokenKey.PopupBorderRadius}}" />
         </Style>
-
-        <!-- <Style Selector="^ /template/ atom|SelectOptions#PART_OptionsBox"> -->
-        <!--     <Setter Property="EmptyIndicatorPadding" Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingLG}}" /> -->
-        <!-- </Style> -->
         
         <Style Selector="^[Mode=Single]">
             <Style Selector="^ /template/ atom|SelectOptions#PART_OptionsBox">
