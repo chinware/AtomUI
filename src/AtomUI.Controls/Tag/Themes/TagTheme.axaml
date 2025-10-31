@@ -6,34 +6,33 @@
     <ControlTheme x:Key="{x:Type atom:Tag}" TargetType="atom:Tag">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:TagThemeConstants.FramePart}"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top">
-                    <Grid Name="{x:Static atom:TagThemeConstants.ElementsLayoutPart}"
-                          ColumnDefinitions="Auto, *, Auto"
-                          Margin="{TemplateBinding Padding}">
-                        <atom:IconPresenter Name="{x:Static atom:TagThemeConstants.IconPresenterPart}"
-                                            Grid.Column="0"
+                <Panel>
+                    <Border Name="Frame"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BorderThickness="{TemplateBinding BorderThickness}"/>
+                    <DockPanel LastChildFill="True" VerticalAlignment="Center"
+                               Margin="{TemplateBinding Padding}">
+                        <atom:IconPresenter Name="IconPresenter"
+                                            DockPanel.Dock="Left"
                                             Icon="{TemplateBinding Icon}"
                                             NormalFilledBrush="{TemplateBinding Foreground}"/>
-                        <atom:TextBlock Name="{x:Static atom:TagThemeConstants.TagTextLabelPart}"
-                                        Grid.Column="1"
+                        <atom:IconButton Name="CloseButton"
+                                         DockPanel.Dock="Right"
+                                         IsVisible="{TemplateBinding IsClosable}"
+                                         Icon="{TemplateBinding CloseIcon}" />
+                        <atom:TextBlock Name="TagTextLabel"
                                         VerticalAlignment="Center"
                                         Text="{TemplateBinding TagText}"
                                         Padding="{TemplateBinding TagTextPaddingInline}" />
-                        <atom:IconButton Name="{x:Static atom:TagThemeConstants.CloseButtonPart}"
-                                         Grid.Column="2"
-                                         IsVisible="{TemplateBinding IsClosable}"
-                                         Icon="{TemplateBinding CloseIcon}" />
-                    </Grid>
-                </Border>
+                    </DockPanel>
+                </Panel>
             </ControlTemplate>
         </Setter>
- 
+        
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:TagTokenKey.DefaultBg}}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TagTokenKey.DefaultColor}}" />
         <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TagTokenKey.TagFontSize}}" />
@@ -46,31 +45,27 @@
         <Style Selector="^:custom-color">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
         </Style>
-
-        <Style Selector="^ /template/ atom|TextBlock#PART_TagTextLabel">
-            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:TagTokenKey.TagLineHeight}}" />
-        </Style>
-
-        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+        
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="IconWidth"
                     Value="{DynamicResource {x:Static atom:TagTokenKey.TagIconSize}}" />
             <Setter Property="IconHeight"
                     Value="{DynamicResource {x:Static atom:TagTokenKey.TagIconSize}}" />
         </Style>
         <Style Selector="^[IsColorSet=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="NormalFilledBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
             </Style>
         </Style>
         <Style Selector="^[IsPresetColorTag=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="NormalFilledBrush"
                         Value="{TemplateBinding Foreground}" />
             </Style>
         </Style>
    
-        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
+        <Style Selector="^ /template/ atom|IconButton#CloseButton">
             <Setter Property="IconWidth"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
             <Setter Property="IconHeight"
@@ -81,7 +76,7 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
         </Style>
         <Style Selector="^[IsColorSet=True][IsPresetColorTag=False]">
-            <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
+            <Style Selector="^ /template/ atom|IconButton#CloseButton">
                 <Setter Property="NormalIconBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
                 <Setter Property="ActiveIconBrush"
@@ -89,6 +84,10 @@
                 <Setter Property="SelectedIconBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
             </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|TextBlock#TagTextLabel">
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:TagTokenKey.TagLineHeight}}" />
         </Style>
 
     </ControlTheme>

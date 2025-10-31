@@ -37,7 +37,7 @@ internal class TagToken : AbstractControlDesignToken
     {
         base.CalculateFromAlias();
         TagFontSize      = SharedToken.FontSizeSM;
-        TagLineHeight    = SharedToken.LineHeightRatioSM * TagFontSize;
+        TagLineHeight    = SharedToken.FontHeightSM;
         TagCloseIconSize = SharedToken.IconSizeXS;
         TagIconSize      = SharedToken.FontSizeIcon;
         TagPadding       = new Thickness(SharedToken.SizeXS - 1, 0);
