@@ -44,9 +44,9 @@ internal class MessageToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         ContentBg = SharedToken.ColorBgElevated;
         ContentPadding = new Thickness(
             (SharedToken.ControlHeightLG -

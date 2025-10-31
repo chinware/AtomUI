@@ -99,48 +99,6 @@ internal class SelectToken : AbstractControlDesignToken
     /// </summary>
     public double OptionHeight { get; set; }
     
-    /// <summary>
-    /// 选框背景色
-    /// Background color of selector
-    /// </summary>
-    public Color SelectorBg { get; set; }
-    
-    /// <summary>
-    /// 清空按钮背景色
-    /// Background color of clear button
-    /// </summary>
-    public Color ClearBg { get; set; }
-    
-    /// <summary>
-    /// 单选大号回填项高度
-    /// Height of single selected item with large size
-    /// </summary>
-    public double SingleItemHeightLG {  get; set; }
-
-    /// <summary>
-    /// 箭头的行末内边距
-    /// Inline end padding of arrow
-    /// </summary>
-    public Thickness ShowArrowPaddingInlineEnd {  get; set; }
-
-    /// <summary>
-    /// 悬浮态边框色
-    /// Hover border color
-    /// </summary>
-    public Color HoverBorderColor { get; set; }
-    
-    /// <summary>
-    /// 激活态边框色
-    /// Active border color
-    /// </summary>
-    public Color ActiveBorderColor { get; set; }
-
-    /// <summary>
-    /// 激活态 outline 颜色
-    /// Active outline color
-    /// </summary>
-    public Color ActiveOutlineColor { get; set; }
-    
     public Thickness SelectAffixPadding { get; set; }
     
     public Thickness FixedItemMargin { get; set; }
@@ -165,14 +123,29 @@ internal class SelectToken : AbstractControlDesignToken
     /// </summary>
     public double PopupMarginToAnchor { get; set; }
     
+    /// <summary>
+    /// 多选模式下的输入框内边距
+    /// </summary>
+    public Thickness MultiModePadding { get; set; }
+
+    /// <summary>
+    /// 多选模式下的小号输入框内边距
+    /// </summary>
+    public Thickness MultiModePaddingSM { get; set; }
+
+    /// <summary>
+    /// 多选模式下的大号输入框内边距
+    /// </summary>
+    public Thickness MultiModePaddingLG { get; set; }
+    
     public SelectToken()
         : base(ID)
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         
         // Item height default use `controlHeight - 2 * paddingXXS`,
         // but some case `paddingXXS=0`.
@@ -191,9 +164,6 @@ internal class SelectToken : AbstractControlDesignToken
         OptionPadding            = new Thickness(SharedToken.ControlPaddingHorizontal, (SharedToken.ControlHeight - SharedToken.FontHeight) / 2);
         OptionFontSize =  SharedToken.FontSize;
         OptionHeight = SharedToken.ControlHeight;
-        SelectorBg = SharedToken.ColorBgContainer;
-        ClearBg = SharedToken.ColorBgContainer;
-        SingleItemHeightLG = SharedToken.ControlHeightLG;
         MultipleItemBg = SharedToken.ColorFillSecondary;
         MultipleItemBorderColor = Colors.Transparent;
         MultipleItemHeight = multipleItemHeight;
@@ -202,15 +172,36 @@ internal class SelectToken : AbstractControlDesignToken
         MultipleSelectorBgDisabled = SharedToken.ColorBgContainerDisabled;
         MultipleItemColorDisabled = SharedToken.ColorTextDisabled;
         MultipleItemBorderColorDisabled = Colors.Transparent;
-        ShowArrowPaddingInlineEnd = new Thickness(0, 0, Math.Ceiling(SharedToken.FontSize * 1.25d), 0);
-        HoverBorderColor = SharedToken.ColorPrimaryHover;
-        ActiveBorderColor = SharedToken.ColorPrimary;
-        ActiveOutlineColor = SharedToken.ColorControlOutline;
         SelectAffixPadding = SharedToken.PaddingXXS;
         
         PopupBorderRadius   = SharedToken.BorderRadiusLG;
         PopupContentPadding = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
         PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
         PopupMarginToAnchor = SharedToken.UniformlyMarginXXS;
+        
+        var fontSize     = SharedToken.FontSize;
+        var fontSizeLG   = SharedToken.FontSizeLG;
+        var lineHeight   = SharedToken.LineHeightRatio;
+        var lineHeightLG = SharedToken.LineHeightRatioLG;
+        var lineWidth    = SharedToken.LineWidth;
+        
+        var multiPaddingVertical =
+            Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth;
+        var multiPaddingLeft  = multiPaddingVertical;
+        var multiPaddingRight = SharedToken.UniformlyPaddingSM - lineWidth;
+        MultiModePadding = new Thickness(multiPaddingLeft, multiPaddingVertical, multiPaddingRight, multiPaddingVertical);
+        
+        var multiPaddingVerticalSM =
+            Math.Round((SharedToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth;
+        var multiPaddingLeftSM  = multiPaddingVerticalSM;
+        var multiPaddingRightSM = SharedToken.ControlPaddingHorizontalSM - lineWidth;
+        MultiModePaddingSM = new Thickness(multiPaddingLeftSM, multiPaddingVerticalSM, multiPaddingRightSM, multiPaddingVerticalSM);
+        
+        var multiPaddingVerticalLG =
+            Math.Ceiling((SharedToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
+            lineWidth;
+        var multiPaddingLeftLG  = multiPaddingVerticalLG;
+        var multiPaddingRightLG = SharedToken.ControlPaddingHorizontal - lineWidth;
+        MultiModePaddingLG = new Thickness(multiPaddingLeftLG, multiPaddingVerticalLG, multiPaddingRightLG, multiPaddingVerticalLG);
     }
 }

@@ -1,36 +1,37 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:Tag}" TargetType="atom:Tag">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Panel>
-                    <Border Name="Frame"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            BorderThickness="{TemplateBinding BorderThickness}"/>
-                    <DockPanel LastChildFill="True" VerticalAlignment="Center"
-                               Margin="{TemplateBinding Padding}">
-                        <atom:IconPresenter Name="IconPresenter"
-                                            DockPanel.Dock="Left"
-                                            Icon="{TemplateBinding Icon}"
-                                            NormalFilledBrush="{TemplateBinding Foreground}"/>
-                        <atom:IconButton Name="CloseButton"
-                                         DockPanel.Dock="Right"
-                                         IsVisible="{TemplateBinding IsClosable}"
-                                         Icon="{TemplateBinding CloseIcon}" />
-                        <atom:TextBlock Name="TagTextLabel"
-                                        VerticalAlignment="Center"
-                                        Text="{TemplateBinding TagText}"
-                                        Padding="{TemplateBinding TagTextPaddingInline}" />
-                    </DockPanel>
-                </Panel>
-            </ControlTemplate>
-        </Setter>
-        
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:ClassModifier="internal"
+              x:Class="AtomUI.Controls.Themes.TagTheme"
+              TargetType="atom:Tag">
+    <Setter Property="Template">
+        <ControlTemplate>
+            <Panel>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderThickness="{TemplateBinding BorderThickness}" />
+                <DockPanel LastChildFill="True" VerticalAlignment="Center"
+                           Margin="{TemplateBinding Padding}">
+                    <atom:IconPresenter Name="IconPresenter"
+                                        DockPanel.Dock="Left"
+                                        Icon="{TemplateBinding Icon}"
+                                        NormalFilledBrush="{TemplateBinding Foreground}" />
+                    <atom:IconButton Name="CloseButton"
+                                     DockPanel.Dock="Right"
+                                     IsVisible="{TemplateBinding IsClosable}"
+                                     Icon="{TemplateBinding CloseIcon}" />
+                    <atom:TextBlock Name="TagTextLabel"
+                                    VerticalAlignment="Center"
+                                    Text="{TemplateBinding TagText}"
+                                    Padding="{TemplateBinding TagTextPaddingInline}" />
+                </DockPanel>
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|Tag)">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:TagTokenKey.DefaultBg}}" />
@@ -41,11 +42,11 @@
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         <Setter Property="TagTextPaddingInline"
                 Value="{DynamicResource {x:Static atom:TagTokenKey.TagTextPaddingInline}}" />
-        
+
         <Style Selector="^:custom-color">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
         </Style>
-        
+
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="IconWidth"
                     Value="{DynamicResource {x:Static atom:TagTokenKey.TagIconSize}}" />
@@ -64,7 +65,7 @@
                         Value="{TemplateBinding Foreground}" />
             </Style>
         </Style>
-   
+
         <Style Selector="^ /template/ atom|IconButton#CloseButton">
             <Setter Property="IconWidth"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
@@ -85,10 +86,10 @@
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^ /template/ atom|TextBlock#TagTextLabel">
             <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:TagTokenKey.TagLineHeight}}" />
         </Style>
+    </Style>
 
-    </ControlTheme>
-</ResourceDictionary>
+</ControlTheme>

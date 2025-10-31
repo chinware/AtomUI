@@ -33,9 +33,9 @@ internal class TagToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         TagFontSize      = SharedToken.FontSizeSM;
         TagLineHeight    = SharedToken.FontHeightSM;
         TagCloseIconSize = SharedToken.IconSizeXS;

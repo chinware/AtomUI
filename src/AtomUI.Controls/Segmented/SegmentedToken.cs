@@ -74,9 +74,9 @@ internal class SegmentedToken : AbstractControlDesignToken
     public Thickness SegmentedItemPaddingSM { get; set; }
     public Thickness SegmentedItemContentMargin { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         TrackPadding      = new Thickness(SharedToken.LineWidthBold);
         TrackBg           = SharedToken.ColorBgLayout;
         ItemColor         = SharedToken.ColorTextLabel;

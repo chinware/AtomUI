@@ -23,9 +23,9 @@ internal class InfoPickerInputToken : AbstractControlDesignToken
     /// </summary>
     public double RangePickerIndicatorThickness { get; set; }
     
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         RangePickerArrowMargin        = new Thickness(SharedToken.UniformlyMarginXS, 0);
         RangePickerIndicatorThickness = SharedToken.LineWidthFocus;
     }

@@ -9,7 +9,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:AddOnDecoratedBox
+                    <atom:SelectAddOnDecoratedBox
                         Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
                         Focusable="True"
                         StyleVariant="{TemplateBinding StyleVariant}"
@@ -21,7 +21,9 @@
                         RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
                         IsEnabled="{TemplateBinding IsEnabled}"
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
-                        ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
+                        ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                        Mode="{TemplateBinding Mode}"
+                        IsSelectionEmpty="{TemplateBinding IsSelectionEmpty}">
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
@@ -65,10 +67,12 @@
                             <atom:SelectResultOptionsBox
                                 Name="SelectedOptionsBox"
                                 HorizontalAlignment="Left"
-                                VerticalAlignment="Center" 
+                                VerticalAlignment="Center"
+                                SelectedOptions="{TemplateBinding SelectedOptions}"
+                                IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
                                 IsVisible="False"/>
                         </Panel>
-                    </atom:AddOnDecoratedBox>
+                    </atom:SelectAddOnDecoratedBox>
                     <atom:Popup Name="{x:Static atom:SelectThemeConstants.PopupPart}"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="False"
@@ -84,9 +88,7 @@
                                 IsBorderless="True"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsShowEmptyIndicator="True"
-                                EmptyIndicatorPadding="40"
                                 SelectedItem="{TemplateBinding SelectedOption}"
-                                SelectedItems="{TemplateBinding SelectedOptions}"
                                 AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedOptions}"
                                 ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"
                             />
@@ -136,7 +138,6 @@
                 </Style>
             </Style>
             <Style Selector="^[IsSearchEnabled=True]">
-                
                 <Style Selector="^ /template/ atom|SelectSearchTextBox#PART_SingleSearchInput">
                     <Setter Property="IsVisible" Value="True" />
                     <Setter Property="WatermarkForeground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
@@ -155,6 +156,11 @@
         <Style Selector="^[Mode=Multiple]">
             <Style Selector="^ /template/ atom|SelectResultOptionsBox#SelectedOptionsBox">
                 <Setter Property="IsVisible" Value="True" />
+            </Style>
+            
+            <Style Selector="^ /template/ atom|SelectOptions#PART_OptionsBox">
+                <Setter Property="IsShowSelectedIndicator" Value="True" />
+                <Setter Property="SelectionMode" Value="Multiple" />
             </Style>
         </Style>
 

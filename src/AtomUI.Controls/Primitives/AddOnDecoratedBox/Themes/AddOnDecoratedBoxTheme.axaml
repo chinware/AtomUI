@@ -167,7 +167,6 @@
         <Style Selector="^[StyleVariant=Outline]">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
             
-
             <Style Selector="^[IsInnerBoxHover=True]">
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.HoverBorderColor}}" />

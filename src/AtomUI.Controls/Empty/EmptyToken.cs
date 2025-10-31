@@ -24,9 +24,9 @@ public class EmptyToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         var controlHeightLG = SharedToken.ControlHeightLG;
         EmptyImgHeight      = controlHeightLG * 2.5;
         EmptyImgHeightMD    = controlHeightLG * 1.85;

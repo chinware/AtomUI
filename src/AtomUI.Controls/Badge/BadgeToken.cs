@@ -70,9 +70,9 @@ internal class BadgeToken : AbstractControlDesignToken
     
     #endregion
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         var lineWidth = SharedToken.LineWidth;
         IndicatorHeight   = Math.Round(SharedToken.FontSize * SharedToken.LineHeightRatio) - 2 * lineWidth;
         IndicatorHeightSM = SharedToken.FontSize;

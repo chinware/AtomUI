@@ -31,6 +31,9 @@ public class Select : TemplatedControl,
                       ISizeTypeAware
 {
     #region 公共属性定义
+    public static readonly StyledProperty<IEnumerable<SelectOption>?> OptionsSourceProperty =
+        AvaloniaProperty.Register<Select, IEnumerable<SelectOption>?>(nameof(OptionsSource));
+    
     public static readonly StyledProperty<bool> IsAllowClearProperty =
         AvaloniaProperty.Register<Select, bool>(nameof(IsAllowClear));
     
@@ -135,6 +138,12 @@ public class Select : TemplatedControl,
     public static readonly StyledProperty<string> OptionFilterPropProperty =
         AvaloniaProperty.Register<Select, string>(
             nameof(OptionFilterProp), nameof(SelectedOption.Value));
+    
+    public IEnumerable<SelectOption>? OptionsSource
+    {
+        get => GetValue(OptionsSourceProperty);
+        set => SetValue(OptionsSourceProperty, value);
+    }
     
     public bool IsAllowClear
     {
@@ -473,6 +482,7 @@ public class Select : TemplatedControl,
         {
             target.HandleClearRequest();
         });
+        OptionsSourceProperty.Changed.AddClassHandler<Select>((x, e) => x.HandleOptionsSourcePropertyChanged(e));
     }
     
     public Select()
@@ -572,6 +582,7 @@ public class Select : TemplatedControl,
         base.OnPointerPressed(e);
         if(!e.Handled && e.Source is Visual source)
         {
+          
             if (_popup?.IsInsidePopup(source) == true)
             {
                 e.Handled = true;
@@ -598,10 +609,13 @@ public class Select : TemplatedControl,
         {
             if (_popup?.IsInsidePopup(source) == true)
             {
-                SetCurrentValue(IsDropDownOpenProperty, false);
+                if (Mode == SelectMode.Single)
+                {
+                    SetCurrentValue(IsDropDownOpenProperty, false);
+                }
                 e.Handled = true;
             }
-            else  if (PseudoClasses.Contains(StdPseudoClass.Pressed))
+            else if (PseudoClasses.Contains(StdPseudoClass.Pressed))
             {
                 SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
                 e.Handled = true;
@@ -655,18 +669,34 @@ public class Select : TemplatedControl,
         }
         else
         {
-            if (_optionsBox.SelectedItems != null)
+            var selectedOptions = new List<SelectOption>();
+            if (SelectedOptions != null)
             {
-                var selectedOptions = new List<SelectOption>();
-                foreach (var item in _optionsBox.SelectedItems)
+                foreach (var option in SelectedOptions)
                 {
-                    if (item is SelectOption selectOption)
+                    if (!selectedOptions.Contains(option))
                     {
-                        selectedOptions.Add(selectOption);
+                        selectedOptions.Add(option);
                     }
                 }
-                SetCurrentValue(SelectedOptionsProperty, selectedOptions);
             }
+
+            foreach (var item in e.RemovedItems)
+            {
+                if (item is SelectOption selectOption)
+                {
+                    selectedOptions.Remove(selectOption);
+                }
+            }
+            
+            foreach (var item in e.AddedItems)
+            {
+                if (item is SelectOption selectOption && !selectedOptions.Contains(selectOption))
+                {
+                    selectedOptions.Add(selectOption);
+                }
+            }
+            SetCurrentValue(SelectedOptionsProperty, selectedOptions);
         }
     }
 
@@ -870,6 +900,16 @@ public class Select : TemplatedControl,
             };
             _optionsBox.FilterDescriptions.Remove(oldFilter);
             _optionsBox.FilterDescriptions.Add(_filterDescription);
+        }
+    }
+    
+    private void HandleOptionsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var newItemsSource = (IEnumerable<SelectOption>?)e.NewValue;
+        if (newItemsSource != null)
+        {
+            Options.Clear();
+            Options.AddRange(newItemsSource);
         }
     }
 }

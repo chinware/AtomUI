@@ -364,9 +364,9 @@ internal class NavMenuToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         
         var colorTextLightSolid = SharedToken.ColorTextLightSolid;
         

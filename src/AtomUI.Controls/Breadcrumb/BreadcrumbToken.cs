@@ -59,9 +59,9 @@ internal class BreadcrumbToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         IconSize                    = SharedToken.IconSize;
         ItemColor                   = SharedToken.ColorTextDescription;
         LastItemColor               = SharedToken.ColorText;

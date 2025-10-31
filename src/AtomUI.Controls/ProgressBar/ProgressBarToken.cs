@@ -53,9 +53,9 @@ internal class ProgressBarToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
 
         CircleTextColor  = SharedToken.ColorText;
         DefaultColor     = SharedToken.ColorInfo;

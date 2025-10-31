@@ -62,9 +62,9 @@ internal class AvatarToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         ContainerSize   = SharedToken.ControlHeight;
         ContainerSizeLG = SharedToken.ControlHeightLG;
         ContainerSizeSM = SharedToken.ControlHeightSM;

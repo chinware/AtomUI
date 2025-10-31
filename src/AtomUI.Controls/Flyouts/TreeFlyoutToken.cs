@@ -54,7 +54,7 @@ internal class TreeFlyoutToken : AbstractControlDesignToken
     /// </summary>
     public double PopupMaxHeight { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
         PopupBorderRadius = SharedToken.BorderRadiusLG;
         PopupMinWidth     = 120;

@@ -74,9 +74,9 @@ internal class TimelineToken : AbstractControlDesignToken
     /// </summary>
     public double IndicatorDotBorderWidth { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
 
         IndicatorTailColor = SharedToken.ColorSplit;
         IndicatorTailWidth = SharedToken.LineWidthBold;

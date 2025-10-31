@@ -54,9 +54,9 @@ internal class ToolTipToken : AbstractControlDesignToken
     /// </summary>
     public double ToolTipArrowSize { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
 
         ToolTipMaxWidth   = 250;
         ToolTipColor      = SharedToken.ColorTextLightSolid;

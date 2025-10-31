@@ -125,9 +125,9 @@ internal class ChromeToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         CloseHoverBackgroundColor   = SharedToken.ColorErrorTextActive;
         ClosePressedBackgroundColor = SharedToken.ColorErrorTextHover;
         ForegroundColor             = SharedToken.ColorTextSecondary;

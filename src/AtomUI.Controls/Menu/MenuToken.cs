@@ -226,9 +226,9 @@ internal class MenuToken : AbstractControlDesignToken
     /// </summary>
     public double SeparatorItemHeight { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
 
         var colorTextDisabled  = SharedToken.ColorTextDisabled;
         var colorError         = SharedToken.ColorError;

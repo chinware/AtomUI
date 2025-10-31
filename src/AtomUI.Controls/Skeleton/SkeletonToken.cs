@@ -75,9 +75,9 @@ internal class SkeletonToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         GradientFromColor     = SharedToken.ColorFillContent;
         GradientToColor       = SharedToken.ColorFill;
         TitleHeight           = SharedToken.ControlHeight / 2;

@@ -10,11 +10,25 @@
         </ControlTheme.BasedOn>
         
         <Style Selector="^:is(atom|SelectOptionItem)">
-            <Style Selector="^[IsSelected=True]">
-                <Setter Property="FontWeight" Value="DemiBold"/>
-            </Style>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SelectTokenKey.OptionFontSize}}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Focusable" Value="False"/>
+            
+            <Style Selector="^[DisabledItemHoverEffect=False]:pointerover">
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SelectTokenKey.OptionActiveBg}}" />
+            </Style>
+            
+            <Style Selector="^[IsSelected=True]">
+                <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SelectTokenKey.OptionSelectedFontWeight}}"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SelectTokenKey.OptionSelectedColor}}"/>
+                <Setter Property="Background" Value="{DynamicResource {x:Static atom:SelectTokenKey.OptionSelectedBg}}"/>
+            </Style>
+            
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SelectTokenKey.OptionPadding}}" />
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SelectTokenKey.OptionHeight}}" />
+            </Style>
+            
         </Style>
         
     </ControlTheme>

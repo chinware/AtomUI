@@ -89,9 +89,9 @@ internal class ListToken : AbstractControlDesignToken
     /// </summary>
     public Color GroupHeaderColor { get; set; }
     
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         var colorTextDisabled  = SharedToken.ColorTextDisabled;
         var colorTextSecondary = SharedToken.ColorTextSecondary;
         var colorBgTextHover   = SharedToken.ColorBgTextHover;

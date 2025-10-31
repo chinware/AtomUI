@@ -38,9 +38,9 @@ internal class RadioButtonToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         var lineWidth        = SharedToken.LineWidth;
         var fontSizeLG       = SharedToken.FontSizeLG;
         var colorPrimary     = SharedToken.ColorPrimary;

@@ -89,9 +89,9 @@ internal class NotificationToken : AbstractControlDesignToken
     /// </summary>
     public Thickness HeaderMargin { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         NotificationProgressHeight = 2;
         NotificationProgressMargin = new Thickness(0, 0, 0, 1);
         NotificationContentMargin = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingMD);

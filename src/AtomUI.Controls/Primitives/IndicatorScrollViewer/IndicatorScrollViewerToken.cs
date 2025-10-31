@@ -34,9 +34,9 @@ internal class IndicatorScrollViewerToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         ThumbBg            = SharedToken.ColorBorder;
         ThumbThickness     = SharedToken.SizeXS;
         ScrollBarThickness = SharedToken.LineWidthBold;

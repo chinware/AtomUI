@@ -456,6 +456,7 @@ public class List : TemplatedControl,
         {
             ConfigureEmptyIndicator();
         }
+        
     }
 
     private void ConfigureEffectiveBorderThickness()

@@ -59,9 +59,9 @@ internal class ButtonSpinnerToken : LineEditToken
     /// </summary>
     public Color FilledHandleBg { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         ControlWidth   = 90;
         HandleWidth    = SharedToken.ControlHeightSM;
         HandleIconSize = SharedToken.FontSize / 2;

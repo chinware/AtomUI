@@ -20,9 +20,9 @@ internal class CheckBoxToken : AbstractControlDesignToken
     
     public Thickness TextMargin { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         CheckIndicatorSize        = SharedToken.ControlInteractiveSize;
         CheckedMarkSize           = CheckIndicatorSize * 0.6;
         IndicatorTristateMarkSize = SharedToken.FontSizeLG / 2;

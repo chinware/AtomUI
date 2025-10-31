@@ -80,9 +80,9 @@ internal class DrawerToken : AbstractControlDesignToken
     /// </summary>
     public double PushOffsetPercent { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
 
         BoxShadowDrawerLeft = new BoxShadows(new BoxShadow()
         {

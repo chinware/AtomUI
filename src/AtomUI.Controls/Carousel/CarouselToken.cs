@@ -54,9 +54,9 @@ internal class CarouselToken : AbstractControlDesignToken
     /// </summary>
     public double ArrowOffset { get; set; }
     
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         IndicatorActiveWidth = 24;
         ArrowSize            = 16;
         ArrowOffset          = SharedToken.SpacingXS;

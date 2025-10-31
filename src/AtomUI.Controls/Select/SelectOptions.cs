@@ -9,8 +9,6 @@ namespace AtomUI.Controls;
 
 internal class SelectOptions : List
 {
-    protected override Type StyleKeyOverride { get; } = typeof(List);
-    
     internal override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         if (item is ListGroupData)
@@ -32,13 +30,12 @@ internal class SelectOptions : List
                     return;
                 }
             
-                var mode   = SelectionMode;
-                var single = mode.HasAllFlags(SelectionMode.Single);
-                if (single)
+                var mode = SelectionMode;
+                if (mode == SelectionMode.Single)
                 {
                     ListDefaultView.Selection.Select(index);
                 }
-                else
+                else if (mode == SelectionMode.Multiple)
                 {
                     if (ListDefaultView.Selection.IsSelected(index))
                     {

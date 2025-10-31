@@ -1,0 +1,36 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SelectAddOnDecoratedBox}" TargetType="atom:SelectAddOnDecoratedBox">
+        <ControlTheme.BasedOn>
+            <themes:AddOnDecoratedBoxTheme TargetType="atom:SelectAddOnDecoratedBox" />
+        </ControlTheme.BasedOn>
+
+        <Style Selector="^:is(atom|SelectAddOnDecoratedBox)">
+            <Style Selector="^:not(^[Mode=Single])^[IsSelectionEmpty=False]">
+                <Style Selector="^[SizeType=Large]">
+                    <Style Selector="^ /template/ Border#PART_ContentFrame">
+                        <Setter Property="Padding"
+                                Value="{DynamicResource {x:Static atom:SelectTokenKey.MultiModePaddingLG}}" />
+                    </Style>
+                </Style>
+                <Style Selector="^[SizeType=Middle]">
+                    <Style Selector="^ /template/ Border#PART_ContentFrame">
+                        <Setter Property="Padding"
+                                Value="{DynamicResource {x:Static atom:SelectTokenKey.MultiModePadding}}" />
+                    </Style>
+
+                </Style>
+                <Style Selector="^[SizeType=Small]">
+                    <Style Selector="^ /template/ Border#PART_ContentFrame">
+                        <Setter Property="Padding"
+                                Value="{DynamicResource {x:Static atom:SelectTokenKey.MultiModePaddingSM}}" />
+                    </Style>
+                </Style>
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

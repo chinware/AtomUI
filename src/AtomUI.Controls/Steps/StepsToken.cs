@@ -167,9 +167,9 @@ internal class StepsToken : AbstractControlDesignToken
     
     #endregion
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         
         CustomIconSize      = SharedToken.ControlHeight;
         CustomIconFontSize  = SharedToken.ControlHeightSM;

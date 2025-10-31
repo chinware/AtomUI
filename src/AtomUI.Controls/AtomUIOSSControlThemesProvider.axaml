@@ -53,7 +53,7 @@
         <ResourceInclude Source="Steps/Themes/StepsThemes.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchTheme.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
-        <ResourceInclude Source="Tag/Themes/TagTheme.axaml" />
+        <ResourceInclude Source="Tag/Themes/TagThemes.axaml" />
         <ResourceInclude Source="TextBlock/Themes/HyperLinkTextBlockTheme.axaml" />
         <ResourceInclude Source="TextSelectionHandle/Themes/TextSelectionHandleTheme.axaml" />
         <ResourceInclude Source="Timeline/Themes/TimelineThemes.axaml" />

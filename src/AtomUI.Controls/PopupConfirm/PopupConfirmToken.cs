@@ -48,9 +48,9 @@ internal class PopupConfirmToken : AbstractControlDesignToken
     /// </summary>
     public Thickness TitleMargin { get; set; }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         PopupMinWidth          = 240;
         PopupMinHeight         = 80;
         ButtonSpacing          = SharedToken.UniformlyMarginXS;

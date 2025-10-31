@@ -701,11 +701,10 @@ namespace AtomUI.Controls.DesignTokens
 
     public static class SelectTokenKey
     {
-        public static readonly TokenResourceKey ActiveBorderColor = new TokenResourceKey("Select.ActiveBorderColor");
-        public static readonly TokenResourceKey ActiveOutlineColor = new TokenResourceKey("Select.ActiveOutlineColor");
-        public static readonly TokenResourceKey ClearBg = new TokenResourceKey("Select.ClearBg");
         public static readonly TokenResourceKey FixedItemMargin = new TokenResourceKey("Select.FixedItemMargin");
-        public static readonly TokenResourceKey HoverBorderColor = new TokenResourceKey("Select.HoverBorderColor");
+        public static readonly TokenResourceKey MultiModePadding = new TokenResourceKey("Select.MultiModePadding");
+        public static readonly TokenResourceKey MultiModePaddingLG = new TokenResourceKey("Select.MultiModePaddingLG");
+        public static readonly TokenResourceKey MultiModePaddingSM = new TokenResourceKey("Select.MultiModePaddingSM");
         public static readonly TokenResourceKey MultipleItemBg = new TokenResourceKey("Select.MultipleItemBg");
         public static readonly TokenResourceKey MultipleItemBorderColor = new TokenResourceKey("Select.MultipleItemBorderColor");
         public static readonly TokenResourceKey MultipleItemBorderColorDisabled = new TokenResourceKey("Select.MultipleItemBorderColorDisabled");
@@ -726,9 +725,6 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey PopupContentPadding = new TokenResourceKey("Select.PopupContentPadding");
         public static readonly TokenResourceKey PopupMarginToAnchor = new TokenResourceKey("Select.PopupMarginToAnchor");
         public static readonly TokenResourceKey SelectAffixPadding = new TokenResourceKey("Select.SelectAffixPadding");
-        public static readonly TokenResourceKey SelectorBg = new TokenResourceKey("Select.SelectorBg");
-        public static readonly TokenResourceKey ShowArrowPaddingInlineEnd = new TokenResourceKey("Select.ShowArrowPaddingInlineEnd");
-        public static readonly TokenResourceKey SingleItemHeightLG = new TokenResourceKey("Select.SingleItemHeightLG");
     }
 
     public static class SeparatorTokenKey

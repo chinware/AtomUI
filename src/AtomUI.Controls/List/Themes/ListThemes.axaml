@@ -3,9 +3,7 @@
                     x:ClassModifier="internal"
                     xmlns:atom="https://atomui.net"
                     xmlns:themes="using:AtomUI.Controls.Themes">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="ListTheme.axaml" />
-    </ResourceDictionary.MergedDictionaries>
+    <themes:ListTheme x:Key="{x:Type atom:List}" TargetType="atom:List" />
     <themes:ListItemTheme x:Key="{x:Type atom:ListItem}" TargetType="atom:ListItem" />
     <themes:ListDefaultViewTheme x:Key="{x:Type atom:ListDefaultView}" TargetType="atom:ListDefaultView" />
     <themes:ListGroupItemTheme x:Key="{x:Type atom:ListGroupItem}" TargetType="atom:ListGroupItem" />

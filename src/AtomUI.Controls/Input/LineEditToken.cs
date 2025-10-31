@@ -32,9 +32,9 @@ internal class LineEditToken : AbstractControlDesignToken
     /// </summary>
     public double InputFontSizeSM { get; set; }
     
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         InputFontSize   = SharedToken.FontSize;
         InputFontSizeLG = SharedToken.FontSizeLG;
         InputFontSizeSM = SharedToken.FontSizeSM;

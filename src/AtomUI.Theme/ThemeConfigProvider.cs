@@ -281,7 +281,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         foreach (var token in ControlTokens.Values)
         {
             var controlToken = (token as AbstractControlDesignToken)!;
-            controlToken.CalculateFromAlias();
+            controlToken.CalculateTokenValues();
             var controlTokenType = controlToken.GetType();
             var tokenAttr        = controlTokenType.GetCustomAttribute<ControlDesignTokenAttribute>();
             var qualifiedTokenKey =

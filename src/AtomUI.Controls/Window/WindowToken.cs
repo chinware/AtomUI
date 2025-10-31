@@ -31,9 +31,9 @@ public class WindowToken : AbstractControlDesignToken
     {
     }
 
-    public override void CalculateFromAlias()
+    public override void CalculateTokenValues()
     {
-        base.CalculateFromAlias();
+        base.CalculateTokenValues();
         DefaultBackground = SharedToken.ColorBgContainer;
         DefaultForeground = SharedToken.ColorText;
         CornerRadius      = new CornerRadius(12);
