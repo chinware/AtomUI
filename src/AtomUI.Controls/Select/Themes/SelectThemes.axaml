@@ -7,6 +7,7 @@
         <ResourceInclude Source="SelectResultOptionsBoxTheme.axaml"/>
         <ResourceInclude Source="SelectSearchTextBoxTheme.axaml"/>
         <ResourceInclude Source="SelectTheme.axaml"/>
+        <ResourceInclude Source="SelectTagTheme.axaml"/>
         <ResourceInclude Source="SelectOptionsTheme.axaml"/>
         <ResourceInclude Source="SelectOptionItemTheme.axaml"/>
         <ResourceInclude Source="SelectAddOnDecoratedBoxTheme.axaml"/>

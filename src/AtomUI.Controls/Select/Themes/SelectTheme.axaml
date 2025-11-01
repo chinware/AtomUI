@@ -23,7 +23,8 @@
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
                         Mode="{TemplateBinding Mode}"
-                        IsSelectionEmpty="{TemplateBinding IsSelectionEmpty}">
+                        IsSelectionEmpty="{TemplateBinding IsSelectionEmpty}"
+                        IsDropDownOpen="{TemplateBinding IsDropDownOpen}">
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
@@ -39,7 +40,8 @@
                                     IsClearable="{Binding IsAllowClear, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsSelectionEmpty="{Binding IsSelectionEmpty, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsDropDownOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType=atom:Select}}"
-                                    IsInputHover="{Binding IsInnerBoxHover, RelativeSource={RelativeSource AncestorType=atom:AddOnDecoratedBox}}"/>
+                                    IsInputHover="{Binding IsInnerBoxHover, RelativeSource={RelativeSource AncestorType=atom:AddOnDecoratedBox}}"
+                                    IsInputPressed="{Binding IsInnerBoxPressed, RelativeSource={RelativeSource AncestorType=atom:AddOnDecoratedBox}}"/>
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
@@ -66,11 +68,14 @@
                                                       Watermark="{TemplateBinding SelectedOption, Converter={StaticResource OptionHeaderConverter}}"/>
                             <atom:SelectResultOptionsBox
                                 Name="SelectedOptionsBox"
-                                HorizontalAlignment="Left"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
+                                Mode="{TemplateBinding Mode}"
                                 SelectedOptions="{TemplateBinding SelectedOptions}"
                                 IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
-                                IsVisible="False"/>
+                                IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
+                                IsVisible="False"
+                                Focusable="True"/>
                         </Panel>
                     </atom:SelectAddOnDecoratedBox>
                     <atom:Popup Name="{x:Static atom:SelectThemeConstants.PopupPart}"
@@ -157,7 +162,9 @@
             <Style Selector="^ /template/ atom|SelectResultOptionsBox#SelectedOptionsBox">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
-            
+            <Style Selector="^[IsSearchEnabled=False]">
+                <Setter Property="Cursor" Value="Hand"/>
+            </Style>
             <Style Selector="^ /template/ atom|SelectOptions#PART_OptionsBox">
                 <Setter Property="IsShowSelectedIndicator" Value="True" />
                 <Setter Property="SelectionMode" Value="Multiple" />

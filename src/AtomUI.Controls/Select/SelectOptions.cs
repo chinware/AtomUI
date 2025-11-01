@@ -1,6 +1,5 @@
 using System.Reactive.Disposables;
 using AtomUI.Data;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -18,7 +17,7 @@ internal class SelectOptions : List
         return new SelectOptionItem();
     }
     
-    private void DoSelectOption(Control container)
+    private void LogicalSelectOption(Control container)
     {
         if (ListDefaultView != null)
         {
@@ -29,22 +28,69 @@ internal class SelectOptions : List
                 {
                     return;
                 }
-            
-                var mode = SelectionMode;
+                var item = ListDefaultView.ItemFromContainer(container);
+                var mode   = SelectionMode;
                 if (mode == SelectionMode.Single)
                 {
                     ListDefaultView.Selection.Select(index);
                 }
                 else if (mode == SelectionMode.Multiple)
                 {
-                    if (ListDefaultView.Selection.IsSelected(index))
+                    if (item is SelectOption option)
                     {
-                        ListDefaultView.Selection.Deselect(index);
+                        if (ListDefaultView.Selection.IsSelected(index))
+                        {
+                            option.IsSelected = false;
+                            ListDefaultView.Selection.Deselect(index);
+                        }
+                        else
+                        {
+                            option.IsSelected = true;
+                            ListDefaultView.Selection.Select(index);
+                        }
                     }
-                    else
+                }
+            }
+        }
+    }
+
+    public void Select(SelectOption option)
+    {
+        if (ListDefaultView != null)
+        {
+            var container = ListDefaultView.ContainerFromItem(option);
+            if (container != null)
+            {
+                var index = ListDefaultView.IndexFromContainer(container);
+                if (index != -1)
+                {
+                    if (index < 0 || index >= ItemCount)
                     {
-                        ListDefaultView.Selection.Select(index);
+                        return;
                     }
+                    option.IsSelected = true;
+                    ListDefaultView.Selection.Select(index);
+                }
+            }
+        }
+    }
+
+    public void DeSelect(SelectOption option)
+    {
+        if (ListDefaultView != null)
+        {
+            var container = ListDefaultView.ContainerFromItem(option);
+            if (container != null)
+            {
+                var index = ListDefaultView.IndexFromContainer(container);
+                if (index != -1)
+                {
+                    if (index < 0 || index >= ItemCount)
+                    {
+                        return;
+                    }
+                    option.IsSelected = false;
+                    ListDefaultView.Selection.Deselect(index);
                 }
             }
         }
@@ -55,7 +101,7 @@ internal class SelectOptions : List
         var container = GetContainerFromEventSource(source);
         if (container != null)
         {
-            DoSelectOption(container);
+            LogicalSelectOption(container);
             return true;
         }
         return false;
@@ -81,6 +127,11 @@ internal class SelectOptions : List
                     {
                         listItem.SetCurrentValue(IsEnabledProperty, data.IsEnabled);
                     }
+                    if (!listItem.IsSet(SelectOptionItem.IsSelectedProperty))
+                    {
+                        listItem.SetCurrentValue(SelectOptionItem.IsSelectedProperty, data.IsSelected);
+                    }
+
                 }
             }
             

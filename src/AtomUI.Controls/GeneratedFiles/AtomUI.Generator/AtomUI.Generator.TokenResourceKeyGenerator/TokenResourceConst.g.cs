@@ -706,8 +706,6 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey MultiModePaddingLG = new TokenResourceKey("Select.MultiModePaddingLG");
         public static readonly TokenResourceKey MultiModePaddingSM = new TokenResourceKey("Select.MultiModePaddingSM");
         public static readonly TokenResourceKey MultipleItemBg = new TokenResourceKey("Select.MultipleItemBg");
-        public static readonly TokenResourceKey MultipleItemBorderColor = new TokenResourceKey("Select.MultipleItemBorderColor");
-        public static readonly TokenResourceKey MultipleItemBorderColorDisabled = new TokenResourceKey("Select.MultipleItemBorderColorDisabled");
         public static readonly TokenResourceKey MultipleItemColorDisabled = new TokenResourceKey("Select.MultipleItemColorDisabled");
         public static readonly TokenResourceKey MultipleItemHeight = new TokenResourceKey("Select.MultipleItemHeight");
         public static readonly TokenResourceKey MultipleItemHeightLG = new TokenResourceKey("Select.MultipleItemHeightLG");

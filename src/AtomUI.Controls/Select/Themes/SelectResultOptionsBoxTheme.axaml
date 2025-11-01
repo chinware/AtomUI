@@ -7,12 +7,12 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Name="RootLayout">
-                    <WrapPanel Name="{x:Static atom:SelectResultOptionsBoxThemeConstants.DefaultPanelPart}"/>
+                    <atom:SelectWrapPanel Name="{x:Static atom:SelectResultOptionsBoxThemeConstants.DefaultPanelPart}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>
         
-        <Style Selector="^ /template/ WrapPanel#PART_DefaultPanel">
+        <Style Selector="^ /template/ atom|SelectWrapPanel#PART_DefaultPanel">
             <Setter Property="ItemSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}"/>
             <Setter Property="LineSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}"/>
         </Style>

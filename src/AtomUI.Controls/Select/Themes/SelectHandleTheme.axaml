@@ -66,14 +66,20 @@
         </Style>
 
         <Style Selector="^[IsClearable=True]">
-            <Style Selector="^[IsInputHover=True][IsSelectionEmpty=False]">
-                <Style Selector="^ /template/ atom|Icon#OpenIndicator">
-                    <Setter Property="IsVisible" Value="False" />
-                </Style>
-                <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
-                    <Setter Property="IsVisible" Value="True" />
+            <Style Selector="^[IsSelectionEmpty=False]">
+                <Style Selector="^[IsInputHover=True]">
+                    <Style Selector="^ /template/ atom|Icon#OpenIndicator">
+                        <Setter Property="IsVisible" Value="False" />
+                    </Style>
+                    <Style Selector="^ /template/ atom|Icon#SearchIndicator">
+                        <Setter Property="IsVisible" Value="False" />
+                    </Style>
+                    <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
+                        <Setter Property="IsVisible" Value="True" />
+                    </Style>
                 </Style>
             </Style>
+           
         </Style>
 
     </ControlTheme>

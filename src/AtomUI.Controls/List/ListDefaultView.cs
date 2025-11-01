@@ -253,5 +253,4 @@ internal class ListDefaultView : SelectingItemsControl
             }
         }
     }
-    
 }

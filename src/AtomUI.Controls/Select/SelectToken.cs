@@ -16,12 +16,6 @@ internal class SelectToken : AbstractControlDesignToken
     public Color MultipleItemBg { get; set; }
     
     /// <summary>
-    /// 多选标签边框色
-    /// Border color of multiple tag
-    /// </summary>
-    public Color MultipleItemBorderColor { get; set; }
-    
-    /// <summary>
     /// 多选标签高度
     /// Height of multiple tag
     /// </summary>
@@ -50,12 +44,6 @@ internal class SelectToken : AbstractControlDesignToken
     /// Text color of multiple tag when disabled
     /// </summary>
     public Color MultipleItemColorDisabled { get; set; }
-    
-    /// <summary>
-    /// 多选标签禁用边框色
-    /// Border color of multiple tag when disabled
-    /// </summary>
-    public Color MultipleItemBorderColorDisabled { get; set; }
     
     /// <summary>
     /// 选项选中时文本颜色
@@ -165,13 +153,11 @@ internal class SelectToken : AbstractControlDesignToken
         OptionFontSize =  SharedToken.FontSize;
         OptionHeight = SharedToken.ControlHeight;
         MultipleItemBg = SharedToken.ColorFillSecondary;
-        MultipleItemBorderColor = Colors.Transparent;
         MultipleItemHeight = multipleItemHeight;
         MultipleItemHeightSM = multipleItemHeightSM;
         MultipleItemHeightLG = multipleItemHeightLG;
         MultipleSelectorBgDisabled = SharedToken.ColorBgContainerDisabled;
         MultipleItemColorDisabled = SharedToken.ColorTextDisabled;
-        MultipleItemBorderColorDisabled = Colors.Transparent;
         SelectAffixPadding = SharedToken.PaddingXXS;
         
         PopupBorderRadius   = SharedToken.BorderRadiusLG;

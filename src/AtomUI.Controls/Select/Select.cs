@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
@@ -12,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -474,7 +474,8 @@ public class Select : TemplatedControl,
     private SelectSearchTextBox? _singleSearchInput;
     private readonly CompositeDisposable _subscriptionsOnOpen = new ();
     private ListFilterDescription? _filterDescription;
-    
+    private string? _filterValue;
+
     static Select()
     {
         FocusableProperty.OverrideDefaultValue<Select>(true);
@@ -483,6 +484,8 @@ public class Select : TemplatedControl,
             target.HandleClearRequest();
         });
         OptionsSourceProperty.Changed.AddClassHandler<Select>((x, e) => x.HandleOptionsSourcePropertyChanged(e));
+        SelectSearchTextBox.TextChangedEvent.AddClassHandler<Select>((x, e) => x.HandleSearchInputTextChanged(e));
+        SelectTag.ClosedEvent.AddClassHandler<Select>((x, e) => x.HandleTagCloseRequest(e));
     }
     
     public Select()
@@ -639,6 +642,7 @@ public class Select : TemplatedControl,
         {
             _optionsBox.SelectionChanged += HandleOptionsBoxSelectionChanged;
         }
+        
         _popup        =  e.NameScope.Get<Popup>(SelectThemeConstants.PopupPart);
         _popup.Opened += PopupOpened;
         _popup.Closed += PopupClosed;
@@ -669,21 +673,18 @@ public class Select : TemplatedControl,
         }
         else
         {
-            var selectedOptions = new List<SelectOption>();
+            var selectedOptions = new HashSet<SelectOption>();
             if (SelectedOptions != null)
             {
                 foreach (var option in SelectedOptions)
                 {
-                    if (!selectedOptions.Contains(option))
-                    {
-                        selectedOptions.Add(option);
-                    }
+                    selectedOptions.Add(option);
                 }
             }
 
             foreach (var item in e.RemovedItems)
             {
-                if (item is SelectOption selectOption)
+                if (item is SelectOption selectOption && !selectOption.IsSelected)
                 {
                     selectedOptions.Remove(selectOption);
                 }
@@ -691,17 +692,22 @@ public class Select : TemplatedControl,
             
             foreach (var item in e.AddedItems)
             {
-                if (item is SelectOption selectOption && !selectedOptions.Contains(selectOption))
+                if (item is SelectOption selectOption && !selectedOptions.Contains(selectOption) && selectOption.IsSelected)
                 {
                     selectedOptions.Add(selectOption);
                 }
             }
-            SetCurrentValue(SelectedOptionsProperty, selectedOptions);
+            var oldSelectedOptions = SelectedOptions?.ToHashSet() ?? new HashSet<SelectOption>();
+            if (!oldSelectedOptions.SetEquals(selectedOptions))
+            {
+                SetCurrentValue(SelectedOptionsProperty, selectedOptions.ToList());
+            }
         }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        base.OnPropertyChanged(change);
         if (change.Property == SelectedOptionsProperty)
         {
             ConfigurePlaceholderVisible();
@@ -735,7 +741,6 @@ public class Select : TemplatedControl,
         {
             HandleOptionFilterPropChanged();
         }
-        base.OnPropertyChanged(change);
     }
     
     private void PopupClosed(object? sender, EventArgs e)
@@ -750,6 +755,8 @@ public class Select : TemplatedControl,
                 _singleSearchInput.Width = double.NaN;
             }
         }
+
+        _filterValue = null;
     }
 
     private void PopupOpened(object? sender, EventArgs e)
@@ -761,11 +768,6 @@ public class Select : TemplatedControl,
             parent.GetObservable(IsVisibleProperty).Subscribe(IsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
         }
 
-        if (_optionsBox != null)
-        {
-            _optionsBox.SelectedItem  = SelectedOption;
-            _optionsBox.SelectedItems = (IList?)SelectedOptions;
-        }
         DropDownOpened?.Invoke(this, EventArgs.Empty);
         if (Mode == SelectMode.Single)
         {
@@ -786,8 +788,25 @@ public class Select : TemplatedControl,
     
     public void Clear()
     {
+        if (SelectedOptions != null)
+        {
+            foreach (var option in SelectedOptions)
+            {
+                option.IsSelected = false;
+            }
+        }
+
+        if (SelectedOption != null)
+        {
+            SelectedOption.IsSelected = false;
+        }
         SelectedOptions = null;
         SelectedOption  = null;
+        if (_optionsBox != null)
+        {
+            _optionsBox.SelectedItems = null;
+            _optionsBox.SelectedItem = null;
+        }
     }
     
     private void ConfigureMaxDropdownHeight()
@@ -825,7 +844,7 @@ public class Select : TemplatedControl,
     private void ConfigurePlaceholderVisible()
     {
         SetCurrentValue(IsPlaceholderTextVisibleProperty, (Mode == SelectMode.Single && SelectedOption == null) || 
-                                                          (Mode != SelectMode.Single && SelectedOptions == null || SelectedOptions?.Count == 0));
+                                                          (Mode != SelectMode.Single && (SelectedOptions == null || SelectedOptions?.Count == 0) && string.IsNullOrEmpty(_filterValue)));
     }
 
     private void ConfigureSelectionIsEmpty()
@@ -841,16 +860,20 @@ public class Select : TemplatedControl,
             {
                 _singleSearchInput.Width = _singleSearchInput.Bounds.Width;
             }
-            _singleSearchInput.TextChanged += HandleSearchInputTextChanged;
         }
     }
 
-    private void HandleSearchInputTextChanged(object? sender, TextChangedEventArgs e)
+    private void HandleSearchInputTextChanged(TextChangedEventArgs e)
     {
         if (_optionsBox != null && _optionsBox.FilterDescriptions != null)
         {
-            var filterValue = _singleSearchInput?.Text;
-            if (string.IsNullOrEmpty(filterValue))
+            if (e.Source is TextBox textBox)
+            {
+                _filterValue = textBox.Text;
+            }
+
+            ConfigurePlaceholderVisible();
+            if (string.IsNullOrEmpty(_filterValue))
             {
                 _optionsBox.FilterDescriptions.Clear();
             }
@@ -861,13 +884,13 @@ public class Select : TemplatedControl,
                     var oldFilter = _filterDescription;
                     Debug.Assert(oldFilter.FilterConditions.Count == 1);
                     var oldFilterValue = oldFilter.FilterConditions.First().ToString();
-                    if (oldFilterValue != filterValue)
+                    if (oldFilterValue != _filterValue)
                     {
                         _filterDescription = new ListFilterDescription()
                         {
                             PropertyPath     = _filterDescription.PropertyPath,
                             Filter           =  _filterDescription.Filter,
-                            FilterConditions = [filterValue]
+                            FilterConditions = [_filterValue]
                         };
                         _optionsBox.FilterDescriptions.Remove(oldFilter);
                         _optionsBox.FilterDescriptions.Add(_filterDescription);
@@ -879,12 +902,22 @@ public class Select : TemplatedControl,
                     {
                         PropertyPath     = OptionFilterProp,
                         Filter           = FilterFn,
-                        FilterConditions = [filterValue],
+                        FilterConditions = [_filterValue],
                     };
                     _optionsBox.FilterDescriptions.Add(_filterDescription);
                 }
             }
         }
+        e.Handled = true;
+    }
+
+    private void HandleTagCloseRequest(RoutedEventArgs e)
+    {
+        if (e.Source is SelectTag tag && tag.Option != null)
+        {
+            _optionsBox?.DeSelect(tag.Option);
+        }
+        e.Handled = true;
     }
 
     private void HandleOptionFilterPropChanged()

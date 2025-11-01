@@ -13,6 +13,9 @@ internal class SelectAddOnDecoratedBox : AddOnDecoratedBox
             o => o.IsSelectionEmpty,
             (o, v) => o.IsSelectionEmpty = v);
     
+    public static readonly StyledProperty<bool> IsDropDownOpenProperty =
+        AvaloniaProperty.Register<SelectAddOnDecoratedBox, bool>(nameof(IsDropDownOpen));
+    
     public SelectMode Mode
     {
         get => GetValue(ModeProperty);
@@ -25,5 +28,11 @@ internal class SelectAddOnDecoratedBox : AddOnDecoratedBox
     {
         get => _isSelectionEmpty;
         set => SetAndRaise(IsSelectionEmptyProperty, ref _isSelectionEmpty, value);
+    }
+    
+    public bool IsDropDownOpen
+    {
+        get => GetValue(IsDropDownOpenProperty);
+        set => SetValue(IsDropDownOpenProperty, value);
     }
 }

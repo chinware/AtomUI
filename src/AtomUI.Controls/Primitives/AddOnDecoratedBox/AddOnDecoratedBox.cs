@@ -36,6 +36,7 @@ internal class AddOnDecoratedBox : ContentControl,
                                    IMotionAwareControl
 {
     public const string AddOnDecoratedBoxPart = "PART_AddOnDecoratedBox";
+    
     #region 公共属性定义
 
     public static readonly StyledProperty<object?> LeftAddOnProperty =
@@ -180,6 +181,11 @@ internal class AddOnDecoratedBox : ContentControl,
         AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, bool>(nameof(IsInnerBoxHover),
             o => o.IsInnerBoxHover,
             (o, v) => o.IsInnerBoxHover = v);
+    
+    internal static readonly DirectProperty<AddOnDecoratedBox, bool> IsInnerBoxPressedProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, bool>(nameof(IsInnerBoxPressed),
+            o => o.IsInnerBoxPressed,
+            (o, v) => o.IsInnerBoxPressed = v);
 
     private CornerRadius _innerBoxCornerRadius;
 
@@ -227,6 +233,14 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         get => _isInnerBoxHover;
         set => SetAndRaise(IsInnerBoxHoverProperty, ref _isInnerBoxHover, value);
+    }
+    
+    private bool _isInnerBoxPressed;
+
+    internal bool IsInnerBoxPressed
+    {
+        get => _isInnerBoxPressed;
+        set => SetAndRaise(IsInnerBoxPressedProperty, ref _isInnerBoxPressed, value);
     }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -375,6 +389,14 @@ internal class AddOnDecoratedBox : ContentControl,
             ContentFrame.PointerExited += (sender, args) =>
             {
                 IsInnerBoxHover = false;
+            };
+            ContentFrame.PointerPressed += (sender, args) =>
+            {
+                IsInnerBoxPressed = true;
+            };
+            ContentFrame.PointerReleased += (sender, args) =>
+            {
+                IsInnerBoxPressed = false;
             };
         }
 

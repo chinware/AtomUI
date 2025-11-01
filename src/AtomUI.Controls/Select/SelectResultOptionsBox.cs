@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Layout;
 
 namespace AtomUI.Controls;
 
@@ -19,6 +20,9 @@ internal class SelectResultOptionsBox : TemplatedControl
     
     public static readonly StyledProperty<bool> IsSearchEnabledProperty =
         Select.IsSearchEnabledProperty.AddOwner<SelectResultOptionsBox>();
+    
+    public static readonly StyledProperty<bool> IsDropDownOpenProperty =
+        AvaloniaProperty.Register<SelectResultOptionsBox, bool>(nameof(IsDropDownOpen));
     
     private IList<SelectOption>? _selectedOptions;
 
@@ -39,8 +43,15 @@ internal class SelectResultOptionsBox : TemplatedControl
         get => GetValue(IsSearchEnabledProperty);
         set => SetValue(IsSearchEnabledProperty, value);
     }
+    
+    public bool IsDropDownOpen
+    {
+        get => GetValue(IsDropDownOpenProperty);
+        set => SetValue(IsDropDownOpenProperty, value);
+    }
 
     private WrapPanel? _defaultPanel;
+    private SelectSearchTextBox? _searchTextBox;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -48,6 +59,15 @@ internal class SelectResultOptionsBox : TemplatedControl
         if (change.Property == SelectedOptionsProperty)
         {
             HandleSelectedOptionsChanged();
+        }
+        else if (change.Property == IsSearchEnabledProperty ||
+                 change.Property == ModeProperty)
+        {
+            ConfigureSearchTextControl();
+        }
+        else if (change.Property == IsDropDownOpenProperty)
+        {
+            ConfigureSearchTextReadOnly();
         }
     }
 
@@ -66,24 +86,79 @@ internal class SelectResultOptionsBox : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _defaultPanel = e.NameScope.Find<WrapPanel>(SelectResultOptionsBoxThemeConstants.DefaultPanelPart);
+        _defaultPanel  = e.NameScope.Find<WrapPanel>(SelectResultOptionsBoxThemeConstants.DefaultPanelPart);
+        _searchTextBox = new SelectSearchTextBox()
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch
+        };
+        if (IsSearchEnabled)
+        {
+            if (Mode == SelectMode.Multiple)
+            {
+                _defaultPanel?.Children.Add(_searchTextBox);
+            }
+        }
     }
 
     private void HandleSelectedOptionsChanged()
     {
         if (_defaultPanel != null)
         {
+            _searchTextBox?.Clear();
             _defaultPanel.Children.Clear();
             if (_selectedOptions != null)
             {
                 foreach (var option in _selectedOptions)
                 {
-                    _defaultPanel.Children.Add(new Tag()
+                    _defaultPanel.Children.Add(new SelectTag()
                     {
                         TagText = option.Header,
-                        Bordered = false
+                        Option = option
                     });
                 }
+            }
+
+            if (_searchTextBox != null)
+            {
+                _defaultPanel.Children.Add(_searchTextBox);
+                _searchTextBox.Focus();
+            }
+        }
+    }
+    
+    private void ConfigureSearchTextControl()
+    {
+        if (_searchTextBox != null)
+        {
+            if (Mode == SelectMode.Multiple)
+            {
+                if (_defaultPanel != null)
+                {
+                    if (IsSearchEnabled)
+                    {
+                        _defaultPanel.Children.Add(_searchTextBox);
+                    }
+                    else
+                    {
+                        _defaultPanel.Children.Remove(_searchTextBox);
+                    }
+                }
+            }
+        }
+    }
+
+    private void ConfigureSearchTextReadOnly()
+    {
+        if (_searchTextBox != null)
+        {
+            if (IsDropDownOpen)
+            {
+                _searchTextBox.IsReadOnly = false;
+            }
+            else
+            {
+                _searchTextBox.Clear();
+                _searchTextBox.IsReadOnly = true;
             }
         }
     }

@@ -94,6 +94,7 @@
     </Setter>
 
     <Style Selector="^:is(atom|TextBox)">
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionBackground}}" />
         <Setter Property="CaretBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         <Setter Property="SelectionForegroundBrush"

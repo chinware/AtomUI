@@ -11,6 +11,9 @@ internal class SelectHandle : TemplatedControl
     public static readonly StyledProperty<bool> IsInputHoverProperty =
         AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsInputHover));
     
+    public static readonly StyledProperty<bool> IsInputPressedProperty =
+        AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsInputPressed));
+    
     public static readonly StyledProperty<bool> IsSearchEnabledProperty =
         AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsSearchEnabled));
         
@@ -33,6 +36,12 @@ internal class SelectHandle : TemplatedControl
     {
         get => GetValue(IsInputHoverProperty);
         set => SetValue(IsInputHoverProperty, value);
+    }
+    
+    public bool IsInputPressed
+    {
+        get => GetValue(IsInputPressedProperty);
+        set => SetValue(IsInputPressedProperty, value);
     }
     
     public bool IsSearchEnabled

@@ -287,7 +287,7 @@
 
                 <Style Selector="^:pressed">
                     <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
                 </Style>
             </Style>
         </Style>
