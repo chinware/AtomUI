@@ -18,7 +18,7 @@
                                         DockPanel.Dock="Left"
                                         Icon="{TemplateBinding Icon}"
                                         NormalFilledBrush="{TemplateBinding Foreground}" />
-                    <atom:IconButton Name="CloseButton"
+                    <atom:IconButton Name="{x:Static atom:TagThemeConstants.CloseButtonPart}"
                                      DockPanel.Dock="Right"
                                      IsVisible="{TemplateBinding IsClosable}"
                                      Icon="{TemplateBinding CloseIcon}" />

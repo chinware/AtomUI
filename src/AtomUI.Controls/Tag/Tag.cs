@@ -1,3 +1,4 @@
+using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
@@ -9,6 +10,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -102,6 +104,19 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
 
     #endregion
 
+    #region 公共事件定义
+
+    public static readonly RoutedEvent<RoutedEventArgs> ClosedEvent =
+        RoutedEvent.Register<Tag, RoutedEventArgs>(nameof(Closed), RoutingStrategies.Bubble);
+
+    public event EventHandler<RoutedEventArgs>? Closed
+    {
+        add => AddHandler(ClosedEvent, value);
+        remove => RemoveHandler(ClosedEvent, value);
+    }
+    
+    #endregion
+
     #region 内部属性定义
 
     internal static readonly StyledProperty<Thickness> TagTextPaddingInlineProperty =
@@ -160,6 +175,7 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
     private static readonly Dictionary<PresetColorType, TagCalcColor> PresetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> StatusColorMap;
     private IDisposable? _borderThicknessDisposable;
+    private IconButton? _closeButton;
     
     static Tag()
     {
@@ -217,6 +233,11 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _closeButton = e.NameScope.Find<IconButton>(TagThemeConstants.CloseButtonPart);
+        if (_closeButton != null)
+        {
+            _closeButton.Click += HandleCloseRequest;
+        }
         SetupDefaultCloseIcon();
         SetupPresetColorMap();
         SetupStatusColorMap();
@@ -398,5 +419,10 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined());
         }
+    }
+
+    private void HandleCloseRequest(object? sender, EventArgs e)
+    {
+        RaiseEvent(new RoutedEventArgs(ClosedEvent, this));
     }
 }
