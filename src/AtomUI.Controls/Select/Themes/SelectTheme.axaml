@@ -71,6 +71,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 Mode="{TemplateBinding Mode}"
+                                SizeType="{TemplateBinding SizeType}"
                                 SelectedOptions="{TemplateBinding SelectedOptions}"
                                 IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
                                 IsDropDownOpen="{TemplateBinding IsDropDownOpen}"

@@ -10,10 +10,31 @@
         </ControlTheme.BasedOn>
 
         <Style Selector="^:is(atom|SelectTag)">
-            <Setter Property="Bordered" Value="False"/>
+            <Setter Property="Bordered" Value="False" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SelectTokenKey.MultipleItemBg}}" />
             <Setter Property="IsClosable" Value="True" />
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SelectTokenKey.OptionFontSize}}" />
+
+            <Style Selector="^:disabled">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SelectTokenKey.MultipleSelectorBgDisabled}}" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SelectTokenKey.MultipleItemColorDisabled}}" />
+                <Setter Property="IsClosable" Value="False" />
+            </Style>
+
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SelectTokenKey.MultipleItemHeightLG}}" />
+            </Style>
+            
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SelectTokenKey.MultipleItemHeight}}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="Height" Value="{DynamicResource {x:Static atom:SelectTokenKey.MultipleItemHeightSM}}" />
+            </Style>
+
         </Style>
 
     </ControlTheme>

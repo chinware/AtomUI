@@ -1,5 +1,6 @@
 using System.Collections;
 using AtomUI.Controls.Themes;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -24,6 +25,9 @@ internal class SelectResultOptionsBox : TemplatedControl
     
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<SelectResultOptionsBox, bool>(nameof(IsDropDownOpen));
+    
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SelectResultOptionsBox>();
     
     private IList? _selectedOptions;
 
@@ -50,9 +54,16 @@ internal class SelectResultOptionsBox : TemplatedControl
         get => GetValue(IsDropDownOpenProperty);
         set => SetValue(IsDropDownOpenProperty, value);
     }
+    
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
 
     private WrapPanel? _defaultPanel;
     private SelectSearchTextBox? _searchTextBox;
+    private protected readonly Dictionary<object, IDisposable> _tagsBindingDisposables = new();
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -107,17 +118,24 @@ internal class SelectResultOptionsBox : TemplatedControl
         {
             _searchTextBox?.Clear();
             _defaultPanel.Children.Clear();
+            foreach (var entry in _tagsBindingDisposables)
+            {
+                entry.Value.Dispose();
+            }
+            _tagsBindingDisposables.Clear();
             if (_selectedOptions != null)
             {
                 foreach (var item in _selectedOptions)
                 {
                     if (item is SelectOption option)
                     {
-                        _defaultPanel.Children.Add(new SelectTag()
+                        var tag = new SelectTag
                         {
                             TagText = option.Header,
                             Option  = option
-                        });
+                        };
+                        _tagsBindingDisposables.Add(tag, BindUtils.RelayBind(this, SizeTypeProperty, tag, SizeTypeProperty));
+                        _defaultPanel.Children.Add(tag);
                     }
                 }
             }

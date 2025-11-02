@@ -172,20 +172,20 @@ internal class SelectToken : AbstractControlDesignToken
         var lineWidth    = SharedToken.LineWidth;
         
         var multiPaddingVertical =
-            Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth;
+            Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth * 2;
         var multiPaddingLeft  = multiPaddingVertical;
         var multiPaddingRight = SharedToken.UniformlyPaddingSM - lineWidth;
         MultiModePadding = new Thickness(multiPaddingLeft, multiPaddingVertical, multiPaddingRight, multiPaddingVertical);
         
         var multiPaddingVerticalSM =
-            Math.Round((SharedToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth;
+            Math.Round((SharedToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth * 2;
         var multiPaddingLeftSM  = multiPaddingVerticalSM;
         var multiPaddingRightSM = SharedToken.ControlPaddingHorizontalSM - lineWidth;
         MultiModePaddingSM = new Thickness(multiPaddingLeftSM, multiPaddingVerticalSM, multiPaddingRightSM, multiPaddingVerticalSM);
         
         var multiPaddingVerticalLG =
             Math.Ceiling((SharedToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
-            lineWidth;
+            lineWidth * 2;
         var multiPaddingLeftLG  = multiPaddingVerticalLG;
         var multiPaddingRightLG = SharedToken.ControlPaddingHorizontal - lineWidth;
         MultiModePaddingLG = new Thickness(multiPaddingLeftLG, multiPaddingVerticalLG, multiPaddingRightLG, multiPaddingVerticalLG);
