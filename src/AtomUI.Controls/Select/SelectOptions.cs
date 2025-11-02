@@ -8,6 +8,8 @@ namespace AtomUI.Controls;
 
 internal class SelectOptions : List
 {
+    public Select? Select { get; set; }
+    
     internal override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         if (item is ListGroupData)
@@ -19,79 +21,12 @@ internal class SelectOptions : List
     
     private void LogicalSelectOption(Control container)
     {
-        if (ListDefaultView != null)
+        if (ListDefaultView != null && Select != null)
         {
-            var index = ListDefaultView.IndexFromContainer(container);
-            if (index != -1)
+            var item = ListDefaultView.ItemFromContainer(container);
+            if (item is SelectOption option)
             {
-                if (index < 0 || index >= ItemCount)
-                {
-                    return;
-                }
-                var item = ListDefaultView.ItemFromContainer(container);
-                var mode   = SelectionMode;
-                if (mode == SelectionMode.Single)
-                {
-                    ListDefaultView.Selection.Select(index);
-                }
-                else if (mode == SelectionMode.Multiple)
-                {
-                    if (item is SelectOption option)
-                    {
-                        if (ListDefaultView.Selection.IsSelected(index))
-                        {
-                            option.IsSelected = false;
-                            ListDefaultView.Selection.Deselect(index);
-                        }
-                        else
-                        {
-                            option.IsSelected = true;
-                            ListDefaultView.Selection.Select(index);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void Select(SelectOption option)
-    {
-        if (ListDefaultView != null)
-        {
-            var container = ListDefaultView.ContainerFromItem(option);
-            if (container != null)
-            {
-                var index = ListDefaultView.IndexFromContainer(container);
-                if (index != -1)
-                {
-                    if (index < 0 || index >= ItemCount)
-                    {
-                        return;
-                    }
-                    option.IsSelected = true;
-                    ListDefaultView.Selection.Select(index);
-                }
-            }
-        }
-    }
-
-    public void DeSelect(SelectOption option)
-    {
-        if (ListDefaultView != null)
-        {
-            var container = ListDefaultView.ContainerFromItem(option);
-            if (container != null)
-            {
-                var index = ListDefaultView.IndexFromContainer(container);
-                if (index != -1)
-                {
-                    if (index < 0 || index >= ItemCount)
-                    {
-                        return;
-                    }
-                    option.IsSelected = false;
-                    ListDefaultView.Selection.Deselect(index);
-                }
+                Select.NotifyLogicalSelectOption(option);
             }
         }
     }
@@ -102,6 +37,7 @@ internal class SelectOptions : List
         if (container != null)
         {
             LogicalSelectOption(container);
+            e.Handled = true;
             return true;
         }
         return false;
@@ -127,11 +63,6 @@ internal class SelectOptions : List
                     {
                         listItem.SetCurrentValue(IsEnabledProperty, data.IsEnabled);
                     }
-                    if (!listItem.IsSet(SelectOptionItem.IsSelectedProperty))
-                    {
-                        listItem.SetCurrentValue(SelectOptionItem.IsSelectedProperty, data.IsSelected);
-                    }
-
                 }
             }
             

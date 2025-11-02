@@ -44,6 +44,9 @@
                                                   IsShowSelectedIndicator="{TemplateBinding IsShowSelectedIndicator}"
                                                   IsItemSelectable="{TemplateBinding IsItemSelectable}"
                                                   ItemsSource="{TemplateBinding CollectionView}"
+                                                  SelectionMode="{TemplateBinding SelectionMode}"
+                                                  SelectedItem="{TemplateBinding SelectedItem, Mode=TwoWay}"
+                                                  SelectedItems="{TemplateBinding SelectedItems, Mode=TwoWay}"
                                                   AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedItem}" />
                             <ContentPresenter
                                 Name="EmptyIndicator"

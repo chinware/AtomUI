@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
@@ -14,6 +15,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -121,8 +123,8 @@ public class Select : TemplatedControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Select>();
     
-    public static readonly DirectProperty<Select, IList<SelectOption>?> SelectedOptionsProperty =
-        AvaloniaProperty.RegisterDirect<Select, IList<SelectOption>?>(
+    public static readonly DirectProperty<Select, IList?> SelectedOptionsProperty =
+        AvaloniaProperty.RegisterDirect<Select, IList?>(
             nameof(SelectedOptions),
             o => o.SelectedOptions,
             (o, v) => o.SelectedOptions = v);
@@ -137,7 +139,7 @@ public class Select : TemplatedControl,
     
     public static readonly StyledProperty<string> OptionFilterPropProperty =
         AvaloniaProperty.Register<Select, string>(
-            nameof(OptionFilterProp), nameof(SelectedOption.Value));
+            nameof(OptionFilterProp), "Value");
     
     public IEnumerable<SelectOption>? OptionsSource
     {
@@ -328,9 +330,9 @@ public class Select : TemplatedControl,
     [Content]
     public AvaloniaList<SelectOption> Options { get; set; } = new();
     
-    private IList<SelectOption>? _selectedOptions;
+    private IList? _selectedOptions;
 
-    public IList<SelectOption>? SelectedOptions
+    public IList? SelectedOptions
     {
         get => _selectedOptions;
         set => SetAndRaise(SelectedOptionsProperty, ref _selectedOptions, value);
@@ -390,17 +392,17 @@ public class Select : TemplatedControl,
             o => o.IsPlaceholderTextVisible,
             (o, v) => o.IsPlaceholderTextVisible = v);
     
-    internal static readonly DirectProperty<Select, SelectOption?> SelectedOptionProperty =
-        AvaloniaProperty.RegisterDirect<Select, SelectOption?>(
-            nameof(SelectedOption),
-            o => o.SelectedOption,
-            (o, v) => o.SelectedOption = v);
-    
     internal static readonly DirectProperty<Select, bool> IsSelectionEmptyProperty =
         AvaloniaProperty.RegisterDirect<Select, bool>(
             nameof(IsSelectionEmpty),
             o => o.IsSelectionEmpty,
             (o, v) => o.IsSelectionEmpty = v);
+    
+    internal static readonly DirectProperty<Select, SelectOption?> SelectedOptionProperty =
+        AvaloniaProperty.RegisterDirect<Select, SelectOption?>(
+            nameof(SelectedOption),
+            o => o.SelectedOption,
+            (o, v) => o.SelectedOption = v);
     
     internal double ItemHeight
     {
@@ -444,20 +446,20 @@ public class Select : TemplatedControl,
         set => SetAndRaise(IsPlaceholderTextVisibleProperty, ref _isPlaceholderTextVisible, value);
     }
     
-    private SelectOption? _selectedOption;
-
-    internal SelectOption? SelectedOption
-    {
-        get => _selectedOption;
-        set => SetAndRaise(SelectedOptionProperty, ref _selectedOption, value);
-    }
-    
     private bool _isSelectionEmpty = true;
 
     internal bool IsSelectionEmpty
     {
         get => _isSelectionEmpty;
         set => SetAndRaise(IsSelectionEmptyProperty, ref _isSelectionEmpty, value);
+    }
+    
+    private SelectOption? _selectedOption;
+
+    internal SelectOption? SelectedOption
+    {
+        get => _selectedOption;
+        set => SetAndRaise(SelectedOptionProperty, ref _selectedOption, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -498,45 +500,6 @@ public class Select : TemplatedControl,
         Clear();
     }
     
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        if (Mode == SelectMode.Single && SelectedOption == null)
-        {
-            if (DefaultValues?.Count > 0)
-            {
-                var defaultValue = DefaultValues.First();
-                foreach (var option in Options)
-                {
-                    if (OptionEqualByValue(defaultValue, option))
-                    {
-                        SelectedOption  = option;
-                        break;
-                    }
-                }
-            }
-        }
-        else if (Mode == SelectMode.Multiple && (SelectedOptions == null || SelectedOptions.Count == 0))
-        {
-            if (DefaultValues?.Count > 0)
-            {
-                var selectedOptions = new List<SelectOption>();
-                foreach (var defaultValue in DefaultValues)
-                {
-                    foreach (var option in Options)
-                    {
-                        if (OptionEqualByValue(defaultValue, option))
-                        {
-                            selectedOptions.Add(option);
-                        }
-                    }
-                }
-
-                SelectedOptions = selectedOptions;
-            }
-        }
-    }
-
     private bool OptionEqualByValue(object value, SelectOption selectOption)
     {
         if (DefaultValueCompareFn != null)
@@ -640,7 +603,7 @@ public class Select : TemplatedControl,
         _singleSearchInput = e.NameScope.Get<SelectSearchTextBox>(SelectThemeConstants.SingleSearchInputPart);
         if (_optionsBox != null)
         {
-            _optionsBox.SelectionChanged += HandleOptionsBoxSelectionChanged;
+            _optionsBox.Select = this;
         }
         
         _popup        =  e.NameScope.Get<Popup>(SelectThemeConstants.PopupPart);
@@ -651,68 +614,49 @@ public class Select : TemplatedControl,
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
         ConfigureSingleSearchTextBox();
+        ConfigureDefaultValues();
     }
 
-    protected void HandleOptionsBoxSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    internal void NotifyLogicalSelectOption(SelectOption selectOption)
     {
         Debug.Assert(_optionsBox != null);
+        var selectedOptions = new List<object>();
         if (Mode == SelectMode.Single)
         {
-            if (_optionsBox.SelectedItem is SelectOption selectOption)
+            if (_singleSearchInput != null)
             {
-                var selectedOptions = new List<SelectOption>();
-                selectedOptions.Add(selectOption);
-                SetCurrentValue(SelectedOptionProperty, selectOption);
-                SetCurrentValue(SelectedOptionsProperty, selectedOptions);
-                if (_singleSearchInput != null)
-                {
-                    _singleSearchInput.Clear();
-                    _singleSearchInput.Width = double.NaN;
-                }
+                _singleSearchInput.Width = double.NaN;
             }
+        
+            selectedOptions.Add(selectOption);
         }
         else
         {
-            var selectedOptions = new HashSet<SelectOption>();
             if (SelectedOptions != null)
             {
-                foreach (var option in SelectedOptions)
+                foreach (var item in SelectedOptions)
                 {
-                    selectedOptions.Add(option);
-                }
-            }
-
-            foreach (var item in e.RemovedItems)
-            {
-                if (item is SelectOption selectOption && !selectOption.IsSelected)
-                {
-                    selectedOptions.Remove(selectOption);
+                    selectedOptions.Add(item);
                 }
             }
             
-            foreach (var item in e.AddedItems)
+            if (!selectedOptions.Contains(selectOption))
             {
-                if (item is SelectOption selectOption && !selectedOptions.Contains(selectOption) && selectOption.IsSelected)
-                {
-                    selectedOptions.Add(selectOption);
-                }
+                selectedOptions.Add(selectOption);
             }
-            var oldSelectedOptions = SelectedOptions?.ToHashSet() ?? new HashSet<SelectOption>();
-            if (!oldSelectedOptions.SetEquals(selectedOptions))
+            else if (selectedOptions.Contains(selectOption))
             {
-                SetCurrentValue(SelectedOptionsProperty, selectedOptions.ToList());
+                selectedOptions.Remove(selectOption);
             }
         }
+        SetCurrentValue(SelectedOptionsProperty, selectedOptions);
+        SyncSelection();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == SelectedOptionsProperty)
-        {
-            ConfigurePlaceholderVisible();
-        }
-        else if (change.Property == IsDropDownOpenProperty)
+        if (change.Property == IsDropDownOpenProperty)
         {
             PseudoClasses.Set(SelectPseudoClass.DropdownOpen, change.GetNewValue<bool>());
             ConfigureSingleSearchTextBox();
@@ -731,15 +675,19 @@ public class Select : TemplatedControl,
         {
             UpdatePseudoClasses();
         }
-        if (change.Property == SelectedOptionsProperty ||
-            change.Property == SelectedOptionProperty)
+        if (change.Property == SelectedOptionsProperty)
         {
+            ConfigureSingleSelectedOption();
             ConfigureSelectionIsEmpty();
             ConfigurePlaceholderVisible();
         }
         else if (change.Property == OptionFilterPropProperty)
         {
             HandleOptionFilterPropChanged();
+        }
+        else if (change.Property == ModeProperty)
+        {
+            ConfigureSingleSelectedOption();
         }
     }
     
@@ -755,8 +703,6 @@ public class Select : TemplatedControl,
                 _singleSearchInput.Width = double.NaN;
             }
         }
-
-        _filterValue = null;
     }
 
     private void PopupOpened(object? sender, EventArgs e)
@@ -771,10 +717,39 @@ public class Select : TemplatedControl,
         DropDownOpened?.Invoke(this, EventArgs.Empty);
         if (Mode == SelectMode.Single)
         {
-            if (_singleSearchInput != null)
+            _singleSearchInput?.Focus();
+        }
+
+        SyncSelection();
+    }
+
+    private void SyncSelection()
+    {
+        if (_optionsBox != null)
+        {
+            var selectedItems = new List<object>();
+            if (Mode == SelectMode.Single)
             {
-                _singleSearchInput.Focus();
+                if (SelectedOptions != null)
+                {
+                    foreach (var option in SelectedOptions)
+                    {
+                        selectedItems.Add(option);
+                        break;
+                    }
+                }
             }
+            else
+            {
+                if (SelectedOptions != null)
+                {
+                    foreach (var option in SelectedOptions)
+                    {
+                        selectedItems.Add(option);
+                    }
+                }
+            }
+            _optionsBox.SetCurrentValue(SelectOptions.SelectedItemsProperty, selectedItems);
         }
     }
     
@@ -788,25 +763,7 @@ public class Select : TemplatedControl,
     
     public void Clear()
     {
-        if (SelectedOptions != null)
-        {
-            foreach (var option in SelectedOptions)
-            {
-                option.IsSelected = false;
-            }
-        }
-
-        if (SelectedOption != null)
-        {
-            SelectedOption.IsSelected = false;
-        }
         SelectedOptions = null;
-        SelectedOption  = null;
-        if (_optionsBox != null)
-        {
-            _optionsBox.SelectedItems = null;
-            _optionsBox.SelectedItem = null;
-        }
     }
     
     private void ConfigureMaxDropdownHeight()
@@ -843,13 +800,12 @@ public class Select : TemplatedControl,
 
     private void ConfigurePlaceholderVisible()
     {
-        SetCurrentValue(IsPlaceholderTextVisibleProperty, (Mode == SelectMode.Single && SelectedOption == null) || 
-                                                          (Mode != SelectMode.Single && (SelectedOptions == null || SelectedOptions?.Count == 0) && string.IsNullOrEmpty(_filterValue)));
+        SetCurrentValue(IsPlaceholderTextVisibleProperty, (SelectedOptions == null || SelectedOptions?.Count == 0) && string.IsNullOrEmpty(_filterValue));
     }
 
     private void ConfigureSelectionIsEmpty()
     {
-        SetCurrentValue(IsSelectionEmptyProperty, SelectedOption == null && (SelectedOptions == null || SelectedOptions?.Count == 0));
+        SetCurrentValue(IsSelectionEmptyProperty, SelectedOptions == null || SelectedOptions?.Count == 0);
     }
 
     private void ConfigureSingleSearchTextBox()
@@ -871,11 +827,11 @@ public class Select : TemplatedControl,
             {
                 _filterValue = textBox.Text;
             }
-
             ConfigurePlaceholderVisible();
             if (string.IsNullOrEmpty(_filterValue))
             {
                 _optionsBox.FilterDescriptions.Clear();
+                _filterDescription = null;
             }
             else
             {
@@ -907,15 +863,33 @@ public class Select : TemplatedControl,
                     _optionsBox.FilterDescriptions.Add(_filterDescription);
                 }
             }
+
+            SyncSelection();
         }
         e.Handled = true;
     }
 
     private void HandleTagCloseRequest(RoutedEventArgs e)
     {
+        if (Mode == SelectMode.Single)
+        {
+            return;
+        }
         if (e.Source is SelectTag tag && tag.Option != null)
         {
-            _optionsBox?.DeSelect(tag.Option);
+            if (SelectedOptions != null)
+            {
+                var selectedOptions = new List<object>();
+                foreach (var selectedItem in SelectedOptions)
+                {
+                    selectedOptions.Add(selectedItem);
+                }
+                if (selectedOptions.Contains(tag.Option))
+                {
+                    selectedOptions.Remove(tag.Option);
+                }
+                SetCurrentValue(SelectedOptionsProperty, selectedOptions);
+            }
         }
         e.Handled = true;
     }
@@ -943,6 +917,70 @@ public class Select : TemplatedControl,
         {
             Options.Clear();
             Options.AddRange(newItemsSource);
+            ConfigureDefaultValues();
+        }
+    }
+
+    private void ConfigureDefaultValues()
+    {
+        if (SelectedOptions == null || SelectedOptions.Count == 0)
+        {
+            if (Mode == SelectMode.Single)
+            {
+                if (DefaultValues?.Count > 0)
+                {
+                    var defaultValue = DefaultValues.First();
+                    foreach (var option in Options)
+                    {
+                        if (OptionEqualByValue(defaultValue, option))
+                        {
+                            SetCurrentValue(SelectedOptionsProperty, new List<SelectOption>()
+                            {
+                                option
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (Mode == SelectMode.Multiple)
+            {
+                if (DefaultValues?.Count > 0)
+                {
+                    var selectedOptions = new List<SelectOption>();
+                    foreach (var defaultValue in DefaultValues)
+                    {
+                        foreach (var option in Options)
+                        {
+                            if (OptionEqualByValue(defaultValue, option))
+                            {
+                                selectedOptions.Add(option);
+                            }
+                        }
+                    }
+                    SetCurrentValue(SelectedOptionsProperty, selectedOptions);
+                }
+            }
+        }
+      
+    }
+
+    private void ConfigureSingleSelectedOption()
+    {
+        if (Mode == SelectMode.Single)
+        {
+            if (SelectedOptions?.Count > 0)
+            {
+                SetCurrentValue(SelectedOptionProperty, SelectedOptions[0]);
+            }
+            else
+            {
+                SetCurrentValue(SelectedOptionProperty, null);
+            }
+        }
+        else
+        {
+            SetCurrentValue(SelectedOptionProperty, null);
         }
     }
 }

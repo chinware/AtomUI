@@ -77,7 +77,7 @@ public class List : TemplatedControl,
             nameof(SelectedItem),
             o => o.SelectedItem,
             (o, v) => o.SelectedItem = v,
-            defaultBindingMode: BindingMode.TwoWay);
+            defaultBindingMode: BindingMode.TwoWay, enableDataValidation: true);
     
     public static readonly StyledProperty<SelectionMode> SelectionModeProperty =
         AvaloniaProperty.Register<List, SelectionMode>(nameof(SelectionMode));
@@ -456,7 +456,6 @@ public class List : TemplatedControl,
         {
             ConfigureEmptyIndicator();
         }
-        
     }
 
     private void ConfigureEffectiveBorderThickness()
@@ -559,8 +558,9 @@ public class List : TemplatedControl,
                 CollectionViewChanged?.Invoke(this, new ListCollectionViewChangedEventArgs(oldCollectionView, newCollectionView));
             }
             ConfigureGroupInfo();
-            SelectedItems = null;
             _measured     = false;
+            SelectedItems = null;
+            SelectedItem  = null;
             ReConfigurePagination();
             InvalidateMeasure();
             UpdatePseudoClasses();
@@ -785,10 +785,8 @@ public class List : TemplatedControl,
         if (ListDefaultView != null)
         {
             _relayBindingDisposables?.Dispose();
-            _relayBindingDisposables = new CompositeDisposable(4);
-            _relayBindingDisposables.Add(BindUtils.RelayBind(this, SelectionModeProperty, ListDefaultView, ListDefaultView.SelectionModeProperty, BindingMode.TwoWay));
-            _relayBindingDisposables.Add(BindUtils.RelayBind(this, SelectedItemsProperty, ListDefaultView, ListDefaultView.SelectedItemsProperty, BindingMode.TwoWay));
-            _relayBindingDisposables.Add(BindUtils.RelayBind(this, SelectedItemProperty, ListDefaultView, ListDefaultView.SelectedItemProperty, BindingMode.TwoWay));
+            _relayBindingDisposables = new CompositeDisposable(4); 
+            _relayBindingDisposables.Add(BindUtils.RelayBind(this, SelectionModeProperty, ListDefaultView, ListDefaultView.SelectionModeProperty));
         }
     }
 

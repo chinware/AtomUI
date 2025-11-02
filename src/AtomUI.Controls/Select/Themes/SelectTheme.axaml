@@ -93,7 +93,6 @@
                                 IsBorderless="True"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsShowEmptyIndicator="True"
-                                SelectedItem="{TemplateBinding SelectedOption}"
                                 AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedOptions}"
                                 ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"
                             />

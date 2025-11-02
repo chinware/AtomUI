@@ -1,3 +1,4 @@
+using System.Collections;
 using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,8 +10,8 @@ namespace AtomUI.Controls;
 
 internal class SelectResultOptionsBox : TemplatedControl
 {
-    public static readonly DirectProperty<SelectResultOptionsBox, IList<SelectOption>?> SelectedOptionsProperty =
-        AvaloniaProperty.RegisterDirect<SelectResultOptionsBox, IList<SelectOption>?>(
+    public static readonly DirectProperty<SelectResultOptionsBox, IList?> SelectedOptionsProperty =
+        AvaloniaProperty.RegisterDirect<SelectResultOptionsBox, IList?>(
             nameof(SelectedOptions),
             o => o.SelectedOptions,
             (o, v) => o.SelectedOptions = v);
@@ -24,9 +25,9 @@ internal class SelectResultOptionsBox : TemplatedControl
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<SelectResultOptionsBox, bool>(nameof(IsDropDownOpen));
     
-    private IList<SelectOption>? _selectedOptions;
+    private IList? _selectedOptions;
 
-    public IList<SelectOption>? SelectedOptions
+    public IList? SelectedOptions
     {
         get => _selectedOptions;
         set => SetAndRaise(SelectedOptionsProperty, ref _selectedOptions, value);
@@ -87,7 +88,7 @@ internal class SelectResultOptionsBox : TemplatedControl
     {
         base.OnApplyTemplate(e);
         _defaultPanel  = e.NameScope.Find<WrapPanel>(SelectResultOptionsBoxThemeConstants.DefaultPanelPart);
-        _searchTextBox = new SelectSearchTextBox()
+        _searchTextBox = new SelectSearchTextBox
         {
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
@@ -108,13 +109,16 @@ internal class SelectResultOptionsBox : TemplatedControl
             _defaultPanel.Children.Clear();
             if (_selectedOptions != null)
             {
-                foreach (var option in _selectedOptions)
+                foreach (var item in _selectedOptions)
                 {
-                    _defaultPanel.Children.Add(new SelectTag()
+                    if (item is SelectOption option)
                     {
-                        TagText = option.Header,
-                        Option = option
-                    });
+                        _defaultPanel.Children.Add(new SelectTag()
+                        {
+                            TagText = option.Header,
+                            Option  = option
+                        });
+                    }
                 }
             }
 

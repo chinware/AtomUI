@@ -10,6 +10,4 @@ public record SelectOption : ISelectOption
     public string Header { get; set; } = string.Empty;
     public bool IsEnabled { get; set; } = true;
     public object? Value { get; set; }
-
-    internal bool IsSelected { get; set; } = false;
 }

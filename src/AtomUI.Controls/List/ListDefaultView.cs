@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
-using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -172,13 +171,10 @@ internal class ListDefaultView : SelectingItemsControl
         Debug.Assert(OwnerList != null);
         
         var disposables = new CompositeDisposable(4);
-        
         OwnerList.PrepareContainerForItemOverride(disposables, container, item, index);
-        
         DisposableListItem(container);
         _itemsBindingDisposables.Add(container, disposables);
     }
-    
     
     protected override void OnKeyDown(KeyEventArgs e)
     {
@@ -249,8 +245,24 @@ internal class ListDefaultView : SelectingItemsControl
         {
             if (!IsItemSelectable)
             {
-                Selection.Clear();
+                SetCurrentValue(SelectedItemsProperty, null);
+            }
+        }
+        else if (change.Property == SelectionModeProperty)
+        {
+            if (SelectionMode == SelectionMode.Multiple)
+            {
+                if (SelectedItems != null)
+                {
+                    var selected = new List<object>();
+                    foreach (var item in SelectedItems)
+                    {
+                        selected.Add(item);
+                    }
+                    SetCurrentValue(SelectedItemsProperty, selected);
+                }
             }
         }
     }
+    
 }
