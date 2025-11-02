@@ -35,8 +35,6 @@ public class OptionButtonGroup : SelectingItemsControl,
                                  IWaveSpiritAwareControl,
                                  IControlSharedTokenResourcesHost
 {
-    protected override Type StyleKeyOverride { get; } = typeof(OptionButtonGroup);
-    
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =

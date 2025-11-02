@@ -154,7 +154,7 @@ internal class SelectToken : AbstractControlDesignToken
         OptionHeight = SharedToken.ControlHeight;
         MultipleItemBg = SharedToken.ColorFillSecondary;
         MultipleItemHeight = multipleItemHeight;
-        MultipleItemHeightSM = multipleItemHeightSM;
+        MultipleItemHeightSM = multipleItemHeightSM + 4;
         MultipleItemHeightLG = multipleItemHeightLG;
         MultipleSelectorBgDisabled = SharedToken.ColorBgContainerDisabled;
         MultipleItemColorDisabled = SharedToken.ColorTextDisabled;
@@ -166,9 +166,7 @@ internal class SelectToken : AbstractControlDesignToken
         PopupMarginToAnchor = SharedToken.UniformlyMarginXXS;
         
         var fontSize     = SharedToken.FontSize;
-        var fontSizeLG   = SharedToken.FontSizeLG;
         var lineHeight   = SharedToken.LineHeightRatio;
-        var lineHeightLG = SharedToken.LineHeightRatioLG;
         var lineWidth    = SharedToken.LineWidth;
         
         var multiPaddingVertical =
@@ -177,17 +175,10 @@ internal class SelectToken : AbstractControlDesignToken
         var multiPaddingRight = SharedToken.UniformlyPaddingSM - lineWidth;
         MultiModePadding = new Thickness(multiPaddingLeft, multiPaddingVertical, multiPaddingRight, multiPaddingVertical);
         
-        var multiPaddingVerticalSM =
-            Math.Round((SharedToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth * 2;
-        var multiPaddingLeftSM  = multiPaddingVerticalSM;
         var multiPaddingRightSM = SharedToken.ControlPaddingHorizontalSM - lineWidth;
-        MultiModePaddingSM = new Thickness(multiPaddingLeftSM, multiPaddingVerticalSM, multiPaddingRightSM, multiPaddingVerticalSM);
+        MultiModePaddingSM = new Thickness(multiPaddingVertical, multiPaddingVertical, multiPaddingRightSM, multiPaddingVertical);
         
-        var multiPaddingVerticalLG =
-            Math.Ceiling((SharedToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
-            lineWidth * 2;
-        var multiPaddingLeftLG  = multiPaddingVerticalLG;
         var multiPaddingRightLG = SharedToken.ControlPaddingHorizontal - lineWidth;
-        MultiModePaddingLG = new Thickness(multiPaddingLeftLG, multiPaddingVerticalLG, multiPaddingRightLG, multiPaddingVerticalLG);
+        MultiModePaddingLG = new Thickness(multiPaddingVertical, multiPaddingVertical, multiPaddingRightLG, multiPaddingVertical);
     }
 }

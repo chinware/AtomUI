@@ -103,6 +103,7 @@ internal class SelectResultOptionsBox : TemplatedControl
         {
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
+        BindUtils.RelayBind(this, SizeTypeProperty, _searchTextBox, SizeTypeProperty);
         if (IsSearchEnabled)
         {
             if (Mode == SelectMode.Multiple)
@@ -110,6 +111,8 @@ internal class SelectResultOptionsBox : TemplatedControl
                 _defaultPanel?.Children.Add(_searchTextBox);
             }
         }
+
+        ConfigureSearchTextControl();
     }
 
     private void HandleSelectedOptionsChanged()
@@ -154,17 +157,7 @@ internal class SelectResultOptionsBox : TemplatedControl
         {
             if (Mode == SelectMode.Multiple)
             {
-                if (_defaultPanel != null)
-                {
-                    if (IsSearchEnabled)
-                    {
-                        _defaultPanel.Children.Add(_searchTextBox);
-                    }
-                    else
-                    {
-                        _defaultPanel.Children.Remove(_searchTextBox);
-                    }
-                }
+                _searchTextBox.IsVisible = IsSearchEnabled;
             }
         }
     }

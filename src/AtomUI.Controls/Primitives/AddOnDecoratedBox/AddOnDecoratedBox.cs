@@ -327,7 +327,9 @@ internal class AddOnDecoratedBox : ContentControl,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (change.Property == LeftAddOnProperty || change.Property == RightAddOnProperty)
+            if (change.Property == LeftAddOnProperty || 
+                change.Property == RightAddOnProperty ||
+                change.Property == CornerRadiusProperty)
             {
                 ConfigureInnerBoxCornerRadius();
             }

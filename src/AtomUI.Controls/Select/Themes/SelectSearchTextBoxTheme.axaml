@@ -8,5 +8,17 @@
         <ControlTheme.BasedOn>
             <themes:TextBoxTheme TargetType="{x:Type atom:SelectSearchTextBox}" />
         </ControlTheme.BasedOn>
+        
+        <Style Selector="^[IsCustomFontSize=False]">
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:LineEditTokenKey.InputFontSizeLG}}" />
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:LineEditTokenKey.InputFontSize}}" />
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:LineEditTokenKey.InputFontSize}}" />
+            </Style>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -65,6 +65,7 @@
                             <atom:SelectSearchTextBox Name="{x:Static atom:SelectThemeConstants.SingleSearchInputPart}" 
                                                       IsVisible="False"
                                                       IsReadOnly="True"
+                                                      SizeType="{TemplateBinding SizeType}"
                                                       Watermark="{TemplateBinding SelectedOption, Converter={StaticResource OptionHeaderConverter}}"/>
                             <atom:SelectResultOptionsBox
                                 Name="SelectedOptionsBox"
@@ -118,7 +119,7 @@
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeSM}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         </Style>
 
         <Style Selector="^ /template/ atom|Popup#PART_Popup">
