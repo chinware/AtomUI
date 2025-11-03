@@ -97,10 +97,7 @@ public class Select : TemplatedControl,
     
     public static readonly StyledProperty<string?> MaxTagPlaceholderProperty =
         AvaloniaProperty.Register<Select, string?>(nameof(MaxTagPlaceholder));
-    
-    public static readonly StyledProperty<int> MaxTagTextLengthProperty =
-        AvaloniaProperty.Register<Select, int>(nameof(MaxTagPlaceholder));
-    
+
     public static readonly StyledProperty<SelectMode> ModeProperty =
         AvaloniaProperty.Register<Select, SelectMode>(nameof(Mode));
    
@@ -285,12 +282,6 @@ public class Select : TemplatedControl,
         set => SetValue(MaxTagPlaceholderProperty, value);
     }
     
-    public int MaxTagTextLength
-    {
-        get => GetValue(MaxTagTextLengthProperty);
-        set => SetValue(MaxTagTextLengthProperty, value);
-    }
-    
     public SelectMode Mode
     {
         get => GetValue(ModeProperty);
@@ -457,6 +448,16 @@ public class Select : TemplatedControl,
             o => o.SelectedCount,
             (o, v) => o.SelectedCount = v);
     
+    internal static readonly DirectProperty<Select, string?> ActivateFilterValueProperty =
+        AvaloniaProperty.RegisterDirect<Select, string?>(nameof(ActivateFilterValue),
+            o => o.ActivateFilterValue,
+            (o, v) => o.ActivateFilterValue = v);
+    
+    internal static readonly DirectProperty<Select, bool> IsEffectiveSearchEnabledProperty =
+        AvaloniaProperty.RegisterDirect<Select, bool>(nameof(IsEffectiveSearchEnabled),
+            o => o.IsEffectiveSearchEnabled,
+            (o, v) => o.IsEffectiveSearchEnabled = v);
+    
     internal double ItemHeight
     {
         get => GetValue(ItemHeightProperty);
@@ -523,6 +524,22 @@ public class Select : TemplatedControl,
         set => SetAndRaise(SelectedCountProperty, ref _selectedCount, value);
     }
     
+    private string? _activateFilterValue;
+
+    internal string? ActivateFilterValue
+    {
+        get => _activateFilterValue;
+        set => SetAndRaise(ActivateFilterValueProperty, ref _activateFilterValue, value);
+    }
+    
+    private bool _isEffectiveSearchEnabled;
+
+    internal bool IsEffectiveSearchEnabled
+    {
+        get => _isEffectiveSearchEnabled;
+        set => SetAndRaise(IsEffectiveSearchEnabledProperty, ref _isEffectiveSearchEnabled, value);
+    }
+    
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => SelectToken.ID;
@@ -539,8 +556,7 @@ public class Select : TemplatedControl,
     private ListFilterDescription? _filterDescription;
     private ListFilterDescription? _filterSelectedDescription;
     private bool _clickInTagCloseButton;
-    
-    private string? _filterValue;
+    private SelectOption? _addNewOption;
 
     static Select()
     {
@@ -709,6 +725,7 @@ public class Select : TemplatedControl,
         UpdatePseudoClasses();
         ConfigureSingleSearchTextBox();
         ConfigureDefaultValues();
+        ConfigureEffectiveSearchEnabled();
     }
     
     private bool PopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
@@ -742,6 +759,10 @@ public class Select : TemplatedControl,
         }
         else
         {
+            if (Mode == SelectMode.Tags)
+            {
+                _addNewOption = null;
+            }
             if (SelectedOptions != null)
             {
                 foreach (var item in SelectedOptions)
@@ -807,6 +828,12 @@ public class Select : TemplatedControl,
             {
                 _filterSelectedDescription = null;
             }
+        }
+        
+        if (change.Property == IsSearchEnabledProperty ||
+            change.Property == ModeProperty)
+        {
+            ConfigureEffectiveSearchEnabled();
         }
     }
     
@@ -919,7 +946,7 @@ public class Select : TemplatedControl,
 
     private void ConfigurePlaceholderVisible()
     {
-        SetCurrentValue(IsPlaceholderTextVisibleProperty, (SelectedOptions == null || SelectedOptions?.Count == 0) && string.IsNullOrEmpty(_filterValue));
+        SetCurrentValue(IsPlaceholderTextVisibleProperty, (SelectedOptions == null || SelectedOptions?.Count == 0) && string.IsNullOrEmpty(ActivateFilterValue));
     }
 
     private void ConfigureSelectionIsEmpty()
@@ -944,10 +971,18 @@ public class Select : TemplatedControl,
         {
             if (e.Source is TextBox textBox)
             {
-                _filterValue = textBox.Text;
+                ActivateFilterValue = textBox.Text;
+            }
+
+            if (Mode == SelectMode.Tags)
+            {
+                if (_addNewOption != null)
+                {
+                    Options.Remove(_addNewOption);
+                }
             }
             ConfigurePlaceholderVisible();
-            if (string.IsNullOrEmpty(_filterValue))
+            if (string.IsNullOrEmpty(ActivateFilterValue))
             {
                 _optionsBox.FilterDescriptions.Clear();
                 _filterDescription = null;
@@ -959,13 +994,13 @@ public class Select : TemplatedControl,
                     var oldFilter = _filterDescription;
                     Debug.Assert(oldFilter.FilterConditions.Count == 1);
                     var oldFilterValue = oldFilter.FilterConditions.First().ToString();
-                    if (oldFilterValue != _filterValue)
+                    if (oldFilterValue != ActivateFilterValue)
                     {
                         _filterDescription = new ListFilterDescription()
                         {
                             PropertyPath     = _filterDescription.PropertyPath,
                             Filter           =  _filterDescription.Filter,
-                            FilterConditions = [_filterValue]
+                            FilterConditions = [ActivateFilterValue]
                         };
                         _optionsBox.FilterDescriptions.Remove(oldFilter);
                         _optionsBox.FilterDescriptions.Add(_filterDescription);
@@ -977,12 +1012,22 @@ public class Select : TemplatedControl,
                     {
                         PropertyPath     = OptionFilterProp,
                         Filter           = FilterFn,
-                        FilterConditions = [_filterValue],
+                        FilterConditions = [ActivateFilterValue],
                     };
                     _optionsBox.FilterDescriptions.Add(_filterDescription);
                 }
             }
 
+            if (_optionsBox.CollectionView?.Count == 0 && ActivateFilterValue != null)
+            {
+                _addNewOption = new SelectOption()
+                {
+                    Header = ActivateFilterValue,
+                    Value  = ActivateFilterValue,
+                    IsDynamicAdded = true
+                };
+                Options.Add(_addNewOption);
+            }
             SyncSelection();
         }
         e.Handled = true;
@@ -1008,6 +1053,14 @@ public class Select : TemplatedControl,
                     selectedOptions.Remove(tag.Option);
                 }
                 SetCurrentValue(SelectedOptionsProperty, selectedOptions);
+            }
+
+            if (Mode == SelectMode.Tags)
+            {
+                if (tag.Option != null && tag.Option.IsDynamicAdded)
+                {
+                    Options.Remove(tag.Option);
+                }
             }
         }
         e.Handled = true;
@@ -1146,5 +1199,17 @@ public class Select : TemplatedControl,
             return !set.Contains(value);
         }
         return true;
+    }
+
+    private void ConfigureEffectiveSearchEnabled()
+    {
+        if (Mode == SelectMode.Tags)
+        {
+            SetCurrentValue(IsEffectiveSearchEnabledProperty, true);
+        }
+        else
+        {
+            SetCurrentValue(IsEffectiveSearchEnabledProperty, IsSearchEnabled);
+        }
     }
 }

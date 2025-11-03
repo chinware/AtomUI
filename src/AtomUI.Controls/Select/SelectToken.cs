@@ -168,7 +168,7 @@ internal class SelectToken : AbstractControlDesignToken
         OptionFontSize =  SharedToken.FontSize;
         OptionHeight = SharedToken.ControlHeight;
         MultipleItemBg = SharedToken.ColorFillSecondary;
-        MultipleItemHeight = multipleItemHeight;
+        MultipleItemHeight = multipleItemHeight - 2;
         MultipleItemHeightSM = multipleItemHeightSM + 4;
         MultipleItemHeightLG = multipleItemHeightLG;
         MultipleSelectorBgDisabled = SharedToken.ColorBgContainerDisabled;
@@ -180,12 +180,10 @@ internal class SelectToken : AbstractControlDesignToken
         PopupBoxShadows     = SharedToken.BoxShadowsSecondary;
         PopupMarginToAnchor = SharedToken.UniformlyMarginXXS;
         
-        var fontSize     = SharedToken.FontSize;
-        var lineHeight   = SharedToken.LineHeightRatio;
         var lineWidth    = SharedToken.LineWidth;
         
         var multiPaddingVertical =
-            Math.Round((SharedToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth * 2;
+            Math.Round((SharedToken.ControlHeight - SharedToken.FontHeight) / 2 * 10) / 10 - lineWidth * 2;
         var multiPaddingLeft  = multiPaddingVertical;
         var multiPaddingRight = SharedToken.UniformlyPaddingSM - lineWidth;
         MultiModePadding = new Thickness(multiPaddingLeft, multiPaddingVertical, multiPaddingRight, multiPaddingVertical);

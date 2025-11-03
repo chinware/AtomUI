@@ -24,6 +24,8 @@ public interface IListCollectionView: IEnumerable, INotifyCollectionChanged
     void Refresh();
     IDisposable DeferRefresh();
     object AddNew();
+    void CancelNew();
+    void CommitNew();
     void Remove(object? item);
     void RemoveAt(int index);
     int Count { get; }

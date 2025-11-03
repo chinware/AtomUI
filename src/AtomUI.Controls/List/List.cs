@@ -815,7 +815,7 @@ public class List : TemplatedControl,
         }
     }
 
-    private void ConfigureEmptyIndicator()
+    protected virtual void ConfigureEmptyIndicator()
     {
         SetCurrentValue(IsEffectiveEmptyVisibleProperty, IsShowEmptyIndicator && IsEmptyDataSource);
     }

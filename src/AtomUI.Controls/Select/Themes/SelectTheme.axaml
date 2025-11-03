@@ -37,7 +37,7 @@
                                     ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsVisible="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:Select}, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                 <atom:SelectHandle
-                                    IsSearchEnabled="{Binding IsSearchEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}" 
+                                    IsSearchEnabled="{Binding IsEffectiveSearchEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}" 
                                     IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     IsLoading="{Binding IsLoading, RelativeSource={RelativeSource AncestorType=atom:Select}}"
@@ -78,7 +78,7 @@
                                 Mode="{TemplateBinding Mode}"
                                 SizeType="{TemplateBinding SizeType}"
                                 SelectedOptions="{TemplateBinding SelectedOptions}"
-                                IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
+                                IsSearchEnabled="{TemplateBinding IsEffectiveSearchEnabled}"
                                 IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
                                 MaxTagCount="{TemplateBinding MaxTagCount}"
                                 IsResponsiveMaxTagCount="{TemplateBinding IsResponsiveMaxTagCount}"
@@ -100,6 +100,7 @@
                                 Name="{x:Static atom:SelectThemeConstants.OptionsBoxPart}"
                                 IsBorderless="True"
                                 IsGroupEnabled="{TemplateBinding IsGroupEnabled}"
+                                GroupPropertyPath="{TemplateBinding GroupPropertyPath}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsShowEmptyIndicator="True"
                                 MaxCount="{TemplateBinding MaxCount}"
@@ -170,6 +171,19 @@
         </Style>
         
         <Style Selector="^[Mode=Multiple]">
+            <Style Selector="^ /template/ atom|SelectResultOptionsBox#SelectedOptionsBox">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+            <Style Selector="^[IsSearchEnabled=False]">
+                <Setter Property="Cursor" Value="Hand"/>
+            </Style>
+            <Style Selector="^ /template/ atom|SelectOptions#PART_OptionsBox">
+                <Setter Property="IsShowSelectedIndicator" Value="True" />
+                <Setter Property="SelectionMode" Value="Multiple" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[Mode=Tags]">
             <Style Selector="^ /template/ atom|SelectResultOptionsBox#SelectedOptionsBox">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
