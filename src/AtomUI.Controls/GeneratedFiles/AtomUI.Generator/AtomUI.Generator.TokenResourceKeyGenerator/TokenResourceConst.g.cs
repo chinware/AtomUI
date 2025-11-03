@@ -718,6 +718,9 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey OptionSelectedBg = new TokenResourceKey("Select.OptionSelectedBg");
         public static readonly TokenResourceKey OptionSelectedColor = new TokenResourceKey("Select.OptionSelectedColor");
         public static readonly TokenResourceKey OptionSelectedFontWeight = new TokenResourceKey("Select.OptionSelectedFontWeight");
+        public static readonly TokenResourceKey Padding = new TokenResourceKey("Select.Padding");
+        public static readonly TokenResourceKey PaddingLG = new TokenResourceKey("Select.PaddingLG");
+        public static readonly TokenResourceKey PaddingSM = new TokenResourceKey("Select.PaddingSM");
         public static readonly TokenResourceKey PopupBorderRadius = new TokenResourceKey("Select.PopupBorderRadius");
         public static readonly TokenResourceKey PopupBoxShadows = new TokenResourceKey("Select.PopupBoxShadows");
         public static readonly TokenResourceKey PopupContentPadding = new TokenResourceKey("Select.PopupContentPadding");

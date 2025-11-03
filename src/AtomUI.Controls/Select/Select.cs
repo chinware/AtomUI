@@ -89,8 +89,11 @@ public class Select : TemplatedControl,
     public static readonly StyledProperty<bool> IsShowMaxCountIndicatorProperty =
         AvaloniaProperty.Register<Select, bool>(nameof(IsShowMaxCountIndicator));
         
-    public static readonly StyledProperty<int> MaxTagCountProperty =
-        AvaloniaProperty.Register<Select, int>(nameof(MaxTagCount), int.MaxValue);
+    public static readonly StyledProperty<int?> MaxTagCountProperty =
+        AvaloniaProperty.Register<Select, int?>(nameof(MaxTagCount));
+    
+    public static readonly StyledProperty<bool?> IsResponsiveMaxTagCountProperty =
+        AvaloniaProperty.Register<Select, bool?>(nameof(IsResponsiveMaxTagCount));
     
     public static readonly StyledProperty<string?> MaxTagPlaceholderProperty =
         AvaloniaProperty.Register<Select, string?>(nameof(MaxTagPlaceholder));
@@ -264,10 +267,16 @@ public class Select : TemplatedControl,
         set => SetValue(IsShowMaxCountIndicatorProperty, value);
     }
     
-    public int MaxTagCount
+    public int? MaxTagCount
     {
         get => GetValue(MaxTagCountProperty);
         set => SetValue(MaxTagCountProperty, value);
+    }
+    
+    public bool? IsResponsiveMaxTagCount
+    {
+        get => GetValue(IsResponsiveMaxTagCountProperty);
+        set => SetValue(IsResponsiveMaxTagCountProperty, value);
     }
     
     public string? MaxTagPlaceholder
@@ -652,7 +661,22 @@ public class Select : TemplatedControl,
             }
             else if (PseudoClasses.Contains(StdPseudoClass.Pressed))
             {
-                SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+                var clickInTagCloseButton = false;
+                if (e.Source is Icon icon)
+                {
+                    var parent = icon.FindAncestorOfType<IconButton>();
+                    var tag    = parent?.FindAncestorOfType<SelectTag>();
+                    if (tag != null)
+                    {
+                        clickInTagCloseButton = true;
+                    }
+                }
+
+                if (!clickInTagCloseButton)
+                {
+                    SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+                }
+    
                 e.Handled = true;
             }
         }

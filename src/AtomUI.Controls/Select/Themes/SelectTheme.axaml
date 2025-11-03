@@ -80,6 +80,8 @@
                                 SelectedOptions="{TemplateBinding SelectedOptions}"
                                 IsSearchEnabled="{TemplateBinding IsSearchEnabled}"
                                 IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
+                                MaxTagCount="{TemplateBinding MaxTagCount}"
+                                IsResponsiveMaxTagCount="{TemplateBinding IsResponsiveMaxTagCount}"
                                 IsVisible="False"
                                 Focusable="True"/>
                         </Panel>

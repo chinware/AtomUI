@@ -15,4 +15,5 @@ internal static class SelectThemeConstants
 internal static class SelectResultOptionsBoxThemeConstants
 {
     public const string DefaultPanelPart = "PART_DefaultPanel";
+    public const string MaxCountAwarePanelPart = "PART_MaxCountAwarePanel";
 }

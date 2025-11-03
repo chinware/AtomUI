@@ -126,6 +126,21 @@ internal class SelectToken : AbstractControlDesignToken
     /// </summary>
     public Thickness MultiModePaddingLG { get; set; }
     
+    /// <summary>
+    /// 输入框内边距
+    /// </summary>
+    public Thickness Padding { get; set; }
+
+    /// <summary>
+    /// 小号输入框内边距
+    /// </summary>
+    public Thickness PaddingSM { get; set; }
+
+    /// <summary>
+    /// 多选模式下的大号输入框内边距
+    /// </summary>
+    public Thickness PaddingLG { get; set; }
+    
     public SelectToken()
         : base(ID)
     {
@@ -180,5 +195,9 @@ internal class SelectToken : AbstractControlDesignToken
         
         var multiPaddingRightLG = SharedToken.ControlPaddingHorizontal - lineWidth;
         MultiModePaddingLG = new Thickness(multiPaddingVertical, multiPaddingVertical, multiPaddingRightLG, multiPaddingVertical);
+        
+        Padding = new Thickness(multiPaddingRight, multiPaddingVertical);
+        PaddingSM = new Thickness(multiPaddingRightSM, multiPaddingVertical);
+        PaddingLG = new Thickness(multiPaddingRightLG,  multiPaddingVertical);
     }
 }

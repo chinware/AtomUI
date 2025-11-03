@@ -32,6 +32,28 @@
                         </Style>
                     </Style>
                 </Style>
+                
+                <Style Selector="^[IsSelectionEmpty=True]">
+                    <Style Selector="^[SizeType=Large]">
+                        <Style Selector="^ /template/ Border#PART_ContentFrame">
+                            <Setter Property="Padding"
+                                    Value="{DynamicResource {x:Static atom:SelectTokenKey.PaddingLG}}" />
+                        </Style>
+                    </Style>
+                    <Style Selector="^[SizeType=Middle]">
+                        <Style Selector="^ /template/ Border#PART_ContentFrame">
+                            <Setter Property="Padding"
+                                    Value="{DynamicResource {x:Static atom:SelectTokenKey.Padding}}" />
+                        </Style>
+
+                    </Style>
+                    <Style Selector="^[SizeType=Small]">
+                        <Style Selector="^ /template/ Border#PART_ContentFrame">
+                            <Setter Property="Padding"
+                                    Value="{DynamicResource {x:Static atom:SelectTokenKey.Padding}}" />
+                        </Style>
+                    </Style>
+                </Style>
             </Style>
 
             <Style Selector="^[StyleVariant=Outline]">

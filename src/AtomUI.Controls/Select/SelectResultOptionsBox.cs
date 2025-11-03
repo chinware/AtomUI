@@ -11,6 +11,8 @@ namespace AtomUI.Controls;
 
 internal class SelectResultOptionsBox : TemplatedControl
 {
+    #region 公共属性定义
+
     public static readonly DirectProperty<SelectResultOptionsBox, IList?> SelectedOptionsProperty =
         AvaloniaProperty.RegisterDirect<SelectResultOptionsBox, IList?>(
             nameof(SelectedOptions),
@@ -28,6 +30,12 @@ internal class SelectResultOptionsBox : TemplatedControl
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SelectResultOptionsBox>();
+    
+    public static readonly StyledProperty<int?> MaxTagCountProperty =
+        Select.MaxTagCountProperty.AddOwner<SelectResultOptionsBox>();
+    
+    public static readonly StyledProperty<bool?> IsResponsiveMaxTagCountProperty =
+        Select.IsResponsiveMaxTagCountProperty.AddOwner<SelectResultOptionsBox>();
     
     private IList? _selectedOptions;
 
@@ -60,9 +68,42 @@ internal class SelectResultOptionsBox : TemplatedControl
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
+    
+    public int? MaxTagCount
+    {
+        get => GetValue(MaxTagCountProperty);
+        set => SetValue(MaxTagCountProperty, value);
+    }
+    
+    public bool? IsResponsiveMaxTagCount
+    {
+        get => GetValue(IsResponsiveMaxTagCountProperty);
+        set => SetValue(IsResponsiveMaxTagCountProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    public static readonly DirectProperty<SelectResultOptionsBox, bool> IsShowDefaultPanelProperty =
+        AvaloniaProperty.RegisterDirect<SelectResultOptionsBox, bool>(
+            nameof(IsShowDefaultPanel),
+            o => o.IsShowDefaultPanel,
+            (o, v) => o.IsShowDefaultPanel = v);
+    
+    private bool _isShowDefaultPanel;
+
+    public bool IsShowDefaultPanel
+    {
+        get => _isShowDefaultPanel;
+        set => SetAndRaise(IsShowDefaultPanelProperty, ref _isShowDefaultPanel, value);
+    }
+    #endregion
 
     private WrapPanel? _defaultPanel;
+    private SelectMaxTagAwarePanel? _maxCountAwarePanel;
     private SelectSearchTextBox? _searchTextBox;
+    private SelectRemainInfoTag? _collapsedInfoTag;
     private protected readonly Dictionary<object, IDisposable> _tagsBindingDisposables = new();
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -80,6 +121,24 @@ internal class SelectResultOptionsBox : TemplatedControl
         else if (change.Property == IsDropDownOpenProperty)
         {
             ConfigureSearchTextReadOnly();
+        }
+        else if (change.Property == IsResponsiveMaxTagCountProperty ||
+                 change.Property == MaxTagCountProperty)
+        {
+            if (IsResponsiveMaxTagCount == true)
+            {
+                SetCurrentValue(IsShowDefaultPanelProperty, false);
+            }
+            else
+            {
+                SetCurrentValue(IsShowDefaultPanelProperty, true);
+            }
+        }
+        else if (change.Property == IsShowDefaultPanelProperty)
+        {
+            _defaultPanel?.Children.Clear();
+            _maxCountAwarePanel?.Children.Clear();
+            HandleSelectedOptionsChanged();
         }
     }
 
@@ -99,16 +158,24 @@ internal class SelectResultOptionsBox : TemplatedControl
     {
         base.OnApplyTemplate(e);
         _defaultPanel  = e.NameScope.Find<WrapPanel>(SelectResultOptionsBoxThemeConstants.DefaultPanelPart);
+        _maxCountAwarePanel = e.NameScope.Find<SelectMaxTagAwarePanel>(SelectResultOptionsBoxThemeConstants.MaxCountAwarePanelPart);
         _searchTextBox = new SelectSearchTextBox
         {
             HorizontalAlignment = HorizontalAlignment.Stretch
+        };
+        _collapsedInfoTag = new SelectRemainInfoTag()
+        {
+            IsClosable = false
         };
         BindUtils.RelayBind(this, SizeTypeProperty, _searchTextBox, SizeTypeProperty);
         if (IsSearchEnabled)
         {
             if (Mode == SelectMode.Multiple)
             {
-                _defaultPanel?.Children.Add(_searchTextBox);
+                if (IsShowDefaultPanel)
+                {
+                    _defaultPanel?.Children.Add(_searchTextBox);
+                }
             }
         }
 
@@ -118,36 +185,80 @@ internal class SelectResultOptionsBox : TemplatedControl
 
     private void HandleSelectedOptionsChanged()
     {
-        if (_defaultPanel != null)
+        if (_isShowDefaultPanel)
         {
-            _searchTextBox?.Clear();
-            _defaultPanel.Children.Clear();
-            foreach (var entry in _tagsBindingDisposables)
+            if (_defaultPanel != null)
             {
-                entry.Value.Dispose();
-            }
-            _tagsBindingDisposables.Clear();
-            if (_selectedOptions != null)
-            {
-                foreach (var item in _selectedOptions)
+                _searchTextBox?.Clear();
+                _defaultPanel.Children.Clear();
+                foreach (var entry in _tagsBindingDisposables)
                 {
-                    if (item is SelectOption option)
+                    entry.Value.Dispose();
+                }
+                _tagsBindingDisposables.Clear();
+                if (_selectedOptions != null)
+                {
+                    foreach (var item in _selectedOptions)
                     {
-                        var tag = new SelectTag
+                        if (item is SelectOption option)
                         {
-                            TagText = option.Header,
-                            Option  = option
-                        };
-                        _tagsBindingDisposables.Add(tag, BindUtils.RelayBind(this, SizeTypeProperty, tag, SizeTypeProperty));
-                        _defaultPanel.Children.Add(tag);
+                            var tag = new SelectTag
+                            {
+                                TagText = option.Header,
+                                Option  = option
+                            };
+                            _tagsBindingDisposables.Add(tag, BindUtils.RelayBind(this, SizeTypeProperty, tag, SizeTypeProperty));
+                            _defaultPanel.Children.Add(tag);
+                        }
                     }
                 }
-            }
 
-            if (_searchTextBox != null)
+                if (_searchTextBox != null)
+                {
+                    _defaultPanel.Children.Add(_searchTextBox);
+                    _searchTextBox.Focus();
+                }
+            }
+        }
+        else
+        {
+            if (_maxCountAwarePanel != null)
             {
-                _defaultPanel.Children.Add(_searchTextBox);
-                _searchTextBox.Focus();
+                _searchTextBox?.Clear();
+                _maxCountAwarePanel.Children.Clear();
+                foreach (var entry in _tagsBindingDisposables)
+                {
+                    entry.Value.Dispose();
+                }
+                
+                _tagsBindingDisposables.Clear();
+                if (_selectedOptions != null)
+                {
+                    foreach (var item in _selectedOptions)
+                    {
+                        if (item is SelectOption option)
+                        {
+                            var tag = new SelectTag
+                            {
+                                TagText = option.Header,
+                                Option  = option
+                            };
+                            _tagsBindingDisposables.Add(tag, BindUtils.RelayBind(this, SizeTypeProperty, tag, SizeTypeProperty));
+                            _maxCountAwarePanel.Children.Add(tag);
+                        }
+                    }
+                }
+                
+                if (_collapsedInfoTag != null)
+                {
+                    _maxCountAwarePanel.Children.Add(_collapsedInfoTag);
+                }
+
+                if (_searchTextBox != null)
+                {
+                    _maxCountAwarePanel.Children.Add(_searchTextBox);
+                    _searchTextBox.Focus();
+                }
             }
         }
     }

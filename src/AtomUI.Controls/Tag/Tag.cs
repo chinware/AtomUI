@@ -183,7 +183,8 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
         StatusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>();
         AffectsMeasure<Tag>(BorderedProperty,
             IconProperty,
-            IsClosableProperty);
+            IsClosableProperty,
+            TagTextProperty);
         AffectsRender<Tag>(TagColorProperty,
             ForegroundProperty,
             BackgroundProperty,
