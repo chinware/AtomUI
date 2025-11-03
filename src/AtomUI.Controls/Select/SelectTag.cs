@@ -29,4 +29,9 @@ internal class SelectTag : Tag
 internal class SelectRemainInfoTag : SelectTag
 {
     protected override Type StyleKeyOverride { get; } = typeof(SelectTag);
+    
+    public void SetRemainText(int remainCount)
+    {
+        TagText = $"+ {remainCount} ...";
+    }
 }

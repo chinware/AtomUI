@@ -122,8 +122,7 @@ internal class SelectResultOptionsBox : TemplatedControl
         {
             ConfigureSearchTextReadOnly();
         }
-        else if (change.Property == IsResponsiveMaxTagCountProperty ||
-                 change.Property == MaxTagCountProperty)
+        else if (change.Property == IsResponsiveMaxTagCountProperty)
         {
             if (IsResponsiveMaxTagCount == true)
             {
@@ -134,10 +133,22 @@ internal class SelectResultOptionsBox : TemplatedControl
                 SetCurrentValue(IsShowDefaultPanelProperty, true);
             }
         }
-        else if (change.Property == IsShowDefaultPanelProperty)
+        
+        if (change.Property == IsShowDefaultPanelProperty)
         {
             _defaultPanel?.Children.Clear();
             _maxCountAwarePanel?.Children.Clear();
+            HandleSelectedOptionsChanged();
+        }
+        
+        if (change.Property == MaxTagCountProperty ||
+            change.Property == SelectedOptionsProperty)
+        {
+            ConfigureMaxTagCountInfoVisible();
+        }
+
+        if (change.Property == MaxTagCountProperty)
+        {
             HandleSelectedOptionsChanged();
         }
     }
@@ -181,6 +192,16 @@ internal class SelectResultOptionsBox : TemplatedControl
 
         ConfigureSearchTextControl();
         HandleSelectedOptionsChanged();
+        if (IsResponsiveMaxTagCount == true)
+        {
+            SetCurrentValue(IsShowDefaultPanelProperty, false);
+        }
+        else
+        {
+            SetCurrentValue(IsShowDefaultPanelProperty, true);
+        }
+
+        ConfigureMaxTagCountInfoVisible();
     }
 
     private void HandleSelectedOptionsChanged()
@@ -198,8 +219,9 @@ internal class SelectResultOptionsBox : TemplatedControl
                 _tagsBindingDisposables.Clear();
                 if (_selectedOptions != null)
                 {
-                    foreach (var item in _selectedOptions)
+                    for (var i = 0; i < _selectedOptions.Count; i++)
                     {
+                        var item = _selectedOptions[i];
                         if (item is SelectOption option)
                         {
                             var tag = new SelectTag
@@ -207,10 +229,27 @@ internal class SelectResultOptionsBox : TemplatedControl
                                 TagText = option.Header,
                                 Option  = option
                             };
+                            if (MaxTagCount.HasValue)
+                            {
+                                if (i < MaxTagCount)
+                                {
+                                    tag.IsVisible = true;
+                                }
+                                else
+                                {
+                                    tag.IsVisible = false;
+                                }
+                            }
+                       
                             _tagsBindingDisposables.Add(tag, BindUtils.RelayBind(this, SizeTypeProperty, tag, SizeTypeProperty));
                             _defaultPanel.Children.Add(tag);
                         }
                     }
+                }
+                
+                if (_collapsedInfoTag != null)
+                {
+                    _defaultPanel.Children.Add(_collapsedInfoTag);
                 }
 
                 if (_searchTextBox != null)
@@ -286,6 +325,22 @@ internal class SelectResultOptionsBox : TemplatedControl
             {
                 _searchTextBox.Clear();
                 _searchTextBox.IsReadOnly = true;
+            }
+        }
+    }
+
+    private void ConfigureMaxTagCountInfoVisible()
+    {
+        if (_collapsedInfoTag != null)
+        {
+            if (MaxTagCount != null && SelectedOptions != null && SelectedOptions.Count > 0 && MaxTagCount < SelectedOptions.Count)
+            {
+                _collapsedInfoTag.IsVisible = true;
+                _collapsedInfoTag.SetRemainText(SelectedOptions.Count - MaxTagCount.Value);
+            }
+            else
+            {
+                _collapsedInfoTag.IsVisible = false;
             }
         }
     }

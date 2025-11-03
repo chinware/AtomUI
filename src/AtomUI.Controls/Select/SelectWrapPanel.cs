@@ -13,7 +13,7 @@ internal class SelectWrapPanel : WrapPanel
         var size = base.ArrangeOverride(finalSize);
         if (_searchTextBox != null)
         {
-            if (Children.Count == 1)
+            if (Children.Count == 2)
             {
                 _searchTextBox.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));    
             }
@@ -23,6 +23,10 @@ internal class SelectWrapPanel : WrapPanel
                 var indexOf    = Children.IndexOf(_searchTextBox);
                 var lastIndex  = indexOf - 1;
                 var lastTag    =  Children[lastIndex];
+                if (!lastTag.IsVisible)
+                {
+                    lastTag    =  Children[lastIndex - 1];
+                }
                 var lastBounds = lastTag.Bounds;
                 var offestX    = lastBounds.Right + ItemSpacing;
                 var offsetY    = lastBounds.Top;

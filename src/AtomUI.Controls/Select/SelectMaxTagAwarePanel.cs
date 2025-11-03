@@ -44,7 +44,7 @@ internal class SelectMaxTagAwarePanel : StackPanel
                 _remainCount = Math.Max(0, Children.Count - 2 - i);
                 if (_remainCount > 0)
                 {
-                    ConfigureInfoTagText(_remainCount); 
+                    _infoTag?.SetRemainText(_remainCount); 
                 }
 
                 effectiveWidth += tagInfoWidth;
@@ -169,21 +169,13 @@ internal class SelectMaxTagAwarePanel : StackPanel
                 if (newItem is SelectRemainInfoTag selectTag)
                 {
                     _infoTag = selectTag;
-                    ConfigureInfoTagText(0);
+                    _infoTag.SetRemainText(0);
                 }
                 if (newItem is SelectSearchTextBox searchTextBox)
                 {
                     _searchTextBox = searchTextBox;
                 }
             }
-        }
-    }
-
-    private void ConfigureInfoTagText(int remainCount)
-    {
-        if (_infoTag != null)
-        {
-            _infoTag.TagText = $"+ {remainCount} ...";
         }
     }
 }
