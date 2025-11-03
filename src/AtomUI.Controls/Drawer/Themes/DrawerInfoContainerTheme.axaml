@@ -118,7 +118,7 @@
             <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
         </Style>
 
-        <Style Selector="^ /template/ atom|IconButton#CloseButton">
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DrawerTokenKey.CloseIconPadding}}" />
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DrawerTokenKey.CloseIconMargin}}" />
@@ -134,7 +134,7 @@
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DrawerTokenKey.FooterPadding}}" />
         </Style>
 
-        <Style Selector="^ /template/ atom|IconButton#CloseButton">
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
             <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
             <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
             <Setter Property="SelectedIconBrush"

@@ -233,7 +233,7 @@ internal class DrawerContainer : ContentControl
                 {
                     return;
                 }
-                
+              
                 if (!IsMotionEnabled)
                 {
                     _motionActor.Opacity = 1.0;
@@ -247,12 +247,13 @@ internal class DrawerContainer : ContentControl
                 LayoutHelper.MeasureChild(_motionActor, DesiredSize, new Thickness());
                 
                 var motion = BuildMotionByPlacement(Placement, MotionDuration, true);
-                
+           
                 motion.Run(_motionActor, null,
                     () =>
                     {
                         _openAnimating = false;
                         drawer.NotifyOpened();
+                       
                     });
             });
            
@@ -312,6 +313,7 @@ internal class DrawerContainer : ContentControl
             {
                 await Task.WhenAll(moveAnimTaskSrc.Task, moveAnimTaskSrc.Task);
                 layer.Children.Remove(this);
+                _motionActor.Opacity = 1.0;
                 drawer.NotifyClosed();
             });
         }
